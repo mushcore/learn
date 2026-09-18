@@ -1,0 +1,7 @@
+.git
+node_modules
+*.md
+!courses/**/*.md
+AUTHORING.md
+README.md
+validate.js

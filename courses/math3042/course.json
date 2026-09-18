@@ -1,0 +1,78 @@
+{
+  "title": "MATH 3042 Statistics",
+  "subtitle": "Unit 1, preparing for Quiz 1",
+  "description": "Unit 1, descriptive statistics: every formula from the lecture notes with the instructor's own worked examples, live visual calculators, and the Lab 1 pencil problems with instant checking.",
+  "intro": ":::quiz Quiz 1 scope\nLecture Unit 01 (descriptive statistics: numerical measures) and Lab 1. The lab says its **pencil problems** are the preparation for the theory part of quizzes, so all seven are worked here with step-by-step checking. Bring a scientific calculator and know how to read $\\bar{X}$ and $s$ from its STAT mode.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      { "lesson": "mock-quiz", "note": "take it cold first to find the gaps (about 30 min)" },
+      { "lesson": "range-sd", "note": "compute one sample sd by hand, start to finish, without the widget" },
+      { "lesson": "empirical-rule", "note": "the tail arithmetic (2.5%, 34%, 0.15%) is where most points are won or lost" },
+      { "lesson": "z-scores", "note": "Z both ways, and the unusual cutoff" },
+      { "lesson": "iqr-boxplot-outliers", "note": "fences and outlier decisions" },
+      { "lesson": "pencil-problems", "note": "do all seven on paper with your calculator; check each" },
+      { "lesson": "mock-quiz", "note": "retake; aim for 90% or better" },
+      { "lesson": "formula-sheet", "note": "print it; rewrite the formulas from memory once" }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Foundations",
+      "lessons": [
+        { "id": "what-is-statistics", "title": "What statistics is (and its parts)", "file": "chapters/01-what-is-statistics.md" },
+        { "id": "categorical", "title": "Categorical data: proportion & mode", "file": "chapters/02-categorical.md" }
+      ]
+    },
+    {
+      "title": "2. Measures of centre",
+      "lessons": [
+        { "id": "mean", "title": "Mean (raw & grouped)", "file": "chapters/03-mean.md" },
+        { "id": "median-mode", "title": "Median & mode", "file": "chapters/04-median-mode.md" }
+      ]
+    },
+    {
+      "title": "3. Measures of variation",
+      "lessons": [
+        { "id": "range-sd", "title": "Range & standard deviation", "file": "chapters/05-range-sd.md" },
+        { "id": "cv", "title": "Coefficient of variation", "file": "chapters/06-cv.md" }
+      ]
+    },
+    {
+      "title": "4. The meaning of σ",
+      "lessons": [
+        { "id": "empirical-rule", "title": "68–95–99.7 rule", "file": "chapters/07-empirical-rule.md" },
+        { "id": "z-scores", "title": "Z-scores & unusual values", "file": "chapters/08-z-scores.md" },
+        { "id": "chebyshev", "title": "Chebyshev's rule", "file": "chapters/09-chebyshev.md" }
+      ]
+    },
+    {
+      "title": "5. Measures of position",
+      "lessons": [
+        { "id": "quartiles-percentiles", "title": "Quartiles & percentiles", "file": "chapters/10-quartiles-percentiles.md" },
+        { "id": "iqr-boxplot-outliers", "title": "IQR, boxplots & outliers", "file": "chapters/11-iqr-boxplot-outliers.md" }
+      ]
+    },
+    {
+      "title": "6. Shape & relationships",
+      "lessons": [
+        { "id": "skewness", "title": "Skewness", "file": "chapters/12-skewness.md" },
+        { "id": "correlation", "title": "Linear correlation r", "file": "chapters/13-correlation.md" }
+      ]
+    },
+    {
+      "title": "7. R essentials",
+      "lessons": [
+        { "id": "r-essentials", "title": "R from Lab 1 (what the quiz may ask)", "file": "chapters/14-r-essentials.md" }
+      ]
+    },
+    {
+      "title": "8. Quiz prep",
+      "lessons": [
+        { "id": "pencil-problems", "title": "Pencil problems, worked", "file": "chapters/15-pencil-problems.md" },
+        { "id": "mock-quiz", "title": "Mock Quiz 1", "file": "chapters/16-mock-quiz.md" },
+        { "id": "formula-sheet", "title": "Formula sheet", "file": "chapters/17-formula-sheet.md" }
+      ]
+    }
+  ]
+}

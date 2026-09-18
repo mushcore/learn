@@ -1,0 +1,14 @@
+{
+  "courses": [
+    {
+      "id": "comp3522",
+      "title": "COMP 3522: Object Oriented Programming in C++",
+      "description": "Week 1: program structure, fundamental types, operators, casting, constants, console IO. Built from Jeff Yim's Week 1 slides and sample code."
+    },
+    {
+      "id": "math3042",
+      "title": "MATH 3042: Applied Probability and Statistics",
+      "description": "Unit 1: descriptive statistics — proportions, centre, variation, Z-scores, empirical rule, Chebyshev, quartiles, boxplots, outliers, skewness, correlation. Built from Carl Gladish's Unit 1 notes and Lab 1."
+    }
+  ]
+}

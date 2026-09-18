@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#151a24" />
+<title>learn</title>
+<link rel="stylesheet" href="/app/styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <button id="navToggle" class="nav-toggle" aria-label="Open lesson list" aria-expanded="false">☰</button>
+      <a class="brand" href="#/">learn<span>.</span></a>
+      <nav id="crumbs" class="crumbs" aria-label="Breadcrumb"></nav>
+      <div class="spacer"></div>
+      <div id="compilerBadge" class="badge" title="Where C++ code is compiled">…</div>
+    </header>
+    <div class="shell">
+      <aside id="sidebar" class="sidebar"></aside>
+      <main id="content" class="content"></main>
+    </div>
+  </div>
+  <script type="module" src="/app/main.js"></script>
+</body>
+</html>

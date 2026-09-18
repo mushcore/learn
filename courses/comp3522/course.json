@@ -1,0 +1,66 @@
+{
+  "title": "COMP 3522 C++",
+  "subtitle": "Week 1, preparing for Quiz 1",
+  "description": "Everything Quiz 1 covers: C++ program structure, fundamental types, operators, casting, constants, and console IO. Each lesson has runnable code you can edit, visual explainers, and a self-check quiz. Finish with the mock quiz and the cheat sheet.",
+  "intro": ":::quiz Quiz 1 format, from the slides\nWritten at the start of lab on the Learning Hub: multiple choice, true/false, matching. It covers the Week 1 slides **and the Week 1 sample code** (HelloWorld, AddIntegers, AddIntegersError, assortedOps, bits, const_vs_constexpr, precisionAndWidth, readName). Every one of those programs is reproduced, runnable, and explained inside these lessons.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      { "lesson": "mock-quiz", "note": "take it cold first, so you know where the gaps are (about 30 min)" },
+      { "lesson": "output-formatting", "note": "the manipulator table is the densest quiz material; play with the widget until every output is predictable" },
+      { "lesson": "input-failure", "note": "fail/bad/eof/good, clear + ignore, and why AddIntegersError breaks" },
+      { "lesson": "increment-logic", "note": "pre/post ++ and short-circuit are the classic what-does-this-print questions" },
+      { "lesson": "constants", "note": "const vs constexpr is a guaranteed true/false pair" },
+      { "lesson": "headers-sources", "note": "the hidden-subtract trick in the sample code" },
+      { "lesson": "mock-quiz", "note": "retake; aim for 90% or better" },
+      { "lesson": "cheat-sheet", "note": "print it and read it on the way in" }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Program structure",
+      "lessons": [
+        { "id": "hello-world", "title": "Anatomy of Hello World", "file": "chapters/01-hello-world.md" },
+        { "id": "preprocessor-namespaces", "title": "Preprocessor & namespaces", "file": "chapters/02-preprocessor-namespaces.md" },
+        { "id": "headers-sources", "title": "Header vs source files", "file": "chapters/03-headers-sources.md" }
+      ]
+    },
+    {
+      "title": "2. Fundamental types",
+      "lessons": [
+        { "id": "types-variables", "title": "Types & variables", "file": "chapters/04-types-variables.md" },
+        { "id": "initialization", "title": "Three ways to initialize", "file": "chapters/05-initialization.md" }
+      ]
+    },
+    {
+      "title": "3. Operators",
+      "lessons": [
+        { "id": "arithmetic", "title": "Arithmetic & compound operators", "file": "chapters/06-arithmetic.md" },
+        { "id": "increment-logic", "title": "++/--, relational & logical", "file": "chapters/07-increment-logic.md" },
+        { "id": "assorted-ops", "title": "Ternary, comma, sizeof, bitwise", "file": "chapters/08-assorted-ops.md" }
+      ]
+    },
+    {
+      "title": "4. Casting & constants",
+      "lessons": [
+        { "id": "casting", "title": "C-style casting", "file": "chapters/09-casting.md" },
+        { "id": "constants", "title": "#define, const, constexpr", "file": "chapters/10-constants.md" }
+      ]
+    },
+    {
+      "title": "5. Console IO",
+      "lessons": [
+        { "id": "output-formatting", "title": "Formatting output", "file": "chapters/11-output-formatting.md" },
+        { "id": "input-cin", "title": "Reading input with cin", "file": "chapters/12-input-cin.md" },
+        { "id": "input-failure", "title": "When input fails", "file": "chapters/13-input-failure.md" }
+      ]
+    },
+    {
+      "title": "6. Quiz prep",
+      "lessons": [
+        { "id": "mock-quiz", "title": "Mock Quiz 1", "file": "chapters/14-mock-quiz.md" },
+        { "id": "cheat-sheet", "title": "One-page cheat sheet", "file": "chapters/15-cheat-sheet.md" }
+      ]
+    }
+  ]
+}
