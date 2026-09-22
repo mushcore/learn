@@ -1,0 +1,67 @@
+{
+  "title": "COMP 3721 Data Communications",
+  "subtitle": "Weeks 1–2, preparing for Quiz 1 and Quiz 2",
+  "description": "Everything from Lectures 01a, 01b, 01c, the Math Review and Lecture 02: definitions in the instructor's own wording, every worked number from the slides and exercise sheets, live signal and network widgets, and quizzes in the real format (true/false, fill in the blank, written response). Finish with the two mock quizzes and the one-page study note.",
+  "intro": ":::quiz Quiz format, from the instructor\nWeekly quizzes are written in the lab, starting Week 2, on material from previous weeks. **Quiz 1 covers Lecture Notes 01a only** (data communications, networks, topologies, the Internet). Quiz 2 will cover 01b/01c (layering, TCP/IP, connecting devices) and Lecture 02 (signals). The sample quiz shows three question styles: **true or false**, **fill in the blanks**, and **short written response**. You may bring **one A4 page of study notes (single-sided, preferably hand-written) and a calculator**; the last lesson here is a draft of that page. Quizzes are 20% of the grade (10 quizzes) and there are no make-ups.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      { "lesson": "mock-quiz-1", "note": "take it cold first to find the gaps (about 25 min)" },
+      { "lesson": "components-data-flow", "note": "five components and simplex / half-duplex / full-duplex are the classic true/false items" },
+      { "lesson": "topologies", "note": "link counts (mesh n(n-1)/2, star n, bus 1 + n drop lines) and the advantage / disadvantage lists" },
+      { "lesson": "tcpip-osi", "note": "each layer's job, PDU name and example protocols; the fill-in-the-blank favourite" },
+      { "lesson": "sine-wave", "note": "T = 1/f with unit prefixes; do the 60 Hz and 200 us examples by hand" },
+      { "lesson": "composite-bandwidth", "note": "bandwidth = highest minus lowest, with the middle-frequency trick from E02" },
+      { "lesson": "exercises-worked", "note": "redo E01 and E02 on paper before checking" },
+      { "lesson": "mock-quiz-1", "note": "retake; aim for 90% or better, then do mock quiz 2" },
+      { "lesson": "study-note", "note": "hand-write your one A4 page from this draft" }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Data communications (01a)",
+      "lessons": [
+        { "id": "data-communications", "title": "What data communications is", "file": "chapters/01-data-communications.md" },
+        { "id": "components-data-flow", "title": "Five components & data flow", "file": "chapters/02-components-data-flow.md" },
+        { "id": "networks", "title": "Networks: nodes, criteria, connections", "file": "chapters/03-networks.md" },
+        { "id": "topologies", "title": "Topologies: mesh, star, bus, ring", "file": "chapters/04-topologies.md" },
+        { "id": "lan-wan-internet", "title": "LAN, WAN, internets & the Internet", "file": "chapters/05-lan-wan-internet.md" }
+      ]
+    },
+    {
+      "title": "2. Protocol layering (01b, 01c)",
+      "lessons": [
+        { "id": "why-layers", "title": "Protocols & why we layer", "file": "chapters/06-why-layers.md" },
+        { "id": "tcpip-osi", "title": "TCP/IP's five layers & the OSI model", "file": "chapters/07-tcpip-osi.md" },
+        { "id": "encapsulation-addressing", "title": "Encapsulation & the four addresses", "file": "chapters/08-encapsulation-addressing.md" },
+        { "id": "connecting-devices", "title": "Hubs, switches, routers", "file": "chapters/09-connecting-devices.md" }
+      ]
+    },
+    {
+      "title": "3. Math review (Lab 1)",
+      "lessons": [
+        { "id": "math-review", "title": "Logs, transformations, phase & units", "file": "chapters/10-math-review.md" }
+      ]
+    },
+    {
+      "title": "4. Physical layer: signals (02)",
+      "lessons": [
+        { "id": "data-and-signals", "title": "Data vs signals, analog vs digital", "file": "chapters/11-data-and-signals.md" },
+        { "id": "sine-wave", "title": "Sine wave: amplitude, frequency, period", "file": "chapters/12-sine-wave.md" },
+        { "id": "phase", "title": "Phase & the sine equation", "file": "chapters/13-phase.md" },
+        { "id": "wavelength", "title": "Wavelength & propagation speed", "file": "chapters/14-wavelength.md" },
+        { "id": "composite-bandwidth", "title": "Composite signals & bandwidth", "file": "chapters/15-composite-bandwidth.md" },
+        { "id": "digital-signals", "title": "Digital signals: bit rate, bit length, levels", "file": "chapters/16-digital-signals.md" }
+      ]
+    },
+    {
+      "title": "5. Quiz prep",
+      "lessons": [
+        { "id": "exercises-worked", "title": "E01, E02 & the sample quiz, worked", "file": "chapters/17-exercises-worked.md" },
+        { "id": "mock-quiz-1", "title": "Mock Quiz 1 (Lecture 01a)", "file": "chapters/18-mock-quiz-1.md" },
+        { "id": "mock-quiz-2", "title": "Mock Quiz 2 (01b, 01c, Week 2)", "file": "chapters/19-mock-quiz-2.md" },
+        { "id": "study-note", "title": "Your one-page study note", "file": "chapters/20-study-note.md" }
+      ]
+    }
+  ]
+}

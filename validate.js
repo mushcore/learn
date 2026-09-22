@@ -7,6 +7,7 @@ const path = require("node:path");
 const WIDGETS = new Set([
   "compile-pipeline", "type-sizes", "init-forms", "expr-stepper", "int-division", "cin-sim", "manipulators", "bitwise", "namespaces",
   "stat-calc", "stat-bars", "normal-curve", "chebyshev", "boxplot", "scatter-corr", "grouped-mean", "skewness", "proportion", "drag-data",
+  "topology", "sine-wave", "freq-period", "composite", "encapsulation", "signal-levels",
 ]);
 const SERVER = process.env.LEARN_URL || "http://localhost:4321";
 const args = process.argv.slice(2);

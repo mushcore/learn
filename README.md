@@ -17,6 +17,7 @@ C++ blocks compile with the first `g++`/`clang++` found on PATH or in CLion's bu
 
 - `courses/comp3522/` — COMP 3522 Week 1 (C++ program structure, types, operators, casting, constants, console IO) + mock quiz + cheat sheet.
 - `courses/math3042/` — MATH 3042 Unit 1 (descriptive statistics) + pencil problems + mock quiz + formula sheet.
+- `courses/comp3721/` — COMP 3721 Weeks 1–2 (data communications, networks, topologies, Internet, protocol layering, TCP/IP, connecting devices, math review, analog/digital signals) + worked exercises + two mock quizzes + one-page study note.
 
 ## Add a course
 

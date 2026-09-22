@@ -1,7 +1,8 @@
 import * as cpp from "./widgets-cpp.js";
 import * as stats from "./widgets-stats.js";
+import * as net from "./widgets-net.js";
 
-const REGISTRY = { ...cpp.WIDGETS, ...stats.WIDGETS };
+const REGISTRY = { ...cpp.WIDGETS, ...stats.WIDGETS, ...net.WIDGETS };
 
 export function widgetNames() {
   return Object.keys(REGISTRY);

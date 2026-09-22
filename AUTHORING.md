@@ -96,6 +96,14 @@ Stats (`app/widgets-stats.js`):
 - `skewness` — skew slider showing mean vs median and Pearson Sk.
 - `proportion` — editable frequency table → p̂ per category, mode. cfg: `{ "categories": {"Black": 95, …} }`.
 
+Networking (`app/widgets-net.js`, COMP 3721):
+- `topology` — Mesh/Star/Bus/Ring buttons + n slider (2–12) → drawn topology, link count and formula. cfg: `{ "type": "mesh", "n": 6, "title": "…" }`.
+- `sine-wave` — A, f, φ sliders → time-domain plot (1 s) with T and shift markers, frequency-domain spike, T/ω/φ(rad)/equation. cfg: `{ "A": 1, "f": 2, "phase": 0, "presets": {"label": [A, f, phaseDeg]} }`.
+- `freq-period` — two-way f ↔ T converter with unit prefixes and the worked step. cfg: `{ "f": 60, "unit": "Hz" }` or `{ "T": 200, "unit": "μs" }`.
+- `composite` — sum of sine waves from a `freq` / `freq:amp` list → time + frequency domains, lowest/highest/bandwidth/middle frequency. cfg: `{ "components": "1:1 3:0.33 9:0.11", "presets": {"label": "…"} }`.
+- `encapsulation` — 18-step walk of a message from source A through a switch and a router to B, showing the active layer and the PDU (H_L, H_N, H_T, M). cfg: `{ "title": "…" }`.
+- `signal-levels` — L slider (2–16) → 8-element digital signal with bit labels, log₂ L, ⌈log₂ L⌉, unused patterns, bit rate. cfg: `{ "levels": 4 }`.
+
 ## Learning design (why the format is what it is)
 - Explanation sits beside the code it explains (spatial contiguity), never above a scrolled-away block. Pin the program.
 - One copy of any program (redundancy principle). Highlight only what is being discussed (signaling); a wrong highlight is worse than none.

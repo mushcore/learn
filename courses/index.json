@@ -9,6 +9,11 @@
       "id": "math3042",
       "title": "MATH 3042: Applied Probability and Statistics",
       "description": "Unit 1: descriptive statistics — proportions, centre, variation, Z-scores, empirical rule, Chebyshev, quartiles, boxplots, outliers, skewness, correlation. Built from Carl Gladish's Unit 1 notes and Lab 1."
+    },
+    {
+      "id": "comp3721",
+      "title": "COMP 3721: Introduction to Data Communications",
+      "description": "Weeks 1–2: data communications, networks and topologies, the Internet, protocol layering and TCP/IP, connecting devices, math review, analog and digital signals (sine waves, phase, wavelength, composite signals, bandwidth, bit rate). Built from Marco Ho's lectures 01a/01b/01c/02, the Math Review, E01/E02 and the sample quiz."
     }
   ]
 }
