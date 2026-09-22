@@ -1,0 +1,40 @@
+{
+  "title": "COMP 3721 · Week 2",
+  "subtitle": "Physical layer: data and signals, preparing for Quiz 2",
+  "description": "Lecture 02 and the E02 exercise sheet: data versus signals, sine waves (amplitude, frequency, period, phase), wavelength, composite signals and bandwidth, digital signals (bit rate, bit length, levels). Every worked number from the slides, live signal widgets, and calculation quizzes with units. Finish with Mock Quiz 2 and the Week 2 study note.",
+  "intro": ":::quiz Quiz 2 scope\nQuiz 2 is expected to cover Lectures 01b/01c (protocol layering, TCP/IP, connecting devices, in the Week 1 module) together with Lecture 02 here. About a third of it is calculation: bring a calculator, write units with every answer, and keep the prefixes straight (ms, μs, kHz, MHz, Mbps). One A4 study note, single-sided and preferably hand-written, is allowed; the last lesson is the Week 2 half of that page.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      { "lesson": "mock-quiz-2", "note": "take it cold first to find the gaps (about 35 min)" },
+      { "lesson": "sine-wave", "note": "T = 1/f with unit prefixes; do the 60 Hz and 200 μs examples by hand" },
+      { "lesson": "phase", "note": "read A, f and T from an equation; cycle fraction to degrees and radians" },
+      { "lesson": "composite-bandwidth", "note": "bandwidth = highest minus lowest, with the middle-frequency trick from E02" },
+      { "lesson": "digital-signals", "note": "bit length, levels to bits with the ceiling, pages-per-second bit rate" },
+      { "lesson": "e02-worked", "note": "redo all five E02 exercises on paper, units and all, before checking" },
+      { "lesson": "mock-quiz-2", "note": "retake; aim for 90% or better" },
+      { "lesson": "study-note", "note": "hand-write the Week 2 half of your A4 page from this draft" }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Physical layer: data and signals (02)",
+      "lessons": [
+        { "id": "data-and-signals", "title": "Data vs signals, analog vs digital", "file": "chapters/01-data-and-signals.md" },
+        { "id": "sine-wave", "title": "Sine wave: amplitude, frequency, period", "file": "chapters/02-sine-wave.md" },
+        { "id": "phase", "title": "Phase & the sine equation", "file": "chapters/03-phase.md" },
+        { "id": "wavelength", "title": "Wavelength & propagation speed", "file": "chapters/04-wavelength.md" },
+        { "id": "composite-bandwidth", "title": "Composite signals & bandwidth", "file": "chapters/05-composite-bandwidth.md" },
+        { "id": "digital-signals", "title": "Digital signals: bit rate, bit length, levels", "file": "chapters/06-digital-signals.md" }
+      ]
+    },
+    {
+      "title": "2. Quiz prep",
+      "lessons": [
+        { "id": "e02-worked", "title": "E02, worked", "file": "chapters/07-e02-worked.md" },
+        { "id": "mock-quiz-2", "title": "Mock Quiz 2 (01b, 01c, Week 2)", "file": "chapters/08-mock-quiz-2.md" },
+        { "id": "study-note", "title": "Your one-page study note (Week 2)", "file": "chapters/09-study-note.md" }
+      ]
+    }
+  ]
+}

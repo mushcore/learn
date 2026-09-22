@@ -26,6 +26,12 @@ async function getCourse(id) {
     const course = await (await fetch(`/courses/${id}/course.json`)).json();
     course.id = id;
     course.lessons = course.chapters.flatMap((ch) => ch.lessons.map((l) => ({ ...l, chapter: ch.title })));
+    // A module (one week or unit) belongs to a course in courses/index.json; remember the parent for breadcrumbs.
+    const reg = await getRegistry();
+    for (const c of reg.courses) {
+      const m = (c.modules || []).find((x) => x.id === id);
+      if (m) { course.parent = c; course.moduleTitle = m.title; }
+    }
     courseCache.set(id, course);
   }
   return courseCache.get(id);
@@ -65,23 +71,56 @@ sidebar.addEventListener("click", (e) => { if (e.target.closest("a")) setNav(fal
 content.addEventListener("click", () => setNav(false));
 
 // ---------- views ----------
+// Home: one card per course. A course is a list of modules (one per week or unit), each a folder under courses/.
 async function renderHome() {
   const reg = await getRegistry();
   sidebar.innerHTML = "";
   sidebar.style.display = "none";
   crumbs.innerHTML = "";
   content.innerHTML = "";
+  content.scrollTop = 0;
   const landing = el("div", "landing");
-  landing.append(el("h1", null, "Study tracks"), el("p", "lead", "Read a lesson, run and edit the code, check yourself with a quiz. Progress is saved in this browser, so pick up where you left off."));
+  landing.append(el("h1", null, "Courses"), el("p", "lead", "Pick a course, then the week you are studying. Read a lesson, run and edit the code, check yourself with a quiz. Progress is saved in this browser, so pick up where you left off."));
   for (const c of reg.courses) {
-    const course = await getCourse(c.id);
+    const mods = await Promise.all((c.modules || []).map((m) => getCourse(m.id)));
+    const done = mods.reduce((s, m) => s + courseProgress(m).done, 0);
+    const total = mods.reduce((s, m) => s + courseProgress(m).total, 0);
+    const pct = total ? Math.round((100 * done) / total) : 0;
+    const card = el("div", "course-card big");
+    const title = el("a", "title", `${c.code} · ${c.title}`);
+    title.href = `#/course/${c.id}`;
+    const desc = el("div", "desc", c.description || "");
+    const cta = el("a", "start-btn cta", "Open course");
+    cta.href = `#/course/${c.id}`;
+    const bar = el("div", "progress-bar");
+    bar.innerHTML = `<div style="width:${pct}%"></div>`;
+    const status = el("div", "desc", `${mods.length} module${mods.length === 1 ? "" : "s"} · ${done} of ${total} lessons complete`);
+    card.append(title, cta, desc, bar, status);
+    landing.append(card);
+  }
+  content.append(landing);
+}
+
+// Course page: the course's modules (weeks / units), each with its own progress and continue button.
+async function renderCoursePage(c) {
+  sidebar.innerHTML = "";
+  sidebar.style.display = "none";
+  crumbs.innerHTML = `<a href="#/">Courses</a> › <span>${c.code}</span>`;
+  content.innerHTML = "";
+  content.scrollTop = 0;
+  const landing = el("div", "landing");
+  landing.append(el("h1", null, `${c.code} · ${c.title}`), el("p", "lead", c.description || ""));
+  landing.append(el("h2", "group-title", "Modules"));
+  for (const m of c.modules || []) {
+    const course = await getCourse(m.id);
     const pr = courseProgress(course);
     const next = nextLesson(course);
     const card = el("div", "course-card big");
-    const title = el("div", "title", c.title);
-    const desc = el("div", "desc", c.description);
+    const title = el("a", "title", m.subtitle ? `${m.title}: ${m.subtitle}` : m.title);
+    title.href = `#/${m.id}`;
+    const desc = el("div", "desc", m.description || course.description || "");
     const cta = el("a", "start-btn cta", pr.done ? `Continue with ${next.title}` : `Start with ${next.title}`);
-    cta.href = `#/${c.id}/${next.id}`;
+    cta.href = `#/${m.id}/${next.id}`;
     const bar = el("div", "progress-bar");
     bar.innerHTML = `<div style="width:${pr.pct}%"></div>`;
     const status = el("div", "desc", `${pr.done} of ${pr.total} lessons complete`);
@@ -91,10 +130,24 @@ async function renderHome() {
   content.append(landing);
 }
 
+// Breadcrumb trail: Courses › <course code> › <module> › ...
+function crumbTrail(course, tail) {
+  const parts = [`<a href="#/">Courses</a>`];
+  if (course.parent) parts.push(`<a href="#/course/${course.parent.id}">${course.parent.code}</a>`);
+  return parts.concat(tail).join(" › ");
+}
+const moduleLabel = (course) => course.moduleTitle || course.title;
+
 function renderSidebar(course, activeId) {
   sidebar.innerHTML = "";
   sidebar.style.display = "";
   const pr = courseProgress(course);
+  if (course.parent) {
+    const back = el("a", "back-link");
+    back.href = `#/course/${course.parent.id}`;
+    back.textContent = `‹ ${course.parent.code}: all modules`;
+    sidebar.append(back);
+  }
   const card = el("a", "course-card");
   card.href = `#/${course.id}`;
   card.innerHTML = `<div class="title">${course.title}</div><div class="desc">${course.subtitle || ""}</div><div class="progress-bar"><div style="width:${pr.pct}%"></div></div><div class="desc">${pr.done} of ${pr.total} done</div>`;
@@ -127,7 +180,7 @@ function renderSidebar(course, activeId) {
 
 async function renderCourseHome(course) {
   renderSidebar(course, null);
-  crumbs.innerHTML = `<a href="#/">Courses</a> › <span>${course.title}</span>`;
+  crumbs.innerHTML = crumbTrail(course, [`<span>${moduleLabel(course)}</span>`]);
   content.innerHTML = "";
   content.scrollTop = 0;
   const wrap = el("div", "landing");
@@ -179,7 +232,7 @@ async function renderCourseHome(course) {
 // shuffled across lessons (interleaving), until you get it right twice in a row.
 async function renderReview(course) {
   renderSidebar(course, "review");
-  crumbs.innerHTML = `<a href="#/">Courses</a> › <a href="#/${course.id}">${course.title}</a> › <span>Review</span>`;
+  crumbs.innerHTML = crumbTrail(course, [`<a href="#/${course.id}">${moduleLabel(course)}</a>`, `<span>Review</span>`]);
   content.innerHTML = "";
   content.scrollTop = 0;
   const wrap = el("div", "lesson");
@@ -216,7 +269,7 @@ async function renderLessonView(course, lessonId) {
   if (idx < 0) return renderCourseHome(course);
   const lesson = course.lessons[idx];
   renderSidebar(course, lessonId);
-  crumbs.innerHTML = `<a href="#/">Courses</a> › <a href="#/${course.id}">${course.title}</a> › <span>${lesson.title}</span>`;
+  crumbs.innerHTML = crumbTrail(course, [`<a href="#/${course.id}">${moduleLabel(course)}</a>`, `<span>${lesson.title}</span>`]);
   content.innerHTML = "";
   content.scrollTop = 0;
   const src = await (await fetch(`/courses/${course.id}/${lesson.file}`)).text();
@@ -270,6 +323,12 @@ async function route() {
   current = { course: null, lessonId: null };
   try {
     if (!courseId) return await renderHome();
+    if (courseId === "course") {
+      const reg = await getRegistry();
+      const c = reg.courses.find((x) => x.id === lessonId);
+      if (!c) throw new Error(`unknown course "${lessonId}"`);
+      return await renderCoursePage(c);
+    }
     const course = await getCourse(courseId);
     setCourse(courseId);
     if (!lessonId) return await renderCourseHome(course);

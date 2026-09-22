@@ -2,18 +2,51 @@
   "courses": [
     {
       "id": "comp3522",
-      "title": "COMP 3522: Object Oriented Programming in C++",
-      "description": "Week 1: program structure, fundamental types, operators, casting, constants, console IO. Built from Jeff Yim's Week 1 slides and sample code."
+      "code": "COMP 3522",
+      "title": "Object Oriented Programming in C++",
+      "description": "Jeff Yim's lectures and sample code, one module per week. Runnable C++ in every lesson.",
+      "modules": [
+        {
+          "id": "comp3522",
+          "title": "Week 1",
+          "subtitle": "program structure, types, operators, casting, constants, console IO",
+          "description": "Built from the Week 1 slides and sample code (HelloWorld, AddIntegers, assortedOps, bits, const_vs_constexpr, precisionAndWidth, readName). Ends with a mock quiz and a cheat sheet."
+        }
+      ]
     },
     {
       "id": "math3042",
-      "title": "MATH 3042: Applied Probability and Statistics",
-      "description": "Unit 1: descriptive statistics — proportions, centre, variation, Z-scores, empirical rule, Chebyshev, quartiles, boxplots, outliers, skewness, correlation. Built from Carl Gladish's Unit 1 notes and Lab 1."
+      "code": "MATH 3042",
+      "title": "Applied Probability and Statistics",
+      "description": "Carl Gladish's lecture units and labs, one module per unit. Live statistics calculators and pencil problems with instant checking.",
+      "modules": [
+        {
+          "id": "math3042",
+          "title": "Unit 1",
+          "subtitle": "descriptive statistics",
+          "description": "Proportions, centre, variation, Z-scores, empirical rule, Chebyshev, quartiles, boxplots, outliers, skewness, correlation. Built from the Unit 1 notes and Lab 1; ends with the pencil problems, a mock quiz and a formula sheet."
+        }
+      ]
     },
     {
       "id": "comp3721",
-      "title": "COMP 3721: Introduction to Data Communications",
-      "description": "Weeks 1–2: data communications, networks and topologies, the Internet, protocol layering and TCP/IP, connecting devices, math review, analog and digital signals (sine waves, phase, wavelength, composite signals, bandwidth, bit rate). Built from Marco Ho's lectures 01a/01b/01c/02, the Math Review, E01/E02 and the sample quiz."
+      "code": "COMP 3721",
+      "title": "Introduction to Data Communications",
+      "description": "Marco Ho's lectures and exercise sheets, one module per week. Weekly lab quizzes from Week 2 on the previous weeks; each module ends with a mock quiz and a draft of the one-page study note.",
+      "modules": [
+        {
+          "id": "comp3721-w1",
+          "title": "Week 1",
+          "subtitle": "data communications, networks, layering, math review",
+          "description": "Lectures 01a, 01b, 01c and the Math Review lab, with E01 and the sample quiz worked. Quiz 1 scope (01a) plus the layering half of Quiz 2."
+        },
+        {
+          "id": "comp3721-w2",
+          "title": "Week 2",
+          "subtitle": "physical layer, data and signals",
+          "description": "Lecture 02: analog and digital signals, sine waves, phase, wavelength, composite signals and bandwidth, bit rate and levels, with E02 worked. The calculation half of Quiz 2."
+        }
+      ]
     }
   ]
 }
