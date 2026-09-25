@@ -73,7 +73,8 @@ export function mountRunner(container, code, ctx, opts = {}) {
   const stdinRow = el("div", "stdin-row");
   const stdinInput = document.createElement("input");
   stdinInput.type = "text";
-  stdinInput.placeholder = "stdin fed to cin — separate values with spaces, use \\n for Enter";
+  stdinInput.placeholder = "input for cin (\\n = Enter)";
+  stdinInput.title = "Text fed to cin — separate values with spaces, write \\n for Enter";
   stdinInput.value = initialStdin;
   stdinRow.append(el("label", null, "stdin"), stdinInput);
 

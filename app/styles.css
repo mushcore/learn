@@ -28,6 +28,7 @@
   --radius: 8px;
   --measure: 72ch;
   --sidebar-w: 288px;
+  --topbar-h: 52px;
 }
 
 * { box-sizing: border-box; }
@@ -45,14 +46,15 @@ body {
 ::selection { background: var(--hl); color: var(--hl-ink); }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
 
-#app { display: flex; flex-direction: column; height: 100vh; }
+#app { display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
+button, a, [role="button"] { -webkit-tap-highlight-color: transparent; }
 
 /* ---------- top bar ---------- */
 .topbar {
   display: flex;
   align-items: center;
   gap: 14px;
-  height: 52px;
+  height: var(--topbar-h);
   padding: 0 18px;
   border-bottom: 1px solid var(--rule);
   background: var(--paper);
@@ -69,18 +71,27 @@ body {
 .brand span { color: var(--hl); }
 .nav-toggle {
   display: none;
+  align-items: center;
+  justify-content: center;
   background: none;
   border: 1px solid var(--rule);
   color: var(--ink);
-  border-radius: 6px;
-  width: 36px; height: 32px;
-  font-size: 18px;
+  border-radius: 8px;
+  width: 40px; height: 40px;
+  padding: 0;
   cursor: pointer;
+  flex-shrink: 0;
 }
+.nav-toggle svg { display: block; }
+.nav-toggle .ico-close, .nav-toggle[aria-expanded="true"] .ico-open { display: none; }
+.nav-toggle[aria-expanded="true"] .ico-close { display: block; }
+.nav-toggle:active { background: var(--paper-3); }
+.scrim { display: none; }
 .crumbs { color: var(--ink-dim); font-size: 13.5px; display: flex; gap: 8px; align-items: center; min-width: 0; white-space: nowrap; overflow: hidden; }
 .crumbs a { color: var(--ink-dim); text-decoration: none; }
 .crumbs a:hover { color: var(--ink); }
 .crumbs span:last-child { color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; }
+.crumbs .sep { color: var(--rule-strong); }
 .spacer { flex: 1; }
 .badge { font-size: 12px; color: var(--ink-dim); white-space: nowrap; }
 .badge.ok::before { content: "●"; color: var(--green); margin-right: 6px; font-size: 9px; vertical-align: 1px; }
@@ -157,7 +168,7 @@ body {
 .lesson:has(.pin-section) { max-width: none; }
 .lesson > .lesson-body { max-width: none; }
 .lesson > *, .lesson .lesson-body > p, .lesson .lesson-body > ul, .lesson .lesson-body > ol, .lesson .lesson-body > blockquote, .lesson .lesson-body > h2, .lesson .lesson-body > h3, .lesson .lesson-body > h4 { max-width: var(--measure); }
-.lesson .lesson-body > table, .lesson .lesson-body > .widget, .lesson .lesson-body > .runner, .lesson .lesson-body > .codeblock, .lesson .lesson-body > .quiz-box, .lesson .lesson-body > .challenge-box, .lesson .lesson-body > .callout { max-width: 880px; }
+.lesson .lesson-body > table, .lesson .lesson-body > .table-wrap, .lesson .lesson-body > .widget, .lesson .lesson-body > .runner, .lesson .lesson-body > .codeblock, .lesson .lesson-body > .quiz-box, .lesson .lesson-body > .challenge-box, .lesson .lesson-body > .callout { max-width: 880px; }
 .lesson .lesson-body > .pin-section { max-width: none; }
 /* In a lesson that has pinned code the body is fluid, so stand-alone code blocks may grow too. */
 .lesson:has(.pin-section) .lesson-body > .runner, .lesson:has(.pin-section) .lesson-body > .codeblock, .lesson:has(.pin-section) .lesson-body > .widget { max-width: 1100px; }
@@ -195,7 +206,9 @@ body {
 .lesson a { color: var(--blue); }
 .lesson strong { color: var(--ink); font-weight: 650; }
 .lesson code { font-family: var(--mono); font-size: 0.88em; background: var(--paper-3); color: var(--hl); padding: 2px 6px; border-radius: 4px; }
+.table-wrap { overflow-x: auto; margin: 16px 0; max-width: 100%; }
 .lesson table { border-collapse: collapse; margin: 16px 0; width: 100%; font-size: 14px; }
+.table-wrap > table { margin: 0; }
 .lesson th, .lesson td { border: 1px solid var(--rule); padding: 7px 11px; text-align: left; vertical-align: top; color: var(--ink-2); }
 .lesson th { background: var(--paper-2); color: var(--ink); font-family: var(--display); font-weight: 600; }
 .lesson tbody tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
@@ -243,7 +256,7 @@ body {
 
 /* runner */
 .runner { background: #0f131b; border: 1px solid var(--rule); border-radius: var(--radius); margin: 18px 0; overflow: hidden; }
-.runner-head { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-bottom: 1px solid var(--rule); background: var(--paper-2); }
+.runner-head { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-bottom: 1px solid var(--rule); background: var(--paper-2); flex-wrap: wrap; }
 .runner-head .lang-tag { font-size: 12.5px; color: var(--ink-dim); }
 .runner-head kbd { font-family: var(--mono); font-size: 11px; color: var(--ink-dim); border: 1px solid var(--rule-strong); border-radius: 4px; padding: 1px 5px; margin-left: 6px; }
 .run-btn {
@@ -258,6 +271,7 @@ body {
   font-family: var(--body);
 }
 .run-btn:hover { background: #ffdc85; }
+.run-btn:active { background: #f0c250; }
 .run-btn:disabled { opacity: 0.55; cursor: progress; }
 .reset-btn {
   background: transparent;
@@ -270,6 +284,7 @@ body {
   font-family: var(--body);
 }
 .reset-btn:hover { color: var(--ink); border-color: var(--ink-dim); }
+.reset-btn:active { background: var(--paper-3); }
 .editor-wrap { position: relative; }
 /* Long lines soft-wrap (identically in the textarea and its highlight overlay, so rows stay
    aligned) instead of scrolling sideways; the editor is sized to its content, so it never
@@ -371,6 +386,7 @@ select.q-input { width: auto; }
 .viz-btn-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
 .viz-btn { background: var(--paper); color: var(--ink-2); border: 1px solid var(--rule); border-radius: 6px; padding: 5px 11px; font-size: 12.5px; cursor: pointer; font-family: var(--mono); }
 .viz-btn:hover { border-color: var(--rule-strong); color: var(--ink); }
+.viz-btn:active { background: var(--paper-3); }
 .viz-btn.active { border-color: var(--hl); color: var(--hl); background: var(--hl-soft); }
 
 .grid-cells { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -462,6 +478,7 @@ select.q-input { width: auto; }
 .course-card.big .cta { grid-column: 2; grid-row: 1 / 3; align-self: center; }
 .start-btn { display: inline-block; background: var(--hl); color: var(--hl-ink); padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: 650; font-size: 14px; white-space: nowrap; }
 .start-btn:hover { background: #ffdc85; }
+.start-btn:active { background: #f0c250; }
 .outline { margin-top: 28px; max-width: 720px; }
 .outline h2 { font-family: var(--display); font-size: 18px; font-weight: 600; margin: 24px 0 8px; }
 .outline-lesson { display: flex; align-items: center; gap: 12px; padding: 8px 10px; border-radius: 6px; text-decoration: none; color: var(--ink-2); font-size: 14.5px; }
@@ -477,19 +494,6 @@ select.q-input { width: auto; }
 .study-plan li { margin: 5px 0; }
 .study-plan a { color: var(--blue); text-decoration: none; }
 .study-plan a:hover { text-decoration: underline; }
-
-/* ---------- responsive ---------- */
-@media (max-width: 900px) {
-  .nav-toggle { display: inline-flex; align-items: center; justify-content: center; }
-  .sidebar { position: fixed; top: 52px; left: 0; bottom: 0; z-index: 20; transform: translateX(-100%); transition: transform 180ms ease; box-shadow: 8px 0 24px rgba(0,0,0,0.4); width: min(var(--sidebar-w), 86vw); }
-  .sidebar.open { transform: none; }
-  .content { padding: 22px 18px 80px; }
-  .crumbs { display: none; }
-  .lesson h1, .landing h1 { font-size: 27px; }
-  .init-row { grid-template-columns: 1fr; }
-  .course-card.big { grid-template-columns: 1fr; }
-  .course-card.big .cta { grid-row: auto; }
-}
 
 /* ---------- print (cheat sheets) ---------- */
 @media print {
@@ -514,10 +518,10 @@ select.q-input { width: auto; }
 /* Prose keeps its reading measure; the pinned code takes every remaining pixel of the viewport. */
 .pin-section { display: grid; grid-template-columns: minmax(0, var(--measure)) minmax(360px, 1fr); gap: 28px; align-items: start; margin: 8px 0 16px; }
 .pin-section.stacked { display: block; }
-.pin-section.stacked .pin-aside { position: static; margin: 16px 0; }
+.pin-section.stacked .pin-aside { position: static; margin: 16px 0; min-width: 0; max-width: 100%; }
 .pin-prose { min-width: 0; }
 .pin-prose > * { max-width: var(--measure); }
-.pin-prose > table, .pin-prose > .runner, .pin-prose > .codeblock, .pin-prose > .callout { max-width: none; }
+.pin-prose > table, .pin-prose > .table-wrap, .pin-prose > .runner, .pin-prose > .codeblock, .pin-prose > .callout { max-width: none; }
 .pin-aside { position: sticky; top: 16px; }
 .pinned { background: #0f131b; border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; }
 .pinned-head { font-family: var(--display); font-weight: 600; font-size: 13px; color: var(--ink-2); padding: 7px 12px; border-bottom: 1px solid var(--rule); background: var(--paper-2); }
@@ -628,6 +632,9 @@ select.q-input { width: auto; }
 .match-pool { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--rule); min-height: 40px; }
 .match-chip { font-family: var(--mono); font-size: 13px; background: var(--blue-soft); border: 1px solid var(--blue); color: var(--ink); border-radius: 6px; padding: 5px 10px; cursor: grab; }
 .match-chip.placed { cursor: default; margin: 0; }
+.match-chip.picked { background: var(--hl); border-color: var(--hl); color: var(--hl-ink); }
+.match-drop.ready { border-color: var(--hl); border-style: solid; background: var(--hl-soft); cursor: pointer; }
+.match-drop:not(.ready):has(.match-chip) { cursor: pointer; }
 .match-chip:active { cursor: grabbing; }
 
 /* q-trace: trace-by-hand */
@@ -725,7 +732,7 @@ select.q-input { width: auto; }
 .pv-code .pl .ln { color: var(--ink-dim); width: 2.2em; text-align: right; flex: none; user-select: none; }
 .pv-code .pl.cur { background: var(--hl-soft); box-shadow: inset 3px 0 0 var(--hl); }
 .pv-mem { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.pv-arrows { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+.pv-arrows { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
 .pv-title { font-family: var(--display); font-size: 12px; color: var(--ink-dim); margin-bottom: 6px; }
 .pv-frame { border: 1px dashed var(--rule-strong); border-radius: 6px; padding: 6px; margin-bottom: 8px; }
 .pv-frame-title { font-family: var(--mono); font-size: 11.5px; color: var(--blue); margin-bottom: 4px; }
@@ -813,3 +820,188 @@ select.q-input { width: auto; }
 .fib-bar-fill { height: 100%; background: var(--red); min-width: 2px; }
 .fib-bar-val { width: 150px; font-family: var(--mono); color: var(--ink-dim); }
 @media (max-width: 720px) { .oc-row .oc-code { min-width: 180px; } .bo-input { width: 130px; } }
+
+/* ---------- responsive ---------- */
+/* Three tiers. <=900px: the lesson list becomes a drawer and the document itself scrolls (so a
+   phone's toolbar can collapse and scrolling feels native). <=600px: phone spacing, type and
+   16px inputs (below that iOS zooms the page on focus). Touch: bigger targets, no hover hints. */
+@media (max-width: 900px) {
+  html, body { height: auto; }
+  #app { height: auto; min-height: 100vh; min-height: 100dvh; }
+  .shell { display: block; }
+  .topbar {
+    position: sticky; top: 0; z-index: 30;
+    height: auto; min-height: var(--topbar-h);
+    padding: env(safe-area-inset-top) max(14px, env(safe-area-inset-right)) 0 max(12px, env(safe-area-inset-left));
+    gap: 10px;
+    background: rgba(21, 26, 36, 0.94);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  }
+  .content { overflow: visible; padding: 22px 18px calc(88px + env(safe-area-inset-bottom)); }
+  body.has-nav .nav-toggle { display: inline-flex; }
+  .sidebar {
+    position: fixed; left: 0; bottom: 0; z-index: 40;
+    top: calc(var(--topbar-h) + env(safe-area-inset-top));
+    width: min(320px, 86vw);
+    transform: translateX(-100%);
+    box-shadow: 8px 0 24px rgba(0, 0, 0, 0.45);
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-bottom: calc(28px + env(safe-area-inset-bottom));
+    overscroll-behavior: contain;
+    visibility: hidden;
+    transition: transform 200ms ease, visibility 0s 200ms;
+  }
+  .sidebar.open { transform: none; visibility: visible; transition: transform 200ms ease; }
+  .scrim {
+    display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 35;
+    top: calc(var(--topbar-h) + env(safe-area-inset-top));
+    background: rgba(8, 11, 16, 0.55);
+    opacity: 0; pointer-events: none; touch-action: none;
+    transition: opacity 200ms ease;
+  }
+  body.nav-open .scrim { opacity: 1; pointer-events: auto; }
+  body.nav-open { overflow: hidden; }
+  .init-row { grid-template-columns: 1fr; }
+  .widget table, .quiz-box table { display: block; overflow-x: auto; max-width: 100%; }
+  .reorder-row code { min-width: 0; overflow-x: auto; }
+  .match-select { max-width: 100%; }
+  .course-card.big { grid-template-columns: 1fr; }
+  .course-card.big .cta { grid-row: auto; grid-column: 1; justify-self: start; }
+  .lesson h1, .landing h1 { font-size: 28px; }
+  /* Wide numeric tables (5+ columns) scroll inside their wrapper instead of crushing every cell. */
+  .table-wrap:has(th:nth-child(5)) th, .table-wrap:has(th:nth-child(5)) td { white-space: nowrap; }
+  .lesson th { white-space: nowrap; }
+}
+
+@media (max-width: 600px) {
+  body { font-size: 16px; }
+  .content { padding: 18px 16px calc(80px + env(safe-area-inset-bottom)); background-size: 24px 24px; }
+  .brand { font-size: 17px; }
+  /* The trail collapses to one link back to the parent page. */
+  .crumbs { gap: 0; }
+  .crumbs > * { display: none; }
+  .crumbs > a:last-of-type { display: inline; overflow: hidden; text-overflow: ellipsis; }
+  .crumbs > a:last-of-type::before { content: "\2039\00a0"; }
+  .badge.visitors { display: none; }
+  .badge.ok { font-size: 0; }
+  .badge.ok::before { font-size: 10px; margin: 0; }
+  .gh-link { margin-left: 0; }
+
+  .lesson h1, .landing h1 { font-size: 26px; }
+  .lesson h1::after, .landing h1::after { height: 8px; }
+  .lesson .meta { margin: 6px 0 22px; flex-wrap: wrap; row-gap: 6px; }
+  .lesson h2 { font-size: 21px; margin: 36px 0 10px; }
+  .lesson h3 { font-size: 17.5px; margin: 24px 0 8px; }
+  .lesson ul, .lesson ol { padding-left: 20px; }
+  .lesson table { font-size: 13.5px; }
+  .lesson th, .lesson td { padding: 6px 9px; }
+  .math.display { font-size: 1.15em; }
+  .callout { padding: 10px 14px; margin: 16px 0; }
+  .lesson hr { margin: 24px 0; }
+
+  /* Boxes lose side padding rather than the text losing width. */
+  .quiz-box { padding: 16px 14px; margin: 24px 0; }
+  .q-text, .quiz-opt span, .quiz-explain, .lesson code, .challenge-prompt, .widget-note { overflow-wrap: anywhere; }
+  .quiz-q { padding-left: 10px; margin-bottom: 18px; }
+  .quiz-opt { flex-wrap: wrap; }
+  .quiz-opt.incorrect::after, .quiz-opt.correct::after { flex-basis: 100%; margin-left: 0; text-align: right; }
+  .quiz-footer .run-btn { flex: 1 1 auto; padding: 12px 16px; font-size: 15px; }
+  .quiz-summary { flex-direction: column; align-items: stretch; }
+  .quiz-summary .msg { min-width: 0; }
+  .quiz-summary .run-btn, .quiz-summary .reset-btn { text-align: center; padding: 11px 14px; }
+  .widget { padding: 14px 12px; margin: 18px 0; }
+  .challenge-head, .challenge-prompt, .hints { padding-left: 12px; padding-right: 12px; }
+  .codeblock pre, .runner-output, .editor-wrap textarea, .editor-wrap pre.highlight { padding-left: 12px; padding-right: 12px; }
+  .el-line { margin-left: -12px; padding-left: 9px; }
+  .runner-head, .stdin-row, .predict-row, .scrub { padding-left: 10px; padding-right: 10px; }
+  .stdin-row { flex-wrap: wrap; }
+  .stdin-row input { min-width: 0; flex: 1 1 160px; }
+
+  /* 16px keeps iOS from zooming the page when a field is focused. */
+  .editor-wrap textarea, .editor-wrap pre.highlight, .pin-aside .editor-wrap textarea, .pin-aside .editor-wrap pre.highlight { font-size: 16px; line-height: 1.45; }
+  .q-input, .stdin-row input, .data-input, .predict-input, .fill-input, .comp-input, .unit-row input, .unit-row select, .algo-select, .bo-input, .num-row input, .pv-edit textarea, .shade-controls input, .trace-input-row .q-input { font-size: 16px; }
+  .q-input { max-width: 100%; }
+  .q-input.wide { width: 100%; }
+
+  /* Pinned code goes first when stacked: read the program, predict, run, then the explanation. */
+  .pin-section.stacked { display: flex; flex-direction: column; align-items: stretch; }
+  .pin-section.stacked .pin-aside { order: -1; margin: 10px 0 18px; min-width: 0; max-width: 100%; }
+  .pin-section.stacked .pin-prose > :first-child { margin-top: 0; }
+
+  .slider-row { gap: 8px; }
+  .slider-row label { width: 104px; flex-shrink: 0; line-height: 1.3; }
+  .slider-row .val { width: auto; min-width: 48px; }
+  .slider-row input[type="range"] { min-width: 0; }
+  .stat-grid { grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: 6px; }
+  .manip-row .stat-label { width: 96px; }
+  .bit-label { width: 52px; font-size: 12px; }
+  .bit { width: 25px; height: 25px; font-size: 12px; }
+  .bit-row { gap: 4px; }
+  .bit-val { margin-left: 6px; }
+  /* One row: the label truncates before the buttons wrap. */
+  .runner-head { flex-wrap: nowrap; }
+  .runner-head .lang-tag { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .runner-head .spacer { display: none; }
+  .runner-head kbd { display: none; }
+  .pv-mem { gap: 8px; }
+  .gloss-card, .tok-card-pop { max-width: calc(100vw - 24px); }
+
+  .next-row { flex-direction: column; align-items: stretch; margin-top: 40px; gap: 12px; }
+  .next-row > div:first-child:empty { display: none; }
+  .next-row > div:first-child a { display: block; text-align: center; padding: 11px 14px; border: 1px solid var(--rule); border-radius: 6px; }
+  .next-actions { flex-direction: column; align-items: stretch; gap: 10px; }
+  .next-actions .done-btn { padding: 12px 16px; font-size: 15px; }
+  .next-actions .next-link { display: block; text-align: center; padding: 11px 14px; border: 1px solid var(--rule-strong); border-radius: 6px; }
+
+  .landing p.lead { font-size: 15.5px; margin: 10px 0 20px; }
+  .course-card.big { padding: 16px; margin: 12px 0; gap: 6px 0; }
+  .course-card.big .title { font-size: 17px; }
+  .course-card.big .cta { order: 10; width: 100%; text-align: center; margin-top: 6px; }
+  .start-btn { white-space: normal; line-height: 1.35; }
+  .landing > .start-btn { display: block; text-align: center; }
+  .match-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+  .match-select { grid-column: 1 / -1; width: 100%; max-width: 100%; }
+  .study-plan { padding: 14px; }
+  .outline-lesson { padding: 10px 8px; }
+  .sidebar { padding-top: 12px; }
+}
+
+@media (max-width: 400px) {
+  .content { padding-left: 14px; padding-right: 14px; }
+  .lesson h1, .landing h1 { font-size: 24px; }
+  .brand { font-size: 16px; }
+  .topbar { gap: 8px; }
+  .slider-row label { width: 92px; }
+  .bit-label { width: 46px; }
+  .bit { width: 21px; height: 21px; font-size: 11.5px; }
+  .bit-row { gap: 3px; }
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+  .pv-mem { grid-template-columns: 1fr; }
+  .viz-two { grid-template-columns: 1fr; }
+  .encap-devices { grid-template-columns: 1fr 1fr; }
+}
+
+/* Touch screens: bigger targets, and no hints that only a keyboard or a mouse can use. */
+@media (pointer: coarse) {
+  .run-btn, .reset-btn, .viz-btn, .start-btn, .diff-btn, .scrub-step { min-height: 40px; }
+  .run-btn { padding: 9px 18px; }
+  .reset-btn { padding: 8px 14px; }
+  .viz-btn { padding: 8px 13px; }
+  .lesson-link { padding: 10px 10px; min-height: 42px; }
+  .sidebar .back-link { padding: 8px 6px 10px; }
+  .small-btn { margin-top: 18px; }
+  .outline-lesson { min-height: 44px; }
+  .quiz-opt { padding: 12px 12px; }
+  .quiz-opt input { width: 18px; height: 18px; margin-top: 2px; }
+  .runner-head kbd { display: none; }
+  .nav-toggle { width: 44px; height: 44px; }
+  input[type="range"] { height: 32px; }
+  .match-chip { padding: 9px 12px; }
+  .match-drop { min-height: 42px; }
+  .spotbug-line { padding: 6px 12px; }
+  .mem-cell { padding: 12px 10px; }
+  .pl-file, .pl-stage { padding: 10px 12px; }
+  .trace-reveal-row { padding: 6px 6px; }
+  .fs-char { width: 30px; }
+  .hist-bar, .dd-dot, .dd-remove, .shade-handle { touch-action: none; }
+}

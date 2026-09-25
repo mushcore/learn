@@ -707,8 +707,9 @@ function pointerViz(box, cfg) {
   function drawArrows() {
     arrows.innerHTML = "";
     const r0 = mem.getBoundingClientRect();
-    arrows.setAttribute("width", r0.width); arrows.setAttribute("height", r0.height);
+    // Sized by CSS (inset: 0) so it always matches the memory box; the viewBox maps 1:1 to it.
     arrows.setAttribute("viewBox", `0 0 ${r0.width} ${r0.height}`);
+    arrows.setAttribute("preserveAspectRatio", "none");
     const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
     defs.innerHTML = `<marker id="pv-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--hl)"/></marker>`;
     arrows.append(defs);

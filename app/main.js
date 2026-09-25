@@ -64,23 +64,42 @@ function scorePill(q) {
 }
 
 // ---------- mobile nav ----------
+// Below 900px the lesson list is a drawer over the page (see styles.css). `nav-open` on <body>
+// shows the backdrop and locks page scroll; `has-nav` says a lesson list exists at all, so the
+// hamburger is hidden on the home and course pages where there is nothing to open.
+const scrim = document.getElementById("scrim");
+const DRAWER = window.matchMedia("(max-width: 900px)");
 function setNav(open) {
+  const was = sidebar.classList.contains("open");
   sidebar.classList.toggle("open", open);
+  document.body.classList.toggle("nav-open", open);
   navToggle.setAttribute("aria-expanded", String(open));
+  if (!DRAWER.matches || open === was) return;
+  if (open) (sidebar.querySelector(".lesson-link.active") || sidebar.querySelector("a, button"))?.focus({ preventScroll: true });
+  else if (sidebar.contains(document.activeElement)) navToggle.focus({ preventScroll: true });
+}
+function showSidebar(on) {
+  sidebar.style.display = on ? "" : "none";
+  document.body.classList.toggle("has-nav", on);
 }
 navToggle.addEventListener("click", () => setNav(!sidebar.classList.contains("open")));
+scrim.addEventListener("click", () => setNav(false));
 sidebar.addEventListener("click", (e) => { if (e.target.closest("a")) setNav(false); });
 content.addEventListener("click", () => setNav(false));
+DRAWER.addEventListener("change", () => setNav(false));
+
+// The page scrolls inside #content on wide screens and as the document on small ones.
+function toTop() { content.scrollTop = 0; window.scrollTo(0, 0); }
 
 // ---------- views ----------
 // Home: one card per course. A course is a list of modules (one per week or unit), each a folder under courses/.
 async function renderHome() {
   const reg = await getRegistry();
   sidebar.innerHTML = "";
-  sidebar.style.display = "none";
+  showSidebar(false);
   crumbs.innerHTML = "";
   content.innerHTML = "";
-  content.scrollTop = 0;
+  toTop();
   const landing = el("div", "landing");
   landing.append(el("h1", null, "Courses"), el("p", "lead", "Pick a course, then the week you are studying. Read a lesson, run and edit the code, check yourself with a quiz. Progress is saved in this browser, so pick up where you left off."));
   for (const c of reg.courses) {
@@ -106,10 +125,10 @@ async function renderHome() {
 // Course page: the course's modules (weeks / units), each with its own progress and continue button.
 async function renderCoursePage(c) {
   sidebar.innerHTML = "";
-  sidebar.style.display = "none";
-  crumbs.innerHTML = `<a href="#/">Courses</a> › <span>${c.code}</span>`;
+  showSidebar(false);
+  crumbs.innerHTML = `<a href="#/">Courses</a><span class="sep">›</span><span>${c.code}</span>`;
   content.innerHTML = "";
-  content.scrollTop = 0;
+  toTop();
   const landing = el("div", "landing");
   landing.append(el("h1", null, `${c.code} · ${c.title}`), el("p", "lead", c.description || ""));
   landing.append(el("h2", "group-title", "Modules"));
@@ -136,13 +155,13 @@ async function renderCoursePage(c) {
 function crumbTrail(course, tail) {
   const parts = [`<a href="#/">Courses</a>`];
   if (course.parent) parts.push(`<a href="#/course/${course.parent.id}">${course.parent.code}</a>`);
-  return parts.concat(tail).join(" › ");
+  return parts.concat(tail).join('<span class="sep">›</span>');
 }
 const moduleLabel = (course) => course.moduleTitle || course.title;
 
 function renderSidebar(course, activeId) {
   sidebar.innerHTML = "";
-  sidebar.style.display = "";
+  showSidebar(true);
   const pr = courseProgress(course);
   if (course.parent) {
     const back = el("a", "back-link");
@@ -184,7 +203,7 @@ async function renderCourseHome(course) {
   renderSidebar(course, null);
   crumbs.innerHTML = crumbTrail(course, [`<span>${moduleLabel(course)}</span>`]);
   content.innerHTML = "";
-  content.scrollTop = 0;
+  toTop();
   const wrap = el("div", "landing");
   wrap.append(el("h1", null, course.title), el("p", "lead", course.description || ""));
   const pr = courseProgress(course);
@@ -236,7 +255,7 @@ async function renderReview(course) {
   renderSidebar(course, "review");
   crumbs.innerHTML = crumbTrail(course, [`<a href="#/${course.id}">${moduleLabel(course)}</a>`, `<span>Review</span>`]);
   content.innerHTML = "";
-  content.scrollTop = 0;
+  toTop();
   const wrap = el("div", "lesson");
   wrap.append(el("h1", null, "Review missed questions"));
   const queue = loadReview(course.id);
@@ -273,7 +292,7 @@ async function renderLessonView(course, lessonId) {
   renderSidebar(course, lessonId);
   crumbs.innerHTML = crumbTrail(course, [`<a href="#/${course.id}">${moduleLabel(course)}</a>`, `<span>${lesson.title}</span>`]);
   content.innerHTML = "";
-  content.scrollTop = 0;
+  toTop();
   const src = await (await fetch(`/courses/${course.id}/${lesson.file}`)).text();
   const { meta, body } = parseFrontMatter(src);
   const wrap = el("div", "lesson");

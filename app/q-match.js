@@ -1,7 +1,9 @@
 // Question type "match": left column of fixed terms, right column of draggable
 // answers (shuffled deterministically so retries look the same). Each left row
-// is a drop target; a <select> under each term is the keyboard/mobile path,
-// kept in sync with the drag state. Graded when every pair lines up.
+// is a drop target. Touch screens have no HTML5 drag, so a chip can also be
+// tapped to pick it up and a row tapped to place it (tap a placed chip to put it
+// back); a <select> under each term is the keyboard path. All three stay in
+// sync. Graded when every pair lines up.
 import { registerQuestionType } from "./quiz.js";
 import { inline } from "./markdown.js";
 
@@ -45,13 +47,14 @@ registerQuestionType("match", (qEl, spec) => {
   // assignment[leftIndex] = rightIndex | null
   const assignment = new Array(n).fill(null);
   let graded = false;
+  let picked = null; // pool chip picked up by a tap, waiting for a row
 
   const box = el("div", "match-box");
   const rowsEl = el("div", "match-rows");
   const pool = el("div", "match-pool");
   box.append(rowsEl, pool);
   qEl.append(box);
-  qEl.append(el("div", "q-note", "Drag an answer onto its term, or use the dropdown."));
+  qEl.append(el("div", "q-note", "Drag an answer onto its term, tap an answer then its term, or use the dropdown."));
 
   const rowRefs = [];
 
@@ -61,6 +64,7 @@ registerQuestionType("match", (qEl, spec) => {
       for (let i = 0; i < n; i++) if (assignment[i] === rightIndex) assignment[i] = null;
     }
     assignment[leftIndex] = rightIndex;
+    picked = null;
     render();
   }
 
@@ -74,6 +78,19 @@ registerQuestionType("match", (qEl, spec) => {
       row.append(term);
 
       const drop = el("div", "match-drop");
+      if (!graded) {
+        drop.tabIndex = 0;
+        drop.setAttribute("role", "button");
+        drop.setAttribute("aria-label", assignment[i] != null ? "remove this answer" : picked != null ? "place the picked answer here" : "drop target");
+        const place = () => {
+          if (graded) return;
+          if (picked != null) assign(i, picked);
+          else if (assignment[i] != null) assign(i, null);
+        };
+        drop.addEventListener("click", place);
+        drop.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); place(); } });
+        if (picked != null) drop.classList.add("ready");
+      }
       if (assignment[i] != null) {
         const chip = el("div", "match-chip placed");
         chip.innerHTML = inline(pairs[assignment[i]][1]);
@@ -83,7 +100,7 @@ registerQuestionType("match", (qEl, spec) => {
         });
         drop.append(chip);
       } else {
-        drop.append(el("span", "match-drop-hint", "drop here"));
+        drop.append(el("span", "match-drop-hint", picked != null ? "tap to place" : "drop here"));
       }
       drop.addEventListener("dragover", (e) => { if (!graded) e.preventDefault(); });
       drop.addEventListener("drop", (e) => {
@@ -128,13 +145,18 @@ registerQuestionType("match", (qEl, spec) => {
     if (!graded) {
       poolOrder.forEach((ri) => {
         if (assignment.includes(ri)) return;
-        const chip = el("div", "match-chip");
+        const chip = el("div", "match-chip" + (picked === ri ? " picked" : ""));
         chip.innerHTML = inline(pairs[ri][1]);
         chip.draggable = true;
         chip.tabIndex = 0;
+        chip.setAttribute("role", "button");
+        chip.setAttribute("aria-pressed", String(picked === ri));
         chip.addEventListener("dragstart", (e) => {
           e.dataTransfer.setData("text/plain", String(ri));
         });
+        const pick = () => { picked = picked === ri ? null : ri; render(); pool.querySelector(".match-chip.picked")?.focus({ preventScroll: true }); };
+        chip.addEventListener("click", pick);
+        chip.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); } });
         pool.append(chip);
       });
     }
