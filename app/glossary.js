@@ -16,10 +16,23 @@ function index(gloss) {
 }
 
 let card = null;
+let hideTimer = 0;
+const cancelHide = () => { clearTimeout(hideTimer); hideTimer = 0; };
+// Leaving the term or the card closes the card after a short grace period, long enough to move the
+// pointer into the card and click a link in it; entering either one cancels the close.
+function scheduleHide() { cancelHide(); hideTimer = setTimeout(hideCard, 260); }
 function showCard(anchor, term, def) {
+  cancelHide();
+  if (card && card._anchor === anchor) return;
   hideCard();
   card = el("div", "gloss-card");
+  card._anchor = anchor;
   card.innerHTML = `<div class="gloss-term">${term.replace(/</g, "&lt;")}</div><div class="gloss-def">${inline(def)}</div>`;
+  card.addEventListener("mouseenter", cancelHide);
+  card.addEventListener("mouseleave", scheduleHide);
+  card.addEventListener("pointerdown", cancelHide);
+  card.addEventListener("focusin", cancelHide);
+  card.addEventListener("focusout", scheduleHide);
   document.body.append(card);
   const r = anchor.getBoundingClientRect();
   const w = card.offsetWidth;
@@ -27,8 +40,11 @@ function showCard(anchor, term, def) {
   card.style.left = left + "px";
   card.style.top = r.bottom + window.scrollY + 6 + "px";
 }
-function hideCard() { if (card) { card.remove(); card = null; } }
+function hideCard() { cancelHide(); if (card) { card.remove(); card = null; } }
 document.addEventListener("scroll", hideCard, true);
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") hideCard(); });
+// A tap or click anywhere else closes it (touch has no hover to leave).
+document.addEventListener("pointerdown", (e) => { if (card && !card.contains(e.target) && !card._anchor.contains(e.target)) hideCard(); });
 
 /** Decorates glossary terms inside `scope`. Skips spans already used as pin references (they have their own affordance). */
 export async function attachGlossary(scope, course) {
@@ -44,7 +60,7 @@ export async function attachGlossary(scope, course) {
     c.tabIndex = c.tabIndex >= 0 ? c.tabIndex : 0;
     const on = () => showCard(c, key, g.get(key));
     c.addEventListener("mouseenter", on); c.addEventListener("focus", on);
-    c.addEventListener("mouseleave", hideCard); c.addEventListener("blur", hideCard);
+    c.addEventListener("mouseleave", scheduleHide); c.addEventListener("blur", scheduleHide);
     n++;
   }
   return n;
