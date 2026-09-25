@@ -1,6 +1,6 @@
 # learn
 
-A self-hosted, boot.dev-style interactive study app. Lessons are markdown with runnable C++ blocks, graded challenges, quizzes (MCQ / multi / true-false / numeric / text), and interactive visual widgets. Progress is saved per course in the browser.
+A self-hosted interactive study app. Lessons are markdown with runnable C++ blocks, graded challenges, quizzes (MCQ / multi / true-false / numeric / text), and interactive visual widgets. Progress is saved per course in the browser.
 
 ## Run
 
@@ -9,11 +9,7 @@ cd D:\BCIT\learn
 bun server.js        # or: node server.js
 ```
 
-Open http://localhost:4321. Keep the terminal open while studying.
-
-The top bar shows a unique-visitor count. A browser registers once (an id in localStorage); the server counts each new id once at hits.sh under the key `github.com/mushcore/learn/unique-visitors` (override with the `VISITOR_KEY` environment variable), and mirrors the number in `data/visitors.json` so the badge still works offline.
-
-C++ blocks compile with the first `g++`/`clang++` found on PATH or in CLion's bundled MinGW (`C:/Program Files/JetBrains/CLion */bin/mingw/bin/g++.exe`). Override with `LEARN_CXX=path\to\g++.exe`. With no local compiler the server proxies to wandbox.org (needs internet).
+Open http://localhost:4321.
 
 ## Courses
 
