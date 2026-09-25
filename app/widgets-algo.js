@@ -687,10 +687,12 @@ function fibRace(box, cfg) {
   const s = slider("n", 1, 40, 1, n, (v) => { n = v; draw(); }, (v) => String(v));
   const out = el("div", "stat-grid");
   const svg = svgEl("svg", { viewBox: "0 0 640 300", class: "curve-svg fib-svg" });
+  const treeWrap = el("div", "fib-tree-wrap");
+  treeWrap.append(svg);
   const treeNote = el("p", "widget-note");
   const bars = el("div", "fib-bars");
   const msTbl = el("div", "gp-table");
-  box.append(s.row, out, svg, treeNote, bars, msTbl);
+  box.append(s.row, out, treeWrap, treeNote, bars, msTbl);
   const calls = [1, 1]; for (let k = 2; k <= 40; k++) calls[k] = 1 + calls[k - 1] + calls[k - 2];
   const fibv = [0, 1]; for (let k = 2; k <= 40; k++) fibv[k] = fibv[k - 1] + fibv[k - 2];
   function timesComputed(N) { const t = new Array(N + 1).fill(0); (function rec(k) { t[k]++; if (k > 1) { rec(k - 1); rec(k - 2); } })(N); return t; }
@@ -702,36 +704,41 @@ function fibRace(box, cfg) {
       ["Ratio", n >= 2 ? fmtNum(calls[n] / (n - 1), 1) + "×" : "—", "calls per fib2 iteration"],
     ]);
     svg.innerHTML = "";
-    if (n <= 7) {
-      const depth = n + 1;
-      const W = 640, H = 300;
-      const leaves = calls[n];
-      let x = 0;
-      const nodes = [];
-      (function place(k, d) {
-        const node = { k, d, x: 0 };
-        if (k > 1) { const a = place(k - 1, d + 1), b = place(k - 2, d + 1); node.x = (a.x + b.x) / 2; node.children = [a, b]; }
-        else { node.x = x++; }
-        nodes.push(node);
-        return node;
-      })(n, 0);
-      const leafCount = x;
-      const X = (v) => 24 + (v / Math.max(1, leafCount - 1)) * (W - 48);
-      const Y = (d) => 22 + (d / Math.max(1, depth - 1)) * (H - 44);
-      const seen = new Map();
-      for (const nd of nodes) seen.set(nd.k, (seen.get(nd.k) || 0) + 1);
-      for (const nd of nodes) if (nd.children) for (const ch of nd.children) svg.append(svgEl("line", { x1: X(nd.x), y1: Y(nd.d), x2: X(ch.x), y2: Y(ch.d), stroke: "var(--rule-strong)" }));
-      for (const nd of nodes) {
-        const dup = seen.get(nd.k) > 1 && nd.k >= 2;
-        svg.append(svgEl("circle", { cx: X(nd.x), cy: Y(nd.d), r: 11, fill: dup ? "var(--red-soft)" : "var(--paper)", stroke: dup ? "var(--red)" : "var(--blue)", "stroke-width": 1.5 }));
-        svg.append(svgEl("text", { x: X(nd.x), y: Y(nd.d) + 4, "text-anchor": "middle", "font-size": 10, fill: "var(--ink)" }, `f${nd.k}`));
-      }
-      svg.style.display = "";
-      treeNote.textContent = `The call tree of fib(${n}): ${fmtInt(calls[n])} calls, ${leaves > 1 ? "" : ""}every red node is a value that was already computed elsewhere in the tree and is being recomputed from scratch. fib2 computes each F[i] exactly once.`;
-    } else {
-      svg.style.display = "none";
-      treeNote.textContent = `The call tree for n = ${n} has ${fmtInt(calls[n])} nodes, too many to draw; the bars show how many times each fib(k) is recomputed.`;
+    // Full tree while it fits (n <= 8, 67 nodes); past that, cut at depth 6 and let each dashed
+    // leaf stand for the whole subtree it hides, so the picture never disappears.
+    const full = calls[n] <= 70;
+    const maxDepth = full ? n : 6;
+    let x = 0;
+    const nodes = [];
+    (function place(k, d) {
+      const node = { k, d, x: 0 };
+      if (k > 1 && d < maxDepth) { const a = place(k - 1, d + 1), b = place(k - 2, d + 1); node.x = (a.x + b.x) / 2; node.children = [a, b]; }
+      else { node.x = x++; node.cut = k > 1; }
+      nodes.push(node);
+      return node;
+    })(n, 0);
+    const leafCount = x;
+    const depth = Math.min(n, maxDepth) + 1;
+    const pxPerLeaf = leafCount <= 12 ? 48 : leafCount <= 34 ? 22 : 18;
+    const W = Math.max(640, leafCount * pxPerLeaf + 48), H = full ? 300 : 330;
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    svg.style.width = W > 640 ? W + "px" : "";
+    svg.style.maxWidth = "none";
+    const X = (v) => 24 + (leafCount > 1 ? (v / (leafCount - 1)) * (W - 48) : (W - 48) / 2);
+    const Y = (d) => 22 + (d / Math.max(1, depth - 1)) * (H - 64);
+    const seen = new Map();
+    for (const nd of nodes) seen.set(nd.k, (seen.get(nd.k) || 0) + 1);
+    for (const nd of nodes) if (nd.children) for (const ch of nd.children) svg.append(svgEl("line", { x1: X(nd.x), y1: Y(nd.d), x2: X(ch.x), y2: Y(ch.d), stroke: "var(--rule-strong)" }));
+    const r = W > 640 ? 9 : 11;
+    for (const nd of nodes) {
+      const dup = seen.get(nd.k) > 1 && nd.k >= 2;
+      svg.append(svgEl("circle", { cx: X(nd.x), cy: Y(nd.d), r, fill: dup ? "var(--red-soft)" : "var(--paper)", stroke: dup ? "var(--red)" : "var(--blue)", "stroke-width": 1.5, "stroke-dasharray": nd.cut ? "3 2" : "" }));
+      svg.append(svgEl("text", { x: X(nd.x), y: Y(nd.d) + 3.5, "text-anchor": "middle", "font-size": r < 11 ? 8.5 : 10, fill: "var(--ink)" }, `f${nd.k}`));
+      if (nd.cut) svg.append(svgEl("text", { x: X(nd.x), y: Y(nd.d) + r + 11, "text-anchor": "middle", "font-size": 8.5, fill: "var(--ink-dim)" }, `+${fmtInt(calls[nd.k] - 1)}`));
     }
+    treeNote.textContent = full
+      ? `The call tree of fib(${n}): ${fmtInt(calls[n])} calls. Every red node is a value that was already computed elsewhere in the tree and is being recomputed from scratch. fib2 computes each F[i] exactly once.`
+      : `The call tree of fib(${n}) has ${fmtInt(calls[n])} nodes, so it is cut at depth 6: each dashed node stands for a whole subtree, and the number under it is how many more calls hide inside. Scroll sideways if it is wider than the page. Red nodes are values computed more than once; fib2 computes each F[i] exactly once.`;
     bars.innerHTML = "";
     const t = timesComputed(Math.min(n, 40));
     const maxT = Math.max(...t);

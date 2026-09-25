@@ -791,6 +791,8 @@ select.q-input { width: auto; }
 .gp-row .dim { color: var(--ink-dim); opacity: 0.6; }
 .gp-row.cur { background: var(--hl-soft); }
 .fib-svg text { font-family: var(--mono); }
+.fib-tree-wrap { overflow-x: auto; margin: 8px 0; }
+.fib-tree-wrap .fib-svg { display: block; }
 .gp-table .widget-note, .fib-bars + .gp-table .widget-note { margin: 6px 0 0; font-family: var(--body); white-space: normal; }
 .bo-inputs { display: flex; gap: 14px; flex-wrap: wrap; margin: 8px 0; }
 .bo-lab { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-dim); }
