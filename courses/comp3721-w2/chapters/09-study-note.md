@@ -3,7 +3,7 @@ title: Your one-page study note (Week 2)
 minutes: 15
 ---
 
-The Week 2 half of the quiz sheet: Lecture 02 facts, the parameter and unit tables, every formula, and the worked numbers from the slides and E02. For Quiz 2, put this beside the 01b/01c block of the Week 1 note. One A4 or letter page, single-sided, preferably hand-written, plus a calculator; copy it by hand, since writing it out is itself the best revision you will do.
+The Week 2 half of the quiz sheet: Lecture 02 facts, the parameter and unit tables, every formula, and the worked numbers from the slides and E02. For Quiz 2, put this beside the 01b/01c block of the Week 1 note. One A4 or letter page, single-sided, hand-written, plus a calculator.
 
 ## Lecture 02: Data and signals
 

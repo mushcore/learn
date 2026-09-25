@@ -1,9 +1,9 @@
 ---
 title: Composite signals & bandwidth
-minutes: 18
+minutes: 14
 ---
 
-A single sine wave can carry energy or ring an alarm, but it cannot carry a conversation. Real data signals are *composite*: many sine waves added together. This lesson is how to take them apart, how to draw them, and the one number the quiz will ask for over and over: **bandwidth**.
+A single sine wave can carry energy or ring an alarm, but it cannot carry a conversation. Real data signals are *composite*: many sine waves added together, and the one number that describes the set is the **bandwidth**.
 
 ## Two ways to draw the same signal
 
@@ -12,13 +12,11 @@ A single sine wave can carry energy or ring an alarm, but it cannot carry a conv
 | **Time-domain** | changes in signal amplitude with respect to time | phase is **not** explicitly shown |
 | **Frequency-domain** | the relationship between amplitude (peak value) and frequency | you can immediately see the frequency and peak amplitude; a sine wave is one spike; more compact and helpful when dealing with more than one sine wave |
 
-:::quiz One sine wave, one spike
-Slide wording: *a complete sine wave in the time domain can be represented by one single spike in the frequency domain.* The spike sits at the wave's frequency and its height is the peak amplitude. Phase does not appear in either plot.
-:::
+*A complete sine wave in the time domain can be represented by one single spike in the frequency domain.* The spike sits at the wave's frequency and its height is the peak amplitude.
 
 ## Why one sine wave is not enough
 
-The slide's argument: simple sine waves have everyday uses such as sending energy from one place to another (power distribution). *However, if we had only one single sine wave to convey a conversation over the phone, it would make no sense and carry no information. We would just hear a buzz.* Therefore:
+Simple sine waves have everyday uses such as power distribution. *However, if we had only one single sine wave to convey a conversation over the phone, it would make no sense and carry no information. We would just hear a buzz.* Therefore:
 
 - **We need to send a composite signal to communicate data.**
 - **A single-frequency sine wave is not useful in data communications.**
@@ -27,8 +25,6 @@ The slide's argument: simple sine waves have everyday uses such as sending energ
 
 - **Composite signal**: a signal made of many simple sine waves.
 - **Fourier analysis** (Jean-Baptiste Fourier): *any composite signal is a combination of simple sine waves with different frequencies, peak amplitudes, and phases.*
-
-So whatever a signal looks like, it can be written as a sum of sine waves, and the frequency-domain plot is just the list of those sine waves.
 
 ## Composite periodic signals: discrete frequencies
 
@@ -41,10 +37,6 @@ The slide figure decomposes one composite periodic signal into three sine waves:
 | largest amplitude | $f$ | **fundamental frequency** or **first harmonic** |
 | smaller | $3f$ | **third harmonic** |
 | smallest | $9f$ | **ninth harmonic** |
-
-In the time domain you see one big slow wave with two faster ripples riding on it; in the frequency domain you see three spikes at $f$, $3f$ and $9f$ with decreasing heights.
-
-Build the slide figure below: start with "f only", then add the harmonics and watch both plots. Then type your own list.
 
 ```widget
 composite
@@ -60,10 +52,6 @@ Real-life examples from the slide:
 - Human voice: a continuous range of frequencies between **0 and 4 kHz**.
 - The signal propagated by an AM or FM radio station.
 
-:::quiz Periodic vs nonperiodic, in the frequency domain
-Periodic composite: **discrete** frequencies (separate spikes). Nonperiodic composite: **continuous** frequencies (a filled-in curve, infinitely many sines). "A composite periodic signal decomposes into sine waves with continuous frequencies" is **false**.
-:::
-
 ## Bandwidth
 
 Slide definition: *the bandwidth ($B$) is the difference between the highest and the lowest frequencies contained in a composite signal.*
@@ -74,16 +62,16 @@ Not the sum, not the highest frequency by itself: the **difference**. For the sl
 
 ## The middle-frequency trick
 
-E02 gives you a bandwidth and a *middle frequency* and asks for the two ends. The middle frequency is the average of the ends:
+E02 gives a bandwidth and a *middle frequency* and asks for the two ends. The middle frequency is the average of the ends:
 
 $$\text{middle} = \frac{f_{h} + f_{l}}{2}$$
 
-So you get two equations, one from the middle and one from the bandwidth:
+Two equations:
 
 - $f_{h} + f_{l} = 2 \times \text{middle}$
 - $f_{h} - f_{l} = B$
 
-Add them to get $2 f_{h}$, or just remember: **each end is half the bandwidth away from the middle**, $f_{h} = \text{middle} + \frac{B}{2}$ and $f_{l} = \text{middle} - \frac{B}{2}$.
+Add them to get $2 f_{h}$, or remember that **each end is half the bandwidth away from the middle**: $f_{h} = \text{middle} + \frac{B}{2}$ and $f_{l} = \text{middle} - \frac{B}{2}$.
 
 ## E02 Exercise 1, worked
 
@@ -94,7 +82,7 @@ Add them to get $2 f_{h}$, or just remember: **each end is half the bandwidth aw
 
 Adding the two equations: $2 f_{h} = 480$, so $f_{h} = 240$ kHz. Then $f_{l} = 280 - 240 = 40$ kHz. Check: $240 - 40 = 200$ kHz.
 
-The plot is a **triangle**: 0 V at 40 kHz, rising to 20 V at 140 kHz, falling back to 0 V at 240 kHz. It is a filled shape rather than spikes because the signal is nonperiodic (continuous frequencies).
+The plot is a **triangle**: 0 V at 40 kHz, 20 V at 140 kHz, 0 V at 240 kHz, a filled shape rather than spikes because the signal is nonperiodic.
 
 ## E02 Exercise 2, worked
 
@@ -104,15 +92,13 @@ The plot is a **triangle**: 0 V at 40 kHz, rising to 20 V at 140 kHz, falling ba
 - middle: $\frac{f_{h} + f_{l}}{2} = 300$ MHz, so $f_{h} + f_{l} = 600$ MHz and $f_{l} = 600 - 400 = 200$ MHz
 - $B = f_{h} - f_{l} = 400 - 200 = 200$ MHz
 
-Shortcut: the middle is 100 MHz below the top, so the bottom is 100 MHz below the middle, and $B = 2 \times 100 = 200$ MHz.
-
 ## E02 Exercise 3, worked
 
 *If a periodic signal is decomposed into five sine waves with frequencies of 100, 400, 500, 750, and 900 Hz, what is its bandwidth?*
 
 $$B = f_{h} - f_{l} = 900\ \text{Hz} - 100\ \text{Hz} = 800\ \text{Hz}$$
 
-The three frequencies in the middle do not matter; only the lowest and highest do. (This is the "E02 exercise 3" preset in the widget above: five spikes, bandwidth 800 Hz.)
+Only the lowest and highest frequencies matter.
 
 ## Try it
 

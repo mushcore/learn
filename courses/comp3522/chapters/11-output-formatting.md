@@ -3,7 +3,7 @@ title: Formatting output
 minutes: 22
 ---
 
-Recall `std::cout` is a **global object** of class `ostream`. In Java, behaviors on an object are called methods; in C++ we call them **member functions**. There are two different ways to format what `cout` prints: calling member functions directly on `cout`, or streaming special **output manipulators** with `<<`. This lesson covers both, using the instructor's `precisionAndWidth.cpp` sample as the running example.
+`std::cout` is a **global object** of class `ostream`; what Java calls methods, C++ calls **member functions**. There are two ways to format what `cout` prints: calling member functions on `cout`, or streaming **output manipulators** with `<<`.
 
 ## Member functions: `setf` and `unsetf`
 
@@ -31,11 +31,11 @@ cout.setf(ios_base::hex, ios_base::basefield);
 cout << n << endl; // hex value: f
 ```
 
-Note the two-argument form for `hex`: it isn't a lone flag, it belongs to the `basefield` group along with `dec` and `oct`, so `setf` needs to know which field it's setting.
+`hex` needs the two-argument form: it belongs to the `basefield` group with `dec` and `oct`, so `setf` must know which field it is setting.
 
 ## Output manipulators
 
-Printing in hex with C's `printf` takes real typing. In C++ you can stream a manipulator straight into `cout` instead of calling `setf`:
+In C++ you can stream a manipulator into `cout` instead of calling `setf`:
 
 ```cpp
 int n{15};
@@ -47,7 +47,7 @@ cout << hex << n << endl; // hex value: f
 
 ### Under the hood
 
-`hex` isn't magic syntax — it's an ordinary function with the signature `ostream& hex(ostream&)`. Streaming it into `cout` calls it, it calls `setf` for you, and returns the stream so the chain of `<<` keeps working:
+`hex` is an ordinary function with the signature `ostream& hex(ostream&)`. Streaming it into `cout` calls it; it calls `setf` and returns the stream so the chain of `<<` continues. Every manipulator works this way:
 
 ```cpp
 cout << hex << n << endl;
@@ -58,10 +58,6 @@ ostream& hex(ostream& outputstream)
     return outputstream;
 }
 ```
-
-That's the whole trick behind every manipulator you're about to see: each one is a function that flips flags on `cout` and hands the stream back.
-
-Play with every manipulator below and watch the exact output update live:
 
 ```widget
 manipulators
@@ -92,13 +88,11 @@ int main() {
 }
 ```
 
-Assuming `n` is `123`:
-
-Predict each line before you run it, then check: `showpos` forces the `+` on positive numbers; `dec`/`hex`/`oct` change the base a number prints in (note hex digits are lowercase by default — `uppercase` is what makes them `7B`); `showbase` prepends the `0x`/`0` prefix a real hex/octal literal would need.
+With `n` at `123`: `showpos` forces the `+` on positive numbers; `dec`, `hex` and `oct` change the base a number prints in (hex digits are lowercase unless `uppercase` is on, which gives `7B`); `showbase` prepends the `0x` or `0` prefix a hex or octal literal would need.
 
 ## Field width and alignment: `left`/`internal`/`right`
 
-Assuming `n` is `-123` and the field width is `setw(6)` (6 characters wide):
+With `n` at `-123` and a field width of `setw(6)`:
 
 ```cpp run
 #include <iostream>
@@ -119,12 +113,12 @@ int main() {
 - `right` (the default) pads on the left: `  -123`
 
 :::quiz `setw` only affects the very next thing printed
-`setw(value)` sets a minimum width for **one field only** — after that one insertion, the width silently resets to 0 (natural width). This is a common trap: students expect `cout << setw(6) << a << b;` to widen both `a` and `b`, but only `a` gets padded.
+`setw(value)` sets a minimum width for **one field only**; after that one insertion the width resets to 0 (natural width). `cout << setw(6) << a << b;` pads only `a`.
 :::
 
 ## `showpoint`, `fixed`, `scientific`
 
-Assuming `d1 = 100.0` and `d2 = 100.12`:
+With `d1 = 100.0` and `d2 = 100.12`:
 
 ```cpp run
 #include <iostream>
@@ -141,7 +135,7 @@ int main() {
 
 `showpoint` forces the decimal point and trailing zeros to show, out to the current precision, even for a value like `100.0` that would otherwise print as just `100`.
 
-Now `fixed` and `scientific`, assuming `number` is `123.456789`:
+Now `fixed` and `scientific`, with `number` at `123.456789`:
 
 ```cpp run pin fixedScientific.cpp
 #include <iostream>
@@ -162,12 +156,12 @@ int main() {
 ```
 
 :::warn Correcting the slide
-The lecture slide prints the `scientific` example as `1.234568E+02` (capital E). Compiling the real code with g++ shows the default is **lowercase**: `1.234568e+02`. You only get the capital `E` if you also turn on `uppercase`. Trust this lesson's numbers over the slide image on this one point.
+The lecture slide prints the `scientific` example as `1.234568E+02` (capital E). g++ prints lowercase by default: `1.234568e+02`. The capital `E` needs `uppercase` turned on too.
 :::
 
 ## `boolalpha`/`noboolalpha`
 
-Assuming `fun` is `true`:
+With `fun` at `true`:
 
 ```cpp run
 #include <iostream>
@@ -216,7 +210,7 @@ int main() {
 ]
 ```
 
-`setprecision(7)` is the one applied on the first line above; `setfill('*')` changes the pad character `setw` uses, so combined with `setw(5)` the three-digit value is padded on the left with two asterisks.
+`setprecision(7)` gives `123.4568`; `setfill('*')` changes the pad character, so `setw(5)` pads the three-digit value on the left with two asterisks.
 
 ## Member functions vs. manipulators
 
@@ -227,7 +221,7 @@ The slides put these side by side and ask "which looks easier?":
 | `cout.setf(ios_base::showpos); cout << number;` | `cout << showpos << number;` |
 | `cout.width(5); cout << number;` | `cout << setw(5) << number;` |
 
-Both do exactly the same thing under the hood — manipulators are just functions like the `hex` example above — but streaming them with `<<` reads more naturally alongside the rest of your output statement, so most C++ code favors manipulators.
+Both do the same thing; manipulators read more naturally inside an output statement, so most C++ code favours them.
 
 ## Walking through `precisionAndWidth.cpp`
 
@@ -267,20 +261,14 @@ int main()
 }
 ```
 
-Here is the instructor's sample, unmodified. Predict the output of every line, then run it with input `3 4`:
-
-Line by line:
+The instructor's sample, unmodified, with input `3 4`. Line by line:
 
 1. `a` starts at `64` (`1000000`). `a <<= 2` shifts left twice: `256`. Prints `256`.
-2. `cout << setw(10) << pi << " " << cake << "\n";` — default precision is 6 significant digits, so `pi` rounds to `3.14593`. `setw(10)` applies to **that one field only** (the trap from earlier): `"3.14593"` is 7 characters, so it's right-padded with 3 spaces to fill the 10-wide field: `"   3.14593"`. Then a literal space, then `cake` at its natural width (precision 6 again): `8.31446`. Line: `   3.14593 8.31446`.
+2. `cout << setw(10) << pi << " " << cake << "\n";` — default precision is 6 significant digits, so `pi` rounds to `3.14593`. `setw(10)` applies to **that one field only**: `"3.14593"` is 7 characters, so it's right-padded with 3 spaces to fill the 10-wide field: `"   3.14593"`. Then a literal space, then `cake` at its natural width (precision 6 again): `8.31446`. Line: `   3.14593 8.31446`.
 3. `cout.precision()` returns the current precision without changing it — `6`. Prints `precision: 6`.
 4. `setprecision(3)` — both numbers now round to 3 significant digits: `3.15` and `8.31`. Prints `3.15 8.31`.
 5. `setprecision(precision)` restores the saved value (`6`), back to `3.14593 8.31446`.
 6. `cin >> m >> n;` with input `3 4` reads `m = 3`, `n = 4`. Prints `m: 3` then `n: 4`.
-
-:::quiz Width only survives one insertion
-After `cout << setw(10) << pi << " " << cake;` prints, only `pi`'s field is 10 wide — `cake` is printed at its natural width. `setw` does not "stick" for the rest of the statement.
-:::
 
 ```quiz
 [

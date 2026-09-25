@@ -1,9 +1,9 @@
 ---
 title: Logs, transformations, phase & units
-minutes: 15
+minutes: 14
 ---
 
-The course outline says you are expected to have "a working knowledge of solving algebraic equations, manipulating logarithms, and basic trigonometry." Lab 1's Math Review (A01, A02) refreshes exactly the pieces Lecture 02 leans on: logarithms (for signal levels), function transformations (for sine waves with phase), degrees and radians (for phase), and SI prefixes (for period and frequency). Bring a calculator to every quiz; these are calculator questions.
+Lab 1's Math Review (A01, A02) refreshes the pieces Lecture 02 leans on: logarithms for signal levels, function transformations for phase shift, degrees and radians for phase, and SI prefixes for period and frequency. These are calculator questions.
 
 ## Logarithm
 
@@ -18,19 +18,15 @@ The general rule:
 
 $$\log_{b} a = c \quad \text{means} \quad b^{c} = a$$
 
-**If the base is not specified, it implies base 10.** E.g. $\log 100 = 2$.
-
-:::quiz Base convention
-"$\log 1000 = 3$" is true (base 10 is implied). "$\log_{2} 8 = 3$" is also true, but "$\log 8 = 3$" is false. Watch for a missing base.
-:::
+**If the base is not specified, it implies base 10.** E.g. $\log 100 = 2$, and $\log 8 = 3$ is false.
 
 ### Getting $\log_{2}$ on a calculator
 
-Beyond the slides but needed for Lecture 02: most calculators have only $\log$ (base 10) and $\ln$. Use the change-of-base rule:
+Most calculators have only $\log$ (base 10) and $\ln$, so use the change-of-base rule:
 
 $$\log_{2} x = \frac{\log x}{\log 2}$$
 
-For the Lecture 02 example of 11 signal levels: $\log_{2} 11 = \dfrac{\log 11}{\log 2} = \dfrac{1.0414}{0.3010} = 3.46$. Either $\log$ or $\ln$ works on top and bottom, as long as you use the same one for both.
+Lecture 02's example of 11 signal levels: $\log_{2} 11 = \dfrac{\log 11}{\log 2} = \dfrac{1.0414}{0.3010} = 3.46$. Either $\log$ or $\ln$ works, as long as top and bottom use the same one.
 
 ### Powers of 2 worth memorizing
 
@@ -45,7 +41,7 @@ Lecture 02 uses these when the number of bits comes out fractional:
 - **Ceiling function** ⌈ ⌉: rounds the number **up** to the nearest integer greater than or equal to the original value. E.g. ⌈π⌉ = ⌈3.1416⌉ = **4**.
 - **Floor function** ⌊ ⌋: rounds the number **down** to the nearest integer less than or equal to the original value. E.g. ⌊π⌋ = ⌊3.1416⌋ = **3**.
 
-For signal levels you always take the ceiling: 11 levels need $\log_{2} 11 = 3.46$ bits, and the number of bits must be an integer, so ⌈3.46⌉ = **4 bits**. (The slide adds "usually a power of 2," which 4 is.)
+For signal levels you always take the ceiling: 11 levels need $\log_{2} 11 = 3.46$ bits, the number of bits must be an integer, so ⌈3.46⌉ = **4 bits**. The slide adds "usually a power of 2," which 4 is.
 
 ## Function transformations
 
@@ -60,21 +56,15 @@ A **transformation** of a function means the curve representing the graph moves 
 | Reflection about x-axis | $y = -f(x)$ | the x-axis acts as a mirror |
 | Reflection about y-axis | $y = f(-x)$ | the y-axis acts as a mirror |
 
-The slide suggests trying these in Desmos (desmos.com/calculator).
-
-:::warn The horizontal ones go the "wrong" way
-$f(x + 3)$ moves the graph **left**, not right, and $f(2x)$ **shrinks** it horizontally (twice as many cycles fit in the same width). Vertical changes behave the way you expect; horizontal ones are reversed.
-:::
+The horizontal rules run the "wrong" way: $f(x + 3)$ moves the graph **left**, and $f(2x)$ **shrinks** it horizontally, so twice as many cycles fit in the same width. Vertical changes behave as you expect.
 
 ### Applied to a sine wave
 
-Lecture 02 writes a sine wave as $s(t) = A \sin(\omega t + \phi)$ with $\omega = 2\pi f$. Read it through the table:
+Lecture 02 writes a sine wave as $s(t) = A \sin(\omega t + \phi)$ with $\omega = 2\pi f$:
 
-- $A$ multiplies the function: a **vertical dilation**. Bigger $A$, taller wave (that is the peak amplitude).
+- $A$ multiplies the function: a **vertical dilation**. Bigger $A$, taller wave (the peak amplitude).
 - $\omega$ multiplies $t$ inside: a **horizontal dilation**. Bigger $\omega$ (bigger $f$), more cycles per second (shorter period).
-- $+\phi$ inside: a **horizontal translation**. Since $\sin(\omega t + \phi) = \sin(\omega(t + \phi/\omega))$, the wave moves **left** by $\phi/\omega$ seconds when $\phi > 0$; $\sin(\omega t - \phi)$ moves it **right** by $\phi/\omega$.
-
-That last line is exactly the "Horizontal shifting (phase shift)" slide of Lecture 02.
+- $+\phi$ inside: a **horizontal translation**. Since $\sin(\omega t + \phi) = \sin(\omega(t + \phi/\omega))$, the wave moves **left** by $\phi/\omega$ seconds when $\phi > 0$; $\sin(\omega t - \phi)$ moves it **right** by $\phi/\omega$. This is Lecture 02's "Horizontal shifting (phase shift)" slide.
 
 ## Degrees and radians
 
@@ -89,13 +79,11 @@ so $1° = \dfrac{2\pi}{360}$ rad and $1 \text{ rad} = \dfrac{360}{2\pi}°$ ($\ap
 | Radians | 0 | $\pi/2$ | $\pi$ | $3\pi/2$ | $2\pi$ |
 | Fraction of a cycle | 0 | 1/4 | 1/2 | 3/4 | 1 |
 
-The A02 handout shows one cycle of a sine wave with the phase marked underneath from 0° to 360° (0 to $2\pi$), and the unit circle with the same angles around it. The idea to keep: **one trip around the circle is one cycle of the wave**, so a fraction of a cycle is the same fraction of 360° or of $2\pi$.
+The A02 handout draws one cycle of a sine wave with the phase marked from 0° to 360° (0 to $2\pi$) beside the unit circle with the same angles. **One trip around the circle is one cycle of the wave**, so a fraction of a cycle is the same fraction of 360° or of $2\pi$.
 
 Worked conversion (the Lecture 02 example): a wave offset by $1/9$ of a cycle has phase $\dfrac{1}{9} \times 360° = 40°$, and $40° \times \dfrac{2\pi}{360°} = \dfrac{2\pi}{9} = 0.698$ rad.
 
-:::tip Calculator mode
-Set your calculator to the mode the question uses. If you compute $\sin(90)$ in radian mode you get 0.894, not 1. Quiz questions on phase are usually pure conversions (degrees to radians), which need no trig at all.
-:::
+Set your calculator to the mode the question uses: $\sin(90)$ in radian mode gives 0.894, not 1. Quiz questions on phase are usually pure conversions from degrees to radians, which need no trig at all.
 
 ## SI prefixes for time and frequency
 

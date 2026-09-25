@@ -1,11 +1,11 @@
 ---
 title: What data communications is
-minutes: 12
+minutes: 10
 ---
 
-Lecture 01a opens with five definitions, revealed one line at a time. Quiz 1 is written on 01a alone, and its fill-in-the-blank questions are built from exactly this wording, so learn each sentence as the instructor wrote it.
+Lecture 01a opens with five definitions. Quiz 1 is written on 01a alone, and its fill-in-the-blank questions use this exact wording.
 
-## Five definitions, in the instructor's words
+## Five definitions
 
 | Term | Definition (slide wording) | Examples on the slide |
 |---|---|---|
@@ -15,24 +15,18 @@ Lecture 01a opens with five definitions, revealed one line at a time. Quiz 1 is 
 | **Data communications** | the exchange of data between **two devices** via some form of **transmission medium** | |
 | **Data communications system** | a **network of hardware and software** that enables the exchange of data between devices over various transmission mediums | |
 
-Notice how each line builds on the one before it. Communication is the general idea; telecommunication adds distance; data is what gets exchanged; data communications is the exchange itself, always *via a medium*; and a data communications system is the hardware and software that makes it happen.
-
-:::quiz Fill-in-the-blank wording
-The blanks the quiz is most likely to leave: "communication at a *distance*", "presented in a form *agreed upon* by the parties", "the exchange of data between *two devices* via some form of *transmission medium*", "a network of *hardware and software*". The three tele- examples (telephony, telegraphy, television) are also a natural short-answer item.
-:::
+Each line builds on the one before it: distance, then the data exchanged, then the exchange itself via a medium, then the hardware and software that carry it out.
 
 ## What is the medium?
 
-The lecture's first question to the class was *what other types of mediums we have?* The slide's answers:
+The slide's answers to *what other types of mediums we have?*:
 
 - **Fibre optic**, which carries **light**.
 - **Air or space**, which carries **radio waves** (electromagnetic waves).
 
-Then a trick question: *what's the medium when we communicate in English?* Answer: **variations in air pressure**, mechanical sound waves made by the mouth and diaphragm and received by your ears. Speech is data communication too, and the air is its medium.
+Spoken English has a medium too: **variations in air pressure**, mechanical sound waves made by the mouth and diaphragm and received by the ears.
 
-:::warn Wired media
-The slide adds one note that reads like a true/false item: **in the case of a wired communication, we should use an electrically conductive material.** Copper wire conducts electricity; that is why twisted-pair and coaxial cables are made of it. Fibre is the exception: it is "wired" in the sense of being a cable, but it carries light, not current.
-:::
+The slide's note on wired media reads like a true/false item: **in the case of a wired communication, we should use an electrically conductive material.** Copper conducts, which is why twisted-pair and coaxial cables are made of it. Fibre is a cable but carries light, not current.
 
 ## Two types of data communications
 
@@ -41,7 +35,7 @@ The slide adds one note that reads like a true/false item: **in the case of a wi
 | Definition | the **electronic transmission of information**, such as data, text, audio, or video, using **digital signals** over communication channels | the transmission of information using **continuous signals** that vary in **amplitude, frequency, or phase** to represent data |
 | Key fact | all digital communication messages should be **represented and transmitted as bits** | the signal itself carries the information in its shape |
 
-The word **bits** is the one to remember. Every digital message, whether text, a photo, or a video call, is turned into 1s and 0s before it is sent. Week 2 comes back to what those bits look like on the wire.
+Every digital message is turned into bits before it is sent. Week 2 shows what those bits look like on the wire.
 
 ## Effectiveness: four fundamental characteristics
 
@@ -52,23 +46,14 @@ The effectiveness of a data communications system *depends on four fundamental c
 3. **Timeliness**: deliver data in a **timely manner**.
 4. **Jitter**: **uneven delay** in the delivery of audio or video packets.
 
-Delivery, accuracy and timeliness are things a good system *does*; jitter is a thing a good system *avoids*. It is listed as a characteristic because for audio and video, packets that arrive with uneven gaps between them sound and look wrong even when every packet eventually arrives.
-
-:::quiz Likely traps
-- "Jitter is the total delay of a packet." **False.** Jitter is the *uneven* (varying) delay between packets, specifically for audio or video.
-- "There are three fundamental characteristics of an effective data communications system." **False.** The slide lists **four**: delivery, accuracy, timeliness, jitter.
-:::
+Jitter is the odd one out. It is *uneven* delay, not total delay, and it matters for audio and video because packets must arrive at a steady rhythm. The slide lists **four** characteristics, not three.
 
 ## The benefits of data communication
-
-The slide arranges four benefits in a grid:
 
 - **Real-time data and information sharing and analysis**
 - **Enhanced connectivity**
 - **Cost saving**
 - **Expanded social engagement**
-
-These are plain enough to remember by their first words: real-time, connectivity, cost, social.
 
 ## Try it
 

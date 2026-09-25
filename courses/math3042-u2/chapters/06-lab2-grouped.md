@@ -1,13 +1,13 @@
 ---
 title: favstats, model formulas, percentiles, Z-scores
-minutes: 26
+minutes: 22
 ---
 
-Lab 2 is where Unit 1's numbers (mean, sd, quartiles, fences, $Sk$, $Z$) get applied to a **real data frame, one group at a time**. The lab itself is not collected, but the instructor says it prepares you for the quizzes, and the R idioms in it (model formulas, `favstats`, `quantile(probs=)`, `percent_rank`, `scale`) are exactly what a "what does this R code compute?" question looks like. This lesson walks the whole notebook, task by task, with the instructor's own output.
+Lab 2 applies Unit 1's numbers (mean, sd, quartiles, fences, $Sk$, $Z$) to a real data frame, one group at a time. Its R idioms (model formulas, `favstats`, `quantile(probs=)`, `percent_rank`, `scale`) are what a "what does this R code compute?" question looks like; every task below shows the instructor's own output.
 
 ## The data: `quine`
 
-The lab analyzes school absences in Walgett, New South Wales, Australia. The data set is built into the `MASS` package; the lab also needs `mosaic` (grouped statistics) and `dplyr` (percent ranks):
+School absences in Walgett, New South Wales, from the `MASS` package; the lab also needs `mosaic` (grouped statistics) and `dplyr` (percent ranks):
 
 ```r
 library(MASS)
@@ -17,7 +17,7 @@ data(quine)
 View(quine)
 ```
 
-`View()` opens the spreadsheet-style viewer in RStudio. Each row is **one child**. There is one numerical variable and four categorical ones:
+`View()` opens the spreadsheet viewer in RStudio. Each row is **one child**, with one numerical variable and four categorical ones:
 
 | Column | Type | Values |
 |---|---|---|
@@ -27,11 +27,9 @@ View(quine)
 | `Age` | categorical | age group (school form): `"F0"`, `"F1"`, `"F2"`, `"F3"` |
 | `Lrn` | categorical | learner status: average `"AL"` or slow `"SL"` |
 
-There are $n = 146$ children (`nrow(quine)` returns 146). Everything in the lab is a question of the form "summarize `Days`, for everyone or for one group of children."
+$n = 146$ children (`nrow(quine)`). Every task summarizes `Days`, for everyone or for one group.
 
 ## `summary()`: six numbers in one call
-
-Base R's `summary()` gives the five-number summary plus the mean:
 
 ```r
 X.vals <- c(9, 10, 8, 10, 11, 12, 11, 11)
@@ -42,7 +40,7 @@ summary( X.vals )
    8.00    9.75   10.50   10.25   11.00   12.00
 ```
 
-Read it left to right: minimum, $Q_1$, median ($Q_2$), mean $\bar{X}$, $Q_3$, maximum. Note the order: the **mean sits in the middle of the line**, between the median and $Q_3$, which trips people up when copying numbers into a table. `summary()` does not report the standard deviation; you need a separate `sd()` call.
+Left to right: minimum, $Q_1$, median ($Q_2$), mean $\bar{X}$, $Q_3$, maximum. The **mean sits in the middle of the line**, between the median and $Q_3$. `summary()` does not report the standard deviation; that needs `sd()`.
 
 ### Task 2: summary statistics of `Days`
 
@@ -56,8 +54,6 @@ sd(quine$Days)
 [1] 16.25322
 ```
 
-The lab's table, rounded to one decimal:
-
 | Statistic | Value |
 |---|---|
 | $\bar{X}$ | 16.5 |
@@ -68,11 +64,11 @@ The lab's table, rounded to one decimal:
 | $Q_3$ | 22.8 |
 | max | 81.0 |
 
-Two things already stand out. The mean (16.5) is well above the median (11.0), so the distribution is skewed right. And $s \approx \bar{X}$, so relative variation is huge: some children are almost never absent, a few are absent for months.
+The mean (16.5) is well above the median (11.0), so the distribution is skewed right, and $s \approx \bar{X}$: some children are almost never absent, a few are absent for months.
 
 ## `favstats()` and the model formula
 
-The `mosaic` package's `favstats()` is `summary()` plus the sd, the count and a missing-value count, but its syntax is different:
+`mosaic`'s `favstats()` is `summary()` plus the sd, the count and a missing-value count, with a different syntax:
 
 ```r
 favstats(~Days, data=quine)
@@ -82,7 +78,7 @@ favstats(~Days, data=quine)
    0  5     11 22.75  81 16.4589 16.25322 146       0
 ```
 
-The first argument `~Days` is a **model formula**. Read `~` as "in terms of". `~Days` on its own just says "use the `Days` variable"; `data=quine` says which data frame it lives in. This looks like extra typing until you want statistics **per group**:
+`~Days` is a **model formula**: read `~` as "in terms of". `~Days` alone means "the `Days` variable", and `data=quine` names the data frame. The payoff is statistics **per group**:
 
 ```r
 favstats(Days~Lrn, data=quine)
@@ -93,14 +89,14 @@ favstats(Days~Lrn, data=quine)
 2  SL   0  5     10 22.5  81 17.30159 18.99035 63       0
 ```
 
-`Days~Lrn` reads "Days, grouped by Lrn": one row of statistics per learner type. The instructor's conclusion: "slow" learners had a greater mean days absent (17.3 days) than "average" learners (15.8 days).
+`Days~Lrn` reads "Days, grouped by Lrn": one row per learner type. The instructor's conclusion: "slow" learners had a greater mean days absent (17.3 days) than "average" learners (15.8 days).
 
 :::tip Reading a formula
-- `~X` : just the variable `X`.
-- `Y~G` : the numerical variable `Y`, one result per level of the categorical variable `G`.
-- `Y~G1+G2` : one result per combination of two categorical variables (you will see this below).
+- `~X`: just the variable `X`.
+- `Y~G`: the numerical variable `Y`, one result per level of the categorical variable `G`.
+- `Y~G1+G2`: one result per combination of two categorical variables.
 
-The same `~` appears in `boxplot(extra~group, data=sleep)` from Unit 1. It is one idea used everywhere in R.
+The same `~` is in `boxplot(extra~group, data=sleep)` from Unit 1.
 :::
 
 ```widget
@@ -108,11 +104,9 @@ group-stats
 { "by": "Sex" }
 ```
 
-The widget above is the whole lab in one place: pick a grouping and it prints the `favstats` table, draws one boxplot per group on a shared axis, computes grouped percentiles, and runs the Z-score check from the end of the lab. Use it to confirm every number below.
-
 ### The mosaic overrides
 
-`mosaic` also teaches the familiar functions to accept formulas, so all of these work with `~X` or `X~G` and `data=`:
+`mosaic` also teaches the familiar functions to accept `~X` or `X~G` with `data=`:
 
 - `mean( ~X, data=df)`, `median( ~X, data=df)`, `sd( ~X, data=df)`, `var( ~X, data=df)`
 - `min( ~X, data=df)`, `max( ~X, data=df)`, `sum( ~X, data=df)`
@@ -136,11 +130,11 @@ round(mean(Days~Sex, data=quine), 1)
 | F | 15.2 |
 | M | 18.0 |
 
-`mean(Days~Sex)` returns one mean per level of `Sex`, as a named vector; `round(..., 1)` rounds every element to one decimal. Boys were absent about three days more on average.
+`mean(Days~Sex)` returns one mean per level of `Sex` as a named vector; `round(..., 1)` rounds every element. Boys were absent about three days more on average.
 
 ### Task 4: Pearson's skewness, overall and by sex
 
-Unit 1's formula is $Sk = \dfrac{3(\bar{X} - Q_2)}{s}$. With mosaic functions it is one line, and the grouped version is the same line with a formula:
+Unit 1's $Sk = \dfrac{3(\bar{X} - Q_2)}{s}$ is one line with mosaic functions, and the grouped version is the same line with a formula:
 
 ```r
 Sk.all <- 3*(mean(~Days, data=quine) - median(~Days, data=quine))/sd(~Days, data=quine)
@@ -160,7 +154,7 @@ Sk.grouped
 | Sex = F | 0.98 |
 | Sex = M | 0.71 |
 
-Check the whole-sample number by hand: $3(16.4589 - 11)/16.25322 = 3(5.4589)/16.25322 = 1.0076$. The whole sample is **highly skewed right** ($Sk > 1$). Both sexes are skewed right; girls slightly more (0.98) than boys (0.71), and neither is quite past the "highly skewed" line of 1 on its own. Because the grouped `mean`, `median` and `sd` all return vectors with the same names `F` and `M`, R does the arithmetic element by element, and the result keeps the names.
+By hand for the whole sample: $3(16.4589 - 11)/16.25322 = 3(5.4589)/16.25322 = 1.0076$: **highly skewed right** ($Sk > 1$). Both sexes are skewed right, girls (0.98) slightly more than boys (0.71), neither past 1 on its own. The grouped `mean`, `median` and `sd` all return vectors named `F` and `M`, so R does the arithmetic element by element and keeps the names.
 
 ## Histograms: `hist()` versus `histogram()`
 
@@ -176,7 +170,7 @@ hist( TenMileRace$net,
       main=paste0("Cherry Blossom Race (n = ", nrow(TenMileRace), ")"))
 ```
 
-The mosaic way is `histogram()` with a formula. `type="count"` asks for frequencies on the vertical axis (the default is density):
+The mosaic way is `histogram()` with a formula; `type="count"` puts frequencies on the vertical axis (the default is density):
 
 ```r
 histogram( ~net, data=TenMileRace,
@@ -188,14 +182,14 @@ histogram( ~net, data=TenMileRace,
            main=paste0("Cherry Blossom Race (n = ", nrow(TenMileRace), ")"))
 ```
 
-Two idioms to know:
+Two idioms:
 
-- `paste0(...)` glues strings and numbers together with no separator, so the title reads `Cherry Blossom Race (n = 8636)` and updates itself if the data changes. The lab keeps asking for $n$ "without hard-coding": that means `nrow(df)` inside `paste0`, never typing 146.
-- `breaks=seq(lo, hi, by=w)` sets the class limits, and `right = FALSE` makes each class $[\text{lower}, \text{upper})$, the same rule as the histogram lesson.
+- `paste0(...)` glues strings and numbers with no separator, so the title reads `Cherry Blossom Race (n = 8636)` and updates with the data. "Without hard-coding" $n$ means `nrow(df)` inside `paste0`, never typing 146.
+- `breaks=seq(lo, hi, by=w)` sets the class limits and `right = FALSE` makes each class $[\text{lower}, \text{upper})$, as in the histogram lesson.
 
 ### Task 5: histogram of `Days`
 
-Classes of width 5 starting from zero, $n$ in the title, and the colour "coral" as a hex RGB code:
+Width 5 from zero, $n$ in the title, the colour "coral" as a hex RGB code:
 
 ```r
 histogram(~Days, data=quine,
@@ -205,7 +199,7 @@ histogram(~Days, data=quine,
           main=paste0("Days absent (n = ", nrow(quine), ")"))
 ```
 
-`"#FF7256"` is red FF, green 72, blue 56 in hexadecimal: coral. The tallest bars are at 0 to 15 days and the bars trail off all the way to 80. The instructor's one-sentence answer: **the long right tail is consistent with the high skewness ($Sk = 1.01$) for the entire sample.** A picture and a number agreeing is the point of Unit 2.
+`"#FF7256"` is red FF, green 72, blue 56. The tallest bars are at 0 to 15 days and the bars trail off to 80. The instructor's answer: **the long right tail is consistent with the high skewness ($Sk = 1.01$) for the entire sample.**
 
 ## Box plots: `boxplot()` versus `bwplot()`
 
@@ -225,11 +219,11 @@ bwplot(~Days, data=quine, horizontal=TRUE,
        main=paste0("Box plot of Days Absent (n =", nrow(quine), ")"))
 ```
 
-`bwplot` ("box-and-whisker plot") draws the same five-number summary as `boxplot`, but its box has a **dot for the median** instead of a line, and its whiskers are dashed. On the `Days` plot the box sits at 5 to 22.75, the whiskers stop near 0 and 48, and a string of open circles runs out to 81: those are the outliers.
+`bwplot` ("box-and-whisker plot") draws the same five-number summary as `boxplot`, with a **dot for the median** instead of a line and dashed whiskers. The box sits at 5 to 22.75, the whiskers stop near 0 and 48, and open circles run out to 81: the outliers.
 
 ### Task 7: how many outliers?
 
-Same fence rule as Unit 1, written with mosaic's `quantile()` and the `prob=` argument:
+Unit 1's fence rule with mosaic's `quantile()` and `prob=`:
 
 ```r
 Q1 <- quantile(~Days, data=quine, prob=0.25)
@@ -246,13 +240,11 @@ sum(is.outlier)
 [1] 8
 ```
 
-By hand: $IQR = 22.75 - 5 = 17.75$, so $1.5 \times IQR = 26.625$. Lower fence $= 5 - 26.625 = -21.625$ (no child can be below it, since days cannot be negative). Upper fence $= 22.75 + 26.625 = 49.375$. Eight children were absent more than 49.375 days: 53, 53, 54, 57, 60, 67, 69 and 81.
+By hand: $IQR = 22.75 - 5 = 17.75$, $1.5 \times IQR = 26.625$, lower fence $= 5 - 26.625 = -21.625$ (unreachable, since days cannot be negative), upper fence $= 22.75 + 26.625 = 49.375$. Eight children exceed it: 53, 53, 54, 57, 60, 67, 69 and 81.
 
-The code has two idioms worth remembering. `|` is OR applied to every row at once, so `is.outlier` is a logical vector with one `TRUE`/`FALSE` per child. And `sum()` of a logical vector **counts the `TRUE`s**, because R treats `TRUE` as 1 and `FALSE` as 0.
+Two idioms: `|` is OR applied to every row at once, so `is.outlier` is one `TRUE`/`FALSE` per child, and `sum()` of a logical vector **counts the `TRUE`s** (R treats `TRUE` as 1 and `FALSE` as 0).
 
 ## Comparing groups
-
-Statistics for `Days` grouped by `Sex`:
 
 ```r
 favstats(Days~Sex, data=quine)
@@ -269,7 +261,7 @@ The instructor's three observations:
 - At each quartile ($Q_1$, $Q_2$, $Q_3$) boys had **more** absences than girls: 5.25 vs 5, 14 vs 10, 27 vs 20.25.
 - However, the child with the **most** absences was female: max 81 vs 69.
 
-That is how to read a grouped table: compare the same column across the rows, and do not let one extreme value (81) override the quartiles.
+Compare the same column across rows, and do not let one extreme value (81) override the quartiles.
 
 ### Task 8: grouped by ethnicity
 
@@ -288,14 +280,14 @@ group-stats
 { "by": "Eth" }
 ```
 
-`bwplot(Days~Eth)` puts the two boxes side by side, vertically, one per level of `Eth`. The two observations from the solutions:
+`bwplot(Days~Eth)` draws one box per level of `Eth`, side by side. The solutions' two observations:
 
 1. Aboriginal students tended to have more days absent, based on the median (15 vs 7) and the mean (21.2 vs 12.2).
 2. Aboriginal students had greater variability in days absent (sd 17.7 vs 13.6, and a wider box: IQR 26 vs 12).
 
 ## Comparisons with multiple factors
 
-Group by two categorical variables with `+` in the formula. R names each combination `Eth.Sex`:
+Group by two categorical variables with `+`; R names each combination `Eth.Sex`:
 
 ```r
 mean(Days~Eth+Sex, data=quine)
@@ -305,7 +297,7 @@ mean(Days~Eth+Sex, data=quine)
 20.92105 10.07143 21.61290 14.71429
 ```
 
-Four groups: Aboriginal girls average 20.9 days, non-Aboriginal girls 10.1, Aboriginal boys 21.6, non-Aboriginal boys 14.7. Ethnicity moves the mean by about 10 days; sex moves it by only a few.
+Aboriginal girls average 20.9 days, non-Aboriginal girls 10.1, Aboriginal boys 21.6, non-Aboriginal boys 14.7. Ethnicity moves the mean by about 10 days, sex by a few.
 
 ```widget
 group-stats
@@ -314,7 +306,7 @@ group-stats
 
 ### Task 9: which group is most (and least) consistent?
 
-"Relatively consistent" is Unit 1's coefficient of variation, $CV = s/\bar{X}$, and a smaller CV means more consistent. The solution computes it for every group at once and lets `which.min`/`which.max` pick:
+"Relatively consistent" is Unit 1's coefficient of variation, $CV = s/\bar{X}$; smaller is more consistent. The solution computes every group at once and lets `which.min`/`which.max` pick:
 
 ```r
 CV.grouped <- sd(Days~Eth+Sex, data=quine) /
@@ -330,15 +322,15 @@ sprintf("The least consistent group is %s.",
 [1] "The least consistent group is N.M."
 ```
 
-The CVs are roughly A.F 0.94, A.M 0.71, N.F 0.89, N.M 1.18. Aboriginal boys are the most consistent group (their sd is the smallest relative to their mean); non-Aboriginal boys the least (sd 17.4 on a mean of only 14.7). `which.min` returns the position of the smallest element; `names()` turns that into the group label; `sprintf` drops it into the sentence at `%s`.
+The CVs are roughly A.F 0.94, A.M 0.71, N.F 0.89, N.M 1.18: Aboriginal boys are the most consistent, non-Aboriginal boys the least (sd 17.4 on a mean of only 14.7). `which.min` gives the position of the smallest element, `names()` its label, and `sprintf` drops it into the sentence at `%s`.
 
 :::warn The task said Age + Sex
-Task 9 asks for groups by `Age` and `Sex`, but the posted solution groups by `Eth` and `Sex`. If you redo it as written, change both formulas to `Days~Age+Sex` (eight groups: `F0.F`, `F1.F`, ..., `F3.M`). The method is identical; only the labels change.
+Task 9 asks for `Age` and `Sex`, but the posted solution groups by `Eth` and `Sex`. Redoing it as written means `Days~Age+Sex` in both formulas (eight groups, `F0.F` to `F3.M`); the method is identical.
 :::
 
 ## Percentiles: `quantile()` and `probs=`
 
-With no second argument, `quantile()` returns the quartiles, which are also the five-number summary:
+With no second argument `quantile()` returns the quartiles, the five-number summary:
 
 ```r
 quantile(~Days, data=quine)
@@ -348,7 +340,7 @@ quantile(~Days, data=quine)
  0.00  5.00 11.00 22.75 81.00
 ```
 
-Any percentile $P_k$ comes from `probs=` with $k$ written as a decimal. The 90th percentile of days absent:
+Any $P_k$ comes from `probs=` with $k$ as a decimal. The 90th percentile:
 
 ```r
 quantile(~Days, probs=0.9, data=quine)
@@ -371,11 +363,11 @@ quantile(~Days, probs=seq(0.1,0.9, by=0.1), data=quine)
   2   5   5   7  11  14  20  27  40
 ```
 
-Notice $P_{20} = P_{30} = 5$: so many children have exactly 5 days that two percentiles land on the same value. Percentiles of a discrete variable repeat.
+$P_{20} = P_{30} = 5$: so many children have exactly 5 days that two percentiles land on the same value. Percentiles of a discrete variable repeat.
 
 ### Task 10: percentiles by group
 
-Add a grouping variable and the `prob=` argument (mosaic accepts `prob` or `probs`):
+Add a grouping variable (mosaic accepts `prob` or `probs`):
 
 ```r
 quantile(Days~Lrn, data=quine, prob=c(0.2, 0.4, 0.6, 0.8))
@@ -386,7 +378,7 @@ quantile(Days~Lrn, data=quine, prob=c(0.2, 0.4, 0.6, 0.8))
 2  SL   5 6.0 13.2  28
 ```
 
-Learner status makes a fairly small difference at every percentile: the 20th percentiles are identical (5 and 5) and the 80th almost so (27 and 28). Now the same by `Sex` and by `Eth`:
+Learner status makes little difference: the 20th percentiles are identical (5 and 5) and the 80th almost so (27 and 28). By `Sex` and by `Eth`:
 
 ```r
 quantile(Days~Sex, data=quine, prob=c(0.2, 0.4, 0.6, 0.8))
@@ -401,11 +393,11 @@ quantile(Days~Eth, data=quine, prob=c(0.2, 0.4, 0.6, 0.8))
 2   N   3   5 10.6 19.6
 ```
 
-The instructor's answer: **`Eth` is the categorical variable that leads to the greatest differences**; it is associated with about twice as many days of absence at each percentile level (6 vs 3, 13 vs 5, 20 vs 10.6, 36.8 vs 19.6). `Sex` and `Lrn` barely move the percentiles.
+The instructor's answer: **`Eth` is the categorical variable that leads to the greatest differences**, about twice as many days at each percentile (6 vs 3, 13 vs 5, 20 vs 10.6, 36.8 vs 19.6). `Sex` and `Lrn` barely move the percentiles.
 
 ## Percentile rank: the other direction
 
-`quantile()` goes from a percentage to a value. `percent_rank()` (from `dplyr`, so no formula, just the column) goes from a value to its percentage:
+`quantile()` goes from a percentage to a value. `percent_rank()` (from `dplyr`: no formula, just the column) goes from a value to its percentage:
 
 ```r
 head( percent_rank(quine$Days) )
@@ -414,7 +406,7 @@ head( percent_rank(quine$Days) )
 [1] 0.08965517 0.47586207 0.55862069 0.17931034 0.17931034 0.53793103
 ```
 
-The first child in the data frame was absent 2 days, and that sits at the 8.965517th percentile: it is larger than about 8.97% of all `Days` values (13 of the other 145 children have fewer days: $13/145 = 0.0897$). Percentile rankings are usually quoted as whole numbers:
+The first child (2 days) is at the 8.97th percentile: 13 of the other 145 children have fewer days, $13/145 = 0.0897$. Rankings are usually quoted as whole numbers:
 
 ```r
 head( round(100*percent_rank(quine$Days) ))
@@ -423,11 +415,11 @@ head( round(100*percent_rank(quine$Days) ))
 [1]  9 48 56 18 18 54
 ```
 
-So the first student was absent more often than 9% of all students; the third one (15 days) more often than 56%.
+The first student was absent more often than 9% of all students; the third (15 days) more often than 56%.
 
 ### Task 11: percentile ranks for one subgroup
 
-Build a logical vector that is `TRUE` for male `F0` students, use it in square brackets to keep only those ranks, and `cbind()` to print them as a column:
+A logical vector that is `TRUE` for male `F0` students, square brackets to keep only those ranks, `cbind()` to print them as a column:
 
 ```r
 is.F0.Male <- (quine$Sex=="M") & (quine$Age=="F0")
@@ -454,11 +446,11 @@ cbind(round(100*percent_rank( quine$Days )[is.F0.Male]))
 [17,]   52
 ```
 
-`&` is AND, row by row. `x[logical]` keeps the elements where the logical vector is `TRUE` (logical indexing). `cbind` ("column bind") makes a one-column matrix, which prints vertically instead of wrapping across the console. Seventeen boys are in form F0; one of them (rank 99) is near the top of the whole school for absences and two (rank 0) had perfect attendance.
+`&` is AND, row by row; `x[logical]` keeps the elements where the vector is `TRUE`; `cbind` ("column bind") makes a one-column matrix that prints vertically. Seventeen boys are in form F0; one (rank 99) is near the top of the school for absences and two (rank 0) had perfect attendance.
 
 ### Subset by percentile rank
 
-To pull out the children above the 75th percentile:
+The children above the 75th percentile:
 
 ```r
 subset( quine, percent_rank(Days) > 0.75)
@@ -472,7 +464,7 @@ subset( quine, percent_rank(Days) > 0.75)
 146   N   F  F3  AL   37
 ```
 
-`subset(df, condition)` keeps the rows where the condition is `TRUE`; inside `subset` you can name columns directly, without `quine$`. Thirty-seven rows come back, and most of them are `A` in the `Eth` column, which matches everything above.
+`subset(df, condition)` keeps the rows where the condition is `TRUE`, and inside it columns are named without `quine$`. Thirty-seven rows come back, most of them `A` in `Eth`.
 
 ### Task 12: who is in the bottom quarter?
 
@@ -485,11 +477,11 @@ round(prop.table( table(P25.students$Sex )),3)
 0.622 0.378
 ```
 
-`table()` counts each sex among the low-absence children; `prop.table()` divides by the total to give proportions ($\hat{p}$ per category). Female students are by far the larger fraction (62.2%) of the 25% with the fewest absences, even though girls are only 80 of 146 (54.8%) overall.
+`table()` counts each sex among the low-absence children and `prop.table()` divides by the total ($\hat{p}$ per category). Girls are 62.2% of the quarter with the fewest absences, against 80 of 146 (54.8%) overall.
 
 ## Z-scores, Chebyshev's theorem and the empirical rule
 
-A $Z$-score says how many standard deviations a value is from the mean. `scale()` computes $Z = (X - \bar{X})/s$ for every element of a vector:
+`scale()` computes $Z = (X - \bar{X})/s$ for every element of a vector:
 
 ```r
 head( scale( quine$Days ) )
@@ -504,11 +496,11 @@ head( scale( quine$Days ) )
 [6,] -0.2128134
 ```
 
-The first child (2 days) is 0.89 standard deviations **below** the mean: $(2 - 16.4589)/16.25322 = -0.8896$. Like a percentile rank, a $Z$-score locates one value relative to the rest.
+The first child (2 days) is 0.89 standard deviations **below** the mean: $(2 - 16.4589)/16.25322 = -0.8896$.
 
 ### Task 13: how many are far from the mean?
 
-Count the children at least 1, 2 and 3 standard deviations away (above or below):
+Children at least 1, 2 and 3 standard deviations from the mean, above or below:
 
 ```r
 Z.scores <- scale( quine$Days )
@@ -522,11 +514,11 @@ sum(abs(Z.scores) > 3)
 [1] 3
 ```
 
-`abs()` throws away the sign so "above or below" is one comparison, and `sum()` of the resulting logical vector counts the `TRUE`s. Thirty-two children are more than 1 sd out, eight more than 2 sd out, three more than 3 sd out. (Eight is also the number of outliers from Task 7; here they agree, but remember Unit 1's warning: **outlier and unusual are different definitions**.)
+`abs()` drops the sign so "above or below" is one comparison, and `sum()` counts the `TRUE`s: 32, 8 and 3 children. Eight is also the outlier count from Task 7; they agree here, but **outlier and unusual are different definitions** (Unit 1).
 
 ### Task 14: does the data obey Chebyshev? The empirical rule?
 
-Convert the counts to fractions **within** $\pm k$ sd:
+Fractions **within** $\pm k$ sd:
 
 ```r
 n.students <- nrow(quine)
@@ -563,11 +555,7 @@ p3 # too low
 | 2 | 0.945 | 0.75 | 0.95 (pretty close) |
 | 3 | 0.979 | 0.889 | 0.997 (too low) |
 
-Chebyshev's theorem holds, as it must for any data set. The empirical rule fails at $k = 1$ and $k = 3$. The instructor's answer: **the empirical rule does not hold for `Days`, since it is not a normally distributed variable. It cannot be, since it is significantly skewed, as shown by $Sk$ earlier.** A right-skewed variable piles up close to the mean on the left (so more than 68% sit within one sd) and then has a long tail (so more than 0.3% sit beyond three sd).
-
-:::quiz The pattern the quiz likes
-Chebyshev is a guarantee for **any** distribution; the 68–95–99.7 rule is a prediction for **bell-shaped** distributions only. Real skewed data satisfies the first and breaks the second. If a question gives you $Sk = 1.01$ and asks whether the empirical rule applies, the answer is no, and the reason is the skewness.
-:::
+Chebyshev's theorem holds, as it must for any data set. The empirical rule fails at $k = 1$ and $k = 3$. The instructor's answer: **the empirical rule does not hold for `Days`, since it is not a normally distributed variable. It cannot be, since it is significantly skewed, as shown by $Sk$ earlier.** A right-skewed variable piles up near the mean on the left (more than 68% within one sd) and then has a long tail (more than 0.3% beyond three sd).
 
 ```quiz
 [

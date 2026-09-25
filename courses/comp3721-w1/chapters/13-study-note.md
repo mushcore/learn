@@ -3,7 +3,7 @@ title: Your one-page study note (Week 1)
 minutes: 15
 ---
 
-The instructor allows **one A4 or letter page, single-sided, preferably hand-written**, plus a calculator, in every quiz (the back may be used for rough work). This page is the Week 1 draft of that sheet: no explanations, only the facts, tables and formulas in the slides' own words. Copy it by hand; writing it out is itself the best revision you will do. **Quiz 1 needs only the 01a block.** The 01b/01c block goes on the Quiz 2 sheet together with the Week 2 note.
+The instructor allows **one A4 or letter page, single-sided, preferably hand-written**, plus a calculator, in every quiz (the back may be used for rough work). This page is the Week 1 draft of that sheet: no explanations, only the facts, tables and formulas in the slides' own words. **Quiz 1 needs only the 01a block.** The 01b/01c block goes on the Quiz 2 sheet together with the Week 2 note.
 
 ## 01a: Data communications
 

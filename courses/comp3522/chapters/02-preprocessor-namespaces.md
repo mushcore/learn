@@ -3,7 +3,7 @@ title: Preprocessor & namespaces
 minutes: 12
 ---
 
-Before `g++` compiles a single line of your code, a separate program called the **preprocessor** runs over the text and rewrites it. Understanding what it does — and what it does *not* do — clears up a lot of "why doesn't this have a semicolon?" confusion.
+Before `g++` compiles a line of your code, a separate program called the **preprocessor** rewrites the text. Knowing what it does explains why some lines have no semicolon.
 
 ## Preprocessor directives
 
@@ -20,7 +20,7 @@ A line starting with `#` is a **preprocessor directive**: an instruction for the
 ```
 
 :::quiz Semicolons and preprocessor directives
-A likely trap question: "`#include <iostream>` must end with a semicolon." **False.** Directives end at the newline. If you put a `;` after one, you've just added an (often harmless) empty statement to your *code* — the directive itself never wants one.
+"`#include <iostream>` must end with a semicolon." **False.** Directives end at the newline. A `;` after one is an empty statement in your *code*; the directive itself never wants one.
 :::
 
 ## Namespaces
@@ -48,13 +48,11 @@ int main()
 }
 ```
 
-`using` is C++'s answer to Java's `import` — it exists purely to **save typing**. It does not change what code is valid, only what you're allowed to write without the `std::` prefix. The pinned example adds one line, `using namespace std;`, and from there down `int main()` can write `cout << "Hello world!" << endl;` and `return 0;` with no `std::` prefix anywhere.
-
-The slides show three variations of this idea. Try each below.
+`using` is C++'s answer to Java's `import`: it saves typing. It does not change what code is valid, only whether you may drop the `std::` prefix. The slides show three variations.
 
 ### Option 1: `using namespace std;`
 
-Every name from `std` becomes visible from that line down to the end of the file: after `using namespace std;`, `int main()` can call `cout << "Hello world!" << endl;` and `return 0;` with no `std::` prefix anywhere.
+Every name from `std` becomes visible from `using namespace std;` down to the end of the file, so `int main()` writes `cout << "Hello world!" << endl;` and `return 0;` with no `std::` prefix anywhere.
 
 ### Option 2: `using std::cout;`
 
@@ -101,8 +99,8 @@ The course's own sample code (`main.cpp` in `HelloWorld`) uses `using namespace 
 
 The risk shows up as projects grow:
 
-- It pulls **every** name from `std` into scope — including ones you didn't ask for. If you also `using namespace` a second library that happens to define a function called, say, `count` or `distance`, you get an **ambiguous name** compile error that has nothing to do with your logic.
-- Putting `using namespace std;` in a **header file** is especially bad: every `.cpp` file that `#include`s that header inherits the blanket `using`, whether it wants it or not. That's why the rule of thumb is: never put `using namespace` in a header.
+- It pulls **every** name from `std` into scope, including ones you didn't ask for. If you also `using namespace` a second library that defines a function called `count` or `distance`, you get an **ambiguous name** compile error that has nothing to do with your logic.
+- Putting `using namespace std;` in a **header file** is especially bad: every `.cpp` file that `#include`s that header inherits the blanket `using`, whether it wants it or not. The rule of thumb: never put `using namespace` in a header.
 
 Option 2 (name a handful of specific names) and Option 3 (scope it to one function) both avoid this by only unlocking exactly what you use.
 
@@ -132,7 +130,7 @@ main.cpp:5:31: error: 'endl' was not declared in this scope; did you mean 'std::
       |                               std::endl
 ```
 
-This is a compiler error, not a preprocessor error — it happens because name lookup runs during compilation, well after the preprocessor has already finished inserting `<iostream>`'s contents. Modern g++ is even helpful enough to suggest the fix (`did you mean 'std::cout'?`), but it still refuses to guess for you.
+This is a compiler error, not a preprocessor error: name lookup runs during compilation, after the preprocessor has inserted `<iostream>`. g++ suggests the fix (`did you mean 'std::cout'?`) but does not apply it.
 
 ```quiz
 [

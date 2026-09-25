@@ -1,9 +1,9 @@
 ---
 title: C-style arrays & random numbers
-minutes: 16
+minutes: 12
 ---
 
-Two short topics from the middle of the Week 2 slides. Arrays get "one slide" because they work the way you expect from C and Java; random numbers get several, because C++ offers three different ways to make them and the quiz likes the ranges.
+C-style arrays work as they did in C. Random numbers come three ways: C's `rand`, and two from the `<random>` header.
 
 ## Arrays: one slide
 
@@ -18,9 +18,9 @@ int some_scores[8] = {1, 2, 3, 4};
     // equivalent to {1, 2, 3, 4, 0, 0, 0, 0}
 ```
 
-Read a declaration from the name outwards. `float values[3]` says "`values` is an array of 3 `float`". `char * names[32]` says "`names` is an array of 32 things, and each thing is a `char *`", a pointer to a character: 32 pointers, not 32 characters. The size in the brackets is fixed at compile time.
+Read a declaration from the name outwards: `float values[3]` is an array of 3 `float`; `char * names[32]` is an array of 32 things, each a `char *`, so 32 pointers, not 32 characters. The size is fixed at compile time.
 
-Braces initialize. With `int scores[] = {1, 2, 3, 4};` the compiler counts the initializers and makes the array size 4. With `int some_scores[8] = {1, 2, 3, 4};` you asked for 8 slots but supplied 4 values; the remaining slots are **filled with the default value, 0**. An array declared with *no* initializer, like `float values[3]`, holds garbage until you assign to it.
+With `int scores[] = {1, 2, 3, 4};` the compiler counts the initializers and makes the size 4. With `int some_scores[8] = {1, 2, 3, 4};` the four missing slots are **filled with 0**. An array with no initializer, like `float values[3]`, holds garbage until you assign to it.
 
 ```cpp run pin arrays.cpp
 // predict: Write every line printed, exactly as the code formats it (this machine: int is 4 bytes, float 4, a pointer 8).
@@ -55,13 +55,9 @@ int main()
 }
 ```
 
-- `sizeof(values)` is 3 floats × 4 bytes = **12**; `sizeof(names)` is 32 pointers × 8 bytes = **256** on a 64-bit machine. `sizeof` on an array gives the whole array's bytes, so `sizeof(scores) / sizeof(scores[0])` (16 / 4) counts its elements: **4**.
-- `for (int s : some_scores)` prints `1 2 3 4 0 0 0 0`: the four missing initializers became zeros.
-- Inside `swap`, `sizeof(arr)` prints **8**, not 16. This is the lecture's key demonstration: an array **parameter** is not an array. `int arr[]` in a parameter list is just another way of writing `int* arr`; the array "decays" to a pointer to its first element, and a pointer is 8 bytes. g++ even warns you about it (`'sizeof' on array function parameter 'arr' will return size of 'int*'`). Because `arr` points at the *original* `scores`, the swap of elements 0 and 3 changes the caller's array: `4 2 3 1`. Compare that with the value-parameter swap in the next lesson, which changes nothing.
-
-:::quiz Two facts the quiz likes
-`int some_scores[8] = {1, 2, 3, 4};` is **equivalent** to `{1, 2, 3, 4, 0, 0, 0, 0}` (missing elements are zero, not garbage). And an array passed to a function arrives as a **pointer** to the original elements, which is why changes inside the function are visible outside.
-:::
+- `sizeof(values)` is 3 floats × 4 bytes = **12**; `sizeof(names)` is 32 pointers × 8 bytes = **256**. `sizeof` on an array is the whole array, so `sizeof(scores) / sizeof(scores[0])` (16 / 4) counts its elements: **4**.
+- `for (int s : some_scores)` prints `1 2 3 4 0 0 0 0`.
+- Inside `swap`, `sizeof(arr)` prints **8**, not 16. An array **parameter** is not an array: `int arr[]` in a parameter list means `int* arr`, the array decays to a pointer to its first element, and a pointer is 8 bytes (g++ warns: `'sizeof' on array function parameter 'arr' will return size of 'int*'`). Because `arr` points at the original `scores`, the swap changes the caller's array: `4 2 3 1`. The value-parameter swap in the next lesson changes nothing.
 
 ```challenge
 {
@@ -77,10 +73,10 @@ int main()
 
 The "ye olde tyme C approach" uses two functions from `<cstdlib>`:
 
-- `srand(seed)` **initializes** (seeds) the random number generator. The seed is a number the sequence starts from.
+- `srand(seed)` **initializes** (seeds) the random number generator.
 - `rand()` returns a pseudo-random integer between 0 and `RAND_MAX`.
 
-The word *pseudo* matters. As the instructor said, "in computing there is no true random; all random is based on something." `rand()` runs a fixed arithmetic recipe from the seed, so the **same seed always produces the same sequence**. That is why you seed with something that changes: `time(NULL)` from `<ctime>`, the current time in seconds.
+*Pseudo* matters: `rand()` runs a fixed arithmetic recipe from the seed, so the **same seed always produces the same sequence**. That is why you seed with something that changes, `time(NULL)` from `<ctime>`, the current time in seconds.
 
 ```cpp run pin random_c.cpp
 #include <iostream>
@@ -109,16 +105,16 @@ int main()
 }
 ```
 
-Run it twice. The first two lines are identical to each other and identical between runs, because `srand(1)` restarts the same recipe. The third line changes from run to run, because `srand(time(NULL));` seeds with the clock.
+The first two lines are identical, and identical between runs, because `srand(1)` restarts the same recipe. The third line changes from run to run because `srand(time(NULL));` seeds with the clock.
 
-Two rules from the lecture: **seed once**, and **never put `srand` inside a loop**. Re-seeding with the same second-resolution time inside a loop gives you the same "random" number over and over.
+**Seed once, never inside a loop.** Re-seeding with the same second-resolution time gives the same "random" number over and over.
 
-- `rand() % UPPER_BOUND` folds the big number into `0 … UPPER_BOUND − 1`. With `UPPER_BOUND = 10` you get 0 to 9: the right side is **not inclusive**.
-- `rand() / (double) RAND_MAX` is the "hack" for a real number in 0.0 to 1.0. The cast makes one operand a `double` so the division is real division (Week 1); without it, integer division would give 0 almost every time. `RAND_MAX` is a built-in constant, 32767 with this compiler.
+- `rand() % UPPER_BOUND` folds the big number into `0 … UPPER_BOUND − 1`: with 10, you get 0 to 9. The right side is **not inclusive**.
+- `rand() / (double) RAND_MAX` gives a real number in 0.0 to 1.0. The cast makes the division real division (Week 1); without it, integer division would give 0 almost every time. `RAND_MAX` is 32767 with this compiler.
 
 ## Choosing a range
 
-The three slide examples, and the rule behind them:
+The three slide examples:
 
 ```cpp
 int random_num_1 = rand() % 100;         // random range 0 to 99
@@ -126,19 +122,15 @@ int random_num_2 = rand() % 100 + 1;     // random range 1 to 100
 int random_num_3 = rand() % 25 + 2000;   // random range 2000 to 2024
 ```
 
-`% m` gives `m` possible values, `0 … m − 1`. Adding an offset shifts the whole range without changing how many values there are: `% 25 + 2000` is the 25 values `2000 … 2024`. If you want the top number included, add 1: `% 100 + 1` runs 1 to 100.
+`% m` gives `m` values, `0 … m − 1`. An offset shifts the range without changing its size: `% 25 + 2000` is the 25 values `2000 … 2024`. To include the top number, add 1: `% 100 + 1` runs 1 to 100.
 
 ```widget
 rand-range
 ```
 
-:::quiz The off-by-one trap
-"`rand() % 100` produces numbers from 0 to 100." **False**: 0 to 99. "`rand() % 25 + 2000` produces 25 different values." **True**: 2000 through 2024. Count the values with `m`, find the ends with `offset` and `offset + m − 1`.
-:::
-
 ## Approach 2 and 3: the `<random>` header
 
-`rand()` is quick and dirty. The C++ `<random>` header separates two jobs: an **engine** produces raw random bits, and a **distribution** shapes them into the range and spread you want. The instructor's reason for the distribution: an engine on its own "will perfectly generate random numbers, but the numbers it generates will be skewed in a specific way"; the distribution takes them "and actually calculates them to follow a uniform distribution."
+`<random>` separates two jobs: an **engine** produces raw random bits, and a **distribution** shapes them into a uniform spread over the range you want.
 
 Uniform `double` in `[a, b]` (slide approach 2):
 
@@ -162,9 +154,9 @@ int main()
 }
 ```
 
-`default_random_engine generator(time(0));` builds the engine and seeds it, the same job `srand` did. `uniform_real_distribution<double> distribution(a, b);` describes what you want: real numbers spread evenly between 10 and 100. The line `distribution(generator)` is where a number is actually produced: every call passes the engine into the distribution and gets a fresh value.
+`default_random_engine generator(time(0));` builds and seeds the engine, the job `srand` did. `uniform_real_distribution<double> distribution(a, b);` describes the spread: real numbers evenly between 10 and 100. `distribution(generator)` produces a number: every call passes the engine into the distribution and gets a fresh value.
 
-Uniform `int` in `[a, b]` (slide approach 3), with the slide's extra flourish:
+Uniform `int` in `[a, b]` (slide approach 3):
 
 ```cpp run pin random_int.cpp
 #include <iostream>
@@ -186,7 +178,7 @@ int main()
 }
 ```
 
-The slide's own comment on this one: "Check it out! We're using a random number generator to generate a random seed for a random number generator!" `random_device rd;` is a generator that draws on the operating system; `rd()` calls its `operator()` to produce one number, which seeds `mt19937 generator`, the Mersenne Twister engine. The instructor was clear this is overkill: seeding `mt19937` with `time(0)` works just as well; he did it "to show you something interesting". Note that `uniform_int_distribution<> distribution(a, b);` includes **both** ends, unlike `rand() % m`.
+The slide's comment: "Check it out! We're using a random number generator to generate a random seed for a random number generator!" `random_device rd;` draws on the operating system; `rd()` calls its `operator()` to produce one number, which seeds `mt19937 generator`, the Mersenne Twister engine. Seeding `mt19937` with `time(0)` works just as well. `uniform_int_distribution<> distribution(a, b);` includes **both** ends, unlike `rand() % m`.
 
 | Need | Tool | Range |
 |---|---|---|
@@ -195,7 +187,7 @@ The slide's own comment on this one: "Check it out! We're using a random number 
 | proper real | `uniform_real_distribution<double>(a, b)` + engine | a … b |
 | proper int | `uniform_int_distribution<>(a, b)` + engine | a … b (inclusive) |
 
-The lecture's suggested exercise: a guessing game that picks a number from 1 to 10 and tells the player "too high" or "too low" until they get it. `rand() % 10 + 1` is all the randomness it needs.
+The lecture's suggested exercise: a guessing game that picks a number from 1 to 10 (`rand() % 10 + 1`) and answers "too high" or "too low" until the player gets it.
 
 ```quiz
 [

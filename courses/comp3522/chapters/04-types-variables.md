@@ -3,7 +3,7 @@ title: Types & variables
 minutes: 14
 ---
 
-C++ is a **strongly typed** language: every variable has a type, and that type never changes for the lifetime of the variable. Before you write a single expression, you need to know what a declaration looks like and what types are available.
+C++ is a **strongly typed** language: every variable has a type, and that type never changes for the lifetime of the variable.
 
 ## Declaring a variable
 
@@ -42,9 +42,9 @@ The rules the slides give for a legal identifier:
 type-sizes
 ```
 
-Click through the cards above. Sizes are platform/compiler dependent — the C++ standard only guarantees minimums and relative orderings (`sizeof(short) <= sizeof(int) <= sizeof(long) <= sizeof(long long)`), not exact byte counts.
+Sizes are platform/compiler dependent — the C++ standard only guarantees minimums and relative orderings (`sizeof(short) <= sizeof(int) <= sizeof(long) <= sizeof(long long)`), not exact byte counts.
 
-Run this to see the actual sizes on the compiler this site uses, plus the largest value an `int` can hold — the same call the `const_vs_constexpr.cpp` sample from lecture opens with:
+The actual sizes on this compiler, plus the largest value an `int` can hold, the call `const_vs_constexpr.cpp` opens with:
 
 ```cpp run
 #include <iostream>
@@ -68,7 +68,7 @@ int main()
 }
 ```
 
-`numeric_limits<int>::max()` is `2147483647` on the vast majority of compilers today (a 32-bit `int`) — that number shows up straight from the lecture's `const_vs_constexpr.cpp` sample, so it's worth recognizing on sight.
+`numeric_limits<int>::max()` is `2147483647` on nearly every compiler today (a 32-bit `int`); the number is worth recognizing on sight.
 
 ## `char` is an integer type
 
@@ -88,18 +88,7 @@ int main()
 }
 ```
 
-This trips people up coming from Java: `char` is not a separate "character" category — it's an **integer type** that happens to be interpreted as a character by `cout` by default. `char letter = 'A';` declares a char holding the letter A; `cout << letter << endl;` prints it as a character, while `cout << (int)letter << endl;` casts it to `int` first and prints its numeric ASCII value, `65`. The same default-printing rule affects `bool`: `bool flag = true;` followed by `cout << flag << endl;` prints `1`, not the word `true`.
-
-:::quiz Quiz note
-`bool` values print as `1`/`0` **by default** — not the words `"true"`/`"false"`. You'll see later that `cout << boolalpha` can change this, but out of the box it's always `1` or `0`.
-:::
-
-## Quick recap
-
-- Every variable declaration is **type, name, optional init** — in that order.
-- Identifiers: letters/digits/underscores, never starting with a digit.
-- `bool`, `char`/`short`/`int`/`long` (integers), `float`/`double`/`long double` (floating point), `void` (no type) are the fundamental types the slides call out.
-- `char` is an integer type under the hood.
+`char` is an **integer type** that `cout` prints as a character by default: `cout << letter << endl;` prints `A`, and `cout << (int)letter << endl;` prints its ASCII code, `65`. The same default applies to `bool`: `cout << flag << endl;` prints `1`, not the word `true`; the `boolalpha` manipulator in the output lesson changes that.
 
 ```quiz
 [

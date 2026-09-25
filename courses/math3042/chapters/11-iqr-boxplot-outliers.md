@@ -12,7 +12,7 @@ $IQR = Q_3 - Q_1$
 It is the range of just the middle 50% of the data — the "typical" spread, with the extreme quarters on each end trimmed away.
 
 :::quiz Advantage and disadvantage are the same fact
-Compared to the range $R$: the IQR's **advantage** is that it ignores extreme values (a single huge outlier can't blow it up the way it blows up $R$). The IQR's **disadvantage** is that it ignores extreme values (it throws away real information about the tails). Both statements are correct — the quiz can ask for either one and the honest answer is the same underlying fact.
+Compared to the range $R$, the IQR's **advantage** and its **disadvantage** are the same fact: it ignores extreme values, so a single outlier cannot blow it up, and it throws away real information about the tails.
 :::
 
 ## From five-number summary to boxplot
@@ -27,7 +27,7 @@ The five-number summary (min, $Q_1$, $Q_2$, $Q_3$, max) draws directly onto a **
 
 Boxplots are most useful for comparing groups. `boxplot(extra ~ group, data = sleep)` draws one box per level of `group`, plotting the numeric variable `extra` against it. The `extra ~ group` syntax is a **model formula**: "extra as explained by group."
 
-The instructor's conclusion from that plot: *"Generally, the drug for group 2 was more effective than the drug for group 1 (not for all individuals)."* Notice the hedge — the boxplot shows the group 2 box shifted higher overall, but the boxes still overlap, so it isn't true for every single individual.
+The instructor's conclusion from that plot: *"Generally, the drug for group 2 was more effective than the drug for group 1 (not for all individuals)."* The hedge matters: the group 2 box sits higher overall, but the boxes still overlap, so it isn't true for every individual.
 
 ## Outliers and fences
 
@@ -52,12 +52,12 @@ $\text{upper fence} = 42.775 + 1.5(13.4) = 62.875$
 Any city below 9.275 or above 62.875 inches is an outlier. In the real data that's Mobile (67.0, above the upper fence) and Phoenix (7.0), Reno (7.2), Albuquerque (7.8), and El Paso (7.8) — all below the lower fence.
 
 :::warn Outlier ≠ Unusual
-These are two different ideas from two different units. **Unusual** (from the empirical rule / Z-scores) means more than 2 standard deviations from the mean. **Outlier** (from boxplots) means beyond $1.5 \times IQR$ past a quartile. A value can be one without being the other — don't mix up which rule a question is asking about.
+**Unusual** (empirical rule / Z-scores) means more than 2 standard deviations from the mean. **Outlier** (boxplots) means beyond $1.5 \times IQR$ past a quartile. A value can be one without being the other.
 :::
 
 ## Try it: Site B drainage data
 
-Lab 1 pencil problem 7 gave two drainage-rate samples. Site B's values include one large reading, 13.6, that the instructor flagged as possibly extreme using the empirical rule ($3\sigma$ test). Apply the fence method to the same data below and compare.
+Lab 1 pencil problem 7 gave two drainage-rate samples. Site B's values include one large reading, 13.6, that the instructor flagged as possibly extreme using the empirical rule ($3\sigma$ test); the fence method below gives a second opinion on the same data.
 
 ```widget
 boxplot
@@ -71,7 +71,7 @@ stat-calc
 
 ## Push a value past the fence
 
-Drag the largest point in and out — watch the upper fence stay put (it's built from $Q_1$ and $Q_3$, which barely move) while the point crosses it.
+The upper fence is built from $Q_1$ and $Q_3$, which barely move when the largest point moves, so the point crosses a fence that stays put.
 
 ```widget
 drag-data

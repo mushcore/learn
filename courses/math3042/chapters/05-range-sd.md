@@ -9,7 +9,7 @@ A **measure of variation** quantifies how spread out the values of $X$ are. Two 
 
 $R = \text{maximum } X - \text{minimum } X$
 
-Instructor's example: ages in the classroom, $R = 35 - 18 = 17$ years. Easy, but it depends on only **two** values — one weird data point changes everything.
+Classroom ages: $R = 35 - 18 = 17$ years. It depends on only **two** values, so one weird data point changes everything.
 
 ## Standard deviation
 
@@ -21,7 +21,7 @@ The **typical distance of the $X$ values away from the mean**. Same units as $X$
 | Population sd | $\sigma = \sqrt{\frac{\sum (X - \mu)^2}{N}}$ | parameter |
 
 :::warn Four facts
-- Sample $s$ divides by **$n - 1$**, not $n$. Reason given in the notes: this makes $s$ a **better approximation of $\sigma$** (the instructor added: $s^2$ is an *unbiased estimator* of $\sigma^2$).
+- Sample $s$ divides by **$n - 1$**, not $n$. Reason given in the notes: this makes $s$ a **better approximation of $\sigma$** ($s^2$ is an *unbiased estimator* of $\sigma^2$).
 - $s$ uses the sample mean $\bar{X}$; $\sigma$ uses the population mean $\mu$.
 - The **units of $s$ and $\sigma$ are the same as the units of $X$** (unlike variance, which is squared).
 - Standard deviation depends on **all** of the data values — unlike $R$ and $IQR$.
@@ -29,7 +29,7 @@ The **typical distance of the $X$ values away from the mean**. Same units as $X$
 
 ### Worked example from the lecture
 
-Calculate $s$ from the sample $5.0,\ 4.5,\ 6.0,\ 7.0,\ 5.2$. Hover any part of the formula to see where it shows up in the working, and any bar in the chart to see its deviation.
+Calculate $s$ from the sample $5.0,\ 4.5,\ 6.0,\ 7.0,\ 5.2$. Hovering a part of the formula highlights it in the working and in the chart.
 
 $$s = \tag{sqrt}{\sqrt{\tag{frac}{\frac{\tag{dev}{\sum (X - \bar{X})^2}}{\tag{nm1}{n - 1}}}}}$$
 
@@ -44,15 +44,15 @@ stat-bars
 { "data": "5.0 4.5 6.0 7.0 5.2", "tag": "dev", "title": "Each bar is one squared deviation from the mean" }
 ```
 
-In R: `sd(c(5.0, 4.5, 6.0, 7.0, 5.2))` → `0.9788`. (R's `sd` **always** computes the sample version with $n-1$.)
+In R: `sd(c(5.0, 4.5, 6.0, 7.0, 5.2))` → `0.9788`. R's `sd` **always** computes the sample version with $n-1$.
 
 :::tip Calculator
-Put your calculator in STAT mode, enter the data, and read $\bar{x}$, $s$ (often labelled $s_x$ or $\sigma_{n-1}$) and $\sigma$ (labelled $\sigma_n$). Know which key is which before the quiz.
+In STAT mode, read $\bar{x}$, $s$ (often labelled $s_x$ or $\sigma_{n-1}$) and $\sigma$ (labelled $\sigma_n$).
 :::
 
 ## Calculator
 
-Paste any data set. It shows the sorted values, every statistic from this unit, and the worked $s$ computation.
+Any data set: the sorted values, every statistic from this unit, and the worked $s$ computation.
 
 ```widget
 stat-calc

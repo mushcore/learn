@@ -1,9 +1,9 @@
 ---
 title: Counting statements: f(n) for find
-minutes: 14
+minutes: 12
 ---
 
-`fib` showed that two correct algorithms can differ by a factor of thousands. This lesson is the lecture's method for predicting that **before writing code**: count how many statements execute for an input of size $n$, then narrow the count down to one statement, the **basic operation**.
+`fib` showed two correct algorithms differing by a factor of thousands. The lecture's method predicts that **before writing code**: count how many statements execute for an input of size $n$.
 
 ## How to determine efficiency
 
@@ -14,20 +14,16 @@ The obvious idea: **do it experimentally**, i.e. write a bunch of implementation
 
 > Another idea: **estimate efficiency before writing code.**
 
-That is what the rest of the course does.
-
 ## What we know
 
-Two facts the whole method rests on:
+Two facts the method rests on:
 
 1. **Running time (efficiency) of an algorithm depends on the input size.**
 2. **The total execution time for any algorithm depends primarily on the number of instructions executed.** Different execution times of specific instructions are of **secondary importance**.
 
-So instead of measuring seconds, count instructions, and count them as a function of the input size $n$.
+So instead of measuring seconds, count instructions as a function of the input size $n$.
 
 ## Counting every statement in find
-
-Here is `find` again, with line numbers:
 
 ```pseudo
 1. Algo: find( A[0…n-1] )
@@ -49,7 +45,7 @@ Here is `find` again, with line numbers:
 | 5 | 2 |
 | 6 | 1 |
 
-Line 1 is the header, so it is counted 0 times (the slide shrugs at "0? 1?" and settles on 0). Line 2 and line 6 run once each. Lines 3, 4 and 5 run once per loop iteration, and the loop runs $i = 1$ to $n - 1$, which is $n - 1 = 2$ times.
+Line 1 is the header, counted 0 times (the slide shrugs at "0? 1?" and settles on 0). Lines 2 and 6 run once each. Lines 3, 4 and 5 run once per iteration, and the loop runs $i = 1$ to $n - 1$, which is $n - 1 = 2$ times.
 
 $$f(3) = 1 + 3 \times (3 - 1) + 1 = 8$$
 
@@ -58,7 +54,7 @@ op-counter
 { "preset": "find (largest element)", "n": 3, "presets": false, "title": "find: how many times each line runs" }
 ```
 
-Set the slider to 8 and compare with the slide's second table:
+The slide's second table, for $n = 8$:
 
 | stmt | #times (n = 8) |
 |---|---|
@@ -71,12 +67,12 @@ Set the slider to 8 and compare with the slide's second table:
 
 $$f(8) = 1 + 3 \times (8 - 1) + 1 = 23$$
 
-And for an input of size $n$, the running time is
+For an input of size $n$, the running time is
 
 $$f(n) = 1 + 3(n - 1) + 1 = 3n - 1$$
 
 :::warn Line 5 runs only when the if is true
-`m ← A[i]` executes only on iterations where `A[i] > m`. The slide counts it $n - 1$ times, which is what happens for an ascending array (every element beats the current maximum), and the widget counts it the same way. On a descending array line 5 would run 0 times and the total would be $2n$ instead of $3n - 1$. This is exactly why the lecture moves away from counting every statement.
+`m ← A[i]` executes only on iterations where `A[i] > m`. The slide counts it $n - 1$ times, which is what happens for an ascending array, and the widget counts it the same way. On a descending array line 5 runs 0 times and the total is $2n$ instead of $3n - 1$. This is why the lecture moves away from counting every statement.
 :::
 
 ## Basic operations
@@ -92,7 +88,7 @@ $$f(n) = 1 + 3(n - 1) + 1 = 3n - 1$$
 | 5 | 2 | 9 | 99 |
 | 6 | 1 | 1 | 1 |
 
-Lines 3, 4 and 5 tie at $n - 1$ and everything else is a constant that stops mattering as $n$ grows. The lecture's definition:
+Lines 3, 4 and 5 tie at $n - 1$; everything else is a constant that stops mattering as $n$ grows. The lecture's definition:
 
 > **We define the basic operation of an algorithm as the statement that gets executed most frequently.**
 
@@ -102,21 +98,17 @@ with tiebreakers:
 - **which one is more "expensive"**;
 - **or maybe sometimes we don't care**.
 
-For `find`, the accepted choice is line 4, the comparison `A[i] > m`: it is inside the loop, it is the actual work of the algorithm (a comparison of data), and it runs every iteration regardless of the input, unlike line 5.
-
-Using this idea, the slide says **the running time of find is**
+For `find` the accepted choice is line 4, the comparison `A[i] > m`: it is inside the loop, it is the actual work of the algorithm (a comparison of data), and it runs every iteration regardless of the input, unlike line 5. So **the running time of find is**
 
 $$f(n) = n - 1$$
 
 > **We don't count instructions that are not basic operations.**
 
-The boxed sentence on the slide is the method for the whole course:
-
 :::tip The fundamental concept
 **Count the number of basic operations executed for an input of size n.** That count, as a function of $n$, is the running time.
 :::
 
-Compare the two answers for `find`: $3n - 1$ (every statement) versus $n - 1$ (basic operation only). Both grow linearly in $n$; the second is simpler to compute and does not depend on which statements happened to be inside the `if`. The next lesson, [Choosing the basic operation](#/comp3760-l1/basic-operation), is about making that choice in harder pseudocode; [Setting up and simplifying the sums](#/comp3760-l1/counting-with-sums) is about counting it when loops nest.
+$3n - 1$ (every statement) and $n - 1$ (basic operation only) both grow linearly in $n$; the second is simpler to compute and does not depend on which statements happened to be inside the `if`. [Choosing the basic operation](#/comp3760-l1/basic-operation) makes that choice in harder pseudocode; [Setting up and simplifying the sums](#/comp3760-l1/counting-with-sums) counts it when loops nest.
 
 ## Try it
 

@@ -3,7 +3,7 @@ title: When input fails
 minutes: 20
 ---
 
-Every stream — including `cin` — carries a set of status bits called `ios_base::iostate`. Understanding these bits is the difference between a program that silently loops forever on bad input and one that recovers cleanly. This lesson reproduces the instructor's `AddIntegers.cpp` and `AddIntegersError.cpp` samples, which exist specifically to show what happens when you get this wrong.
+Every stream, including `cin`, carries status bits called `ios_base::iostate`. They are the difference between a program that loops forever on bad input and one that recovers. The samples `AddIntegers.cpp` and `AddIntegersError.cpp` show both.
 
 ## The `iostate` bits
 
@@ -24,7 +24,7 @@ while (cin >> n) { /* loop while reads keep succeeding */ }
 
 ## Testing the bits with member functions
 
-You can test these bits directly with member functions on `cin`. The slides give exact "true iff" definitions — memorize the wording, it's exactly how a quiz will phrase it:
+Member functions on `cin` test the bits. The slides' exact "true iff" wording:
 
 1. **`fail()`** — true iff `badbit` **or** `failbit` is set.
 2. **`bad()`** — true iff `badbit` is set.
@@ -42,10 +42,10 @@ The slides' table (`*` stands for EOF):
 | `hello` | No change | Set | Not set |
 | EOF alone | No change | Set | Set |
 
-Two things to notice and remember, because they're both trap material:
+Two traps:
 
-- On a **failed** read, `n` is left **completely unchanged** — not zeroed, not garbage, just whatever it held before the read was attempted.
-- The offending characters (like `hello`) **stay in the buffer**. They are never consumed by a failed extraction, which means every later read against that same stream will *also* fail immediately, since the same bad characters are still sitting there waiting to be read.
+- On a **failed** read, `n` is left **unchanged**: not zeroed, not garbage, just whatever it held before.
+- The offending characters (`hello`) **stay in the buffer**. A failed extraction never consumes them, so every later read on the same stream also fails.
 
 ```widget
 cin-sim
@@ -53,7 +53,7 @@ cin-sim
 ```
 
 :::quiz A failed read does not clear itself
-Once `failbit` is set, the stream stays in a failed state and every subsequent `cin >> anything` fails immediately too — without even looking at the buffer — until you explicitly call `cin.clear()`. This is the single most common reason a "read numbers in a loop" program appears to hang or skip input entirely.
+Once `failbit` is set, every later `cin >> anything` fails immediately, without looking at the buffer, until `cin.clear()` is called. This is the usual reason a read-numbers-in-a-loop program seems to hang or skip input.
 :::
 
 ## Recovering: `clear()` and `ignore()`
@@ -82,7 +82,7 @@ cin.clear(); // unsets failbits
 cin.ignore(numeric_limits<streamsize>::max(), '\n');
 ```
 
-`numeric_limits<streamsize>::max()` is "as many characters as the type can even represent," combined with `'\n'` as a stop condition — in practice this means "throw away everything up to and including the next newline." The instructor wraps this exact pair of calls into a reusable helper:
+`numeric_limits<streamsize>::max()` is as many characters as the type can represent; with `'\n'` as the stop condition it means "throw away everything up to and including the next newline." The instructor wraps the pair in a helper:
 
 ```cpp
 void ignoreline(istream& is)
@@ -94,7 +94,7 @@ void ignoreline(istream& is)
 
 ## `AddIntegers.cpp` vs `AddIntegersError.cpp`
 
-Both samples do the same thing on paper: read integers in a loop until the input stops being a number, then read words in a second loop until the user types `quit`. Only one of them works. Run both with the same input and compare.
+Both samples do the same thing on paper: read integers in a loop until the input stops being a number, then read words in a second loop until the user types `quit`. Only one of them works.
 
 ### `AddIntegers.cpp`
 
@@ -128,7 +128,7 @@ int main() {
 }
 ```
 
-Trace it: `while(cin >> n)` reads `5`, then `6`, then hits `x` — the extraction fails, `n` is unchanged, `x` stays in the buffer, and `failbit` stops the loop. Then `cin.clear();` unsets `failbit`, and `cin.ignore(numeric_limits<streamsize>::max(),'\n');` throws away everything up to and including the newline right after `x` — that discards the leftover `x` and the line break, leaving `hello quit` ready to read. `while(cin >> name)` then reads `hello` (prints it), reads `quit`, and `break`s. Full output:
+`while(cin >> n)` reads `5`, then `6`, then fails on `x`: `n` is unchanged, `x` stays in the buffer, and `failbit` ends the loop. `cin.clear();` unsets `failbit`, and `cin.ignore(numeric_limits<streamsize>::max(),'\n');` discards the leftover `x` and the newline, leaving `hello quit` ready to read. `while(cin >> name)` reads `hello` and prints it, reads `quit`, and breaks. Full output:
 
 ```text
 Enter a number: 
@@ -200,7 +200,7 @@ int main() {
 }
 ```
 
-Use the **Before / After** toggle on the program. The two added lines are the whole fix.
+The **Before / After** toggle on the program shows the two added lines that are the whole fix.
 
 :::before Before
 With `failbit` still set from the `x`, `while(cin >> name)` is false on its first check. The string loop never runs; the output jumps straight to `Ending program`.
@@ -210,7 +210,7 @@ With `failbit` still set from the `x`, `while(cin >> name)` is false on its firs
 `cin.clear();` resets the flags and `cin.ignore(numeric_limits<streamsize>::max(),'\n');` discards the rest of the bad line. Now `while(cin >> name)` reads `hello`, then `quit`, and exits normally.
 :::
 
-This is byte-for-byte the same first loop — it fails on `x` exactly the same way, leaving `failbit` set. The difference is what happens next: **there is no `cin.clear()` call anywhere before the second loop.** `cout << "Enter a string..."` still prints, because printing to `cout` has nothing to do with `cin`'s state — but the moment `while(cin >> name)` is evaluated, the stream is *already* in a failed state from the `x` read. `cin >> name` checks the stream's state before attempting to read anything at all; since it's already failed, the extraction refuses to run and the whole `while` condition is `false` on its very first check. The loop body never executes — not even once — so `hello` and `quit` are simply never read. Full output:
+The first loop, `while(cin >> n)`, fails on `x` exactly as before, leaving `failbit` set. **There is no `cin.clear()` before the second loop.** `cout << "Enter a string..."` still prints, because `cout` does not depend on `cin`'s state, but `while(cin >> name)` checks the stream's state before reading anything, finds it failed, and is `false` on its very first check. `hello` and `quit` are never read. Full output:
 
 ```text
 Enter a number: 
@@ -224,10 +224,6 @@ Ending program
 cin-sim
 { "reads": ["int n"], "input": "5 6 x", "presets": { "fails on x": "5 6 x", "all valid": "5 6 7" } }
 ```
-
-:::quiz Printing a prompt does not fix a failed stream
-`cout << "Enter a string..." << endl;` always runs — it's unconditional. It is easy to assume that because a prompt printed, the next read must be ready to go. It isn't: a failed `cin` stays failed across any number of unrelated `cout` statements until something explicitly calls `cin.clear()`.
-:::
 
 ```quiz
 [

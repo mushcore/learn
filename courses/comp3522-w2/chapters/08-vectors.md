@@ -1,9 +1,9 @@
 ---
 title: std::vector
-minutes: 14
+minutes: 10
 ---
 
-A C-style array has a size fixed at compile time: `int scores[4]` holds four ints forever. Real programs rarely know their sizes in advance. The C++ answer is `std::vector`, declared in `<vector>`. The instructor's one-line summary: **think Java's `ArrayList`**. It is an array that grows as you add to it.
+A C-style array has a size fixed at compile time. `std::vector`, from `<vector>`, is an array that grows as you add to it: **think Java's `ArrayList`**.
 
 ## What a vector is
 
@@ -11,9 +11,9 @@ From the slides:
 
 - It lives in `<vector>`.
 - It is a **sequence container that can change size** (like Java's `ArrayList`).
-- It is part of the **STL** (Standard Template Library), which gets its own lectures in a few weeks. You can use a vector productively now without knowing about its iterators.
+- It is part of the **STL** (Standard Template Library), covered in a few weeks; it is useful now without knowing its iterators.
 
-The type of the elements goes inside angle brackets: `vector<int>` is a vector of ints, `vector<string>` a vector of strings.
+The element type goes in angle brackets: `vector<int>`, `vector<string>`.
 
 ## The member functions you need
 
@@ -26,7 +26,7 @@ The type of the elements goes inside angle brackets: `vector<int>` is a vector o
 | `erase(iterator pos)` | removes the element at the iterator position |
 | `clear()` | removes all elements |
 
-Click through the operations before reading the code. Watch `size()` change, and watch what `at` does with a bad index compared with `[ ]`:
+The widget runs each operation and shows `size()` and what `at` does with a bad index compared with `[ ]`:
 
 ```widget
 vector-viz
@@ -66,23 +66,19 @@ int main()
 }
 ```
 
-Line by line:
-
-- `vector <int> intVector;` declares an empty vector of ints. No size is given; there is nothing in it yet.
-- The three `push_back` calls append `5`, `10`, `15`, so the vector is `[5, 10, 15]` and `size()` is 3.
-- `intVector.erase(intVector.begin()+1); //erases 10 at index 1` removes the element at index 1. `erase` wants an **iterator**, not an index; `begin()` is an iterator to the first element and `+1` moves it to the second. Everything after the erased element shifts left, so the vector is now `[5, 15]`.
-- The **classic for loop** uses `intVector.size()` as the limit and `intVector[i]` to read each element, exactly like an array.
-- `for (int value: intVector)` is the **ranged-for** (the slides call it C++'s for-each loop). Each pass copies the next element into `value`. Note carefully what `value` is: it is the **element itself, not the index**. That is why the loop prints `5 15`, not `0 1`.
+- `vector <int> intVector;` declares an empty vector; the three `push_back` calls make it `[5, 10, 15]` with `size()` 3.
+- `intVector.erase(intVector.begin()+1); //erases 10 at index 1` takes an **iterator**, not an index: `begin()` points at the first element and `+1` moves to the second. Everything after shifts left: `[5, 15]`.
+- `for (int value: intVector)` is the **ranged-for** (C++'s for-each). Each pass copies the next element into `value`: the **element itself, not the index**, so the loop prints `5 15`, not `0 1`.
 
 Both loops print `5 15`.
 
 :::warn size() is unsigned
-The slide writes the classic loop as `for(int i=0; i<intVector.size(); i++)`. That compiles, but `size()` returns an unsigned `size_t`, and comparing it with a signed `int` produces a warning under the course's `-Wall` flags ("comparison of integer expressions of different signedness"). The program above uses `size_t i` to be clean. On a quiz, either spelling counts as a correct loop.
+The slide writes `for(int i=0; i<intVector.size(); i++)`. That compiles, but `size()` returns an unsigned `size_t`, and comparing it with a signed `int` warns under `-Wall` ("comparison of integer expressions of different signedness"); the program above uses `size_t i`. On a quiz either spelling is a correct loop.
 :::
 
 ## `at` versus `[ ]`
 
-The one difference the slide highlights: `at` does a bounds check and throws an exception; `[ ]` does not check at all.
+`at` does a bounds check and throws an exception; `[ ]` does not check at all.
 
 ```cpp run pin atVsBrackets.cpp
 // predict: Write all four lines printed.
@@ -109,11 +105,11 @@ int main()
 }
 ```
 
-`cout << v[1] << " " << v.at(1) << endl;` shows that for a valid index the two are interchangeable, and `v.at(0) = 7;` shows that `at` returns a reference you can assign through. The interesting line is `cout << v.at(5) << endl;`: with only two elements, index 5 is past the end, so `at` throws `std::out_of_range` and the `catch` prints the message instead. Had we written `v[5]`, there would be no exception: just **undefined behaviour**, reading memory that does not belong to the vector and possibly printing garbage. Prefer `at` while learning; use `[ ]` in loops whose bounds you have already checked.
+For a valid index the two are interchangeable, and `v.at(0) = 7;` shows that `at` returns a reference you can assign through. With two elements, `cout << v.at(5) << endl;` is past the end, so `at` throws `std::out_of_range` and the `catch` prints the message. `v[5]` would throw nothing: **undefined behaviour**, reading memory that is not the vector's. Prefer `at` while learning; use `[ ]` in loops whose bounds you have already checked.
 
 ## size versus capacity
 
-In the lecture video the instructor adds one more function, `capacity()`, to show what happens behind the scenes as a vector grows:
+In the video the instructor adds `capacity()` to show what happens as a vector grows:
 
 ```cpp run pin capacity.cpp
 // predict: Write the five "size capacity" lines.
@@ -144,16 +140,12 @@ int main()
 ```
 
 - After one `push_back`, `cout << v.size() << " " << v.capacity() << endl;` prints `1 1`.
-- Two more pushes: size `3`, capacity `4`. The instructor: *"size shows you how many elements are currently in your vector, whereas capacity shows you in the back end how much memory is actually allocated."*
+- Two more pushes: `3 4`. Size is how many elements are in the vector; capacity is how much memory is allocated behind it.
 - A fourth push fills the allocation: `4 4`.
-- The fifth push does not fit, so the vector allocates a bigger block, copies the elements over, and continues: `5 8`. The instructor guesses *"I think it just doubles every time,"* and with g++ that is exactly right: 1, 2, 4, 8, 16, ...
-- `v.clear();` removes all the elements but keeps the storage: `0 8`. The ranged-for over an empty vector runs zero times.
+- The fifth does not fit, so the vector allocates a bigger block and copies the elements over: `5 8`. With g++ the capacity doubles: 1, 2, 4, 8, 16, ...
+- `v.clear();` removes the elements but keeps the storage: `0 8`. The ranged-for runs zero times.
 
-You never manage this yourself; it is the point of the container. But it explains why `push_back` is occasionally slower (a reallocation happened) and why `capacity()` is at least `size()`.
-
-:::quiz Value, not index
-The ranged-for `for (int value : intVector)` gives you each **element**. A common wrong answer says it loops over indices 0, 1, 2. If you need the index, use the classic loop.
-:::
+You never manage this yourself, but it explains why `push_back` is occasionally slower (a reallocation) and why `capacity()` is at least `size()`.
 
 ```quiz
 [

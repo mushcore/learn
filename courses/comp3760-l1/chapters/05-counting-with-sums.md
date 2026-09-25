@@ -1,9 +1,9 @@
 ---
 title: Setting up and simplifying the sums
-minutes: 18
+minutes: 15
 ---
 
-Once the basic operation is chosen, "how many times is it executed?" is a counting problem, and the lecture solves it the same way every time: write the loops as summations, then simplify to a function of $n$. This lesson works every example from the slides and gives you the only two summation facts you need.
+Once the basic operation is chosen, "how many times is it executed?" is a counting problem, and the lecture solves it the same way every time: write the loops as summations, then simplify to a function of $n$.
 
 ## An algorithm for analyzing algorithms
 
@@ -14,7 +14,7 @@ Slide 43 states the recipe as an algorithm whose input is an algorithm:
 3. **This is the running time.**
 4. **Determine big-O class of the running time function.**
 
-The textbook's version (slide 62, from p. 62) is the one to memorize, because a quiz can ask for a step by number:
+The textbook's version (slide 62, from p. 62) is numbered, and a question can ask for a step by number:
 
 1. **Decide on a parameter indicating the input's size.**
 2. **Identify the algorithm's basic operation.**
@@ -27,7 +27,7 @@ Steps 4 and 5 are this lesson. Step 3 is [Best, worst and average case](#/comp37
 
 ## The two summation facts you need
 
-The slides point to the Math Review and to Appendix A of the textbook for these. Everything in Lecture 1 comes from two identities.
+The slides point to the Math Review and to Appendix A of the textbook; everything in Lecture 1 comes from two identities.
 
 **A sum of ones counts the terms.** From $l$ to $u$ inclusive there are $u - l + 1$ terms:
 
@@ -39,9 +39,9 @@ So $\sum_{i=1}^{n} 1 = n$, $\sum_{i=0}^{n-1} 1 = n$, and $\sum_{j=i+1}^{n-1} 1 =
 
 $$\sum_{i=1}^{n} i = \frac{n(n+1)}{2}$$
 
-Replace $n$ by $n - 1$ and you get the form the lecture uses most: $\sum_{i=1}^{n-1} i = \frac{(n-1)n}{2}$. Check it with $n = 5$: $1 + 2 + 3 + 4 = 10 = \frac{4 \cdot 5}{2}$.
+Replace $n$ by $n - 1$ for the form the lecture uses most: $\sum_{i=1}^{n-1} i = \frac{(n-1)n}{2}$. Check with $n = 5$: $1 + 2 + 3 + 4 = 10 = \frac{4 \cdot 5}{2}$.
 
-Two consequences you will use without thinking: a constant $c$ added $n$ times is $\sum_{i=0}^{n-1} c = c \cdot n$, and a sum can be split term by term, $\sum (a_i - b_i) = \sum a_i - \sum b_i$.
+Two consequences: a constant $c$ added $n$ times is $\sum_{i=0}^{n-1} c = c \cdot n$, and a sum can be split term by term, $\sum (a_i - b_i) = \sum a_i - \sum b_i$.
 
 ## Example 1: Mystery1, a single loop
 
@@ -53,7 +53,7 @@ Two consequences you will use without thinking: a constant $c$ added $n$ times i
 5.  return S
 ```
 
-**What does it do?** Calculates $1^2 + 2^2 + 3^2 + \ldots + n^2$. **Basic operation?** It's line 4. **How many times?** Slide 30 spells it out: the basic operation is executed once each time through the loop, 1st time: 1, 2nd time: 1, …, $n$th time: 1, so you have a sum $1 + 1 + 1 + \ldots + 1$ ($n$ times) $= n$. In summation form:
+**What does it do?** Calculates $1^2 + 2^2 + 3^2 + \ldots + n^2$. **Basic operation?** Line 4. **How many times?** Slide 30: once each time through the loop, 1st time: 1, 2nd time: 1, …, $n$th time: 1, so the sum is $1 + 1 + 1 + \ldots + 1$ ($n$ times) $= n$. In summation form:
 
 $$\sum_{i=1}^{n} 1 = n$$
 
@@ -73,23 +73,21 @@ op-counter
 6.  return S
 ```
 
-**What does it do?** Calculates the sum of the elements in array $A$. **Basic operation?** The addition on line 5.
-
-**How many times?** Work from the outside in, the way slides 32 to 34 do.
+**What does it do?** Calculates the sum of the elements in array $A$. **Basic operation?** The addition on line 5. **How many times?** Work from the outside in, as slides 32 to 34 do.
 
 - **The outer loop:** $i$ goes from 0 to $n-1$, so we have $\sum_{i=0}^{n-1} (\text{whatever the inner loop does})$.
-- **The inner loop:** $j$ goes from 0 to $n-1$, and at each iteration we do one basic operation, so the inner loop contributes $\sum_{j=0}^{n-1} 1$. We do this for each iteration of the outer loop:
+- **The inner loop:** $j$ goes from 0 to $n-1$ with one basic operation per iteration, so it contributes $\sum_{j=0}^{n-1} 1$, once for each iteration of the outer loop:
 
 $$\sum_{i=0}^{n-1} \sum_{j=0}^{n-1} 1$$
 
-- **Simplify from the inside:** the inner summation is $\sum_{j=0}^{n-1} 1 = 1 + 1 + \ldots + 1 = n$. So the outer summation is $\sum_{i=0}^{n-1} n = n + n + \ldots + n = n^2$.
+- **Simplify from the inside:** $\sum_{j=0}^{n-1} 1 = 1 + 1 + \ldots + 1 = n$, so the outer summation is $\sum_{i=0}^{n-1} n = n + n + \ldots + n = n^2$.
 
 ```widget
 loop-grid
 { "preset": "square", "n": 6, "title": "Mystery2: one dot for every (i, j) the inner statement runs for" }
 ```
 
-Every dot is one execution of line 5. A full $n \times n$ square: $n^2$ dots.
+Every dot is one execution of line 5: a full $n \times n$ square, $n^2$ dots.
 
 ```widget
 op-counter
@@ -111,12 +109,12 @@ op-counter
 
 The basic operation is the key comparison `A[j]>v` on line 5 ([why](#/comp3760-l1/basic-operation)). Slides 38 to 40:
 
-- **Look at the outer loop first.** There is a variable $i$ getting incremented from 1 up to $n-1$, so we have $\sum_{i=1}^{n-1}(\ldots)$.
-- **The inner loop:** $j$ goes from $i-1$ down to 0, and at each iteration we do one basic operation. Mathematically the number of steps is $\sum_{j=0}^{i-1} 1$. We do this for each iteration of the outer loop, so the total number of basic operations is:
+- **Look at the outer loop first.** $i$ is incremented from 1 up to $n-1$, so we have $\sum_{i=1}^{n-1}(\ldots)$.
+- **The inner loop:** $j$ goes from $i-1$ down to 0 with one basic operation per iteration, $\sum_{j=0}^{i-1} 1$ steps, once for each iteration of the outer loop:
 
 $$\sum_{i=1}^{n-1} \sum_{j=0}^{i-1} 1$$
 
-- **Simplifying the sum.** We know $\sum_{j=0}^{i-1} 1 = i$ (the terms run from 0 to $i-1$, that is $i$ of them). So $\sum_{i=1}^{n-1} \sum_{j=0}^{i-1} 1 = \sum_{i=1}^{n-1} i$, which equals
+- **Simplifying the sum.** $\sum_{j=0}^{i-1} 1 = i$ (the terms run from 0 to $i-1$, $i$ of them), so $\sum_{i=1}^{n-1} \sum_{j=0}^{i-1} 1 = \sum_{i=1}^{n-1} i$, which equals
 
 $$\frac{(n-1)n}{2}$$
 
@@ -125,11 +123,11 @@ loop-grid
 { "preset": "lower", "n": 6, "title": "Loops: the inner loop runs i times on pass i" }
 ```
 
-The dots form a triangle, half of a square, which is why the answer is about $\frac{n^2}{2}$. Note the assumption hiding in "$j$ goes from $i-1$ down to 0": the comparison must be true every time for $j$ to get all the way down. That is the worst case, an input in descending order. The lecture counts the worst case unless told otherwise.
+The dots form a triangle, half a square, which is why the answer is about $\frac{n^2}{2}$. "$j$ goes from $i-1$ down to 0" assumes the comparison is true every time: the worst case, an input in descending order. The lecture counts the worst case unless told otherwise.
 
 ## Three nested loops: matrix multiplication
 
-Slides 50 and 83 use the standard algorithm for multiplying two $n \times n$ matrices; here it is in the slides' style.
+Slides 50 and 83 use the standard algorithm for multiplying two $n \times n$ matrices.
 
 ```pseudo
 1. MatrixMultiply(A[0..n-1, 0..n-1], B[0..n-1, 0..n-1])
@@ -164,11 +162,11 @@ op-counter
 
 **Problem:** calculating an unusual sum. **Input size measure:** the number $n$. **Basic operation:** the division and assignment on line 6 (**but note that div-by-2 is actually a super-fast op**).
 
-There is no `for` bound to sum over, so count the values $i$ takes. Starting at $n$, it is halved (integer division) until it drops below 1: $n, n/2, n/4, \ldots, 1$. The number of halvings before a number below 1 appears is $⌊\log_2 n⌋ + 1$, and the slide writes the running time as
+There is no `for` bound to sum over, so count the values $i$ takes: $n, n/2, n/4, \ldots, 1$ (integer division), $⌊\log_2 n⌋ + 1$ of them. The slide writes the running time as
 
 $$C(n) = \log n$$
 
-For $n = 8$: $i = 8, 4, 2, 1$, four passes, and $\log_2 8 + 1 = 4$. For $n = 1000$: $1000, 500, 250, 125, 62, 31, 15, 7, 3, 1$, ten passes, and $⌊\log_2 1000⌋ + 1 = 9 + 1 = 10$. Doubling $n$ adds a single pass. This is the shape to recognize on a quiz: **a loop whose control variable is divided by a constant each time runs a logarithmic number of times.**
+For $n = 8$: $i = 8, 4, 2, 1$, four passes, and $\log_2 8 + 1 = 4$. For $n = 1000$: $1000, 500, 250, 125, 62, 31, 15, 7, 3, 1$, ten passes, and $⌊\log_2 1000⌋ + 1 = 9 + 1 = 10$. Doubling $n$ adds one pass. **A loop whose control variable is divided by a constant each time runs a logarithmic number of times.**
 
 ```widget
 op-counter
@@ -209,7 +207,7 @@ Expand and collect:
 
 $$= n^2 - n - n + 1 - \frac{n^2}{2} + \frac{3n}{2} - 1 = \frac{n^2}{2} - \frac{n}{2} \in O(n^2)$$
 
-Sanity check with $n = 4$: pairs $(0,1), (0,2), (0,3), (1,2), (1,3), (2,3)$, six comparisons, and $\frac{16}{2} - \frac{4}{2} = 6$. Notice that $\frac{n^2}{2} - \frac{n}{2} = \frac{n(n-1)}{2}$, the number of pairs you can pick from $n$ items, which is a shortcut worth remembering: every "compare each element with every later element" loop costs $\frac{n(n-1)}{2}$.
+Sanity check with $n = 4$: pairs $(0,1), (0,2), (0,3), (1,2), (1,3), (2,3)$, six comparisons, and $\frac{16}{2} - \frac{4}{2} = 6$. Also $\frac{n^2}{2} - \frac{n}{2} = \frac{n(n-1)}{2}$, the number of pairs you can pick from $n$ items: every "compare each element with every later element" loop costs $\frac{n(n-1)}{2}$.
 
 ```widget
 loop-grid

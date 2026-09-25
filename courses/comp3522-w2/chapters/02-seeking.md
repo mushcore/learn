@@ -1,9 +1,9 @@
 ---
 title: Seeking: tellg, tellp, seekg, seekp
-minutes: 18
+minutes: 14
 ---
 
-You can now open, read, write and copy files. But every example so far started at the beginning and ran to the end. Suppose you are writing a text editor and want to copy from the seventh character to the thirteenth, or jump straight to the end of a log. You need a way to **navigate** inside the file. The lecture calls this **seeking**.
+Every example so far started at the beginning of the file and ran to the end. **Seeking** moves the read/write position anywhere in the file, which also gives you the file's size.
 
 ## The cursor
 
@@ -13,9 +13,9 @@ Imagine a text file that contains:
 Hi class, here is some text
 ```
 
-When you open it with an `ifstream`, the stream keeps a **position indicator**, which the instructor calls "the cursor" (in quotes, because nothing blinks on screen). It starts at **position 0**, just before the `H`. Every `get()`, `>>` or `getline` reads from the cursor and moves it forward. Seeking means reading or changing that number directly.
+When you open it with an `ifstream`, the stream keeps a **position indicator**, which the lecture calls "the cursor". It starts at **position 0**, just before the `H`. Every `get()`, `>>` or `getline` reads from the cursor and moves it forward.
 
-Positions count characters from 0. For the eleven-character file `Hello World` the positions are:
+Positions count characters from 0. For the eleven-character file `Hello World`:
 
 | char | H | e | l | l | o | ␣ | W | o | r | l | d | (end) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -35,9 +35,7 @@ streampos std::ostream::tellp()
 streampos std::istream::tellg()
 ```
 
-The letters are the whole trick: **g** is for *get* (input streams read, they *get* characters), **p** is for *put* (output streams *put* characters). So an `ifstream` has `tellg`, an `ofstream` has `tellp`, and an `fstream`, which does both, has both. The instructor's honest reaction in the lecture: "I don't know why they did this, it's really confusing to me; it seems like they should just use a function called `tell` for both." Confusing or not, the quiz will ask, so learn the pairing.
-
-Both return a `streampos`, which is just a number you can print or subtract.
+**g** is for *get* (input streams get characters), **p** is for *put* (output streams put them). An `ifstream` has `tellg`, an `ofstream` has `tellp`, and an `fstream` has both. Both return a `streampos`, a number you can print or subtract.
 
 The slides give three openings of the same `helloWorld.txt` (contents `Hello World`) and ask what each `tell` prints:
 
@@ -77,17 +75,13 @@ int main()
 }
 ```
 
-1. `ifstream reader("helloWorld.txt");` opens for reading. The cursor starts at the beginning, so `reader.tellg()` prints **0**. Note the `g`: an input stream.
-2. `ofstream appender("helloWorld.txt", ios::app);` opens for appending. The slide's answer is **11**: append mode puts the cursor at the end, and the end of an eleven-character file is position 11. Note the `p`: an output stream.
-3. The `ios::app | ios::ate` variant is not on the slide; it is here because of the warning below. `ate` explicitly moves the cursor to the end when the file opens, so `atEnd.tellp()` is **11** everywhere.
-4. `ofstream writer("helloWorld.txt");` is a plain `ofstream`, which as you learned in the previous lesson **truncates**: the file is emptied on opening. The cursor is at position 0 of a now-empty file, so `writer.tellp()` prints **0**. That is the real reason for the slide's answer, and the last line of the program proves it: after that open, the file has **0** bytes left.
+1. `ifstream reader("helloWorld.txt");` opens for reading with the cursor at the beginning, so `reader.tellg()` prints **0**.
+2. `ofstream appender("helloWorld.txt", ios::app);` opens for appending. The slide's answer is **11**: append mode puts the cursor at the end of an eleven-character file.
+3. The `ios::app | ios::ate` variant is not on the slide. `ate` explicitly moves the cursor to the end on opening, so `atEnd.tellp()` is **11** on every platform.
+4. `ofstream writer("helloWorld.txt");` is a plain `ofstream`, which **truncates** the file on opening. The cursor is at position 0 of a now-empty file, so `writer.tellp()` prints **0**, and the last line shows the file has **0** bytes left.
 
 :::warn The slide says 11; this compiler prints 0
-On the MinGW g++ that CLion (and this app) uses, an `ofstream` opened with `ios::app` alone reports `tellp()` as **0** right after opening, even though the file has 11 characters. The position report is lazy: it only becomes meaningful once you write. The *behaviour* is still what the slide describes, because every write in `app` mode goes to the end of the file regardless of what `tellp()` says (the next program proves that too). If you want the number 11 as on the slide, add `ios::ate`, which performs an explicit seek to the end on opening. For the quiz, answer as the slide does: append mode positions at the end, so `tellp()` reports 11.
-:::
-
-:::quiz Which one prints 0 and why
-"`ofstream myFile("helloWorld.txt"); cout << myFile.tellp();` prints 0 because output streams always start at the beginning." Half right. It prints 0, but the deeper reason is that a plain `ofstream` **truncated** the file first: the cursor is at the start of an empty file. Say both when asked.
+On the MinGW g++ that CLion and this app use, an `ofstream` opened with `ios::app` alone reports `tellp()` as **0** until the first write. The behaviour is still what the slide describes: every write in `app` mode goes to the end of the file, whatever `tellp()` says. Adding `ios::ate` gives the slide's 11. On the quiz, answer as the slide does: append mode positions at the end, so `tellp()` reports 11.
 :::
 
 ## Moving the cursor: seekg and seekp
@@ -104,7 +98,7 @@ ifstream& seekg(streampos)
 ifstream& seekg(streamoff, ios_base::seekdir)
 ```
 
-The one-argument form takes an **absolute** position: `seekp(10)` puts the cursor at position 10, counted from the beginning. The two-argument form takes an **offset relative to a direction**, which is the same idea as C's `fseek` with `SEEK_SET`, `SEEK_CUR` and `SEEK_END`:
+The one-argument form is an **absolute** position: `seekp(10)` puts the cursor at position 10. The two-argument form is an **offset from a direction**, like C's `fseek` with `SEEK_SET`, `SEEK_CUR` and `SEEK_END`:
 
 | C++ type | Holds |
 |---|---|
@@ -112,17 +106,15 @@ The one-argument form takes an **absolute** position: `seekp(10)` puts the curso
 | `std::ios::streamoff` | an offset: how far to move, positive or negative |
 | `std::ios_base::seekdir` | the direction to measure the offset from |
 
-The three `seekdir` values are public members of `ios_base` (so `ios::beg` and `ios_base::beg` are the same thing):
+The three `seekdir` values are public members of `ios_base` (`ios::beg` and `ios_base::beg` are the same thing):
 
 - `ios::beg`: measure from the **beginning** (position 0).
 - `ios::cur`: measure from the **current** cursor position.
 - `ios::end`: measure from the **end** (position = file size).
 
-The instructor's mental model: think of left, current and right "justification" in a word processor, then nudge by the offset.
-
 ## The four worked examples
 
-All four start from the same append-mode `ofstream` on `Hello World`. Work each one out on the position table before you run the program.
+All four start from the same append-mode `ofstream` on `Hello World`. Work each one out on the position table first.
 
 ```cpp run pin seekDemo.cpp
 // predict: the file is Hello World. Write the four positions printed, then the file's final contents.
@@ -159,13 +151,13 @@ int main()
 }
 ```
 
-- `myFile.seekp(6);` is the absolute form: the cursor goes to position 6, which is the `W` of `World`. `tellp()` prints **6**.
+- `myFile.seekp(6);` is the absolute form: position 6, the `W` of `World`.
 - `myFile.seekp(4, ios::beg);` moves +4 from the beginning: 0 + 4 = **4**, the `o` of `Hello`.
-- `myFile.seekp(-4, ios::end);` moves −4 from the end. The end is 11, so 11 − 4 = **7**, the `o` of `World`. Negative offsets are how you count backwards from the end.
-- `myFile.seekp(-6, ios::cur);` moves −6 from the *current* position. The cursor was left at 7 by the previous line, so 7 − 6 = **1**, the `e` of `Hello`. This is the one students get wrong: `cur` depends on whatever happened before.
-- The final `myFile << "!";` shows what `app` really means: the cursor said 1, but the `!` is written at the end, so the file becomes `Hello World!`. Append mode positions at the end **before each output operation**, exactly as the mode table said.
+- `myFile.seekp(-4, ios::end);` moves −4 from the end: 11 − 4 = **7**, the `o` of `World`. Negative offsets count backwards.
+- `myFile.seekp(-6, ios::cur);` moves −6 from the *current* position, which the previous line left at 7: 7 − 6 = **1**, the `e` of `Hello`. `cur` depends on whatever happened before.
+- `myFile << "!";` shows what `app` means: the cursor said 1, but the `!` lands at the end, so the file becomes `Hello World!`.
 
-Now drive it yourself. The widget models the same eleven-character file, all four openings, every tell and seek, plus `get`, `put` and the size trick from the next section.
+The widget models the same eleven-character file: all four openings, every tell and seek, plus `get`, `put` and the size trick from the next section.
 
 ```widget
 file-seek
@@ -173,16 +165,12 @@ file-seek
 ```
 
 :::quiz Which member for which stream
-- `ofstream`: `tellp` and `seekp` only.
-- `ifstream`: `tellg` and `seekg` only.
-- `fstream`: either pair.
-
-Calling `myFile.tellg()` on an `ofstream` is a **compile error** ("no member named `tellg`"), not a runtime problem. The quiz can show you such a line and ask whether it compiles.
+`ofstream`: `tellp` and `seekp` only. `ifstream`: `tellg` and `seekg` only. `fstream`: either pair. Calling `myFile.tellg()` on an `ofstream` is a **compile error** ("no member named `tellg`"), not a runtime problem.
 :::
 
 ## A useful trick: the size of a file
 
-Why bother with all this? Moving around a file is one reason. The slide's other reason is that seeking gives you a file's size in three lines: remember where the cursor starts, jump to the end, and subtract.
+Seeking gives you a file's size in three lines: remember where the cursor starts, jump to the end, and subtract.
 
 ```cpp run pin fileSize.cpp
 // predict: Write the exact line printed, in the form size is: N bytes.
@@ -206,11 +194,11 @@ int main()
 }
 ```
 
-`streampos begin = myfile.tellg();` records the starting position, 0. `myfile.seekg(0, ios::end);` moves zero characters from the end, in other words *to* the end, and `streampos end = myfile.tellg();` records that position, 11. Subtracting two `streampos` values gives a `streamoff`, the number of characters between them: `size is: 11 bytes.` One character of a text file is one byte, which is why counting characters counts bytes. In the lecture the same code on a `test.txt` holding `Hello World` printed 11 as well.
+`streampos begin = myfile.tellg();` records the starting position, 0. `myfile.seekg(0, ios::end);` moves zero characters from the end, in other words *to* the end, and `streampos end = myfile.tellg();` records 11. Subtracting two `streampos` values gives a `streamoff`, the number of characters between them: `size is: 11 bytes.` One character of a text file is one byte.
 
 ## Seeking, then reading: the lecture's fileSeek.cpp
 
-The lecture's last demo uses an `fstream`, which has both `g` and `p` members, to write a file, jump into the middle, and read a few characters. Watch what a read does to the cursor.
+The lecture's last demo uses an `fstream`, which has both `g` and `p` members, to write a file, jump into the middle, and read a few characters.
 
 ```cpp run pin fileSeek.cpp
 // predict: Five lines: the position before the read, the position after it, the word read, then the last two positions.
@@ -240,11 +228,11 @@ int main()
 }
 ```
 
-- The open mode `ios::in | ios::out | ios::trunc` is needed because a plain `fstream` would refuse to open a file that does not exist yet (previous lesson); `trunc` creates it.
-- `myFile.seekg(6, ios::beg);` moves six characters from the beginning: 0, 1, 2, 3, 4, 5, 6, landing on the `W`. `tellg()` reports **6**.
-- `myFile.read(buffer, 5);` reads five characters into the character array, `World`, and moves the cursor five places: **11**, the end. Reading (and writing) advances the cursor; seeking just relocates it.
-- `buffer[5] = '\0';` adds the null terminator so the array can be printed as a C string. The array was declared with room for six: five characters plus the terminator.
-- `myFile.seekg(-5, ios::end);` is the lecture's last check: 11 − 5 = **6**, back at the `W`.
+- The mode `ios::in | ios::out | ios::trunc` is needed because a plain `fstream` refuses to open a file that does not exist yet; `trunc` creates it.
+- `myFile.seekg(6, ios::beg);` lands on the `W`, so `tellg()` reports **6**.
+- `myFile.read(buffer, 5);` reads five characters, `World`, and moves the cursor five places to **11**. Reading and writing advance the cursor; seeking only relocates it.
+- `buffer[5] = '\0';` adds the terminator so the array prints as a C string; the array has room for six.
+- `myFile.seekg(-5, ios::end);` is 11 − 5 = **6**, back at the `W`.
 
 :::tip The rule in one line
 Seek to *place* the cursor; read or write to *move* it; tell to *ask* where it is. `g` for input, `p` for output, either for `fstream`.

@@ -3,7 +3,7 @@ title: Mock Quiz 2
 minutes: 40
 ---
 
-One long quiz covering everything from Unit 2 (visualizing data) and Lab 2 (grouped statistics in R, the pencil problems). Do it in one sitting, no notes, with your calculator, like the real thing. Every explanation shows the arithmetic and says *why* — if you miss one, go back to that chapter before tomorrow.
+One long quiz covering everything from Unit 2 (visualizing data) and Lab 2 (grouped statistics in R, the pencil problems). Do it in one sitting, no notes, with your calculator, like the real thing. Every explanation shows the arithmetic and says *why*; a miss points back to its chapter.
 
 :::quiz What the real quiz looks like
 Definitions and symbols, small computations from the lecture's own numbers (the BCIT students, Old Faithful, the quine absences), reading a table or a curve, and "which R command does this". The Unit 1 tools (quartiles, fences, $Sk$, empirical rule, Chebyshev) are used *inside* Unit 2 questions, so they are here too.

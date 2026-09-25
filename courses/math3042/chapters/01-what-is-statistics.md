@@ -5,9 +5,9 @@ minutes: 12
 
 ## A little history
 
-Statistics began in **18th-century Europe**, when states (governments) started collecting data about their citizens — that is literally where the name comes from (*state*-istics).
+Statistics began in **18th-century Europe**, when states (governments) started collecting data about their citizens, which is where the name comes from (*state*-istics).
 
-Two names the notes call out by name:
+Two names from the notes:
 
 - **Ronald Fisher (1890–1962)** developed the foundational concepts and methods of *statistical inference*, working with genetics and agricultural data. His book *Statistical Methods for Research Workers* (1925) shaped scientific research to the present day.
 - **Thomas Bayes (1701–1761)** gives his name to *Bayesian inference*, which in the last 50 years has become an important approach to data analysis in **machine learning**.
@@ -16,7 +16,7 @@ Two names the notes call out by name:
 
 > Statistics is *the part of mathematics that uses data to find patterns and to inform decisions.*
 
-Memorize that sentence — "patterns" (descriptive) and "decisions" (inferential) are literally the first two parts of statistics you will meet below.
+"Patterns" is descriptive statistics and "decisions" is inferential statistics, the first two parts of statistics below.
 
 ## Why it matters in CST
 
@@ -24,7 +24,7 @@ Statistics and probability show up throughout *data science* (including *machine
 
 ## The survey example
 
-The lecture uses a *data frame* (think: a table, one row per person, one column per measured variable) from R's `survey` dataset. With a table like that you can ask questions such as:
+The lecture uses a *data frame* from R's `survey` dataset: a table with one row per person and one column per measured variable. With a table like that you can ask questions such as:
 
 - What is the typical age of a student?
 - Do most students exercise?
@@ -48,7 +48,7 @@ That returns every recorded pulse value as a vector.
 | numerical | quantitative | `Age` |
 
 :::quiz Quiz note
-"Categorical" and "qualitative" are two names for the exact same thing (non-numerical data) — not two different kinds of data. Same for "numerical" and "quantitative."
+"Categorical" and "qualitative" are two names for one kind of data (non-numerical), not two different kinds; the same goes for "numerical" and "quantitative."
 :::
 
 ## The three parts of statistics
@@ -80,10 +80,6 @@ The same concept gets two symbols depending on whether it describes a sample or 
 | Proportion | $\hat{p}$ | $p$ |
 | Correlation | $r$ | $\rho$ |
 | Size | $n$ | $N$ |
-
-:::warn Quiz note
-A **statistic** describes a **sample**; a **parameter** describes the **population**. It is easy to mix these up under time pressure — read the question for the word "sample" or "population" before answering.
-:::
 
 ## Try it
 

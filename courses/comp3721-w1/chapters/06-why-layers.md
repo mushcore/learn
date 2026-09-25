@@ -1,22 +1,9 @@
 ---
 title: Protocols & why we layer
-minutes: 12
+minutes: 10
 ---
 
-Lecture 01a ended with the Internet as a "network of networks." Lecture 01b asks the obvious follow-up: with that many moving parts, how does anyone organize it? The answer is **protocol layering**, and Quiz 2 will test the vocabulary of this lesson almost word for word.
-
-## Networks are complex
-
-The slides list the "pieces" a network is made of:
-
-- hosts
-- routers
-- links of various media
-- applications
-- protocols
-- hardware, software
-
-Then the question: *is there any hope of organizing the structure of a network?* Yes, and the trick is the same one used to run an airline.
+A network is made of hosts, routers, links of various media, applications, protocols, hardware and software. **Protocol layering** is how that structure is organized, and Quiz 2 tests its vocabulary almost word for word.
 
 ## Analogy: organization of air travel
 
@@ -35,7 +22,7 @@ Each row is a **layer**, and each layer implements one service:
 - via its own **internal-layer actions**
 - relying on **services provided by the layer below**
 
-The ticketing layer does not know how planes are routed. It just trusts that baggage, gates, runways, and routing will happen underneath it. That independence is the whole point.
+Ticketing does not know how planes are routed; it trusts the layers beneath it.
 
 ## What is a protocol?
 
@@ -43,61 +30,41 @@ Lecture 01a defined a protocol as *a set of rules that govern data communication
 
 > A protocol defines **what** is communicated, **how** and **when**. This provides accurate and timely transfer of information between different devices on a network.
 
-In other words, a protocol defines:
+A protocol defines:
 
 - the **format** and the **order** of messages exchanged between two or more communicating entities, and
 - the **actions taken** on the transmission and/or receipt of a message or other event.
 
-:::quiz Fill-in-the-blank wording
-"A protocol defines **what** is communicated, **how** and **when**." Those three words are the ones most likely to be blanked out. The 01a version, "a set of rules that govern data communications," is equally fair game.
-:::
-
 ## The two principles of protocol layering
 
-The slides state exactly two principles. Learn them by number.
+The slides state exactly two principles, by number.
 
-1. **First principle:** for having **bidirectional** communication, each layer must be able to perform **two opposite tasks**. (If a layer adds a header on the way out, the same layer must remove it on the way in. If it encrypts, it must also decrypt.)
-2. **Second principle:** the **two objects under each layer at both sites should be identical**. (The thing the transport layer hands down at the sender must be the same thing the transport layer receives at the receiver. What travels between matching layers is identical, even though the layers below did work on it in between.)
-
-:::warn Do not swap them
-"Two opposite tasks" is the *first* principle. "Identical objects at both sites" is the *second*. A true/false question can hinge on which number goes with which.
-:::
+1. **First principle:** for having **bidirectional** communication, each layer must be able to perform **two opposite tasks**. A layer that adds a header on the way out removes it on the way in; one that encrypts also decrypts.
+2. **Second principle:** the **two objects under each layer at both sites should be identical**. What the transport layer hands down at the sender is what the transport layer receives at the receiver, even though the layers below worked on it in between.
 
 ## What layering buys you
 
 **Protocol layering enables us to divide the complex task of communication into multiple smaller and simpler tasks.** Network designers organize protocols, and the hardware and software that implement them, in layers.
 
-Two definitions from the slide:
-
 - The **service model** of a layer is *the services that a layer offers to the layer above*.
 - Each layer provides its service by **performing certain actions within that layer** and by **using the services of the layer directly below it**.
 
-Notice the direction: a layer serves the layer *above* and consumes from the layer *below*. It never reaches two layers down.
+A layer serves the layer above and uses only the layer directly below, never two layers down.
 
 ## The three advantages
 
-The slide numbers them, so the quiz might too:
-
 1. **Separating the services from the implementation.** The layer above only cares what service it gets, not how.
-2. **Simpler and less expensive intermediate systems.** A device in the middle of the path only needs the lower layers (a switch needs two, a router needs three; see the next lessons). It does not carry the whole stack.
-3. **Modularity (independent layers), a "black box."** This gives ease of maintenance and updating of the system: a change in a layer's service implementation is **transparent to the rest of the system**.
-
-:::quiz Written-response candidate
-"List two advantages of protocol layering" is exactly the shape of the sample quiz's written-response questions. Have all three ready in the slide's wording.
-:::
+2. **Simpler and less expensive intermediate systems.** A device in the middle of the path needs only the lower layers: a switch needs two, a router three.
+3. **Modularity (independent layers), a "black box."** Ease of maintenance and updating: a change in a layer's service implementation is **transparent to the rest of the system**.
 
 ## Protocol suite, and the two models
 
-A **protocol suite (stack)** is *a set of protocols organized in different layers, designed to work together*.
-
-The course uses two models for computer network operations:
+A **protocol suite (stack)** is *a set of protocols organized in different layers, designed to work together*. The course uses two models:
 
 | Model | Layers | Note |
 |---|---|---|
 | **TCP/IP protocol suite** | **5** | used in the Internet today (the Internet protocol stack) |
 | **OSI model** | **7** | an ISO standard for network communications |
-
-The next lesson walks through both, layer by layer.
 
 ## Try it
 

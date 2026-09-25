@@ -3,7 +3,7 @@ title: Reading input with cin
 minutes: 16
 ---
 
-Getting input in Java requires building a `Scanner` and a non-trivial amount of setup code. Getting input in C is dangerous and requires finesse with `fgets` and `sscanf` — recall the instructor's line: **"scanf was not our friend."** C++ gives you `std::cin` and the **extraction operator** `>>`, which is both simpler and safer, as long as you know its one sharp edge.
+Java needs a `Scanner` and setup code, and C's `scanf` "was not our friend". C++ gives you `std::cin` and the **extraction operator** `>>`, simpler and safer, with one sharp edge.
 
 ## The extraction operator `>>`
 
@@ -18,7 +18,7 @@ Both forms of input above work identically. That's because `>>`:
 2. Reads as many characters as fit the target type.
 3. Stops at the first character that doesn't fit the type — and **leaves that character in the buffer** for the next read.
 
-That third rule is the one to remember; it's why chaining `cin >> m >> n` works at all (each `>>` picks up right after the previous one stopped) and it's also the source of the failure modes in the next lesson.
+The third rule is why chaining `cin >> m >> n` works: each `>>` picks up where the previous one stopped. It is also the source of the failure modes in the next lesson.
 
 ## Reading an int
 
@@ -67,8 +67,6 @@ int main() {
 
 `cin >> name` for a `std::string` reads one whitespace-delimited word — it stops at the first space, tab, or newline, not at the end of the line.
 
-Step through exactly what the buffer looks like as each read happens:
-
 ```widget
 cin-sim
 { "reads": ["int hours", "double weight_kg", "string name"], "input": "8 72.5 Jeffrey", "presets": { "ints and text": "8 72.5 Jeffrey", "extra spaces": "  8   72.5   Jeffrey  " } }
@@ -76,7 +74,7 @@ cin-sim
 
 ## Reading into a fixed-size buffer
 
-The slides show this example and then react to it, in the instructor's own words: **"NOOOOOO DON'T DO THIS."**
+The slides show this example and reject it:
 
 ```cpp
 constexpr int first_name_length = 5;
@@ -84,10 +82,10 @@ char first_name[first_name_length];
 cin >> first_name; // NOOOOOO DON'T DO THIS
 ```
 
-Why is this dangerous? `char[]` decays to `char*` when passed around — `cin` only ever sees a raw pointer, not the array's actual length. It has no way to know `first_name` can only hold 5 characters, so it will happily keep writing characters past the end of the array for any input longer than 4 characters. That's a memory allocation issue: you're writing into memory you don't own.
+`char[]` decays to `char*`, so `cin` sees a raw pointer, not the array's length. It cannot know `first_name` holds only 5 characters and keeps writing past the end of the array for any input longer than 4 characters: memory you don't own.
 
 :::danger char arrays with cin are unsafe by default
-`cin >> someCharArray;` on its own never checks how big `someCharArray` is. Any input word longer than the array will overflow it. This is exactly the kind of question that shows up as a true/false trap: "is `cin >> first_name;` on a `char[5]` safe as long as you never type more than 5 characters?" — false, because you'd need to leave room for the null terminator too (4 characters + `'\0'`).
+`cin >> someCharArray;` never checks how big `someCharArray` is; any word longer than the array overflows it. "Is `cin >> first_name;` on a `char[5]` safe as long as you never type more than 5 characters?" **False**: the null terminator needs a slot too (4 characters + `'\0'`).
 :::
 
 ## The fix: `setw` on input
@@ -127,18 +125,12 @@ int main() {
 ]
 ```
 
-Here is the instructor's sample exactly as written. Predict the output, then run it with input `Jonathan`:
-
-`constexpr int firstNameLength = 5;` declares the capacity as a compile-time constant, and `char firstName[firstNameLength];` allocates a 5-byte array — room for 4 real characters plus the null terminator. `cin >> setw(5) >> firstName;` reads at most 4 characters from `"Jonathan"` — `J`, `o`, `n`, `a` — writes `'\0'` after them, and stops. The rest of the word (`than`) is left sitting in the input buffer, unread. `cout << firstName;` prints the null-terminated C-string it actually holds: `Jona`.
+The instructor's sample, with input `Jonathan`. `constexpr int firstNameLength = 5;` declares the capacity as a compile-time constant, and `char firstName[firstNameLength];` allocates a 5-byte array: room for 4 real characters plus the null terminator. `cin >> setw(5) >> firstName;` reads at most 4 characters from `"Jonathan"` (`J`, `o`, `n`, `a`), writes `'\0'` after them, and stops. The rest of the word (`than`) is left in the input buffer, ready for the *next* extraction. `cout << firstName;` prints the null-terminated C-string it holds: `Jona`.
 
 ```widget
 cin-sim
 { "reads": ["char firstName[5] (setw(5))"], "input": "Jonathan", "presets": { "full name": "Jonathan", "short name": "Al" } }
 ```
-
-:::quiz setw caps the *array*, not the word length in the input
-Even though `"Jonathan"` is 8 characters long, `cin >> setw(5) >> firstName;` only ever writes 4 of them into `firstName` — the remaining characters (`than`) are still sitting in the buffer, ready to be read by the *next* extraction. This is why chained reads after a truncated `char[]` read can look "wrong" if you forget the leftover characters are still there.
-:::
 
 ```quiz
 [

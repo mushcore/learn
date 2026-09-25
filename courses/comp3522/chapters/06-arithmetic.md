@@ -62,15 +62,13 @@ int main()
 
 `17 / 5` is `3`, not `3.4`. When **both** operands of `/` are integers, the result is an integer — the fractional part is thrown away (truncated toward zero, not rounded). `%` gives you back what division dropped: `17 % 5 == 2` because `17 = 3*5 + 2`.
 
-Negative numbers are the trap. C++ truncates **toward zero**, and `%` follows the sign of the left-hand operand (the dividend). Predict each line before you hit Run:
+Negative numbers are the trap. C++ truncates **toward zero**, and `%` follows the sign of the left-hand operand (the dividend).
 
-Work it by hand first: `-7 / 2` truncates toward zero, not down — `-3.5` becomes `-3`, **not** `-4`. Then `%` fills in the gap so that `(a/b)*b + a%b == a`: `-3*2 = -6`, and `-7 - (-6) = -1`, so `-7 % 2` gives `-1`. The same logic gives `7 / -2` equal to `-3` and `7 % -2` equal to `1`. Run the block above and check your predictions.
+`-7 / 2` truncates toward zero: `-3.5` becomes `-3`, **not** `-4`. `%` fills the gap so that `(a/b)*b + a%b == a`: `-3*2 = -6` and `-7 - (-6) = -1`, so `-7 % 2` is `-1`. The same logic gives `7 / -2` equal to `-3` and `7 % -2` equal to `1`.
 
 :::quiz Division-by-zero is not a compile error
 `int x = 5 / 0;` **compiles fine** and then crashes (or does something undefined) **at runtime** — integer division by zero is undefined behaviour, not a syntax problem the compiler catches. Floating-point division by zero is different: `5.0 / 0.0` is well-defined and gives you `inf`.
 :::
-
-Try the sliders — drag `a` and `b` and watch `/`, `%`, and the sign rule update live:
 
 ```widget
 int-division
@@ -78,7 +76,7 @@ int-division
 
 ## Step through an expression
 
-`expr-stepper` shows operator precedence and evaluation order one step at a time. Try the presets below, then edit the expression yourself.
+The stepper shows operator precedence and evaluation order one step at a time.
 
 ```widget
 expr-stepper

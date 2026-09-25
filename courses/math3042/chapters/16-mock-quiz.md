@@ -3,7 +3,7 @@ title: Mock Quiz 1
 minutes: 30
 ---
 
-One long quiz covering everything from Unit 1: definitions, symbols, formulas, small computations, and the R function each concept maps to. Do it in one sitting, no notes, like the real thing. Every explanation shows the arithmetic — if you miss one, go re-read that chapter before tomorrow.
+One long quiz covering everything from Unit 1: definitions, symbols, formulas, small computations, and the R function each concept maps to. Every explanation shows the arithmetic.
 
 ```quiz
 [

@@ -3,7 +3,7 @@ title: C-style casting
 minutes: 12
 ---
 
-The slide for this section is one line: `float x = 2.25; int y = (int)x; //truncates value`. That single example hides two things the quiz will ask about — what "truncates" actually means, and why casting is the *fix* for a bug you've already seen with integer division.
+The slide for this section is one line: `float x = 2.25; int y = (int)x; //truncates value`. Two things hide in it: what "truncates" means, and why casting fixes the integer-division bug.
 
 ## Wrapping a type in parentheses
 
@@ -21,7 +21,7 @@ int main()
 }
 ```
 
-Predict `y` before you run it: the fractional `.25` doesn't get rounded away, it gets **dropped**.
+The fractional `.25` is not rounded away; it is **dropped**.
 
 ## Truncation is toward zero, not "round down"
 
@@ -64,13 +64,11 @@ int main()
 - `std::cout << (double)a / b << std::endl;` casts `a` to `double` **first**. Now one operand of `/` is a `double`, so the whole division is done in floating point: `3.5`.
 - `std::cout << (double)(a / b) << std::endl;` computes `a / b` **first** — still `int / int`, which truncates to `3` — and only then casts the already-truncated `3` to `double`, giving `3.0`. The cast arrived too late to save the fractional part.
 
-Same cast, same variables (`int a = 7;` and `int b = 2;`), different placement, different answer. Parentheses control *when* the conversion happens.
+Same cast, different placement, different answer: parentheses control *when* the conversion happens.
 
 ```widget
 int-division
 ```
-
-Drag `a` and `b` in the widget and watch how the cast column changes the moment you move the cast inside vs. outside the division.
 
 ## Casting between char, int, and bool
 
@@ -105,13 +103,9 @@ int anInt = 0;
 float aFloat = (float)anInt;   // aFloat = 0.0
 ```
 
-:::quiz "Truncates" is not "rounds"
-The slide's comment literally says `//truncates value`. If a quiz question shows `(int)` applied to a negative float, remember: truncation chops toward zero. `(int)-2.75` is `-2`. Do not round to `-3`.
-:::
-
 ## C++ has its own casting operators too
 
-C-style casting is compact but it's also a blunt instrument — the compiler doesn't tell you what *kind* of conversion you meant. Later this term you'll meet four named C++ casting operators that make the intent explicit: `static_cast`, `dynamic_cast`, `const_cast`, and `reinterpret_cast`. For now, just recognize the names — the mechanics come later.
+C-style casting is compact but blunt: the compiler cannot tell what *kind* of conversion you meant. Later this term you'll meet four named C++ casting operators that make the intent explicit: `static_cast`, `dynamic_cast`, `const_cast`, and `reinterpret_cast`. For now, recognize the names.
 
 ```quiz
 [

@@ -1,9 +1,9 @@
 ---
 title: Wavelength & propagation speed
-minutes: 10
+minutes: 9
 ---
 
-Period measures a sine wave in time: how long one cycle takes. Wavelength measures the same cycle in *distance*: how far the signal gets while completing it. The link between the two is the speed at which the signal travels through the medium.
+Period measures a sine wave in time. Wavelength measures the same cycle in *distance*: how far the signal travels while completing it, which depends on the speed of the medium.
 
 ## Wavelength ($\lambda$)
 
@@ -21,14 +21,12 @@ Slide wording: *wavelength binds the period or the frequency of a simple sine wa
 
 ## Frequency vs wavelength
 
-This slide is a true/false question waiting to happen:
+From the slide:
 
-- The **frequency** of a signal is **independent of the transmission medium**. (The slide asks "so what does it really depend on?" The answer, beyond the slides: on the sender that generates the signal. A 60 Hz wave is 60 Hz in copper, fibre, or air.)
+- The **frequency** of a signal is **independent of the transmission medium**. It depends on the sender that generates the signal: a 60 Hz wave is 60 Hz in copper, fibre, or air.
 - The **wavelength** relies on **both** the frequency **and** the transmission medium.
 
-:::quiz Medium changes speed and wavelength, never frequency
-"When a signal passes from air into a cable its frequency decreases" is **false**. Its propagation speed drops, so its wavelength shrinks, but the frequency stays what the sender made it. "Wavelength depends on both the frequency and the medium" is **true**.
-:::
+When a signal passes from air into a cable its propagation speed drops, so its wavelength shrinks; the frequency stays what the sender made it.
 
 ## The formula
 
@@ -44,11 +42,11 @@ Units check: $\frac{\text{m/s}}{1/\text{s}} = \text{m}$. If your answer is not i
 
 $$\lambda = \frac{c}{f} = \frac{3 \times 10^{8}}{4 \times 10^{14}} = 0.75 \times 10^{-6}\ \text{m} = 0.75\ \text{μm}$$
 
-Scientific notation, step by step: divide the numbers, $\frac{3}{4} = 0.75$; subtract the exponents, $10^{8 - 14} = 10^{-6}$. So $0.75 \times 10^{-6}$ m, and since $10^{-6}$ m is a micrometre, $\lambda = 0.75$ μm. That is why fibre-optic wavelengths are quoted in μm.
+Divide the numbers, $\frac{3}{4} = 0.75$, and subtract the exponents, $10^{8 - 14} = 10^{-6}$. Since $10^{-6}$ m is a micrometre, $\lambda = 0.75$ μm, which is why fibre-optic wavelengths are quoted in μm.
 
 ## Practice values (beyond the slides)
 
-These are computed here for practice; only the red-light case is on the slides. Cover the right column and reproduce it.
+Only the red-light row is on the slides.
 
 | Frequency | Propagation speed | Wavelength |
 |---|---|---|
@@ -58,7 +56,7 @@ These are computed here for practice; only the red-light case is on the slides. 
 | 100 MHz | $3 \times 10^{8}$ m/s | $\frac{3 \times 10^{8}}{10^{8}} = 3$ m |
 | 2.4 GHz (Wi-Fi) | $3 \times 10^{8}$ m/s | $\frac{3 \times 10^{8}}{2.4 \times 10^{9}} = 0.125$ m |
 
-The two 1 GHz rows are the whole lesson in one comparison: same frequency, slower medium, shorter wavelength.
+The two 1 GHz rows: same frequency, slower medium, shorter wavelength.
 
 ## Try it
 
@@ -86,7 +84,7 @@ The two 1 GHz rows are the whole lesson in one comparison: same frequency, slowe
     "answer": 200,
     "tolerance": 1,
     "unit": "m",
-    "explain": "Use the other form of the formula: $\\lambda = c \\times T = 2 \\times 10^{8} \\times 10^{-6} = 200$ m. (Lesson 16 uses the identical arithmetic for bit length.)"
+    "explain": "Use the other form of the formula: $\\lambda = c \\times T = 2 \\times 10^{8} \\times 10^{-6} = 200$ m. (The digital signals lesson uses the identical arithmetic for bit length.)"
   },
   {
     "q": "Infrared light used in fibre has a wavelength of 1.5 μm. In a vacuum ($3 \\times 10^{8}$ m/s), what is its frequency in Hz?",

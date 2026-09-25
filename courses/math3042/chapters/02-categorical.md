@@ -17,8 +17,6 @@ $$
 p = \frac{X}{N}
 $$
 
-Same idea as the statistic/parameter table from the last lesson: $\hat{p}$ from a sample, $p$ for the whole population.
-
 ## Worked example: eye colour
 
 A sample of BCIT students gives these counts for $X$ = Eye Colour:
@@ -50,13 +48,9 @@ For a **non-numerical** variable, the **mode** is just its most frequent value. 
 
 In the eye-colour example, Brown has the highest frequency (130 out of 302), so **the modal value is Brown**.
 
-::::warn Likely quiz trap
-It is tempting to say "the mode is 130" — that's the *frequency*, not the mode. The mode is the **category name** (Brown), not the count.
-::::
-
-::::quiz Trap
-A mean of a categorical variable like eye colour is meaningless: there is no numerical average of "Brown," "Blue," and "Green." Mean only makes sense for numerical data. For categorical data you use proportion and mode instead.
-::::
+:::warn Likely quiz trap
+The mode is the **category name** (Brown), not its frequency (130).
+:::
 
 ## R language
 

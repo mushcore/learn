@@ -3,7 +3,7 @@ title: Skewness
 minutes: 12
 ---
 
-Every measure so far has been about centre (mean, median), variation (range, SD, IQR), or position (Z-scores, percentiles). **Skewness** is a different kind of number entirely — it doesn't tell you where the data is or how spread out it is. It tells you how **non-symmetrical** the distribution is.
+Every measure so far has been about centre (mean, median), variation (range, SD, IQR), or position (Z-scores, percentiles). **Skewness** measures none of those: it tells you how **non-symmetrical** the distribution is.
 
 ## Where mean and median disagree
 
@@ -13,7 +13,7 @@ For a perfectly symmetric distribution, the mean and the median sit at exactly t
 - **Skewed left** (long tail on the left) → the tail drags the mean **down below** the median → skewness < 0.
 - **Skewed right** (long tail on the right) → the tail drags the mean **up above** the median → skewness > 0.
 
-A quick way to remember it: the sign of the skewness matches the side the mean sits relative to the median, which matches the side the tail points.
+The sign of the skewness matches the side the mean sits relative to the median, which matches the side the tail points.
 
 ## Pearson's coefficient of skewness
 
@@ -21,19 +21,19 @@ $Sk = 3 \cdot \frac{\bar{X} - Q_2}{s}$ (sample) or $Sk = 3 \cdot \frac{\mu - Q_2
 
 $Q_2$ is just the median. The factor of 3 and the division by $s$ (or $\sigma$) turn the raw gap between mean and median into a unit-free number you can compare across data sets.
 
-**Highly skewed** is a specific threshold, not a vibe:
+**Highly skewed** has a specific threshold:
 - Highly skewed **left**: $Sk < -1$.
 - Highly skewed **right**: $Sk > +1$.
 
 Anything between $-1$ and $+1$ is only mildly skewed (or symmetric, near 0).
 
 :::quiz Sign direction
-It is easy to get this backwards under quiz pressure. Say it out loud: **skewed left → mean is LESS than median** (the left tail pulls the mean down), **skewed right → mean is GREATER than median** (the right tail pulls the mean up). If a question gives you "mean 50, median 55," the mean is below the median, so the distribution is skewed **left** — even though nothing in the numbers says "left" directly.
+"Mean 50, median 55": the mean is below the median, so the distribution is skewed **left**, even though nothing in the numbers says "left" directly.
 :::
 
 ## Worked example: cat bodyweights
 
-The instructor's example uses the `cats$Bwt` data from R's `MASS` package (n = 144 domestic cats):
+The `cats$Bwt` data from R's `MASS` package (n = 144 domestic cats):
 
 - Mean $\bar{X} = 2.724$
 - Median $Q_2 = 2.7$
@@ -50,21 +50,17 @@ In R this is one line:
 $0.146$ is positive but well inside $(-1, 1)$, so cat bodyweight is **mildly skewed right** — a small number of heavier cats stretch the upper tail, pulling the mean just above the median.
 
 :::warn Don't use the `moments` package formula
-R's `moments` library has a `skewness()` function, but it uses a **different formula** (based on the third standardized moment, not Pearson's mean/median formula). The instructor was explicit: "ignore this" for this course. Always compute Pearson's $Sk = 3(\bar{X}-Q_2)/s$ by hand or with the one-liner above — not `moments::skewness()`.
+R's `moments` library has a `skewness()` function that uses a **different formula** (the third standardized moment, not Pearson's mean/median formula). The course ignores it: compute Pearson's $Sk = 3(\bar{X}-Q_2)/s$ by hand or with the one-liner above.
 :::
 
 ## Drag the data
-
-Drag the skew slider and watch what happens: the median stays put while the mean slides toward whichever tail grows longer, and the Pearson $Sk$ value tracks that gap.
 
 ```widget
 skewness
 { "title": "Skewness: mean chases the tail, median barely moves" }
 ```
 
-## Drag the data
-
-Now build the skew yourself. Drag a single point out into a tail and watch Pearson's $Sk$ cross the ±1 threshold.
+## Build a tail yourself
 
 ```widget
 drag-data

@@ -1,12 +1,12 @@
 ---
 title: E02, worked
-minutes: 15
+minutes: 12
 ---
 
-The Week 2 exercise sheet (E02) has five calculation questions: bandwidth from the middle frequency, bandwidth of a set of harmonics, bit rate from pages per second, and transmission time from a bit rate. Commit to an answer on paper, with units, before you open the worked answer; checking an answer you never made teaches almost nothing. (E01 and the sample quiz questions are worked in the Week 1 module.)
+The Week 2 exercise sheet (E02) has five calculation questions: bandwidth from the middle frequency, bandwidth of a set of harmonics, bit rate from pages per second, and transmission time from a bit rate. E01 and the sample quiz questions are worked in the Week 1 module.
 
 :::tip Follow the units
-The instructor writes every Week 2 calculation as a chain of unit fractions (bits × seconds per bit, pages × bits per page) so that the units cancel to the unit the question asks for. Copy that habit: it catches most factor-of-1000 slips before they cost marks.
+The instructor writes every calculation as a chain of unit fractions (bits × seconds per bit, pages × bits per page) so the units cancel to the unit the question asks for. The habit catches factor-of-1000 slips.
 :::
 
 ## E02: Week 2 exercises
@@ -44,7 +44,7 @@ $$\frac{f_h + f_l}{2} = 140\ \text{kHz} \quad \to \quad f_h + f_l = 280\ \text{k
 
 Add them: $2 f_h = 480$, so $f_h = 240$ kHz. Subtract them: $2 f_l = 80$, so $f_l = 40$ kHz.
 
-The frequency-domain plot is a **triangle**: amplitude 0 at 40 kHz, rising in a straight line to the peak of 20 V at 140 kHz, then falling back to 0 at 240 kHz. Because the signal is nonperiodic, the plot is a continuous shape, not a set of separate spikes.
+The frequency-domain plot is a **triangle**: amplitude 0 at 40 kHz, rising in a straight line to the peak of 20 V at 140 kHz, then falling back to 0 at 240 kHz. The signal is nonperiodic, so the plot is a continuous shape, not separate spikes.
 
 ### Exercise 2
 
@@ -98,7 +98,7 @@ $$B = f_h - f_l = 400 - 200 = 200\ \text{MHz}$$
 
 $$B = f_h - f_l = 900\ \text{Hz} - 100\ \text{Hz} = 800\ \text{Hz}$$
 
-The three middle frequencies are irrelevant to the bandwidth; only the extremes count.
+Only the extremes count; the three middle frequencies are irrelevant.
 
 ### Exercise 4
 
@@ -123,7 +123,7 @@ $$\text{size of a page} = 24\ \frac{\text{lines}}{\text{page}} \times 80\ \frac{
 
 $$\text{bit rate} = 200\ \frac{\text{pages}}{\text{s}} \times 15360\ \frac{\text{bits}}{\text{page}} = 3072000\ \text{bps} = 3.072\ \text{Mbps}$$
 
-This is exactly the slide example (100 pages per second gave 1.536 Mbps) with the page rate doubled.
+This is the slide example (100 pages per second gave 1.536 Mbps) with the page rate doubled.
 
 ### Exercise 5
 
@@ -159,9 +159,9 @@ Convert "a file" into "seconds" the same way, one unit fraction at a time:
 $$1\ \text{file} \times \frac{100000\ \text{ch}}{\text{file}} \times \frac{8\ \text{b}}{\text{ch}} \times \frac{1\ \text{s}}{1000\ \text{b}} = 800\ \text{s}$$
 
 :::warn Bit rate is not a period
-$1000$ bps means $1/1000$ s **per bit** (the bit duration). Multiply bits by seconds per bit; do not divide the other way round. If your answer for (a) came out as 100 s, you inverted the fraction.
+$1000$ bps means $1/1000$ s **per bit**. Multiply bits by seconds per bit; an answer of 100 s for (a) means the fraction was inverted.
 :::
 
 ## Not covered yet: E03
 
-The Week 3 sheet (E03) asks about cable loss in dB per kilometre and signal-to-noise ratio (SNR, SNR in dB). Those belong to next week's transmission-impairment lecture and are not in Quiz 1 or Quiz 2 scope as posted.
+The Week 3 sheet (E03) asks about cable loss in dB per kilometre and signal-to-noise ratio (SNR, SNR in dB). Those belong to next week's transmission-impairment lecture and are outside the posted scope of Quiz 1 and Quiz 2.

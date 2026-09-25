@@ -3,19 +3,15 @@ title: R from Lab 1 (what the quiz may ask)
 minutes: 18
 ---
 
-This is a reference lesson, not a new topic — it collects the R mechanics from **Lab 1** (`Lab_01_Notebook.Solutions.pdf`, `demo_notebook_Unit_01.Rmd`) that the quiz can test directly: notebook mechanics, vectors, data frames, logical subsetting, factors, and the stats functions you already know by hand.
+The R mechanics from **Lab 1** (`Lab_01_Notebook.Solutions.pdf`, `demo_notebook_Unit_01.Rmd`) that the quiz can test directly.
 
 ## R Notebooks
 
-A `.Rmd` file mixes **text chunks** (plain markdown, with LaTeX between `$...$` for formulas) and **code chunks** (fenced with ```` ```{r} ```` ... ```` ``` ````). You write the analysis narrative around the code instead of separating them into a report and a script.
+A `.Rmd` file mixes **text chunks** (plain markdown, with LaTeX between `$...$` for formulas) and **code chunks** (fenced with ```` ```{r} ```` ... ```` ``` ````).
 
 - **Run Current Chunk**: `Ctrl+Shift+Enter` — runs just the chunk your cursor is in and shows its output inline.
 - **Preview**: renders the notebook to HTML using whatever output the chunks *already produced* — it does **not** re-run any code.
 - **Knit**: re-runs **every** chunk from top to bottom in a fresh session, then renders the result to HTML, PDF, or Word.
-
-:::quiz Preview vs Knit
-A common trap: "Preview updates my document with new results." **False.** Preview only re-renders existing chunk output; if you changed code and haven't re-run the chunk, Preview shows stale results. Only **Knit** guarantees every chunk ran with the current code.
-:::
 
 ## Assignment and variable names
 
@@ -26,7 +22,7 @@ mu.female <- 164.7
 sig.female <- 7.1
 ```
 
-The `.` in `mu.female` is just a regular character allowed in identifiers — it is **not** member access like `object.field` in C++/Java/Python. `mu.female` is one variable name, not "the `female` member of `mu`."
+The `.` in `mu.female` is just a regular character allowed in identifiers, **not** member access like `object.field` in C++/Java/Python.
 
 Two ways to build a sequence of numbers:
 
@@ -72,7 +68,7 @@ TenMileRace[c(1,2,3,4,5), "time"]
 [1] 6060 4515 5026 4229 5293
 ```
 
-`$` pulls out a whole column as a vector. `TenMileRace` has 8636 rows, so printing the whole column would flood the console — `head()` shows just the first several instead:
+`$` pulls out a whole column as a vector. `TenMileRace` has 8636 rows, so printing the whole column would flood the console; `head()` shows just the first several:
 
 ```r
 head(TenMileRace$time, 5)
@@ -109,10 +105,6 @@ TenMileRace[TenMileRace$time < 3000, "time"]
 ```text
 [1] 2825 2818 2852 2933 2874 2836 2961 2999 2899 2963 2876 2816 2872 2891 2869
 ```
-
-:::quiz sum() on a logical vector
-Likely quiz phrasing: "What does `sum(condition)` return when `condition` is a logical vector?" It is **not** a sum of data values — it's a **count of TRUEs**, because `TRUE` is coerced to `1` and `FALSE` to `0`.
-:::
 
 ## Subsetting: subset(), &, |, !, %in%
 
@@ -236,7 +228,7 @@ max(TenMileRace$net)
 [1] 10536
 ```
 
-`sd()` always computes the **sample** standard deviation — dividing by $n-1$, the same way as the by-hand formula from the variation lesson (see the plywood-thickness example, `sd(X.vals)` → 0.006560179, in the pencil-problems lesson). There is no built-in population-sd function; you'd write `sqrt(sum((x-mean(x))^2)/length(x))` for that.
+`sd()` always computes the **sample** standard deviation, dividing by $n-1$ like the by-hand formula (plywood example in the pencil problems: `sd(X.vals)` → 0.006560179). There is no built-in population-sd function; write `sqrt(sum((x-mean(x))^2)/length(x))` for that.
 
 Quantiles and IQR, applied to `faithful$eruptions` (the same data set from the quartiles lesson):
 
@@ -278,7 +270,7 @@ boxplot(extra~group, data=sleep)
 hist(TenMileRace$time, breaks=seq(2800, 10600, by=200), right=FALSE, col='pink')
 ```
 
-`right=FALSE` means each class interval includes its **left** endpoint but excludes its right endpoint — e.g. the bin `[3000, 3200)` includes a value of exactly 3000 but a value of exactly 3200 falls into the *next* bin. (The default, `right=TRUE`, is the opposite: `(3000, 3200]`.)
+`right=FALSE` means each class interval includes its **left** endpoint but excludes its right endpoint: the bin `[3000, 3200)` includes a value of exactly 3000, and a value of exactly 3200 falls into the *next* bin. The default, `right=TRUE`, is the opposite: `(3000, 3200]`.
 
 ## Packages
 

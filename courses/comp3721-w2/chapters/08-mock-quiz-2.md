@@ -3,7 +3,7 @@ title: Mock Quiz 2 (01b, 01c, Week 2)
 minutes: 35
 ---
 
-Quiz 2 is expected to cover what came after Quiz 1's scope: Lecture 01b (protocol layering, the TCP/IP protocol suite, the OSI model, encapsulation and addressing) and the 01c complementary notes (hubs, switches, routers), both in the Week 1 module, plus Lecture 02 (data and signals, sine waves, phase, wavelength, composite signals, bandwidth, digital signals). Same rules as the real thing: one hand-written A4 note, a calculator, no other help. About a third of the questions are calculations; write the units with every answer and keep the unit prefixes (ms, μs, kHz, MHz, Mbps) straight. Every explanation shows the arithmetic or the exact slide fact.
+Quiz 2 is expected to cover what came after Quiz 1's scope: Lecture 01b (protocol layering, the TCP/IP protocol suite, the OSI model, encapsulation and addressing) and the 01c complementary notes (hubs, switches, routers), both in the Week 1 module, plus Lecture 02 (data and signals, sine waves, phase, wavelength, composite signals, bandwidth, digital signals). Same rules as the real thing: one hand-written A4 note, a calculator, no other help. About a third of the questions are calculations; write the units with every answer.
 
 ```quiz
 [

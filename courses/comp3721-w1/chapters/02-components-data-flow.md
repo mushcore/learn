@@ -1,9 +1,9 @@
 ---
 title: Five components & data flow
-minutes: 12
+minutes: 10
 ---
 
-Every data communications system, from two laptops on a cable to a video call across the world, is built from the same **five components**. After that, the lecture asks one more question about any link: which way does the data flow?
+Every data communications system is built from the same **five components**, and every link carries data in one of three directions.
 
 ## The five components
 
@@ -15,28 +15,22 @@ Every data communications system, from two laptops on a cable to a video call ac
 | **Transmission medium** | the physical path by which a message travels from sender to receiver | twisted-pair wire, coaxial cable, fibre-optic cable, air |
 | **Protocol** | a set of rules that govern data communications | |
 
-Two small details from the slides are worth a second look:
+Two details from the slide:
 
-- Under **sender**, the slide repeats the Lecture 01a rule: *all digital communication messages should be represented and transmitted as bits.* The sender is where data becomes bits.
-- A **telephone handset** appears in both the sender and the receiver lists; a **video camera** only as a sender and a **television** only as a receiver. The same device can play either role.
+- Under **sender**, the slide repeats the Lecture 01a rule: *all digital communication messages should be represented and transmitted as bits.*
+- A **telephone handset** appears in both the sender and the receiver lists. The same device can play either role.
 
 ## Protocol: the agreement
 
-The protocol box on the slide carries two sentences. Memorize both:
+The protocol slide has two sentences:
 
 > A protocol is **a set of rules that govern data communications.**
 
 > A protocol **represents an agreement between the communicating devices.**
 
-The second sentence is the "why": both devices must agree on the rules, otherwise a message can be delivered perfectly and still mean nothing. (Beyond the slides: the textbook adds that without a protocol two devices may be *connected* but not *communicating*.)
-
-:::quiz Fill-in-the-blank wording
-"A ___ is a set of rules that govern data communications" wants **protocol**. "The ___ is the physical path by which a message travels from sender to receiver" wants **transmission medium**. Be ready to list all five components from memory; it is a natural written-response question.
-:::
+Both devices must agree on the rules, or a message can be delivered perfectly and still mean nothing.
 
 ## Data flow: modes of communication
-
-Take any link between two devices. There are three possibilities for the direction of data.
 
 | Mode | Slide description | Slide picture | Everyday example |
 |---|---|---|---|
@@ -44,22 +38,8 @@ Take any link between two devices. There are three possibilities for the directi
 | **Half-duplex** | two-directional communication, **one at a time** | "direction of data at time 1", then "direction of data at time 2" | walkie-talkie |
 | **Full-duplex** | two-directional communication, **simultaneously** | "direction of data all the time" | telephone |
 
-The pictures on the slides carry the intuition:
-
-- **Simplex**: a mainframe drives a monitor. The monitor never sends anything back. A keyboard is the same idea in the other direction.
-- **Half-duplex**: two laptops, one arrow at time 1 and the opposite arrow at time 2. With a walkie-talkie you press to talk and release to listen; both people cannot talk at once.
-- **Full-duplex**: two laptops, arrows both ways *all the time*. On the telephone both people can speak and hear at the same moment.
-
 :::quiz Sample quiz question (true or false)
-The instructor's own sample quiz asks: **"In full-duplex mode of communication, signals going in one direction share the capacity of the link with signals going in the other direction."**
-
-The answer is **True**. The link has one total capacity and, in full-duplex, both directions use it at the same time, so they share it. The assigned textbook reading (Forouzan §1.1) explains that this sharing happens either by using two physically separate paths inside the link or by dividing the link's capacity between the two directions. Either way, the capacity is shared, not doubled.
-:::
-
-:::warn Do not confuse the modes
-- Half-duplex is *not* "one direction only"; both directions are possible, just not at the same time.
-- Simplex is *not* "slow duplex"; it is strictly one way, and the receiver cannot reply on that link at all.
-- The dividing line between half- and full-duplex is the single word **simultaneously**.
+**"In full-duplex mode of communication, signals going in one direction share the capacity of the link with signals going in the other direction."** **True.** Both directions use the one link at the same time, so its capacity is shared: either two physically separate paths inside the link, or the link's capacity divided between the two directions (Forouzan §1.1). Shared, not doubled.
 :::
 
 ## Try it

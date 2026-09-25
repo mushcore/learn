@@ -1,13 +1,13 @@
 ---
 title: References: the alias
-minutes: 22
+minutes: 16
 ---
 
-C has pointers. C++ adds a second tool that uses the same `&` symbol and, in the instructor's words, is "an entirely different concept": the **reference**. This lesson covers what a reference is, the one rule that catches everyone (it can never be re-seated), how to tell the two meanings of `&` apart, references to constants, and how references flow in and out of functions.
+C++ adds a second tool that uses the same `&` symbol as address-of and is "an entirely different concept": the **reference**, another name for an existing variable.
 
 ## A reference is a nickname
 
-The slide definition, in four lines:
+The slide definition:
 
 - **An alias**: anything done to the reference is done to the referent. The video's word is "nickname".
 - **Must be initialized when created**. `int& ref;` does not compile.
@@ -40,22 +40,18 @@ int main()
 }
 ```
 
-Step the widget while you read. `int& ref = n;` does not create a box: the stack shows the same cell with two names, `n` and `ref`, at one address. Then `ref = m;` looks like it might make `ref` refer to `m`. It does not. The slide comment says it: "same as n = m". The value 345 is copied into the box that `n` and `ref` share, so both `cout << n << endl;` and `cout << ref << endl;` print `345`. Changing `m` afterwards changes nothing about `n` or `ref`.
-
-:::quiz Assignment to a reference
-"Assignment to a reference changes the value of the object referred to, not the reference itself." The reference is bound once, at initialization, and stays bound to that one variable for its whole life.
-:::
+`int& ref = n;` creates no box: the widget shows one cell with two names at one address. `ref = m;` does not make `ref` refer to `m`; the slide comment says "same as n = m". The value 345 is copied into the box that `n` and `ref` share, so `cout << n << endl;` and `cout << ref << endl;` both print `345`, and changing `m` afterwards changes nothing. In the slide's words, assignment to a reference changes the value of the object referred to, not the reference itself: it is bound once, at initialization, for its whole life.
 
 ## Reading the ampersand
 
-The same character does two jobs, and the quiz will test whether you can tell them apart. The instructor's rule from the code video:
+The same character does two jobs. The rule from the code video:
 
 | You see | Meaning | How to tell |
 |---|---|---|
 | `int& b = a;` | **reference**: `b` is a nickname for `a` | there is a type immediately to the left of the `&`, and it is being initialized right away |
 | `cout << &a;` | **address-of**: the address of `a` | nothing to the left of the `&`; it sits in an expression |
 
-Here is `references.cpp` from the video, with the address printing replaced by comparisons so the output is fixed (the video prints raw addresses and they all come out identical, `cc8`):
+`references.cpp` from the video, with the address printing replaced by comparisons so the output is fixed (the video prints raw addresses and they all come out `cc8`):
 
 ```cpp run pin references.cpp
 // predict: Five lines. Booleans print as words because of boolalpha.
@@ -83,11 +79,11 @@ int main()
 }
 ```
 
-Walk it line by line. `b = 8;` is "exactly the same as saying a = 8", so the first line printed is `8`. `int& c = b;` makes a nickname for a nickname; "if you trace this all the way down", `c` is `a`, so `c = 4;` prints `4`. The comparison `(&a == &b)` uses the *other* ampersand, address-of, and it is `true` for both pairs: three names, one address. Finally `c = d;` copies 999 into the shared box, so `c` and `a` both print `999`, and the addresses are still equal.
+`b = 8;` is the same as `a = 8`, so the first line is `8`. `int& c = b;` is a nickname for a nickname, so `c` is `a` and `c = 4;` prints `4`. `(&a == &b)` uses the *other* ampersand, address-of, and is `true` for both pairs: three names, one address. `c = d;` copies 999 into the shared box, so `c` and `a` both print `999`.
 
 ## A reference cannot be re-seated
 
-This is the trap. The slide example uses `numRef`:
+The slide example uses `numRef`:
 
 ```widget
 pointer-viz
@@ -111,11 +107,11 @@ int main()
 }
 ```
 
-`int& numRef = num;` binds the reference once, to `num`. The slide's own comment for `numRef = num2;` is "numRef still referring to num, but changed num's value to 200". Compare that with a pointer: `p = &num2` would re-point `p`. With a reference there is no such operation at all; every assignment goes through to the referent. So `num2 = 300;` on the next line changes only `num2`, and the output is `200 300 200`.
+`int& numRef = num;` binds the reference once. The slide's comment for `numRef = num2;` is "numRef still referring to num, but changed num's value to 200". A pointer could be re-pointed with `p = &num2`; a reference has no such operation, every assignment goes through to the referent. So `num2 = 300;` changes only `num2`: `200 300 200`.
 
 ## Swap with references
 
-Now the swap from the previous lesson, third version. The slides put the pointer and reference versions side by side and ask you to notice how much cleaner the reference one reads:
+The third version of the swap. The slides put it beside the pointer version:
 
 ```widget
 pointer-viz
@@ -145,7 +141,7 @@ int main()
 }
 ```
 
-In the widget, the `swap` frame gets no new boxes for `arg1` and `arg2`; instead `first` and `second` in `main` each grow a second name. The body `int temp{arg1};` reads `first`, `arg1 = arg2;` writes into `first`, and `arg2 = temp;` writes into `second`, with no stars anywhere. The call `swap(first, second);` looks identical to the by-value call that failed; the difference is entirely in the parameter list. Output: `2526 3522`.
+The `swap` frame gets no new boxes: `first` and `second` in `main` each grow a second name. `int temp{arg1};` reads `first`, `arg1 = arg2;` writes into `first`, and `arg2 = temp;` writes into `second`, with no stars. The call `swap(first, second);` looks identical to the by-value call that failed; the difference is entirely in the parameter list. Output: `2526 3522`.
 
 | Version | Parameters | Call | Inside the body | Works? |
 |---|---|---|---|---|
@@ -155,7 +151,7 @@ In the widget, the `swap` frame gets no new boxes for `arg1` and `arg2`; instead
 
 ## Pointers versus references
 
-"Does our processor know about references? NO." Pointers and references produce the same assembly instructions; references are converted to pointers when the code is compiled. "References are for programmers." So the difference is entirely about what the language lets you write:
+"Does our processor know about references? NO." Pointers and references produce the same assembly instructions; references are converted to pointers when the code is compiled. "References are for programmers." The difference is what the language lets you write:
 
 | | Pointer | Reference |
 |---|---|---|
@@ -168,7 +164,7 @@ In the widget, the `swap` frame gets no new boxes for `arg1` and `arg2`; instead
 
 ## References to constants
 
-You cannot bind a plain reference to a temporary value, because a reference must name an existing variable:
+A plain reference cannot bind to a temporary value, because it must name an existing variable:
 
 ```cpp
 int& reference{1};    // will not compile: 1 is not a variable
@@ -179,7 +175,7 @@ long& ref = n;        // will not compile either: n is an int, not a long
 const long& ref = n;  // OK, but read the note below
 ```
 
-Why does `long& ref = n` fail when `n` is a real variable? Because the types do not match. To make a `long` out of an `int`, the compiler would have to create a temporary `long` holding a copy, and a non-const reference cannot bind to a temporary. Adding `const` allows exactly that: the reference binds to the hidden copy, not to `n`. Watch the widget's last preset to see the copy appear:
+`long& ref = n` fails even though `n` is a real variable because the types differ: making a `long` out of an `int` needs a temporary copy, and a non-const reference cannot bind to a temporary. `const` allows exactly that, so the reference binds to the hidden copy, not to `n`.
 
 ```widget
 pointer-viz
@@ -201,11 +197,9 @@ int main()
 }
 ```
 
-The instructor says he rarely uses this in practice, but the two compile errors are exactly the kind of true/false pair the quiz likes.
-
 ## Functions and references
 
-The "Functions and references" video adds the rules for references crossing a function boundary. First the danger: **a function cannot return a reference to a local object.**
+The "Functions and references" video adds one danger: **a function must not return a reference to a local object.**
 
 ```cpp
 int& f()          // compiles, but dangerous
@@ -222,7 +216,7 @@ int* g()          // same problem with a pointer
 }
 ```
 
-Local variables disappear when the function exits, so whoever uses the returned reference is looking at memory that "at some point will disappear and I don't know when". Both compile; both are wrong. The video's four combinations of in and out:
+Local variables disappear when the function exits, so the returned reference names dead memory. Both compile; both are wrong. The four combinations of in and out:
 
 | Signature | Coming in | Going out | Verdict |
 |---|---|---|---|
@@ -254,11 +248,11 @@ int main()
 }
 ```
 
-`f4(x) = 7;` is the line to think about. Because `int& f4(int& n)` returns a reference to the original, the call expression *is* `x`, and assigning to it assigns to `x` (after the doubling inside the call has already happened). `f1(x) + f2(x)` just reads the value twice. Could you use a global variable instead of references? "We can, but we shouldn't."
+`f4(x) = 7;` works because `int& f4(int& n)` returns a reference to the original: the call expression *is* `x`, so assigning to it assigns to `x` after the doubling inside the call. `f1(x) + f2(x)` reads the value twice. A global variable could do the same job: "we can, but we shouldn't."
 
 ## The two meanings of & in one program
 
-The practice sheet ends with a function that uses both ampersands; the full worked answers are in the lesson "Pointers & references practice, worked". Step it now to see a reference parameter, a by-value parameter and a pointer parameter side by side:
+The practice sheet ends with a function that uses both ampersands, worked in full in "Pointers & references practice, worked". The widget shows a reference parameter, a by-value parameter and a pointer parameter in one frame:
 
 ```widget
 pointer-viz

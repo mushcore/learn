@@ -1,6 +1,6 @@
 ---
 title: Sine wave: amplitude, frequency, period
-minutes: 16
+minutes: 14
 ---
 
 The slides call the sine wave *the most fundamental form of a periodic analog signal*. Three parameters represent it completely:
@@ -8,8 +8,6 @@ The slides call the sine wave *the most fundamental form of a periodic analog si
 1. **Peak amplitude ($A$)**: the value of its highest intensity.
 2. **Frequency ($f$)**: the number of completed cycles (periods) in 1 s.
 3. **Phase ($\phi$)**: the position of the waveform relative to time 0.
-
-This lesson covers $A$, $f$ and the period $T$. Phase gets its own lesson next, because it carries the equation with it.
 
 ## Peak amplitude ($A$)
 
@@ -21,7 +19,7 @@ Two slide examples:
 - The voltage of a battery is constant, for example 1.5 V. A constant signal is **periodic with a frequency of 0**.
 
 :::tip Where 120√2 comes from (beyond the slides)
-The 120 V on the label is the RMS value, and for a sine wave the peak is $\sqrt{2}$ times the RMS value; the slide only needs you to know the peak is about 170 V and the frequency is 60 Hz.
+The 120 V on the label is the RMS value; a sine wave's peak is $\sqrt{2}$ times its RMS value.
 :::
 
 ## Frequency ($f$) and period ($T$)
@@ -35,7 +33,7 @@ The slide figures: a wave with $T = 2$ s has $f = \frac{1}{2}$ Hz; a wave that f
 
 $$f = \frac{1}{T} \qquad T = \frac{1}{f}$$
 
-Drag $f$ below and count the cycles inside the 1 s window; then read $T$ off the panel and check that $f \times T = 1$.
+In the widget, the number of cycles inside the 1 s window is $f$, and the panel's $T$ satisfies $f \times T = 1$.
 
 ```widget
 sine-wave
@@ -50,10 +48,6 @@ Slide wording: *frequency is the rate of change with respect to time.*
 - Change over a **long** span of time means **low** frequency.
 - If a signal **does not change at all**, its frequency is **zero** (the battery: a flat line, $f = 0$ Hz).
 - If a signal **changes instantaneously**, its frequency is **infinite** ($T = 0$ s).
-
-:::quiz Two extremes worth a true/false each
-"A signal that never changes has a frequency of zero" is **true**. "A signal that changes instantaneously has an infinite frequency" is **true**, and its period is $T = 0$ s. Both come straight from the slide.
-:::
 
 ## Units of period and frequency
 
@@ -74,7 +68,7 @@ The rows line up on purpose. Because $\frac{1}{10^{-3}} = 10^{3}$, the reciproca
 | ns | GHz |
 | ps | THz |
 
-So "$T = 4$ μs" means "$f = \frac{1}{4}$ MHz $= 0.25$ MHz $= 250$ kHz" with no scientific notation at all. Use this shortcut to check the long way.
+So "$T = 4$ μs" means "$f = \frac{1}{4}$ MHz $= 0.25$ MHz $= 250$ kHz" with no scientific notation at all.
 
 ## Example 1 (slide): from frequency to period
 
@@ -82,7 +76,7 @@ So "$T = 4$ μs" means "$f = \frac{1}{4}$ MHz $= 0.25$ MHz $= 250$ kHz" with no 
 
 $$T = \frac{1}{f} = \frac{1}{60\ \text{Hz}} = 0.0167\ \text{s} = 16.7\ \text{ms}$$
 
-Steps: $1 \div 60 = 0.01667$ s. To get milliseconds multiply by $10^{3}$: $0.01667 \times 1000 = 16.7$ ms. Sanity check: 60 cycles fit in one second, so each one takes a bit less than $\frac{1}{50}$ s $= 20$ ms.
+Steps: $1 \div 60 = 0.01667$ s. To get milliseconds multiply by $10^{3}$: $0.01667 \times 1000 = 16.7$ ms.
 
 ## Example 2 (slide): from period to frequency
 
@@ -92,11 +86,11 @@ $$f = \frac{1}{T} = \frac{1}{200 \times 10^{-6}\ \text{s}} = \frac{1\,000\,000}{
 
 Steps: dividing by $10^{-6}$ is multiplying by $10^{6}$, so $\frac{1}{200 \times 10^{-6}} = \frac{10^{6}}{200} = 5000$. Then $5000$ Hz $= 5$ kHz.
 
-Shortcut check: $T$ in μs gives $f$ in MHz, so $f = \frac{1}{200}$ MHz $= 0.005$ MHz $= 5$ kHz. Same answer.
+Shortcut check: $T$ in μs gives $f$ in MHz, so $f = \frac{1}{200}$ MHz $= 0.005$ MHz $= 5$ kHz.
 
 ## Convert both ways
 
-Type a frequency or a period and pick its unit. The panel shows the reciprocal with the prefix arithmetic written out, so you can compare it to your own calculator steps.
+The panel shows the reciprocal with the prefix arithmetic written out.
 
 ```widget
 freq-period
@@ -104,8 +98,6 @@ freq-period
 ```
 
 ## Try it
-
-Work each one on paper with your calculator first, the way you will in the lab.
 
 ```quiz
 [

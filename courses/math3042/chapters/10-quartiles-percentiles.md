@@ -15,13 +15,11 @@ Sorted data can be cut into four equal-sized quarters by three cut points:
 | $Q_2$ | the median — separates the lowest 50% from the upper 50% |
 | $Q_3$ | separates the lowest 75% from the upper 25% |
 
-$Q_2$ is nothing new — it is the median you already know how to find.
-
 ## Hand method for small data sets
 
 To find $Q_1$ and $Q_3$ by hand: find the median first, then treat the **lower half** and **upper half** as their own mini data sets and take the median of each. If $n$ is **odd**, exclude the middle value itself from both halves before you split.
 
-Instructor's median examples, extended to quartiles:
+The median examples, extended to quartiles:
 
 **Odd $n = 7$:** $19, 19, 20, (22), 23, 25, 50$ → median $Q_2 = 22$.
 Exclude the 22, split what's left: lower half $19, 19, 20$ → $Q_1 = 19$ (its median). Upper half $23, 25, 50$ → $Q_3 = 25$.
@@ -42,7 +40,7 @@ $Q_3 = \frac{204\text{th} + 205\text{th}}{2} = 4.4585$
 R's `quantile()` function does not compute quartiles exactly this way — it interpolates slightly differently and reports $Q_1 = 2.16275$ and $Q_3 = 4.45425$ for the same data. Both are correct.
 
 :::quiz Slight disagreement is OK
-The instructor's own words: **"There are about 10 different ways to define quartiles. Slight disagreement is OK."** If your hand-calculated $Q_1$ doesn't exactly match R's `quantile()` output, that is expected — not a mistake. Don't assume a mismatch means you did the arithmetic wrong.
+**"There are about 10 different ways to define quartiles. Slight disagreement is OK."** A hand-calculated $Q_1$ that differs slightly from R's `quantile()` output is expected, not a mistake.
 :::
 
 ## Percentiles
@@ -51,13 +49,9 @@ A **percentile** $P_k$ generalizes the idea: it separates the lowest $k\%$ of th
 
 $Q_1 = P_{25} \qquad Q_2 = P_{50} \qquad Q_3 = P_{75}$
 
-In R: `quantile(data$X, k/100)` — the instructor's note is to **specify the percentage as a decimal** (e.g. `0.33` for the 33rd percentile, not `33`).
+In R: `quantile(data$X, k/100)`; give the percentage as a decimal (`0.33` for the 33rd percentile, not `33`).
 
 Example: `quantile(faithful$eruptions, 0.33)` gives $P_{33} = 2.417$. That means 33% of eruption durations are below 2.417 minutes, and 67% are above.
-
-:::warn Quiz note
-$P_{33} = 2.417$ does **not** mean "67% of the data is below 2.417." Read the subscript carefully: $P_{33}$ puts **33%** below and **67%** above.
-:::
 
 ## The five-number summary
 
@@ -71,8 +65,6 @@ Calling `quantile()` with no second argument returns all five landmark values at
 That's `quantile(faithful$eruptions)`. This five-number summary is exactly what a boxplot draws.
 
 ## Try it
-
-Paste a small data set and see the sorted values, both the hand-method and R-method quartiles, and the resulting box.
 
 ```widget
 boxplot

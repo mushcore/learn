@@ -3,7 +3,7 @@ title: Ternary, comma, sizeof, bitwise
 minutes: 18
 ---
 
-The slide calls these "some more assorted operators" — ternary, comma ("yuck", in the instructor's own words), casting, and `sizeof`. The sample code for this section is `assortedOps.cpp`; we reproduce it here exactly, plus the bitwise operators from `bits.cpp` and `const_vs_constexpr.cpp`.
+The slide calls these "some more assorted operators": ternary, comma, casting and `sizeof`. The sample code is `assortedOps.cpp`, plus the bitwise operators from `bits.cpp` and `const_vs_constexpr.cpp`.
 
 ## Ternary operator `?:`
 
@@ -36,7 +36,7 @@ expr-stepper
 { "expr": "(++n, n)", "env": { "n": 1 }, "presets": ["(++n, n)", "(++n, 2*n)"] }
 ```
 
-Here is the full `assortedOps.cpp` sample, with the ternary rewrite from above already applied. Run it with input `3`:
+The full `assortedOps.cpp` sample, with the ternary rewrite applied, on input `3`:
 
 ```cpp run pin assortedOps.cpp
 // stdin: 3
@@ -66,7 +66,7 @@ int main() {
 }
 ```
 
-Trace the `m` line by hand — this is exactly how the quiz will ask it:
+The `m` line, traced:
 
 1. `n` starts at `1`.
 2. `++n` — first item in the comma list — makes `n = 2`.
@@ -76,7 +76,7 @@ Trace the `m` line by hand — this is exactly how the quiz will ask it:
 6. On the next line, `(++m, m)` increments `m` to `7` and then evaluates to `m` (7) — so it **prints `m = 7`**.
 
 :::quiz The comma operator is not a tuple and not a function-call separator
-`int m = (a, b);` does **not** create a pair — it evaluates `a`, throws the result away, evaluates `b`, and `m` becomes `b`. Don't confuse the comma **operator** (needs parentheses, evaluates to the last expression) with the commas that separate function arguments or declarations like `int x, y;` — those are not the comma operator at all.
+`int m = (a, b);` does **not** create a pair — it evaluates `a`, throws the result away, evaluates `b`, and `m` becomes `b`. The comma **operator** (needs parentheses, evaluates to the last expression) is not the comma that separates function arguments or declarations like `int x, y;`.
 :::
 
 ## Casting operator
@@ -132,9 +132,7 @@ int main() {
 }
 ```
 
-The `bits.cpp` sample runs every bitwise operator's compound form on `a = b = c = d = e = 2`:
-
-`2` in binary is `010`. Work through each:
+`bits.cpp` runs every compound bitwise operator on `2`, which is `010` in binary:
 
 | Expression | Binary | Decimal |
 |---|---|---|
@@ -144,14 +142,12 @@ The `bits.cpp` sample runs every bitwise operator's compound form on `a = b = c 
 | `d \|= 1` (`010 \| 001`) | `011` | `3` |
 | `e ^= 1` (`010 ^ 001`) | `011` | `3` |
 
-Click bits directly to see this for any starting values:
-
 ```widget
 bitwise
 { "a": 2, "b": 1 }
 ```
 
-`const_vs_constexpr.cpp` chains two of these on the same variable, then reads a runtime value into a `const int`. Run it with input `7`:
+`const_vs_constexpr.cpp` chains two of these on one variable, then reads a runtime value into a `const int`. Input is `7`:
 
 ```cpp run
 // stdin: 7
@@ -177,11 +173,9 @@ int main()
 }
 ```
 
-`a` starts at `1` (`001`). `a <<= 3` shifts left three places to `1000` = `8`. Then `a |= b` with `b = 2` (`010`) ORs `1000 | 0010 = 1010` = `10`, and — because `|=` is an expression, not a statement — `cout << (a |= b)` prints the **new** value of `a`, `10`, in the same line that updates it. Output so far: `2147483647`, `1`, `8`, `10`.
+`a` starts at `1` (`001`). `a <<= 3` shifts left three places to `1000` = `8`. `a |= b` with `b = 2` (`010`) gives `1010` = `10`, and because `|=` is an expression, `cout << (a |= b)` prints the new value `10` on the same line that updates it. Output so far: `2147483647`, `1`, `8`, `10`.
 
-The last two lines are the sample's actual point (it's named `const_vs_constexpr.cpp`, after all): `const int constantinput = input;` compiles fine even though `input` is only known once the user types it at runtime — a `const` only promises the value won't change *after* initialization, so it prints whatever was typed, `7`. A `constexpr` in the same spot would **not** compile, because `constexpr` requires the value to be known at compile time, before the program ever runs.
-
-In one sentence: `const` can be set from a runtime value and never change again; `constexpr` must already be a compile-time value.
+The last two lines are the sample's point: `const int constantinput = input;` compiles even though `input` is only known at runtime, because a `const` only promises the value won't change *after* initialization; it prints `7`. A `constexpr` in the same spot would **not** compile, because `constexpr` requires a value known at compile time.
 
 ```quiz
 [

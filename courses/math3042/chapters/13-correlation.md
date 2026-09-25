@@ -19,7 +19,7 @@ $r$ is the **sample** statistic. The **population** version is written $\rho$ (r
 
 ## Worked example: resistance and failure time
 
-The instructor's electric-circuit data: $n = 12$ components, $x$ = resistance, $y$ = time to failure.
+The electric-circuit data: $n = 12$ components, $x$ = resistance, $y$ = time to failure.
 
 | x | y | xy | x² | y² |
 |---|---|---|---|---|
@@ -61,10 +61,6 @@ $r = 0.8324$ is close to 1, so resistance and failure time have a **strong posit
 | close to $-1$ (e.g. $-0.8$ to $-0.99$) | Strong negative linear correlation |
 | $r = -1$ | Perfect negative linear correlation |
 
-:::quiz r near 0 does not mean "unrelated"
-This is the instructor's own trap: $r \approx 0$ only rules out a **linear** relationship. A perfect parabola ($y = x^2$) has $r$ near 0 even though $y$ is completely determined by $x$ — the relationship is just curved, not straight. "No linear correlation" is the correct phrase; "no relationship at all" is not.
-:::
-
 ## Drag the points
 
 ```widget
@@ -72,11 +68,11 @@ scatter-corr
 { "title": "Linear correlation r — drag the points or pick a preset" }
 ```
 
-Try the **"Curved (r≈0 but related!)"** preset: the points trace a perfect parabola, yet $r$ comes out near 0. That is the property above, made visible — a strong, completely deterministic relationship that Pearson's $r$ cannot see because it is not linear.
+The **"Curved (r≈0 but related!)"** preset traces a perfect parabola ($y = x^2$): $y$ is completely determined by $x$, yet $r$ comes out near 0, because the relationship is curved, not linear. "No linear correlation" is the correct phrase; "no relationship at all" is not.
 
 ## Correlation does not imply causation
 
-Even a strong $r$ never tells you that one variable *causes* the other. The instructor's example: ice cream consumption and boating accidents are positively correlated across months of the year — but eating ice cream does not cause boating accidents. Both rise and fall with a hidden third factor (warm weather, more people out on boats and buying ice cream). Always ask whether a third variable could explain a correlation before claiming causation.
+Even a strong $r$ never tells you that one variable *causes* the other. Ice cream consumption and boating accidents are positively correlated across the months of the year, but eating ice cream does not cause boating accidents: both rise and fall with a hidden third factor (warm weather, more people out on boats and buying ice cream). Always ask whether a third variable could explain a correlation before claiming causation.
 
 ```quiz
 [

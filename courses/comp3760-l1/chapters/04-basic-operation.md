@@ -1,15 +1,15 @@
 ---
 title: Choosing the basic operation (and the tie-breakers)
-minutes: 18
+minutes: 15
 ---
 
-In [Counting statements](#/comp3760-l1/counting-statements) you counted every statement of `find` and got $f(n) = 3n - 1$. The lecture then throws most of that work away: **we define the basic operation of an algorithm as the statement that gets executed most frequently**, and **we don't count instructions that are not basic operations**. This lesson is about picking that one statement when it is not obvious, which is exactly what the quiz asks over and over.
+[Counting statements](#/comp3760-l1/counting-statements) counted every statement of `find` and got $f(n) = 3n - 1$; the lecture then keeps only one statement. Picking it when it is not obvious is what the tie-breakers are for.
 
 ## The definition, and what breaks a tie
 
 > **We define the basic operation of an algorithm as the statement that gets executed most frequently.**
 
-When two statements are executed the same number of times, slide 27 gives three tie-breakers:
+When two statements execute the same number of times, slide 27 gives three tie-breakers:
 
 - **deepest inside the loop**
 - **which one is more "expensive"**
@@ -18,7 +18,7 @@ When two statements are executed the same number of times, slide 27 gives three 
 And the sentence the whole course rests on: **this is the fundamental concept we use to analyze algorithmic efficiency: count the number of basic operations executed for an input of size n.**
 
 :::quiz One algorithm, one basic operation
-The definition says *the* statement, singular. When a quiz option reads "this code has two basic operations", it is the distractor. Two statements can tie on count; a tie-breaker then picks one of them. Two statements can also both grow with $n$ while one grows faster; the faster one wins outright.
+The definition says *the* statement, singular. "This code has two basic operations" is the distractor: two statements can tie on count, and a tie-breaker then picks one; if one grows faster with $n$, it wins outright.
 :::
 
 ## Example 3: Loops
@@ -36,7 +36,7 @@ Slide 35 asks three questions about this algorithm: what does it do, what is the
 8.    A[j+1] ← v
 ```
 
-**What does it do?** Slide 36 traces it on `5 2 4 6 1 3`. Each pass picks up $v = A[i]$ (shown in bold), slides the larger elements to its left one place right, and drops $v$ into the gap. That is insertion sort, which the textbook covers later; the slide just calls it `Loops`.
+**What does it do?** Slide 36 traces it on `5 2 4 6 1 3`. Each pass picks up $v = A[i]$ (in bold), slides the larger elements to its left one place right, and drops $v$ into the gap. That is insertion sort; the slide just calls it `Loops`.
 
 | pass $i$ | $v = A[i]$ | comparisons `A[j]>v` made | array after the pass |
 |---|---|---|---|
@@ -47,7 +47,7 @@ Slide 35 asks three questions about this algorithm: what does it do, what is the
 | 4 | 1 | 4 (6, 5, 4, 2 all > 1) | 1 2 4 5 6 **3** |
 | 5 | 3 | 4 (6, 5, 4 > 3, then 2 > 3 fails) | 1 2 3 4 5 6 |
 
-Twelve comparisons in total for this input. Keep that column in mind: the number depends on the *order* of the input, which is the subject of [Best, worst and average case](#/comp3760-l1/best-worst-average).
+Twelve comparisons for this input. The number depends on the *order* of the input, the subject of [Best, worst and average case](#/comp3760-l1/best-worst-average).
 
 ## Which statement is the basic operation?
 
@@ -55,27 +55,27 @@ Slide 37 is honest that there is a choice:
 
 > **Two options: there are variable assignments and comparisons. Most people would say the basic operation is the key comparison `A[j]>v`.**
 
-Why? Two reasons, in the slide's words:
+Two reasons, in the slide's words:
 
 - **It is really the key thing being checked in each loop.**
 - **"Data" comparisons are often considered more expensive than simple numerical comparisons or assignments.**
 
-Count the lines and you see why a tie-breaker is needed at all. In the worst case (input in descending order, so every comparison is true and $j$ walks all the way down to 0) lines 5, 6 and 7 each execute $\frac{n(n-1)}{2}$ times. They tie on frequency, and all three are inside the innermost loop. "More expensive" settles it: line 5 compares *data*, lines 6 and 7 only copy and subtract.
+In the worst case (input in descending order, so every comparison is true and $j$ walks down to 0) lines 5, 6 and 7 each execute $\frac{n(n-1)}{2}$ times. They tie on frequency and all three sit in the innermost loop, so "more expensive" settles it: line 5 compares *data*, lines 6 and 7 only copy and subtract.
 
 ```widget
 op-counter
 { "preset": "Loops (insertion sort)", "mode": "worst", "presets": false, "title": "Loops: how many times each line runs" }
 ```
 
-Set $n = 10$ and read the column: line 5 is executed 45 times, and so are lines 6 and 7. Flip the mode to *best* (already sorted input) and the inner loop stops after one comparison every pass, so line 5 drops to $n - 1$ while lines 6 and 7 fall to 0. The basic operation is still line 5 in both cases; the count is what changes.
+At $n = 10$ that is 45 each. On sorted input (*best*) line 5 drops to $n - 1$ and lines 6 and 7 to 0; the basic operation is still line 5, only the count changes.
 
 :::tip Two comparisons on one line
-Line 5 contains two comparisons: `j≥0` is a plain numerical check and `A[j]>v` is the *key comparison* (it compares array data). When the slides say "the basic operation is the comparison", they mean the key comparison. On a quiz, an option that names the data comparison beats one that names the loop counter check.
+Line 5 contains two comparisons: `j≥0` is a plain numerical check and `A[j]>v` is the *key comparison* (it compares array data). "The basic operation is the comparison" means the key comparison, and that is the one to name.
 :::
 
 ## The tie-breaker list
 
-Slide 41 turns "more expensive" into an ordered list. Learn it in this order; a quiz option is decided by the *highest* item that applies.
+Slide 41 turns "more expensive" into an ordered list; the highest item that applies decides.
 
 1. **Function calls (growing with N)**
 2. **Function calls (constant time)**
@@ -89,7 +89,7 @@ Slide 41 turns "more expensive" into an ordered list. Learn it in this order; a 
 2. **Addition/subtraction**
 
 :::warn Guidelines, not laws
-The slide ends with: **these are all more like guidelines than strict rules.** A true/false question can be built on that sentence. The ranking tells you which of two equally frequent statements to prefer; it never overrides the count itself. A statement that runs $n^2$ times beats a function call that runs $n$ times.
+The slide ends with: **these are all more like guidelines than strict rules.** The ranking says which of two *equally frequent* statements to prefer; it never overrides the count. A statement that runs $n^2$ times beats a function call that runs $n$ times.
 :::
 
 ### Function calls beat everything: CountSomething2
@@ -111,16 +111,16 @@ Slide 10's algorithm counts how many numbers of the form $100a + b$ (with $1 \le
 12. END
 ```
 
-Lines 5 and 6 both execute $n^2$ times (line 7 only when `val` happens to be prime, so it cannot be the most frequent). Line 5 is an assignment with a multiplication and an addition; line 6 is a **function call**. Function calls sit at the top of the tie-breaker list, so line 6 is the basic operation and the running time is $C(n) = n^2$. The cost hidden inside `isPrime` is exactly why the list ranks calls first: one call can be a whole loop of its own.
+Lines 5 and 6 both execute $n^2$ times (line 7 only when `val` is prime, so it cannot be the most frequent). Line 5 is an assignment with a multiplication and an addition; line 6 is a **function call**, the top of the list, so line 6 is the basic operation and $C(n) = n^2$. One call can hide a whole loop of its own, which is why calls rank first.
 
 ```widget
 op-counter
 { "preset": "CountSomething2 (isPrime)", "presets": false, "title": "CountSomething2: the isPrime call ties with line 5 on count" }
 ```
 
-## The quiz's favourite question
+## Four traps
 
-The sample quiz asks "what is the basic operation?" four different ways. Each one tests a different trap.
+The sample quiz asks "what is the basic operation?" four ways, each with a different trap.
 
 ### A constant loop is not a basic operation: DoSomething(N)
 
@@ -143,16 +143,14 @@ The sample quiz asks "what is the basic operation?" four different ways. Each on
 16. END
 ```
 
-Line 7 runs exactly **100 times, whatever N is**. For $N = 10$ that is more than any other line, and that is the trap: the running time is a function of the input size, and 100 does not grow with $N$. As soon as $N$ passes 100, lines 11 and 14 overtake it and keep growing. A statement whose count does not depend on $N$ cannot be the basic operation.
+Line 7 runs exactly **100 times, whatever N is**: more than any other line at $N = 10$, but 100 does not grow with $N$, and a statement whose count does not depend on $N$ cannot be the basic operation.
 
-That leaves lines 11 and 14, tied at $N$ executions each. Line 11 is an addition. Line 14 calls `max(s, t)`, a **constant-time function call** (tie-breaker 2), and then **multiplies** (arithmetic tie-breaker 1). Line 14 wins on both lists. The running time is $C(N) = N$.
+That leaves lines 11 and 14, tied at $N$ each. Line 11 is an addition. Line 14 calls `max(s, t)`, a **constant-time function call** (tie-breaker 2), and then **multiplies** (arithmetic tie-breaker 1), so it wins on both lists. $C(N) = N$.
 
 ```widget
 op-counter
 { "preset": "DoSomething(N) (10×10 then N)", "n": 10, "presets": false, "title": "DoSomething(N): line 7 is stuck at 100 while lines 11 and 14 grow" }
 ```
-
-Drag $n$ from 10 to 100 and past it. The 100 never moves.
 
 ### Two loops, one basic operation: CountSomethingElse(N)
 
@@ -174,7 +172,7 @@ Drag $n$ from 10 to 100 and past it. The 100 never moves.
 15. END
 ```
 
-This is slide 11's `CountSomethingElse` under a shorter name. Line 6 is inside a loop that runs $i$ times inside a loop that runs $N$ times: $1 + 2 + \ldots + N = \frac{N(N+1)}{2}$ executions. Line 12 runs $N$ times. For $N = 10$ that is 55 against 10, and the gap widens with $N$. The basic operation is line 6, full stop. "Line 6 and line 12" is the distractor: the second loop is a smaller term that big-O will throw away anyway.
+This is slide 11's `CountSomethingElse` under a shorter name. Line 6 sits in a loop that runs $i$ times inside a loop that runs $N$ times: $1 + 2 + \ldots + N = \frac{N(N+1)}{2}$ executions. Line 12 runs $N$ times. For $N = 10$ that is 55 against 10. The basic operation is line 6; "line 6 and line 12" is the distractor, a smaller term that big-O throws away anyway.
 
 ```widget
 op-counter
@@ -198,7 +196,7 @@ op-counter
 12. end-while
 ```
 
-Read `i/2` as integer division (with real division `i` would never reach 0 and the loop would never end). Then `i` takes the values $n, n/2, n/4, \ldots$ and the outer loop runs only $⌊\log_2 n⌋ + 1$ times, so lines 4, 5, 6 and 11 each run that few times. Line 8 runs once for every step of the inner countdown, and on the very first pass alone (with $j = 1$) it runs $n$ times. It is the deepest statement and by far the most frequent one. For $n = 10$:
+Read `i/2` as integer division (with real division `i` would never reach 0). Then `i` takes the values $n, n/2, n/4, \ldots$ and the outer loop runs only $⌊\log_2 n⌋ + 1$ times, so lines 4, 5, 6 and 11 each run that few times. Line 8 runs once per step of the inner countdown, and on the first pass alone (with $j = 1$) it runs $n$ times. For $n = 10$:
 
 | outer pass | $i$ | $j$ | $x$ takes the values | line 8 runs |
 |---|---|---|---|---|
@@ -207,7 +205,7 @@ Read `i/2` as integer division (with real division `i` would never reach 0 and t
 | 3 | 2 | 3 | 2, −1 | 1 |
 | 4 | 1 | 4 | 1, −3 | 1 |
 
-Fifteen executions of line 8 against four of everything in the outer loop. Basic operation: **line 8**, the assignment `x = x - j`.
+Fifteen executions of line 8 against four of everything in the outer loop. Basic operation: **line 8**, the assignment `x = x - j`, the deepest and by far the most frequent statement.
 
 ```widget
 op-counter
@@ -229,7 +227,7 @@ op-counter
 10. END
 ```
 
-The loop runs $n$ times. Line 4 executes every pass, so $n$ times. It compares `A[n]` with `B[n]`, the same (out-of-range) pair every time, so the same branch is taken every pass and either line 5 or line 7 also runs $n$ times, never both. Line 4 is a **key comparison** (tie-breaker 3); lines 5 and 7 are assignments (tie-breaker 4). Basic operation: the comparison on line 4, executed **n** times. The odd index does not change the count, and the quiz's "how many times" answer is $n$, not $n/2$ (both branches are not split between passes) and not $2n$.
+The loop runs $n$ times, so line 4 executes $n$ times. It compares `A[n]` with `B[n]`, the same (out-of-range) pair every pass, so the same branch is taken every time and either line 5 or line 7 also runs $n$ times, never both. Line 4 is a **key comparison** (tie-breaker 3); lines 5 and 7 are assignments (tie-breaker 4). Basic operation: the comparison on line 4, executed **n** times: not $n/2$ (the branches are not split between passes) and not $2n$.
 
 ## Try it
 

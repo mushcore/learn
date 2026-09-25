@@ -1,6 +1,6 @@
 ---
 title: The lecture's practice problems, worked
-minutes: 15
+minutes: 13
 ---
 
 The last slide of Lecture 1 sets three problems. **For each of the following problems, write an algorithm and then determine: (a) its basic operation, (b) basic operation count, (c) if basic op count depends on input form.**
@@ -9,7 +9,7 @@ The last slide of Lecture 1 sets three problems. **For each of the following pro
 2. Computing $n!$ ($n$ factorial)
 3. Checking whether all elements in a given array are distinct
 
-Do each one on paper before reading the worked version. The recipe is the "algorithm for analyzing algorithms" from the slides: **decide on the basic operation** (may require tie-breakers), **count how many times the basic operation is executed** (set up summations, simplify to an expression that depends on $N$; this is the running time), then **determine the big-O class** of the running time function.
+The recipe is the slides' "algorithm for analyzing algorithms": decide on the basic operation (tie-breakers if needed), count how many times it is executed (set up summations, simplify to a function of $N$), then determine the big-O class.
 
 ## Problem 1: the sum of a set of numbers
 
@@ -23,13 +23,11 @@ Do each one on paper before reading the worked version. The recipe is the "algor
 ```
 
 - **Input size:** $n$, the number of numbers.
-- **(a) Basic operation:** the addition `sum + A[i]` on line 4. It is the statement executed most frequently (the only one inside the loop), and among the candidates it is the one doing the work. If you prefer to name it "the assignment on line 4", that is the same line: the tie-breaker list ranks the arithmetic in the expression, but either name points at line 4.
+- **(a) Basic operation:** the addition `sum + A[i]` on line 4, the only statement inside the loop. "The assignment on line 4" names the same line; either points at line 4.
 - **(b) Count:** once per pass of the loop, $i$ from $0$ to $n - 1$:
   $$C(n) = \sum_{i=0}^{n-1} 1 = n$$
 - **(c) Depends on input form?** **No.** Every element is added exactly once whatever its value; there is no `if` that could skip work. Best case = worst case = $n$.
-- **Class:** $C(n) = n \in O(n)$, linear: "algorithms that scan a list of size $n$".
-
-This is the same shape as `Mystery1` on the slides (`S ← S + i * i` inside `for i ← 1 to n`), which also came out to exactly $n$.
+- **Class:** $C(n) = n \in O(n)$, linear: "algorithms that scan a list of size $n$". Same shape as `Mystery1` on the slides, which also came out to exactly $n$.
 
 ## Problem 2: n factorial
 
@@ -42,16 +40,16 @@ This is the same shape as `Mystery1` on the slides (`S ← S + i * i` inside `fo
 6.    return f
 ```
 
-- **Input size:** the number $n$ itself (as in `Example3` on the slides, where the input size measure was "number $n$").
-- **(a) Basic operation:** the multiplication `f * i` on line 4. Tie-breakers agree: it is the deepest statement, and multiplication ranks above addition on the arithmetic list.
+- **Input size:** the number $n$ itself (as in `Example3`, where the input size measure was "number $n$").
+- **(a) Basic operation:** the multiplication `f * i` on line 4: the deepest statement, and multiplication ranks above addition on the arithmetic list.
 - **(b) Count:** $i$ runs from $2$ to $n$, which is $n - 2 + 1$ values:
   $$C(n) = \sum_{i=2}^{n} 1 = n - 1 \quad (n \ge 2)$$
-  If you wrote the loop as `for i ← 1 to n`, the count is $n$ (one wasted multiplication by 1). Both answers are right for their own algorithm; on a quiz, count the loop you were shown.
-- **(c) Depends on input form?** **No.** The count depends only on the size $n$, not on any property of the input.
+  With the loop written `for i ← 1 to n` the count is $n$ (one wasted multiplication by 1). Count the loop you were shown.
+- **(c) Depends on input form?** **No.** The count depends only on $n$.
 - **Class:** $O(n)$.
 
 :::tip Starting at 1 or at 0
-`Factorial(0)` and `Factorial(1)` both return 1 without entering the loop: the `for i ← 2 to n` bound is empty when $n < 2$, so the count formula $n - 1$ only applies for $n \ge 2$. When you state a count, say for which $n$ it holds if the loop can be empty.
+`Factorial(0)` and `Factorial(1)` return 1 without entering the loop: `for i ← 2 to n` is empty when $n < 2$, so $n - 1$ only holds for $n \ge 2$. When a loop can be empty, say for which $n$ the count holds.
 :::
 
 ## Problem 3: are all the elements distinct?
@@ -70,11 +68,9 @@ This is the slide's `UniqueElements` algorithm (textbook Example 3):
 - **(a) Basic operation:** the **comparison in the innermost loop**, `A[i] = A[j]` on line 4. Key comparisons outrank the loop bookkeeping.
 - **(b) Count:** the algorithm can stop early, so the count is not a single number. In the **worst case** (all elements distinct, or the only duplicate is the last pair) every comparison happens:
   $$C_{worst}(n) = \sum_{i=0}^{n-2} \sum_{j=i+1}^{n-1} 1 = \sum_{i=0}^{n-2} (n - 1 - i) = \frac{n^2}{2} - \frac{n}{2}$$
-  (the full simplification is worked line by line in [Setting up and simplifying the sums](#/comp3760-l1/counting-with-sums)). In the **best case** `A[0] = A[1]` and the very first comparison returns `false`: $C_{best}(n) = 1$.
-- **(c) Depends on input form?** **Yes.** This is the whole point of the third problem: the count depends on *where* (and whether) a duplicate sits. Step 3 of the textbook's strategy says that when this happens, best, worst and average cases must be investigated separately, and the slide rule is **unless otherwise specified, you should always analyze the worst case.**
+  (simplified line by line in [Setting up and simplifying the sums](#/comp3760-l1/counting-with-sums)). In the **best case** `A[0] = A[1]` and the first comparison returns `false`: $C_{best}(n) = 1$.
+- **(c) Depends on input form?** **Yes.** The count depends on *where* (and whether) a duplicate sits. Step 3 of the textbook's strategy says best, worst and average cases must then be investigated separately, and the slide rule is **unless otherwise specified, you should always analyze the worst case.**
 - **Class:** $C_{worst}(n) = \frac{n^2}{2} - \frac{n}{2} \in O(n^2)$, quadratic: two embedded loops.
-
-Run the three problems through the counter and compare the "worst" and "best" modes for `UniqueElements`; the other two have no modes because their counts cannot vary.
 
 ```widget
 op-counter
@@ -83,7 +79,7 @@ op-counter
 
 ## From the textbook
 
-The slide before the practice problems lists exercises from Levitin, 3rd edition. Do them on paper with the book open; they are in the same style as the quiz.
+The slide before the practice problems lists exercises from Levitin, 3rd edition, in the same style as the quiz:
 
 - Chapter 1.1, page 8, question 5
 - Chapter 1.2, page 18, question 9
@@ -94,7 +90,7 @@ The slide before the practice problems lists exercises from Levitin, 3rd edition
 
 ## Three more, in the quiz's style
 
-The quiz shows a short fragment and asks *what is the basic operation* or *how many times is it performed*. These three are not on the slides; they are built to catch the three most common mistakes.
+Three fragments that are not on the slides, each built around a common mistake.
 
 ### A: a halving loop with a constant inner loop
 
@@ -109,11 +105,11 @@ The quiz shows a short fragment and asks *what is the basic operation* or *how m
 8.    endwhile
 ```
 
-- **Basic operation:** line 5. It is the deepest statement, and it runs 5 times for every pass of the outer loop, so it is executed most often. (Line 7, the division, runs only once per pass.)
-- **Count:** the outer loop is `Example3` from the slides: with integer division, $i$ takes the values $n, ⌊n/2⌋, ⌊n/4⌋, \ldots, 1$, which is $⌊\log_2 n⌋ + 1$ passes. Each pass runs line 5 five times:
+- **Basic operation:** line 5, the deepest statement; it runs 5 times per pass of the outer loop, while line 7 runs once per pass.
+- **Count:** the outer loop is `Example3`: with integer division, $i$ takes the values $n, ⌊n/2⌋, ⌊n/4⌋, \ldots, 1$, which is $⌊\log_2 n⌋ + 1$ passes. Each pass runs line 5 five times:
   $$C(n) = 5 \cdot (⌊\log_2 n⌋ + 1)$$
   For $n = 8$: $i = 8, 4, 2, 1$, four passes, $C = 20$.
-- **Class:** $O(\log n)$. The constant 5 is a constant factor and disappears. A constant-bound inner loop never changes the class.
+- **Class:** $O(\log n)$. The 5 is a constant factor and disappears; a constant-bound inner loop never changes the class.
 
 ### B: a nested loop whose inner bound is a constant
 
@@ -130,10 +126,10 @@ The quiz shows a short fragment and asks *what is the basic operation* or *how m
 10.   return count
 ```
 
-- **Basic operation:** the comparison `A[i] > j` on line 5. It is executed on every pass of the inner loop; line 6 only runs when the comparison is true, so it can never be executed more often than line 5, and a key comparison outranks an assignment on the tie-breaker list anyway.
+- **Basic operation:** the comparison `A[i] > j` on line 5. It runs on every pass of the inner loop; line 6 runs only when the comparison is true, so it can never be more frequent, and a key comparison outranks an assignment anyway.
 - **Count:** the inner loop runs exactly 20 times for each of the $n$ values of $i$:
   $$C(n) = \sum_{i=0}^{n-1} \sum_{j=1}^{20} 1 = \sum_{i=0}^{n-1} 20 = 20n$$
-- **Class:** $O(n)$, **not** $O(n^2)$. Two nested loops give $n^2$ only when *both* bounds grow with $n$. Here the inner bound is the constant 20, so the algorithm is linear. This is the trap the quiz's `DoSomething(N)` fragment is built on: its $10 \times 10$ loop contributes a constant 100 no matter how big $N$ gets.
+- **Class:** $O(n)$, **not** $O(n^2)$. Two nested loops give $n^2$ only when *both* bounds grow with $n$; here the inner bound is the constant 20. The same trap as `DoSomething(N)`, whose $10 \times 10$ loop contributes a constant 100 however big $N$ gets.
 
 ### C: a loop that calls a function that loops
 
@@ -146,15 +142,15 @@ The quiz shows a short fragment and asks *what is the basic operation* or *how m
 6.    return total
 ```
 
-`SumAll` is Problem 1's algorithm: it adds up all $n$ elements, so each call does $n$ additions.
+`SumAll` is Problem 1's algorithm: each call does $n$ additions.
 
-- **Basic operation:** the call `SumAll(A)` on line 4. The tie-breaker list starts with **function calls (growing with $N$)**: a call whose own cost grows with the input outranks everything else in the statement, including the addition next to it.
-- **Basic operation count:** the call happens once per pass of the loop:
+- **Basic operation:** the call `SumAll(A)` on line 4. The tie-breaker list starts with **function calls (growing with $N$)**: a call whose own cost grows with the input outranks everything else in the statement, including the addition beside it.
+- **Basic operation count:** once per pass of the loop:
   $$C(n) = \sum_{i=0}^{n-1} 1 = n$$
-- **Total work and class:** each call costs $n$ additions, so the algorithm as a whole performs $n \cdot n = n^2$ additions and its class is $O(n^2)$.
+- **Total work and class:** each call costs $n$ additions, so the algorithm performs $n \cdot n = n^2$ additions and its class is $O(n^2)$.
 
 :::quiz "How many times" is not the same question as "what class"
-For FragC, **the basic operation is performed $n$ times** (that is the literal count of the call) but **the efficiency class is $O(n^2)$** (the count multiplied by what each call costs). The slides give you the tie-breaker rule that makes the call the basic operation; the consequence, that a growing-cost call carries its cost into the class, is the reason that rule sits at the top of the list. Read the question: a count question wants $n$; a class question wants $O(n^2)$.
+For FragC, **the basic operation is performed $n$ times** (the literal count of the call) but **the efficiency class is $O(n^2)$** (the count multiplied by what each call costs). A growing-cost call carries its cost into the class, which is why that rule sits at the top of the list. A count question wants $n$; a class question wants $O(n^2)$.
 :::
 
 ## Try it

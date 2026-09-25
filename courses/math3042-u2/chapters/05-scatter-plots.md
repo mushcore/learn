@@ -1,19 +1,17 @@
 ---
 title: Scatter plots
-minutes: 10
+minutes: 9
 ---
 
-Everything so far in Unit 2 pictured **one** variable at a time. The last chart in the notes pictures **two**: *"When we measure two or more numerical variables for each individual/unit, then it is possible to create a scatter plot."*
+Every chart so far pictured **one** variable. The last chart in the notes pictures **two**: *"When we measure two or more numerical variables for each individual/unit, then it is possible to create a scatter plot."*
 
 ## The idea
 
-Call the two variables $X$ and $Y$. *"We simply plot one point $(X, Y)$ for each individual/unit."* That is the whole construction: $n$ individuals give $n$ dots, with $X$ on the horizontal axis and $Y$ on the vertical axis. No classes, no counting: the pattern of the dots is the summary.
-
-Both variables must be numerical. A scatter plot of eye colour against height is not a thing; that would be a grouped box plot, which Lab 2 covers.
+*"We simply plot one point $(X, Y)$ for each individual/unit."* $n$ individuals give $n$ dots, $X$ on the horizontal axis and $Y$ on the vertical, with no classes and no counting: the pattern of the dots is the summary. Both variables must be numerical; eye colour against height needs a grouped box plot instead (Lab 2).
 
 ## The lecture example: fuel efficiency versus car weight
 
-R's built-in data frame `mtcars` has 32 cars and eleven variables per car. The notes take $Y$ = `mpg` (fuel efficiency, miles per gallon) and $X$ = `wt` (weight). The first few rows:
+R's built-in `mtcars` has 32 cars and eleven variables. The notes take $Y$ = `mpg` (fuel efficiency, miles per gallon) and $X$ = `wt` (weight):
 
 | car | `wt` | `mpg` |
 |---|---|---|
@@ -24,9 +22,7 @@ R's built-in data frame `mtcars` has 32 cars and eleven variables per car. The n
 | Honda Civic | 1.615 | 30.4 |
 | Toyota Corolla | 1.835 | 33.9 |
 
-Each row becomes one dot. The heavy Cadillac sits far right and low; the light Corolla sits far left and high. Over all 32 dots the picture *"trends downwards"*: heavier cars get fewer miles per gallon.
-
-The notes connect this to Unit 1: **"The fact that the points trend downwards is consistent with the linear correlation coefficient being negative."**
+Each row is one dot. The heavy Cadillac sits far right and low, the light Corolla far left and high, and over all 32 dots the picture *"trends downwards"*: heavier cars get fewer miles per gallon. The notes connect this to Unit 1: **"The fact that the points trend downwards is consistent with the linear correlation coefficient being negative."**
 
 ```r
 cor(mtcars$wt, mtcars$mpg)
@@ -35,15 +31,15 @@ cor(mtcars$wt, mtcars$mpg)
 [1] -0.8676594
 ```
 
-$r = -0.868$: a strong negative linear relationship (remember $-1 \le r \le 1$, and values near $-1$ mean the dots hug a downward line). If the dots trended upward, $r$ would be positive; a shapeless cloud gives $r \approx 0$. See [Linear correlation r](#/math3042/correlation) for the formula and the properties.
+$r = -0.868$ is a strong negative linear relationship ($-1 \le r \le 1$; values near $-1$ mean the dots hug a downward line). An upward trend gives positive $r$; a shapeless cloud gives $r \approx 0$ ([Linear correlation r](#/math3042/correlation)).
 
 ### The line through the dots
 
-The dotted line on the chart is the **line of best fit**, which the instructor also calls the **"regression line."** He wrote its equation on the plot:
+The dotted line is the **line of best fit**, which the instructor also calls the **"regression line."** Its equation on the plot:
 
 $$\text{mpg} = -5.344 \cdot \text{wt} + 37.285$$
 
-Read it as: each extra unit of weight costs about 5.3 mpg. The notes say linear models are covered *"later in the course"*; for now you only need to recognize the line and its name. In R the demo notebook gets it from `lm()` and draws it with `abline()`:
+Each extra unit of weight costs about 5.3 mpg. Linear models come *"later in the course"*; for now, recognize the line and its name. The demo notebook fits it with `lm()` and draws it with `abline()`:
 
 ```r
 model <- lm(mtcars$mpg ~ mtcars$wt)
@@ -52,7 +48,7 @@ abline(model, lty=3)
 
 ## Drawing it in R: two ways
 
-Base R, from the demo notebook, with the point style arguments spelled out:
+Base R, from the demo notebook:
 
 ```r
 data(mtcars)
@@ -64,9 +60,9 @@ plot( mtcars$wt, mtcars$mpg,    #X and Y values
       col="#66BD63", pch=19, lwd=1)
 ```
 
-`plot(x, y)` takes the $X$ vector first and the $Y$ vector second. `type="p"` means points, `pch=19` is the solid-dot symbol, `col` is the colour (a hex RGB code, the same kind Lab 2 asks for), and `xlab`/`ylab`/`main` label the axes and the chart.
+`plot(x, y)` takes $X$ first and $Y$ second. `type="p"` means points, `pch=19` the solid dot, `col` a hex RGB colour (the kind Lab 2 asks for), and `xlab`/`ylab`/`main` the labels.
 
-The instructor then wrote the **lattice** version in the margin, which uses a model formula:
+The instructor's **lattice** version in the margin uses a model formula:
 
 ```r
 library(lattice)
@@ -85,19 +81,15 @@ xyplot(mpg ~ wt, data = mtcars,
        type = c("p", "r"))
 ```
 
-His annotation on the last line: `type = c("p", "r")` means **"do data points ("p") and a regression line ("r")."** So lattice draws the line of best fit for you in one argument. `cex = 1` is the point size, and `paste0()` again builds the title from `nrow(mtcars)` so the $n$ is not hard-coded.
+His annotation on the last line: `type = c("p", "r")` means **"do data points ("p") and a regression line ("r")."** `cex = 1` is the point size, and `paste0()` builds the title from `nrow(mtcars)` so $n$ is not hard-coded.
 
 :::quiz Which side of the ~ is Y?
-The model formula `mpg ~ wt` reads "mpg **explained by** wt": the variable on the **left** of `~` is $Y$ (vertical axis), the one on the **right** is $X$ (horizontal). It is the same convention as `boxplot(extra ~ group)` in Unit 1 and `favstats(Days ~ Sex)` in Lab 2. In base `plot(x, y)` the order is the opposite: $X$ first.
+`mpg ~ wt` reads "mpg **explained by** wt": left of `~` is $Y$ (vertical), right is $X$ (horizontal), as in `boxplot(extra ~ group)` (Unit 1) and `favstats(Days ~ Sex)` (Lab 2). Base `plot(x, y)` is the opposite order: $X$ first.
 :::
 
 :::tip Units on the axis
-The notes label the weight axis "Weight (tons)". R's own documentation for `mtcars` says `wt` is in thousands of pounds (a 3.44 there is 3440 lb, about 1.7 tons). Use the label the notes use; the shape of the plot and the correlation do not depend on the unit.
+The notes label the weight axis "Weight (tons)". R's documentation says `wt` is in thousands of pounds (3.44 is 3440 lb, about 1.7 tons). Use the notes' label; the shape and the correlation do not depend on the unit.
 :::
-
-## Try it
-
-This is the real `mtcars` data, all 32 cars, with the live $r$ and the line of best fit computed underneath. Drag a point and watch $r$ change: pull the Cadillac up to 30 mpg and the correlation weakens; drag the light cars down and it flips sign. Then switch to the Unit 1 circuit preset for comparison.
 
 ```widget
 scatter-corr

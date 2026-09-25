@@ -1,13 +1,13 @@
 ---
 title: Best, worst and average case
-minutes: 10
+minutes: 9
 ---
 
-For `find`, `Mystery1` and `Mystery2` the count came out as a clean function of $n$ and nothing else. For a search, it does not: the same $n$ can cost 1 comparison or $n$ comparisons depending on *where the key is*. Step 3 of the textbook's strategy exists for this case, and the lecture's rule for it is short: analyze the worst case.
+For `find`, `Mystery1` and `Mystery2` the count came out as a function of $n$ and nothing else. For a search it does not: the same $n$ can cost 1 comparison or $n$ comparisons depending on *where the key is*. Step 3 of the textbook's strategy exists for this case, and the lecture's rule is short: analyze the worst case.
 
 ## Example 4: searching for a key
 
-Slide 52's problem is **searching for key in a list of n items**. Here is the algorithm in the slides' style.
+Slide 52's problem is **searching for key in a list of n items**.
 
 ```pseudo
 1. SequentialSearch(A[0..n-1], K)
@@ -31,8 +31,6 @@ op-counter
 { "preset": "SequentialSearch", "mode": "worst", "presets": false, "title": "SequentialSearch: flip the mode and watch line 3" }
 ```
 
-Flip between *worst* and *best*. The algorithm and $n$ do not change; only the input does, and line 3's count swings from $n$ to 1.
-
 ## The three cases, defined
 
 Slide 53, with the exact wording:
@@ -45,27 +43,23 @@ The slide's example for all three is **the problem of finding an element in an u
 
 ## Which to use
 
-Slide 54 answers the question before you ask it:
+Slide 54:
 
 > **We will usually focus on worst-case analysis. Unless otherwise specified, you should always analyze the worst case.**
 
-And then a fact that a true/false question loves:
+And:
 
 > **There are many situations where best case = worst case. Example: find the largest element in an unsorted list.**
 
-To find the largest element you must look at every element; there is no lucky input that lets `find` stop early. Its comparison runs $n - 1$ times no matter what order the list is in. Best = worst = $n - 1$, and there is nothing to investigate separately.
-
-:::quiz Two sentences to keep
-"Unless otherwise specified, analyze the worst case" is the default for every count in this course. "Best case = worst case for finding the largest element" is the standard example of an algorithm whose count depends only on $n$. Both can be asked as true/false.
-:::
+To find the largest element you must look at every element; there is no lucky input that lets `find` stop early. Its comparison runs $n - 1$ times whatever the order, so best = worst = $n - 1$ and there is nothing to investigate separately.
 
 ## Where this sits in the strategy
 
-Step 3 of the textbook's general strategy (slide 62) is the step this lesson is about:
+Step 3 of the textbook's general strategy (slide 62):
 
 > **Be sure the number of times the basic operation is executed depends only on the size of the input. If it depends on some other property, the best/worst/average case efficiencies must be investigated separately.**
 
-So the workflow is: choose the basic operation, then ask whether its count could change for two inputs of the same size. If yes, count the worst case (and the best, if asked). If no, there is one count and one function.
+So: choose the basic operation, then ask whether its count could differ for two inputs of the same size. If yes, count the worst case (and the best, if asked). If no, there is one count and one function.
 
 | algorithm | basic operation | depends on input form? | $C_{best}(n)$ | $C_{worst}(n)$ |
 |---|---|---|---|---|
@@ -77,16 +71,16 @@ So the workflow is: choose the basic operation, then ask whether its count could
 
 ## Two more algorithms whose count depends on the input
 
-**Loops (insertion sort).** In [Setting up the sums](#/comp3760-l1/counting-with-sums) the inner loop was counted as running $i$ times on pass $i$, which assumes `A[j] > v` is true all the way down to $j = 0$. That happens when the input is in descending order: the worst case, $\frac{n(n-1)}{2}$ comparisons. If the input is already sorted, `A[j] > v` is false on the first try every pass: one comparison per pass, $n - 1$ in total. The slide-36 example (`5 2 4 6 1 3`, twelve comparisons for $n = 6$) sits between the best case of 5 and the worst case of 15.
+**Loops (insertion sort).** In [Setting up the sums](#/comp3760-l1/counting-with-sums) the inner loop was counted as running $i$ times on pass $i$, which assumes `A[j] > v` is true all the way down to $j = 0$: descending input, the worst case, $\frac{n(n-1)}{2}$ comparisons. If the input is already sorted, `A[j] > v` is false on the first try every pass: one comparison per pass, $n - 1$ in total. The slide-36 example (`5 2 4 6 1 3`, twelve comparisons for $n = 6$) sits between the best case of 5 and the worst case of 15.
 
-**UniqueElements.** The worst case, all elements distinct, runs both loops to the end: $\frac{n^2}{2} - \frac{n}{2}$ comparisons. The best case is a duplicate in the first two positions: the very first comparison `A[0] = A[1]` is true, `return false` fires, and the count is 1.
+**UniqueElements.** The worst case, all elements distinct, runs both loops to the end: $\frac{n^2}{2} - \frac{n}{2}$ comparisons. The best case is a duplicate in the first two positions: the first comparison `A[0] = A[1]` is true, `return false` fires, and the count is 1.
 
 ```widget
 op-counter
 { "preset": "UniqueElements", "mode": "best", "presets": false, "title": "UniqueElements in the best case: one comparison, then return" }
 ```
 
-Switch this one to *worst* to see the $\frac{n(n-1)}{2}$ come back. Note what the mode does *not* change: the basic operation is the same comparison in both cases. Best and worst are different counts of the same statement, not different statements.
+The mode does not change the basic operation: best and worst are different counts of the same statement, not different statements.
 
 :::warn Order matters for searches and sorts, not for sums
 A loop that touches every element unconditionally (a sum, a product, a matrix multiplication, finding the max) has one count. A loop with an early exit (`return` inside the loop, or a `while` whose condition reads the data) can stop early on a lucky input, and that is the signal that best and worst case differ.

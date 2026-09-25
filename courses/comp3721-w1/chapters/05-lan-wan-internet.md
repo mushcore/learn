@@ -1,9 +1,9 @@
 ---
 title: LAN, WAN, internets & the Internet
-minutes: 15
+minutes: 13
 ---
 
-Networks come in sizes. The lecture names two (LAN and WAN), then shows what happens when you connect networks together: an internet, and eventually *the* Internet. This lesson closes with how the Internet is organized, how you reach it, and who writes its rules.
+Networks come in two sizes, LAN and WAN. Connecting networks together makes an internet, and eventually *the* Internet, which has a structure, access methods and a standards body of its own.
 
 ## Network types
 
@@ -25,28 +25,18 @@ Networks come in sizes. The lecture names two (LAN and WAN), then shows what hap
 
 > A **switched WAN** is used in the **backbone of global communication** today.
 
-| | LAN | WAN |
-|---|---|---|
-| Span | one office, building or campus | town, state, country, world |
-| Owned by | usually privately owned | created and run by communication companies, leased by the user |
-| Connects | hosts | network devices (switches, routers, modems) |
-
-:::quiz Likely traps
-- "A WAN is usually privately owned." **False**: a LAN is usually privately owned; a WAN is run by communication companies and *leased*.
-- "A point-to-point WAN connects more than two devices." **False**: point-to-point connects two; *switched* WAN connects more than two.
-- "The backbone of global communication today is a switched WAN." **True.**
-:::
+A LAN connects hosts and is usually privately owned; a WAN connects network devices and is leased from a communication company.
 
 ## Internetwork, internet, Internet
 
 When **two or more networks are connected**, they make an **internetwork**. The slide's example: different branches of the same organization.
 
-Then a capitalization rule that is a favourite true/false item:
+The capital letter matters:
 
 - An **internet**, with lower-case i, is **two or more networks that can communicate with each other**.
 - The most notable internet is called the **Internet**, with upper-case I, and is composed of **thousands of interconnected networks**.
 
-So every Internet is an internet, but an internet is not necessarily the Internet. Any company that joins two of its own networks has built an internet.
+Every Internet is an internet; an internet is not necessarily the Internet.
 
 ## A brief history of the Internet
 
@@ -57,11 +47,9 @@ So every Internet is an internet, but an internet is not necessarily the Interne
 | **1990** | Sir **Tim Berners-Lee** invented the **World Wide Web (WWW)** |
 | **1993** | the first popular and user-friendly web browser was developed: **Mosaic**, then Netscape, then Mozilla, then Firefox |
 
-The one word on the ARPANET slide that could stand alone as a fill-in is **survivability**: the network was designed to keep working when parts of it failed.
-
 ## Computer networks and the Internet
 
-The slide's phrase: the Internet is a **network of networks**. The lecture then zooms in on the pieces.
+The Internet is a **network of networks**.
 
 ### Edge, access, core
 
@@ -69,11 +57,11 @@ The slide's phrase: the Internet is a **network of networks**. The lecture then 
 - The **access network** is the network that **physically connects an end system to the first router** (the **edge router**) on a path from the end system to any other distant end system.
 - The **core network** is the network of **routers, link-layer switches, and links** that interconnects the Internet's end systems.
 
-Your laptop is at the edge; your home Wi-Fi, modem and the line to your ISP are the access network; everything beyond that first router, out to the far end system, is the core.
+Your laptop is at the edge; your home Wi-Fi, modem and the line to your ISP are the access network; everything beyond that first router is the core.
 
 ### The structure: customers, providers, backbones
 
-The lecture's diagram of the Internet has three tiers joined at **peering points**:
+The lecture's diagram has three tiers joined at **peering points**:
 
 | Tier | Slide label | Who |
 |---|---|---|
@@ -81,22 +69,18 @@ The lecture's diagram of the Internet has three tiers joined at **peering points
 | Middle | **Provider networks** | **national or regional ISPs** |
 | Bottom | **Customer networks** | organizations and individuals who buy access from a provider |
 
-**Internet Service Providers (ISPs)** are the companies that run the provider networks and backbones. **Peering points** are where the backbones connect to each other and to the provider networks, drawn as small circles with dashed links on the diagram.
+**Internet Service Providers (ISPs)** run the provider networks and backbones. **Peering points** are where the backbones connect to each other and to the provider networks.
 
 ## Accessing the Internet
 
-The slide lists four ways an end system reaches the Internet:
+Four ways an end system reaches the Internet:
 
 - **Telephone networks**
-  - **dial-up** service ("remember the sweet sound of dial-up?")
-  - **DSL (Digital Subscriber Line)** service: the line can be used **simultaneously for both voice and data communication**
+  - **dial-up** service
+  - **DSL (Digital Subscriber Line)** service: the line can be used **simultaneously for both voice and data communication**, unlike dial-up
 - **Cable networks**
 - **Wireless networks**
 - **Direct connection** to the Internet
-
-:::quiz DSL trap
-"With DSL, the telephone line can be used simultaneously for both voice and data." **True**, and that is the difference from dial-up, which tied up the line.
-:::
 
 ## Internet standards and RFCs
 
@@ -111,10 +95,6 @@ A **Request for Comment (RFC)** is:
 - **technical and detailed**
 
 **IETF** is the organization responsible for the development and publication of RFCs. **RFC-1 was written in 1969**, the same year as the first ARPANET message.
-
-:::warn Two-letter answers
-Fill-in-the-blank questions here are short and exact: *IETF* creates Internet standards and publishes RFCs; *interoperability* is why standards exist; *RFC* stands for Request for Comment. Write the abbreviation and its expansion on your study note.
-:::
 
 ## Try it
 

@@ -3,7 +3,7 @@ title: Pencil problems, worked
 minutes: 35
 ---
 
-Lab 1 says these seven "Pencil Problems" are the preparation for the **theory part** of the quiz — no R, just a calculator. Work each one out yourself before checking the quiz answer, then use the widget to confirm the whole calculation.
+Lab 1 says these seven "Pencil Problems" are the preparation for the **theory part** of the quiz — no R, just a calculator.
 
 ## Problem 1 — Plywood thickness
 

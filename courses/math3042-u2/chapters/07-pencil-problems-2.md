@@ -1,13 +1,13 @@
 ---
 title: Lab 2 pencil problems, worked
-minutes: 22
+minutes: 20
 ---
 
-Lab 2 ends with four problems "meant to be done with paper and pencil (and scientific calculator)". The lab says they help you prepare for **the theory part of the quiz and the exams**, so treat them as the closest thing you have to the real questions. Do each one on paper before you open its solution: write your numbers in the "try it first" box, then compare. Every solution here follows the instructor's posted answers step by step, and says where a different but acceptable method gives a slightly different number.
+Lab 2 ends with four problems "meant to be done with paper and pencil (and scientific calculator)" that the lab says prepare you for **the theory part of the quiz and the exams**. Each solution follows the instructor's posted answers step by step and notes where an acceptable alternative method gives a slightly different number.
 
 ## Problem 1: a frequency distribution for plywood thickness
 
-You are given the raw data for $X$ = thickness (in inches) of a sample of $n = 18$ sheets of nominally three-quarter-inch plywood:
+$X$ = thickness (in inches) of a sample of $n = 18$ sheets of nominally three-quarter-inch plywood:
 
 ```text
 0.754  0.735  0.754  0.748  0.740  0.752  0.747  0.740  0.751
@@ -17,26 +17,24 @@ You are given the raw data for $X$ = thickness (in inches) of a sample of $n = 1
 Determine an appropriate number of classes and appropriate class limits for a frequency distribution. Then determine the frequencies and the relative frequencies.
 
 :::quiz Try it first
-Before reading on, write down: $\sqrt{n}$, the range $R$, the ideal class width, the class width you will actually use, the first lower class limit, and then every class with its frequency. Only then scroll.
+Write $\sqrt{n}$, the range $R$, the ideal class width, the width you will use, the first lower limit, and every class with its frequency.
 :::
 
 ### Step 1: how many classes, how wide
 
-The recipe from the histogram lesson:
-
-1. Initial number of classes: $\sqrt{n} = \sqrt{18} = 4.24$, so about four or five classes.
+1. Initial number of classes: $\sqrt{n} = \sqrt{18} = 4.24$, so four or five classes.
 2. Range: $R = \max - \min = 0.754 - 0.732 = 0.022$ inches.
 3. Ideal class width: $R / \sqrt{n} = 0.022 / 4.24 = 0.0052$.
-4. Round to the precision of the data. The data has **three decimals**, so the width must be a three-decimal number, and a "nice" one: $0.0052 \to \mathbf{0.005}$.
-5. First lower class limit: the minimum, $0.730$ (rounded down from 0.732 to a clean multiple of 0.005).
+4. Round to the precision of the data. Three decimals, and a "nice" number: $0.0052 \to \mathbf{0.005}$.
+5. First lower class limit: the minimum rounded down to a clean multiple of 0.005, $0.730$.
 
 ### Step 2: the class limits
 
-Lower limits go up by 0.005: 0.730, 0.735, 0.740, 0.745, 0.750. Each upper limit is the next lower limit minus one unit of precision (0.001): 0.734, 0.739, 0.744, 0.749, 0.754. The last class ends at 0.754, which is exactly the maximum, so five classes cover everything.
+Lower limits rise by 0.005: 0.730, 0.735, 0.740, 0.745, 0.750. Each upper limit is the next lower limit minus one unit of precision (0.001): 0.734, 0.739, 0.744, 0.749, 0.754. The last class ends exactly at the maximum, so five classes cover everything.
 
 ### Step 3: count
 
-Sort the data first, then tally:
+Sort, then tally:
 
 ```text
 0.732 | 0.735 | 0.740 0.740 0.740 0.741 0.742 | 0.747 0.747 0.748 0.748 | 0.750 0.750 0.751 0.752 0.752 0.754 0.754
@@ -50,7 +48,7 @@ Sort the data first, then tally:
 | 0.745 | 0.749 | 4 | 0.222 |
 | 0.750 | 0.754 | 7 | 0.389 |
 
-Frequencies sum to 18 and relative frequencies to 1.00 (0.056 + 0.056 + 0.278 + 0.222 + 0.389 = 1.001, rounding). The distribution is skewed left: most sheets are at the thick end, with a thin tail down to 0.732.
+Frequencies sum to 18 and relative frequencies to 1.00 ($0.056 + 0.056 + 0.278 + 0.222 + 0.389 = 1.001$, rounding). The distribution is skewed left: most sheets are at the thick end, with a thin tail down to 0.732.
 
 ```widget
 hist-builder
@@ -59,7 +57,7 @@ hist-builder
 
 ### The same thing in R
 
-The solution builds the table with `cut()`, which assigns each value to a class, and `table()`, which counts:
+`cut()` assigns each value to a class and `table()` counts:
 
 ```r
 X.vals <- c(0.754, 0.735, 0.754, 0.748, 0.740, 0.752, 0.747, 0.740, 0.751,
@@ -93,23 +91,19 @@ freq.dist
 [0.75,0.755)         0.750        0.754 7 0.389
 ```
 
-`breaks=seq(0.730, 0.755, by=0.005)` lists the class boundaries; `right=FALSE` makes each class $[\text{lower}, \text{next lower})$, which is why R labels them `[0.73,0.735)`. The upper limit 0.734 in the table is the last possible data value inside that class.
-
-:::quiz Width must match the precision
-A likely trap: "the ideal width is 0.0052, so use 0.0052." No. The data has three decimals, so the class width and limits must too. Round 0.0052 to 0.005 and start from 0.730.
-:::
+`breaks=seq(0.730, 0.755, by=0.005)` lists the boundaries and `right=FALSE` makes each class $[\text{lower}, \text{next lower})$, which is why R labels them `[0.73,0.735)`. The table's upper limit 0.734 is the last possible data value inside that class.
 
 ## Problem 2: IQ percentiles from the empirical rule
 
 IQ scores for a large population have mean $\mu = 100$ and standard deviation $\sigma = 15$. Based on the 68–95–99.7 rule, determine the IQ score equivalent to (a) $P_{2.5}$, (b) $P_{16}$, (c) $P_{50}$, (d) $P_{66}$, (e) $P_{97.5}$.
 
 :::quiz Try it first
-Sketch the bell, mark $\mu \pm \sigma$, $\mu \pm 2\sigma$, $\mu \pm 3\sigma$, and write the percentage in each band. Then write the five IQ scores.
+Sketch the bell, mark $\mu \pm \sigma$, $\mu \pm 2\sigma$, $\mu \pm 3\sigma$ with the percentage in each band, then write the five IQ scores.
 :::
 
 ### The bands
 
-The empirical rule splits the bell into slices. Because the curve is symmetric, each side is half of a band:
+The empirical rule splits the symmetric bell into slices:
 
 | band | percent |
 |---|---|
@@ -120,7 +114,7 @@ The empirical rule splits the bell into slices. Because the curve is symmetric, 
 | $\mu + \sigma$ to $\mu + 2\sigma$ | 13.5% |
 | above $\mu + 2\sigma$ | 2.5% |
 
-Adding from the left gives the **cumulative** percentages, which are exactly the percentiles at each boundary:
+Adding from the left gives the cumulative percentages, which are the percentiles at each boundary:
 
 | boundary | IQ | percent below | percentile |
 |---|---|---|---|
@@ -133,15 +127,13 @@ Adding from the left gives the **cumulative** percentages, which are exactly the
 So (a) $P_{2.5} = 100 - 2(15) = \mathbf{70}$, (b) $P_{16} = 100 - 15 = \mathbf{85}$, (c) $P_{50} = \mu = \mathbf{100}$, (e) $P_{97.5} = 100 + 2(15) = \mathbf{130}$.
 
 :::warn Part (d): the answer key says P66 = μ + σ = 115
-The posted solution writes "$P_{66} = \mu + \sigma = 115$". By the 68–95–99.7 rule, the score one standard deviation above the mean has $50\% + 34\% = 84\%$ of the population below it, so $\mu + \sigma = 115$ is $P_{84}$, not $P_{66}$. The label looks like a typo for $P_{84}$. If a quiz asks for $P_{84}$, answer 115 and explain it as $\mu + \sigma$. A true $P_{66}$ cannot be read off the empirical rule at all (it needs a $Z$ table: $Z \approx 0.41$, IQ $\approx 106$), which is another reason to suspect the typo.
+The posted solution writes "$P_{66} = \mu + \sigma = 115$". By the 68–95–99.7 rule, $\mu + \sigma$ has $50\% + 34\% = 84\%$ of the population below it, so 115 is $P_{84}$; the label looks like a typo for $P_{84}$. A true $P_{66}$ cannot be read from the empirical rule at all ($Z$ table: $Z \approx 0.41$, IQ $\approx 106$). Asked for $P_{84}$, answer 115 as $\mu + \sigma$.
 :::
 
 ```widget
 normal-curve
 { "mu": 100, "sigma": 15, "x": 85, "title": "IQ: slide X to each boundary and read the % below" }
 ```
-
-Set $X$ to 70, 85, 100, 115 and 130 in turn and confirm the "% below" cells: 2.5, 16, 50, 84, 97.5.
 
 ## Problem 3: gold prices, range, IQR and fences
 
@@ -169,15 +161,15 @@ $R = \max - \min = 6448.51 - 6023.88 = \mathbf{424.63}$.
 
 ### (a) IQR, the way the answer key computes it (R's `quantile()`)
 
-R's default quantile interpolates between sorted values. With $n = 10$, $Q_1$ sits at position $1 + 0.25 \times 9 = 3.25$: a quarter of the way from the 3rd value to the 4th:
+R's default quantile interpolates between sorted values. With $n = 10$, $Q_1$ is at position $1 + 0.25 \times 9 = 3.25$, a quarter of the way from the 3rd value to the 4th:
 
 $Q_1 = 6195.20 + 0.25(6231.64 - 6195.20) = 6195.20 + 0.25(36.44) = \mathbf{6204.31}$
 
-$Q_3$ sits at position $1 + 0.75 \times 9 = 7.75$: three quarters of the way from the 7th value to the 8th:
+$Q_3$ is at position $1 + 0.75 \times 9 = 7.75$, three quarters of the way from the 7th value to the 8th:
 
 $Q_3 = 6374.78 + 0.75(6377.58 - 6374.78) = 6374.78 + 0.75(2.80) = \mathbf{6376.88}$
 
-$IQR = 6376.88 - 6204.31 = \mathbf{172.57}$, which is exactly what `IQR(X.gold)` prints.
+$IQR = 6376.88 - 6204.31 = \mathbf{172.57}$, which is what `IQR(X.gold)` prints.
 
 ### (b) Fences
 
@@ -189,17 +181,17 @@ Upper fence $= Q_3 + 258.855 = 6376.88 + 258.855 = \mathbf{6635.735}$
 
 ### (c) Outliers
 
-The minimum 6023.88 is above the lower fence and the maximum 6448.51 is below the upper fence. **There are no outliers** in the sample.
+The minimum 6023.88 is above the lower fence and the maximum 6448.51 below the upper fence: **there are no outliers**.
 
 ### The hand method gives slightly different quartiles
 
-Unit 1's pencil method takes $Q_1$ as the median of the lower half and $Q_3$ as the median of the upper half. With ten values, each half has five, so:
+Unit 1's pencil method takes $Q_1$ as the median of the lower half and $Q_3$ of the upper half; with five values per half:
 
 $Q_1 = 6195.20$ (3rd value), $Q_3 = 6377.58$ (8th value), $IQR = 6377.58 - 6195.20 = 182.38$
 
 $1.5 \times IQR = 273.57$; fences $6195.20 - 273.57 = 5921.63$ and $6377.58 + 273.57 = 6651.15$. Still no outliers.
 
-The instructor said in Unit 1 that "there are about 10 different ways to define quartiles" and that slight disagreement is fine. On a quiz, show your method; either $IQR = 172.57$ (R) or $182.38$ (hand) is acceptable, and the outlier conclusion is the same.
+The instructor said in Unit 1 that "there are about 10 different ways to define quartiles". Show your method; $IQR = 172.57$ (R) or $182.38$ (hand) is acceptable, and the outlier conclusion is the same.
 
 ```widget
 boxplot
@@ -230,11 +222,11 @@ sum(is.outlier)
 [1] 0
 ```
 
-The `25%` and `75%` labels on the fences are just names carried along from `quantile()`; the numbers are the fences.
+The `25%` and `75%` labels on the fences are names carried along from `quantile()`; the numbers are the fences.
 
 ## Problem 4: reading an ogive
 
-The test scores of 2287 Grade 8 students in the Netherlands are represented by an ogive: cumulative percentage of students (vertical) against test score (horizontal), with points at every 5 marks.
+The test scores of 2287 Grade 8 students in the Netherlands are represented by an ogive: cumulative percentage of students (vertical) against test score (horizontal), with points every 5 marks.
 
 ```widget
 ogive
@@ -244,12 +236,12 @@ ogive
 (a) What proportion of students had scores below 50? (b) What proportion had scores between 30 and 40? (c) What range of scores represents the top 25% of the class?
 
 :::quiz Try it first
-Read the curve: the height at 50, the heights at 30 and 40, and the score where the curve crosses 75%. Write three answers.
+Read the height at 50, the heights at 30 and 40, and the score where the curve crosses 75%.
 :::
 
 ### How to read an ogive
 
-Every point on the curve is "(score, percent of students **below** that score)". So:
+Every point is "(score, percent of students **below** that score)":
 
 - To find "what proportion is below $x$": go up from $x$ to the curve, then left to the axis.
 - To find "what proportion is between $a$ and $b$": read both heights and **subtract**.
@@ -257,18 +249,18 @@ Every point on the curve is "(score, percent of students **below** that score)".
 
 ### (a) Below 50
 
-Above score 50 the curve is at about **80%**. Roughly 0.80 of the 2287 students, about 1830, scored below 50.
+The curve is at about **80%** above score 50: roughly 0.80 of the 2287 students, about 1830, scored below 50.
 
 ### (b) Between 30 and 40
 
-Height at 40 is about 39%, height at 30 is about 13%. Difference: $39\% - 13\% \approx \mathbf{25\%}$. (The answer key reads the picture as $40\% - 15\% = 25\%$; the exact heights depend on your eye, the difference is what matters.)
+Height at 40 about 39%, at 30 about 13%: $39\% - 13\% \approx \mathbf{25\%}$. (The answer key reads $40\% - 15\% = 25\%$; the heights depend on your eye, the difference is what matters.)
 
 ### (c) The top 25%
 
-The top 25% is everyone **above** $P_{75}$. Go right from 75% to the curve: it crosses between 45 (60%) and 50 (80%), about three quarters of the way up, at a score of roughly **48**. The top quarter of the class scored from about **48 up to 60**, the maximum on the axis.
+The top 25% is everyone **above** $P_{75}$. Across from 75%, the curve crosses between 45 (60%) and 50 (80%), about three quarters of the way, at roughly **48**. The top quarter scored from about **48 up to 60**, the maximum on the axis.
 
-:::quiz Between means subtract
-"Between 30 and 40" is the height at 40 minus the height at 30. Reading only the height at 40 (39%) is the classic mistake, and so is answering a percentile question with a percentage instead of a score. Check that your answer has the right units: percent for (a) and (b), scores for (c).
+:::quiz Units
+Percent for (a) and (b), scores for (c). Answering a percentile question with a percentage is the classic mistake.
 :::
 
 ```quiz

@@ -3,7 +3,7 @@ title: Study sheet (Lecture 1)
 minutes: 10
 ---
 
-The main quizzes are **closed-everything**, so this page is not something to bring: it is what should be in your head. Read it once, close it, and write it out from memory on a blank page. Whatever you could not reproduce is what to reread.
+The main quizzes are **closed-everything**, so this page is what should be in your head, not something to bring. Read it, close it, write it out from memory, and reread whatever you could not reproduce.
 
 ## The definition (slide 7)
 

@@ -26,7 +26,7 @@ Anything that calls `add` only needs to have *seen the declaration* — the comp
 
 ## The calculator sample
 
-The course's Week 1 sample code (`HelloWorld/`) builds exactly this pattern with an `add` function — and deliberately hides a `subtract` function to make a point. Here are the three files, unchanged.
+The Week 1 sample code (`HelloWorld/`) builds this pattern with an `add` function and deliberately hides a `subtract` function. The three files, unchanged:
 
 **calculator.hpp** — the header. Declares the interface:
 
@@ -83,7 +83,7 @@ int main() {
 Running this prints `Hello, World!` then `15` (from `add(10,5)`).
 
 :::quiz Why can't main.cpp call subtract?
-This is the sample code's actual teaching point, and a very likely quiz question. `subtract` **is** fully implemented in `calculator.cpp` — the function body exists and would compile fine. But `main.cpp` only has `#include "calculator.hpp"`; it never includes `calculator.cpp`. It calls `add(10,5)` successfully, but the matching line `//cout << subtract(10, 5);` is commented out. Since the `subtract` declaration is commented out of the header, the preprocessor never pastes any mention of `subtract` into `main.cpp`. As far as the compiler is concerned while compiling `main.cpp`, no function named `subtract` exists — calling it is a compile error, not a linker error, and uncommenting only the header line (without touching calculator.cpp) is enough to fix it.
+`subtract` is fully implemented in `calculator.cpp`, but `main.cpp` only includes `calculator.hpp`, and the `subtract` declaration is commented out of that header. While compiling `main.cpp` the compiler has never seen a function named `subtract`, so calling it is a compile error, not a linker error. Uncommenting the header line alone fixes it.
 :::
 
 ```widget
@@ -94,7 +94,7 @@ compile-pipeline
 
 - **Quotes vs angle brackets**: `#include "calculator.hpp"` for your own headers (the preprocessor looks in your project directory first); `#include <iostream>` for library headers (angle brackets, no extension).
 - **Never `#include` a `.cpp` file.** Only ever include headers. `main.cpp` connects to `calculator.cpp`'s code through `calculator.hpp`, never by including `calculator.cpp` directly.
-- **`#pragma once`**, not `#ifndef` include guards. Both exist to stop a header's contents from being pasted into the same file twice (which would redeclare everything and fail to compile), but `#pragma once` is one line instead of three (`#ifndef X_H` / `#define X_H` / `#endif`) and is what the slides tell you to prefer.
+- **`#pragma once`**, not `#ifndef` include guards. Both stop a header's contents from being pasted into the same file twice (which would redeclare everything and fail to compile), but `#pragma once` is one line instead of three (`#ifndef X_H` / `#define X_H` / `#endif`) and is what the slides prefer.
 - **Every `.cpp` should have a matching `.hpp`** — except `main.cpp`. `main.cpp` is the one file that's allowed to exist without a header of its own, since nothing else needs to call into it.
 - A source file **connects** to its header by `#include`-ing it and giving the *matching* function declaration as its definition — same return type, name, and parameter types.
 
@@ -112,11 +112,11 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
 - `-Wextra` — enable additional warnings beyond `-Wall`
 - `-pedantic` — warn about anything that isn't strict ISO C++
 
-This is exactly the same flag set the `cpp run` blocks on this site compile with, so code that looks fine here should also look fine in CLion.
+The `cpp run` blocks on this site compile with the same flags.
 
 ## Declaration before use
 
-The Run button on this page only compiles a single file, so it can't show three separate files executing together — but it can show the same *rule* that makes the multi-file version work: the compiler must see a declaration before it sees a call.
+One file can still show the rule that makes the multi-file version work: the compiler must see a declaration before it sees a call.
 
 ```cpp run
 #include <iostream>
@@ -136,7 +136,7 @@ int add(int first, int second) // definition — full body
 }
 ```
 
-Try deleting the standalone declaration line (`int add(int first, int second);`) and running again — you'll get a compile error, because at the point `main` calls `add`, the compiler hasn't seen it yet. In the real multi-file project, `#include "calculator.hpp"` is what supplies that declaration before `main` needs it.
+Without the standalone declaration line, the call in `main` is a compile error, because the compiler has not seen `add` yet. In the multi-file project, `#include "calculator.hpp"` supplies that declaration.
 
 ## Summary (from the slides)
 

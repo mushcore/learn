@@ -1,9 +1,9 @@
 ---
 title: Order of growth and the efficiency classes
-minutes: 14
+minutes: 12
 ---
 
-By the end of [Setting up and simplifying the sums](#/comp3760-l1/counting-with-sums) every algorithm we analyzed had turned into a formula. The slide says it in five words: **Running times of algorithms are functions.**
+By the end of [Setting up and simplifying the sums](#/comp3760-l1/counting-with-sums) every algorithm had turned into a formula. The slide says it in five words: **Running times of algorithms are functions.**
 
 | Algorithm | Running time |
 |---|---|
@@ -11,7 +11,7 @@ By the end of [Setting up and simplifying the sums](#/comp3760-l1/counting-with-
 | `Mystery2` (sum of an $n \times n$ array) | $f(n) = n^2$ |
 | `Loops` (insertion sort, worst case) | $f(n) = \frac{(n-1)n}{2}$ |
 
-This lesson is about comparing such functions. The next one, [Big-O, Big-Ω, Big-Θ](#/comp3760-l1/big-o-omega-theta), makes the comparison formal.
+Comparing such functions is the question; [Big-O, Big-Ω, Big-Θ](#/comp3760-l1/big-o-omega-theta) makes the comparison formal.
 
 ## There are LOTS of functions in the world
 
@@ -30,20 +30,18 @@ The slide asks it with four running times:
 - $C(n) = \log n + 5$
 - $C(n) = n!$
 
-Multiply out the first one: $\frac{n(n-1)}{2} = \frac{n^2}{2} - \frac{n}{2}$. For large $n$ the $-\frac{n}{2}$ hardly matters next to $\frac{n^2}{2}$, so the first two are essentially the *same* running time written two ways. $\log n + 5$ grows far more slowly than either, and $n!$ grows faster than anything else on this page. The whole lesson is about making "essentially the same" and "grows faster" precise.
+Multiply out the first: $\frac{n(n-1)}{2} = \frac{n^2}{2} - \frac{n}{2}$. For large $n$ the $-\frac{n}{2}$ hardly matters next to $\frac{n^2}{2}$, so the first two are the *same* running time written two ways. $\log n + 5$ grows far more slowly than either; $n!$ grows faster than anything else on the page.
 
 ## Order of growth
 
-Two algorithms, $f_A(n) = n$ and $f_B(n) = n^2$. The slide draws them on one axis: for the smallest inputs the red $n^2$ curve actually sits *below* the straight line $n$ (at $n = 0.5$, $n^2 = 0.25$). Then it crosses at $n = 1$ and pulls away, and it never comes back.
-
-That crossing is the point. Which algorithm is faster on a tiny input is an accident of constants. **What we really care about: order of growth as $n \to \infty$.**
+Two algorithms, $f_A(n) = n$ and $f_B(n) = n^2$. On the slide's axis, for the smallest inputs the red $n^2$ curve sits *below* the line $n$ (at $n = 0.5$, $n^2 = 0.25$); it crosses at $n = 1$, pulls away, and never comes back. Which algorithm is faster on a tiny input is an accident of constants. **What we really care about: order of growth as $n \to \infty$.**
 
 ```widget
 growth-plot
 { "nmax": 30, "title": "Orders of growth: drag n and read every function; toggle curves off to compare two at a time" }
 ```
 
-Turn everything off except `n` and `n^2` and watch the gap open. Then turn on `2^n`: on this log-scale axis it is the curve that is still a straight line pointing up when everything polynomial has bent over. Finally `n!`, which leaves even $2^n$ behind.
+On the log-scale axis, $2^n$ is still a straight line pointing up when every polynomial has bent over, and $n!$ leaves even $2^n$ behind.
 
 ## Table 2.1: values of the functions that matter
 
@@ -62,15 +60,15 @@ Three things to read off it:
 
 - **$\log_2 n$ barely moves.** Multiplying $n$ by ten adds about 3.3 to $\log_2 n$. A million items need only 20 halvings.
 - **$n \log_2 n$ is "almost linear".** At $n = 10^6$ it is $2.0 \cdot 10^7$, only 20 times $n$ itself, while $n^2$ is a million times $n$.
-- **$2^n$ and $n!$ run off the table.** The book does not even print them past $n = 100$.
+- **$2^n$ and $n!$ run off the table.** The book does not print them past $n = 100$.
 
 :::warn 100! on the fastest supercomputer
-The slide circles $9.3 \cdot 10^{157}$ and adds: **$1.5 \times 10^{133}$ years on the world's fastest supercomputer.** An algorithm that tries every permutation of 100 items is not "slow"; it will not finish in the lifetime of the universe. That is why the efficiency *class* of an algorithm matters more than any constant factor.
+The slide circles $9.3 \cdot 10^{157}$ and adds: **$1.5 \times 10^{133}$ years on the world's fastest supercomputer.** An algorithm that tries every permutation of 100 items will not finish in the lifetime of the universe, which is why the efficiency *class* matters more than any constant factor.
 :::
 
 ## Common efficiency classes
 
-Every basic-operation count you will meet in this course lands in one of eight classes. The names and the textbook's comments (the underlined parts are what the instructor highlighted on the slide):
+Every basic-operation count in this course lands in one of eight classes. The names and the textbook's comments (bold marks what the instructor highlighted on the slide):
 
 | Class | Name | Comments |
 |---|---|---|
@@ -83,17 +81,17 @@ Every basic-operation count you will meet in this course lands in one of eight c
 | $2^n$ | exponential | Typical for algorithms that generate **all subsets of an $n$-element set.** Often, the term "exponential" is used in a broader sense to include this and larger orders of growth as well. |
 | $n!$ | factorial | Typical for algorithms that generate **all permutations of an $n$-element set.** |
 
-Matching the classes to the algorithms you have already counted:
+The algorithms already counted, by class:
 
-- `Example3` halves $i$ every pass, so it is **logarithmic**: cutting the problem's size by a constant factor on each iteration.
+- `Example3` halves $i$ every pass: **logarithmic**, cutting the problem's size by a constant factor on each iteration.
 - `find` and `SequentialSearch` scan a list of size $n$: **linear**.
 - `Loops` (insertion sort, an elementary sort) and `UniqueElements` have two embedded loops: **quadratic**.
 - `MatrixMultiply` has three embedded loops: **cubic**.
 
 :::quiz Two true/false traps hiding in the table
-**A logarithmic algorithm cannot look at all of its input.** True: to touch every one of $n$ items takes at least $n$ steps, which is already linear. So anything in $O(\log n)$ must be *skipping* most of the input (binary search skips half of what is left on every step).
+**A logarithmic algorithm cannot look at all of its input.** True: touching every one of $n$ items is already $n$ steps, so anything in $O(\log n)$ must be *skipping* most of the input (binary search skips half of what is left on every step).
 
-**Two nested loops always mean $n^2$.** False as a rule, true as a "typically". If the inner loop runs a *constant* number of times (say 1 to 10), the count is $10n$, which is linear. Count the loop bounds; do not just count the loops.
+**Two nested loops always mean $n^2$.** False as a rule, true as a "typically". If the inner loop runs a *constant* number of times (say 1 to 10), the count is $10n$, which is linear. Count the loop bounds, not the loops.
 :::
 
 ## Try it

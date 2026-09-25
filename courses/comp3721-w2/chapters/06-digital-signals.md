@@ -1,13 +1,13 @@
 ---
 title: Digital signals: bit rate, bit length, levels
-minutes: 18
+minutes: 14
 ---
 
-Everything so far described analog signals with frequency, period, phase and wavelength. Digital signals need a different vocabulary, because the thing that matters is not how often a pattern repeats but how many bits go by each second.
+Analog signals were described by frequency, period, phase and wavelength. Digital signals need a different vocabulary: what matters is how many bits go by each second.
 
 ## Why frequency does not describe a digital signal
 
-Slide wording: *most digital signals are nonperiodic*, so **frequency and period are not suitable characteristics**. A stream of bits does not repeat; there is no cycle to time. Instead we use the bit rate.
+Slide wording: *most digital signals are nonperiodic*, so **frequency and period are not suitable characteristics**. A stream of bits has no cycle to time; the bit rate is used instead.
 
 ## Bit rate, bit duration, bit length
 
@@ -17,8 +17,6 @@ Slide wording: *most digital signals are nonperiodic*, so **frequency and period
 
 $$\text{bit length} = \text{propagation speed} \times \text{bit duration}$$
 
-Compare with Lesson 14: wavelength is propagation speed times period. Bit length is propagation speed times bit duration. Same shape of formula, digital vocabulary.
-
 ### Slide example: bit length
 
 *What is the bit length of a signal that has a bit rate of 1 Mbps and is travelling at $2 \times 10^{8}$ m/s on a transmission medium?*
@@ -26,7 +24,7 @@ Compare with Lesson 14: wavelength is propagation speed times period. Bit length
 - Bit duration $= \dfrac{1}{1\ \text{Mbps}} = \dfrac{1}{10^{6}}$ s $= 1$ μs
 - Bit length $= (2 \times 10^{8}\ \text{m/s}) \times (1 \times 10^{-6}\ \text{s}) = 200$ m
 
-*This means a bit occupies 200 metres on this transmission medium.* While the sender is still finishing one bit, the front of that bit is already 200 m down the cable.
+*This means a bit occupies 200 metres on this transmission medium.*
 
 ## Levels
 
@@ -42,9 +40,7 @@ The two slide figures show the same second of time drawn with two and then four 
 | a | 2 | 8 | 1 | 8 (1 0 1 1 0 0 0 1) | 8 bps |
 | b | 4 | 8 | 2 | 16 (11 10 01 01 00 00 00 10) | 16 bps |
 
-Same eight signal elements per second, but with four levels each element carries two bits, so the bit rate doubles. That is the whole reason to use more levels.
-
-Slide the level count below and read the bits per element and the resulting bit rate at eight elements per second.
+With four levels each element carries two bits, so the bit rate doubles.
 
 ```widget
 signal-levels
@@ -53,7 +49,7 @@ signal-levels
 
 ## How many bits does a level need?
 
-Slide: *to encode 4 levels, $\log_{2} 4 = 2$ bits are required.* In general, for a signal with $L$ levels the number of bits needed is $\log_{2} L$, and then rounded up.
+Slide: *to encode 4 levels, $\log_{2} 4 = 2$ bits are required.*
 
 ### Slide example: 11 levels
 
@@ -70,10 +66,10 @@ $$\text{bits} = ⌈\log_{2} L⌉$$
 - **Floor** ⌊ ⌋: rounds the number **down** to the nearest integer less than or equal to it. Slide example: ⌊3.1416⌋ = 3.
 
 :::tip Calculator (beyond the slides)
-Most calculators have no log base 2 key. Use $\log_{2} L = \dfrac{\log L}{\log 2}$ with the base-10 log key from the Math Review: $\dfrac{\log 11}{\log 2} = \dfrac{1.0414}{0.3010} = 3.46$. Then take the ceiling by hand.
+Most calculators have no log base 2 key. Use $\log_{2} L = \dfrac{\log L}{\log 2}$ with the base-10 log key: $\dfrac{\log 11}{\log 2} = \dfrac{1.0414}{0.3010} = 3.46$, then take the ceiling.
 :::
 
-Worked table (cover the right column and reproduce it):
+Worked table:
 
 | Levels $L$ | $\log_{2} L$ | Bits needed ⌈$\log_{2} L$⌉ |
 |---|---|---|
@@ -85,7 +81,7 @@ Worked table (cover the right column and reproduce it):
 | 32 | 5 | 5 |
 | 100 | 6.64 | 7 |
 
-Powers of two are the clean cases; anything in between rounds **up**, never down. With 3 bits you can only name 8 levels, so 11 levels are impossible with 3 bits.
+3 bits can only name 8 levels, so 11 levels need 4: round **up**, never down.
 
 ## Slide example: bit rate of a channel
 
@@ -102,29 +98,23 @@ Multiply the units through: pages/s × lines/page × characters/line × bits/cha
 - Size of a page $= 24\ \dfrac{\text{lines}}{\text{page}} \times 80\ \dfrac{\text{characters}}{\text{line}} \times 8\ \dfrac{\text{bits}}{\text{character}} = 15\,360$ bits
 - Bit rate $= 200\ \dfrac{\text{pages}}{\text{s}} \times 15\,360\ \dfrac{\text{bits}}{\text{page}} = 3\,072\,000$ bps $= 3.072$ Mbps
 
-Twice the pages per second of the slide example gives twice the bit rate ($2 \times 1.536 = 3.072$ Mbps).
-
 ## E02 Exercise 5, worked
 
 *A device is sending out data at the rate of 1000 bps. (a) How long does it take to send out 10 bits? (b) How long does it take to send a file of 100 000 characters? Assume each character is 8 bits.*
 
 The answer sheet does both by unit cancellation: convert the thing you have into seconds using $\dfrac{1\ \text{s}}{1000\ \text{b}}$.
 
-**(a)** $10\ \text{b} \times \dfrac{1\ \text{s}}{1000\ \text{b}} = 0.01$ s (that is 10 ms; each bit takes 1 ms at 1000 bps).
+**(a)** $10\ \text{b} \times \dfrac{1\ \text{s}}{1000\ \text{b}} = 0.01$ s, which is 10 ms.
 
 **(b)** $1\ \text{file} \times 100\,000\ \dfrac{\text{ch}}{\text{file}} \times 8\ \dfrac{\text{b}}{\text{ch}} \times \dfrac{1\ \text{s}}{1000\ \text{b}} = 800$ s
 
-That is $800\,000$ bits at 1000 bits every second, so 800 seconds (about 13 minutes).
-
-:::warn Time = bits ÷ bit rate, and bits are characters × 8
-Both parts are the same formula: time $= \dfrac{\text{number of bits}}{\text{bit rate}}$. The only trap is forgetting to turn characters into bits first.
-:::
+Both parts are time $= \dfrac{\text{number of bits}}{\text{bit rate}}$; the trap is forgetting to turn characters into bits first.
 
 ## A digital signal is a composite analog signal
 
 Slide wording: *a periodic or nonperiodic digital signal is a composite analog signal with frequencies between zero and infinity (infinite bandwidth).* Fourier analysis can be used to decompose a digital signal, just like any composite signal.
 
-The slide's picture is a square wave (a digital signal jumping between $-1$ and $+1$) with a single sine wave drawn over it on the interval $-\pi$ to $\pi$: that sine is the first harmonic of the square wave. Adding higher and higher harmonics makes the sum look more and more square; getting the vertical edges exactly needs infinitely many, hence infinite bandwidth.
+The slide's picture is a square wave jumping between $-1$ and $+1$ with its first harmonic drawn over it on $-\pi$ to $\pi$. Adding higher harmonics makes the sum squarer; exact vertical edges need infinitely many, hence infinite bandwidth.
 
 In the frequency domain:
 
@@ -132,10 +122,6 @@ In the frequency domain:
 |---|---|---|
 | **periodic** (rare in data communications) | infinite | **discrete** |
 | **nonperiodic** (the usual case) | infinite | **continuous** |
-
-:::quiz Two true/false items from this slide
-"A digital signal has infinite bandwidth" is **true** (periodic or not). "A nonperiodic digital signal decomposes into discrete frequencies" is **false**: nonperiodic means continuous frequencies, exactly as for nonperiodic analog composites in Lesson 15.
-:::
 
 ## Try it
 

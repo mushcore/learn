@@ -13,10 +13,10 @@ If $X$ follows a **normal distribution**, you don't need to integrate anything t
 | $\mu \pm 2\sigma$ | 95% | 95.45% |
 | $\mu \pm 3\sigma$ | 99.7% | 99.73% |
 
-The rounded numbers (68, 95, 99.7) are what the notes use everywhere; the exact figures in the right column are what you'd get from the true normal curve if you needed extra precision. Each band is centered on the mean and grows by one more standard deviation on each side.
+The notes use the rounded numbers everywhere; the exact figures are what the true normal curve gives.
 
 :::quiz Quiz note
-The empirical rule **only applies to variables that are (approximately) normally distributed**. Chebyshev's theorem (next lesson) is the one that works for *any* distribution, but its bounds are weaker. If a quiz question doesn't say "normal" or show a bell curve, don't reach for 68-95-99.7.
+The empirical rule applies **only to (approximately) normally distributed** variables. Chebyshev's theorem (next lesson) works for *any* distribution, with weaker bounds.
 :::
 
 ## Worked example: IQ scores
@@ -32,8 +32,6 @@ normal-curve
 { "mu": 100, "sigma": 15, "x": 130, "presets": { "IQ score": [100, 15, 130] } }
 ```
 
-Drag the shading mode to **"Shade ±2σ"** on the widget above. It highlights the 70–130 interval and shows the 95% figure directly on the curve — that's the same number you just computed by hand as $\mu \pm 2\sigma$.
-
 ## Reading the tails
 
 Because the normal curve is symmetric, you can split each band's *leftover* probability evenly between the two tails.
@@ -45,7 +43,7 @@ Because the normal curve is symmetric, you can split each band's *leftover* prob
 - Above $\mu + 3\sigma$ is half of the leftover $0.3\%$: $0.3\%/2 = 0.15\%$.
 
 ::: tip Building any percentage from the three bands
-Every empirical-rule question on the quiz is just adding and subtracting slices of 68/95/99.7, using the fact that the curve is symmetric about $\mu$. Sketch the curve, mark $\mu-3\sigma \ldots \mu+3\sigma$, and label each slice: 0.15, 2.35, 13.5, 34, 34, 13.5, 2.35, 0.15 (those eight slices sum to 100%).
+Every band question is adding and subtracting slices of 68/95/99.7 on a curve symmetric about $\mu$. The eight slices from $\mu-3\sigma$ to $\mu+3\sigma$ are 0.15, 2.35, 13.5, 34, 34, 13.5, 2.35, 0.15 percent, and they sum to 100.
 :::
 
 ## Lab 1 pencil problem 5: moisture content

@@ -3,7 +3,7 @@ title: Formula sheet
 minutes: 20
 ---
 
-Everything from Unit 1 on one page. No new explanations here — this is a lookup reference for the night before the quiz. If a formula doesn't make sense, go back to its chapter.
+Everything from Unit 1 on one page: a lookup reference, with no new explanations.
 
 ## Symbol legend
 

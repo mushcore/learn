@@ -3,7 +3,7 @@ title: "#define, const, constexpr"
 minutes: 16
 ---
 
-A constant is a value that **cannot change after it is initialized** — Java's `final`. C++ gives you three ways to make one, and they were introduced in three different eras of the language. The quiz cares about the differences.
+A constant is a value that **cannot change after it is initialized**, Java's `final`. C++ has three ways to make one, from three eras of the language.
 
 ## Old style: `#define`
 
@@ -14,16 +14,16 @@ A constant is a value that **cannot change after it is initialized** — Java's 
 This is a **preprocessor directive**, not a C++ statement — the same family as `#include`. That means two things:
 
 - **No semicolon.** A preprocessor directive ends at the newline, just like `#include <iostream>` has none.
-- It is **pure textual replacement**. Before the compiler ever sees your code, the preprocessor scans the source and swaps every occurrence of `PI` for the literal text `3.1415926535`. `PI` is never a variable, never has a type, and never occupies memory — it's find-and-replace.
+- It is **pure textual replacement**. Before the compiler ever sees your code, the preprocessor swaps every occurrence of `PI` for the literal text `3.1415926535`. `PI` is never a variable, never has a type, and never occupies memory.
 
-That textual-replacement behaviour is also the pitfall. Imagine defining a constant as an expression instead of a single number:
+That textual replacement is also the pitfall. Define a constant as an expression instead of a single number:
 
 ```cpp
 #define TWICE 2 + 3
 int x = TWICE * 4;   // you probably expect 20
 ```
 
-Because `#define` is *text* substitution, this literally becomes `int x = 2 + 3 * 4;` after preprocessing — which is `14`, not `20`, because multiplication binds tighter than the `+` that got pasted in. `const` and `constexpr` don't have this problem: they are real, typed values the compiler reasons about, not text pasted into your source.
+After preprocessing this is literally `int x = 2 + 3 * 4;`, which is `14`, not `20`, because multiplication binds tighter than the pasted `+`. `const` and `constexpr` don't have this problem: they are real, typed values the compiler reasons about, not text pasted into your source.
 
 ## `const`: mandatory initialization
 
@@ -35,11 +35,9 @@ some_value = 9;              // ERROR!
 const int some_other_value;  // ERROR!
 ```
 
-- `const int some_value = 1;` declares a constant integer, initialized right there.
-- `some_value = 9;` fails to compile — you promised this value wouldn't change, and the compiler enforces that promise.
-- `const int some_other_value;` **also fails to compile**, for a different reason: it has no initializer at all. **It is mandatory to set a `const` value in its declaration.** There is no such thing as "declare now, assign later" for a `const`.
+`some_value = 9;` fails because you promised this value wouldn't change. `const int some_other_value;` fails for a different reason: **it is mandatory to set a `const` value in its declaration.** There is no "declare now, assign later" for a `const`.
 
-The valid forms from the same slide use all three initialization styles you already know (`=`, `()`, `{}`):
+The valid forms from the same slide use the three initialization styles you already know (`=`, `()`, `{}`); the initializer just has to be present:
 
 ```cpp
 const float pi(3.14159);
@@ -47,19 +45,13 @@ const char top_score{'A'};
 const bool larger{some_value < pi};
 ```
 
-All three are legal `const` declarations — the initializer just has to be present, in whichever style you prefer.
-
 ## `const` as a function parameter
 
 ```cpp
 void myFunc(const int num) { /* ... */ }
 ```
 
-Marking a parameter `const` is a promise to whoever reads the function signature: **"I promise not to change this value."** The function can read `num` freely but cannot reassign it inside the body — the compiler will reject any attempt to do so.
-
-:::quiz A const must be initialized where it's declared
-`const int x;` followed by `x = 5;` later does **not** compile — you cannot declare a `const` and assign it afterward, even once, even before it's ever read. The initializer is mandatory at the declaration itself.
-:::
+Marking a parameter `const` is a promise to whoever reads the signature: **"I promise not to change this value."** The function can read `num` but cannot reassign it.
 
 ## `constexpr`: known at compile time
 
@@ -67,7 +59,7 @@ Marking a parameter `const` is a promise to whoever reads the function signature
 constexpr double another_value{1.3};
 ```
 
-`constexpr` means **"to be evaluated at compile time."** Think of it as a compile-time constant — the compiler computes and bakes in its value while compiling your program, which is useful for performance (no runtime work needed to produce the value).
+`constexpr` means **"to be evaluated at compile time."** The compiler computes and bakes in the value while compiling, so no runtime work is needed to produce it.
 
 The key distinction the slides draw between the two:
 
@@ -78,7 +70,7 @@ That difference is exactly what `const_vs_constexpr.cpp` demonstrates.
 
 ## Walking through `const_vs_constexpr.cpp`
 
-Run it with input `7`:
+Input is `7`:
 
 ```cpp run pin const_vs_constexpr.cpp
 // stdin: 7
@@ -117,32 +109,22 @@ int main()
 ]
 ```
 
-Line by line, with `7` typed at the prompt:
-
-1. `numeric_limits<int>::max()` prints `2147483647` — the largest value an `int` can hold on this platform, from `<limits>`. Nothing to do with constants yet, just a warm-up value.
-2. `a` starts at `1`. `cout << a` prints `1`.
-3. `a <<= 3` shifts `a`'s bits left by 3: `1 (001)` becomes `8 (1000)`. Prints `8`.
-4. `cout << (a |= b) << endl;` — `b` is `2 (010)`. `a |= b` makes `a = 8 | 2 = 10 (1010)`, and since `|=` is an expression, the `cout` prints the **updated** value: `10`.
-5. `cin >> input` reads the `7` you typed.
-6. `const int constantinput = input;` **compiles fine**. A `const` only needs its value known when the program *runs* — reading it from `cin` at runtime is perfectly legal, because `const` never promised "known at compile time," only "won't change after it's set."
-7. `cout << constantinput << endl;` prints `7` — the value that came from `cin`.
+With `7` typed: `numeric_limits<int>::max()` prints `2147483647`, the largest `int` on this platform; `cout << a << endl;` prints `1`; `a <<= 3;` shifts `1` (`001`) to `8` (`1000`); `cout << (a |= b) << endl;` makes `a = 8 | 2 = 10` (`1010`) and, because `|=` is an expression, prints the updated value `10`. Then `cin >> input;` reads the `7`, `const int constantinput = input;` compiles because a `const` only needs its value known when the program *runs*, and `cout << constantinput << endl;` prints `7`.
 
 ## Why the `constexpr` line is commented out
 
-The line right above the output is commented out for a reason — it doesn't compile:
+The commented-out line does not compile:
 
 ```cpp
 constexpr int constantinput2 = input;
 ```
 
-`input` is an ordinary `int` variable whose value only exists once `cin >> input` runs, at runtime. A `constexpr` demands a value the compiler can compute **while compiling**, before the program ever runs and before any input has been typed. Trying to compile that line gives an error along these lines:
+`input` only gets a value when `cin >> input` runs, at runtime. A `constexpr` needs a value the compiler can compute **while compiling**, before any input exists. The error:
 
 ```text
 error: the value of 'input' is not usable in a constant expression
 note: 'input' was not declared 'constexpr'
 ```
-
-This is the whole lesson in one pair of lines: `const int constantinput = input;` compiles because `const` tolerates a runtime-determined value; `constexpr int constantinput2 = input;` does not, because `constexpr` insists on a compile-time-determined one.
 
 ## `constexpr` as an array size
 

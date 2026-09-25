@@ -3,13 +3,11 @@ title: Anatomy of Hello World
 minutes: 12
 ---
 
-Every C++ program you write this term starts from this shape. The quiz asks about each piece, so let's take it apart line by line.
-
-Press **Run**. The code is compiled with the same `g++` CLion uses, then executed. Edit it freely — try changing the text, or deleting the semicolon after `return 0` to see a compile error.
+Every C++ program you write this term starts from this shape. The program below is compiled with the same `g++` CLion uses, and it is editable.
 
 ## Line by line
 
-Hover any piece in the table to see where it lives in the program (and hover a line of the program to see its explanation).
+Hovering a row of the table highlights the matching line of the program, and vice versa.
 
 ```cpp run pin HelloWorld.cpp
 #include <iostream>
@@ -48,11 +46,11 @@ Java has an **API**; C++ has a **standard library**. Java has packages; C++ has 
 - **`::`** (scope resolution) → access **members of a namespace or class**: `std::cout`, `ios_base::hex`
 - **`.`** (dot) → access **members of an object** (an instance): `cout.setf(...)`, `cin.clear()`
 
-Notice both appear together: `std::cout.setf(std::ios_base::boolalpha)` — `std::` picks the namespace, `.setf` calls a member function on the object.
+Both appear together in `std::cout.setf(std::ios_base::boolalpha)`: `std::` picks the namespace, `.setf` calls a member function on the object.
 
 ## What `<<` really does
 
-`std::cout << n;` is actually a function call: `std::cout.operator<<(n);` whose header looks like `ostream& operator<<(int);`. It **returns the stream** — that's why you can chain: `cout << a << b << endl;` works because `(cout << a)` gives back `cout`.
+`std::cout << n;` is a function call: `std::cout.operator<<(n);` whose header looks like `ostream& operator<<(int);`. It **returns the stream**, which is why you can chain: `cout << a << b << endl;` works because `(cout << a)` gives back `cout`.
 
 ## `endl` vs `'\n'`
 

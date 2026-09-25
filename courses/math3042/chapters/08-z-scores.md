@@ -11,7 +11,7 @@ $$Z = \frac{X - \mu}{\sigma}$$
 
 That's the population version; for a sample use $Z = \dfrac{X - \bar{X}}{s}$ instead — same idea, matched to the data you have.
 
-The instructor's own phrase for this: **"Z = how many standard deviations something is from the mean."** $Z$ has no units — it works the same way regardless of whether $X$ is in cm, kg, or IQ points.
+**"Z = how many standard deviations something is from the mean."** $Z$ has no units, so it works the same whether $X$ is in cm, kg, or IQ points.
 
 - $Z > 0$: $X$ is above the mean.
 - $Z < 0$: $X$ is below the mean.
@@ -25,9 +25,9 @@ $X = 175$: $Z = \frac{175 - 164.7}{7.1} = \frac{10.3}{7.1} = \mathbf{1.45}$
 
 $X = 178.9$: $Z = \frac{178.9 - 164.7}{7.1} = \frac{14.2}{7.1} = \mathbf{2.0}$
 
-$X = 155$ (below the mean): $Z = \frac{155 - 164.7}{7.1} = \frac{-9.7}{7.1} = \mathbf{-1.37}$ — a negative $Z$ just means the value sits below the mean, not that the arithmetic went wrong.
+$X = 155$ (below the mean): $Z = \frac{155 - 164.7}{7.1} = \frac{-9.7}{7.1} = \mathbf{-1.37}$; a negative $Z$ means the value sits below the mean.
 
-Since $Z = 2.0$ lands exactly on the empirical-rule boundary, we can read off the percentage below it directly: 95% of the data sits inside $\mu \pm 2\sigma$, split evenly into a 2.5% tail below and a 2.5% tail above. So the percentage of women **below** 178.9 cm is $95\% + 2.5\% = \mathbf{97.5\%}$ (everything up to $-2\sigma$, plus the lower half of the middle band, plus the upper half).
+$Z = 2.0$ lands exactly on an empirical-rule boundary: 95% of the data sits inside $\mu \pm 2\sigma$, with a 2.5% tail on each side, so the percentage of women **below** 178.9 cm is $2.5\% + 95\% = \mathbf{97.5\%}$.
 
 ```widget
 normal-curve
@@ -40,13 +40,13 @@ Rearrange the formula to find the raw value that corresponds to a given Z-score:
 
 $X = \mu + Z\sigma$ (population) or $X = \bar{X} + Zs$ (sample)
 
-Instructor's example: on an IQ test ($\mu = 100$, $\sigma = 15$), what score has $Z = 3.2$?
+On an IQ test ($\mu = 100$, $\sigma = 15$), what score has $Z = 3.2$?
 
 $X = 100 + 3.2 \times 15 = 100 + 48 = \mathbf{148}$
 
 ## The empirical rule, restated in Z
 
-Because $Z$ just measures distance from the mean in units of $\sigma$, the empirical rule bands are exactly the same bands, relabelled:
+Because $Z$ measures distance from the mean in units of $\sigma$, the empirical rule bands are the same bands, relabelled:
 
 | Z range | % of data |
 |---|---|
@@ -59,11 +59,9 @@ Because $Z$ just measures distance from the mean in units of $\sigma$, the empir
 **Unusual: $Z < -2$ or $Z > +2$.** Since 95% of values sit inside $-2 < Z < 2$, the remaining 5% (split into two 2.5% tails) is "unusual" — not impossible, just rare.
 
 :::quiz Outlier ≠ Unusual
-The instructor was explicit about this: **"Outlier ≠ Unusual."** These are two different rules that usually — but not always — agree:
+**"Outlier ≠ Unusual."** Two different rules that usually, but not always, agree:
 - **Unusual** uses the Z-score: $Z < -2$ or $Z > +2$.
 - **Outlier** uses the IQR fence rule: below $Q_1 - 1.5 \times IQR$ or above $Q_3 + 1.5 \times IQR$.
-
-A likely quiz trap: don't compute an outlier fence when asked for "unusual," and don't compute a Z-score when asked for an "outlier."
 :::
 
 ### Worked example: LeBron James
@@ -72,7 +70,7 @@ Men's heights: $\mu = 178.4$ cm, $\sigma = 7.6$ cm. LeBron James is 203 cm tall.
 
 $Z = \frac{203 - 178.4}{7.6} = \frac{24.6}{7.6} = \mathbf{3.24}$
 
-$3.24 > 2$, so LeBron's height **is unusual** (in the statistical sense — a rare value, not a mistake).
+$3.24 > 2$, so LeBron's height **is unusual**: a rare value, not a mistake.
 
 The cutoffs for "unusual" male heights are $\mu \pm 2\sigma$: below $178.4 - 15.2 = \mathbf{163.2}$ cm or above $178.4 + 15.2 = \mathbf{193.6}$ cm.
 
@@ -82,8 +80,6 @@ normal-curve
 ```
 
 ## Try it yourself
-
-Drag the slider or type an $X$ value. Watch $Z$, the percent below, and the unusual flag update together.
 
 ```widget
 normal-curve

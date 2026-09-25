@@ -3,7 +3,7 @@ title: Mock Quiz 1 (Lecture 01a)
 minutes: 25
 ---
 
-Quiz 1 covers **Lecture Notes 01a only**: data communications, the five components, data flow, networks and their criteria, connection types, the four topologies, LAN and WAN, internets and the Internet, and Internet standards. The real quiz is written in the lab with one hand-written A4 study note and a calculator, in three formats: true or false, fill in the blanks, and short written response. This mock uses the same wording as the slides, in slide order. Do it in one sitting without notes, then read every explanation you missed, because the explanations restate the exact slide fact the question was built from.
+Quiz 1 covers **Lecture Notes 01a only**: data communications, the five components, data flow, networks and their criteria, connection types, the four topologies, LAN and WAN, internets and the Internet, and Internet standards. The real quiz is written in the lab with one hand-written A4 study note and a calculator, in three formats: true or false, fill in the blanks, and short written response. This mock uses the same wording as the slides, in slide order. Do it in one sitting without notes.
 
 ```quiz
 [

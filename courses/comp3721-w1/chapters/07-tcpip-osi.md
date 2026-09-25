@@ -1,9 +1,9 @@
 ---
 title: TCP/IP's five layers & the OSI model
-minutes: 18
+minutes: 15
 ---
 
-This is the densest lesson for Quiz 2. Every layer has a **job**, a **PDU name**, and a list of **example protocols**, and each of those is fill-in-the-blank material. Learn the table first, then read the per-layer notes to attach a story to each row.
+Every layer has a **job**, a **PDU name** and a list of **example protocols**, and each of those is fill-in-the-blank material.
 
 ## The TCP/IP protocol suite
 
@@ -17,13 +17,11 @@ This is the densest lesson for Quiz 2. Every layer has a **job**, a **PDU name**
 | 2 | **Data link** | data transfer between **neighbouring** network elements/devices (without errors) | **frame** | Ethernet, 802.11 (WiFi) | NIC |
 | 1 | **Physical** | carries individual **bits** across the link (from one node to the next) | bits | link dependent | NIC |
 
-The "implemented in" column combines two slides: the transport and application layers are described as implemented in software in the end systems, and the "Good to know" slide says the physical and data-link layers are typically implemented in a **NIC (Network Interface Card)**.
+The "implemented in" column combines two slides: transport and application are software in the end systems, and the "Good to know" slide puts the physical and data-link layers in a **NIC (Network Interface Card)**.
 
 ## PDU
 
-A **PDU (Protocol Data Unit)** is *a unit of data that is passed between different layers of a protocol stack*. Each layer has its own name for its PDU, which is why the table has a column for it.
-
-The slide's example PDU is an Ethernet **frame** (the data-link PDU). Its fields are listed in the next lesson; for now, remember that a frame is the data-link layer's unit, and it wraps everything the layers above produced.
+A **PDU (Protocol Data Unit)** is *a unit of data that is passed between different layers of a protocol stack*. Each layer has its own name for its PDU. The slide's example PDU is an Ethernet **frame**, the data-link PDU; its fields are in the next lesson.
 
 ## Layer 1: physical
 
@@ -31,9 +29,7 @@ The slide's example PDU is an Ethernet **frame** (the data-link PDU). Its fields
 - Actually, the bits received in a **frame from the data-link layer** are transformed to **signals** and sent through the transmission medium.
 - Physical layer protocols are **link dependent**: they rely on the actual transmission medium of the link.
 
-:::quiz Sample quiz true/false
-"Data-link layer transforms bits to electromagnetic signals." **False.** Turning bits into signals is the **physical** layer's job. The data-link layer hands down a frame; the physical layer converts its bits to signals.
-:::
+The sample quiz's "Data-link layer transforms bits to electromagnetic signals" is **false**: turning bits into signals is the **physical** layer's job.
 
 ## Layer 2: data link
 
@@ -41,11 +37,7 @@ The slide's example PDU is an Ethernet **frame** (the data-link PDU). Its fields
 - PDU name: **frame**.
 - Protocols: **Ethernet**, **802.11 (WiFi)**.
 
-"Neighbouring" is the key word. The data-link layer only ever moves a frame across **one link**, from a node to the next node. It has no idea where the final destination is.
-
-:::quiz Sample quiz written response
-"What is the responsibility of the data-link layer in the TCP/IP protocol suite?" Model answer, in the slide's words: **data transfer between neighbouring network elements (node-to-node), without errors; its PDU is the frame.**
-:::
+"Neighbouring" is the key word. The data-link layer moves a frame across **one link**, from a node to the next node, and does not know the final destination.
 
 ## Layer 3: network
 
@@ -54,9 +46,7 @@ The slide's example PDU is an Ethernet **frame** (the data-link PDU). Its fields
 - Also called the **IP layer**.
 - Protocols: **IP (Internet Protocol)**, ICMP, DHCP, ARP, routing protocols.
 
-:::quiz Sample quiz fill-in-the-blank
-"_______ layer of TCP/IP protocol suite provides host-to-host communication." Answer: **Network.** Contrast with the transport layer, which is **process-to-process**.
-:::
+The sample quiz's fill-in "_______ layer of TCP/IP protocol suite provides host-to-host communication" is **network**.
 
 ## Layer 4: transport
 
@@ -65,7 +55,7 @@ The slide's example PDU is an Ethernet **frame** (the data-link PDU). Its fields
 - Protocols: **TCP, UDP, SCTP**.
 - Transport layer protocols are **almost always implemented in software in the end systems**.
 
-Host-to-host (network) gets the data to the right computer. Process-to-process (transport) gets it to the right program on that computer.
+Host-to-host (network) reaches the right computer; process-to-process (transport) reaches the right program on it.
 
 ## Layer 5: application
 
@@ -76,10 +66,8 @@ Host-to-host (network) gets the data to the right computer. Process-to-process (
 
 ## Good to know
 
-Two facts from the slide that make good true/false items:
-
 - The **physical layer and data-link layer** are typically implemented in a **NIC (Network Interface Card)**, and they handle communication over a **specific link**.
-- **Hosts (end systems) implement all 5 layers** of the TCP/IP protocol stack. (Intermediate devices implement fewer; the next lessons show a switch with two layers and a router with three.)
+- **Hosts (end systems) implement all 5 layers** of the TCP/IP protocol stack. A switch implements two and a router three (next lessons).
 
 ## The OSI model
 
@@ -101,7 +89,7 @@ The **Application, Presentation, and Session** layers of OSI are **combined into
 - **Session layer:** session management, synchronization of data exchange.
 
 :::warn Numbering trap
-"Transport" is layer 4 in **both** models and "Application" is layer 5 in TCP/IP but layer 7 in OSI. If a question says "layer 5," check which model it means: TCP/IP layer 5 is Application; OSI layer 5 is Session.
+"Transport" is layer 4 in **both** models; "Application" is layer 5 in TCP/IP but layer 7 in OSI. TCP/IP layer 5 is Application; OSI layer 5 is Session.
 :::
 
 ## Try it

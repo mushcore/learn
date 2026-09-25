@@ -1,9 +1,9 @@
 ---
 title: Stem-and-leaf plots
-minutes: 16
+minutes: 14
 ---
 
-Categorical data gets pies and bars. For a **numerical** variable there are more choices. The notes list six, and the instructor annotated three of them in the margin:
+Categorical data gets pies and bars. For a **numerical** variable the notes list six charts, three with the instructor's margin note:
 
 | Chart | Instructor's note |
 |---|---|
@@ -14,15 +14,11 @@ Categorical data gets pies and bars. For a **numerical** variable there are more
 | ogives | (two lessons from now) |
 | scatter plots | (last lesson of the unit) |
 
-This lesson does the first two: the stem-and-leaf plot, and why a bar plot of integer data is usually the wrong tool.
-
 ## What a stem-and-leaf plot is
 
-The notes call it *"a simple (although old-fashioned) way to visualize data for a numerical variable $X$"* and then say the important thing: **"Essentially, a stem-and-leaf plot is a frequency distribution of $X$."** It shows how many values land in each range, like a histogram turned on its side, but it keeps every individual data value visible.
+The notes' definition: **"Essentially, a stem-and-leaf plot is a frequency distribution of $X$."** It shows how many values land in each range, like a histogram on its side, while keeping every individual value visible.
 
 ### Cutting a value into stem and leaf
-
-Every data value is cut into two parts:
 
 - The **leaf** is usually the last digit.
 - The **stem** is everything before the last digit.
@@ -35,14 +31,14 @@ The instructor's example: $163 \to$ stem **16**, leaf **3**. Then:
 
 ## The lecture example: 20 heights
 
-$X$ = Height (in cm) for the first 20 students in `BCIT.students`, the raw data exactly as the notes list it:
+$X$ = Height (in cm) for the first 20 students in `BCIT.students`:
 
 ```text
 163 187 169 168 170 154 167 175 153 170
 159 187 163 178 158 170 169 183 170 146
 ```
 
-The stems present are 14, 15, 16, 17, 18. Assigning leaves and sorting each line gives the instructor's handwritten plot:
+The stems are 14 to 18. Assigning and sorting the leaves gives the instructor's plot:
 
 ```text
 14 | 6
@@ -52,13 +48,9 @@ The stems present are 14, 15, 16, 17, 18. Assigning leaves and sorting each line
 18 | 3 7 7
 ```
 
-Check one line yourself: the values in the 150s are 154, 153, 159, 158, so stem 15 gets leaves 4, 3, 9, 8, which sort to 3 4 8 9. Count the leaves: $1 + 4 + 6 + 6 + 3 = 20$, one per student. Nothing is lost: reading a leaf back gives the original value (17 | 5 is 175).
+Check one line: the 150s are 154, 153, 159, 158, so stem 15 gets leaves 4, 3, 9, 8, sorted to 3 4 8 9. The leaves count $1 + 4 + 6 + 6 + 3 = 20$, one per student, and each reads back to its value (17 | 5 is 175).
 
-His interpretation, written under the plot: **"The centre is around 170 cm (the mode is 170 cm)."** The longest line (stems 16 and 17 tie with six leaves each) shows where the data piles up, and 170 appears four times, more than any other value.
-
-## Try it
-
-Paste any data. The 20 heights are the first preset; the others show what R does with all 302 heights, with Old Faithful, and with Age.
+His interpretation under the plot: **"The centre is around 170 cm (the mode is 170 cm)."** Stems 16 and 17 tie for the longest line with six leaves, and 170 appears four times, more than any other value.
 
 ```widget
 stem-leaf
@@ -66,7 +58,7 @@ stem-leaf
 
 ## Letting R do it: `stem()`
 
-For all $n = 302$ heights *"it is better to let R do the work"*:
+For all $n = 302$ heights:
 
 ```r
 stem(BCIT.students$Height.CM)
@@ -90,14 +82,14 @@ The decimal point is 1 digit(s) to the right of the |
 
 Two notes from the lecture:
 
-- **R has decided to split each stem into two stems** (one line for leaves 0–4, one for leaves 5–9). With 302 values, one line per stem would be far too crowded, so R doubles the number of lines.
-- **"We can easily see that the typical student height is around 165 to 170 cm"**: the longest lines are the 16 | 5–9 line and the 16 | 0–4 line.
+- **R split each stem into two lines**, leaves 0–4 and 5–9, because 302 values on one line per stem would be too crowded.
+- **"We can easily see that the typical student height is around 165 to 170 cm"**: the two longest lines are stem 16.
 
 ### Reading the key line
 
-The first line R prints, *"The decimal point is 1 digit(s) to the right of the |"*, is the key that turns stems and leaves back into numbers. The instructor circled the first row and wrote: **"therefore 14 | 1 represents 141 cm."** Put the stem and leaf together as 141 and the decimal point sits one digit to the right of the bar, so the value is 141, not 14.1.
+The first line R prints, *"The decimal point is 1 digit(s) to the right of the |"*, turns stems and leaves back into numbers. The instructor circled the first row: **"therefore 14 | 1 represents 141 cm."** Join stem and leaf as 141; the decimal point sits one digit right of the bar, so the value is 141, not 14.1.
 
-If you want one line per stem instead of R's split, the demo notebook uses the `scale` argument to compress the number of stems by half:
+The demo notebook's `scale` argument compresses the number of stems by half, giving one line per stem:
 
 ```r
 stem( BCIT.students$Height.CM, scale=0.5)
@@ -105,15 +97,13 @@ stem( BCIT.students$Height.CM, scale=0.5)
 
 ## Too many digits: round first
 
-Some data has more precision than a stem-and-leaf plot can use. *"If a numerical variable has more than three digits of precision, it might be necessary to reduce the number of digits by rounding before making the stem-and-leaf plot."*
+The notes' rule: *"If a numerical variable has more than three digits of precision, it might be necessary to reduce the number of digits by rounding before making the stem-and-leaf plot."*
 
-Example: the `eruptions` variable of the built-in `faithful` data frame (Old Faithful eruption durations, 272 of them) has four digits, such as $X = 2.283$. Using all four digits would produce far too many stems. So: **round each $X$ first, then cut it**. The instructor's diagram:
+The `eruptions` variable of the built-in `faithful` data frame (272 Old Faithful eruption durations) has four digits, such as $X = 2.283$; all four would produce far too many stems. So **round each $X$ first, then cut it**:
 
 ```text
 2.283  →  round  →  2.28  →  stem 22, leaf 8
 ```
-
-R's output for the whole data set:
 
 ```r
 stem(faithful$eruptions)
@@ -141,36 +131,28 @@ The decimal point is 1 digit(s) to the left of the |
   50 | 0370
 ```
 
-Read the key: the decimal point is one digit to the **left** of the bar, so 16 | 0 is 1.60, and 22 | 8 is 2.28 (the rounded 2.283). Here R went the other way from the heights: each line holds **two** stems (16 covers 1.60–1.79), because 272 values spread over 1.6–5.1 would otherwise give too many lines. That is why the leaves on the 16 line run 0, 7, 0, 3, 5, ... and are not simply sorted 0–9: the first three are 1.60, 1.67, 1.70.
+The key now says the decimal point is one digit to the **left** of the bar: 16 | 0 is 1.60 and 22 | 8 is 2.28. Here R went the other way from the heights and put **two** stems on each line (16 covers 1.60–1.79), because 272 values over 1.6–5.1 would otherwise give too many lines. That is why the 16 line reads 0, 7, 0, 3, 5, ... rather than a sorted 0–9: the first three leaves are 1.60, 1.67, 1.70.
 
-The instructor's conclusion under this plot: **"Most eruptions are around 1.8 or 4.4"**: two clusters with a gap between about 2.6 and 3.4. Keep this picture; the histogram lesson shows the same two humps.
+The instructor's conclusion: **"Most eruptions are around 1.8 or 4.4"**, two clusters with a gap from about 2.6 to 3.4. The histogram lesson shows the same two humps.
 
 :::tip The unit is minutes
-`faithful$eruptions` is measured in minutes (an eruption lasts 1.6 to 5.1 min). One of the R calls in the notes labels the axis "Eruptions (sec)"; the numbers are the same either way, but if a question asks about "eruptions shorter than 4.0 minutes", it means $X < 4.0$.
+`faithful$eruptions` is in minutes (1.6 to 5.1 min). One R call in the notes labels the axis "Eruptions (sec)"; the numbers are the same, and "eruptions shorter than 4.0 minutes" means $X < 4.0$.
 :::
 
 ## Bar plots for integer data: usually a bad choice
 
-If $X$ is an **integer** numerical variable like Age, the notes say we "occasionally" visualize it with a bar plot, exactly as for categories. **"Don't forget the `table` step!"**: `barplot()` wants counts, not raw values.
+An **integer** variable like Age can "occasionally" be bar-plotted like a category. **"Don't forget the `table` step!"**: `barplot()` wants counts, not raw values.
 
 ```r
 barplot( table(BCIT.students$Age), xlab="Age", ylab="Frequency" )
 ```
 
-The instructor crossed the resulting chart out and wrote **"Not recommended"**, for two reasons:
+The instructor crossed the chart out and wrote **"Not recommended"**, for two reasons:
 
 - **potentially too many rectangles**: one bar per distinct age.
-- **can be missing X values along the horizontal axis**: nobody is 27, 31, 32, 33, 34, 36, 37, 38, 40 or 41, so those ages simply do not appear. The axis reads 18, 19, ..., 26, 28, 29, 30, 35, 39, 42 with equal spacing, which hides the real gaps. The notes call this **"one serious problem."**
+- **can be missing X values along the horizontal axis**: nobody is 27, 31, 32, 33, 34, 36, 37, 38, 40 or 41, so those ages do not appear. The axis reads 18, 19, ..., 26, 28, 29, 30, 35, 39, 42 with equal spacing, hiding the real gaps. The notes call this **"one serious problem."**
 
-That problem is exactly what a histogram fixes: it divides the whole range into classes of equal width, so every value has a place on the axis. Next lesson.
-
-:::quiz Stem-and-leaf facts that make good true/false questions
-- A stem-and-leaf plot **is** a frequency distribution (true), and unlike a histogram it keeps every individual value (true).
-- The leaf is usually the **last** digit; the stem is everything before it.
-- Leaves must be sorted on each line.
-- R may split a stem into two lines (leaves 0–4 and 5–9) or merge two stems onto one line; the key line tells you where the decimal point goes.
-- Data with more than three digits of precision should be rounded before plotting.
-:::
+A histogram fixes it by dividing the whole range into classes of equal width, so every value has a place on the axis.
 
 ```quiz
 [

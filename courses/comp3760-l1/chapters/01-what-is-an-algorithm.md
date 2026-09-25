@@ -1,6 +1,6 @@
 ---
 title: What an algorithm is (and is not)
-minutes: 12
+minutes: 10
 ---
 
 Lecture 1 covers textbook sections **1.1, 1.2, 1.3 and 2.1**. The session topics, in the instructor's order:
@@ -12,21 +12,19 @@ Lecture 1 covers textbook sections **1.1, 1.2, 1.3 and 2.1**. The session topics
 - Determine the **running time** of an algorithm
 - Define asymptotic notations (**big-O**)
 
-This lesson is the first two bullets. The rest of the module is the other four.
-
 ## Why we care
 
 - **Algorithms are at the core of computer programming.**
 - There are many important, **standard algorithms**.
 - We want to **design new algorithms** and **analyze their efficiency**.
 
-That last bullet is the whole course in one line: design, then analyze. Lecture 1 is entirely about the analyzing half.
+Design, then analyze. Lecture 1 is the analyzing half.
 
 ## The definition
 
 > An **algorithm** is a **sequence of unambiguous instructions** for obtaining a **required output** for **any legitimate input** in a **finite amount of time**.
 
-Memorize it as four requirements, because a quiz question can attack any one of them:
+Four requirements, each of which can fail on its own:
 
 | Requirement | What it rules out |
 |---|---|
@@ -35,13 +33,13 @@ Memorize it as four requirements, because a quiz question can attack any one of 
 | for **any legitimate input** | a procedure that works for the inputs you tried but breaks (or is undefined) for some other valid input |
 | in a **finite amount of time** | anything that can loop forever for some legitimate input |
 
-The slide draws the picture: a **problem** goes in, the **algorithm** sits inside the "computer", an **input** goes in one side and the **output** comes out the other. The algorithm is the recipe that turns *every* legitimate input for that problem into the required output.
+The slide's picture: a **problem** goes in, the **algorithm** sits inside the "computer", an **input** goes in one side and the **output** comes out the other.
 
 ## There can't be only one
 
 > **There is always more than one algorithm for the same problem.**
 
-So we need ways to compare them. The lecture names three characteristics we care about:
+Three characteristics to compare them on:
 
 - Is it **correct**?
 - Is it **time-efficient**?
@@ -51,7 +49,7 @@ Correctness is non-negotiable. Time and space are what the rest of this module m
 
 ## Problem types and design techniques
 
-Two lists from the slides. You do not analyze them yet; they are the map of the whole course.
+Two lists from the slides, the map of the whole course.
 
 **Important problem types** (7):
 
@@ -77,25 +75,21 @@ Two lists from the slides. You do not analyze them yet; they are the map of the 
 - Branch and bound
 
 :::quiz Problem type or design technique?
-"Sorting" is a **problem type**. "Divide and conquer" is a **design technique** (a way of building an algorithm for a problem). A quiz can mix the two lists in one set of options; keep them apart.
+"Sorting" is a **problem type**. "Divide and conquer" is a **design technique**. One set of options can mix the two lists.
 :::
 
 ## Not a programming course, but pseudocode everywhere
 
-From the course intro: **"This is not a programming course!"** We will certainly write code (labs are in Java), but we are mostly studying the **abstract idea of algorithms**, and *"you may actually need to suspend some of your coding skilz at times."*
-
-To represent, communicate and discuss algorithms we still need a language, and that language is **pseudocode**:
+From the course intro: **"This is not a programming course!"** Labs are in Java, but the subject is the **abstract idea of algorithms**. The language for representing, communicating and discussing them is **pseudocode**:
 
 - used **a LOT**: lectures, textbook, quizzes, labs, exams
 - expresses basic programming statements: **variables, assignments, expressions, conditional statements, loops, subroutines**
 - the **"Common Tongue" of computing**: "everybody" can understand it
 - if ever in doubt, ask
 
-Every quiz question in this course is a short piece of pseudocode followed by a question about it. Reading pseudocode quickly and exactly is the skill being tested.
-
 ## Is this a valid algorithm?
 
-The first question type. Here is one in the quiz's own style:
+The first question type:
 
 ```pseudo
 Algorithm ReturnTheBiggest(x, y)
@@ -113,17 +107,17 @@ Algorithm ReturnTheBiggest(x, y)
 END
 ```
 
-Check it against the four requirements. The instructions are unambiguous. For $x > y$ and $y > x$ it returns the required output. But $x = y$ is a **legitimate input** (two equal numbers is a perfectly normal thing to hand this procedure), and for that input it runs `while true` and never returns.
+The instructions are unambiguous, and for $x > y$ and $y > x$ it returns the required output. But $x = y$ is a **legitimate input**, and for that input it runs `while true` and never returns.
 
 :::quiz Answer: No
-It fails **"in a finite amount of time"** (and, as a consequence, never produces the required output for that input). One legitimate input that loops forever is enough to disqualify the whole thing. Do not be distracted by the fact that it works for *most* inputs: the definition says **any** legitimate input.
+It fails **"in a finite amount of time"** (and so never produces the required output for that input). One legitimate input that loops forever disqualifies the whole thing, however many inputs it works for: the definition says **any** legitimate input.
 :::
 
-The general method: for each of the four requirements, try to find one legitimate input that breaks it. If you can, the answer is No.
+The general method: for each of the four requirements, look for one legitimate input that breaks it. If you find one, the answer is No.
 
 ## What does it do?
 
-Before you can analyze pseudocode you have to be able to read it. The lecture opens with three mystery algorithms and asks only "what does this do?". Work each one before opening the answer.
+The lecture opens with three mystery algorithms and asks only what each one does.
 
 ```pseudo
 Algorithm DoSomething()
@@ -139,14 +133,14 @@ Algorithm DoSomething()
 END
 ```
 
-`secret` is $100x + 10x + x = 111x$, and $111 = 3 \times 37$, so `secret % 37 == 0` is **true on every pass**. `count` therefore increments every time, `x` walks 1, 2, 3, …, 100, the loop stops when `x` reaches 100, and the algorithm returns **100**. It takes no input at all, so its work is the same every time it runs:
+`secret` is $100x + 10x + x = 111x$, and $111 = 3 \times 37$, so `secret % 37 == 0` is **true on every pass**. `count` increments every time, `x` walks 1, 2, 3, …, 100, the loop stops when `x` reaches 100, and the algorithm returns **100**. It takes no input, so its work is the same every run:
 
 ```widget
 op-counter
 { "preset": "DoSomething() (no input)", "n": 10, "presets": false, "title": "DoSomething(): the counts do not depend on n" }
 ```
 
-Move the slider. Nothing changes. An algorithm with no input has no input size, and its running time is a constant.
+An algorithm with no input has no input size, and its running time is a constant.
 
 ```pseudo
 Algorithm CountSomething2(int n)
@@ -163,7 +157,7 @@ Algorithm CountSomething2(int n)
 END
 ```
 
-For every pair $(a, b)$ with $1 \le a, b \le n$ it forms the number $100a + b$ and asks a library whether it is prime. It **counts the primes among the numbers $100a + b$**. Note the call to `SomeMathLib.isPrime(val)`: it will matter in [Choosing the basic operation](#/comp3760-l1/basic-operation).
+For every pair $(a, b)$ with $1 \le a, b \le n$ it forms $100a + b$ and asks a library whether it is prime: it **counts the primes among the numbers $100a + b$**. The call `SomeMathLib.isPrime(val)` matters in [Choosing the basic operation](#/comp3760-l1/basic-operation).
 
 ```pseudo
 Algorithm CountSomethingElse(int N)
@@ -183,7 +177,7 @@ Algorithm CountSomethingElse(int N)
 END
 ```
 
-The first loop fills `A[i]` with $1 + 2 + \ldots + i$ (the $i$-th triangular number). The second loop adds them all up. So it returns the **sum of the first $N$ triangular numbers**. This exact algorithm comes back as a quiz question about basic operations, so remember its shape: a double loop where the inner bound is `i`, followed by a single loop.
+The first loop fills `A[i]` with $1 + 2 + \ldots + i$ (the $i$-th triangular number); the second loop adds them up. It returns the **sum of the first $N$ triangular numbers**. Its shape, a double loop whose inner bound is `i` followed by a single loop, comes back when choosing basic operations.
 
 ## Try it
 

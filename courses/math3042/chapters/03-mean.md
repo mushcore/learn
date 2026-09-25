@@ -3,7 +3,7 @@ title: Mean (raw & grouped)
 minutes: 15
 ---
 
-A **measure of centre** answers one question: what is a "typical" value of $X$? The mean is the one everyone already knows how to compute — but the quiz cares about the details: which symbol is which, and what happens when your data arrives already grouped into a frequency table.
+A **measure of centre** answers one question: what is a "typical" value of $X$? The mean is the one everyone already knows how to compute; the details that matter are which symbol is which, and what to do when the data arrives already grouped into a frequency table.
 
 ## Sample mean vs population mean
 
@@ -13,15 +13,11 @@ $\bar{X}$ (read "X-bar") is the **sample mean** — a **statistic**, computed fr
 
 $$\mu = \frac{\sum X}{N}$$
 
-$\mu$ (mu) is the **population mean** — a **parameter**, computed from all $N$ members of the population. Same arithmetic, different symbol, different scope. The quiz likes to ask "which of these is a parameter?" — the answer is always $\mu$, never $\bar{X}$.
-
-:::quiz Quiz note
-$\bar{X}$ and $\mu$ use the exact same formula shape (sum divided by count). The only difference is whether you divided by a **sample** size $n$ or a **population** size $N$. Don't let the different letters convince you the math is different — it isn't.
-:::
+$\mu$ (mu) is the **population mean** — a **parameter**, computed from all $N$ members of the population. Same arithmetic, different scope: $\mu$ is the parameter, $\bar{X}$ the statistic.
 
 ## Worked example: ages
 
-The instructor's own example. Ages in a sample: $22, 19, 20, 22, 35, 19, 21, 23$.
+Ages in a sample: $22, 19, 20, 22, 35, 19, 21, 23$.
 
 1. Sum: $22+19+20+22+35+19+21+23 = 181$
 2. Count: $n = 8$
@@ -30,7 +26,7 @@ The instructor's own example. Ages in a sample: $22, 19, 20, 22, 35, 19, 21, 23$
 In R: `mean(c(22, 19, 20, 22, 35, 19, 21, 23))` → `22.625`.
 
 :::tip Calculator
-Find your calculator's **STAT mode** before the quiz, not during it. Enter these eight ages as a 1-variable data list and read off $\bar{x}$. You should get `22.625`. If you can't find STAT mode under exam pressure you will lose easy marks — practice it now.
+Enter these eight ages in your calculator's **STAT mode** as a 1-variable data list; it should read $\bar{x}$ = `22.625`.
 :::
 
 ```widget
@@ -44,7 +40,7 @@ Sometimes you don't get the raw values — you get a **frequency table**: how ma
 
 $$\bar{X} = \frac{\sum f_i X_i}{\sum f_i}$$
 
-Here $i$ indexes the groups (row 1, row 2, ...), $f_i$ is the frequency (count) in group $i$, and $X_i$ is the midpoint of group $i$'s interval. You're treating every observation in a group as if it were exactly at that group's midpoint.
+Every observation in a group is treated as if it were exactly at that group's midpoint.
 
 ### Worked example: Old Faithful eruption durations
 
@@ -63,21 +59,13 @@ grouped-mean
 
 ### Why 3.498 instead of 3.488?
 
-The **raw** (ungrouped) mean of the actual `faithful$eruptions` data is `3.488`. The grouped calculation gives `3.498` — close, but not identical.
-
-The reason: grouping throws away information. Every single observation inside a class gets replaced by that class's midpoint before you average. An eruption that actually lasted 1.90 minutes and one that lasted 1.60 minutes both get counted as `1.75` if they fall in the same bin. You've traded exact values for a summary table, so some precision is unavoidably lost. The grouped mean is an **approximation** of the true mean, not a recomputation of it.
-
-:::quiz Quiz note
-"The grouped mean formula always gives the exact same answer as computing the mean from raw data." **False.** It gives an *approximation* — usually close, but only exact in the unlikely case that every value inside each class happens to equal that class's midpoint.
-:::
+The **raw** (ungrouped) mean of the actual `faithful$eruptions` data is `3.488`; the grouped calculation gives `3.498`. Grouping throws away information: every observation inside a class is replaced by that class's midpoint before you average, so an eruption of 1.90 minutes and one of 1.60 minutes both count as `1.75` if they share a bin. The grouped mean is an **approximation** of the true mean, not a recomputation of it.
 
 ## Another grouped example: steel rods
 
-Lab 1's pencil problem 2: rod diameters given as a frequency table (diameter : count) — $10.00\text{mm}\!:\!40$, $10.01\!:\!75$, $10.02\!:\!100$, $10.03\!:\!90$, $10.04\!:\!45$ (here the diameters themselves are already the class marks, $\sum f_i = 350$). Working the formula through gives
+Lab 1's pencil problem 2: rod diameters given as a frequency table (diameter : count) — $10.00\text{mm}\!:\!40$, $10.01\!:\!75$, $10.02\!:\!100$, $10.03\!:\!90$, $10.04\!:\!45$. Here the diameters themselves are the class marks and $\sum f_i = 350$. Working the formula through gives
 
 $$\bar{X} = 10.02071 \text{ mm}$$
-
-Same formula, same process — sum $f_i X_i$, divide by sum $f_i$.
 
 ```quiz
 [

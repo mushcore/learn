@@ -138,4 +138,11 @@ Algorithms (`app/widgets-algo.js`, COMP 3760):
 - Ground everything in the instructor's material (slide wording, sample code, worked numbers). Where the slides make a claim that is a likely true/false trap, call it out in a `:::quiz` callout.
 - Visual first: use a widget wherever a concept can be seen. Use `cpp run` blocks generously (C++ course) — the student learns by editing and running.
 - No emojis. No filler. Technical but friendly.
+- Concise prose (house rule since the 2026-09-25 review; the reviewer found Week 2 lessons twice the density of Week 1 for the same material):
+  - One telling per fact. The code comment says what a line does; one sentence beside the code says why or gives the number. No "line by line" list that restates the comments, and no callout that restates the paragraph above it. A `:::quiz` callout exists only for a trap the prose has not already stated.
+  - Instructor quotes only when they carry a mental model or a rule the quiz uses (the box with a nickname, dynamic = manual, keep a tally, seed once). No colour quotes.
+  - The intro is one or two sentences stating the problem the lesson solves. No table-of-contents sentence ("This lesson covers ...").
+  - No stage directions ("Read it inside out", "Run it", "Now drive it yourself") and no quiz meta-talk ("the quiz will ask", "students lose marks on this every term").
+  - Trivial members (`close()`, `exit(1)`) get one sentence. Short sentences; no parenthetical asides.
+  - Budget: 500-800 prose words per lesson outside code and quizzes. A lesson over 900 is restating something. Mock quizzes, cheat sheets and formula sheets are reference material and are exempt.
 - Do NOT edit engine files (`app/`, `server.js`, `course.json`). Only write your assigned chapter files.

@@ -1,9 +1,9 @@
 ---
 title: Histograms: the class recipe
-minutes: 24
+minutes: 20
 ---
 
-The instructor's margin note on the list of charts: histograms are **"most common and important."** A histogram looks like a bar chart, *"but it is much better for visualizing numerical data"*, because it fixes the bar plot's two problems: it groups values into a manageable number of rectangles, and every possible $X$ value has a place on the axis. This lesson is the one recipe from Unit 2 that you must be able to run by hand: turn raw data into **classes**, count the **frequencies**, and draw.
+Histograms are **"most common and important"** (the instructor's margin note): a bar chart for numerical data that groups values into a manageable number of rectangles and gives every possible $X$ value a place on the axis. The recipe below is the one thing in Unit 2 you must be able to run by hand.
 
 ## Three steps
 
@@ -13,13 +13,13 @@ To make a histogram, we:
 2. Count the number of $X$ values that fall into each class. This count is the **frequency**.
 3. Plot a **rectangle** showing the frequency (or relative frequency) for each class.
 
-R will pick classes for you if you let it:
+R picks classes for you if you let it:
 
 ```r
 hist( BCIT.students$Age, col="lightblue")
 ```
 
-That produces classes 18–20, 20–22, 22–24, ..., with the biggest rectangle (about 110 students) over 20–22 and a long, nearly empty tail out to 42. But letting R decide is not the skill being tested. The quiz wants you to **define the classes yourself**, and the notes give a seven-step example.
+That gives classes 18–20, 20–22, 22–24, ..., the biggest rectangle (about 110 students) over 20–22, and a long, nearly empty tail out to 42. The notes' seven-step recipe defines the classes yourself.
 
 ## The recipe, worked on Age ($n = 302$, min 18, max 42)
 
@@ -31,15 +31,15 @@ $$\sqrt{n} = \sqrt{302} = 17.4$$
 
 $$\text{class width} = \frac{R}{\sqrt{n}} = \frac{42 - 18}{17.4} = 1.38$$
 
-The instructor labels this **"the ideal class width."** It is a starting point, not the final answer, because 1.38 is not a width you can use with whole-number ages.
+The instructor calls this **"the ideal class width."** It is a starting point: 1.38 is not a usable width for whole-number ages.
 
-**3. Round the class width to match the precision of $X$:** $1.38 \to 2$. Ages are whole years, so the width must be a whole number. He calls the result the **"actual class width."** (Why not 1? A width of 1 year gives one rectangle per age, which is the bar plot we just rejected. Rounding up to 2 gives fewer, fuller classes; either direction is allowed, "round (up or down)".)
+**3. Round the class width to match the precision of $X$:** $1.38 \to 2$, the **"actual class width."** Ages are whole years, so the width is a whole number. A width of 1 would give one rectangle per age, the bar plot again; "round (up or down)" to a nice number.
 
 **4. First lower class limit = the minimum $X$ (you may round it down):** $18$.
 
-**5. Determine all class limits.** Add the width to get each next lower limit: 18, 20, 22, ... (the instructor wrote "+2" between the rows). Each **upper limit is one unit of precision below the next lower limit**, so the classes never overlap and leave no gaps: 19, 21, 23, ...
+**5. Determine all class limits.** Add the width for each next lower limit: 18, 20, 22, ... Each **upper limit is one unit of precision below the next lower limit**: 19, 21, 23, ..., so classes never overlap and leave no gaps.
 
-**6. Count the $X$ values in each class.** The result is called the **frequency distribution**:
+**6. Count the $X$ values in each class.** The result is the **frequency distribution**:
 
 | lower class limit | upper class limit | frequency |
 |---|---|---|
@@ -57,7 +57,7 @@ The instructor labels this **"the ideal class width."** It is a starting point, 
 | 40 | 41 | 0 |
 | 42 | 43 | 1 |
 
-The frequencies add to 302. Notice the classes with frequency 0 (32–33, 36–37, 40–41): they stay in the table and on the chart as empty rectangles, which is precisely what the bar plot hid.
+The frequencies add to 302. Classes with frequency 0 (32–33, 36–37, 40–41) stay in the table and on the chart as empty rectangles, which is what the bar plot hid.
 
 **7. Plot a rectangle for each class, showing the frequency:**
 
@@ -68,19 +68,17 @@ hist(BCIT.students$Age,
      main="Age of BCIT Students (n = 302)")
 ```
 
-Read the arguments:
-
-- `breaks=seq(18, 44, by=2)` gives the boundaries 18, 20, 22, ..., 44: thirteen classes of width 2 starting at the first lower limit. The sequence must run past the maximum (42), which is why it ends at 44.
-- `right = FALSE` says each class **includes its left boundary and excludes its right boundary**. The instructor drew an arrow to the first rectangle: **"this rectangle represents students with $18 \le X < 20$, not including 20."** A 20-year-old belongs to the second class, 20–21.
-- `xaxp=c(15, 45, 15)` just places tick marks from 15 to 45 at every 2 years; `xlab`, `ylab`, `main` label the axes and the chart.
+- `breaks=seq(18, 44, by=2)`: boundaries 18, 20, ..., 44, thirteen classes of width 2 from the first lower limit. The sequence must run past the maximum (42), hence 44.
+- `right = FALSE`: each class **includes its left boundary and excludes its right boundary**. The instructor's arrow to the first rectangle: **"this rectangle represents students with $18 \le X < 20$, not including 20."** A 20-year-old is in the second class.
+- `xaxp=c(15, 45, 15)` places tick marks from 15 to 45 every 2 years; `xlab`, `ylab`, `main` label the chart.
 
 :::quiz right = FALSE
-Expect a question on which class a boundary value belongs to. With `right = FALSE`, class "18–19" is really $[18, 20)$: it contains 18 and 19.99 but not 20. The default, `right = TRUE`, would be $(18, 20]$, the opposite. The notes always use `right = FALSE`, so the lower limit is in and the next lower limit is out.
+Class "18–19" is $[18, 20)$: 18 is in, 20 is out. The default `right = TRUE` would give $(18, 20]$, the opposite. The notes always use `right = FALSE`.
 :::
 
 ## Features of a histogram
 
-The notes list six properties. Together they are what separates a histogram from a bar chart:
+The notes' six properties:
 
 - Variable $X$ goes along the horizontal axis.
 - The $X$ axis is divided into **classes**.
@@ -91,15 +89,15 @@ The notes list six properties. Together they are what separates a histogram from
 
 ## Second worked example: Old Faithful ($n = 272$)
 
-`faithful$eruptions` runs from 1.6 to 5.1 minutes with three decimals. The instructor worked the recipe in the margin:
+`faithful$eruptions` runs from 1.6 to 5.1 minutes with three decimals. The instructor's margin work:
 
 $$\sqrt{n} = \sqrt{272} = 16.5$$
 $$\text{range of } X = \max - \min = 5.1 - 1.6 = 3.5$$
 $$\text{ideal class width} = \frac{\text{range}}{\sqrt{n}} = \frac{3.5}{16.5} = 0.21212$$
 
-Then the rounding rule, in his words: **"The class width must have the same number of decimal places as the $X$ data (3 digits). We also should round down to a 'nice' number. → actual class width = 0.200."**
+The rounding rule in his words: **"The class width must have the same number of decimal places as the $X$ data (3 digits). We also should round down to a 'nice' number. → actual class width = 0.200."**
 
-Lower limits start at the minimum, 1.600, and go up by 0.200. Each upper limit is 0.001 below the next lower limit, so the first class is 1.600 to 1.799: the instructor's arrow calls 1.799 **"the last possible $X$ value before the next lower limit."**
+Lower limits start at the minimum, 1.600, and rise by 0.200. Each upper limit is 0.001 below the next lower limit, so the first class is 1.600 to 1.799, where 1.799 is **"the last possible $X$ value before the next lower limit."**
 
 | Lower class limit | Upper class limit | Frequency |
 |---|---|---|
@@ -132,25 +130,19 @@ hist( faithful$eruptions,
       col="pink")
 ```
 
-The first pink rectangle is $1.600 \le X < 1.800$ (the instructor's note under it). Conclusion from the notes: **eruption durations cluster around two different values, 2.0 and 4.5**, the same two humps the stem-and-leaf plot showed. A shape with two peaks is called bimodal; the mean (3.49) sits in the empty valley between them, which is a good reminder that a single number can describe a data set badly.
+The first pink rectangle is $1.600 \le X < 1.800$. Conclusion from the notes: **eruption durations cluster around two different values, 2.0 and 4.5**, the two humps of the stem-and-leaf plot. The shape is bimodal, and the mean (3.49) sits in the empty valley between the peaks.
 
 :::warn Six frequencies that do not match an exact count
-If you count the Old Faithful values by hand with $[\text{lower}, \text{upper}]$ exactly, four classes come out differently: 2.200–2.399 has 16 (not 18), 2.400–2.599 has 5 (not 3), 2.600–2.799 has 2 (not 3), 2.800–2.999 has 3 (not 2); and near the top, 4.600–4.799 has 22 (not 28) and 4.800–4.999 has 17 (not 11). The notes' table is what R's `hist()` printed: `seq(1.6, 5.2, 0.2)` builds its boundaries by repeated floating-point addition, so some of them are stored as 2.4000000000000004, 2.8000000000000003 and 4.800000000000001, and every value sitting exactly on such a boundary (2.400, 2.800, 4.800) falls into the class **below**. Use the notes' numbers on the quiz; it is what the course material shows, and the method itself is not wrong. Just know that "exactly on a boundary" is where a computer and a pencil can disagree.
+Counting the Old Faithful values by hand with exact class limits gives different numbers in six classes: 2.200–2.399 has 16 (not 18), 2.400–2.599 has 5 (not 3), 2.600–2.799 has 2 (not 3), 2.800–2.999 has 3 (not 2), 4.600–4.799 has 22 (not 28) and 4.800–4.999 has 17 (not 11). The notes' table is what R's `hist()` printed: `seq(1.6, 5.2, 0.2)` builds its boundaries by repeated floating-point addition, so some are stored as 2.4000000000000004, 2.8000000000000003 and 4.800000000000001, and a value exactly on such a boundary (2.400, 2.800, 4.800) falls into the class **below**. Use the notes' numbers; the method is not wrong, and "exactly on a boundary" is where a computer and a pencil can disagree.
 :::
 
 ## Pitfalls: too many classes, too few classes
 
-The $\sqrt{n}$ rule exists because both extremes ruin the picture.
+**Using too many classes is bad.** Old Faithful with a width of 0.020 instead of 0.200 (about 175 classes) **"shows a jagged shape and lots of empty classes."** Individual values show as spikes and the two humps disappear in the noise.
 
-**Using too many classes is bad.** The notes redraw Old Faithful with a class width of 0.020 instead of 0.200 (about 175 classes). The instructor's caption: **"shows a jagged shape and lots of empty classes."** Individual values start to show as spikes, and the two humps are hard to see through the noise.
+**Using too few classes is also bad.** A width of 2.000 (two classes: 1.6–3.6 and 3.6–5.6) **"doesn't show enough detail about the shape of the distribution."** The bimodal shape is gone.
 
-**Using too few classes is also bad.** With a width of 2.000 (two classes: 1.6–3.6 and 3.6–5.6) you get two pink blocks. Caption: **"doesn't show enough detail about the shape of the distribution."** The bimodal shape is gone completely.
-
-His summary line: **"Using $\sqrt{n}$ avoids these problems."**
-
-## Build one yourself
-
-Every number in the recipe recomputes as you change the data, the width or the starting limit. Start with Age, then switch to Old Faithful and press the "too many" and "too few" buttons to see the two pitfalls. Hover a rectangle to see which values it counts.
+**"Using $\sqrt{n}$ avoids these problems."**
 
 ```widget
 hist-builder
@@ -160,10 +152,6 @@ hist-builder
 hist-builder
 { "preset": "Old Faithful eruptions (n = 272)", "title": "Old Faithful: the 18 classes from the notes" }
 ```
-
-:::tip Doing it on the quiz, by hand
-For a small data set (the plywood pencil problem has $n = 18$): compute $\sqrt{n}$, then $R/\sqrt{n}$, round to the data's precision and to a nice number, start at the minimum, list lower limits by adding the width, set each upper limit one precision-unit below the next lower limit, then tally. Relative frequency is frequency divided by $n$. The pencil-problems lesson works that example start to finish.
-:::
 
 ```quiz
 [

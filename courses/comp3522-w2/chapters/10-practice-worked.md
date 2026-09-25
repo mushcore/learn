@@ -1,13 +1,13 @@
 ---
 title: Pointers & references practice, worked
-minutes: 15
+minutes: 12
 ---
 
-The Learning Hub has a two-page "Pointer and Reference Activity" (14 points: 7 blanks, then 3 + 1 + 1 + 2 for the second program). The video ends by saying it is not marked, but "pointers and references will come back over and over for this entire course", and Quiz 2 draws from it. Do each part on paper first, then check here.
+The Learning Hub's two-page "Pointer and Reference Activity" is worth 14 points: 7 blanks, then 3 + 1 + 1 + 2 for the second program. It is not marked, but "pointers and references will come back over and over for this entire course", and Quiz 2 draws from it. Do each part on paper before checking.
 
 ## Part 1: fill in x and y after every line (7 points)
 
-The sheet's program, with a print after each statement so you can run it. Write down `x` and `y` after every line before you run anything:
+The sheet's program, with a print after each statement:
 
 ```widget
 pointer-viz
@@ -35,8 +35,6 @@ int main()
 }
 ```
 
-The answers, with the reason for each:
-
 | Line | x | y | Why |
 |---|---|---|---|
 | `p1 = &x;` | 5 | 15 | only the pointer changed: p1 now holds the address of x |
@@ -46,11 +44,11 @@ The answers, with the reason for each:
 | `p2 = p1;` | 15 | 15 | copies the address in p1 into p2: both point at x now; values untouched |
 | `*p1 = *p2 + 10;` | 25 | 15 | *p2 is x (15), plus 10 is 25, written into x; y is never touched again |
 
-Two habits from the videos make this mechanical. First, ask of every line "is the pointer changing, or is the box it points at changing?" Lines with `p1 = ...` or `p2 = ...` move arrows; lines starting with `*p1 = ...` write into a box. Second, before `p2 = p1;`, draw the arrows: after it, both arrows land on `x`, which is why `*p2` on the last line reads `x`, not `y`.
+Two habits make this mechanical. Ask of every line "is the pointer changing, or the box it points at?": `p1 = ...` and `p2 = ...` move arrows, `*p1 = ...` writes into a box. And draw the arrows after `p2 = p1;`: both land on `x`, which is why `*p2` on the last line reads `x`, not `y`.
 
 ## Part 2: test(int& x, int y, int* z)
 
-The second program mixes all three parameter kinds. Predict the output before you run it:
+The second program mixes all three parameter kinds:
 
 ```widget
 pointer-viz
@@ -79,18 +77,18 @@ int main(){
 }
 ```
 
-The output is `8 7 7`. Here is the trace:
+The output is `8 7 7`:
 
-- `x++;` increments through the reference. `x` is a nickname for `a`, so `a` becomes 8.
-- `y++;` increments a copy. `y` received the value 6 from `b`; the copy becomes 7 and is thrown away when `test` returns. `b` is still 6 at this moment.
-- `(*z)++;` dereferences first (parentheses), then increments. `z` holds the address of `b` (because `int* c = &b;` and `c` was passed), so `b` becomes 7.
-- Back in `main`: `a` is 8, `b` is 7, and `*c` reads `b` again, so 7.
+- `x++;` increments through the reference: `x` is a nickname for `a`, so `a` becomes 8.
+- `y++;` increments a copy of `b`'s value 6; the copy is thrown away when `test` returns.
+- `(*z)++;` dereferences first (parentheses), then increments. `z` holds the address of `b` (from `int* c = &b;`), so `b` becomes 7.
+- Back in `main`: `a` is 8, `b` is 7, and `*c` reads `b` again, 7.
 
-The common wrong answer is `8 6 7`: it forgets that `z` points at `b`, so the pointer line changes `b` as surely as the reference line changes `a`. The by-value parameter is the only one that leaves its argument alone.
+The common wrong answer, `8 6 7`, forgets that `z` points at `b`: the pointer line changes `b` as surely as the reference line changes `a`. Only the by-value parameter leaves its argument alone.
 
 ## What changes if you flip the parameters? (3 points)
 
-The sheet asks you to try changing arguments from pass-by-reference to pass-by-value and back. Every variant below is the same body with a different parameter list:
+The sheet asks you to change arguments from pass-by-reference to pass-by-value and back. Every variant below is the same body with a different parameter list:
 
 ```cpp run pin testVariants.cpp
 // predict: Four lines of three numbers.
@@ -126,27 +124,27 @@ int main()
 | `yByRef` | `int& x, int& y, int* z` | `8 8 8` | y is now b itself: `y++` and `(*z)++` both hit b, so b goes 6, 7, 8 |
 | `bothFlipped` | `int x, int& y, int* z` | `7 8 8` | a untouched, b incremented twice |
 
-Notice the call site never changes: `original(a, b, c)` and `yByRef(a, b, c)` look identical. Whether `b` is copied or aliased is decided entirely by the parameter list, which is why you must read the function signature before predicting anything.
+The call site never changes: `original(a, b, c)` and `yByRef(a, b, c)` look identical. Whether `b` is copied or aliased is decided by the parameter list alone, so read the signature before predicting anything.
 
 ## What if you make b a pointer? (1 point)
 
-Change `int b = 6;` to a pointer, say `int* b = &something;`. Then `int* c = &b;` no longer compiles as written: `&b` is the address of a pointer, an `int**`, which cannot be stored in an `int*`. And `test(a, b, c)` fails too, because `b` is now an `int*` being passed to the plain `int y`. g++ reports invalid conversions for both. To make it work you have to dereference: `test(a, *b, b)` passes the value `b` points at for `y` and the pointer itself for `z`. The lesson: a pointer and the thing it points at are different types, and the compiler will not convert between them for you.
+Change `int b = 6;` to a pointer, say `int* b = &something;`. Then `int* c = &b;` no longer compiles: `&b` is the address of a pointer, an `int**`, which cannot be stored in an `int*`. `test(a, b, c)` fails too, because an `int*` is being passed to the plain `int y`. To make it work you dereference: `test(a, *b, b)` passes the value `b` points at for `y` and the pointer itself for `z`. A pointer and the thing it points at are different types, and the compiler will not convert between them.
 
 ## What if you make y a pointer? (1 point)
 
-Change the parameter to `int* y`. Two things follow:
+Change the parameter to `int* y`:
 
-- The call must pass an address: `test(a, &b, c)`. Passing `b` itself is a compile error (int to int*).
-- `y++;` now increments the *pointer*, not the value. It moves `y` to the next int-sized slot in memory and never touches `b`. Nothing is dereferenced, so nothing crashes, but nothing useful happens either. To add one to `b` you would write `(*y)++`, and then `b` would be incremented twice (once by `y`, once by `z`), giving `8 8 8`.
+- The call must pass an address, `test(a, &b, c)`; passing `b` itself is a compile error (int to int*).
+- `y++;` now increments the *pointer*: it moves `y` to the next int-sized slot in memory and never touches `b`. To add one to `b` you would write `(*y)++`, and then `b` is incremented twice (by `y` and by `z`): `8 8 8`.
 
-This is the same distinction as `*numPtrCopy++` versus `(*numPtrCopy)++` in the pointers lesson: the parentheses decide whether you move the arrow or change the box.
+This is the `*numPtrCopy++` versus `(*numPtrCopy)++` distinction from the pointers lesson: the parentheses decide whether you move the arrow or change the box.
 
 ## The two ampersands in the underlined code (2 points)
 
 The sheet underlines `int& x` in the signature and `&b` in `int* c = &b;`.
 
-- In `void test( int& x, ... )`, the `&` follows a type. It declares `x` as a **reference**: a nickname for whatever variable is passed in (here `a`). No copy is made and no address is stored; `x` simply *is* `a` for the duration of the call.
-- In `int* c = &b;`, the `&` stands in front of a variable in an expression. It is the **address-of operator**: it produces the memory address of `b`, and that address is what the pointer `c` stores.
+- In `void test( int& x, ... )`, the `&` follows a type. It declares `x` as a **reference**: a nickname for the variable passed in (here `a`). No copy is made and no address is stored; `x` *is* `a` for the duration of the call.
+- In `int* c = &b;`, the `&` stands in front of a variable in an expression: the **address-of operator**. It produces the address of `b`, which is what the pointer `c` stores.
 
 Same symbol, two jobs: "if there's a type to the left of your & symbol, then that's a reference; if there's nothing, then that's the address-of operator."
 

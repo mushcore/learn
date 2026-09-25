@@ -1,9 +1,9 @@
 ---
 title: Data vs signals, analog vs digital
-minutes: 12
+minutes: 10
 ---
 
-Lecture 02 drops to the bottom of the TCP/IP stack. The upper four layers pass data around logically; the physical layer is where something real has to move through a wire, a fibre, or the air. Every term in this lesson is slide wording, and every one of them is fill-in-the-blank material.
+Lecture 02 drops to the bottom of the TCP/IP stack. The upper four layers pass data around logically; the physical layer is where something real has to move through a wire, a fibre, or the air.
 
 ## What actually travels?
 
@@ -12,10 +12,10 @@ The slides open with Alice and Bob talking over a network and ask two questions:
 - **What is really exchanged between Alice and Bob?** Data (information).
 - **What goes through the network connecting Alice to Bob at the physical layer?** Signals (for example, electrical signals).
 
-That distinction is the whole lesson. Data is what the two ends care about; signals are what the medium carries. The physical layer's job, in the slide's words, is *moving data in the form of electromagnetic signals across a transmission medium*. So **data must be changed to signals for transmission**.
+Data is what the two ends care about; signals are what the medium carries. The physical layer's job, in the slide's words, is *moving data in the form of electromagnetic signals across a transmission medium*, so **data must be changed to signals for transmission**.
 
 :::quiz Logical vs physical
-Slide wording to memorize: *communication at the application, transport, network, and data-link layers is **logical**; communication at the physical layer is **physical**.* A true/false item claiming "the data-link layer transforms bits into signals" or "the data-link layer communicates physically" is **false**: only the physical layer does that. (The sample quiz has exactly this true/false.)
+*Communication at the application, transport, network, and data-link layers is **logical**; communication at the physical layer is **physical**.* "The data-link layer transforms bits into signals" is **false**: only the physical layer does that.
 :::
 
 ## Two kinds of data
@@ -25,7 +25,7 @@ Slide wording to memorize: *communication at the application, transport, network
 | **Analog data** | information that is *continuous* (takes on continuous values) | sound: when someone speaks, an analog wave is created in the air |
 | **Digital data** | information that has *discrete states* (takes on discrete values) | data stored in computer memory in the form of 1s and 0s |
 
-The key words are **continuous** and **discrete**. Sound pressure can take any value; a memory cell can only be 0 or 1.
+The key words are **continuous** and **discrete**: sound pressure can take any value; a memory cell is only ever 0 or 1.
 
 ## Two kinds of signals
 
@@ -36,7 +36,7 @@ Data and signals are different things, and each can independently be analog or d
 | **Analog signal** | has *many levels of intensity* over a period of time |
 | **Digital signal** | has a *limited number of defined values* (often 0 and 1) |
 
-"Many levels" versus "a limited number of defined values" is the fill-in-the-blank version of this slide. An analog signal can sit at any voltage between its extremes; a digital signal is only ever at one of its allowed levels. Lesson 16 counts those levels.
+An analog signal can sit at any voltage between its extremes; a digital signal is only ever at one of its allowed levels.
 
 ## Periodic vs nonperiodic
 
@@ -48,10 +48,8 @@ Both analog and digital signals can take one of two forms.
   - A simple periodic analog signal, a **sine wave**, cannot be decomposed into simpler signals.
 - **Nonperiodic (aperiodic)**: the signal changes without a repeating pattern.
 
-:::quiz The sentence the quiz is built on
-*In data communications, we commonly use **periodic analog** signals and **nonperiodic digital** signals.*
-
-Expect it as a fill-in-the-blank ("we commonly use ______ analog signals and ______ digital signals") or as a true/false with the words swapped. The pairing is analog with periodic, digital with nonperiodic. The slides state this as a fact and do not justify it; treat it as one for the quiz.
+:::quiz Periodic analog, nonperiodic digital
+*In data communications, we commonly use **periodic analog** signals and **nonperiodic digital** signals.* The slides state this as a fact and do not justify it. The trap is the swapped pairing: nonperiodic analog, periodic digital.
 :::
 
 ## Simple vs composite
@@ -61,14 +59,12 @@ A periodic analog signal is one of two things:
 - **Simple**: a single sine wave. It cannot be decomposed into simpler signals.
 - **Composite**: composed of multiple sine waves.
 
-Here is the simplest periodic analog signal there is. Drag $f$ and watch the period $T = 1/f$ shrink; the pattern between two grid marks is one cycle.
+In the widget, the pattern between two grid marks is one cycle, and $T = 1/f$.
 
 ```widget
 sine-wave
 { "A": 1, "f": 2, "phase": 0, "title": "A simple periodic analog signal (one sine wave)", "presets": { "T = 1 s": [1, 1, 0], "T = 0.5 s": [1, 2, 0], "T = 0.2 s": [1, 5, 0] } }
 ```
-
-Lesson 15 takes composite signals apart. For now, "simple = one sine wave" is the definition to keep.
 
 ## Where you meet a sine wave
 
@@ -77,7 +73,7 @@ The slides give two everyday sine waves:
 - **Power distribution**: the sine wave is carrying **energy** (the voltage in your wall outlet).
 - **Burglar alarm**: the sine wave is a **signal of danger**.
 
-Both are single sine waves doing a job. Neither is carrying data, which is exactly why data communication needs composite signals (Lesson 15).
+Neither carries data, which is why data communication needs composite signals.
 
 ## Try it
 

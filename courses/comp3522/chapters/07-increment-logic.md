@@ -3,7 +3,7 @@ title: ++/--, relational & logical operators
 minutes: 15
 ---
 
-Three more operator families the quiz will test: increment/decrement, relational (comparison), and logical.
+Three more operator families: increment/decrement, relational (comparison), and logical.
 
 ## Pre vs post
 
@@ -18,7 +18,7 @@ x++; //post
 - **`x++` (postfix)**: use the **current** value of `x` in the surrounding expression, **then** increment it.
 - **`++x` (prefix)**: increment `x` **first**, then use the new value.
 
-Predict what each program prints before you run it — both start with `x = 5`:
+Both programs start with `x = 5`:
 
 ```cpp run
 #include <iostream>
@@ -44,7 +44,7 @@ int main()
 
 The first program prints `5 6` — the first `<<` grabs the old `x` (5) and increments as a side effect; by the time the second `<<` runs, `x` is already 6. The second prints `6 6` because `x` is incremented *before* it is used at all.
 
-Step through it here — the default expression combines both increments on the same variable in one line:
+The stepper's default expression combines both increments on one variable:
 
 ```widget
 expr-stepper
@@ -119,7 +119,7 @@ int main()
 
 `&&` and `\|\|` **short-circuit**: the right-hand side is only evaluated if it can change the answer.
 
-`std::cout << (loud(false, "left") && loud(true, "right")) << std::endl;` calls `loud(false, "left")` first. That call runs `std::cout << "checking " << label << std::endl;`, printing `checking ` followed by the label, and `return value;` hands back `false`. Because the left side of `&&` is `false`, the whole expression must be `false`, so `loud(true, "right")` is never called — `right` never gets checked. The next line, `std::cout << (loud(true, "left") || loud(true, "right")) << std::endl;`, tells the same story for `||`: `loud(true, "left")` returns `true`, so the right side is skipped.
+`std::cout << (loud(false, "left") && loud(true, "right")) << std::endl;` calls `loud(false, "left")` first, which prints `checking left` and returns `false`. The left side of `&&` is `false`, so the whole expression is `false` and `loud(true, "right")` is never called. On the next line `loud(true, "left")` returns `true`, so the right side of `||` is skipped.
 
 :::quiz `=` is not `==`
 `if (x = 10)` **compiles**. It assigns `10` to `x`, and then tests the assigned value for truthiness (non-zero is true), so the branch runs every time unless you assign `0`. This is one of the most common real bugs in C and C++\.

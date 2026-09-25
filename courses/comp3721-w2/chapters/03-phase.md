@@ -1,26 +1,26 @@
 ---
 title: Phase & the sine equation
-minutes: 18
+minutes: 14
 ---
 
-Amplitude says how tall the wave is and frequency says how fast it repeats. The third parameter, **phase**, says where the wave *starts*. Once you have all three you can write the wave as an equation, and reading $A$, $f$ and $T$ back out of an equation is a guaranteed quiz calculation.
+Amplitude says how tall the wave is and frequency how fast it repeats; the third parameter, **phase**, says where the wave *starts*. With all three, the wave can be written as an equation.
 
 ## Phase ($\phi$)
 
 Slide definition: *the position of the waveform relative to time 0 (it indicates the status of the first cycle). Measured in degrees or radians.*
 
-Phase is not a voltage and not a time. It is an angle, because one full cycle of a sine wave is one trip around a circle.
+Phase is an angle, not a voltage or a time: one full cycle of a sine wave is one trip around a circle.
 
 ## Degrees and radians
 
-Everything on the "More about Phase" slide:
+From the "More about Phase" slide:
 
 - $360° = 2\pi$ rad
 - $1° = \frac{2\pi}{360}$ rad
-- $1$ rad $= \frac{360}{2\pi}$ degrees (about $57.3°$, a number the slide leaves for your calculator)
+- $1$ rad $= \frac{360}{2\pi}$ degrees, about $57.3°$
 - A shift of a complete cycle is a phase shift of $360°$.
 
-The A02 handout draws one cycle with its phase marked underneath, from $0°$ to $360°$ and from $0$ to $2\pi$ rad. Those landmarks are worth knowing cold:
+The A02 handout marks one cycle from $0°$ to $360°$ and from $0$ to $2\pi$ rad:
 
 | Fraction of a cycle | Degrees | Radians |
 |---|---|---|
@@ -30,7 +30,7 @@ The A02 handout draws one cycle with its phase marked underneath, from $0°$ to 
 | $\frac{3}{4}$ | $270°$ | $\frac{3\pi}{2}$ |
 | 1 | $360°$ | $2\pi$ |
 
-A quarter cycle is $90°$; on the unit circle that is the point straight up, $(0, 1)$, which is where a sine wave is at its peak.
+A quarter cycle is $90°$; on the unit circle that is the point straight up, $(0, 1)$, where a sine wave is at its peak.
 
 ## The equation of a sine wave
 
@@ -47,7 +47,7 @@ and labels its four parts:
 | $f$ | frequency |
 | $T$ | period |
 
-The two forms are the same equation because $f = \frac{1}{T}$. The thing to remember when reading an equation: **whatever multiplies $t$ inside the sine is $2\pi f$**. Divide it by $2\pi$ to get the frequency.
+The two forms are the same equation because $f = \frac{1}{T}$. **Whatever multiplies $t$ inside the sine is $2\pi f$**; divide it by $2\pi$ to get the frequency.
 
 ### Slide example: read the parameters off the equation
 
@@ -58,7 +58,7 @@ The two forms are the same equation because $f = \frac{1}{T}$. The thing to reme
 **(b)** Nothing written in front means $A = 1$ V. Inside, $2\pi f = 10$, so $f = \frac{10}{2\pi} = 1.59$ Hz. Then $T = \frac{1}{1.59} = 0.628$ s.
 
 :::warn The π is the trap
-In (a) the $\pi$ cancels and the frequency is a round 10 Hz. In (b) there is no $\pi$ inside the sine, so you must actually divide by $2\pi = 6.283$: $10 / 6.283 = 1.59$ Hz. A common mistake is to answer "5 Hz" for (b) by halving 10 and forgetting the $\pi$.
+In (a) the $\pi$ cancels. In (b) there is no $\pi$ inside the sine, so divide by the full $2\pi = 6.283$: $10 / 6.283 = 1.59$ Hz, not 5 Hz.
 :::
 
 ## Writing the phase into the equation
@@ -67,7 +67,7 @@ The slide replaces $2\pi f$ with the single symbol $\omega$ (omega):
 
 $$\omega = 2\pi f \qquad s(t) = A\sin(\omega t)$$
 
-In that equation the phase is zero. If we add or subtract a non-zero number $\phi$ to or from $\omega t$, the phase becomes non-zero:
+In that equation the phase is zero. Adding or subtracting a non-zero $\phi$ makes the phase non-zero:
 
 $$s(t) = A\sin(\omega t \pm \phi)$$
 
@@ -78,21 +78,17 @@ The "Horizontal Shifting" slide draws both cases:
 - $A\sin(\omega t - \phi)$: the wave shifts to the **right** by $\frac{\phi}{\omega}$.
 - $A\sin(\omega t + \phi)$: the wave shifts to the **left** by $\frac{\phi}{\omega}$.
 
-One line of algebra explains the direction: the wave crosses zero (going up) where the inside of the sine is zero. For $\omega t - \phi = 0$ that is $t = +\frac{\phi}{\omega}$, a crossing at positive time (shifted right); for $\omega t + \phi = 0$ it is $t = -\frac{\phi}{\omega}$, at negative time (shifted left).
-
-:::quiz Sign trap
-"$A\sin(\omega t + \phi)$ is shifted to the right by $\phi/\omega$" is **false**; plus shifts left, minus shifts right. Also note the shift is in *time* ($\phi/\omega$ seconds), while $\phi$ itself is an *angle*.
-:::
+The wave crosses zero going up where the inside of the sine is zero: at $t = +\frac{\phi}{\omega}$ for $\omega t - \phi$ (shifted right) and at $t = -\frac{\phi}{\omega}$ for $\omega t + \phi$ (shifted left). The shift is a *time*, $\phi/\omega$ seconds; $\phi$ itself is an angle.
 
 ## Example 1 (slide): same $A$ and $f$, three phases
 
 Three sine waves with the same amplitude and frequency but different phases:
 
 - $s(t) = \sin(\omega t)$: phase $0°$. Starts at zero, rising.
-- $s(t) = \sin(\omega t + 90°)$: phase $90°$. **Starts at its peak.** The wave has been shifted $\frac{1}{4}T$ to the left, so the quarter-cycle climb to the peak has already happened at time 0.
+- $s(t) = \sin(\omega t + 90°)$: phase $90°$. **Starts at its peak.** Shifted $\frac{1}{4}T$ to the left, so the climb to the peak has already happened at time 0.
 - $s(t) = \sin(\omega t + 180°)$: phase $180°$. Starts at zero but **falling**. Shifted $\frac{1}{2}T$ to the left, half a cycle.
 
-Use the presets below to see all three, then use the phase slider to find the $270°$ case yourself (it starts at the bottom, the trough).
+A $270°$ phase starts at the trough.
 
 ```widget
 sine-wave
@@ -103,15 +99,13 @@ sine-wave
 
 *A sine wave is offset $\frac{1}{9}$ cycle with respect to time 0. What is its phase in degrees and radians?*
 
-A whole cycle is $360°$, so a ninth of a cycle is a ninth of that:
-
 $$\phi = \frac{1}{9} \times 360° = 40°$$
 
 Convert to radians with $1° = \frac{2\pi}{360}$ rad:
 
 $$\phi = 40° \times \frac{2\pi}{360°}\ \text{rad} = \frac{2\pi}{9}\ \text{rad} = 0.698\ \text{rad}$$
 
-On a calculator: $2 \times 3.1416 \div 9 = 0.698$. The general recipe is **phase in degrees = fraction of a cycle × 360°** and **phase in radians = fraction of a cycle × 2π**.
+The general recipe: **phase in degrees = fraction of a cycle × 360°** and **phase in radians = fraction of a cycle × 2π**.
 
 ## Try it
 

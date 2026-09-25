@@ -1,13 +1,13 @@
 ---
 title: Frequency tables, pie charts, bar charts
-minutes: 14
+minutes: 12
 ---
 
-Unit 1 summarized data with **numbers**: $\bar{X}$, $s$, quartiles, $\hat{p}$. Unit 2 summarizes the same data with **pictures**. The instructor's opening line: *"It is also important to present visual summaries of data through charts and tables."* This lesson covers the categorical case, where the only sensible summary is a count per category, and the two charts that display those counts.
+Unit 1 summarized data with **numbers**: $\bar{X}$, $s$, quartiles, $\hat{p}$. Unit 2 summarizes the same data with **pictures**, starting with categorical data, where the only summary is a count per category and the two charts that display those counts.
 
 ## The data set for the whole unit
 
-Everything in Unit 2 runs on a sample of $n = 302$ BCIT students. Each row is one student; the four columns are:
+Unit 2 runs on a sample of $n = 302$ BCIT students, one row per student:
 
 | Variable | Type | Values |
 |---|---|---|
@@ -16,17 +16,17 @@ Everything in Unit 2 runs on a sample of $n = 302$ BCIT students. Each row is on
 | `Wr.Hnd` | categorical | writing hand: R, L, A |
 | `Height.CM` | numerical | 141 to 199 cm |
 
-Loading it in R (the notes use `read.csv` on the file `BCIT.students.csv`):
+The notes load it with `read.csv`:
 
 ```r
 BCIT.students <- read.csv("Data\BCIT.students.csv", row.names = 1, sep="")
 ```
 
-`row.names = 1` tells R the first column holds row labels (1, 2, 3, ...), not data. After this line, `BCIT.students$Eye.Colour` is the eye-colour column, exactly like `TenMileRace$net` in Lab 1.
+`row.names = 1` makes the first column the row labels, not data. `BCIT.students$Eye.Colour` is then the eye-colour column, like `TenMileRace$net` in Lab 1.
 
 ## Step 1: the frequency table
 
-A **frequency** is a count. To summarize a categorical variable you count how many individuals fall in each category, and R's `table()` does exactly that:
+A **frequency** is a count. `table()` counts how many individuals fall in each category:
 
 ```r
 freq.tab <- table( BCIT.students$Eye.Colour )
@@ -37,16 +37,13 @@ Black  Blue Brown Green Other
    95    52   130    10    15
 ```
 
-Two things to notice, because both come up in questions:
+**R lists the categories alphabetically**, not by size and not in the order they appear in the data. The counts sum to $n$: $95 + 52 + 130 + 10 + 15 = 302$.
 
-1. **R lists the categories alphabetically** (Black, Blue, Brown, Green, Other), not in the order they appear in the data and not by size.
-2. The counts sum to $n$: $95 + 52 + 130 + 10 + 15 = 302$.
-
-The instructor's interpretation, written right on the chart: **"Brown is the modal colour (i.e. mode)."** The **mode** of a categorical variable is the category with the highest frequency, and it is the only measure of centre that makes sense for categories (there is no "average eye colour"). Dividing by $n$ turns a frequency into the sample proportion from Unit 1: $\hat{p}(\text{Brown}) = 130/302 = 0.4305$. See [Categorical data: proportion & mode](#/math3042/categorical) if that needs a refresher.
+The instructor's note on the chart: **"Brown is the modal colour (i.e. mode)."** The **mode** is the category with the highest frequency, and it is the only measure of centre a categorical variable has. Dividing a count by $n$ gives the Unit 1 sample proportion: $\hat{p}(\text{Brown}) = 130/302 = 0.4305$ ([Categorical data: proportion & mode](#/math3042/categorical)).
 
 ### R detail: a table is a "named vector"
 
-The notes flag this with **R language:** the object `freq.tab` is a vector whose elements carry names. You can index it by position or by name, and the bracket style decides whether the name comes along:
+`freq.tab` is a vector whose elements carry names. Index it by position or by name; the bracket style decides whether the name comes along:
 
 ```r
 freq.tab[3]
@@ -63,11 +60,7 @@ Brown
 [1] "Black" "Blue"  "Brown" "Green" "Other"
 ```
 
-Single brackets keep the name attached (`Brown` printed above `130`); **double square brackets drop the name** and return the bare number `[1] 130`. Position 3 is Brown only because of the alphabetical ordering.
-
-:::quiz Position versus name
-A likely question: "What does `freq.tab[3]` return?" You need the alphabetical order to answer it: Black (1), Blue (2), Brown (3), Green (4), Other (5). `freq.tab[[3]]` is the same count without its label.
-:::
+Single brackets keep the name attached; **double square brackets drop it** and return the bare `[1] 130`. Position 3 is Brown only because of the alphabetical order: Black (1), Blue (2), Brown (3), Green (4), Other (5).
 
 ## Step 2a: the pie chart
 
@@ -75,11 +68,9 @@ A likely question: "What does `freq.tab[3]` return?" You need the alphabetical o
 pie(freq.tab, radius=1.0, main="Eye Colour in BCIT Students (n = 302)")
 ```
 
-`pie()` takes the frequency table and draws one slice per category. The **area (angle) of each slice is that category's fraction of the whole sample**, its relative frequency $x/n$. Brown's slice is $130/302 = 43\%$ of the circle, Green's is $10/302 = 3.3\%$.
+One slice per category, and the **angle of each slice is the category's relative frequency** $x/n$: Brown is $130/302 = 43\%$ of the circle, Green $10/302 = 3.3\%$. The instructor's annotation: **"shows relative frequency."** A pie answers "what fraction of the sample is Brown?" at a glance. It is bad at precise comparison: you cannot read off whether Black (95) beats Blue (52).
 
-The instructor's annotation beside the pie: **"shows relative frequency."** So the pie chart answers the question *"what fraction of the sample is Brown?"* at a glance. What it does badly is precise comparison: is Black (95) bigger than Blue (52)? You can see it, but you cannot read either number, and two slices of similar size are hard to rank by eye.
-
-R's default slice colours are white, light blue, misty rose, light cyan, lavender, in the alphabetical order of the categories, starting at 3 o'clock and going counter-clockwise. `radius=1.0` just makes the pie fill the plotting area; `main=` is the title.
+R draws the slices in alphabetical order, counter-clockwise from 3 o'clock, in its default colours (white, light blue, misty rose, light cyan, lavender). `radius=1.0` fills the plotting area; `main=` is the title.
 
 ## Step 2b: the bar chart
 
@@ -89,18 +80,14 @@ barplot(freq.tab, col="lightgreen",
         main="Eye Colour in BCIT Students (n = 302)")
 ```
 
-`barplot()` draws one bar per category with **height equal to the frequency** (the count itself, read off the vertical axis labelled Frequency). The instructor's annotations: the y-axis shows **"absolute freq."**, and the chart **"shows absolute frequency, better for comparisons."** He drew an arrow from the top of the Black bar up to the top of the Brown bar: on a bar chart you can see exactly how much taller Brown (130) is than Black (95), because both are measured against the same axis.
+One bar per category with **height equal to the frequency**. The instructor's annotations: the y-axis shows **"absolute freq."**, and the chart **"shows absolute frequency, better for comparisons."** All bars share one axis, so Brown (130) against Black (95) is read exactly.
 
-The notes state the rule in two sentences you should be able to reproduce:
+The rule from the notes:
 
 > A pie chart is better at showing what fraction a sample forms out of the whole sample.
 > A bar chart is better at showing how two categories compare to each other.
 
-Both charts are built from the **same frequency table**; they present the same information in related but different ways.
-
-## Try it
-
-Edit the frequencies (for example, make Blue 200) and watch the pie re-slice while the bars re-scale. Hover a row to find its slice and its bar. The R output and the named-vector indexing update too.
+Both charts are drawn from the same frequency table.
 
 ```widget
 cat-charts
@@ -108,7 +95,7 @@ cat-charts
 
 ## Dressing up a bar chart (from the demo notebook)
 
-The demo notebook shows the extra arguments `barplot()` accepts. You are not expected to memorize them, but you should recognize what each does:
+The demo notebook's extra `barplot()` arguments, to recognize rather than memorize:
 
 ```r
 barplot(freq.tab,  col=c("black","lightblue","brown","lightgreen","white"),
@@ -122,12 +109,12 @@ barplot(freq.tab,  col=c("black","lightblue","brown","lightgreen","white"),
         density=30, angle=30)
 ```
 
-- `col=c(...)` gives one colour per bar, in the alphabetical category order.
-- `main=paste("... n = ", nrow(BCIT.students), ")")` builds the title from the data frame's row count, so the $n$ in the title is **never hard-coded**. Lab 2 asks for exactly this trick.
-- `space` is the gap between bars, `horiz=TRUE` would lay the bars sideways, `density`/`angle` hatch the bars with lines.
+- `col=c(...)`: one colour per bar, in alphabetical category order.
+- `main=paste("... n = ", nrow(BCIT.students), ")")` builds the title from the row count, so $n$ is **never hard-coded**. Lab 2 asks for this.
+- `space` is the gap between bars, `horiz=TRUE` lays them sideways, `density`/`angle` hatch them.
 
-:::tip One table, two charts, one mode
-Whatever the chart, the statistical content is the frequency table. Read the mode from the tallest bar or the biggest slice; read a relative frequency by dividing a count by $n$. If a question gives you percentages instead of counts, a pie chart can be drawn straight from them (Lab 3 does that with `pie(percents, labels)`).
+:::tip Percentages instead of counts
+A pie chart can be drawn straight from percentages when a question gives those instead of counts (Lab 3 does it with `pie(percents, labels)`).
 :::
 
 ```quiz

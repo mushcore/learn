@@ -3,7 +3,7 @@ title: Chebyshev's rule
 minutes: 12
 ---
 
-The empirical rule (68-95-99.7) is powerful, but it has one condition attached: the data must be **approximately normal** (bell-shaped, symmetric). What do you do when the shape is unknown, skewed, or definitely not normal? That's what **Chebyshev's rule** is for.
+The empirical rule (68-95-99.7) has one condition attached: the data must be **approximately normal** (bell-shaped, symmetric). When the shape is unknown, skewed, or definitely not normal, **Chebyshev's rule** applies instead.
 
 ## The rule
 
@@ -14,7 +14,7 @@ $$1 - \frac{1}{k^2}$$
 The word "at least" is the whole point: Chebyshev gives a guaranteed lower bound that holds no matter how weird the distribution is. The empirical rule gives an exact estimate, but only when normality holds.
 
 :::quiz "At least" is not "approximately"
-A likely trap: the empirical rule says $\mu \pm 2\sigma$ contains **approximately** 95%. Chebyshev says $\mu \pm k\sigma$ contains **at least** $1 - 1/k^2$. Don't swap "at least" for "approximately" when writing a Chebyshev answer — the guarantee is a floor, not an estimate.
+Write "at least" for a Chebyshev answer and "approximately" for an empirical-rule answer; the Chebyshev guarantee is a floor, not an estimate.
 :::
 
 ## Comparing the two rules
@@ -33,18 +33,16 @@ chebyshev
 
 ## Why $k = 1$ gives 0%
 
-At $k=1$, Chebyshev guarantees nothing — literally $0\%$. The instructor's own example showing this bound is *tight* (can actually be reached): a data set with **half the values at $-10$ and half at $+10$**, so $\mu = 0$ and $\sigma = 10$. Every single value has $Z = \pm 1$ exactly — none has $-1 < Z < 1$. So the fraction strictly between $-1$ and $+1$ really is $0\%$, matching Chebyshev's bound exactly. This is why Chebyshev can't promise more than 0% at $k=1$: some data set really does achieve the worst case.
+At $k=1$, Chebyshev guarantees nothing, and the bound is *tight*: a data set with **half the values at $-10$ and half at $+10$** has $\mu = 0$ and $\sigma = 10$, every value at $Z = \pm 1$ exactly, and none strictly between $-1$ and $+1$. Some data set really does achieve the worst case, so Chebyshev cannot promise more than 0% at $k=1$.
 
 ## When to use which rule
 
 - Data is **roughly bell-shaped / normal** — use the empirical rule (68-95-99.7). It's more precise.
 - Data's shape is **unknown, skewed, or you can't assume normal** — use Chebyshev. It's weaker but always valid.
 
-Chebyshev is the safe, universal fallback; the empirical rule is the sharper tool you reach for once you've confirmed (or been told) the data is normal.
-
 ## Worked example: moisture content
 
-Instructor's pencil problem: moisture content has $\mu = 18$, $\sigma = 0.5$, and the shape is **not assumed normal**, so Chebyshev applies.
+Pencil problem: moisture content has $\mu = 18$, $\sigma = 0.5$, and the shape is **not assumed normal**, so Chebyshev applies.
 
 Question: what fraction of readings are guaranteed to fall between **17 and 19**?
 
@@ -52,7 +50,7 @@ First find $k$: $17$ and $19$ are each $1$ unit from the mean, and $\sigma = 0.5
 
 $1 - \frac{1}{k^2} = 1 - \frac{1}{4} = 0.75 = \mathbf{75\%}$
 
-At least 75% of moisture readings fall between 17 and 19 — a guarantee that holds regardless of the true shape of the distribution.
+At least 75% of moisture readings fall between 17 and 19, whatever the true shape of the distribution.
 
 ```quiz
 [

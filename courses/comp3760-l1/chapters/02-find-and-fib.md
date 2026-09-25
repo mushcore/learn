@@ -1,9 +1,9 @@
 ---
 title: find, and why fib needs a better algorithm
-minutes: 12
+minutes: 11
 ---
 
-Two worked examples from the slides. `find` is the algorithm the whole module keeps coming back to: small enough to count every statement by hand. `fib` is the motivation: two correct algorithms for the same problem, one of which becomes unusable within seconds.
+`find` is the algorithm the module counts by hand. `fib` is the motivation: two correct algorithms for one problem, one of which becomes unusable within seconds.
 
 ## find: read it first
 
@@ -16,9 +16,9 @@ Two worked examples from the slides. `find` is the algorithm the whole module ke
 6.    return m
 ```
 
-The slide asks only: **what does it do?** Walk it with a small array before reading on: `A = 5 2 4 6 1 3`.
+The slide asks only: **what does it do?**
 
-`m` starts as `A[0]`. Each later element is compared with `m`, and whenever it is bigger it replaces `m`. When the loop ends, `m` is the biggest thing seen. **It finds the largest element of an array.**
+`m` starts as `A[0]`. Each later element is compared with `m` and replaces it when bigger, so when the loop ends `m` is the biggest thing seen. **It finds the largest element of an array.**
 
 ## Correctness
 
@@ -28,7 +28,7 @@ The slide asks three questions about `find`:
 - **for any possible input?** (how many are there?)
 - **within a finite amount of time?**
 
-And then: *how would you argue this rigorously?* The lecture leaves it as a question. A short argument: after the loop has looked at `A[i]`, `m` is the largest of `A[0..i]` (true before the loop for `i = 0`, and each iteration keeps it true). The loop runs exactly $n - 1$ times, so it finishes, and it finishes with `m` equal to the largest of `A[0..n-1]`. That covers every input of every size, which is what "any legitimate input" demands. The number of possible inputs is unlimited, so testing a few can never replace an argument.
+And then: *how would you argue this rigorously?* The lecture leaves it as a question. A short argument: after the loop has looked at `A[i]`, `m` is the largest of `A[0..i]` (true before the loop for `i = 0`, and each iteration keeps it true). The loop runs exactly $n - 1$ times, so it finishes with `m` equal to the largest of `A[0..n-1]`, for every input of every size. The number of possible inputs is unlimited, so testing a few can never replace an argument.
 
 ## Time efficiency
 
@@ -40,19 +40,13 @@ Any algorithm that finds the largest element of an unsorted array has to look at
 
 > Is `find` a space-efficient algorithm? (amount of memory) **Again, it seems reasonable.** **Two temp variables introduced.**
 
-The two are `m` and `i`. `find` does not copy the array or build anything that grows with $n$; the extra memory is the same two variables whether $n$ is 3 or 3 million.
-
-:::quiz Space efficiency counts extra memory
-A true/false item like "find is not space-efficient because it stores a copy of the array" is false. It introduces two temporary variables and nothing else. The input array itself is not counted against the algorithm.
-:::
+The two are `m` and `i`. `find` does not copy the array or build anything that grows with $n$, and the input array itself is not counted against the algorithm.
 
 ## Variation of the problem
 
 > What if you are guaranteed that `A` is **pre-sorted**? Is this `find()` algorithm still efficient? **Could you do better?**
 
-Yes. If the array is sorted in ascending order, the largest element is the last one: `return A[n-1]`. That is one step no matter how big $n$ is. `find` still gives the right answer on a sorted array, but it does $n - 1$ comparisons to discover something the guarantee already told you.
-
-This is the lesson's point about problems versus algorithms: change the problem (add a guarantee about the input) and a different algorithm becomes the efficient one.
+Yes. In an ascending array the largest element is the last one: `return A[n-1]`, one step for any $n$. `find` still gives the right answer but does $n - 1$ comparisons to discover something the guarantee already told you. Change the problem (add a guarantee about the input) and a different algorithm becomes the efficient one.
 
 ## Why do we care? fib
 
@@ -120,20 +114,20 @@ The difference, in the slide's words:
 - **Second approach**: **stores successive results so we don't have to re-compute them.**
 - **Very soon the second approach is much, much faster.**
 
-Look at where the time goes. `fib(5)` calls `fib(4)` and `fib(3)`; `fib(4)` calls `fib(3)` again and `fib(2)`; every `fib(3)` calls `fib(2)` again… The same small subproblems are recomputed an enormous number of times. `fib2` computes each `F[i]` exactly once.
+`fib(5)` calls `fib(4)` and `fib(3)`; `fib(4)` calls `fib(3)` again and `fib(2)`; every `fib(3)` calls `fib(2)` again. The same small subproblems are recomputed an enormous number of times, while `fib2` computes each `F[i]` exactly once.
 
 ```widget
 fib-race
 { "n": 6, "title": "fib vs fib2: how much work each one does" }
 ```
 
-Push `n` up. The call count for `fib` roughly multiplies by 1.6 every time `n` goes up by one (the timing column does the same: 9, 11, 22, …, 1627 ms), while `fib2` adds one loop iteration.
+The call count for `fib` multiplies by about 1.6 every time `n` goes up by one (the timing column does the same: 9, 11, 22, …, 1627 ms); `fib2` adds one loop iteration.
 
 ## So?
 
 > **Fib is a basic example of why we care about algorithm efficiency.** A well thought out algorithm can run **much faster**. There can be **big variation** in efficiency.
 
-The next lesson, [Counting statements](#/comp3760-l1/counting-statements), turns "much faster" into something you can compute from the pseudocode before writing a line of Java.
+[Counting statements](#/comp3760-l1/counting-statements) turns "much faster" into something you can compute from the pseudocode before writing a line of Java.
 
 ## Try it
 

@@ -3,7 +3,7 @@ title: Three ways to initialize
 minutes: 12
 ---
 
-Unlike Java, C++ gives you three different syntaxes for initializing a variable, and the quiz expects you to recognize all three by sight.
+Unlike Java, C++ has three syntaxes for initializing a variable.
 
 ## The three forms
 
@@ -13,17 +13,15 @@ int x(0);    // 2. Constructor initialization — parentheses
 int x{0};    // 3. Uniform initialization — curly braces (C++11)
 ```
 
-All three set `x` to `0`. They are not new syntaxes for three different features — they're three different **spellings** of "initialize this variable now."
+All three set `x` to `0`; they are three spellings of the same thing.
 
 ```widget
 init-forms
 ```
 
-Pick a source type/value and a target type in the widget above and watch what each form does — in particular watch what happens when the target type is narrower than the source value.
-
 ## Why prefer uniform initialization?
 
-Straight from the slides: uniform initialization (the `{}` form) is preferred because **it prohibits implicit narrowing conversion** among built-in types. The `=` and `()` forms will silently truncate a value that doesn't fit the target type; `{}` refuses to compile.
+The slides' reason to prefer uniform initialization (the `{}` form): **it prohibits implicit narrowing conversion** among built-in types. `=` and `()` silently truncate a value that does not fit the target type; `{}` refuses to compile.
 
 ```cpp pin narrowing.cpp
 double x, y, z;
@@ -32,7 +30,7 @@ int sum(x + y + z);    // same — still truncates
 int sum{x + y + z};    // ERROR! This won't work. We're happy!
 ```
 
-Given `double x, y, z;`, the `=` form `int sum = x + y + z;` and the `()` form `int sum(x + y + z);` both compile and silently truncate. The `{}` form `int sum{x + y + z};` is different — the slides' own reaction to that last line is "We're happy!" because it refuses to compile instead. A compile error here is the feature, not a bug: it catches a whole class of silent-data-loss bugs at compile time instead of letting them run.
+Given `double x, y, z;`, `int sum = x + y + z;` and `int sum(x + y + z);` compile and truncate; `int sum{x + y + z};` does not compile. The slide's comment on that line, "We're happy!", is the point: the error catches silent data loss at compile time.
 
 ### See the truncation happen
 
@@ -54,11 +52,11 @@ int main()
 }
 ```
 
-`x + y + z` is `4.5`, a `double`. Assigning it into an `int` with `=` or `()` silently drops the `.5` — you get `4`, with no warning that you lost information.
+`x + y + z` is `4.5`, a `double`; `=` and `()` drop the `.5` with no warning.
 
 ### Now watch `{}` refuse to compile
 
-Uniform initialization treats that same truncation as an error instead of silently allowing it — when the compiler can see, at compile time, that the value doesn't fit:
+Uniform initialization treats that same truncation as an error when the compiler can see, at compile time, that the value doesn't fit:
 
 ```cpp
 #include <iostream>
@@ -73,7 +71,7 @@ int main()
 }
 ```
 
-Try to compile that and the compiler stops you before it ever runs:
+The compiler stops before the program runs:
 
 ```text
 main.cpp: In function 'int main()':
@@ -82,21 +80,13 @@ main.cpp:6:23: error: narrowing conversion of '4.5e+0' from 'double' to 'int' [-
       |             ~~~~~~~~~~^~~~~
 ```
 
-That's the whole point: `=` and `()` let a `double` quietly become an `int`; `{}` makes that an error you have to fix explicitly (e.g. with a cast).
-
 :::warn When the value comes from a variable instead of a literal
-Swap the literals for the `double x, y, z` variables from the previous example (`int sum{x + y + z};`) and g++ only prints a `-Wnarrowing` **warning** — it still compiles and still truncates to `4`, exactly like `=` and `()`. The narrowing rule is part of the C++ standard either way (both cases are technically ill-formed), but g++ only escalates to a hard error when it can evaluate the narrowed value itself, at compile time. The quiz follows the slides: treat `{}` narrowing as "won't compile."
+Swap the literals for the `double x, y, z` variables (`int sum{x + y + z};`) and g++ only prints a `-Wnarrowing` **warning**: it compiles and truncates to `4`, like `=` and `()`. Both cases are ill-formed by the standard, but g++ escalates to an error only when it can evaluate the narrowed value at compile time. For the quiz, follow the slides: `{}` narrowing "won't compile."
 :::
 
-:::quiz Quiz note
-Uniform initialization (`{}`) is a **C++11** feature — it did not exist in earlier C++. The `=` and `()` forms are older and both allow narrowing; only `{}` blocks it.
+:::quiz C++11
+Uniform initialization (`{}`) is a **C++11** feature. The `=` and `()` forms are older and both allow narrowing; only `{}` blocks it.
 :::
-
-## Quick recap
-
-- Three forms, same result when types match: `= `, `()`, `{}`.
-- `{}` is the odd one out: it's C++11-only, and it's the only form that **prohibits narrowing conversions**.
-- A `double` truncating into an `int` compiles fine with `=`/`()` and loses data silently; the same code with `{}` is a compile error.
 
 ```quiz
 [

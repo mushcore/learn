@@ -1,15 +1,13 @@
 ---
 title: Encapsulation & the four addresses
-minutes: 16
+minutes: 14
 ---
 
-The previous lesson gave each layer a job and a PDU name. This lesson follows one message from host A to host B and watches what each device on the path does to it. Two ideas come out: **encapsulation** (headers stack up on the way down and peel off on the way up) and **four levels of addresses** (one per layer that has a header).
+Follow one message from host A to host B and watch what each device on the path does to it. Headers stack up on the way down and peel off on the way up (**encapsulation**), and each layer that has a header has its own kind of address (**four levels of addresses**).
 
 ## Communication through an internet
 
-The slide draws source **A** and destination **B** with a **switch**, a **router**, and another **switch** in between. Three links are labelled: **Link 1** from A through the first switch to the router, **Link 2** from the router through the second switch to B, and **Link 3** from the router down to a third host, C, on another network.
-
-What matters is how many layers each device runs:
+The slide draws source **A** and destination **B** with a **switch**, a **router** and another **switch** between them. What matters is how many layers each device runs:
 
 | Device | Layers it runs | Why |
 |---|---|---|
@@ -17,11 +15,11 @@ What matters is how many layers each device runs:
 | **Switch** | **2**: data link, physical | it only moves frames across one link |
 | **Router** | **3**: network, data link, physical | it must read the network-layer address to route between links |
 
-This is the "simpler and less expensive intermediate systems" advantage of layering made concrete: a switch never needs transport or application software.
+This is the "simpler and less expensive intermediate systems" advantage of layering: a switch never needs transport or application software.
 
 ## Encapsulation at the source
 
-At the source, data flows **down** the stack. Each layer takes what the layer above gave it and adds its own **header** in front. The slide labels the headers by layer: $H_T$ (transport), $H_N$ (network), $H_L$ (link).
+Data flows **down** the stack. Each layer adds its own **header** in front of what the layer above gave it: $H_T$ (transport), $H_N$ (network), $H_L$ (link).
 
 | Layer | Adds | Result | PDU name |
 |---|---|---|---|
@@ -31,13 +29,13 @@ At the source, data flows **down** the stack. Each layer takes what the layer ab
 | Data link | $H_L$ | $H_L\ H_N\ H_T\ M$ | **frame** |
 | Physical | converts to signals | 1010110101... | **bits** |
 
-The second encapsulation slide names the same steps generically: **Data** at L5, **L4 header + data = Segment**, **L3 header = Packet**, **L2 header = Frame**, **bits** at L1. Datagram and packet are the same thing here.
+The second encapsulation slide names the same steps generically: **Data** at L5, **L4 header + data = Segment**, **L3 header = Packet**, **L2 header = Frame**, **bits** at L1. Datagram and packet are the same thing.
 
-**Decapsulation** at the destination is the exact reverse: bits become a frame, the data-link layer removes $H_L$, the network layer removes $H_N$, the transport layer removes $H_T$, and the application receives $M$. That is the first principle of layering (two opposite tasks) in action.
+**Decapsulation** at the destination is the reverse: the data-link layer removes $H_L$, the network layer removes $H_N$, the transport layer removes $H_T$, and the application receives $M$. That is the first principle of layering, two opposite tasks.
 
 ## What the switch does
 
-The frame $H_L\ H_N\ H_T\ M$ arrives at the switch's physical layer, goes up **one** layer to data link, and comes back down. The switch looks at the link-layer header to decide which port to send it out of, but the frame leaves **unchanged**: still $H_L\ H_N\ H_T\ M$.
+The frame $H_L\ H_N\ H_T\ M$ arrives at the switch's physical layer, goes up **one** layer to data link, and comes back down. The switch reads the link-layer header to pick an outgoing port; the frame leaves **unchanged**.
 
 ## What the router does
 
@@ -48,22 +46,16 @@ The router goes up to the **network** layer:
 3. Network layer reads $H_N$ (the destination IP address) and decides which link to forward on.
 4. Data link adds a **new** $H_L$ for the next link and sends $H_L\ H_N\ H_T\ M$ down to the physical layer.
 
-So $H_N$, $H_T$, and $M$ cross the router untouched, but $H_L$ is replaced on every link. The link-layer header only ever describes one hop.
+$H_N$, $H_T$ and $M$ cross the router untouched; $H_L$ is replaced on every link, because a link-layer header describes one hop only.
 
 ```widget
 encapsulation
 { "title": "Step through a message from A to B" }
 ```
 
-:::quiz True/false traps
-- "A switch operates at the network layer." **False**: data link and physical only.
-- "A router changes the transport-layer header when it forwards a packet." **False**: it replaces the **link-layer** header. $H_T$ and $M$ are untouched.
-- "The network-layer header is examined by the router." **True**: that is how it routes.
-:::
-
 ## An example frame
 
-The slide showed an Ethernet frame as its example PDU. The field sizes are there to make "frame" concrete, not to memorize for Quiz 2:
+The slide's example PDU is an Ethernet frame:
 
 | Field | Size |
 |---|---|
@@ -75,11 +67,11 @@ The slide showed an Ethernet frame as its example PDU. The field sizes are there
 | Payload | 46–1500 bytes |
 | CRC / FCS | 4 bytes |
 
-Frame size is 64–1522 bytes. Notice the destination and source **MAC addresses** sit in the frame header: these are the link-layer addresses from the next section, and they are exactly what the router rewrites.
+Frame size is 64–1522 bytes. The destination and source **MAC addresses** in the header are the link-layer addresses of the next section, and they are what the router rewrites.
 
 ## Four levels of addresses
 
-**Four levels of addresses are used in an internet following the TCP/IP protocols.** Each corresponds to one layer with a header:
+**Four levels of addresses are used in an internet following the TCP/IP protocols**, one per layer that has a header:
 
 | Packet name | Layer | Address | What it identifies |
 |---|---|---|---|
@@ -89,14 +81,7 @@ Frame size is 64–1522 bytes. Notice the destination and source **MAC addresses
 | Frame | Data link | **Link-layer addresses** (MAC) | defining a specific host or router **in a network (LAN or WAN)** |
 | Bits | Physical | (none) | |
 
-Read the last column carefully. A logical (IP) address is global: it identifies a host on the whole Internet. A link-layer (MAC) address is local: it identifies a host or router within one network. That is why the router can throw away the old $H_L$ and write a new one for the next network.
-
-:::quiz Fill-in-the-blank wording
-- "A _______ address uniquely defines a host on the Internet." -> **logical (IP)**
-- "_______ numbers identify a process on a host." -> **port**
-- "_______ addresses define a specific host or router in a network (LAN or WAN)." -> **link-layer (MAC)**
-- "The physical layer has _______ address." -> **no**
-:::
+A logical (IP) address is global: it identifies a host on the whole Internet. A link-layer (MAC) address is local to one network, which is why the router can discard the old $H_L$ and write a new one for the next network.
 
 ## E01 exercise 2: changing the LAN technology
 
@@ -104,7 +89,7 @@ Read the last column carefully. A logical (IP) address is global: it identifies 
 
 **Answer: only the data-link layer and the physical layer.**
 
-The instructor's reasoning: changing the LAN technology usually means changing the transmission medium, say from coaxial cable to fibre-optic cable, or to a wireless technology such as WiFi. Physical layer protocols **depend on the transmission medium**. The data-link layer is involved in communication between **neighbouring nodes**, so it is also affected by the medium. The network, transport, and application layers never see the medium, so they stay as they are.
+Changing the LAN technology usually means changing the transmission medium, say from coaxial cable to fibre-optic cable, or to a wireless technology such as WiFi. Physical layer protocols **depend on the transmission medium**, and the data-link layer handles communication between **neighbouring nodes** over that medium. The network, transport and application layers never see the medium.
 
 ## Try it
 

@@ -1,9 +1,9 @@
 ---
 title: E01 & the sample quiz, worked
-minutes: 20
+minutes: 18
 ---
 
-The instructor posted two pieces of Week 1 practice material: the Week 1 exercise sheet (E01) and one page of sample quiz questions that shows the three formats the real quizzes use (true or false, fill in the blanks, written response). Every item is reproduced here. Commit to an answer on paper before you open the worked answer; checking an answer you never made teaches almost nothing. The Week 2 sheet (E02) is worked in the Week 2 module.
+The Week 1 exercise sheet (E01) and the instructor's one page of sample quiz questions, in the three formats the real quizzes use: true or false, fill in the blanks, written response. Commit to an answer on paper before you open the worked answer.
 
 ## E01: Week 1 exercises
 
@@ -31,7 +31,7 @@ $$\text{links} = \frac{n(n-1)}{2} = \frac{12 \times 11}{2} = 66$$
 For a bus topology there is one long cable as a backbone and every device connects to it through its own drop line: **12 drop lines**, and **one backbone** link is needed.
 
 :::quiz Watch the wording
-"How many cable links" for a bus is answered as *n drop lines plus one backbone*, not as a single number. Write both parts.
+"How many cable links" for a bus is answered as *n drop lines plus one backbone*, not as a single number.
 :::
 
 ### Exercise 2
@@ -49,9 +49,7 @@ For a bus topology there is one long cable as a backbone and every device connec
 ]
 ```
 
-**Instructor's answer.** The only two layers that need to be changed are the **data-link layer** and the **physical layer**.
-
-Changing the LAN technology usually means changing the transmission medium: from coaxial cable to fibre-optic cable, or to a wireless technology such as WiFi. Physical-layer protocols depend on the transmission medium. The data-link layer is involved in communication between neighbouring nodes, so it is also affected by the medium. Everything above (network, transport, application) is unchanged.
+**Instructor's answer.** The only two layers that need to be changed are the **data-link layer** and the **physical layer**. Changing the LAN technology usually means changing the transmission medium: from coaxial cable to fibre-optic cable, or to a wireless technology such as WiFi. Physical-layer protocols depend on the transmission medium, and the data-link layer is involved in communication between neighbouring nodes, so it is also affected. Network, transport and application are unchanged.
 
 ### Exercise 3
 
@@ -105,15 +103,15 @@ Changing the LAN technology usually means changing the transmission medium: from
 
 **Instructor's answer.** **Network**, **IP addresses** (or logical addresses).
 
-Although a router is generally considered a network-layer device, it operates at the **network, data-link and physical** layers (three layers). The network layer depends on the services of the layer below it, the data-link layer, which in turn relies on the services of the physical layer. So any network-layer device must implement all three.
+Although a router is generally considered a network-layer device, it operates at the **network, data-link and physical** layers. The network layer depends on the services of the data-link layer, which in turn relies on the physical layer, so any network-layer device must implement all three.
 
 :::quiz Two different questions
-"At which layer does a router operate?" has the one-word answer *network*. "How many layers does a router implement?" is *three*. A switch implements *two* (data link and physical). Read which of the two is being asked.
+"At which layer does a router operate?" has the one-word answer *network*. "How many layers does a router implement?" is *three*. A switch implements *two* (data link and physical).
 :::
 
 ## Sample quiz questions
 
-The instructor's sample page has six questions: two true or false, two fill in the blanks, two written response. Each is reproduced verbatim.
+Six questions: two true or false, two fill in the blanks, two written response, reproduced verbatim.
 
 ### 1. True or false
 
@@ -131,7 +129,7 @@ The instructor's sample page has six questions: two true or false, two fill in t
 ```
 
 :::quiz Model answer
-**True.** Full-duplex means two-directional communication *simultaneously*. Both directions use the same link at the same time, so its capacity is shared between them. (Half-duplex avoids the sharing by taking turns; simplex only ever has one direction.)
+**True.** Full-duplex means two-directional communication *simultaneously*. Both directions use the same link at the same time, so its capacity is shared between them. Half-duplex avoids the sharing by taking turns; simplex only ever has one direction.
 :::
 
 ### 2. True or false

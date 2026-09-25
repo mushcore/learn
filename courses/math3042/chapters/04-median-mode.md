@@ -13,7 +13,7 @@ The median, written $\tilde{X}$ or $Q_2$, is the value that sits in the **middle
 - **Even $n$:** there is no single middle value, so the median is the **mean of the two middle values**.
 
 :::warn Sort first
-Every median question starts the same way: **sort the data**. If you compute the median of unsorted data you will get the wrong answer even if your counting is correct.
+Sort the data first; the median of unsorted data is wrong even when the counting is right.
 :::
 
 ### Worked example, odd $n$
@@ -24,7 +24,7 @@ The middle position is the 4th value: $19, 19, 20, \mathbf{22}, 23, 25, 50$.
 
 $$Q_2 = 22$$
 
-Notice the median completely ignores the `50` — it doesn't matter that it's far larger than everything else, only that it's above the middle.
+The median ignores the `50`: it only matters that it is above the middle, not how far above.
 
 ### Worked example, even $n$
 
@@ -35,7 +35,7 @@ There are two middle values, the 3rd and 4th: $19, 20, \mathbf{23}, \mathbf{27},
 $$Q_2 = \frac{23 + 27}{2} = 25$$
 
 :::quiz Quiz note
-"With an even number of values, the median is one of the two middle data points." **False.** With even $n$ there is no single middle data point — the median is the **average** of the two middle values, and that average is often a number that doesn't even appear in the data set (like `25` above).
+With even $n$ the median is the **average** of the two middle values, which is often a number that does not appear in the data set (like `25` here).
 :::
 
 ## Worked example: Old Faithful eruptions
@@ -70,19 +70,13 @@ stat-calc
 { "data": "60 62 64 68 70 72 75 78 80 80 80 80 80 82 84 88 90 92", "title": "Pulse-style data with a clear mode (80)" }
 ```
 
-Try editing that widget's data to make every value unique — the mode disappears entirely. That's the "no mode" case.
-
-:::quiz Quiz note
-"Every data set has a mode." **False.** If no value repeats, there is no mode at all. A mode requires at least one value to occur more often than the rest.
-:::
-
 ## Why bother with the median at all?
 
-If the mean is easier to compute, why does the median exist? Because the mean is sensitive to **every** value, including extreme ones — one huge outlier can drag the mean a long way. The median only cares about rank order, so it barely moves.
+The mean is sensitive to **every** value, including extreme ones, so one huge outlier can drag it a long way. The median only cares about rank order, so it barely moves.
 
-Look back at $19, 19, 20, 22, 23, 25, 50$: the mean is $\frac{19+19+20+22+23+25+50}{7} \approx 25.4$ — noticeably pulled upward by the `50`. The median stayed at `22`, a much better description of where most of the data actually sits.
+Look back at $19, 19, 20, 22, 23, 25, 50$: the mean is $\frac{19+19+20+22+23+25+50}{7} \approx 25.4$ — pulled upward by the `50`. The median stayed at `22`, a much better description of where most of the data actually sits.
 
-This becomes the central idea of skewness (coming up next): when a distribution is skewed or has outliers, the mean and median pull apart, and the median is usually the more trustworthy "typical value."
+This is the central idea of skewness (next): when a distribution is skewed or has outliers, the mean and median pull apart, and the median is usually the more trustworthy "typical value."
 
 ```widget
 drag-data

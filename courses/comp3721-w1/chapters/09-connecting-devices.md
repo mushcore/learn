@@ -1,15 +1,13 @@
 ---
 title: Hubs, switches, routers
-minutes: 12
+minutes: 10
 ---
 
-Lecture 01c is a one-page complementary note on **connecting (communication) devices**. It is short, but it fills in exactly the gaps that E01 exercises 3 and 4 test, and it ties the layer counts from the previous lesson to real hardware.
+Lecture 01c is a one-page note on **connecting (communication) devices**: the hardware behind the layer counts of the previous lesson, and behind E01 exercises 3 and 4.
 
 ## Why connecting devices exist
 
-We use connecting devices to **connect hosts together to make a network**, or to **connect networks together to make an internet**. Connecting devices can operate in different layers of the Internet model. There are **three main types**: **hubs**, **link-layer switches**, and **routers**.
-
-The layer a device reaches decides what it can read, and therefore what it can decide:
+We use connecting devices to **connect hosts together to make a network**, or to **connect networks together to make an internet**. They operate in different layers of the Internet model. There are **three main types**: **hubs**, **link-layer switches**, and **routers**. The layer a device reaches decides what it can read, and so what it can decide:
 
 | Device | Layers | What it reads | What it decides |
 |---|---|---|---|
@@ -25,8 +23,6 @@ Hubs today operate in the **physical layer** (first layer) of the TCP/IP protoco
 - A hub is also called a **multiport (multiway) repeater**.
 - It forwards the signal to **all outgoing ports except the one from which the signal was received**.
 
-No addresses are read. The hub cannot tell one host from another; it only knows "not back where it came from."
-
 ## Link-layer switch
 
 Link-layer switches operate in the **first two layers** (physical layer and data-link layer).
@@ -36,10 +32,6 @@ Link-layer switches operate in the **first two layers** (physical layer and data
 - In general, we refer to a switch as a **link-layer device**.
 - A link-layer switch has **filtering capability**: it can check the destination address of a frame and **decide from which outgoing port the frame should be sent**. That is the **difference with a hub**.
 
-:::quiz Written-response candidate
-"What is the difference between a hub and a switch?" A hub repeats a signal out every other port (physical layer only). A switch reads the destination MAC address in the frame and forwards it out **one** chosen port: **filtering**.
-:::
-
 ## Router
 
 Routers operate in the **first three layers** (physical, data link, and network).
@@ -48,21 +40,17 @@ Routers operate in the **first three layers** (physical, data link, and network)
 - As a link-layer device, it **checks the physical (link-layer) addresses** (source and destination) contained in the packet.
 - As a network-layer device, it **checks the network-layer addresses**.
 
-A router **can connect networks**. In other words, a router is an **internetworking device**: it connects independent networks to form an internetwork. By this definition, **two networks connected by a router become an internetwork or an internet**.
+A router **can connect networks**: it is an **internetworking device**, connecting independent networks to form an internetwork. **Two networks connected by a router become an internetwork or an internet**.
 
 ## Three differences: router vs. repeater or switch
 
-The note lists exactly three. These are numbered on the page, so learn them as a set:
+The note numbers exactly three:
 
 1. A router has a **physical address (link-layer / MAC address)** as well as a **logical (IP) address** for **each of its interfaces**.
 2. A router **acts only on those packets in which the link-layer destination address matches the address of the interface** at which the packet arrives.
 3. A router **changes the link-layer address of the packet (both source and destination)** when it forwards the packet.
 
-Difference 3 is the same fact you saw in the encapsulation lesson: $H_L$ is replaced at every router. Difference 1 explains how: the router has its own MAC address on each interface to write into the new header.
-
-:::warn Two addresses per interface
-Not "one IP address for the router." **Each interface** of a router has its own link-layer address and its own IP address. A router joining three networks has three of each.
-:::
+Difference 3 is the $H_L$ replacement from the encapsulation lesson; difference 1 is what makes it possible, since the router has its own MAC address on each interface to write into the new header. A router joining three networks has three link-layer addresses and three IP addresses, not one of each.
 
 ## E01 exercise 3
 
@@ -72,7 +60,7 @@ Not "one IP address for the router." **Each interface** of a router has its own 
 
 - **Router**: connects a network to other networks (internetworking device).
 - **Switch**: connects end systems together inside a network.
-- **Modem**: changes the form of data. The name is a contraction of modulator-demodulator: it converts between the digital data of a computer and the analog signal of a phone or cable line. (The modulation part itself is Week 5 material.)
+- **Modem**: changes the form of data, converting between a computer's digital data and the analog signal of a phone or cable line. Modulation itself is Week 5 material.
 
 ## E01 exercise 4
 
@@ -80,11 +68,7 @@ Not "one IP address for the router." **Each interface** of a router has its own 
 
 **Answer: network, IP addresses (or logical addresses).**
 
-The instructor's note: although a router is generally considered a **network-layer device**, it operates and functions at the **network layer, data-link layer, and physical layer** (three layers). The network layer depends on the services of the layer below it, the data-link layer, which itself relies on services provided by the physical layer. So **any network-layer device must implement all three layers**.
-
-:::quiz How to answer "what layer"
-If asked what layer a device belongs to, give the **highest** layer it reaches: hub = physical, switch = data link, router = network. If asked how many layers it implements, count from the bottom: 1, 2, 3.
-:::
+Although a router is generally considered a **network-layer device**, it operates at the **network layer, data-link layer, and physical layer**. The network layer depends on the services of the data-link layer, which relies on the physical layer, so **any network-layer device must implement all three layers**. Asked what layer a device belongs to, give the highest layer it reaches: hub = physical, switch = data link, router = network. Asked how many layers it implements, count from the bottom: 1, 2, 3.
 
 ## Try it
 

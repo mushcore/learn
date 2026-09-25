@@ -1,9 +1,9 @@
 ---
 title: Networks: nodes, criteria, connections
-minutes: 12
+minutes: 10
 ---
 
-A data communications system connects two devices. A **network** connects many. This lesson covers the lecture's vocabulary for networks, the three criteria a network is judged by, and the two ways a link can be connected.
+A data communications system connects two devices. A **network** connects many.
 
 ## What is a network?
 
@@ -13,30 +13,24 @@ The slide builds the definition in three steps, with a railway map as the pictur
 - **Nodes** are *individual entities or points within a network*, like **stations**.
 - **Edges** are *links or connections* that represent the relationships or interactions between nodes, like **railways**.
 
-Stations and the tracks between them: that is the whole idea. Everything else in the course is about what the nodes are and what travels on the edges.
-
 ## Computer networks
 
-The lecture then specializes the definition:
+For computer networks the slide narrows the definition:
 
 > A **network** is *the interconnection of a set of devices capable of communication.*
 
-The nodes become **devices**, of which the slide names two kinds:
+The nodes are **devices**, of two kinds:
 
 | Kind of device (node) | Slide examples |
 |---|---|
 | **Host (end system)** | a large computer, desktop, laptop, workstation, cellular phone, etc. |
 | **Connecting / networking / communication device** | router, switch, modem, etc. |
 
-And the edges become the **connection between devices**: *wired or wireless transmission media such as cable or air.*
-
-:::quiz Host or connecting device?
-A phone is a **host** (end system). A switch is a **connecting device**. If a question asks for "an example of an end system", answer with a computer, laptop, workstation or cellular phone; if it asks for "a connecting device", answer router, switch or modem. The three names *connecting device*, *networking device* and *communication device* all mean the same thing on the slide.
-:::
+The edges are the **connection between devices**: *wired or wireless transmission media such as cable or air.*
 
 ## Network criteria
 
-A network must meet three criteria. Each one comes with the specific things it is measured by:
+A network must meet three criteria, each measured by specific things:
 
 | Criterion | Measured by (slide wording) |
 |---|---|
@@ -44,21 +38,17 @@ A network must meet three criteria. Each one comes with the specific things it i
 | **Reliability** | measured by **accuracy of delivery**, **failure rate**, **recovery time from failure**, and the network's **robustness** |
 | **Security** | protecting data from **unauthorized access/damage** and implementing **policies and procedures for recovery** from breaches and data losses |
 
-The measurements are as quizzable as the names. "Performance is mainly measured in terms of ___ and ___" wants throughput and delay.
-
-:::warn Two different fours and threes
-Do not mix these up with the previous lesson: the *effectiveness of a data communications system* has **four** characteristics (delivery, accuracy, timeliness, jitter); a *network* has **three** criteria (performance, reliability, security). Accuracy appears in both lists, once as a characteristic and once as a measure of reliability.
+:::warn Two different lists
+The *effectiveness of a data communications system* has **four** characteristics (delivery, accuracy, timeliness, jitter); a *network* has **three** criteria (performance, reliability, security). Accuracy appears in both, once as a characteristic and once as a measure of reliability.
 :::
 
 ## Type of connection
-
-Any link in a network is connected in one of two ways.
 
 ### Point-to-point
 
 - **A dedicated link between two devices.**
 - The **capacity of the link is reserved** for transmission between the two devices.
-- Examples on the slide: wire, microwave or satellite links; changing TV channels using the remote control (the remote and the TV have the link to themselves).
+- Examples on the slide: wire, microwave or satellite links; changing TV channels using the remote control.
 
 ### Multipoint (multidrop)
 
@@ -67,10 +57,10 @@ Any link in a network is connected in one of two ways.
   - **spatially shared**: several devices can use the link **simultaneously**;
   - **timeshared**: users must **take turns**.
 
-The slide's text does not spell out the name "multipoint" next to the definition; the name comes from the textbook (Forouzan §1.2, assigned reading), where it is also called multidrop. The definition and the two ways of sharing are on the slide.
+The slide does not print the name next to the definition; "multipoint", also called multidrop, comes from the textbook (Forouzan §1.2, assigned reading).
 
 :::quiz Sample quiz question (fill in the blank)
-The instructor's sample quiz asks: *"Assume we have a dedicated link between two devices. This type of connection is called ___."* The answer is **point-to-point**. The words that trigger it are *dedicated* and *two devices*; if the question says *more than two devices share a single link*, the answer is **multipoint**.
+*"Assume we have a dedicated link between two devices. This type of connection is called ___."* **Point-to-point.** *Dedicated* and *two devices* trigger it; *more than two devices share a single link* means **multipoint**.
 :::
 
 ## Try it

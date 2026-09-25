@@ -5,7 +5,7 @@ minutes: 25
 
 Quiz 1 covers **Lecture 1**: the definition of an algorithm, time and space efficiency, the basic operation and its tie-breakers, counting how many times it runs, best and worst case, orders of growth, and Big-O, Big-Ω and Big-Θ. The real quiz is **one take only, timed, closed-everything**, and it is **multiple choice over short pseudocode**. The first five questions here are in exactly the instructor's style: *is this a valid algorithm?*, *what is the basic operation?*, *how many times is it performed?* The rest cover the remaining slides in the same format.
 
-Do it in one sitting without notes. Then read every explanation you missed: each one names the slide fact the question was built from, so a miss here becomes a fact you own before the real thing.
+One sitting, no notes. Every explanation names the slide fact the question was built from.
 
 :::tip How to read a "basic operation" question
 Three checks, in order. **Which line runs the most as n grows?** Constant loops (1 to 10, 1 to 5) do not grow, so their bodies are out no matter how big the constant is. **Ties?** Deepest inside the loop first, then the tie-breaker list: function calls, key comparisons, assignments, expression evaluations; multiplication and division before addition and subtraction. **One answer.** An algorithm has one basic operation; "this code has two basic operations" is always a distractor.

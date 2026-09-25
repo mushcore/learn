@@ -1,9 +1,9 @@
 ---
 title: Topologies: mesh, star, bus, ring
-minutes: 16
+minutes: 14
 ---
 
-The **topology** of a network is *the geometric representation of the relationship of all the links and linking devices (nodes) to one another.* The lecture covers **four basic network topologies**: mesh, star, bus, ring. For each one you need the definition, the advantage and disadvantage lists, and how many cable links it takes for $n$ devices.
+The **topology** of a network is *the geometric representation of the relationship of all the links and linking devices (nodes) to one another.* The lecture covers **four basic network topologies**: mesh, star, bus, ring. For each you need the definition, the advantage and disadvantage lists, and the number of cable links for $n$ devices.
 
 ## Mesh
 
@@ -14,7 +14,7 @@ topology
 { "type": "mesh", "n": 6, "title": "Mesh: every device linked to every other" }
 ```
 
-Drag the slider: the number of links grows much faster than the number of devices. Each new device needs a link to *every* existing device.
+Each new device needs a link to *every* existing device.
 
 **Advantages**
 
@@ -44,7 +44,7 @@ topology
 { "type": "star", "n": 6, "title": "Star: every device linked only to the hub" }
 ```
 
-Devices do not talk to each other directly; everything goes through the hub. One link per device.
+Devices do not talk to each other directly; everything goes through the hub.
 
 **Advantages**
 
@@ -62,12 +62,12 @@ Devices do not talk to each other directly; everything goes through the hub. One
 **Links for $n$ devices:** $n$ (one per device, to the hub).
 
 :::quiz Sample quiz question (written response)
-The instructor's sample quiz asks: **"List two disadvantages of star topology."** Model answer, straight from the slide:
+**"List two disadvantages of star topology."** From the slide:
 
 1. The dependency of the whole topology on **one single point** (the hub): if the hub fails, the whole network is down.
 2. **More cabling** is required compared with bus and ring.
 
-Notice that "more cabling" is relative. Star uses *less* cabling than mesh (an advantage) but *more* than bus and ring (a disadvantage). A true/false question can be built on either half.
+"More cabling" is relative: star uses *less* cabling than mesh (an advantage) but *more* than bus and ring (a disadvantage).
 :::
 
 ## Bus
@@ -87,7 +87,7 @@ Notice that "more cabling" is relative. Star uses *less* cabling than mesh (an a
 - difficult reconnection and adding new devices
 - difficult fault isolation
 
-**Links for $n$ devices:** *one backbone line and $n$ drop lines are needed.* This is the one topology whose answer is not a single number; give both parts.
+**Links for $n$ devices:** *one backbone line and $n$ drop lines are needed.* The answer is not a single number; give both parts.
 
 ## Ring
 
@@ -115,11 +115,6 @@ Notice that "more cabling" is relative. Star uses *less* cabling than mesh (an a
 | Star | point-to-point to the hub | $n$ | more than bus and ring |
 | Mesh | point-to-point to every device | $\frac{n(n-1)}{2}$ | most |
 
-Two facts to hold together:
-
-- **Bus** is the only *multipoint* topology; the other three are built from *point-to-point* links.
-- **Mesh** is the only one where the link count grows faster than $n$.
-
 ## Worked: E01 exercise 1
 
 *Consider a network with 12 devices. If these devices are arranged in a mesh topology, how many cable links are needed? How about the number of links in a bus topology?*
@@ -127,11 +122,7 @@ Two facts to hold together:
 - Mesh: $\frac{12 \times (12 - 1)}{2} = \frac{12 \times 11}{2} = \mathbf{66}$ cable links.
 - Bus: **12 drop lines**, and also **one backbone** link is needed.
 
-Set the widget to mesh with 12 devices to see all 66 links drawn.
-
-:::warn Show the formula
-On a quiz, write $\frac{n(n-1)}{2}$ before the number. A bare "66" with the wrong formula earns nothing on a written response, and the formula alone can earn part marks if you slip on the arithmetic.
-:::
+On a written response, write the formula before the number.
 
 ## Try it
 
