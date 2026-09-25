@@ -87,6 +87,9 @@ body {
 .badge.err { color: var(--red); }
 .badge.visitors { color: var(--ink-dim); }
 .badge.visitors:empty { display: none; }
+.gh-link { display: inline-flex; align-items: center; color: var(--ink-dim); margin-left: 4px; border-radius: 4px; }
+.gh-link svg { width: 18px; height: 18px; fill: currentColor; display: block; }
+.gh-link:hover, .gh-link:focus-visible { color: var(--ink); }
 
 /* ---------- shell ---------- */
 .shell { flex: 1; display: flex; min-height: 0; }
