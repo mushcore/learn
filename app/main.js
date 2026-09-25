@@ -23,7 +23,9 @@ async function getRegistry() {
 }
 async function getCourse(id) {
   if (!courseCache.has(id)) {
-    const course = await (await fetch(`/courses/${id}/course.json`)).json();
+    const res = await fetch(`/courses/${id}/course.json`);
+    if (!res.ok) throw new Error(`unknown module "${id}"; pick one from the course list`);
+    const course = await res.json();
     course.id = id;
     course.lessons = course.chapters.flatMap((ch) => ch.lessons.map((l) => ({ ...l, chapter: ch.title })));
     // A module (one week or unit) belongs to a course in courses/index.json; remember the parent for breadcrumbs.
@@ -328,6 +330,12 @@ async function route() {
       const c = reg.courses.find((x) => x.id === lessonId);
       if (!c) throw new Error(`unknown course "${lessonId}"`);
       return await renderCoursePage(c);
+    }
+    // `#/<course id>` (e.g. #/comp3760) is a natural thing to type; send it to the course page.
+    const reg = await getRegistry();
+    if (reg.courses.some((c) => c.id === courseId) && !reg.courses.some((c) => (c.modules || []).some((m) => m.id === courseId))) {
+      history.replaceState(null, "", `#/course/${courseId}`);
+      return route();
     }
     const course = await getCourse(courseId);
     setCourse(courseId);
