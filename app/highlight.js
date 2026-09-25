@@ -13,7 +13,8 @@ const CPP_TYPES = new Set([
   "std", "string", "vector", "cout", "cin", "endl", "cerr", "size_t", "istream", "ostream",
   "streamsize", "numeric_limits", "ios_base", "setw", "setprecision", "setfill", "boolalpha",
   "hex", "dec", "oct", "fixed", "scientific", "showpos", "showbase", "uppercase", "left",
-  "right", "internal", "showpoint",
+  "right", "internal", "showpoint", "fstream", "ifstream", "ofstream", "istringstream", "ostringstream",
+  "stringstream", "getline", "ios", "streambuf", "nothrow", "iostream", "sstream", "iomanip",
 ]);
 const R_KW = new Set(["if", "else", "for", "while", "function", "return", "TRUE", "FALSE", "NULL", "NA", "in", "library", "data"]);
 

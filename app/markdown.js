@@ -94,6 +94,11 @@ const INLINE_RE = /`([^`]+)`|\$\$([^$]+?)\$\$|(?<![\w\\])\$(?=\S)([^$\n]*?\S)\$/
 // widget bar) sharing the same id. Must run before code/math extraction so a marker can wrap `$…$`.
 const MREF_RE = /\{\{([\w-]+)\}\}([\s\S]*?)\{\{\/\1\}\}/g;
 
+// Inline `code` spans are highlighted like code blocks, in the language of the module being read
+// (`lang` in course.json: cpp, r or pseudo; main.js sets it on every navigation). No language = plain.
+let inlineLang = "";
+export function setInlineLang(lang) { inlineLang = lang || ""; }
+
 export function inline(text) {
   // 1) pull out {{id}}…{{/id}} refs, then code and math, into placeholders so bold/italic can span them
   const slots = [];
@@ -102,7 +107,7 @@ export function inline(text) {
     return `\u0000${slots.length - 1}\u0000`;
   });
   s = s.replace(INLINE_RE, (_, code, dmath, math) => {
-    slots.push(code != null ? `<code>${escapeHtml(code)}</code>` : dmath != null ? mathify(dmath, true) : mathify(math));
+    slots.push(code != null ? `<code>${highlight(inlineLang, code)}</code>` : dmath != null ? mathify(dmath, true) : mathify(math));
     return `\u0000${slots.length - 1}\u0000`;
   });
   s = escapeHtml(s);

@@ -1,4 +1,5 @@
 {
+  "lang": "r",
   "title": "MATH 3042 Statistics · Unit 2",
   "subtitle": "Visualizing data, and Lab 2 (grouped statistics in R), preparing for Quiz 2",
   "description": "Unit 2, descriptive statistics by picture: frequency tables, pie and bar charts, stem-and-leaf plots, the histogram recipe (classes from √n), cumulative relative frequencies and ogives, scatter plots. Plus Lab 2: favstats and model formulas, grouped percentiles and percent ranks, Z-scores on real data, and the four pencil problems. Live chart builders, the instructor's own worked numbers, a mock quiz and a formula sheet.",

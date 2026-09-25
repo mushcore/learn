@@ -1,4 +1,5 @@
 {
+  "lang": "cpp",
   "title": "COMP 3522 C++ · Week 2",
   "subtitle": "File IO, arrays, random numbers, pointers, references, strings, vectors, new/delete, preparing for Quiz 2",
   "description": "Everything in the Week 2 slides and lecture videos, taught from scratch: file streams and seeking, C-style arrays, random numbers, pointers and references (with a step-by-step memory diagram), std::string and getline, stringstreams, vectors, and dynamic memory with new and delete. Runnable code in every lesson, the pointer practice sheet worked, a mock quiz and a cheat sheet.",

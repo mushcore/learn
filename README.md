@@ -25,7 +25,7 @@ Navigation is course → module → lesson. A course (e.g. COMP 3721) is an entr
 
 ## Add a course
 
-1. Create `courses/<id>/course.json` (see an existing one): title, subtitle, description, optional `intro` markdown, `chapters[]` each with `lessons[] = { id, title, file }`.
+1. Create `courses/<id>/course.json` (see an existing one): `lang` (`cpp`, `r` or `pseudo`; colours inline `code` in the prose, omit for none), title, subtitle, description, optional `intro` markdown, `chapters[]` each with `lessons[] = { id, title, file }`.
 2. Write lessons in `courses/<id>/chapters/*.md` following `AUTHORING.md` (front matter, fenced block types, widget catalogue).
 3. Register it as a module under its course in `courses/index.json` (`courses[].modules[] = { id, title, subtitle, description }`; add the course entry with `id`, `code`, `title`, `description` if it is the first module).
 4. Validate: `bun validate.js courses/<id>` (server must be running; it compiles every C++ block and checks quiz JSON).

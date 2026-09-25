@@ -1,4 +1,5 @@
 {
+  "lang": "cpp",
   "title": "COMP 3522 C++",
   "subtitle": "Week 1, preparing for Quiz 1",
   "description": "Everything Quiz 1 covers: C++ program structure, fundamental types, operators, casting, constants, and console IO. Each lesson has runnable code you can edit, visual explainers, and a self-check quiz. Finish with the mock quiz and the cheat sheet.",

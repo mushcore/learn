@@ -1,4 +1,4 @@
-import { renderLesson, parseFrontMatter } from "./markdown.js";
+import { renderLesson, parseFrontMatter, setInlineLang } from "./markdown.js";
 import { setCourse, loadProgress, markLessonDone, resetCourse, loadReview, reviewCount } from "./progress.js";
 import { mountQuiz } from "./quiz.js";
 import "./q-fill.js";
@@ -358,6 +358,7 @@ async function route() {
     }
     const course = await getCourse(courseId);
     setCourse(courseId);
+    setInlineLang(course.lang);
     if (!lessonId) return await renderCourseHome(course);
     if (lessonId === "review") return await renderReview(course);
     await renderLessonView(course, lessonId);

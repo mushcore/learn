@@ -205,7 +205,7 @@ button, a, [role="button"] { -webkit-tap-highlight-color: transparent; }
 .lesson li::marker { color: var(--ink-dim); }
 .lesson a { color: var(--blue); }
 .lesson strong { color: var(--ink); font-weight: 650; }
-.lesson code { font-family: var(--mono); font-size: 0.88em; background: var(--paper-3); color: var(--hl); padding: 2px 6px; border-radius: 4px; }
+.lesson code { font-family: var(--mono); font-size: 0.88em; background: var(--paper-3); color: var(--ink); padding: 2px 6px; border-radius: 4px; }
 .table-wrap { overflow-x: auto; margin: 16px 0; max-width: 100%; }
 .lesson table { border-collapse: collapse; margin: 16px 0; width: 100%; font-size: 14px; }
 .table-wrap > table { margin: 0; }
@@ -505,6 +505,7 @@ select.q-input { width: auto; }
   .lesson h1, .lesson h2, .lesson h3, .lesson p, .lesson li, .lesson th, .lesson td, .lesson strong, .callout-title { color: #111; }
   .lesson h2 { border-bottom-color: #999; margin-top: 18pt; }
   .lesson code { background: #eee; color: #111; }
+  .lesson code span { color: inherit; }
   .math, .math .frac .num, .math .sqrt .ovl { color: #111; border-color: #111; }
   .callout { background: #f6f6f6; border-color: #bbb; }
   .lesson th { background: #eee; }
@@ -533,6 +534,7 @@ select.q-input { width: auto; }
 .pl.hot .lc, .pl.hot .lc span { color: var(--hl) !important; }
 .lesson code.ref { cursor: help; text-decoration: underline dotted var(--hl); text-underline-offset: 3px; }
 .lesson code.ref.hot, .lesson code.ref:hover { background: var(--hl); color: var(--hl-ink); }
+.lesson code.ref.hot span, .lesson code.ref:hover span { color: inherit; }
 .lesson code.ref:focus-visible { outline-offset: 1px; }
 @media (max-width: 1099px) { .pin-section { display: block; } .pin-aside { position: static; } }
 @media print { .pin-section { display: block; } .pin-aside { position: static; } .pl.hot { background: none; } }
