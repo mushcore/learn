@@ -142,6 +142,61 @@ async function runWandbox(code, stdin) {
   };
 }
 
+// ---------- unique visitor counter ----------
+// The durable count lives at hits.sh, a free hit counter keyed by a URL-like name: fetching the
+// badge SVG counts one hit and reports the total, while /api/urns/<key> reads the total without
+// counting. The browser registers once per device (an id kept in localStorage), and the server
+// fetches the badge once per new id, so hits == unique visitors. data/visitors.json mirrors the
+// number and the ids seen, so the badge keeps working when hits.sh is unreachable (and locally).
+const VISITOR_KEY = process.env.VISITOR_KEY || "github.com/mushcore/learn/unique-visitors";
+const DATA_DIR = path.join(ROOT, "data");
+const VISITOR_FILE = path.join(DATA_DIR, "visitors.json");
+let visitorCache = null; // { count, at }
+
+function readLocalVisitors() {
+  try { return JSON.parse(fs.readFileSync(VISITOR_FILE, "utf8")); } catch { return { count: 0, ids: [] }; }
+}
+function writeLocalVisitors(obj) {
+  try { fs.mkdirSync(DATA_DIR, { recursive: true }); fs.writeFileSync(VISITOR_FILE, JSON.stringify(obj)); } catch {}
+}
+async function remoteVisitorTotal() {
+  const r = await fetch(`https://hits.sh/api/urns/${VISITOR_KEY}`, { signal: AbortSignal.timeout(6000) });
+  if (r.status === 404) return 0; // key not created yet: nobody has been counted
+  if (!r.ok) throw new Error(`hits.sh ${r.status}`);
+  return Number((await r.json()).total) || 0;
+}
+async function remoteVisitorHit() {
+  const r = await fetch(`https://hits.sh/${VISITOR_KEY}.svg?view=total`, { signal: AbortSignal.timeout(6000) });
+  if (!r.ok) throw new Error(`hits.sh ${r.status}`);
+  const m = /hits: (\d+)/.exec(await r.text());
+  if (!m) throw new Error("hits.sh: no count in the badge");
+  return Number(m[1]);
+}
+async function visitorCount() {
+  if (visitorCache && Date.now() - visitorCache.at < 60_000) return visitorCache.count;
+  const local = readLocalVisitors();
+  try {
+    const count = Math.max(await remoteVisitorTotal(), local.count || 0);
+    visitorCache = { count, at: Date.now() };
+    if (count !== local.count) writeLocalVisitors({ ...local, count });
+    return count;
+  } catch {
+    return local.count || 0;
+  }
+}
+async function registerVisitor(id) {
+  const local = readLocalVisitors();
+  const ids = new Set(local.ids || []);
+  if (id && ids.has(id)) return visitorCount(); // this device was already counted by this server
+  if (id) { ids.add(id); while (ids.size > 5000) ids.delete(ids.values().next().value); }
+  let count;
+  try { count = await remoteVisitorHit(); } catch { count = (local.count || 0) + 1; }
+  count = Math.max(count, (local.count || 0) + 1);
+  writeLocalVisitors({ count, ids: [...ids] });
+  visitorCache = { count, at: Date.now() };
+  return count;
+}
+
 // ---------- http ----------
 function readBody(req) {
   return new Promise((resolve, reject) => {
@@ -161,6 +216,19 @@ const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, "http://localhost");
   if (url.pathname === "/api/health") {
     return json(res, 200, { compiler: findCompiler() || "wandbox"});
+  }
+  if (url.pathname === "/api/visitors") {
+    try {
+      if (req.method === "POST") {
+        let body = {};
+        try { body = JSON.parse(await readBody(req)); } catch {}
+        const id = typeof body.id === "string" ? body.id.slice(0, 64) : "";
+        return json(res, 200, { count: await registerVisitor(id) });
+      }
+      return json(res, 200, { count: await visitorCount() });
+    } catch (e) {
+      return json(res, 500, { error: String(e && e.message || e) });
+    }
   }
   if (url.pathname === "/api/run" && req.method === "POST") {
     let body;

@@ -85,6 +85,8 @@ body {
 .badge { font-size: 12px; color: var(--ink-dim); white-space: nowrap; }
 .badge.ok::before { content: "●"; color: var(--green); margin-right: 6px; font-size: 9px; vertical-align: 1px; }
 .badge.err { color: var(--red); }
+.badge.visitors { color: var(--ink-dim); }
+.badge.visitors:empty { display: none; }
 
 /* ---------- shell ---------- */
 .shell { flex: 1; display: flex; min-height: 0; }
@@ -149,11 +151,13 @@ body {
   background-position: -1px -1px;
 }
 .lesson, .landing { max-width: 880px; }
-.lesson:has(.pin-section) { max-width: 1180px; }
+.lesson:has(.pin-section) { max-width: none; }
 .lesson > .lesson-body { max-width: none; }
 .lesson > *, .lesson .lesson-body > p, .lesson .lesson-body > ul, .lesson .lesson-body > ol, .lesson .lesson-body > blockquote, .lesson .lesson-body > h2, .lesson .lesson-body > h3, .lesson .lesson-body > h4 { max-width: var(--measure); }
 .lesson .lesson-body > table, .lesson .lesson-body > .widget, .lesson .lesson-body > .runner, .lesson .lesson-body > .codeblock, .lesson .lesson-body > .quiz-box, .lesson .lesson-body > .challenge-box, .lesson .lesson-body > .callout { max-width: 880px; }
-.lesson .lesson-body > .pin-section { max-width: 1180px; }
+.lesson .lesson-body > .pin-section { max-width: none; }
+/* In a lesson that has pinned code the body is fluid, so stand-alone code blocks may grow too. */
+.lesson:has(.pin-section) .lesson-body > .runner, .lesson:has(.pin-section) .lesson-body > .codeblock, .lesson:has(.pin-section) .lesson-body > .widget { max-width: 1100px; }
 
 .lesson h1, .landing h1 {
   font-family: var(--display);
@@ -264,14 +268,17 @@ body {
 }
 .reset-btn:hover { color: var(--ink); border-color: var(--ink-dim); }
 .editor-wrap { position: relative; }
-.editor-wrap textarea, .editor-wrap pre.highlight { margin: 0; padding: 14px 16px; font-family: var(--mono); font-size: 13.5px; line-height: 1.5; white-space: pre; tab-size: 4; }
-.editor-wrap textarea { position: relative; z-index: 1; width: 100%; min-height: 90px; background: transparent; color: transparent; caret-color: #fff; border: none; resize: vertical; outline: none; display: block; }
+/* Long lines soft-wrap (identically in the textarea and its highlight overlay, so rows stay
+   aligned) instead of scrolling sideways; the editor is sized to its content, so it never
+   scrolls vertically either. */
+.editor-wrap textarea, .editor-wrap pre.highlight { margin: 0; padding: 14px 16px; font-family: var(--mono); font-size: 13.5px; line-height: 1.5; white-space: pre-wrap; overflow-wrap: break-word; word-break: normal; tab-size: 4; }
+.editor-wrap textarea { position: relative; z-index: 1; width: 100%; min-height: 90px; background: transparent; color: transparent; caret-color: #fff; border: none; resize: vertical; outline: none; display: block; overflow-y: hidden; }
 .editor-wrap textarea:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--hl-soft); }
 .editor-wrap pre.highlight { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; color: var(--ink); }
 .stdin-row { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-top: 1px solid var(--rule); background: var(--paper-2); }
 .stdin-row label { font-size: 12.5px; color: var(--ink-dim); }
 .stdin-row input { flex: 1; background: #0f131b; border: 1px solid var(--rule); border-radius: 6px; color: var(--ink); padding: 5px 9px; font-family: var(--mono); font-size: 12.5px; }
-.runner-output { border-top: 1px solid var(--rule); padding: 10px 16px 12px; font-family: var(--mono); font-size: 13px; white-space: pre-wrap; word-break: break-word; max-height: 340px; overflow-y: auto; }
+.runner-output { border-top: 1px solid var(--rule); padding: 10px 16px 12px; font-family: var(--mono); font-size: 13px; white-space: pre-wrap; word-break: break-word; max-height: 600px; overflow-y: auto; }
 .runner-output.empty { display: none; }
 .runner-output .stream-label { color: var(--ink-dim); font-family: var(--body); font-size: 12px; margin: 8px 0 3px; }
 .runner-output .stream-label:first-child { margin-top: 0; }
@@ -501,7 +508,8 @@ select.q-input { width: auto; }
 }
 
 /* Pinned example beside a section, with reference linking */
-.pin-section { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 400px); gap: 28px; align-items: start; margin: 8px 0 16px; }
+/* Prose keeps its reading measure; the pinned code takes every remaining pixel of the viewport. */
+.pin-section { display: grid; grid-template-columns: minmax(0, var(--measure)) minmax(360px, 1fr); gap: 28px; align-items: start; margin: 8px 0 16px; }
 .pin-section.stacked { display: block; }
 .pin-section.stacked .pin-aside { position: static; margin: 16px 0; }
 .pin-prose { min-width: 0; }
@@ -510,7 +518,7 @@ select.q-input { width: auto; }
 .pin-aside { position: sticky; top: 16px; }
 .pinned { background: #0f131b; border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; }
 .pinned-head { font-family: var(--display); font-weight: 600; font-size: 13px; color: var(--ink-2); padding: 7px 12px; border-bottom: 1px solid var(--rule); background: var(--paper-2); }
-.pinned-pre { margin: 0; padding: 10px 0; overflow: auto; max-height: calc(100vh - 120px); font-family: var(--mono); font-size: 13px; line-height: 1.55; }
+.pinned-pre { margin: 0; padding: 10px 0; overflow: auto; font-family: var(--mono); font-size: 13px; line-height: 1.55; }
 .pl { display: flex; padding: 0 12px 0 0; border-left: 3px solid transparent; white-space: pre; }
 .pl .ln { width: 34px; flex-shrink: 0; text-align: right; padding-right: 12px; color: var(--ink-dim); user-select: none; font-size: 11.5px; }
 .pl .lc { flex: 1; }
@@ -523,11 +531,13 @@ select.q-input { width: auto; }
 @media print { .pin-section { display: block; } .pin-aside { position: static; } .pl.hot { background: none; } }
 
 /* pinned runner: the one copy, docked + editable; wide monitors get more room */
-.pin-section { grid-template-columns: minmax(0, 1fr) minmax(360px, 44%); }
+/* Code is shown at full height (the editor grows with its content). An aside taller than the
+   viewport cannot stick without hiding its bottom, so pinned.js marks it `tall` and it scrolls
+   with the page instead. */
+.pin-aside.tall { position: static; }
 .pin-aside .runner { margin: 0; }
 .pin-aside .editor-wrap textarea, .pin-aside .editor-wrap pre.highlight { font-size: 13px; }
-.pin-aside .runner-output { max-height: 220px; }
-.pin-aside .editor-wrap { max-height: calc(100vh - 260px); overflow: auto; }
+.pin-aside .runner-output { max-height: 420px; }
 .el-line { border-left: 3px solid transparent; margin-left: -16px; padding-left: 13px; }
 .el-line.hot { background: var(--hl-soft); border-left-color: var(--hl); }
 .el-line.hot, .el-line.hot span { color: var(--hl) !important; }
@@ -537,7 +547,7 @@ select.q-input { width: auto; }
 .predict-verdict { margin-top: 10px; font-family: var(--body); font-size: 13px; padding: 8px 10px; border-radius: 6px; }
 .predict-verdict.pass { color: var(--green); background: var(--green-soft); }
 .predict-verdict.fail { color: var(--hl); background: var(--hl-soft); }
-@media (min-width: 1500px) { .lesson:has(.pin-section) { max-width: 1500px; } .lesson .lesson-body > .pin-section { max-width: 1500px; } .pin-section { grid-template-columns: minmax(0, 1fr) minmax(420px, 48%); } }
+@media (min-width: 1500px) { .pin-section { gap: 36px; } .pin-aside .editor-wrap textarea, .pin-aside .editor-wrap pre.highlight { font-size: 13.5px; } }
 .review-link { margin-top: 10px; border-top: 1px solid var(--rule); padding-top: 12px; border-radius: 0; }
 .review-link.active { border-radius: 6px; }
 
@@ -619,7 +629,7 @@ select.q-input { width: auto; }
 
 /* q-trace: trace-by-hand */
 .trace-box { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 320px); gap: 16px; align-items: start; margin: 10px 0; }
-.trace-code { background: #0f131b; border: 1px solid var(--rule); border-radius: var(--radius); overflow: auto; max-height: 420px; font-family: var(--mono); font-size: 13px; line-height: 1.55; padding: 8px 0; }
+.trace-code { background: #0f131b; border: 1px solid var(--rule); border-radius: var(--radius); overflow: auto; font-family: var(--mono); font-size: 13px; line-height: 1.55; padding: 8px 0; }
 .trace-side { display: flex; flex-direction: column; gap: 8px; }
 .trace-input-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .trace-input-label { font-size: 12.5px; color: var(--ink-dim); white-space: nowrap; }
@@ -707,7 +717,7 @@ select.q-input { width: auto; }
 /* ---------- Week 2 C++ widgets (widgets-cpp2.js) ---------- */
 .pv-ctl { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 8px 0 12px; }
 .pv-main { display: grid; grid-template-columns: minmax(260px, 1fr) minmax(300px, 1.25fr); gap: 14px; align-items: start; }
-.pv-code { background: #0f131b; border: 1px solid var(--rule); border-radius: 6px; padding: 8px 0; font-family: var(--mono); font-size: 12.5px; max-height: 420px; overflow: auto; }
+.pv-code { background: #0f131b; border: 1px solid var(--rule); border-radius: 6px; padding: 8px 0; font-family: var(--mono); font-size: 12.5px; overflow: auto; }
 .pv-code .pl { display: flex; gap: 10px; padding: 1px 10px; white-space: pre; }
 .pv-code .pl .ln { color: var(--ink-dim); width: 2.2em; text-align: right; flex: none; user-select: none; }
 .pv-code .pl.cur { background: var(--hl-soft); box-shadow: inset 3px 0 0 var(--hl); }

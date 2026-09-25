@@ -4,3 +4,6 @@ courses/_*/
 
 # Learning Hub exports dropped in the repo root
 /*.zip
+
+# runtime mirror of the visitor counter
+data/

@@ -106,5 +106,12 @@ export function wrapSection(nodes, sourceEl) {
   const apply = () => wrap.classList.toggle("stacked", !WIDE.matches);
   WIDE.addEventListener("change", apply);
   apply();
+  // The aside is sticky so the code stays beside the prose that explains it, but a sticky box
+  // taller than the viewport would never show its bottom lines. Code is shown at full height, so
+  // when the box outgrows the window it is released to scroll with the page instead.
+  const tall = () => aside.classList.toggle("tall", aside.offsetHeight > window.innerHeight - 24);
+  if (window.ResizeObserver) new ResizeObserver(tall).observe(aside);
+  window.addEventListener("resize", tall);
+  requestAnimationFrame(tall);
   return wrap;
 }

@@ -16,9 +16,12 @@ export function createEditor(initialCode, lang = "cpp") {
   textarea.spellcheck = false;
   textarea.value = initialCode;
 
+  // The editor is always as tall as its content, so there is never a vertical scrollbar. When a
+  // long line brings in a horizontal scrollbar, leave room for it so the last line is not covered.
   function fit() {
     textarea.style.height = "auto";
-    textarea.style.height = textarea.scrollHeight + 4 + "px";
+    const hbar = textarea.scrollWidth > textarea.clientWidth ? 20 : 0;
+    textarea.style.height = textarea.scrollHeight + 4 + hbar + "px";
   }
   function sync() {
     const lines = textarea.value.split("\n");

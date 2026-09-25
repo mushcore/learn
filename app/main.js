@@ -356,3 +356,26 @@ fetch("/api/health").then((r) => r.json()).then((j) => {
   badge.title = j.compiler;
   badge.classList.add("ok");
 }).catch(() => { badge.textContent = "Server offline"; badge.classList.add("err"); });
+
+// Unique visitor counter: a browser registers once (an id kept in localStorage); every later
+// load only reads the total. See the visitor section of server.js for where the count lives.
+(async () => {
+  const visitors = document.getElementById("visitorBadge");
+  if (!visitors) return;
+  let id = null, isNew = false;
+  try {
+    id = localStorage.getItem("learn.visitor");
+    if (!id) {
+      id = typeof crypto.randomUUID === "function" ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      localStorage.setItem("learn.visitor", id);
+      isNew = true;
+    }
+  } catch { /* storage blocked: read-only visit */ }
+  try {
+    const r = isNew
+      ? await fetch("/api/visitors", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id }) })
+      : await fetch("/api/visitors");
+    const j = await r.json();
+    if (Number.isFinite(j.count)) visitors.textContent = `${j.count} visitor${j.count === 1 ? "" : "s"}`;
+  } catch { visitors.textContent = ""; }
+})();
