@@ -47,6 +47,17 @@ export function createEditor(initialCode, lang = "cpp") {
   wrap.appendChild(textarea);
   sync();
   requestAnimationFrame(fit);
+  // Lines soft-wrap, so the content height depends on the width: re-measure whenever the editor
+  // gets narrower or wider (window resize, sidebar toggle, layout change) and once web fonts land.
+  if (window.ResizeObserver) {
+    let lastWidth = 0;
+    new ResizeObserver(() => {
+      const w = wrap.clientWidth;
+      if (w !== lastWidth) { lastWidth = w; fit(); }
+    }).observe(wrap);
+  }
+  window.addEventListener("resize", fit);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
 
   return {
     el: wrap,
