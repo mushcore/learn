@@ -19,6 +19,7 @@ Open http://localhost:4321.
 - `courses/math3042-u2/` — MATH 3042 Unit 2 (frequency tables, pie/bar, stem-and-leaf, the histogram class recipe, cumulative frequencies and ogives, scatter plots) + Lab 2 grouped statistics in R + pencil problems + mock quiz + formula sheet.
 - `courses/comp3721-w1/` — COMP 3721 Week 1 (data communications, networks, topologies, Internet, protocol layering, TCP/IP, connecting devices, math review) + E01 and sample quiz worked + Mock Quiz 1 + study note.
 - `courses/comp3721-w2/` — COMP 3721 Week 2 (physical layer: analog/digital signals, sine waves, phase, wavelength, composite signals, bandwidth, bit rate, levels) + E02 worked + Mock Quiz 2 + study note.
+- `courses/comp3760-l1/` — COMP 3760 Lecture 1 (what an algorithm is, find and fib, counting statements and basic operations with the tie-breakers, sums, best/worst case, orders of growth, Big-O / Ω / Θ) + the lecture's practice problems worked + Mock Quiz 1 + study sheet. Every slide and quiz-style algorithm runs in a per-line execution counter (`op-counter`).
 
 Navigation is course → module → lesson. A course (e.g. COMP 3721) is an entry in `courses/index.json` with a list of modules; a module is one week (or unit) with its own folder and id (`<course>-w<N>`), so a course grows week by week without one giant module. The home page lists courses, a course page (`#/course/<id>`) lists its modules, and a module page lists its lessons.
 
@@ -36,6 +37,7 @@ server.js            static server + POST /api/run (compile & run C++, 5 s limit
 validate.js          lesson validator
 index.html, app/     SPA: main.js (router/sidebar/progress), markdown.js (renderer + math),
                      quiz.js, challenge.js, runner.js, editor.js, highlight.js,
-                     widgets-cpp.js, widgets-stats.js, widgets.js (registry), styles.css
+                     widgets-cpp.js, widgets-cpp2.js, widgets-stats.js, widgets-viz.js, widgets-net.js,
+                     widgets-algo.js, widgets.js (registry), styles.css
 courses/             index.json + one folder per course
 ```

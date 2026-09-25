@@ -2,7 +2,7 @@
 // the line(s) that are the bug (or the fix location). Multi-select when
 // spec.answer is an array. Graded by exact set match.
 import { registerQuestionType } from "./quiz.js";
-import { highlightCpp } from "./highlight.js";
+import { highlight } from "./highlight.js";
 
 function el(tag, cls, text) {
   const e = document.createElement(tag);
@@ -25,7 +25,7 @@ registerQuestionType("spotbug", (qEl, spec) => {
     row.setAttribute("aria-pressed", "false");
     row.append(el("span", "spotbug-num", String(lineNo)));
     const src = el("span", "spotbug-src");
-    src.innerHTML = highlightCpp(line) || "\u00a0";
+    src.innerHTML = highlight(spec.lang || "cpp", line) || "\u00a0";
     row.append(src);
     const toggle = () => {
       if (row.classList.contains("done")) return;

@@ -28,6 +28,7 @@ const SYMBOLS = {
   ldots: "…", cdots: "⋯", dots: "…", rightarrow: "→", Rightarrow: "⇒", leftarrow: "←", to: "→", quad: "\u2003", qquad: "\u2003\u2003", ",": "\u2009", ";": "\u2005", " ": "\u00a0", "!": "",
   left: "", right: "", displaystyle: "", mid: "|", lt: "<", gt: ">", "%": "%", "$": "$", "{": "{", "}": "}", "_": "_", "&": "&amp;", "#": "#",
   min: "min", max: "max", ln: "ln", log: "log", exp: "exp", sin: "sin", cos: "cos", tan: "tan",
+  Theta: "Θ", lfloor: "⌊", rfloor: "⌋", lceil: "⌈", rceil: "⌉", subset: "⊂", subseteq: "⊆", notin: "∉", forall: "∀", exists: "∃", equiv: "≡", ll: "≪", gg: "≫",
 };
 function mathParse(src) {
   let i = 0;

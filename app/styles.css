@@ -764,3 +764,50 @@ select.q-input { width: auto; }
 .vec-cell.spare { border-color: var(--rule); border-style: dashed; opacity: 0.6; }
 .vec-idx { font-size: 10px; color: var(--ink-dim); }
 .vec-val { font-size: 15px; color: var(--hl); }
+
+/* ---- COMP 3760 algorithm-analysis widgets (widgets-algo.js) ---- */
+.algo-label { font-size: 13px; color: var(--ink-dim); }
+.algo-select { font-family: var(--mono); font-size: 12.5px; background: var(--paper); color: var(--ink); border: 1px solid var(--rule); border-radius: 6px; padding: 5px 8px; max-width: 100%; }
+.oc-table { background: #0f131b; border: 1px solid var(--rule); border-radius: var(--radius); overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.5; padding: 6px 0; margin: 10px 0; }
+.oc-row { display: flex; align-items: baseline; padding: 1px 10px 1px 0; border-left: 3px solid transparent; white-space: pre; }
+.oc-row .oc-ln { width: 34px; flex-shrink: 0; text-align: right; padding-right: 12px; color: var(--ink-dim); user-select: none; font-size: 11px; }
+.oc-row .oc-code { flex: 1; min-width: 260px; }
+.oc-row .oc-cnt { width: 84px; flex-shrink: 0; text-align: right; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.oc-row .oc-cnt.cur { color: var(--hl); }
+.oc-head { border-bottom: 1px solid var(--rule); margin-bottom: 4px; padding-bottom: 3px; color: var(--ink-dim); font-size: 11px; font-family: var(--body); }
+.oc-head .oc-cnt.cur { color: var(--hl); }
+.oc-row.max { background: var(--hl-soft); border-left-color: var(--hl); }
+.oc-row.basic { background: var(--green-soft); border-left-color: var(--green); }
+.oc-row.basic .oc-ln::after { content: " ★"; color: var(--green); }
+.oc-why { margin-top: 8px; font-size: 14px; }
+.oc-why-p { margin: 0; }
+.lg-code { font-family: var(--mono); font-size: 12.5px; background: #0f131b; border: 1px solid var(--rule); border-radius: 6px; padding: 8px 12px; margin: 8px 0; white-space: pre; overflow-x: auto; }
+.lg-sum { text-align: center; font-size: 16px; margin: 10px 0; }
+.gp-table, .bo-table { font-family: var(--mono); font-size: 12.5px; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 6px 10px; margin: 10px 0; overflow-x: auto; }
+.gp-row, .bo-row { display: grid; gap: 8px; padding: 2px 0; white-space: nowrap; }
+.gp-row { grid-template-columns: 60px repeat(7, minmax(70px, 1fr)); }
+.gp-row > span:not(:first-child) { text-align: right; }
+.gp-head, .bo-head { color: var(--ink-dim); font-family: var(--body); font-size: 11.5px; border-bottom: 1px solid var(--rule); margin-bottom: 3px; }
+.gp-row .dim { color: var(--ink-dim); opacity: 0.6; }
+.gp-row.cur { background: var(--hl-soft); }
+.fib-svg text { font-family: var(--mono); }
+.gp-table .widget-note, .fib-bars + .gp-table .widget-note { margin: 6px 0 0; font-family: var(--body); white-space: normal; }
+.bo-inputs { display: flex; gap: 14px; flex-wrap: wrap; margin: 8px 0; }
+.bo-lab { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-dim); }
+.bo-input { font-family: var(--mono); font-size: 13px; background: var(--paper); color: var(--ink); border: 1px solid var(--rule); border-radius: 6px; padding: 5px 8px; width: 180px; }
+.bo-verdict { font-size: 13.5px; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--rule); margin: 8px 0; }
+.bo-verdict.ok { border-color: var(--green); background: var(--green-soft); }
+.bo-verdict.bad { border-color: var(--red); background: var(--red-soft); }
+.bo-row { grid-template-columns: 50px repeat(4, minmax(90px, 1fr)); }
+.bo-row > span:not(:first-child) { text-align: right; }
+.bo-row.before { color: var(--ink-dim); }
+.bo-row .ok { color: var(--green); }
+.bo-row .bad { color: var(--red); }
+.bo-err { color: var(--red); font-size: 13px; }
+.fib-bars { margin: 8px 0; }
+.fib-bar-row { display: flex; align-items: center; gap: 8px; font-size: 12px; margin: 2px 0; }
+.fib-bar-lab { width: 54px; font-family: var(--mono); color: var(--ink-2); text-align: right; }
+.fib-bar { flex: 1; height: 10px; background: var(--paper); border: 1px solid var(--rule); border-radius: 3px; overflow: hidden; }
+.fib-bar-fill { height: 100%; background: var(--red); min-width: 2px; }
+.fib-bar-val { width: 150px; font-family: var(--mono); color: var(--ink-dim); }
+@media (max-width: 720px) { .oc-row .oc-code { min-width: 180px; } .bo-input { width: 130px; } }

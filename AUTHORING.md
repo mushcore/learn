@@ -24,7 +24,7 @@ Body markdown (paragraphs, lists).
   kinds: `tip` (green), `warn` (yellow), `danger` (red), `quiz` / `exam` (purple, use for "the quiz asks this" notes), `info` (blue, default).
 
 ## Fenced blocks
-1. Static code: ```` ```cpp ```` / ```` ```r ```` / ```` ```text ```` (text → labelled "output").
+1. Static code: ```` ```cpp ```` / ```` ```r ```` / ```` ```pseudo ```` (pseudocode: keywords in the COMP 3760 dialect highlighted) / ```` ```text ```` (text → labelled "output").
 2. Runnable, editable C++ (compiled with g++ -std=c++20 -Wall -Wextra -pedantic; 5 s limit):
 ````
 ```cpp run
@@ -66,6 +66,7 @@ int main() { ... }
 ```
 ````
    `code` (string) shows a code box under the question. Default numeric tolerance = 0.5% of answer.
+   Interactive types (see `app/q-*.js`): `fill` (`code` with `___` blanks, `answer`), `reorder` (`lines`), `spotbug` (`code`, `answer` = 1-based row number(s) to click; add `"lang": "pseudo"` for pseudocode), `match` (`pairs: [[left, right], …]`), `shade` (normal-curve region), `trace` (`code`, `steps`).
 5. Widget (first line = name, remaining lines = optional JSON config):
 ````
 ```widget
@@ -118,6 +119,13 @@ Networking (`app/widgets-net.js`, COMP 3721):
 - `composite` — sum of sine waves from a `freq` / `freq:amp` list → time + frequency domains, lowest/highest/bandwidth/middle frequency. cfg: `{ "components": "1:1 3:0.33 9:0.11", "presets": {"label": "…"} }`.
 - `encapsulation` — 18-step walk of a message from source A through a switch and a router to B, showing the active layer and the PDU (H_L, H_N, H_T, M). cfg: `{ "title": "…" }`.
 - `signal-levels` — L slider (2–16) → 8-element digital signal with bit labels, log₂ L, ⌈log₂ L⌉, unused patterns, bit rate. cfg: `{ "levels": 4 }`.
+
+Algorithms (`app/widgets-algo.js`, COMP 3760):
+- `op-counter` — pseudocode with a per-line execution count column for n = 3, 10, 100 plus a slider and quick buttons up to the preset's safe n, the most frequent row highlighted, a "Reveal the basic operation" button (generation effect), the closed-form C(n), and for find the all-statements f(n). Counts come from running the algorithm in JS with a counter per line, so they are exact. cfg: `{ "preset": "<name>", "n": 10, "mode": "worst"|"best", "presets": false, "title": "…" }`; omit `presets` to show the selector. Presets: "find (largest element)", "Mystery1 (sum of squares)", "Mystery2 (sum of an n×n array)", "Loops (insertion sort)" (worst/best), "CountSomethingElse(N)", "Example3 (halving loop)", "SequentialSearch" (worst/best), "UniqueElements" (worst/best), "MatrixMultiply", "CountSomething2 (isPrime)", "DoSomething() (no input)", "DoSomething(N) (10×10 then N)", "UnusualAdd(A, B)" (equal/different), "Halving with countdown".
+- `loop-grid` — one dot per (i, j) pair a double loop visits, per-row counts, the double sum and its closed form, n slider 2–12. cfg: `{ "preset": "square"|"lower"|"upper"|"triangle1", "n": 6, "title": "…" }` (square n², lower = insertion sort (n−1)n/2, upper = unique elements n(n−1)/2, triangle1 = CountSomethingElse n(n+1)/2).
+- `growth-plot` — log₂n, n, n log₂n, n², n³, 2ⁿ, n! toggles on a log-y plot, an n slider that reads every value, and Table 2.1 at n = 10 … 10⁶ (2ⁿ and n! left blank past 100 as in the textbook). cfg: `{ "show": ["n", "n^2", "2^n"], "nmax": 30, "title": "…" }`.
+- `big-o-check` — f(n) and g(n) expression boxes (n, numbers, + − * / ^, parentheses, implicit multiplication, log/log2 base 2, sqrt, n!), c / c₂ / n₀ sliders, O / Ω / Θ modes, a slide-70 style table (n, f(n), c·g(n), holds?), a plot with the n₀ line and the region where the relation holds, and a verdict checked numerically up to n = 10⁶. cfg: `{ "f": "2n+6", "g": "n", "c": 4, "n0": 3, "mode": "O"|"Omega"|"Theta", "c2": 1, "presets": false, "title": "…" }`.
+- `fib-race` — n slider 1–40: fib(n), recursive call count vs fib2 loop count, the call tree for n ≤ 7 with recomputed nodes in red, a per-k "times recomputed" bar list, and the slide's measured ms table (N = 30..40). cfg: `{ "n": 6, "title": "…" }`.
 
 ## Learning design (why the format is what it is)
 - Explanation sits beside the code it explains (spatial contiguity), never above a scrolled-away block. Pin the program.

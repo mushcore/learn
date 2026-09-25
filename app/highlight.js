@@ -59,7 +59,31 @@ export function highlightR(code) {
   return out.join("");
 }
 
+const PSEUDO_KW = new Set([
+  "Algorithm", "Algo", "ALGORITHM", "for", "to", "downto", "do", "while", "if", "then", "else", "endif", "endfor",
+  "endwhile", "end-if", "end-while", "end-for", "end-if-else", "end-do", "return", "END", "End", "new", "and", "or", "not",
+  "true", "false", "repeat", "until", "Input", "Output",
+]);
+const PSEUDO_RE = /(\/\/[^\n]*)|("(?:[^"\\\n]|\\.)*")|(\b\d+\.?\d*\b)|(\b[A-Za-z_]\w*(?:-[A-Za-z]+)*\b)|([^\s\w]+)|(\s+)/g;
+
+/** Pseudocode (COMP 3760): keywords in the instructor's dialect, numbers, `//` comments. */
+export function highlightPseudo(code) {
+  const out = [];
+  let m;
+  PSEUDO_RE.lastIndex = 0;
+  while ((m = PSEUDO_RE.exec(code))) {
+    const [full, comment, str, num, word] = m;
+    if (comment) out.push(`<span class="tok-com">${esc(full)}</span>`);
+    else if (str) out.push(`<span class="tok-str">${esc(full)}</span>`);
+    else if (num) out.push(`<span class="tok-num">${esc(full)}</span>`);
+    else if (word) out.push(PSEUDO_KW.has(word) ? `<span class="tok-kw">${esc(full)}</span>` : esc(full));
+    else out.push(esc(full));
+  }
+  return out.join("");
+}
+
 export function highlight(lang, code) {
+  if (lang === "pseudo" || lang === "pseudocode") return highlightPseudo(code);
   if (lang === "cpp" || lang === "c++" || lang === "c") return highlightCpp(code);
   if (lang === "r" || lang === "R") return highlightR(code);
   return esc(code);

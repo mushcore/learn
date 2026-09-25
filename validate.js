@@ -10,6 +10,7 @@ const WIDGETS = new Set([
   "topology", "sine-wave", "freq-period", "composite", "encapsulation", "signal-levels",
   "cat-charts", "stem-leaf", "hist-builder", "ogive", "group-stats",
   "pointer-viz", "file-seek", "open-modes", "rand-range", "getline-sim", "vector-viz",
+  "op-counter", "loop-grid", "growth-plot", "big-o-check", "fib-race",
 ]);
 const SERVER = process.env.LEARN_URL || "http://localhost:4321";
 const args = process.argv.slice(2);

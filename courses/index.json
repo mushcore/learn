@@ -59,6 +59,20 @@
           "description": "Lecture 02: analog and digital signals, sine waves, phase, wavelength, composite signals and bandwidth, bit rate and levels, with E02 worked. The calculation half of Quiz 2."
         }
       ]
+    },
+    {
+      "id": "comp3760",
+      "code": "COMP 3760",
+      "title": "Design and Analysis of Algorithms",
+      "description": "Tom Magliery's lectures, one module per lecture. Pseudocode analysis with live basic-operation counters, and quizzes in the real multiple-choice format; each module ends with a mock quiz and a study sheet.",
+      "modules": [
+        {
+          "id": "comp3760-l1",
+          "title": "Lecture 1",
+          "subtitle": "algorithm analysis: basic operations, counting, order of growth, big-O",
+          "description": "Textbook 1.1, 1.2, 1.3, 2.1. What an algorithm is, find and fib, counting statements and basic operations with the tie-breakers, setting up sums, best/worst case, orders of growth and Big-O / Ω / Θ. Every slide algorithm and every quiz-style fragment runs in a per-line execution counter. Ends with the practice problems worked, Mock Quiz 1 and a study sheet."
+        }
+      ]
     }
   ]
 }
