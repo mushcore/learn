@@ -1,6 +1,7 @@
 // Interactive statistics widgets (Descriptive stats, normal curve, Chebyshev,
 // quartiles/boxplot/outliers, correlation, grouped mean, skewness).
 import { el, html, esc, slider, btnRow, fmtNum } from "./dom.js";
+import { MTCARS } from "./data-stats.js";
 
 // ---------- pure stats helpers (exported for reuse/tests) ----------
 export const sum = (a) => a.reduce((s, v) => s + v, 0);
@@ -381,16 +382,18 @@ function scatterCorr(box, cfg) {
   box.append(el("h4", null, cfg.title || "Linear correlation r: drag the points"));
   const presets = {
     "Circuit (lecture)": { x: [43, 29, 44, 33, 33, 47, 34, 31, 48, 34, 46, 37], y: [32, 20, 45, 35, 22, 46, 28, 26, 37, 33, 47, 30] },
+    "mtcars: wt vs mpg (Unit 2)": { x: MTCARS.map((r) => r[1]), y: MTCARS.map((r) => r[2]) },
     "Perfect +1": { x: [1, 2, 3, 4, 5, 6, 7, 8], y: [2, 4, 6, 8, 10, 12, 14, 16] },
     "Perfect −1": { x: [1, 2, 3, 4, 5, 6, 7, 8], y: [16, 14, 12, 10, 8, 6, 4, 2] },
     "No linear (r≈0)": { x: [1, 2, 3, 4, 5, 6, 7, 8, 9], y: [5, 1, 8, 2, 7, 3, 9, 1, 6] },
     "Curved (r≈0 but related!)": { x: [-4, -3, -2, -1, 0, 1, 2, 3, 4], y: [16, 9, 4, 1, 0, 1, 4, 9, 16] },
   };
-  let pts = presets["Circuit (lecture)"].x.map((x, i) => ({ x, y: presets["Circuit (lecture)"].y[i] }));
+  const first = cfg.preset && presets[cfg.preset] ? cfg.preset : "Circuit (lecture)";
+  let pts = presets[first].x.map((x, i) => ({ x, y: presets[first].y[i] }));
   const svg = svgEl("svg", { viewBox: "0 0 640 300", class: "curve-svg" });
   const out = el("div", "stat-grid");
   const table = el("div", "stat-steps");
-  box.append(btnRow(Object.keys(presets), (i, l) => { pts = presets[l].x.map((x, j) => ({ x, y: presets[l].y[j] })); draw(); }, 0), svg, out, table);
+  box.append(btnRow(Object.keys(presets), (i, l) => { pts = presets[l].x.map((x, j) => ({ x, y: presets[l].y[j] })); draw(); }, Object.keys(presets).indexOf(first)), svg, out, table);
   const W = 640, H = 300, pad = 40;
   let bounds;
   function computeBounds() {
@@ -439,7 +442,8 @@ function scatterCorr(box, cfg) {
     out.innerHTML = "";
     const n = xs.length, sx = sum(xs), sy = sum(ys), sxy = sum(xs.map((x, i) => x * ys[i])), sxx = sum(xs.map((x) => x * x)), syy = sum(ys.map((y) => y * y));
     const desc = r > 0.99 ? "perfect positive" : r > 0.7 ? "strong positive" : r > 0.3 ? "moderate positive" : r > -0.3 ? "no linear correlation" : r > -0.7 ? "moderate negative" : r > -0.99 ? "strong negative" : "perfect negative";
-    for (const [l, v, nn] of [["r", fmtNum(r, 4), desc], ["n", n, ""], ["Σx, Σy", `${fmtNum(sx, 2)}, ${fmtNum(sy, 2)}`, ""], ["Σxy", fmtNum(sxy, 2), ""], ["Σx², Σy²", `${fmtNum(sxx, 2)}, ${fmtNum(syy, 2)}`, ""]]) {
+    const icpt = my - slope * mx;
+    for (const [l, v, nn] of [["r", fmtNum(r, 4), desc], ["n", n, ""], ["Σx, Σy", `${fmtNum(sx, 2)}, ${fmtNum(sy, 2)}`, ""], ["Σxy", fmtNum(sxy, 2), ""], ["Σx², Σy²", `${fmtNum(sxx, 2)}, ${fmtNum(syy, 2)}`, ""], ["line of best fit", Number.isFinite(slope) ? `y = ${fmtNum(slope, 3)}·x + ${fmtNum(icpt, 3)}` : "—", "the dotted regression line (covered later)"]]) {
       const c = el("div", "stat-cell");
       c.append(el("div", "stat-label", l), el("div", "stat-value", String(v)));
       if (nn) c.append(el("div", "stat-note", nn));

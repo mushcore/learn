@@ -11,6 +11,12 @@
           "title": "Week 1",
           "subtitle": "program structure, types, operators, casting, constants, console IO",
           "description": "Built from the Week 1 slides and sample code (HelloWorld, AddIntegers, assortedOps, bits, const_vs_constexpr, precisionAndWidth, readName). Ends with a mock quiz and a cheat sheet."
+        },
+        {
+          "id": "comp3522-w2",
+          "title": "Week 2",
+          "subtitle": "file IO, arrays, random numbers, pointers, references, strings, vectors, new/delete",
+          "description": "Built from the Week 2 slides, the lecture videos and the Pointers and References practice sheet. A step-by-step memory diagram for pointers and references, a file-cursor simulator, and runnable versions of every slide program. Ends with the practice sheet worked, a mock quiz and a cheat sheet."
         }
       ]
     },
@@ -25,6 +31,12 @@
           "title": "Unit 1",
           "subtitle": "descriptive statistics",
           "description": "Proportions, centre, variation, Z-scores, empirical rule, Chebyshev, quartiles, boxplots, outliers, skewness, correlation. Built from the Unit 1 notes and Lab 1; ends with the pencil problems, a mock quiz and a formula sheet."
+        },
+        {
+          "id": "math3042-u2",
+          "title": "Unit 2",
+          "subtitle": "visualizing data, and Lab 2 grouped statistics",
+          "description": "Frequency tables, pie and bar charts, stem-and-leaf, the histogram class recipe, cumulative relative frequencies and ogives, scatter plots; Lab 2 favstats, model formulas, percentiles, percent ranks and Z-scores on the quine data. Built from the Unit 2 notes (filled) and the Lab 2 solutions; ends with the pencil problems, a mock quiz and a formula sheet."
         }
       ]
     },

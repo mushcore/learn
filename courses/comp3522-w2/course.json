@@ -1,0 +1,139 @@
+{
+  "title": "COMP 3522 C++ · Week 2",
+  "subtitle": "File IO, arrays, random numbers, pointers, references, strings, vectors, new/delete, preparing for Quiz 2",
+  "description": "Everything in the Week 2 slides and lecture videos, taught from scratch: file streams and seeking, C-style arrays, random numbers, pointers and references (with a step-by-step memory diagram), std::string and getline, stringstreams, vectors, and dynamic memory with new and delete. Runnable code in every lesson, the pointer practice sheet worked, a mock quiz and a cheat sheet.",
+  "intro": ":::quiz Quiz 2 scope\nQuiz 2 is written at the start of lab on the Learning Hub, in the same format as Quiz 1 (multiple choice, true/false, matching, what-does-this-print). It covers the **Week 2 slides**, the **lecture videos**, and the **Pointers and References practice** sheet. Every program from the slides is reproduced here, runnable and explained line by line; the practice sheet is worked in full.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "mock-quiz-2",
+        "note": "take it cold first, so you know where the gaps are (about 40 min)"
+      },
+      {
+        "lesson": "pointers",
+        "note": "step through the practice activity in the memory widget until you can predict every x and y"
+      },
+      {
+        "lesson": "references",
+        "note": "alias, must be initialized, cannot be re-seated; the two meanings of &"
+      },
+      {
+        "lesson": "new-delete",
+        "note": "the memory-leak walkthrough and the fix; delete vs delete[]"
+      },
+      {
+        "lesson": "seeking",
+        "note": "tellg/tellp and the four seekp examples, by hand"
+      },
+      {
+        "lesson": "strings-getline",
+        "note": "the getline failure table is a guaranteed what-does-this-print"
+      },
+      {
+        "lesson": "practice-worked",
+        "note": "redo the practice sheet on paper, then check"
+      },
+      {
+        "lesson": "mock-quiz-2",
+        "note": "retake; aim for 90% or better"
+      },
+      {
+        "lesson": "cheat-sheet-2",
+        "note": "print it and read it on the way in"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. File IO, part 2",
+      "lessons": [
+        {
+          "id": "file-streams",
+          "title": "File streams: open, close, read, copy",
+          "file": "chapters/01-file-streams.md"
+        },
+        {
+          "id": "seeking",
+          "title": "Seeking: tellg, tellp, seekg, seekp",
+          "file": "chapters/02-seeking.md"
+        }
+      ]
+    },
+    {
+      "title": "2. Arrays and random numbers",
+      "lessons": [
+        {
+          "id": "arrays-random",
+          "title": "C-style arrays & random numbers",
+          "file": "chapters/03-arrays-random.md"
+        }
+      ]
+    },
+    {
+      "title": "3. Pointers and references",
+      "lessons": [
+        {
+          "id": "pointers",
+          "title": "Pointers, & and *, nullptr",
+          "file": "chapters/04-pointers.md"
+        },
+        {
+          "id": "references",
+          "title": "References: the alias",
+          "file": "chapters/05-references.md"
+        }
+      ]
+    },
+    {
+      "title": "4. Strings and stringstreams",
+      "lessons": [
+        {
+          "id": "strings-getline",
+          "title": "std::string & getline",
+          "file": "chapters/06-strings-getline.md"
+        },
+        {
+          "id": "stringstream",
+          "title": "istringstream",
+          "file": "chapters/07-stringstream.md"
+        }
+      ]
+    },
+    {
+      "title": "5. Vectors and dynamic memory",
+      "lessons": [
+        {
+          "id": "vectors",
+          "title": "std::vector",
+          "file": "chapters/08-vectors.md"
+        },
+        {
+          "id": "new-delete",
+          "title": "new, delete and memory leaks",
+          "file": "chapters/09-new-delete.md"
+        }
+      ]
+    },
+    {
+      "title": "6. Quiz prep",
+      "lessons": [
+        {
+          "id": "practice-worked",
+          "title": "Pointers & references practice, worked",
+          "file": "chapters/10-practice-worked.md"
+        },
+        {
+          "id": "mock-quiz-2",
+          "title": "Mock Quiz 2",
+          "file": "chapters/11-mock-quiz-2.md"
+        },
+        {
+          "id": "cheat-sheet-2",
+          "title": "One-page cheat sheet (Week 2)",
+          "file": "chapters/12-cheat-sheet.md"
+        }
+      ]
+    }
+  ]
+}

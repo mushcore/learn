@@ -1,3 +1,6 @@
 node_modules/
 .DS_Store
 courses/_*/
+
+# Learning Hub exports dropped in the repo root
+/*.zip

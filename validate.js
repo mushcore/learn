@@ -8,6 +8,8 @@ const WIDGETS = new Set([
   "compile-pipeline", "type-sizes", "init-forms", "expr-stepper", "int-division", "cin-sim", "manipulators", "bitwise", "namespaces",
   "stat-calc", "stat-bars", "normal-curve", "chebyshev", "boxplot", "scatter-corr", "grouped-mean", "skewness", "proportion", "drag-data",
   "topology", "sine-wave", "freq-period", "composite", "encapsulation", "signal-levels",
+  "cat-charts", "stem-leaf", "hist-builder", "ogive", "group-stats",
+  "pointer-viz", "file-seek", "open-modes", "rand-range", "getline-sim", "vector-viz",
 ]);
 const SERVER = process.env.LEARN_URL || "http://localhost:4321";
 const args = process.argv.slice(2);
