@@ -133,7 +133,7 @@ The difference between the two is what happens with a bad index. `s[10]` on a 5-
 The slides pause here for a preview of something you will meet properly in a few weeks. Three innocent-looking lines call three different pieces of the `string` class:
 
 ```cpp run pin classesAside.cpp
-// predict: Which line prints "COMP 3522", and what does first hold at the end?
+// predict: Write the three lines printed, brackets included.
 #include <iostream>
 #include <string>
 using namespace std;
@@ -197,7 +197,7 @@ The full form is `getline(inputstream, input, delimiter)`. By default the delimi
 
 ```cpp run pin delimiter.cpp
 // stdin: Yim,Jeff,COMP3522
-// predict: What are the three fields printed?
+// predict: The input is Yim,Jeff,COMP3522. Write the one line printed.
 #include <iostream>
 #include <string>
 using namespace std;
@@ -236,7 +236,7 @@ Now the slide's table, reproduced with a real program. Each row shows what one `
 
 | cin user input | `string input` | bits set |
 |---|---|---|
-| `Hello World` (then EOF) | `Hello World` | eofbit |
+| `Hello World` then Enter | `Hello World` | none |
 | `Hello\nworld\n` | `Hello` | none |
 | `\nWorld\n` | EMPTY | none |
 | `Hello*` | `Hello` | eofbit |
@@ -245,7 +245,7 @@ Now the slide's table, reproduced with a real program. Each row shows what one `
 
 ```cpp run pin getlineTable.cpp
 // stdin: Hello\nworld\n
-// predict: With the input above, what does each of the two calls leave in input, and which bits are set?
+// predict: With the input above, write the two lines printed, in the program's own [input] eof=.. fail=.. format.
 #include <iostream>
 #include <string>
 using namespace std;
@@ -278,7 +278,7 @@ Because `getline` returns the stream, and a stream converts to `false` once fail
 
 ```cpp run pin lineByLine.cpp
 // stdin: first line\nsecond line\nthird
-// predict: How many times does the loop body run, and what is printed?
+// predict: Write the four lines printed: one per loop pass, then the read N lines summary.
 #include <iostream>
 #include <string>
 using namespace std;
@@ -305,7 +305,7 @@ This one costs students marks every term. Ask for a number with `>>`, then ask f
 
 ```cpp run pin mixTrap.cpp
 // stdin: 42\nJeff Yim
-// predict: The user types 42, Enter, then "Jeff Yim". What does the program print for the name?
+// predict: The user types 42, Enter, then Jeff Yim. Write the one line printed: n = ..., name = [...]
 #include <iostream>
 #include <string>
 using namespace std;
@@ -314,11 +314,9 @@ int main()
 {
     int n;
     string name;
-    cout << "Enter a number: ";
     cin >> n;
-    cout << "Enter your name: ";
     getline(cin, name);
-    cout << "\nn = " << n << ", name = [" << name << "]" << endl;
+    cout << "n = " << n << ", name = [" << name << "]" << endl;
     return 0;
 }
 ```
@@ -334,12 +332,10 @@ int main()
 {
     int n;
     string name;
-    cout << "Enter a number: ";
     cin >> n;
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cout << "Enter your name: ";
     getline(cin, name);
-    cout << "\nn = " << n << ", name = [" << name << "]" << endl;
+    cout << "n = " << n << ", name = [" << name << "]" << endl;
     return 0;
 }
 ```

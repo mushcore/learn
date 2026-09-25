@@ -23,7 +23,7 @@ Read a declaration from the name outwards. `float values[3]` says "`values` is a
 Braces initialize. With `int scores[] = {1, 2, 3, 4};` the compiler counts the initializers and makes the array size 4. With `int some_scores[8] = {1, 2, 3, 4};` you asked for 8 slots but supplied 4 values; the remaining slots are **filled with the default value, 0**. An array declared with *no* initializer, like `float values[3]`, holds garbage until you assign to it.
 
 ```cpp run pin arrays.cpp
-// predict: write every line printed (this machine: int is 4 bytes, float 4, a pointer 8).
+// predict: Write every line printed, exactly as the code formats it (this machine: int is 4 bytes, float 4, a pointer 8).
 #include <iostream>
 using namespace std;
 
@@ -42,7 +42,8 @@ int main()
     int scores[] = {1, 2, 3, 4};            // size deduced: 4
     int some_scores[8] = {1, 2, 3, 4};      // equivalent to {1, 2, 3, 4, 0, 0, 0, 0}
 
-    cout << "sizeof(values): " << sizeof(values) << "  sizeof(names): " << sizeof(names) << endl;
+    cout << "sizeof(values): " << sizeof(values) << endl;
+    cout << "sizeof(names): " << sizeof(names) << endl;
     cout << "sizeof(scores): " << sizeof(scores) << " bytes = " << sizeof(scores) / sizeof(scores[0]) << " ints" << endl;
     for (int s : some_scores) cout << s << ' ';
     cout << endl;

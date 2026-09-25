@@ -195,7 +195,7 @@ delete[] arr;                   // new[] -> delete[]
 
 ## True or false
 
-:::quiz Answers in order: F T F T F · T F T F T · F T F T F
+:::quiz Fifteen true or false (answers at the bottom)
 1. `ofstream` opened with no flags keeps the old contents.
 2. `ios_base::app` moves to the end before every write.
 3. `tellp` belongs to input streams.
@@ -211,6 +211,8 @@ delete[] arr;                   // new[] -> delete[]
 13. `getline` leaves the newline in the buffer.
 14. `at()` throws for a bad index; `[]` does not check.
 15. C++ frees `new` memory automatically when a function returns.
+
+Answers, in order: F T F T F · T F T F T · F T F T F
 :::
 
 ```quiz

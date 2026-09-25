@@ -42,7 +42,7 @@ Both return a `streampos`, which is just a number you can print or subtract.
 The slides give three openings of the same `helloWorld.txt` (contents `Hello World`) and ask what each `tell` prints:
 
 ```cpp run pin tellDemo.cpp
-// predict: helloWorld.txt holds Hello World (11 characters). Write the five numbers this machine prints. The second one is a trap explained below.
+// predict: helloWorld.txt holds Hello World (11 characters). Write the five numbers this machine prints, one per line. The second one is a trap explained below.
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -72,7 +72,7 @@ int main()
 
     ifstream check("helloWorld.txt");
     check.seekg(0, ios::end);
-    cout << "bytes left in the file: " << check.tellg() << endl;
+    cout << check.tellg() << endl;                // bytes left in the file
     return 0;
 }
 ```
@@ -185,7 +185,7 @@ Calling `myFile.tellg()` on an `ofstream` is a **compile error** ("no member nam
 Why bother with all this? Moving around a file is one reason. The slide's other reason is that seeking gives you a file's size in three lines: remember where the cursor starts, jump to the end, and subtract.
 
 ```cpp run pin fileSize.cpp
-// predict: what size does the program report?
+// predict: Write the exact line printed, in the form size is: N bytes.
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -213,7 +213,7 @@ int main()
 The lecture's last demo uses an `fstream`, which has both `g` and `p` members, to write a file, jump into the middle, and read a few characters. Watch what a read does to the cursor.
 
 ```cpp run pin fileSeek.cpp
-// predict: write the two positions printed, the word between them, and the last two positions.
+// predict: Five lines: the position before the read, the position after it, the word read, then the last two positions.
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -224,11 +224,11 @@ int main()
     myFile << "Hello World";
 
     myFile.seekg(6, ios::beg);
-    cout << "before read: " << myFile.tellg() << endl;   // 6
+    cout << myFile.tellg() << endl;                      // before the read: 6
 
     char buffer[6];
     myFile.read(buffer, 5);
-    cout << "after read: " << myFile.tellg() << endl;    // 11
+    cout << myFile.tellg() << endl;                      // after the read: 11
     buffer[5] = '\0';
     cout << buffer << endl;                              // World
 

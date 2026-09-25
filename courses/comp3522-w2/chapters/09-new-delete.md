@@ -127,7 +127,7 @@ Two things the video stresses:
 - The instructor's bookkeeping trick: *"whenever you have the `new` keyword written somewhere, remember you always need a corresponding `delete` somewhere else."* If the count of `new`s and `delete`s in your program does not balance, there is a leak or a double free somewhere.
 
 ```cpp run pin deleteBasics.cpp
-// predict: Which lines print, and what is printed after the delete?
+// predict: Write the two lines printed.
 #include <iostream>
 using namespace std;
 
@@ -157,7 +157,7 @@ pointer-viz
 ```
 
 ```cpp run pin leak.cpp
-// predict: Trace which heap box each pointer points at after every line. Which box can never be freed?
+// predict: Write the one line printed (two numbers). While you trace it, work out which heap box can never be freed.
 #include <iostream>
 using namespace std;
 
@@ -176,7 +176,7 @@ int main()
 1. `int *i = new int{11};` allocates a box at `0xffff000a` holding 11; `i` points at it.
 2. `int *a = new int{99};` allocates a second box at `0xffff000b` holding 99; `a` points at it.
 3. `i = a;      // creates a memory leak` copies the **address** in `a` into `i`. Both pointers now point at the 99 box. Nothing points at the 11 box any more. The instructor: *"that chunk of memory is now just floating around in your RAM, and there's no way for us to get a reference or pointer back to it to delete it."*
-4. `delete i;   // frees the 99 block (the one both pointers point at)` releases the box that `i` currently points at, the 99. Now `a` is dangling, and the 11 box is still allocated with no way to reach it. **That is the memory leak.** The program prints `99 99` and ends with 11 bytes... well, one `int`, lost forever (until the OS reclaims everything at exit).
+4. `delete i;   // frees the 99 block (the one both pointers point at)` releases the box that `i` currently points at, the 99. Now `a` is dangling, and the 11 box is still allocated with no way to reach it. **That is the memory leak.** The program prints `99 99` and ends with one `int`, the 11, lost forever (until the OS reclaims everything at exit).
 
 In a program that does this once, you will never notice. In a loop, or a server that runs for weeks, the lost blocks add up until the process runs out of memory.
 
@@ -188,7 +188,7 @@ pointer-viz
 ```
 
 ```cpp run pin leakFixed.cpp
-// predict: How many blocks are freed, and by which lines?
+// predict: Write the one line printed. Then count: how many blocks are freed, and by which lines?
 #include <iostream>
 using namespace std;
 
@@ -216,7 +216,7 @@ False, and it is a favourite true/false. `delete` frees the **data object the po
 From the lecture video: if the system cannot give you the memory, `new` **throws an exception** (`std::bad_alloc`). If you would rather test for failure than handle an exception, ask for the `nothrow` version, which returns `nullptr` instead:
 
 ```cpp run pin nothrow.cpp
-// predict: Does the allocation succeed here? What prints?
+// predict: Does the allocation succeed here? Write the line printed.
 #include <iostream>
 #include <new>
 using namespace std;

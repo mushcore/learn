@@ -85,7 +85,7 @@ The slide writes the classic loop as `for(int i=0; i<intVector.size(); i++)`. Th
 The one difference the slide highlights: `at` does a bounds check and throws an exception; `[ ]` does not check at all.
 
 ```cpp run pin atVsBrackets.cpp
-// predict: What is printed on the last two lines?
+// predict: Write all four lines printed.
 #include <iostream>
 #include <vector>
 #include <stdexcept>
@@ -137,9 +137,8 @@ int main()
     cout << v.size() << " " << v.capacity() << endl;
     for (int value : v)
     {
-        cout << value << " ";
+        cout << value << " ";          // runs zero times: the vector is empty
     }
-    cout << "(nothing printed by the loop when the vector is empty)" << endl;
     return 0;
 }
 ```

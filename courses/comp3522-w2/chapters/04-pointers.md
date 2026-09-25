@@ -64,13 +64,13 @@ pointer-viz
 ```
 
 ```cpp run pin pointers.cpp
-// predict: Write every line printed. sizeof(int*) is 8 on the lab machines.
+// predict: Write every line printed, exactly as the code formats it. sizeof(int*) is 8 on the lab machines.
 #include <iostream>
 using namespace std;
 
 int main()
 {
-    cout << "sizeof(int)  = " << sizeof(int) << endl;
+    cout << "sizeof(int) = " << sizeof(int) << endl;
     cout << "sizeof(int*) = " << sizeof(int*) << endl;
 
     int a = 10;
@@ -266,7 +266,7 @@ The output is `6`, `5`, `6`: the copy became 6 inside the first function, `num` 
 One more example from the "4 - Pointers" video. Passing an array to a function looks like passing by value, but the array "gets converted into a pointer" to the original. The instructor proves it with `sizeof`: 16 bytes in `main` (four ints), 8 bytes inside the function (one pointer).
 
 ```cpp run pin arraySwap.cpp
-// predict: Three lines. The last line is the array after swapping elements 0 and 3.
+// predict: Three lines, exactly as the code formats them. The last line is the array after swapping elements 0 and 3.
 #include <iostream>
 using namespace std;
 
@@ -281,7 +281,7 @@ int main()
 {
     int numbers[] = {1, 2, 3, 4};
     cout << "sizeof(numbers) = " << sizeof(numbers) << " bytes" << endl;  // 16: four ints
-    cout << "sizeof(int*)    = " << sizeof(int*) << " bytes" << endl;     // 8: what the function sees
+    cout << "sizeof(int*) = " << sizeof(int*) << " bytes" << endl;        // 8: what the function sees
 
     swapElements(numbers, 0, 3);
     for (int i = 0; i < 4; i++) {

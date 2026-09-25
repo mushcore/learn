@@ -3,7 +3,7 @@ title: Mock Quiz 2
 minutes: 45
 ---
 
-55 questions in the real format: multiple choice, true/false, select-all, what-does-this-print, fill-in-the-code, matching and a bug hunt. Answer everything before you check. Every explanation says *why*, so a wrong answer is still a lesson; the ones you miss come back in later lessons until you get them right twice.
+62 questions in the real format: multiple choice, true/false, select-all, what-does-this-print, fill-in-the-code, matching and a bug hunt. Answer everything before you check. Every explanation says *why*, so a wrong answer is still a lesson; the ones you miss come back in later lessons until you get them right twice.
 
 :::quiz Real quiz conditions
 Written at the start of lab on the Learning Hub. It covers the **Week 2 slides**, the **lecture videos** and the **Pointers and References practice** sheet. Numbers in the questions are the instructor's own (3522 and 2526, 123 and 345, `Hello World` positions, `0xffff000A`), so if a number looks familiar, trust it. Aim for 90% here before you stop studying.
@@ -21,6 +21,12 @@ Written at the start of lab on the Learning Hub. It covers the **Week 2 slides**
     ],
     "answer": 1,
     "explain": "File streams live in `<fstream>`. `<iostream>` gives you cin/cout/cerr, `<sstream>` gives you the string streams, and `<cstdio>` is C's printf family."
+  },
+  {
+    "q": "`<<`, `>>` and the manipulators from Week 1 (`setw`, `fixed`, `setprecision`, ...) work on file streams exactly as they do on `cin` and `cout`.",
+    "type": "tf",
+    "answer": true,
+    "explain": "Slide 3: we can use <<, >> and manipulators with file streams. An ofstream is an ostream and an ifstream is an istream, so everything you learned for the console carries over; only the object on the left of the operator changes."
   },
   {
     "type": "match",
@@ -55,6 +61,17 @@ Written at the start of lab on the Learning Hub. It covers the **Week 2 slides**
     ],
     "answer": 1,
     "explain": "The slide says it exactly: open a file **(or create it if it doesn't exist)** for writing. An ofstream creates the file; it is an ifstream that fails when the file is missing, because there is nothing to read."
+  },
+  {
+    "q": "In the slide's opening code, `if (!f.is_open()) { cerr << \"Unable to open file\" << endl; exit(1); }`, what do `cerr` and `exit(1)` do?",
+    "options": [
+      "`cerr` prints to the standard error stream; `exit(1)` ends the program at once with a non-zero (error) code",
+      "`cerr` reads an error message from the keyboard; `exit(1)` restarts the program",
+      "`cerr` is just another name for `cout`; `exit(1)` returns 1 from main and carries on",
+      "`cerr` writes the message into the file; `exit(1)` closes it"
+    ],
+    "answer": 0,
+    "explain": "cerr is a cout reserved for error messages (CLion shows it in red). exit(1) from <cstdlib> terminates the program immediately; the 1 is the exit code, and any non-zero code means an error. `if (!f)` is the equivalent shorter test for a failed open."
   },
   {
     "type": "match",
@@ -112,6 +129,16 @@ Written at the start of lab on the Learning Hub. It covers the **Week 2 slides**
     ],
     "answer": 1,
     "explain": "Every stream owns an internal buffer (a filebuf for file streams). `rdbuf()` hands you that buffer, and inserting a buffer into an output stream writes everything in it. Streams cannot be assigned to each other, so option A does not compile."
+  },
+  {
+    "type": "match",
+    "q": "Match each kind of stream to the internal buffer class it uses (slide 7).",
+    "pairs": [
+      ["file streams (`ifstream`, `ofstream`, `fstream`)", "`filebuf`"],
+      ["`cin`, `cout`, `cerr`", "`streambuf`"],
+      ["string streams (`istringstream`)", "`stringbuf`"]
+    ],
+    "explain": "Every stream object uses an internal buffer; the class depends on the device: filebuf for files, streambuf for the console IO streams, stringbuf for string streams. You rarely manage it directly, but rdbuf() hands it to you, which is what makes the one-line file copy work."
   },
   {
     "q": "What does this loop from the slides do? (`in` is an open ifstream)",
@@ -251,6 +278,17 @@ Written at the start of lab on the Learning Hub. It covers the **Week 2 slides**
     ],
     "answer": 1,
     "explain": "`rand() % 25` is 0 … 24 (the modulus itself is never produced: \"the right side is not inclusive\"); adding 2000 shifts that to 2000 … 2024. Likewise `rand() % 100` is 0 … 99 and `rand() % 100 + 1` is 1 … 100."
+  },
+  {
+    "q": "What does `rand() / (double) RAND_MAX` produce?",
+    "options": [
+      "A random `double` from 0.0 to 1.0",
+      "Always 0, because of integer division",
+      "A random integer from 0 to RAND_MAX",
+      "A random `double` from 1.0 to RAND_MAX"
+    ],
+    "answer": 0,
+    "explain": "The slide's zero_to_one line. Casting one operand to double makes the division real division (Week 1), so the result is rand()'s value as a fraction of its maximum: 0.0 to 1.0. Without the cast it would be integer division and almost always 0."
   },
   {
     "q": "To get good random numbers you should call `srand(time(NULL))` inside the loop, just before each `rand()`.",
@@ -435,6 +473,24 @@ Written at the start of lab on the Learning Hub. It covers the **Week 2 slides**
     "explain": "The slide: in C++, the string object needn't terminate with \\0. The object keeps its own length (`size()`/`length()`). Only when you ask for `c_str()` do you get a null-terminated C array."
   },
   {
+    "q": "For any `std::string s`, `s.size()` and `s.length()` return the same number.",
+    "type": "tf",
+    "answer": true,
+    "explain": "The slide lists both and adds (same thing!): two names for the number of characters. Neither counts a terminating \\0, because a std::string does not need one."
+  },
+  {
+    "q": "What does this print?",
+    "code": "string a = \"apple\";\nstring b = \"bear\";\ncout << boolalpha << (b > a) << \" \" << (a == \"apple\");",
+    "options": [
+      "true true",
+      "false true",
+      "true false",
+      "It does not compile: C++ strings need compareTo or equals"
+    ],
+    "answer": 0,
+    "explain": "Unlike Java, the relational operators are defined for std::string and compare lexicographically: b comes after a, so b > a is true, and == compares the characters, so a == \"apple\" is true."
+  },
+  {
     "q": "What does this print?",
     "code": "string s = \"hello\";\ncout << s[0];\ncout << s.at(1);",
     "options": [
@@ -479,6 +535,17 @@ Written at the start of lab on the Learning Hub. It covers the **Week 2 slides**
     ],
     "answer": 1,
     "explain": "getline reads characters up to the newline, stores them in the string, and **tosses the newline**. One call reads one line: `Hello`. The second line waits in the buffer for the next call."
+  },
+  {
+    "q": "`getline(inputstream, input, delimiter)` keeps extracting characters until... (select all that apply)",
+    "options": [
+      "EOF is reached (and eofbit is set)",
+      "the delimiter or newline is extracted (and tossed)",
+      "so many characters have been extracted that they exceed what the string can hold (and failbit is set)",
+      "a space is read"
+    ],
+    "answer": [0, 1, 2],
+    "explain": "The three conditions from the slide. A space is not a delimiter for getline (stopping at whitespace is >> behaviour); getline reads whole lines, spaces included, which is exactly why it exists."
   },
   {
     "q": "The input is empty: end-of-file right away. What happens on `getline(cin, input);`?",

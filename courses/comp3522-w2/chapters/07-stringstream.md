@@ -50,7 +50,7 @@ Same output, `123`.
 ## Extracting a number and then a string
 
 ```cpp run pin numberThenString.cpp
-// predict: Two runs are described in the prose. Write both outputs.
+// predict: Write the two lines printed. (A second input is tried in the prose.)
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -85,7 +85,7 @@ Notice the last preset: extracting an `int` from `abc` fails, sets failbit, and 
 ## Reading everything as strings: the `eof` loop
 
 ```cpp run pin eofLoop.cpp
-// predict: How many lines print, and what are they?
+// predict: Write the lines printed, one per line.
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -125,7 +125,7 @@ The slides end with two programs that do the same thing: read lines from the key
 
 ```cpp run pin sumReuse.cpp
 // stdin: 12\n50\nabc\n 7 8
-// predict: The lines typed are 12, 50, abc, and " 7 8". What is the final sum?
+// predict: The lines typed are 12, 50, abc, and " 7 8". Write the line printed: sum = N
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -169,7 +169,7 @@ The video says the stream failed because it *"was expecting the space character 
 
 ```cpp run pin sumFresh.cpp
 // stdin: 12\n50\nabc\n 7 8
-// predict: Same input as before. Does this version need clear()? What is the sum?
+// predict: Same input as before. Write the line printed (sum = N). Does this version need clear()?
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -201,7 +201,7 @@ If `iss >> n` fails (the line was `abc`), what is in `n`? With the C++11 rules t
 The output direction exists too. An `ostringstream` collects whatever you insert with `<<` and hands it back as one string with `str()`, which is how you build a string out of numbers without any conversion functions:
 
 ```cpp run pin oss.cpp
-// predict: What string does output hold, and what is its length?
+// predict: Write the one line printed, exactly: the string, then its length in parentheses.
 #include <iostream>
 #include <sstream>
 #include <string>

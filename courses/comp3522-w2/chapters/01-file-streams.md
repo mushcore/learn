@@ -46,7 +46,7 @@ Three things are new here:
 Run the program below before reading on. It opens the same file name three different ways.
 
 ```cpp run pin openingFiles.cpp
-// predict: data.txt does not exist when the program starts. Which opens succeed, and what is the first line read back?
+// predict: data.txt does not exist when the program starts. Write the three lines printed, exactly as the code formats them (open or NOT open, then the first line).
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -203,7 +203,7 @@ open-modes
 Just like C, you can move characters individually:
 
 1. Use `std::basic_istream::get` to acquire the character.
-2. Use `std::basic_ostream::put` to place the character.
+2. Use `std::basic_ostream::put` to place the character. (The slide's text says `basic_istream::put`; `put` really belongs to the output side, `basic_ostream`, which is what an `ofstream` is.)
 
 The slide's reading loop:
 
@@ -215,14 +215,14 @@ while ((c = in.get()) != EOF)
 }
 ```
 
-Read it inside out. `in.get()` extracts the next character and returns it. The assignment `c = in.get()` stores it and, because an assignment is an expression whose value is the value assigned, the parentheses let the loop compare that same character against `EOF` in one line. `EOF` is a constant from `<cstdio>` (its value is −1) that `get()` returns when there are no characters left. That is the whole reason `get()` returns an `int` rather than a `char`: an `int` has room for all 256 byte values *plus* one extra value that means "end of file".
+Read it inside out. `in.get()` extracts the next character and returns it. The assignment `c = in.get()` stores it and, because an assignment is an expression whose value is the value assigned, the parentheses let the loop compare that same character against `EOF` in one line. `EOF` is a constant from `<cstdio>` (its value is −1, and `<iostream>` already includes it) that `get()` returns when there are no characters left. That is the whole reason `get()` returns an `int` rather than a `char`: an `int` has room for all 256 byte values *plus* one extra value that means "end of file".
 
-Storing the result in a `char`, as the slide does, works for ordinary text files. The strictly safe declaration is `int c;`, because a `char` can only hold byte values, and on some platforms one legitimate byte would compare equal to −1 and stop the loop early. Both versions compile cleanly; know that `int` is the careful choice.
+Storing the result in a `char`, as the slide does, works for ordinary text files on this compiler. The strictly safe declaration is `int c;`, because a `char` can only hold byte values: where `char` is signed, one legitimate byte (0xFF) compares equal to −1 and stops the loop early; where it is unsigned, nothing ever compares equal to −1 and the loop never ends. Both versions compile cleanly; know that `int` is the careful choice.
 
 Here is the lecture's `fileIO.cpp`: copy a file character by character, replacing every digit with a star.
 
 ```cpp run pin fileIO.cpp
-// predict: data.txt contains hello123. What ends up in output.txt (and is printed)?
+// predict: data.txt contains hello123. Write the one line printed: output.txt: followed by the copy.
 #include <iostream>
 #include <fstream>
 #include <cctype>
