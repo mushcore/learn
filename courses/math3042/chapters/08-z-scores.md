@@ -79,7 +79,7 @@ normal-curve
 { "mu": 178.4, "sigma": 7.6, "x": 203, "title": "Men's height — LeBron at Z = 3.24" }
 ```
 
-## Try it yourself
+## Z and the percentage below on the curve
 
 ```widget
 normal-curve

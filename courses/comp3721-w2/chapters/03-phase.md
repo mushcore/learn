@@ -107,8 +107,6 @@ $$\phi = 40° \times \frac{2\pi}{360°}\ \text{rad} = \frac{2\pi}{9}\ \text{rad}
 
 The general recipe: **phase in degrees = fraction of a cycle × 360°** and **phase in radians = fraction of a cycle × 2π**.
 
-## Try it
-
 ```quiz
 [
   {

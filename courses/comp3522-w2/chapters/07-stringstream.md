@@ -5,7 +5,7 @@ minutes: 12
 
 A `std::string` cannot pull a number out of `" 123abc"`; streams can. An **istringstream** is "a class that's just a wrapper around an existing string": it makes a string behave like `cin`, so every `>>` rule you know works on text already in memory.
 
-## What it is
+## `istringstream` comes from `<sstream>`
 
 - Great for reading and manipulating strings.
 - Defined in the `<sstream>` header.
@@ -188,7 +188,7 @@ int main()
 If `iss >> n` fails (the line was `abc`), g++ follows the C++11 rule: a failed numeric extraction **stores 0** in `n` and sets failbit. The `if (iss >> n)` guard keeps that 0 out of the sum.
 :::
 
-## One slide on ostringstream
+## `ostringstream`: the output direction
 
 The output direction exists too. An `ostringstream` collects whatever you insert with `<<` and hands it back as one string with `str()`:
 

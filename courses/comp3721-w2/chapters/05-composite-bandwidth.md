@@ -100,8 +100,6 @@ $$B = f_{h} - f_{l} = 900\ \text{Hz} - 100\ \text{Hz} = 800\ \text{Hz}$$
 
 Only the lowest and highest frequencies matter.
 
-## Try it
-
 ```quiz
 [
   {

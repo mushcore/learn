@@ -179,8 +179,6 @@ END
 
 The first loop fills `A[i]` with $1 + 2 + \ldots + i$ (the $i$-th triangular number); the second loop adds them up. It returns the **sum of the first $N$ triangular numbers**. Its shape, a double loop whose inner bound is `i` followed by a single loop, comes back when choosing basic operations.
 
-## Try it
-
 ```quiz
 [
   {

@@ -42,8 +42,6 @@ Both devices must agree on the rules, or a message can be delivered perfectly an
 **"In full-duplex mode of communication, signals going in one direction share the capacity of the link with signals going in the other direction."** **True.** Both directions use the one link at the same time, so its capacity is shared: either two physically separate paths inside the link, or the link's capacity divided between the two directions (Forouzan §1.1). Shared, not doubled.
 :::
 
-## Try it
-
 ```quiz
 [
   {

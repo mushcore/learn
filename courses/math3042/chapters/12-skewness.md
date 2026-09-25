@@ -73,7 +73,7 @@ drag-data
 ]}
 ```
 
-## Quick recap
+## Mean, median and Sk by shape
 
 | Situation | Mean vs median | Sign of Sk |
 |---|---|---|

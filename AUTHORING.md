@@ -144,5 +144,6 @@ Algorithms (`app/widgets-algo.js`, COMP 3760):
   - The intro is one or two sentences stating the problem the lesson solves. No table-of-contents sentence ("This lesson covers ...").
   - No stage directions ("Read it inside out", "Run it", "Now drive it yourself") and no quiz meta-talk ("the quiz will ask", "students lose marks on this every term").
   - Trivial members (`close()`, `exit(1)`) get one sentence. Short sentences; no parenthetical asides.
+  - Headings and callout titles state the fact or name the thing. Never the format: no "the one-sentence version", "the rule in one line", "What it is", "Good to know", "Summary", "Quick recap", "Try it". A `quiz` block gets no heading at all (its box is already labelled); a widget section is headed by what the widget shows.
   - Budget: 500-800 prose words per lesson outside code and quizzes. A lesson over 900 is restating something. Mock quizzes, cheat sheets and formula sheets are reference material and are exempt.
 - Do NOT edit engine files (`app/`, `server.js`, `course.json`). Only write your assigned chapter files.

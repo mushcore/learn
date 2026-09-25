@@ -5,9 +5,7 @@ minutes: 12
 
 C-style arrays work as they did in C. Random numbers come three ways: C's `rand`, and two from the `<random>` header.
 
-## Arrays: one slide
-
-The whole slide:
+## Declaring C-style arrays
 
 ```cpp
 float values[3]      // array of 3 floats

@@ -91,8 +91,6 @@ A logical (IP) address is global: it identifies a host on the whole Internet. A 
 
 Changing the LAN technology usually means changing the transmission medium, say from coaxial cable to fibre-optic cable, or to a wireless technology such as WiFi. Physical layer protocols **depend on the transmission medium**, and the data-link layer handles communication between **neighbouring nodes** over that medium. The network, transport and application layers never see the medium.
 
-## Try it
-
 ```quiz
 [
   {

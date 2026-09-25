@@ -55,7 +55,7 @@ Any city below 9.275 or above 62.875 inches is an outlier. In the real data that
 **Unusual** (empirical rule / Z-scores) means more than 2 standard deviations from the mean. **Outlier** (boxplots) means beyond $1.5 \times IQR$ past a quartile. A value can be one without being the other.
 :::
 
-## Try it: Site B drainage data
+## Site B drainage data
 
 Lab 1 pencil problem 7 gave two drainage-rate samples. Site B's values include one large reading, 13.6, that the instructor flagged as possibly extreme using the empirical rule ($3\sigma$ test); the fence method below gives a second opinion on the same data.
 

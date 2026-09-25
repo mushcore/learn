@@ -234,8 +234,8 @@ int main()
 - `buffer[5] = '\0';` adds the terminator so the array prints as a C string; the array has room for six.
 - `myFile.seekg(-5, ios::end);` is 11 − 5 = **6**, back at the `W`.
 
-:::tip The rule in one line
-Seek to *place* the cursor; read or write to *move* it; tell to *ask* where it is. `g` for input, `p` for output, either for `fstream`.
+:::tip Seek places the cursor, read and write move it, tell reports it
+`g` for input, `p` for output, either for `fstream`.
 :::
 
 ```quiz

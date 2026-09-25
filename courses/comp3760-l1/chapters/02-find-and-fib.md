@@ -129,8 +129,6 @@ The call count for `fib` multiplies by about 1.6 every time `n` goes up by one (
 
 [Counting statements](#/comp3760-l1/counting-statements) turns "much faster" into something you can compute from the pseudocode before writing a line of Java.
 
-## Try it
-
 ```quiz
 [
   {

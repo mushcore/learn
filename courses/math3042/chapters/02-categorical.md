@@ -76,8 +76,6 @@ table(TenMileRace$sex)
 
 The set of possible values a non-numerical variable can take (here, `"F"` and `"M"`) is called its **levels** in R — check with `levels(TenMileRace$sex)`.
 
-## Try it
-
 ```quiz
 [
   {

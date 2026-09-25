@@ -58,8 +58,6 @@ Only the red-light row is on the slides.
 
 The two 1 GHz rows: same frequency, slower medium, shorter wavelength.
 
-## Try it
-
 ```quiz
 [
   {

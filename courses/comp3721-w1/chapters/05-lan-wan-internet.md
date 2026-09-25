@@ -96,8 +96,6 @@ A **Request for Comment (RFC)** is:
 
 **IETF** is the organization responsible for the development and publication of RFCs. **RFC-1 was written in 1969**, the same year as the first ARPANET message.
 
-## Try it
-
 ```quiz
 [
   {

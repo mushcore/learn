@@ -229,8 +229,6 @@ op-counter
 
 The loop runs $n$ times, so line 4 executes $n$ times. It compares `A[n]` with `B[n]`, the same (out-of-range) pair every pass, so the same branch is taken every time and either line 5 or line 7 also runs $n$ times, never both. Line 4 is a **key comparison** (tie-breaker 3); lines 5 and 7 are assignments (tie-breaker 4). Basic operation: the comparison on line 4, executed **n** times: not $n/2$ (the branches are not split between passes) and not $2n$.
 
-## Try it
-
 ```quiz
 [
   {

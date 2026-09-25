@@ -124,8 +124,6 @@ Devices do not talk to each other directly; everything goes through the hub.
 
 On a written response, write the formula before the number.
 
-## Try it
-
 ```quiz
 [
   {

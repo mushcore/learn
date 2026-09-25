@@ -55,8 +55,6 @@ Jitter is the odd one out. It is *uneven* delay, not total delay, and it matters
 - **Cost saving**
 - **Expanded social engagement**
 
-## Try it
-
 ```quiz
 [
   {

@@ -229,7 +229,7 @@ int main()
 
 `int * my_pointer = new (nothrow) int[100];` passes the `nothrow` object (from `<new>`) to `new`, so `if (my_pointer == nullptr)` can test for a failed allocation instead of catching an exception. For 100 ints the allocation succeeds. Exceptions come later in the course.
 
-## Summary table
+## Stack versus heap
 
 | | Stack (`int i;`) | Heap (`int * i = new int;`) |
 |---|---|---|

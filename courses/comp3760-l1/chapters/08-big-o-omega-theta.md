@@ -113,7 +113,7 @@ Big-O with the inequality flipped: the shading is now *above* $c \cdot g(n)$, an
 
 The picture is a band, $c_1 g(n)$ on top and $c_2 g(n)$ underneath, with $f(n)$ trapped between them from $n_0$ on. Being in $Θ(g(n))$ is being in both $O(g(n))$ and $\Omega(g(n))$. For $2n + 6$: upper constant $c_1 = 4$ (from $n_0 = 3$), lower constant $c_2 = 2$ (from $n_0 = 1$), so with $n_0 = 3$ both hold and $2n + 6 \in Θ(n)$. In the widget's Θ mode, `c` is the upper constant $c_1$ and `c2` the lower one.
 
-## Summary of the three notations
+## O, Ω and Θ side by side
 
 The slide's "intuition" summary:
 
@@ -156,8 +156,6 @@ The lecture closes by finishing the three analyses from earlier with their class
 - **Find the max element in a list.** Input size $n$ (number of list items); basic operation: comparison. $C(n) = \sum_{i=1}^{n-1} 1 = n - 1 \in O(n)$.
 - **Multiplication of two matrices.** Input size: matrix dimension; basic operation: multiplication of two numbers. $C(n) = \sum_{i=0}^{n-1}\sum_{j=0}^{n-1}\sum_{k=0}^{n-1} 1 = n^3 \in O(n^3)$.
 - **Element uniqueness.** Input size $n$; basic operation: the comparison in the innermost loop; worst case $C(n) = \frac{n^2}{2} - \frac{n}{2} \in O(n^2)$ (the full simplification is in [Setting up and simplifying the sums](#/comp3760-l1/counting-with-sums)).
-
-## Try it
 
 ```quiz
 [

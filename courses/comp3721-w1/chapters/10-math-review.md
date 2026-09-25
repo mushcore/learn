@@ -105,8 +105,6 @@ Because $f = 1/T$, each row is a reciprocal pair: **1/ms = kHz, 1/μs = MHz, 1/n
 - Dividing powers of ten: $\dfrac{3 \times 10^{8}}{4 \times 10^{14}} = 0.75 \times 10^{8-14} = 0.75 \times 10^{-6}$.
 - Converting the answer to a prefix: $0.0167$ s $= 16.7 \times 10^{-3}$ s $= 16.7$ ms. Move the decimal three places per prefix step.
 
-## Try it
-
 ```quiz
 [
   {

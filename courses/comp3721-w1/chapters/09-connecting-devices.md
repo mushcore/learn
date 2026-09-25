@@ -70,8 +70,6 @@ Difference 3 is the $H_L$ replacement from the encapsulation lesson; difference 
 
 Although a router is generally considered a **network-layer device**, it operates at the **network layer, data-link layer, and physical layer**. The network layer depends on the services of the data-link layer, which relies on the physical layer, so **any network-layer device must implement all three layers**. Asked what layer a device belongs to, give the highest layer it reaches: hub = physical, switch = data link, router = network. Asked how many layers it implements, count from the bottom: 1, 2, 3.
 
-## Try it
-
 ```quiz
 [
   {

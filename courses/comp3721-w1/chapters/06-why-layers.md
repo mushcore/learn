@@ -66,8 +66,6 @@ A **protocol suite (stack)** is *a set of protocols organized in different layer
 | **TCP/IP protocol suite** | **5** | used in the Internet today (the Internet protocol stack) |
 | **OSI model** | **7** | an ISO standard for network communications |
 
-## Try it
-
 ```quiz
 [
   {

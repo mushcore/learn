@@ -5,7 +5,7 @@ minutes: 9
 
 Every chart so far pictured **one** variable. The last chart in the notes pictures **two**: *"When we measure two or more numerical variables for each individual/unit, then it is possible to create a scatter plot."*
 
-## The idea
+## One dot per individual
 
 *"We simply plot one point $(X, Y)$ for each individual/unit."* $n$ individuals give $n$ dots, $X$ on the horizontal axis and $Y$ on the vertical, with no classes and no counting: the pattern of the dots is the summary. Both variables must be numerical; eye colour against height needs a grouped box plot instead (Lab 2).
 

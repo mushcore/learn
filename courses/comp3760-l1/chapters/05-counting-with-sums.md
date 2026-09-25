@@ -226,8 +226,6 @@ op-counter
 - **Control variable halved each pass:** $\log_2 n$ passes (plus one).
 :::
 
-## Try it
-
 ```quiz
 [
   {

@@ -64,7 +64,7 @@ Host-to-host (network) reaches the right computer; process-to-process (transport
 - Protocols: **IMAP, SMTP, HTTP, FTP, Telnet, DNS**, and more.
 - Application layer protocols are **implemented in software in the end systems**.
 
-## Good to know
+## Which hardware implements which layers
 
 - The **physical layer and data-link layer** are typically implemented in a **NIC (Network Interface Card)**, and they handle communication over a **specific link**.
 - **Hosts (end systems) implement all 5 layers** of the TCP/IP protocol stack. A switch implements two and a router three (next lessons).
@@ -91,8 +91,6 @@ The **Application, Presentation, and Session** layers of OSI are **combined into
 :::warn Numbering trap
 "Transport" is layer 4 in **both** models; "Application" is layer 5 in TCP/IP but layer 7 in OSI. TCP/IP layer 5 is Application; OSI layer 5 is Session.
 :::
-
-## Try it
 
 ```quiz
 [

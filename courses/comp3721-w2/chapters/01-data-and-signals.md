@@ -75,8 +75,6 @@ The slides give two everyday sine waves:
 
 Neither carries data, which is why data communication needs composite signals.
 
-## Try it
-
 ```quiz
 [
   {

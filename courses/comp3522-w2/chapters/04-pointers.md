@@ -280,7 +280,7 @@ int main()
 
 `swapElements(numbers, 0, 3);` passes the array name, which decays to the address of its first element, so `array[i] = array[j];` writes into the caller's array. Square brackets on a pointer are a second way to dereference (`array[i]` is `*(array + i)`); the slides list both: "we use `*` or `[]`." The output ends with `4 2 3 1`.
 
-## Rules to remember
+## Pointer rules from the slides
 
 | Rule | Slide wording |
 |---|---|

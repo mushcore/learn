@@ -123,8 +123,6 @@ In the frequency domain:
 | **periodic** (rare in data communications) | infinite | **discrete** |
 | **nonperiodic** (the usual case) | infinite | **continuous** |
 
-## Try it
-
 ```quiz
 [
   {

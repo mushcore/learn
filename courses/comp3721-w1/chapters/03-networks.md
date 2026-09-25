@@ -63,8 +63,6 @@ The slide does not print the name next to the definition; "multipoint", also cal
 *"Assume we have a dedicated link between two devices. This type of connection is called ___."* **Point-to-point.** *Dedicated* and *two devices* trigger it; *more than two devices share a single link* means **multipoint**.
 :::
 
-## Try it
-
 ```quiz
 [
   {

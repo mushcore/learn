@@ -94,8 +94,6 @@ The algorithms already counted, by class:
 **Two nested loops always mean $n^2$.** False as a rule, true as a "typically". If the inner loop runs a *constant* number of times (say 1 to 10), the count is $10n$, which is linear. Count the loop bounds, not the loops.
 :::
 
-## Try it
-
 ```quiz
 [
   {

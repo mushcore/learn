@@ -97,8 +97,6 @@ freq-period
 { "f": 60, "unit": "Hz" }
 ```
 
-## Try it
-
 ```quiz
 [
   {

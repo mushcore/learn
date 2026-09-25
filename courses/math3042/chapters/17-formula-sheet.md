@@ -155,8 +155,6 @@ Properties: $-1 \le r \le 1$; unaffected by unit changes; unaffected by swapping
 | Correlation | `cor(x, y)` |
 | Histogram | `hist(x, breaks = ..., right = FALSE)` |
 
-## Quick self-check
-
 ```quiz
 [
   {

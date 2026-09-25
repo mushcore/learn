@@ -5,7 +5,7 @@ minutes: 12
 
 Every C++ program you write this term starts from this shape. The program below is compiled with the same `g++` CLion uses, and it is editable.
 
-## Line by line
+## Each piece of `HelloWorld.cpp`
 
 Hovering a row of the table highlights the matching line of the program, and vice versa.
 
@@ -37,9 +37,7 @@ int main()
 | `std::endl` | An **output manipulator**: inserts a newline **and flushes** the stream buffer. | `println` |
 | `return 0;` | 0 tells the OS the program ran without errors. | — |
 
-:::tip C++ vs Java, the one-sentence version
-Java has an **API**; C++ has a **standard library**. Java has packages; C++ has **namespaces**. Java methods; C++ **member functions**.
-:::
+Java's **API**, **packages** and **methods** are C++'s **standard library**, **namespaces** and **member functions**.
 
 ## `::` versus `.`
 

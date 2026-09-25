@@ -138,7 +138,7 @@ int add(int first, int second) // definition — full body
 
 Without the standalone declaration line, the call in `main` is a compile error, because the compiler has not seen `add` yet. In the multi-file project, `#include "calculator.hpp"` supplies that declaration.
 
-## Summary (from the slides)
+## The slides' rules for headers and sources
 
 1. One `main` method.
 2. `main` may call other functions, just like C.

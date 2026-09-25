@@ -61,7 +61,7 @@ $r = 0.8324$ is close to 1, so resistance and failure time have a **strong posit
 | close to $-1$ (e.g. $-0.8$ to $-0.99$) | Strong negative linear correlation |
 | $r = -1$ | Perfect negative linear correlation |
 
-## Drag the points
+## r for any cloud of points
 
 ```widget
 scatter-corr

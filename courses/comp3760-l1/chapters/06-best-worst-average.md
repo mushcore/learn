@@ -86,8 +86,6 @@ The mode does not change the basic operation: best and worst are different count
 A loop that touches every element unconditionally (a sum, a product, a matrix multiplication, finding the max) has one count. A loop with an early exit (`return` inside the loop, or a `while` whose condition reads the data) can stop early on a lucky input, and that is the signal that best and worst case differ.
 :::
 
-## Try it
-
 ```quiz
 [
   {

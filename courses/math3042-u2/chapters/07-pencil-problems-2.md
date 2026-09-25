@@ -16,10 +16,6 @@ $X$ = thickness (in inches) of a sample of $n = 18$ sheets of nominally three-qu
 
 Determine an appropriate number of classes and appropriate class limits for a frequency distribution. Then determine the frequencies and the relative frequencies.
 
-:::quiz Try it first
-Write $\sqrt{n}$, the range $R$, the ideal class width, the width you will use, the first lower limit, and every class with its frequency.
-:::
-
 ### Step 1: how many classes, how wide
 
 1. Initial number of classes: $\sqrt{n} = \sqrt{18} = 4.24$, so four or five classes.
@@ -97,10 +93,6 @@ freq.dist
 
 IQ scores for a large population have mean $\mu = 100$ and standard deviation $\sigma = 15$. Based on the 68–95–99.7 rule, determine the IQ score equivalent to (a) $P_{2.5}$, (b) $P_{16}$, (c) $P_{50}$, (d) $P_{66}$, (e) $P_{97.5}$.
 
-:::quiz Try it first
-Sketch the bell, mark $\mu \pm \sigma$, $\mu \pm 2\sigma$, $\mu \pm 3\sigma$ with the percentage in each band, then write the five IQ scores.
-:::
-
 ### The bands
 
 The empirical rule splits the symmetric bell into slices:
@@ -144,10 +136,6 @@ The price of gold (CA$ per oz) for the last ten days of August 2026:
 ```
 
 (a) Determine the range $R$ and the interquartile range $IQR$. (b) Find the lower and upper fences for checking whether a value is an outlier. (c) Are there any outliers?
-
-:::quiz Try it first
-Sort the ten prices, then write $R$, $Q_1$, $Q_3$, $IQR$, both fences, and your outlier verdict.
-:::
 
 ### Sort
 
@@ -234,10 +222,6 @@ ogive
 ```
 
 (a) What proportion of students had scores below 50? (b) What proportion had scores between 30 and 40? (c) What range of scores represents the top 25% of the class?
-
-:::quiz Try it first
-Read the height at 50, the heights at 30 and 40, and the score where the curve crosses 75%.
-:::
 
 ### How to read an ogive
 

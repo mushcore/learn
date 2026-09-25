@@ -81,8 +81,6 @@ The same concept gets two symbols depending on whether it describes a sample or 
 | Correlation | $r$ | $\rho$ |
 | Size | $n$ | $N$ |
 
-## Try it
-
 ```quiz
 [
   {

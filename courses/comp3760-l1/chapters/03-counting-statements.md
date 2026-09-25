@@ -110,8 +110,6 @@ $$f(n) = n - 1$$
 
 $3n - 1$ (every statement) and $n - 1$ (basic operation only) both grow linearly in $n$; the second is simpler to compute and does not depend on which statements happened to be inside the `if`. [Choosing the basic operation](#/comp3760-l1/basic-operation) makes that choice in harder pseudocode; [Setting up and simplifying the sums](#/comp3760-l1/counting-with-sums) counts it when loops nest.
 
-## Try it
-
 ```quiz
 [
   {

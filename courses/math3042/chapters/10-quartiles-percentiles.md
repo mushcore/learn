@@ -64,7 +64,7 @@ Calling `quantile()` with no second argument returns all five landmark values at
 
 That's `quantile(faithful$eruptions)`. This five-number summary is exactly what a boxplot draws.
 
-## Try it
+## The boxplot of the first ten eruptions
 
 ```widget
 boxplot

@@ -153,8 +153,6 @@ Three fragments that are not on the slides, each built around a common mistake.
 For FragC, **the basic operation is performed $n$ times** (the literal count of the call) but **the efficiency class is $O(n^2)$** (the count multiplied by what each call costs). A growing-cost call carries its cost into the class, which is why that rule sits at the top of the list. A count question wants $n$; a class question wants $O(n^2)$.
 :::
 
-## Try it
-
 ```quiz
 [
   {
