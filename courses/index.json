@@ -57,6 +57,12 @@
           "title": "Week 2",
           "subtitle": "physical layer, data and signals",
           "description": "Lecture 02: analog and digital signals, sine waves, phase, wavelength, composite signals and bandwidth, bit rate and levels, with E02 worked. The calculation half of Quiz 2."
+        },
+        {
+          "id": "comp3721-w3",
+          "title": "Week 3",
+          "subtitle": "transmission, impairment, data rate limits",
+          "description": "Lecture 03: baseband and broadband transmission, attenuation and the decibel, distortion, noise and SNR, Nyquist and Shannon, bandwidth and the bandwidth-delay product, parallel and serial transmission, with E03 worked. Expected scope of Quiz 3."
         }
       ]
     },

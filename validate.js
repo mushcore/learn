@@ -11,6 +11,7 @@ const WIDGETS = new Set([
   "cat-charts", "stem-leaf", "hist-builder", "ogive", "group-stats",
   "pointer-viz", "file-seek", "open-modes", "rand-range", "getline-sim", "vector-viz",
   "op-counter", "loop-grid", "growth-plot", "big-o-check", "fib-race",
+  "channel-filter", "decibel", "snr-noise", "data-rate", "bandwidth-delay", "tx-modes",
 ]);
 const SERVER = process.env.LEARN_URL || "http://localhost:4321";
 const args = process.argv.slice(2);

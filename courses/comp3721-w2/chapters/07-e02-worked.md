@@ -162,6 +162,6 @@ $$1\ \text{file} \times \frac{100000\ \text{ch}}{\text{file}} \times \frac{8\ \t
 $1000$ bps means $1/1000$ s **per bit**. Multiply bits by seconds per bit; an answer of 100 s for (a) means the fraction was inverted.
 :::
 
-## Not covered yet: E03
+## E03 belongs to Week 3
 
-The Week 3 sheet (E03) asks about cable loss in dB per kilometre and signal-to-noise ratio (SNR, SNR in dB). Those belong to next week's transmission-impairment lecture and are outside the posted scope of Quiz 1 and Quiz 2.
+The Week 3 sheet (E03) asks about cable loss in dB per kilometre and signal-to-noise ratio. Both are worked in the Week 3 module: [E03, worked](#/comp3721-w3/e03-worked).

@@ -1,0 +1,46 @@
+{
+  "title": "COMP 3721 · Week 3",
+  "subtitle": "Physical layer: transmission, impairment and data rate limits, preparing for Quiz 3",
+  "description": "Lecture 03 and the E03 exercise sheet: baseband and broadband transmission, attenuation and the decibel, distortion, noise and SNR, the Nyquist bit rate and the Shannon capacity, bandwidth and the bandwidth-delay product, parallel and serial transmission. Every worked number from the slides, a live widget for each idea, and calculation quizzes with units. Finish with Mock Quiz 3 and the Week 3 study note.",
+  "intro": ":::quiz Quiz 3 scope\nQuiz 2 covered Lecture 02, so Quiz 3 is expected to cover Lecture 03, all of it in this module. The calculations are decibels, SNR, Nyquist and Shannon: bring a calculator with a log key, write the unit with every answer and the sign with every decibel value, and convert prefixes (mW, μW, kHz, MHz, kbps, Mbps) before dividing. One A4 or letter page of notes, single-sided and preferably hand-written, is allowed; the last lesson is the Week 3 block of that page.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      { "lesson": "mock-quiz-3", "note": "take it cold first to find the gaps (about 35 min)" },
+      { "lesson": "attenuation-decibel", "note": "dB from two powers and power from dB; the sign tells attenuated from amplified" },
+      { "lesson": "distortion-noise-snr", "note": "the four noise definitions word for word; SNR with the prefixes converted first" },
+      { "lesson": "nyquist", "note": "Example 1 by hand: solve for L, then the two choices when L is not a power of 2" },
+      { "lesson": "shannon", "note": "Example 2 by hand: Shannon for the upper limit, Nyquist for the levels" },
+      { "lesson": "e03-worked", "note": "redo both E03 exercises on paper, units and all, before checking" },
+      { "lesson": "mock-quiz-3", "note": "retake; aim for 90% or better" },
+      { "lesson": "study-note", "note": "hand-write the Week 3 block of your A4 page from this draft" }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Physical layer: transmission and impairment (03)",
+      "lessons": [
+        { "id": "baseband-broadband", "title": "Baseband & broadband transmission", "file": "chapters/01-baseband-broadband.md" },
+        { "id": "attenuation-decibel", "title": "Attenuation & the decibel", "file": "chapters/02-attenuation-decibel.md" },
+        { "id": "distortion-noise-snr", "title": "Distortion, noise & SNR", "file": "chapters/03-distortion-noise-snr.md" }
+      ]
+    },
+    {
+      "title": "2. Data rate and performance (03)",
+      "lessons": [
+        { "id": "nyquist", "title": "Noiseless channel: Nyquist bit rate", "file": "chapters/04-nyquist.md" },
+        { "id": "shannon", "title": "Noisy channel: Shannon capacity", "file": "chapters/05-shannon.md" },
+        { "id": "bandwidth-delay", "title": "Bandwidth & the bandwidth-delay product", "file": "chapters/06-bandwidth-delay.md" },
+        { "id": "transmission-modes", "title": "Transmission modes: parallel & serial", "file": "chapters/07-transmission-modes.md" }
+      ]
+    },
+    {
+      "title": "3. Quiz prep",
+      "lessons": [
+        { "id": "e03-worked", "title": "E03, worked", "file": "chapters/08-e03-worked.md" },
+        { "id": "mock-quiz-3", "title": "Mock Quiz 3 (Week 3)", "file": "chapters/09-mock-quiz-3.md" },
+        { "id": "study-note", "title": "Your one-page study note (Week 3)", "file": "chapters/10-study-note.md" }
+      ]
+    }
+  ]
+}

@@ -4,8 +4,9 @@ import * as net from "./widgets-net.js";
 import * as viz from "./widgets-viz.js";
 import * as cpp2 from "./widgets-cpp2.js";
 import * as algo from "./widgets-algo.js";
+import * as net2 from "./widgets-net2.js";
 
-const REGISTRY = { ...cpp.WIDGETS, ...stats.WIDGETS, ...net.WIDGETS, ...viz.WIDGETS, ...cpp2.WIDGETS, ...algo.WIDGETS };
+const REGISTRY = { ...cpp.WIDGETS, ...stats.WIDGETS, ...net.WIDGETS, ...viz.WIDGETS, ...cpp2.WIDGETS, ...algo.WIDGETS, ...net2.WIDGETS };
 
 export function widgetNames() {
   return Object.keys(REGISTRY);
