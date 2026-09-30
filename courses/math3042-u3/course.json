@@ -1,0 +1,59 @@
+{
+  "lang": "r",
+  "title": "MATH 3042 Statistics · Unit 3",
+  "subtitle": "Probability and counting, with Lab 3 (charts in R) and Lab 4 (simulations), preparing for Quiz 3",
+  "description": "Unit 3, probability from the ground up: random experiments, sample spaces and events, the classical and relative-frequency definitions and the law of large numbers, the fundamental counting rule with factorials, permutations and combinations on a deck of cards, the complement and addition rules, conditional probability and independence read off a two-way table, the multiplication rule, and Bayes' rule on a tree diagram. Plus the two labs of the week: Lab 3's pie, bar, stem, histogram, ogive and scatter charts of the survey data in R, and Lab 4's sample() and replicate() simulations. Every example in the notes is worked with its arithmetic; clickable sample spaces, a counting calculator, a two-way table, a Bayes tree and a simulation lab; a mock quiz and a formula sheet.",
+  "intro": ":::quiz Quiz 3 scope\nLecture Unit 03 (probability and counting) with Lab 3 and Lab 4. Expect the same two-part format as Quiz 2: a **paper and pencil** part (counting, the probability rules, a two-way table, a Bayes tree, with a scientific calculator and its nPr / nCr keys) and an **RStudio** part in the style of the labs (a chart of `survey` with a computed title, a `sample()` / `replicate()` simulation, a relative-frequency estimate). The Unit 3 notes were posted unfilled, so the worked examples here are checked by computation and by the demo notebook's simulations.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      { "lesson": "mock-quiz-3", "note": "take it cold first to find the gaps (about 30 min)" },
+      { "lesson": "counting", "note": "when is it n^r, P(n, r) or C(n, r); redo every card example with the nPr and nCr keys" },
+      { "lesson": "conditional-independence", "note": "read every conditional off the two-way table, then test independence" },
+      { "lesson": "bayes", "note": "draw the tree for the CPU example on paper, then check it in the widget" },
+      { "lesson": "complement-addition", "note": "complement for 'at least', subtract the overlap for 'or'" },
+      { "lesson": "examples-worked", "note": "every lecture example with a blank line in the notes, worked; do them before reading" },
+      { "lesson": "lab4-simulations", "note": "sample(), replace=TRUE, replicate(): what the RStudio part will ask" },
+      { "lesson": "mock-quiz-3", "note": "retake; aim for 90% or better" },
+      { "lesson": "formula-sheet-3", "note": "print it; rewrite the rules from memory once" }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. What probability is",
+      "lessons": [
+        { "id": "probability-sample-space", "title": "Random experiments, sample spaces, events", "file": "chapters/01-probability-sample-space.md" },
+        { "id": "relative-frequency-lln", "title": "Relative frequency and the law of large numbers", "file": "chapters/02-relative-frequency-lln.md" }
+      ]
+    },
+    {
+      "title": "2. Counting",
+      "lessons": [
+        { "id": "counting", "title": "The counting rule, permutations and combinations", "file": "chapters/03-counting.md" }
+      ]
+    },
+    {
+      "title": "3. Probability rules",
+      "lessons": [
+        { "id": "complement-addition", "title": "The complement and addition rules", "file": "chapters/04-complement-addition.md" },
+        { "id": "conditional-independence", "title": "Conditional probability, independence, the multiplication rule", "file": "chapters/05-conditional-independence.md" },
+        { "id": "bayes", "title": "Bayes' rule on a tree diagram", "file": "chapters/06-bayes.md" }
+      ]
+    },
+    {
+      "title": "4. The labs in R",
+      "lessons": [
+        { "id": "lab3-charts-r", "title": "Lab 3: charts of the survey data", "file": "chapters/07-lab3-charts-r.md" },
+        { "id": "lab4-simulations", "title": "Lab 4: simulating probabilities with sample() and replicate()", "file": "chapters/08-lab4-simulations.md" }
+      ]
+    },
+    {
+      "title": "5. Quiz prep",
+      "lessons": [
+        { "id": "examples-worked", "title": "Every lecture example, worked", "file": "chapters/09-examples-worked.md" },
+        { "id": "mock-quiz-3", "title": "Mock Quiz 3", "file": "chapters/10-mock-quiz-3.md" },
+        { "id": "formula-sheet-3", "title": "Formula sheet (Unit 3)", "file": "chapters/11-formula-sheet-3.md" }
+      ]
+    }
+  ]
+}

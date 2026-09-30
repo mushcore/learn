@@ -1,0 +1,60 @@
+{
+  "lang": "cpp",
+  "title": "COMP 3522 C++ · Week 3",
+  "subtitle": "Classes, constructors, copying, destructors, inheritance, virtual functions, testing with Catch, UML, preparing for Quiz 3 and Lab 3",
+  "description": "Everything in the Week 3 slides and sample projects, taught from scratch: structs and classes, the default constructor and the most vexing parse, member initialization lists and default arguments, the copy constructor and shallow versus deep copies, destructors, forward declarations, inheritance and the three access levels, polymorphism with virtual functions, plus the testing and debugging deck, Lab 3's stack with Catch unit tests, and the UML review. Every slide program is runnable and stepped; a mock quiz and a cheat sheet close the week.",
+  "intro": ":::quiz Quiz 3 scope\nWritten at the start of lab on the Learning Hub in the usual format (multiple choice, true/false, matching, what-does-this-print). It covers the **Week 3 slides** (both decks), the **Week 3 sample projects** (Circle, Complex, Visibility, myVec, polymorphism, private, virtual, virtual2, whichconstructor), and the **Testing review** and **UML review** decks posted with Lab 3. Every one of those programs is reproduced here, runnable, with its real output.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      { "lesson": "mock-quiz-3", "note": "take it cold first, so you know where the gaps are (about 45 min)" },
+      { "lesson": "constructors", "note": "member initialization list, default arguments, the most vexing parse; play the constructor picker until every declaration is obvious" },
+      { "lesson": "copy-constructor", "note": "shallow versus deep copy is the week's guaranteed what-happens question" },
+      { "lesson": "inheritance", "note": "the access table and which base constructor runs" },
+      { "lesson": "polymorphism-virtual", "note": "virtual2.cpp line by line: reference, pointer, qualified call, sliced copy" },
+      { "lesson": "testing-debugging", "note": "testing versus debugging, partitions, assertions, the three kinds of testing we use" },
+      { "lesson": "lab3-stack", "note": "write the stack and its tests before the lab, not during it" },
+      { "lesson": "mock-quiz-3", "note": "retake; aim for 90% or better" },
+      { "lesson": "cheat-sheet-3", "note": "print it and read it on the way in" }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Classes and objects",
+      "lessons": [
+        { "id": "structs-classes", "title": "Structs, classes and the four OOP words", "file": "chapters/01-structs-classes.md" },
+        { "id": "constructors", "title": "Constructors, member initialization, default arguments", "file": "chapters/02-constructors.md" }
+      ]
+    },
+    {
+      "title": "2. Copying and destroying",
+      "lessons": [
+        { "id": "copy-constructor", "title": "The copy constructor: shallow versus deep", "file": "chapters/03-copy-constructor.md" },
+        { "id": "destructor", "title": "Destructors and object lifetime", "file": "chapters/04-destructor.md" },
+        { "id": "forward-declaration", "title": "Forward declarations and organizing code", "file": "chapters/05-forward-declaration.md" }
+      ]
+    },
+    {
+      "title": "3. Inheritance and polymorphism",
+      "lessons": [
+        { "id": "inheritance", "title": "Inheritance, access levels, which constructor runs", "file": "chapters/06-inheritance.md" },
+        { "id": "polymorphism-virtual", "title": "Polymorphism and virtual functions", "file": "chapters/07-polymorphism-virtual.md" }
+      ]
+    },
+    {
+      "title": "4. Testing, Lab 3 and UML",
+      "lessons": [
+        { "id": "testing-debugging", "title": "Testing and debugging", "file": "chapters/08-testing-debugging.md" },
+        { "id": "lab3-stack", "title": "Lab 3: MyStack and Catch unit tests", "file": "chapters/09-lab3-stack.md" },
+        { "id": "uml-review", "title": "UML review: class, collaboration, sequence diagrams", "file": "chapters/10-uml-review.md" }
+      ]
+    },
+    {
+      "title": "5. Quiz prep",
+      "lessons": [
+        { "id": "mock-quiz-3", "title": "Mock Quiz 3", "file": "chapters/11-mock-quiz-3.md" },
+        { "id": "cheat-sheet-3", "title": "One-page cheat sheet (Week 3)", "file": "chapters/12-cheat-sheet.md" }
+      ]
+    }
+  ]
+}
