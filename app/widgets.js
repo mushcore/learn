@@ -5,8 +5,10 @@ import * as viz from "./widgets-viz.js";
 import * as cpp2 from "./widgets-cpp2.js";
 import * as algo from "./widgets-algo.js";
 import * as net2 from "./widgets-net2.js";
+import * as oop from "./widgets-oop.js";
+import * as prob from "./widgets-prob.js";
 
-const REGISTRY = { ...cpp.WIDGETS, ...stats.WIDGETS, ...net.WIDGETS, ...viz.WIDGETS, ...cpp2.WIDGETS, ...algo.WIDGETS, ...net2.WIDGETS };
+const REGISTRY = { ...cpp.WIDGETS, ...stats.WIDGETS, ...net.WIDGETS, ...viz.WIDGETS, ...cpp2.WIDGETS, ...algo.WIDGETS, ...net2.WIDGETS, ...oop.WIDGETS, ...prob.WIDGETS };
 
 export function widgetNames() {
   return Object.keys(REGISTRY);

@@ -1,0 +1,53 @@
+{
+  "lang": "cpp",
+  "title": "COMP 3522 C++ · Week 4",
+  "subtitle": "Abstract classes and interfaces, multiple inheritance and the diamond, friends, operator overloading, the copy assignment operator, preparing for Quiz 4 and the midterm",
+  "description": "Everything in the Week 4 slides and sample projects, taught from scratch: pure virtual functions and abstract classes, interfaces and the virtual destructor, multiple inheritance with its ambiguities, the diamond and virtual base classes with the most-derived-class rule, friend functions and classes, the canonical forms of every overloaded operator, and the copy-and-swap assignment operator. Every program is runnable with its real output; the midterm practice questions are worked; a mock quiz and a cheat sheet close the week.",
+  "intro": ":::quiz Quiz 4 scope\nSame format as before (multiple choice, true/false, matching, what-does-this-print) at the start of lab. It covers the **Week 4 slides** (both decks) and the **Week 4 sample projects** (Dollar, FriendClass, diamond, diamondmethods, inherit_constructor, oop_abstract, oop_multi0 to oop_multi3, oop_virtual, operators). The slide deck also lists five **midterm practice questions**; they are worked in the second-last lesson.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      { "lesson": "mock-quiz-4", "note": "take it cold first, so you know where the gaps are (about 45 min)" },
+      { "lesson": "abstract-classes", "note": "pure specifier, what can and cannot be done with an abstract class; play the checker" },
+      { "lesson": "diamond-virtual-base", "note": "oop_multi1, 2 and 3 line by line: two grandparents, the lost name, the most derived class" },
+      { "lesson": "operator-overloading", "note": "member or non-member, which six comparisons, prefix versus postfix; the rewriter until every expression is obvious" },
+      { "lesson": "copy-assignment", "note": "copy-and-swap in four steps; what the compiler's operator= gets wrong" },
+      { "lesson": "friends", "note": "not mutual, not transitive, not inherited, any section" },
+      { "lesson": "midterm-practice", "note": "answer the five questions on paper first, then compare" },
+      { "lesson": "mock-quiz-4", "note": "retake; aim for 90% or better" },
+      { "lesson": "cheat-sheet-4", "note": "print it and read it on the way in" }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Abstract classes and interfaces",
+      "lessons": [
+        { "id": "abstract-classes", "title": "Pure virtual functions and abstract classes", "file": "chapters/01-abstract-classes.md" },
+        { "id": "interfaces", "title": "Interfaces and the virtual destructor", "file": "chapters/02-interfaces.md" }
+      ]
+    },
+    {
+      "title": "2. Multiple inheritance",
+      "lessons": [
+        { "id": "multiple-inheritance", "title": "Multiple inheritance and ambiguity", "file": "chapters/03-multiple-inheritance.md" },
+        { "id": "diamond-virtual-base", "title": "The diamond and virtual base classes", "file": "chapters/04-diamond-virtual-base.md" }
+      ]
+    },
+    {
+      "title": "3. Friends and operators",
+      "lessons": [
+        { "id": "friends", "title": "Friend functions and friend classes", "file": "chapters/05-friends.md" },
+        { "id": "operator-overloading", "title": "Operator overloading: the canonical forms", "file": "chapters/06-operator-overloading.md" },
+        { "id": "copy-assignment", "title": "The copy assignment operator and copy-and-swap", "file": "chapters/07-copy-assignment.md" }
+      ]
+    },
+    {
+      "title": "4. Quiz and midterm prep",
+      "lessons": [
+        { "id": "midterm-practice", "title": "Midterm practice questions, worked", "file": "chapters/08-midterm-practice.md" },
+        { "id": "mock-quiz-4", "title": "Mock Quiz 4", "file": "chapters/09-mock-quiz-4.md" },
+        { "id": "cheat-sheet-4", "title": "One-page cheat sheet (Week 4)", "file": "chapters/10-cheat-sheet.md" }
+      ]
+    }
+  ]
+}

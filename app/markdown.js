@@ -29,6 +29,7 @@ const SYMBOLS = {
   left: "", right: "", displaystyle: "", mid: "|", lt: "<", gt: ">", "%": "%", "$": "$", "{": "{", "}": "}", "_": "_", "&": "&amp;", "#": "#",
   min: "min", max: "max", ln: "ln", log: "log", exp: "exp", sin: "sin", cos: "cos", tan: "tan",
   Theta: "Θ", lfloor: "⌊", rfloor: "⌋", lceil: "⌈", rceil: "⌉", subset: "⊂", subseteq: "⊆", notin: "∉", forall: "∀", exists: "∃", equiv: "≡", ll: "≪", gg: "≫",
+  cap: "∩", cup: "∪", emptyset: "∅", varnothing: "∅", setminus: "∖", vert: "|", lvert: "|", rvert: "|", neg: "¬", land: "∧", lor: "∨",
 };
 function mathParse(src) {
   let i = 0;

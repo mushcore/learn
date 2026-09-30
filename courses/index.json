@@ -17,6 +17,18 @@
           "title": "Week 2",
           "subtitle": "file IO, arrays, random numbers, pointers, references, strings, vectors, new/delete",
           "description": "Built from the Week 2 slides, the lecture videos and the Pointers and References practice sheet. A step-by-step memory diagram for pointers and references, a file-cursor simulator, and runnable versions of every slide program. Ends with the practice sheet worked, a mock quiz and a cheat sheet."
+        },
+        {
+          "id": "comp3522-w3",
+          "title": "Week 3",
+          "subtitle": "classes, constructors, copying, destructors, inheritance, virtual functions, testing, UML",
+          "description": "Built from both Week 3 decks, the nine sample projects, the Testing review deck and the UML review. A constructor picker, an object-lifetime stepper, shallow-versus-deep copy and virtual-dispatch visualizers, every slide program runnable with its real output, Lab 3's stack with Catch-style tests you can run. Ends with a mock quiz and a cheat sheet."
+        },
+        {
+          "id": "comp3522-w4",
+          "title": "Week 4",
+          "subtitle": "abstract classes, interfaces, multiple inheritance, the diamond, friends, operator overloading, copy-and-swap",
+          "description": "Built from both Week 4 decks and the twelve sample projects. An abstract-class checker, a diamond builder that shows one or two grandparents and which constructor ran, a friendship checker, an operator-call rewriter and a copy-and-swap stepper; every program runnable with its real output. Ends with the midterm practice questions worked, a mock quiz and a cheat sheet."
         }
       ]
     },
@@ -37,6 +49,12 @@
           "title": "Unit 2",
           "subtitle": "visualizing data, and Lab 2 grouped statistics",
           "description": "Frequency tables, pie and bar charts, stem-and-leaf, the histogram class recipe, cumulative relative frequencies and ogives, scatter plots; Lab 2 favstats, model formulas, percentiles, percent ranks and Z-scores on the quine data. Built from the Unit 2 notes (filled) and the Lab 2 solutions; ends with the pencil problems, a mock quiz and a formula sheet."
+        },
+        {
+          "id": "math3042-u3",
+          "title": "Unit 3",
+          "subtitle": "probability and counting, Lab 3 charts in R, Lab 4 simulations",
+          "description": "Sample spaces, classical and relative-frequency probability, the law of large numbers, the counting rule, permutations and combinations, the complement, addition and multiplication rules, conditional probability and independence on a two-way table, Bayes' rule on a tree; Lab 3's charts of the survey data and Lab 4's sample()/replicate() simulations. Built from the Unit 3 notes, the demo notebook and both lab solutions; every lecture example worked in full, with clickable sample spaces, a counting calculator, a Bayes tree and a simulation lab. Ends with a mock quiz and a formula sheet."
         }
       ]
     },

@@ -83,10 +83,17 @@ export function mountRunner(container, code, ctx, opts = {}) {
     predictBox = el("div", "predict-row");
     const ta = document.createElement("textarea");
     ta.className = "predict-input"; ta.rows = 2; ta.placeholder = "your prediction";
-    predictBox.append(el("label", null, predict), ta);
+    const hint = el("span", "predict-hint", "Run is locked until you write a prediction here (any guess counts).");
+    predictBox.append(el("label", null, predict), ta, hint);
     runBtn.disabled = true;
+    runBtn.classList.add("locked");
     runBtn.title = "Write a prediction first";
-    ta.addEventListener("input", () => { runBtn.disabled = ta.value.trim().length < 1; runBtn.title = runBtn.disabled ? "Write a prediction first" : ""; });
+    ta.addEventListener("input", () => {
+      runBtn.disabled = ta.value.trim().length < 1;
+      runBtn.classList.toggle("locked", runBtn.disabled);
+      runBtn.title = runBtn.disabled ? "Write a prediction first" : "";
+      hint.style.display = runBtn.disabled ? "" : "none";
+    });
     predictBox._ta = ta;
   }
 
