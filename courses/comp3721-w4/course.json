@@ -1,0 +1,47 @@
+{
+  "title": "COMP 3721 · Week 4",
+  "subtitle": "Digital-to-digital conversion: line coding, preparing for Quiz 4",
+  "description": "Lecture 04 and its complementary note: data elements and signal elements, data rate and signal rate, the bandwidth of a digital signal, baseline wandering, DC components, self-synchronization, and the line coding schemes (unipolar NRZ, polar NRZ-L and NRZ-I, Manchester, differential Manchester, bipolar AMI). Every worked number from the slides, a live widget for each idea, and waveforms you draw yourself and check. Finish with Mock Quiz 4 and the Week 4 study note.",
+  "intro": ":::quiz Quiz 4 scope\nThe lab quizzes follow the lectures one week behind, so Quiz 4 is expected to cover Lecture 04, all of it in this module. The calculations are the signal rate and bandwidth formulas and the extra bits from a clock difference: write baud for a signal rate, bps for a data rate and Hz for a bandwidth. Be ready to turn a bit pattern into a signal, and a signal back into bits, for each scheme. One A4 or letter page of notes, single-sided and preferably hand-written, is allowed; the last lesson is the Week 4 block of that page.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      { "lesson": "mock-quiz-4", "note": "take it cold first to find the gaps (about 35 min)" },
+      { "lesson": "data-rate-signal-rate", "note": "S = c × N × 1/r by hand, with r = 1, 1/2, 2 and 4/3; baud, not bps" },
+      { "lesson": "self-synchronization", "note": "the 0.1 percent example at 1 kbps and 1 Mbps" },
+      { "lesson": "unipolar-polar-nrz", "note": "the level rules: unipolar, NRZ-L, NRZ-I, and the three problems of polar NRZ" },
+      { "lesson": "manchester", "note": "0 is high-to-low, 1 is low-to-high; differential: inversion at the start for 0" },
+      { "lesson": "encoding-practice", "note": "draw every scheme for one pattern on paper, then in the widgets" },
+      { "lesson": "mock-quiz-4", "note": "retake; aim for 90% or better" },
+      { "lesson": "study-note", "note": "hand-write the Week 4 block of your A4 page from this draft" }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Line coding and its characteristics (04)",
+      "lessons": [
+        { "id": "line-coding-elements", "title": "Line coding: data elements & signal elements", "file": "chapters/01-line-coding-elements.md" },
+        { "id": "data-rate-signal-rate", "title": "Data rate & signal rate", "file": "chapters/02-data-rate-signal-rate.md" },
+        { "id": "digital-bandwidth", "title": "Bandwidth of a digital signal", "file": "chapters/03-digital-bandwidth.md" },
+        { "id": "baseline-dc", "title": "Baseline wandering & DC components", "file": "chapters/04-baseline-dc.md" },
+        { "id": "self-synchronization", "title": "Self-synchronization", "file": "chapters/05-self-synchronization.md" }
+      ]
+    },
+    {
+      "title": "2. Line coding schemes (04)",
+      "lessons": [
+        { "id": "unipolar-polar-nrz", "title": "Unipolar NRZ, polar NRZ-L & NRZ-I", "file": "chapters/06-unipolar-polar-nrz.md" },
+        { "id": "manchester", "title": "Manchester & differential Manchester", "file": "chapters/07-manchester.md" },
+        { "id": "bipolar-ami", "title": "Bipolar AMI & the schemes compared", "file": "chapters/08-bipolar-ami.md" }
+      ]
+    },
+    {
+      "title": "3. Quiz prep",
+      "lessons": [
+        { "id": "encoding-practice", "title": "Encoding practice: bits to waveforms", "file": "chapters/09-encoding-practice.md" },
+        { "id": "mock-quiz-4", "title": "Mock Quiz 4 (Week 4)", "file": "chapters/10-mock-quiz-4.md" },
+        { "id": "study-note", "title": "Your one-page study note (Week 4)", "file": "chapters/11-study-note.md" }
+      ]
+    }
+  ]
+}
