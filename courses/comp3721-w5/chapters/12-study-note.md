@@ -16,7 +16,7 @@ The Week 5 block of the quiz sheet: Lectures 05a and 05b in the slide's words, e
 - Figures: $f_s = 2f$ Nyquist rate, a good approximation; $f_s = 4f$ oversampling, same approximation but redundant and unnecessary; $f_s = f$ undersampling, does not look like the original.
 - **Quantization**: the set of amplitudes (can be infinite with nonintegral values) is mapped to a set of discrete values; an **approximation** process.
 - Recipe: 1. amplitudes between $V_{min}$ and $V_{max}$; 2. divide into $L$ zones (quantization levels) of height $\Delta$; 3. assign quantized values **0 to $L - 1$ to the midpoint** of each zone; 4. approximate each sample to the quantized value. Table columns: actual → normalized PAM = actual/$\Delta$ → zone → normalized quantized = midpoint → normalized error = **quantized − PAM** → code = zone number → word in $n_b$ bits.
-- Zone from a normalized value (symmetric range): zone = ⌊value⌋ + $L/2$; midpoint = zone − $L/2$ + 0.5. A value exactly on a boundary goes to the upper zone on the slide (1.50 → zone 5).
+- Zone from a normalized value (symmetric range): zone = ⌊value⌋ + $L/2$; midpoint = zone − $L/2$ + 0.5. 1.50 → zone 5, and 1.50 is that zone's midpoint, so its error is 0.
 - **Encoding** (last step): each quantized sample becomes an $n_b$-bit code word, $n_b = \log_{2} L$.
 - Choosing $L$: the range of the amplitudes and the required accuracy. Two values only → $L = 2$; voice → more levels; **audio digitizing $L = 256$**. Lower $L$ increases the quantization error when the signal fluctuates a lot.
 - **Quantization error (noise)**: $-\Delta/2 \le$ error $\le \Delta/2$. It changes the SNR, so the Shannon upper limit capacity (bit rate) is **decreased**. Depends on $L$ or $n_b$.

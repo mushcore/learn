@@ -51,7 +51,7 @@ Slide numbers below are PDF page numbers. Many slides are progressive builds of 
   - "Normalized error is the difference between normalized quantized value and normalized PAM value" (quantized − PAM): **−0.28, 0, +0.26, −0.44, +0.30, −0.40, −0.24, +0.38, −0.30**.
   - Quantization code: **2, 5, 7, 7, 6, 2, 1, 2, 2** ("−1.50 → midpoint of zone 2").
   - Encoded words (3 bits each, "Encoding (Last step of PCM)"): **010, 101, 111, 111, 110, 010, 001, 010, 010**.
-  - Note for the lesson: the sample 1.50 sits exactly on the boundary between zones 4 (0 to D) and 5 (D to 2D); the slide puts it in zone 5 (code 5, quantized value 1.50, error 0). A sample on a boundary follows the slide: it goes to the upper zone in this example. (Observation from the figure, not a stated rule.)
+  - Note for the lesson: the sample 1.50 is the midpoint of zone 5 (D to 2D), so the slide gives it code 5, quantized value 1.50, error 0. No sample in the table falls on a line between two zones, and the slide states no rule for one. (Corrected 2026-10-12: an earlier note wrongly called 1.50 a boundary value.)
 
 ## 05a — Encoding and bit rate (slide 43)
 - "Each quantized sample can be changed to an n_b-bit code word. (L is the number of quantization levels/zones): **n_b = log₂ L**." "Number of bits per sample = n_b = log₂ L."
@@ -132,7 +132,7 @@ Slide numbers below are PDF page numbers. Many slides are progressive builds of 
 4. "If we have a constellation diagram with 16 constellation points, what is the number of bits per constellation point (i.e., per signal element)? Assume the amplitude for a constellation point is 5 volts while the amplitude of the in-phase carrier is 3 volts. What is the amplitude of the quadrature carrier?" Answer: "Number of bits = log₂ 16 = **4**. 5² = 3² + q²; q² = 25 − 9; **q = 4 V**." (Pythagoras on the constellation point: amplitude² = I² + Q².)
 
 ## Beyond the slides (label as such in the lessons)
-- Zone arithmetic for the quantization widget: zone index k = floor(normalized value) + L/2 for a symmetric range (clamped to 0 … L − 1); midpoint = k − L/2 + 0.5 in units of Δ; code word = k in n_b bits. Reproduces every row of the slide-36 table (with the boundary sample 1.50 going up to zone 5).
+- Zone arithmetic for the quantization widget: zone index k = floor(normalized value) + L/2 for a symmetric range (clamped to 0 … L − 1); midpoint = k − L/2 + 0.5 in units of Δ; code word = k in n_b bits. Reproduces every row of the slide-36 table (1.50 is the midpoint of zone 5; a value on a zone line goes to the upper zone by the floor, which is the formula's choice, not a slide rule).
 - Quiz-style inverse questions the sheet does not ask but the formulas support: bit rate ÷ n_b = f_s; f_s ÷ 2 = f_max; L from n_b (L = 2^n_b).
 - The textbook's Nyquist example "a complex low-pass signal with bandwidth 200 kHz → sampling rate 400 000 samples/s" and its "human voice 0 to 4 kHz, 8 bits → 64 kbps" (E05 exercise 1 is this one) — from memory, unverified; only E05's version is to be cited.
 - SNR_dB per n_b table and the "each bit adds about 6 dB" reading are computed from the slide formula, not printed.

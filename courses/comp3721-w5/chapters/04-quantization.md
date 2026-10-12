@@ -73,9 +73,11 @@ quantizer
 
 Check two rows against the recipe. Sample 4: $19.7 / 5 = 3.94$, in zone 7 ($3D$ to $4D$), midpoint 3.50, error $3.50 - 3.94 = -0.44$, code 7, word 111. Sample 7: $-11.3 / 5 = -2.26$, in zone 1 ($-3D$ to $-2D$), midpoint −2.50, error $-2.50 - (-2.26) = -0.24$, code 1, word 001.
 
-## Sample 2 sits on a boundary
+## Sample 2 lands exactly on a midpoint
 
-$7.5 / 5 = 1.50$ is exactly the line between zone 4 (0 to $D$) and zone 5 ($D$ to $2D$). The slide puts it in zone 5: quantized value 1.50, error 0, code 5, word 101. The slide states no rule for boundaries; in this example a sample on a boundary goes to the upper zone, and a quiz built from this table will expect 5.
+$7.5 / 5 = 1.50$ lies in zone 5 ($D$ to $2D$), and 1.50 is the midpoint of that zone. The quantized value equals the sample, so the error is 0: code 5, word 101. It is the only sample in the table with no error.
+
+No sample in the slide's table falls exactly on a line between two zones (a normalized value such as 1.00 or 2.00), and the slide states no rule for one.
 
 ## Reading the error column
 
@@ -83,11 +85,11 @@ The error is quantized minus PAM. A sample below its midpoint has a positive err
 
 ## Zone arithmetic for any symmetric range
 
-Not on the slides, but it reproduces every row: for a range symmetric about 0, the zone is $\lfloor \text{normalized value} \rfloor + L/2$, clamped to $0 \ldots L - 1$, and the midpoint is $\text{zone} - L/2 + 0.5$. For −1.22 that is $\lfloor -1.22 \rfloor + 4 = -2 + 4 = 2$ and $2 - 4 + 0.5 = -1.50$. For the boundary value 1.50 it gives $1 + 4 = 5$, matching the slide.
+Not on the slides, but it reproduces every row: for a range symmetric about 0, the zone is $\lfloor \text{normalized value} \rfloor + L/2$, clamped to $0 \ldots L - 1$, and the midpoint is $\text{zone} - L/2 + 0.5$. For −1.22 that is $\lfloor -1.22 \rfloor + 4 = -2 + 4 = 2$ and $2 - 4 + 0.5 = -1.50$. For 1.50 it gives $1 + 4 = 5$ and $5 - 4 + 0.5 = 1.50$, the sample itself. The floor sends a value exactly on a zone line, such as 2.00, to the upper zone; that is the formula's choice, not a slide rule.
 
 ### Change L or the samples and watch the zones move
 
-Set $L = 4$ and the same nine samples spread over only four zones, so the errors grow; set $L = 16$ and they shrink. Typing a sample on a zone line shows where the boundary goes.
+Set $L = 4$ and the same nine samples spread over only four zones, so the errors grow; set $L = 16$ and they shrink. Typing a sample on a zone line (10 V is 2.00) shows which zone the widget's formula gives it.
 
 ```widget
 quantizer
@@ -136,10 +138,10 @@ quantizer
     "explain": "Step 3 of the slide: assign quantized values of 0 to $L - 1$ to the midpoint of each zone. A sample is then approximated by the midpoint of the zone it falls in."
   },
   {
-    "q": "In the slide example, the sample 7.5 V normalizes to exactly 1.50, on the line between zones 4 and 5. What code does the slide give it?",
-    "options": ["4", "5", "Either, the slide leaves it blank", "4.5"],
+    "q": "In the slide example, the sample 7.5 V normalizes to 1.50. What is its normalized error?",
+    "options": ["−0.50", "0", "+0.50", "+0.25"],
     "answer": 1,
-    "explain": "The slide puts 1.50 in zone 5: quantized value 1.50, error 0, code 5, word 101. The slide states no boundary rule; in this example a boundary sample goes to the upper zone."
+    "explain": "1.50 lies in zone 5 ($D$ to $2D$), and the midpoint of zone 5 is 1.50. Quantized value 1.50 minus PAM value 1.50 is 0. Code 5, word 101."
   },
   {
     "q": "With $L = 8$ quantization levels, each encoded word needs how many bits?",

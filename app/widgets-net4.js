@@ -351,7 +351,7 @@ function quantizer(box, cfg) {
       ["Error bound", `±Δ/2 = ±${num(Q.delta / 2)} V`, "normalized: between −0.5 and +0.5"],
       ["Largest |error| here", num(maxErr, 2), `${num(maxErr * Q.delta, 2)} V, within the bound`],
     ]);
-    note.textContent = "Normalized PAM value = actual amplitude / Δ. The zone is the band the value falls in (codes 0 to L − 1 from the bottom); the normalized quantized value is the zone's midpoint; the normalized error is quantized − PAM. A value exactly on a boundary, like 1.50, goes to the upper zone, as on the slide (zone 5, error 0).";
+    note.textContent = "Normalized PAM value = actual amplitude / Δ. The zone is the band the value falls in (codes 0 to L − 1 from the bottom); the normalized quantized value is the zone's midpoint; the normalized error is quantized − PAM. The slide's 1.50 is the midpoint of zone 5, so its error is 0. A value exactly on a zone line, like 2.00, is put in the upper zone here; the slide shows no such sample.";
   }
   for (const f of [Vmin, Vmax, Lf]) f.on(restart);
   sampIn.addEventListener("input", restart);
