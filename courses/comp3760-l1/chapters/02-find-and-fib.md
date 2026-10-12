@@ -123,6 +123,15 @@ fib-race
 
 The call count for `fib` multiplies by about 1.6 every time `n` goes up by one (the timing column does the same: 9, 11, 22, …, 1627 ms); `fib2` adds one loop iteration.
 
+### The calls in the order they happen
+
+The tree above is the finished picture. This one grows it call by call: `fib(n-1)` first, all the way down, and `fib(n-2)` only after that answer is back. Watch for the red nodes, each one an argument that was already computed elsewhere in the tree. Tick the predict box to choose the next call or return yourself.
+
+```widget
+fib-tree-play
+{ "n": 5, "title": "fib(5): 15 calls, in the order they are made" }
+```
+
 ## So?
 
 > **Fib is a basic example of why we care about algorithm efficiency.** A well thought out algorithm can run **much faster**. There can be **big variation** in efficiency.

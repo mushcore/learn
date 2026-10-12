@@ -29,6 +29,15 @@ The slide figure sends 0 1 0 0 1 0, and its first 1 is positive:
 
 The second 1 is negative although two 0s separate it from the first. The alternation counts 1s only; the 0s in between change nothing.
 
+### Play the six bits: which way does each 1 go?
+
+The caption for each 1 names the 1 before it, because that is what sets its polarity. Tick **Predict each bit before it is drawn** to pick the level yourself.
+
+```widget
+line-code-play
+{ "bits": "010010", "schemes": ["ami"], "scheme": "ami", "title": "The slide's six bits in AMI, drawn one bit at a time" }
+```
+
 ### The slide's six bits in AMI
 
 ```widget

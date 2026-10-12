@@ -75,6 +75,15 @@ $$f(n) = 1 + 3(n - 1) + 1 = 3n - 1$$
 `m ← A[i]` executes only on iterations where `A[i] > m`. The slide counts it $n - 1$ times, which is what happens for an ascending array, and the widget counts it the same way. On a descending array line 5 runs 0 times and the total is $2n$ instead of $3n - 1$. This is why the lecture moves away from counting every statement.
 :::
 
+### find, one comparison at a time
+
+Each step below is one execution of line 4. The `runs` column counts every line as it executes: the ascending array gives the slide's 1, 2, 2, 2, 1. Press `descending` and line 5 drops to 0 while line 4 stays at $n - 1$. The predict box asks for the count first, then each comparison.
+
+```widget
+find-play
+{ "algo": "find", "array": [2, 5, 8], "title": "find on n = 3: line 4 runs n - 1 times, line 5 only when the if is true" }
+```
+
 ## Basic operations
 
 > **Which instruction in find gets executed the most?**

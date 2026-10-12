@@ -14,12 +14,13 @@ const WIDGETS = new Set([
   "channel-filter", "decibel", "snr-noise", "data-rate", "bandwidth-delay", "tx-modes",
   "access-matrix", "ctor-picker", "lifetime-trace", "copy-viz", "dispatch-viz", "partitions", "abstract-check", "diamond-viz", "friend-check", "op-dispatch", "copy-swap", "uml-relations",
   "sample-space", "lln-sim", "counting-calc", "prob-rules", "birthday", "two-way", "bayes-tree", "sim-lab",
-  "line-code", "signal-elements", "signal-rate", "baseline-dc", "dc-offset", "clock-drift",
+  "line-code", "line-code-play", "signal-elements", "signal-rate", "baseline-dc", "dc-offset", "clock-drift",
   "sampler", "quantizer", "pcm-calc", "shift-keying", "constellation", "analog-mod",
   "fdm-plan", "tdm-frames", "rate-manager", "hop-walk", "arp-exchange", "mux-link",
   "pmf-table", "binomial-calc", "hyper-vs-binom", "geometric-calc", "poisson-calc", "dist-picker",
   "pdf-area", "z-table", "normal-prob", "exp-wait", "bit-error",
   "catch-matcher", "unwind-stepper", "exception-tree", "coupling-graph", "solid-spotter", "demeter-chain",
+  "wave-travel", "pcm-play", "tdm-play", "fib-tree-play", "find-play", "standardize-play", "memoryless-play",
   "container-picker", "iter-walk", "iterator-ops", "swo-checker", "map-insert", "partition-stepper",
 ]);
 const SERVER = process.env.LEARN_URL || "http://localhost:4321";

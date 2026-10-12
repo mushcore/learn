@@ -20,6 +20,15 @@ signal-levels
 { "levels": 8 }
 ```
 
+### Watch one sample go through the whole encoder
+
+The slide's nine samples pass through sampling, quantizing and encoding one at a time, and each 3-bit word joins the bitstream under the plot. Watch the red gap: it is the quantization error. Tick the predict box to name each code before it is shown.
+
+```widget
+pcm-play
+{ "vmin": -20, "vmax": 20, "levels": 8, "samples": "-6.1 7.5 16.2 19.7 11.0 -5.5 -11.3 -9.4 -6.0" }
+```
+
 ## Bit rate = f_s × n_b
 
 Slide wording: *Bit rate = Sampling rate × Number of bits per sample = $f_s \times n_b$.*

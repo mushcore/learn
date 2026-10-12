@@ -2,6 +2,7 @@
 // Nyquist rate, quantization (the slide's nine-sample table), the PCM calculator, ASK / FSK / PSK / 8-QAM,
 // constellation diagrams, and AM / FM / PM with their bandwidth boxes.
 import { el, slider, btnRow } from "./dom.js";
+import { createPlayback } from "./playback.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 function svgEl(tag, attrs = {}, text) {
@@ -431,6 +432,231 @@ function pcmCalc(box, cfg) {
   const own = cfg.fmax != null || cfg.levels != null || cfg.bits != null;
   apply(own ? { fmax: cfg.fmax ?? 4, unit: cfg.unit, levels: cfg.levels, bits: cfg.bits, c: cfg.c, r: cfg.r } : { ...presets[labels[0]], c: cfg.c ?? presets[labels[0]].c, r: cfg.r ?? presets[labels[0]].r });
   if (!own) setActive(presetRow, 0);
+}
+
+// ---------- widget: pcm-play ----------
+// The whole PCM encoder as one pass: each sample is read off the curve, snapped to its zone's midpoint and
+// encoded into the bitstream. Uses quantize() above, so every number is the quantizer widget's number.
+const paren = (s) => (s.startsWith("−") ? `(${s})` : s);
+const smooth = (u) => { const c = clamp(u, 0, 1); return c * c * (3 - 2 * c); };
+/** A smooth curve through equally spaced values (uniform Catmull-Rom), as a function of the sample index. */
+function curveThrough(vals) {
+  const P = (k) => vals[clamp(k, 0, vals.length - 1)];
+  return (t) => {
+    const k = Math.floor(t), u = t - k, p0 = P(k - 1), p1 = P(k), p2 = P(k + 1), p3 = P(k + 2);
+    return 0.5 * (2 * p1 + (p2 - p0) * u + (2 * p0 - 5 * p1 + 4 * p2 - p3) * u * u + (3 * p1 - p0 - 3 * p2 + p3) * u * u * u);
+  };
+}
+/** Where a sample's normalized value sits: "in" its zone, on the "edge" between two zones, or "out" of range. */
+function pcmPlace(Q, r) {
+  const rel = r.pam - Q.nmin, j = Math.round(rel);
+  if (rel < -1e-9 || rel > Q.nmax - Q.nmin + 1e-9) return "out";
+  return Math.abs(rel - j) < 1e-9 && j > 0 && j < Q.nmax - Q.nmin - 1e-9 ? "edge" : "in";
+}
+/** The four (or fewer) codes offered for sample i: consecutive, containing the right one, not always in the same place. */
+function pcmChoices(zone, L, i) {
+  const m = Math.min(4, L), lo = clamp(zone - ((i * 2 + 1) % m), 0, L - m);
+  return Array.from({ length: m }, (_, k) => lo + k);
+}
+function pcmPlay(box, cfg) {
+  const okRange = Number.isFinite(+cfg.vmin) && Number.isFinite(+cfg.vmax) && +cfg.vmax > +cfg.vmin;
+  const vmin = okRange ? +cfg.vmin : -20, vmax = okRange ? +cfg.vmax : 20;
+  const raw = typeof cfg.samples === "string" ? cfg.samples : Array.isArray(cfg.samples) ? cfg.samples.join(" ") : "";
+  let samples = raw.split(/[\s,;]+/).map(parseFloat).filter(Number.isFinite).slice(0, 12);
+  if (!samples.length) samples = SLIDE_SAMPLES.split(" ").map(parseFloat);
+  const askWord = cfg.ask === "word", what = askWord ? "encoded word" : "quantization code";
+  const L0 = Number.isFinite(+cfg.levels) ? clamp(Math.round(+cfg.levels), 2, 16) : 8;
+  let L = L0, Q = quantize(samples, vmin, vmax, L);
+  // Predict mode: `answered` samples may be played; the next one waits for the student's code.
+  let predict = !!cfg.predict, answered = 0, asked = 0, firstTry = 0, missed = false, wrong = null, askKey = null, refocus = false;
+  let pb = null;
+
+  box.append(el("h4", null, cfg.title || "The PCM encoder in one pass: sample, quantize, encode"));
+  const Lf = valueField("levels L", L, "number", "zones, 2 to 16");
+  const slideBtn = el("button", "viz-btn", `slide example: L = ${L0}`);
+  slideBtn.type = "button";
+  slideBtn.addEventListener("click", () => { Lf.set(L0); setL(); });
+  Lf.row.append(slideBtn);
+  const predictLabel = el("label", "playback-check");
+  const predictBox = document.createElement("input");
+  predictBox.type = "checkbox"; predictBox.checked = predict;
+  predictLabel.append(predictBox, ` Predict each sample's ${what} before it is shown`);
+  const svg = svgEl("svg", { viewBox: "0 0 640 280", class: "curve-svg net-svg", role: "img", "aria-label": "analog signal over the quantization zones, with each sample quantized and its code word added to the bitstream" });
+  const caption = el("p", "playback-caption");
+  caption.setAttribute("aria-live", "polite");
+  const ask = el("div", "viz-btn-row playback-ask");
+  const note = el("p", "widget-note");
+  box.append(Lf.row, predictLabel, svg, caption, ask);
+
+  const n = () => Q.rows.length;
+  const label = (code) => (askWord ? code.toString(2).padStart(Q.nb, "0") : String(code));
+  const volts = (v) => `${num(v * Q.delta, 2)} V`;
+  const division = (r) => `${fmtA(r.a)}/${num(Q.delta)} = ${fix2(r.pam)}`;
+  const asking = (pos) => predict && answered < n() && Math.abs(pos - answered) < 1e-6;
+  /** The rule quoted after a wrong pick: where the picked zone is, and which side of it the sample lies. */
+  function whyNot(r, w) {
+    const lo = Q.nmin + w, hi = lo + 1;
+    const side = Math.abs(r.pam - hi) < 1e-9 ? "is exactly on its top edge, and a value on a boundary line is put in the upper zone"
+      : r.pam > hi ? "is above it" : "is below it";
+    return `Not ${label(w)}. ${askWord ? `${label(w)} is code ${w}, the zone` : `Code ${w} is the zone`} from ${dLabel(lo)} to ${dLabel(hi)} (${volts(lo)} to ${volts(hi)}), and ${division(r)} ${side}. The code is the number of the zone the normalized value falls in, counted from 0 at the bottom${askWord ? `, written in ${Q.nb} bits` : ""}.`;
+  }
+  function answer(v, e) {
+    asked += wrong == null && !missed ? 1 : 0;
+    if (v !== Q.rows[answered].code) { missed = true; wrong = v; refocus = e.detail === 0; frame(pb.pos()); return; }
+    if (!missed) firstTry++;
+    missed = false; wrong = null; refocus = e.detail === 0; answered++;
+    pb.next();
+  }
+  function renderAsk(pos) {
+    const key = asking(pos) ? `${L}|${answered}|${wrong}` : "";
+    if (key === askKey) return;
+    askKey = key; ask.innerHTML = ""; ask.hidden = !predict;
+    if (!key) return;
+    const r = Q.rows[answered];
+    const btns = pcmChoices(r.code, L, answered).map((v) => {
+      const b = el("button", "viz-btn" + (v === wrong ? " playback-wrong" : ""), label(v));
+      b.type = "button";
+      b.setAttribute("aria-label", `${what} ${label(v)}`);
+      b.addEventListener("click", (e) => answer(v, e));
+      ask.append(b);
+      return b;
+    });
+    if (wrong != null) ask.append(el("span", "playback-feedback", whyNot(r, wrong)));
+    if (refocus) { refocus = false; (btns.find((b) => !b.classList.contains("playback-wrong")) || btns[0]).focus(); }
+  }
+  function zoneText(r) {
+    const place = pcmPlace(Q, r), lo = Q.nmin + r.zone;
+    if (place === "edge") return `is exactly on the line between zones ${r.zone - 1} and ${r.zone}; a value on a boundary line is put in the upper zone, so it belongs to zone ${r.zone}`;
+    if (place === "out") return `is outside the range ${dLabel(Q.nmin)} to ${dLabel(Q.nmax)}, so it takes the nearest zone, zone ${r.zone}`;
+    return `lies between ${dLabel(lo)} and ${dLabel(lo + 1)}, so it belongs to zone ${r.zone}`;
+  }
+  function frame(pos) {
+    const N = n(), PT = 24, PH = clamp(L * 28, 200, 320), PX0 = 104, PX1 = 622, R1 = PT + PH + 19, R2 = R1 + 17, R3 = R2 + 19;
+    const span = Q.nmax - Q.nmin, y = (v) => PT + PH - ((clamp(v, Q.nmin, Q.nmax) - Q.nmin) / span) * PH;
+    // room is kept on the right of the last sample for its value and error labels
+    const dx = (PX1 - PX0 - 108) / Math.max(1, N - 1), x = (t) => PX0 + 26 + t * dx;
+    const q = asking(pos), cur = q ? answered : Math.min(N - 1, Math.floor(pos - 1e-9));
+    // f is how far the current sample has gone through the encoder; a pending question holds it at "sampled".
+    const f = q ? 0.38 : cur < 0 ? 0 : pos - cur;
+    const halo = { stroke: "var(--paper-2)", "stroke-width": 4, "paint-order": "stroke" };
+    const mono = { "font-family": "ui-monospace, Consolas, monospace" };
+    svg.innerHTML = "";
+    svg.setAttribute("viewBox", `0 0 640 ${R3 + 10}`);
+    text(svg, 16, 14, "code", { "font-size": 10.5 });
+    text(svg, 96, 14, "normalized", { "text-anchor": "end", "font-size": 10.5 });
+    const hot = cur >= 0 && f > 0.4 ? Q.rows[cur].zone : -1;
+    for (let k = 0; k < L; k++) {
+      const top = y(Q.nmin + k + 1), bottom = y(Q.nmin + k);
+      svg.append(svgEl("rect", { x: PX0, y: top, width: PX1 - PX0, height: bottom - top, fill: k % 2 ? "var(--blue-soft)" : "var(--hl-soft)" }));
+      if (k === hot) svg.append(svgEl("rect", { x: 4, y: top + 1, width: 24, height: bottom - top - 2, rx: 3, fill: "var(--hl)" }));
+      text(svg, 16, (top + bottom) / 2 + 4, String(k), { fill: k === hot ? "var(--paper)" : "var(--hl)", "font-size": L > 12 ? 10 : 12, "font-weight": "600" });
+      svg.append(svgEl("line", { x1: 6, y1: bottom + 1, x2: 26, y2: bottom + 1, stroke: "var(--rule-strong)" }));
+    }
+    for (let j = 0; j <= L; j++) text(svg, 96, y(Q.nmin + j) + 4, dLabel(Q.nmin + j), { "text-anchor": "end", "font-size": L > 12 ? 9.5 : 11 });
+    const baseV = clamp(0, Q.nmin, Q.nmax), yb = y(baseV);
+    for (let i = 0; i < N; i++) svg.append(svgEl("line", { x1: x(i), y1: PT, x2: x(i), y2: PT + PH, stroke: "var(--rule-strong)", "stroke-dasharray": "2 5", opacity: 0.8 }));
+    if (hot >= 0) {
+      const top = y(Q.nmin + hot + 1), bottom = y(Q.nmin + hot), ym = (top + bottom) / 2;
+      svg.append(svgEl("rect", { x: PX0 + 1, y: top + 1, width: PX1 - PX0 - 2, height: bottom - top - 2, fill: "none", stroke: "var(--hl)", "stroke-width": 2 }));
+      svg.append(svgEl("line", { x1: PX0, y1: ym, x2: PX1, y2: ym, stroke: "var(--hl)", "stroke-width": 1.4, "stroke-dasharray": "6 4" }));
+      // the zone's midpoint, named in the gutter between the two boundary labels
+      text(svg, 96, ym + 3.5, fix2(Q.rows[cur].q), { "text-anchor": "end", fill: "var(--hl)", "font-size": L > 12 ? 8.5 : 10, "font-weight": "700" });
+    }
+    svg.append(svgEl("line", { x1: PX0 - 2, y1: yb, x2: PX1 + 10, y2: yb, stroke: "var(--ink)", "stroke-width": 1.4 }));
+    text(svg, PX1 + 14, yb - 5, "Time", { "text-anchor": "end" });
+    const sig = curveThrough(Q.rows.map((r) => clamp(r.pam, Q.nmin, Q.nmax)));
+    const t0 = -26 / dx, t1 = N - 1 + 82 / dx, pts = [];
+    for (let k = 0; k <= 260; k++) { const t = t0 + ((t1 - t0) * k) / 260; pts.push([x(t), y(sig(t))]); }
+    svg.append(polyline(pts, "var(--ink-2)", 1.7));
+    for (const [yy, s] of [[R1, "sample (V)"], [R2, "code"], [R3, "bitstream"]]) text(svg, 96, yy, s, { "text-anchor": "end", "font-size": 10.5 });
+    svg.append(svgEl("rect", { x: PX0, y: R3 - 13, width: PX1 - PX0, height: 18, rx: 3, fill: "var(--paper)", stroke: "var(--rule-strong)" }));
+    const wordAttrs = { fill: "var(--ink)", "font-size": Q.nb > 3 ? 11 : 12.5, "font-weight": "600", ...mono };
+    const gap = (i, yTo, color = "var(--red)") => {
+      const r = Q.rows[i], py = y(r.pam);
+      if (Math.abs(py - yTo) > 0.6) svg.append(svgEl("line", { x1: x(i), y1: py, x2: x(i), y2: yTo, stroke: color, "stroke-width": 2.4 }));
+      svg.append(svgEl("circle", { cx: x(i), cy: py, r: 3, fill: "var(--paper)", stroke: "var(--ink)", "stroke-width": 1.3 }));
+    };
+    // Samples already through the encoder: a stem to the quantized value, the actual value as a ring, the error as the red gap.
+    for (let i = 0; i < Math.min(cur, N); i++) {
+      const r = Q.rows[i], qy = y(r.q);
+      svg.append(svgEl("line", { x1: x(i), y1: yb, x2: x(i), y2: qy, stroke: "var(--blue)", "stroke-width": 2.2 }));
+      gap(i, qy);
+      svg.append(svgEl("circle", { cx: x(i), cy: qy, r: 4.5, fill: "var(--blue)" }));
+      text(svg, x(i), R1, fmtA(r.a), { fill: "var(--ink-2)", "font-size": 10.5 });
+      text(svg, x(i), R2, String(r.code), { fill: "var(--hl)", "font-size": 11.5, "font-weight": "600" });
+      text(svg, x(i), R3, r.word, wordAttrs);
+    }
+    if (cur >= 0 && cur < N) {
+      const r = Q.rows[cur], cx = x(cur), py = y(r.pam), qy = y(r.q);
+      const side = { "text-anchor": "start", "font-size": 11.5, "font-weight": "600", ...halo }, lx = cx + 9;
+      if (f < 0.2) {
+        // (a) the signal runs on to the sampling instant
+        const t = cur - (cur === 0 ? -t0 : 1) * (1 - smooth(f / 0.2));
+        svg.append(svgEl("circle", { cx: x(t), cy: y(sig(t)), r: 5, fill: "var(--hl)" }));
+      } else {
+        const s = smooth((f - 0.2) / 0.16), m = smooth((f - 0.44) / 0.2), dotY = py + (qy - py) * m;
+        svg.append(svgEl("line", { x1: cx, y1: PT, x2: cx, y2: PT + PH, stroke: "var(--hl)", "stroke-width": 1.2, "stroke-dasharray": "4 3" }));
+        svg.append(svgEl("line", { x1: cx, y1: yb, x2: cx, y2: m > 0 ? dotY : yb + (py - yb) * s, stroke: "var(--blue)", "stroke-width": 2.6 }));
+        if (m > 0) gap(cur, dotY);
+        svg.append(svgEl("circle", { cx, cy: dotY, r: 5.2, fill: m > 0 ? "var(--blue)" : "var(--hl)" }));
+        if (m < 1) text(svg, lx, py + (r.pam >= baseV ? -7 : 15), `${fmtA(r.a)} V`, { fill: "var(--ink)", ...side });
+        else text(svg, lx, (py + qy) / 2 + 4, `error ${signed2(r.err)}`, { fill: "var(--red)", ...side });
+        text(svg, cx, R1, fmtA(r.a), { fill: "var(--ink)", "font-size": 10.5, "font-weight": "600" });
+        if (f >= 0.7) {
+          // (c) the code is emitted and its word drops into the bitstream
+          const c = smooth((f - 0.74) / 0.2);
+          text(svg, cx, R2, String(r.code), { fill: "var(--hl)", "font-size": 11.5, "font-weight": "600" });
+          if (c < 1) svg.append(svgEl("rect", { x: cx - 19, y: qy + (R3 - qy) * c - 13, width: 38, height: 18, rx: 3, fill: "var(--hl)" }));
+          text(svg, cx, qy + (R3 - qy) * c, r.word, { ...wordAttrs, fill: c < 1 ? "var(--paper)" : "var(--hl)" });
+        }
+      }
+    }
+    let msg;
+    if (q) {
+      const r = Q.rows[answered];
+      msg = `Sample ${answered + 1} is ${fmtA(r.a)} V, and ${division(r)}. Which ${what} does it get?`;
+    } else if (cur < 0) {
+      msg = `Press Play to send the ${N} samples through the PCM encoder one at a time: sampling, quantizing, encoding. Here L = ${L} zones, each of height Δ = ${num(Q.delta)} V.`;
+    } else {
+      const r = Q.rows[cur], k = cur + 1;
+      if (f < 0.4) msg = `Sample ${k}, sampling: at the sampling instant the signal is ${fmtA(r.a)} V. Normalized PAM value = ${division(r)}.`;
+      else if (f < 0.7) msg = `Sample ${k}, quantizing: ${fix2(r.pam)} ${zoneText(r)}. It is approximated by the midpoint of the zone, ${fix2(r.q)}. Normalized error = ${fix2(r.q)} − ${paren(fix2(r.pam))} = ${signed2(r.err)}.`;
+      else msg = `Sample ${k}, encoding: actual value ${fmtA(r.a)} V, zone ${r.zone}, quantized value ${fix2(r.q)} (${volts(r.q)}), error ${signed2(r.err)}. Quantization code ${r.code} is the ${Q.nb}-bit encoded word ${r.word}.`;
+      if (pos >= N) {
+        msg += ` All ${N} samples are encoded: the bitstream is ${Q.rows.map((s) => s.word).join(" ")}, ${N} × ${Q.nb} = ${N * Q.nb} bits at n_b = ${Q.nb} bit${Q.nb === 1 ? "" : "s"} per sample.`;
+        if (asked > 0) msg += ` ${firstTry} of ${asked} right on the first try.`;
+      }
+    }
+    if (caption.textContent !== msg) caption.textContent = msg;
+    renderAsk(pos);
+  }
+  function restart() {
+    Q = quantize(samples, vmin, vmax, L);
+    answered = 0; asked = 0; firstTry = 0; missed = false; wrong = null; askKey = null;
+    const e = log2int(L);
+    note.textContent = `Δ = (V_max − V_min)/L = (${num(vmax)} − ${paren(num(vmin))})/${L} = ${num(Q.delta)} V. n_b = log₂ ${L} = ${Number.isInteger(e) ? Q.nb : `${num(e, 2)}, rounded up to ${Q.nb}`} bit${Q.nb === 1 ? "" : "s"} per sample, codes 0 to ${L - 1} from the bottom zone up. The ring is the actual sample, the dot its quantized value, and the red gap the error (quantized − PAM), never more than half a zone.`;
+    pb.reset(n());
+  }
+  function setL() {
+    const v = Lf.get();
+    if (!(Number.isInteger(v) && v >= 2 && v <= 16)) { pb.pause(); note.textContent = "Enter a whole number of levels L from 2 to 16."; return; }
+    L = v; restart();
+  }
+  pb = createPlayback({
+    count: n(), unit: "sample", onFrame: frame,
+    stepMs: () => cfg.stepMs || 3200,
+    limit: () => (predict ? answered : n()),
+    onBlocked: () => { ask.classList.remove("playback-nudge"); void ask.offsetWidth; ask.classList.add("playback-nudge"); },
+  });
+  box.append(pb.el, note);
+  Lf.on(setL);
+  predictBox.addEventListener("change", () => {
+    predict = predictBox.checked; pb.pause();
+    // Samples already on screen count as answered; the questions start at the next one.
+    answered = Math.ceil(pb.pos() - 1e-9); asked = 0; firstTry = 0; missed = false; wrong = null; askKey = null;
+    pb.set(pb.pos());
+  });
+  restart();
 }
 
 // ---------- widget: shift-keying ----------
@@ -880,6 +1106,7 @@ export const WIDGETS = {
   "sampler": sampler,
   "quantizer": quantizer,
   "pcm-calc": pcmCalc,
+  "pcm-play": pcmPlay,
   "shift-keying": shiftKeying,
   "constellation": constellation,
   "analog-mod": analogMod,

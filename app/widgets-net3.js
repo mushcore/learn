@@ -2,6 +2,7 @@
 // elements, signal rate and bandwidth, baseline wandering and DC components, clock drift, and the
 // line coding schemes (unipolar NRZ, polar NRZ-L and NRZ-I, Manchester, differential Manchester, AMI).
 import { el, slider, btnRow, fmtNum } from "./dom.js";
+import { createPlayback } from "./playback.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 function svgEl(tag, attrs = {}, text) {
@@ -271,6 +272,140 @@ function lineCode(box, cfg) {
   check.addEventListener("click", () => { checked = true; draw(); });
   reveal.addEventListener("click", () => { const half = lcEncode(scheme, bits); guess = guess.map((_, k) => answerOf(half, k)); checked = true; revealed = true; draw(); });
   clear.addEventListener("click", restart);
+  restart();
+}
+
+// ---------- widget: line-code-play ----------
+// The line-code waveform drawn one bit at a time, each bit captioned with the rule that set it.
+/** Why bit i has the levels it has, in the slide's words. `half` is lcEncode's output. */
+function lcReason(scheme, bits, half, i) {
+  const one = bits[i] === "1", a = half[2 * i], b = half[2 * i + 1], before = i > 0 ? half[2 * i - 1] : 1;
+  if (scheme === "unipolar") return one ? "positive voltage defines bit 1" : "the zero voltage defines bit 0";
+  if (scheme === "nrz-l") return one ? "negative voltage level for 1" : "positive voltage level for 0";
+  if (scheme === "nrz-i") return one ? `change for 1, so the level inverts from ${levelName(before)} to ${levelName(a)}` : `no change for 0, so the level stays at ${levelName(a)}`;
+  if (scheme === "manchester") return `${one ? "low-to-high" : "high-to-low"}, with the transition at the middle of the bit`;
+  if (scheme === "diff-manchester") {
+    const start = one ? `no inversion at the start of a 1, so the bit starts at ${levelName(a)}, where the signal already was` : `inversion at the start of a 0, so the signal goes from ${levelName(before)} to ${levelName(a)}`;
+    return `${start}; the transition at the middle then takes it to ${levelName(b)}`;
+  }
+  if (!one) return "a neutral zero voltage";
+  const prior = bits.slice(0, i).lastIndexOf("1");
+  return prior < 0 ? "the first 1 is positive" : `the 1s alternate: the 1 before it (bit ${prior + 1}) was ${a > 0 ? "negative" : "positive"}, so this one is ${a > 0 ? "positive" : "negative"}`;
+}
+function lineCodePlay(box, cfg) {
+  const all = Object.keys(LC);
+  const schemes = (Array.isArray(cfg.schemes) ? cfg.schemes : all).filter((s) => LC[s]);
+  if (!schemes.length) schemes.push(...all);
+  let scheme = schemes.includes(cfg.scheme) ? cfg.scheme : schemes[0];
+  const valid = (s) => /^[01]{2,16}$/.test(s);
+  let bits = valid(cfg.bits || "") ? cfg.bits : LC[scheme].slide;
+  // Predict mode: `answered` bits may be drawn; the next one waits for the student's level.
+  let predict = !!cfg.predict, half = [], answered = 0, asked = 0, firstTry = 0, missed = false, wrong = null, askKey = null, refocus = false;
+  let pb = null;
+
+  box.append(el("h4", null, cfg.title || "Watch the signal being drawn, one bit at a time"));
+  if (schemes.length > 1) box.append(btnRow(schemes.map((s) => LC[s].name), (i) => { scheme = schemes[i]; restart(); }, schemes.indexOf(scheme)));
+  const row = el("div", "unit-row");
+  const input = bitsInput(bits, 16);
+  row.append(el("label", null, "bits"), input);
+  for (const [label, get] of [["slide figure", () => LC[scheme].slide], ["alternating", () => "01010101"], ["long run of 0s", () => "10000001"], ["long run of 1s", () => "01111110"]]) {
+    const b = el("button", "viz-btn", label);
+    b.addEventListener("click", () => { bits = get(); input.value = bits; restart(); });
+    row.append(b);
+  }
+  const predictLabel = el("label", "playback-check");
+  const predictBox = document.createElement("input");
+  predictBox.type = "checkbox"; predictBox.checked = predict;
+  predictLabel.append(predictBox, " Predict each bit before it is drawn");
+  const svg = svgEl("svg", { viewBox: "0 0 640 180", class: "curve-svg net-svg" });
+  const caption = el("p", "playback-caption");
+  caption.setAttribute("aria-live", "polite");
+  const ask = el("div", "viz-btn-row playback-ask");
+  const note = el("p", "widget-note");
+  box.append(row, predictLabel, svg, caption, ask);
+
+  const n = () => bits.length;
+  const asking = (pos) => predict && answered < n() && Math.abs(pos - answered) < 1e-6;
+  function answer(v, e) {
+    asked += wrong == null && !missed ? 1 : 0;
+    if (v !== half[2 * answered]) { missed = true; wrong = v; refocus = e.detail === 0; frame(pb.pos()); return; }
+    if (!missed) firstTry++;
+    missed = false; wrong = null; refocus = e.detail === 0; answered++;
+    pb.next();
+  }
+  function renderAsk(pos) {
+    const key = asking(pos) ? `${scheme}|${answered}|${wrong}` : "";
+    if (key === askKey) return;
+    askKey = key; ask.innerHTML = ""; ask.hidden = !predict;
+    if (!key) return;
+    const btns = LC[scheme].levels.map((v) => {
+      const b = el("button", "viz-btn" + (v === wrong ? " playback-wrong" : ""), levelName(v));
+      b.type = "button";
+      b.addEventListener("click", (e) => answer(v, e));
+      ask.append(b);
+      return b;
+    });
+    if (wrong != null) ask.append(el("span", "playback-feedback", `Not ${levelName(wrong)}. ${LC[scheme].rule}`));
+    if (refocus) { refocus = false; (btns.find((b) => !b.classList.contains("playback-wrong")) || btns[0]).focus(); }
+  }
+  function frame(pos) {
+    const N = n(), inv = LC[scheme].invertOn, X0 = 64, X1 = 626, YC = 100, AMP = 50;
+    const bw = (X1 - X0) / N, x = (p) => X0 + p * bw, y = (v) => YC - v * AMP;
+    const q = asking(pos), drawn = Math.ceil(pos - 1e-9) - 1, hot = q ? answered : drawn;
+    svg.innerHTML = "";
+    svg.setAttribute("viewBox", `0 0 640 ${inv ? 202 : 180}`);
+    if (hot >= 0 && hot < N) svg.append(svgEl("rect", { x: x(hot), y: 10, width: bw, height: YC + AMP + 6, fill: "var(--hl-soft)" }));
+    lcFrame(svg, bits, X0, X1, 26, YC + AMP + 16);
+    lcLevelLabels(svg, scheme, X0 - 24, YC, AMP);
+    svg.append(svgEl("line", { x1: X0, y1: YC, x2: X1, y2: YC, stroke: "var(--rule-strong)" }));
+    // The level before the first bit, for the schemes whose first bit depends on it.
+    if (inv) svg.append(svgEl("line", { x1: X0 - 18, y1: y(1), x2: X0, y2: y(1), stroke: "var(--ink-dim)", "stroke-width": 2.2, "stroke-dasharray": "3 3" }));
+    if (pos > 0) {
+      const pts = inv ? [[X0, y(1)]] : [];
+      for (let h = 0; h < 2 * N && pos > h / 2; h++) pts.push([x(h / 2), y(half[h])], [x(Math.min((h + 1) / 2, pos)), y(half[h])]);
+      svg.append(polyline(pts, "var(--blue)", 2.6));
+    }
+    if (inv) {
+      for (let i = 0; i < N && pos > i; i++) {
+        svg.append(svgEl("circle", { cx: x(i), cy: y(i > 0 ? half[2 * i - 1] : 1), r: 3.6, fill: bits[i] === inv ? "var(--ink)" : "var(--paper-2)", stroke: "var(--ink)", "stroke-width": 1.4 }));
+      }
+      svg.append(svgEl("text", { x: 345, y: 196, "text-anchor": "middle", "font-size": 10.5, fill: "var(--ink-dim)" }, `● inversion: next bit is ${inv}  ·  ○ no inversion: next bit is ${inv === "1" ? "0" : "1"}`));
+    }
+    if (pos > 0 && pos < N) svg.append(svgEl("circle", { cx: x(pos), cy: y(half[Math.ceil(pos * 2 - 1e-9) - 1]), r: 5, fill: "var(--hl)" }));
+    let text;
+    if (q) text = `Bit ${answered + 1} is ${bits[answered]}. Which level does the signal take ${LC[scheme].per === 2 ? "in the first half of this bit" : "for this bit"}?`;
+    else if (drawn < 0) text = ["Press Play to draw the signal one bit at a time.", LC[scheme].start].filter(Boolean).join(" ");
+    else {
+      text = `Bit ${drawn + 1} is ${bits[drawn]}: ${lcReason(scheme, bits, half, drawn)}.`;
+      if (pos >= N && asked > 0) text += ` All ${N} bits are drawn: ${firstTry} of ${asked} right on the first try.`;
+    }
+    if (caption.textContent !== text) caption.textContent = text;
+    renderAsk(pos);
+  }
+  function restart() {
+    half = lcEncode(scheme, bits);
+    answered = 0; asked = 0; firstTry = 0; missed = false; wrong = null; askKey = null;
+    note.textContent = [LC[scheme].rule, LC[scheme].start].filter(Boolean).join(" ");
+    pb.reset(n());
+  }
+  half = lcEncode(scheme, bits);
+  pb = createPlayback({
+    count: n(), unit: "bit", onFrame: frame,
+    stepMs: () => cfg.stepMs || (LC[scheme].per === 2 ? 1500 : 1100),
+    limit: () => (predict ? answered : n()),
+    onBlocked: () => { ask.classList.remove("playback-nudge"); void ask.offsetWidth; ask.classList.add("playback-nudge"); },
+  });
+  box.append(pb.el, note);
+  input.addEventListener("input", () => {
+    const v = input.value.replace(/[^01]/g, "");
+    if (valid(v)) { bits = v; restart(); } else note.textContent = "Type 2 to 16 bits, 0s and 1s only.";
+  });
+  predictBox.addEventListener("change", () => {
+    predict = predictBox.checked; pb.pause();
+    // Bits already on screen count as answered; the questions start at the next one.
+    answered = Math.ceil(pb.pos() - 1e-9); asked = 0; firstTry = 0; missed = false; wrong = null; askKey = null;
+    pb.set(pb.pos());
+  });
   restart();
 }
 
@@ -644,6 +779,7 @@ function clockDrift(box, cfg) {
 
 export const WIDGETS = {
   "line-code": lineCode,
+  "line-code-play": lineCodePlay,
   "signal-elements": signalElements,
   "signal-rate": signalRate,
   "baseline-dc": baselineDc,

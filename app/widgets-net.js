@@ -2,6 +2,7 @@
 // parameters, frequency/period conversion, composite signals and bandwidth, encapsulation through
 // a switch and a router, digital signal levels.
 import { el, slider, btnRow, fmtNum } from "./dom.js";
+import { createPlayback } from "./playback.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 function svgEl(tag, attrs = {}, text) {
@@ -370,6 +371,7 @@ const STEPS = [
 function encapsulation(box, cfg) {
   box.append(el("h4", null, cfg.title || "Encapsulation and decapsulation through a switch and a router"));
   const devs = el("div", "encap-devices");
+  devs.style.position = "relative";
   const layerEls = DEVICES.map((d) => {
     const dv = el("div", "encap-device");
     dv.append(el("div", "name", d.name));
@@ -377,31 +379,272 @@ function encapsulation(box, cfg) {
     devs.append(dv);
     return rows;
   });
+  // The PDU's position: a dot that travels from the layer of the previous step to the layer of this one.
+  const token = el("span");
+  token.setAttribute("aria-hidden", "true");
+  token.style.cssText = "position:absolute;width:11px;height:11px;border-radius:50%;background:var(--hl);box-shadow:0 0 0 3px var(--hl-soft);pointer-events:none;transform:translate(-50%,-50%);";
+  devs.append(token);
   const pduRow = el("div", "encap-pdu");
   const caption = el("div", "encap-caption");
-  const ctl = el("div", "viz-btn-row");
-  const prev = el("button", "viz-btn", "◀ prev"), next = el("button", "viz-btn", "next ▶"), reset = el("button", "viz-btn", "reset");
-  const counter = el("span", "encap-pduname");
-  ctl.append(prev, next, reset, counter);
-  box.append(devs, pduRow, caption, ctl, el("p", "widget-note", "H_T = transport header (ports), H_N = network header (IP addresses), H_L = link header (MAC addresses). Compare with the lecture's Source, Switch, Router, Destination example."));
-  let step = 0;
-  function render() {
-    const [dev, layer, parts, pduName, text] = STEPS[step];
+  caption.setAttribute("aria-live", "polite");
+  box.append(devs, pduRow, caption);
+  const INTRO = "Press Play to follow the message M from Source A, through the switch and the router, to Destination B, one layer at a time.";
+  const rowOf = ([dev, layer]) => layerEls[dev][DEVICES[dev].layers.indexOf(layer)];
+  const spot = (st) => { const r = rowOf(st); return [r.offsetLeft + r.offsetWidth - 13, r.offsetTop + r.offsetHeight / 2]; };
+  let pduKey = -1, fresh = [], pb = null;
+  // pos k (a whole number) shows step k of STEPS; between k − 1 and k the PDU is on its way there.
+  function frame(pos) {
+    const k = Math.ceil(pos - 1e-9), cur = k > 0 ? STEPS[k - 1] : null, before = k > 1 ? STEPS[k - 2] : null;
+    const frac = k > 0 ? pos - (k - 1) : 0, ease = frac * frac * (3 - 2 * frac);
     layerEls.forEach((rows, di) => rows.forEach((r) => {
-      r.classList.toggle("active", di === dev && r.textContent === layer);
-      r.classList.toggle("dim", di !== dev);
+      r.classList.toggle("active", !!cur && di === cur[0] && r.textContent === cur[1]);
+      r.classList.toggle("dim", !!cur && di !== cur[0]);
     }));
-    pduRow.innerHTML = "";
-    for (const p of parts) { const [cls, label] = PART[p]; pduRow.append(el("span", "encap-part " + cls, label)); }
-    pduRow.append(el("span", "encap-pduname", `PDU: ${pduName}`));
-    caption.textContent = text;
-    counter.textContent = `step ${step + 1} of ${STEPS.length} · ${DEVICES[dev].name}, ${layer} layer`;
-    prev.disabled = step === 0; next.disabled = step === STEPS.length - 1;
+    if (pduKey !== k) {
+      pduKey = k; pduRow.innerHTML = ""; fresh = [];
+      if (cur) {
+        const [dev, layer, parts, pduName] = cur;
+        for (const p of parts) {
+          const [cls, label] = PART[p];
+          const part = el("span", "encap-part " + cls, label);
+          if (!before || !before[2].includes(p)) fresh.push(part);
+          pduRow.append(part);
+        }
+        pduRow.append(el("span", "encap-pduname", `PDU: ${pduName} · ${DEVICES[dev].name}, ${layer} layer`));
+      }
+    }
+    // A header that this step adds (or the bits / frame it turns the PDU into) fades in as the step is drawn.
+    for (const part of fresh) part.style.opacity = String(0.2 + 0.8 * ease);
+    if (cur) {
+      const [bx, by] = spot(cur), [ax, ay] = before ? spot(before) : [bx, by];
+      token.style.left = `${ax + (bx - ax) * ease}px`;
+      token.style.top = `${ay + (by - ay) * ease}px`;
+      token.style.opacity = before ? "1" : String(ease);
+    } else token.style.opacity = "0";
+    const text = cur ? cur[4] : INTRO;
+    if (caption.textContent !== text) caption.textContent = text;
   }
-  prev.addEventListener("click", () => { step = Math.max(0, step - 1); render(); });
-  next.addEventListener("click", () => { step = Math.min(STEPS.length - 1, step + 1); render(); });
-  reset.addEventListener("click", () => { step = 0; render(); });
-  render();
+  pb = createPlayback({ count: STEPS.length, unit: "step", stepMs: () => cfg.stepMs || 2400, onFrame: frame });
+  box.append(pb.el, el("p", "widget-note", "H_T = transport header (ports), H_N = network header (IP addresses), H_L = link header (MAC addresses). Compare with the lecture's Source, Switch, Router, Destination example."));
+  // The dot is placed from the layer boxes' measured positions, so redraw it when the layout changes.
+  if (typeof ResizeObserver === "function") new ResizeObserver(() => frame(pb.pos())).observe(devs);
+  else frame(pb.pos());
+}
+
+// ---------- widget: wave-travel ----------
+const SUP_DIGITS = "⁰¹²³⁴⁵⁶⁷⁸⁹";
+const sup = (n) => (n < 0 ? "⁻" : "") + String(Math.abs(n)).split("").map((d) => SUP_DIGITS[d]).join("");
+const pow10 = (v) => Math.floor(Math.log10(v) + 1e-9);
+/** 3e8 → "3 × 10⁸". Pass e to keep one exponent across a row of values. */
+function sci(v, e = pow10(v)) { return `${fmtNum(v / 10 ** e, 3)} × 10${sup(e)}`; }
+const WT_F_UNITS = [["Hz", 1], ["kHz", 1e3], ["MHz", 1e6], ["GHz", 1e9], ["× 10¹⁴ Hz", 1e14]];
+const WT_PRESETS = {
+  "Red light (slide)": [4e14, 3e8],
+  "1 GHz, vacuum": [1e9, 3e8],
+  "1 GHz, cable": [1e9, 2e8],
+  "100 MHz": [1e8, 3e8],
+  "2.4 GHz Wi-Fi": [2.4e9, 3e8],
+};
+function waveTravel(box, cfg) {
+  const okF = (v) => Number.isFinite(v) && v > 0 && v <= 1e18, okC = (v) => Number.isFinite(v) && v > 0 && v <= 3e8 * (1 + 1e-9);
+  const presets = cfg.presets && Object.keys(cfg.presets).length ? cfg.presets : WT_PRESETS;
+  const labels = Object.keys(presets);
+  const periods = clamp(Math.round(cfg.periods ?? 4), 2, 8);
+  let f = okF(cfg.f) ? cfg.f : 4e14, c = okC(cfg.speed) ? cfg.speed : 3e8;
+  let span = 0, count = periods;
+  // Predict mode: `answered` periods may be played; the next one waits for the student's distance.
+  let predict = !!cfg.predict, answered = 0, asked = 0, firstTry = 0, missed = false, wrong = null, askKey = null, refocus = false, gridKey = null;
+  let pb = null;
+
+  box.append(el("h4", null, cfg.title || "One period in time is one wavelength in distance"));
+  const presetRow = el("div", "viz-btn-row");
+  const presetBtns = labels.map((l) => {
+    const b = el("button", "viz-btn", l);
+    b.type = "button";
+    b.addEventListener("click", () => { const [pf, pc] = presets[l]; if (okF(pf) && okC(pc)) { f = pf; c = pc; fill(); restart(); } });
+    presetRow.append(b);
+    return b;
+  });
+  const fRow = el("div", "unit-row"), cRow = el("div", "unit-row");
+  const fIn = document.createElement("input"); fIn.type = "number"; fIn.step = "any"; fIn.min = "0";
+  const fSel = document.createElement("select");
+  for (const [u] of WT_F_UNITS) { const o = document.createElement("option"); o.value = u; o.textContent = u; fSel.append(o); }
+  fSel.style.fontFamily = "var(--body)";
+  fIn.setAttribute("aria-label", "frequency"); fSel.setAttribute("aria-label", "frequency unit");
+  fRow.append(el("label", null, "frequency f"), fIn, fSel);
+  const cIn = document.createElement("input"); cIn.type = "number"; cIn.step = "any"; cIn.min = "0"; cIn.max = "3";
+  cIn.setAttribute("aria-label", "propagation speed, in units of 10 to the 8 metres per second");
+  cRow.append(el("label", null, "propagation speed c"), cIn, el("span", null, "× 10⁸ m/s"));
+  for (const [label, v] of [["vacuum: 3", 3e8], ["cable: 2", 2e8]]) {
+    const b = el("button", "viz-btn", label);
+    b.type = "button";
+    b.addEventListener("click", () => { c = v; fill(); restart(); });
+    cRow.append(b);
+  }
+  const predictLabel = el("label", "playback-check");
+  const predictBox = document.createElement("input");
+  predictBox.type = "checkbox"; predictBox.checked = predict;
+  predictLabel.append(predictBox, " Predict each period before it is shown");
+  const svg = svgEl("svg", { viewBox: "0 0 640 210", class: "curve-svg net-svg" });
+  const caption = el("p", "playback-caption");
+  caption.setAttribute("aria-live", "polite");
+  const ask = el("div", "viz-btn-row playback-ask");
+  const out = el("div", "stat-grid");
+  const note = el("p", "widget-note");
+  const NOTE = "Frequency is set by the sender and is independent of the medium. Wavelength relies on both: change the propagation speed or the frequency and one cycle covers a different distance. The distance axis keeps its scale while 2 to 10 wavelengths fit on it.";
+  box.append(presetRow, fRow, cRow, predictLabel, svg, caption, ask);
+
+  function fill() {
+    const u = f >= 1e12 ? WT_F_UNITS[4] : bestUnit(f, WT_F_UNITS.slice(0, 4));
+    fSel.value = u[0]; fIn.value = fmtNum(f / u[1], 6); cIn.value = fmtNum(c / 1e8, 6);
+  }
+  const fmtF = (v) => (v >= 1e12 ? `${sci(v)} Hz` : fmtHz(v));
+  const fmtC = () => `${sci(c, 8)} m/s`;
+  // Times and distances keep the unit (or the power of ten) of T and λ, so a row of them compares at a glance.
+  function fmtT(t, digits = 2) {
+    const T = 1 / f;
+    if (!(t > 0)) return "0";
+    if (T >= 1e-12) { const u = bestUnit(T, TIME_UNITS); return `${fmtNum(t / u[1], digits)} ${u[0]}`; }
+    const e = pow10(T);
+    return `${fmtNum(t / 10 ** e, digits)} × 10${sup(e)} s`;
+  }
+  function fmtD(d, digits = 4) {
+    const lam = c / f;
+    if (!(d > 0)) return "0";
+    const [u, k] = lam < 1e-4 ? ["μm", 1e-6] : lam < 1e-2 ? ["mm", 1e-3] : lam < 1e3 ? ["m", 1] : ["km", 1e3];
+    return `${fmtNum(d / k, digits)} ${u}`;
+  }
+  const asking = (pos) => predict && answered < count && Math.abs(pos - answered) < 1e-6;
+  /** Multiples of λ offered before period k; k itself is the right one. */
+  function choices(k) {
+    const cand = [k, k - 1, k + 1, k / 2, 2 * k, 10 * k], picked = [];
+    for (const m of cand) if (m > 0 && !picked.includes(m) && picked.length < 4) picked.push(m);
+    return picked.sort((p, q) => p - q);
+  }
+  function answer(m, e) {
+    asked += wrong == null && !missed ? 1 : 0;
+    if (m !== answered + 1) { missed = true; wrong = m; refocus = e.detail === 0; frame(pb.pos()); return; }
+    if (!missed) firstTry++;
+    missed = false; wrong = null; refocus = e.detail === 0; answered++;
+    pb.next();
+  }
+  function renderAsk(pos) {
+    const key = asking(pos) ? `${f}|${c}|${answered}|${wrong}` : "";
+    if (key === askKey) return;
+    askKey = key; ask.innerHTML = ""; ask.hidden = !predict;
+    if (!key) return;
+    const lam = c / f, k = answered + 1;
+    const btns = choices(k).map((m) => {
+      const b = el("button", "viz-btn" + (m === wrong ? " playback-wrong" : ""), fmtD(m * lam));
+      b.type = "button";
+      b.addEventListener("click", (e) => answer(m, e));
+      ask.append(b);
+      return b;
+    });
+    if (wrong != null) {
+      ask.append(el("span", "playback-feedback", k === 1
+        ? `Not ${fmtD(wrong * lam)}. Wavelength is the distance a simple signal can travel in one period: λ = c / f = c × T, with c = ${fmtC()} and f = ${fmtF(f)}.`
+        : `Not ${fmtD(wrong * lam)}. The signal travels one wavelength in each period, so after ${k} periods the front is ${k} wavelengths from the sender.`));
+    }
+    if (refocus) { refocus = false; (btns.find((b) => !b.classList.contains("playback-wrong")) || btns[0]).focus(); }
+  }
+  function frame(pos) {
+    const lam = c / f, T = 1 / f, X0 = 66, X1 = 622, YC = 76, AMP = 34, YD = 154, YT = 186;
+    const x = (d) => X0 + (d / span) * (X1 - X0);
+    const q = asking(pos), k = Math.ceil(pos - 1e-9), done = Math.floor(pos + 1e-9), front = pos * lam;
+    const known = !predict || answered >= 1, hot = q ? answered + 1 : k;
+    const txt = (xx, yy, s, fill = "var(--ink-dim)", anchor = "middle", size = 10.5) => svg.append(svgEl("text", { x: xx, y: yy, "text-anchor": anchor, "font-size": size, fill, style: "font-family: var(--body)" }, s));
+    svg.innerHTML = "";
+    svg.append(svgEl("rect", { x: X0, y: YC - AMP - 8, width: X1 - X0, height: 2 * AMP + 16, fill: "var(--paper-2)", stroke: "var(--rule-strong)", "stroke-width": 1 }));
+    if (hot >= 1) svg.append(svgEl("rect", { x: x((hot - 1) * lam), y: YC - AMP - 8, width: Math.min(x(hot * lam), X1) - x((hot - 1) * lam), height: 2 * AMP + 16, fill: "var(--hl-soft)" }));
+    txt(X0, 13, `sender: f = ${fmtF(f)}`, "var(--ink-dim)", "start");
+    txt(X1, 13, `transmission medium: c = ${fmtC()}`, "var(--ink-dim)", "end");
+    svg.append(svgEl("line", { x1: X0, y1: YC, x2: X1, y2: YC, stroke: "var(--rule-strong)" }));
+    if (pos > 0) {
+      const pts = [], n = Math.max(2, Math.ceil(pos * 48));
+      for (let i = 0; i <= n; i++) { const d = (front * i) / n; pts.push([x(d), YC - AMP * Math.sin(2 * Math.PI * (pos - d / lam))]); }
+      svg.append(polyline(pts, "var(--blue)", 2.4));
+    }
+    // Each finished cycle is one wavelength long; the bracket marks the newest one.
+    if (done >= 1 && known) {
+      const xa = x((done - 1) * lam), xb = x(done * lam), yb = 128;
+      svg.append(svgEl("line", { x1: xa, y1: yb, x2: xb, y2: yb, stroke: "var(--green)", "stroke-width": 2 }));
+      for (const xx of [xa, xb]) svg.append(svgEl("line", { x1: xx, y1: yb - 5, x2: xx, y2: yb + 5, stroke: "var(--green)", "stroke-width": 2 }));
+      txt((xa + xb) / 2, yb + 13, `λ = ${fmtD(lam)}`, "var(--green)");
+    }
+    // Distance and time axes share the x scale: one tick is one wavelength above and one period below.
+    const ticks = Math.floor(span / lam + 1e-6), every = ticks > 6 ? 2 : 1;
+    for (const [yy, title, color, value, shown] of [[YD, "distance", "var(--blue)", (i) => fmtD(i * lam), predict ? answered : ticks], [YT, "time", "var(--hl)", (i) => fmtT(i * T), ticks]]) {
+      txt(X0 - 8, yy + 4, title, "var(--ink-dim)", "end");
+      svg.append(svgEl("line", { x1: X0, y1: yy, x2: X1, y2: yy, stroke: "var(--rule-strong)" }));
+      if (pos > 0) svg.append(svgEl("line", { x1: X0, y1: yy, x2: x(front), y2: yy, stroke: color, "stroke-width": 4, "stroke-linecap": "round" }));
+      for (let i = 0; i <= ticks; i++) {
+        const xx = x(i * lam);
+        svg.append(svgEl("line", { x1: xx, y1: yy - 4, x2: xx, y2: yy + 4, stroke: "var(--ink-dim)" }));
+        if (i <= shown && i % every === 0) txt(xx, yy + 16, value(i), i <= done ? "var(--ink)" : "var(--ink-dim)", xx > X1 - 34 ? "end" : "middle", 10);
+      }
+    }
+    svg.append(svgEl("circle", { cx: X0, cy: YC - AMP * Math.sin(2 * Math.PI * pos), r: 4, fill: "var(--blue)", stroke: "var(--paper-2)", "stroke-width": 1.5 }));
+    if (pos > 0) {
+      const xf = x(front);
+      svg.append(svgEl("line", { x1: xf, y1: YC - AMP - 8, x2: xf, y2: YT, stroke: "var(--hl)", "stroke-width": 1.2, "stroke-dasharray": "3 3" }));
+      svg.append(svgEl("circle", { cx: xf, cy: YC, r: 5, fill: "var(--hl)" }));
+      txt(clamp(xf, X0 + 60, X1 - 60), 29, `front: ${fmtD(front, 2)} after ${fmtT(pos * T, 2)}`, "var(--hl)");
+    }
+    let text;
+    if (q) {
+      text = answered === 0
+        ? `The sender's frequency is ${fmtF(f)} and the propagation speed of the medium is ${fmtC()}. How far will the front of the signal travel in the first period?`
+        : `After ${answered} period${answered === 1 ? "" : "s"} the front is ${fmtD(answered * lam)} from the sender. Where will it be after period ${answered + 1}?`;
+    } else if (k < 1) text = `Press Play. The sender completes one cycle every period, T = 1/f = ${fmtT(T)}. Watch how far the front of the signal travels in that time.`;
+    else {
+      text = `Period ${k}: in one period, T = ${fmtT(T)}, the signal travels c × T = ${fmtC()} × ${fmtT(T)} = ${fmtD(lam)}, which is one wavelength. After ${k} period${k === 1 ? "" : "s"}: elapsed time ${fmtT(k * T)}, distance ${fmtD(k * lam)}.`;
+      if (pos >= count && asked > 0) text += ` All ${count} periods are shown: ${firstTry} of ${asked} right on the first try.`;
+    }
+    if (caption.textContent !== text) caption.textContent = text;
+    const key = `${f}|${c}|${known}|${done}`;
+    if (key !== gridKey) {
+      gridKey = key;
+      grid(out, [
+        ["Period T = 1/f", fmtT(T), `1 / ${fmtF(f)}`],
+        ["Wavelength λ = c / f", known ? fmtD(lam) : "?", known ? `${fmtC()} / ${fmtF(f)} = c × T` : "predict it first"],
+        [`Front after ${done} period${done === 1 ? "" : "s"}`, fmtD(done * lam), `${done} × λ, at time ${done} × T = ${fmtT(done * T)}`],
+      ]);
+    }
+    renderAsk(pos);
+  }
+  function restart() {
+    const lam = c / f, fits = span / lam;
+    if (!(fits >= 2 - 1e-6 && fits <= 10 + 1e-6)) span = periods * lam;
+    count = clamp(Math.floor(span / lam + 1e-6), 1, 10);
+    answered = 0; asked = 0; firstTry = 0; missed = false; wrong = null; askKey = null; gridKey = null;
+    presetBtns.forEach((b, i) => { const [pf, pc] = presets[labels[i]]; b.classList.toggle("active", Math.abs(pf / f - 1) < 1e-9 && Math.abs(pc / c - 1) < 1e-9); });
+    note.textContent = NOTE;
+    pb.reset(count);
+  }
+  span = periods * (c / f);
+  pb = createPlayback({
+    count, unit: "period", onFrame: frame,
+    stepMs: () => cfg.stepMs || 1800,
+    limit: () => (predict ? answered : count),
+    onBlocked: () => { ask.classList.remove("playback-nudge"); void ask.offsetWidth; ask.classList.add("playback-nudge"); },
+  });
+  box.append(pb.el, out, note);
+  function typed() {
+    const nf = parseFloat(fIn.value) * WT_F_UNITS.find(([u]) => u === fSel.value)[1], nc = parseFloat(cIn.value) * 1e8;
+    if (!okF(nf)) { note.textContent = "Type a frequency greater than 0."; return; }
+    if (!okC(nc)) { note.textContent = "Type a propagation speed above 0 and no more than 3 (× 10⁸ m/s, the speed in a vacuum)."; return; }
+    f = nf; c = nc; restart();
+  }
+  fIn.addEventListener("input", typed); fSel.addEventListener("change", typed); cIn.addEventListener("input", typed);
+  predictBox.addEventListener("change", () => {
+    predict = predictBox.checked; pb.pause();
+    // Periods already on screen count as answered; the questions start at the next one.
+    answered = Math.ceil(pb.pos() - 1e-9); asked = 0; firstTry = 0; missed = false; wrong = null; askKey = null; gridKey = null;
+    pb.set(pb.pos());
+  });
+  fill();
+  restart();
 }
 
 // ---------- widget: signal-levels ----------
@@ -458,4 +701,5 @@ export const WIDGETS = {
   "composite": composite,
   "encapsulation": encapsulation,
   "signal-levels": signalLevels,
+  "wave-travel": waveTravel,
 };

@@ -2,6 +2,7 @@
 // through a low-pass or bandpass channel, decibels, signal-to-noise ratio, the Nyquist and Shannon
 // data rate limits, the bandwidth-delay product, parallel and serial transmission.
 import { el, slider, btnRow, fmtNum } from "./dom.js";
+import { createPlayback } from "./playback.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 function svgEl(tag, attrs = {}, text) {
@@ -535,80 +536,188 @@ function dataRate(box, cfg) {
 }
 
 // ---------- widget: bandwidth-delay ----------
+// The slide's "After 1 s ... After n s" rows, filled in by the playback bar: one step is one second.
 function bandwidthDelay(box, cfg) {
   let bw = clamp(Math.round(cfg.bandwidth ?? 5), 1, 8), delay = clamp(Math.round(cfg.delay ?? 5), 1, 8);
+  // Predict mode: `answered` seconds may be shown; the next one waits for the student's count.
+  let predict = !!cfg.predict, answered = 0, asked = 0, firstTry = 0, missed = false, wrong = null, askKey = null, refocus = false, gridKey = null;
+  let pb = null;
   box.append(el("h4", null, cfg.title || "Bandwidth-delay product: the bits that fill the link"));
-  const sB = slider("Bandwidth", 1, 8, 1, bw, (v) => { bw = v; draw(); }, (v) => `${v} bps`);
-  const sD = slider("Delay", 1, 8, 1, delay, (v) => { delay = v; draw(); }, (v) => `${v} s`);
+  const sB = slider("Bandwidth", 1, 8, 1, bw, (v) => { bw = v; restart(); }, (v) => `${v} bps`);
+  const sD = slider("Delay", 1, 8, 1, delay, (v) => { delay = v; restart(); }, (v) => `${v} s`);
+  const predictLabel = el("label", "playback-check");
+  const predictBox = document.createElement("input");
+  predictBox.type = "checkbox"; predictBox.checked = predict;
+  predictLabel.append(predictBox, " Predict the bits on the link before each second is shown");
   const svg = svgEl("svg", { viewBox: "0 0 640 260", class: "curve-svg net-svg" });
+  const caption = el("p", "playback-caption");
+  caption.setAttribute("aria-live", "polite");
+  const ask = el("div", "viz-btn-row playback-ask");
   const out = el("div", "stat-grid");
   const note = el("p", "widget-note");
-  box.append(sB.row, sD.row, svg, out, note);
-  function draw() {
-    svg.innerHTML = "";
+  box.append(sB.row, sD.row, predictLabel, svg, caption, ask);
+
+  const nBits = (n) => `${n} bit${n === 1 ? "" : "s"}`;
+  const asking = (pos) => predict && answered < delay && Math.abs(pos - answered) < 1e-6;
+  /** Four counts to choose from for "bits on the link after t s", the right one (bw × t) among them. */
+  function choices(t) {
+    const right = bw * t, set = [right];
+    for (const c of [bw * (t - 1), bw * (t + 1), bw + t, t, right + 1, right + 2, right + 3]) if (c > 0 && !set.includes(c) && set.length < 4) set.push(c);
+    return set.sort((a, b) => a - b);
+  }
+  function answer(v, e) {
+    asked += wrong == null && !missed ? 1 : 0;
+    if (v !== bw * (answered + 1)) { missed = true; wrong = v; refocus = e.detail === 0; frame(pb.pos()); return; }
+    if (!missed) firstTry++;
+    missed = false; wrong = null; refocus = e.detail === 0; answered++;
+    pb.next();
+  }
+  function renderAsk(pos) {
+    const key = asking(pos) ? `${bw}|${delay}|${answered}|${wrong}` : "";
+    if (key === askKey) return;
+    askKey = key; ask.innerHTML = ""; ask.hidden = !predict;
+    if (!key) return;
+    const btns = choices(answered + 1).map((v) => {
+      const b = el("button", "viz-btn" + (v === wrong ? " playback-wrong" : ""), nBits(v));
+      b.type = "button";
+      b.addEventListener("click", (e) => answer(v, e));
+      ask.append(b);
+      return b;
+    });
+    if (wrong != null) {
+      const now = bw * answered;
+      ask.append(el("span", "playback-feedback", `Not ${nBits(wrong)}. ${now === 0 ? "The link is empty now" : `${nBits(now)} ${now === 1 ? "is" : "are"} on the link now and none has reached the receiver yet`}. Each second ${bw === 1 ? "1 more bit enters" : `${bw} more bits enter`} the link (bandwidth ${bw} bps).`));
+    }
+    if (refocus) { refocus = false; (btns.find((b) => !b.classList.contains("playback-wrong")) || btns[0]).focus(); }
+  }
+  /** What second t does to the link, in the lesson's words. */
+  function stepText(t) {
+    const first = bw === 1 ? "first bit" : `first ${bw} bits`;
+    const full = `the link is full: it holds bandwidth × delay = ${bw} × ${delay} = ${nBits(bw * delay)}`;
+    if (t === 1) {
+      const put = `Second 1: the sender puts ${nBits(bw)} on the link (bandwidth ${bw} bps).`;
+      return delay === 1 ? `${put} After 1 s the ${first} reach${bw === 1 ? "es" : ""} the receiver and ${full}.` : `${put} After 1 s the ${first} ${bw === 1 ? "is" : "are"} on the link.`;
+    }
+    const move = `Second ${t}: the bits on the link move one step toward the receiver and ${bw} more bit${bw === 1 ? " follows" : "s follow"} them.`;
+    return t === delay ? `${move} After ${t} s the ${first} reach${bw === 1 ? "es" : ""} the receiver and ${full}.` : `${move} After ${t} s the link holds ${bw} × ${t} = ${nBits(bw * t)}.`;
+  }
+  function frame(pos) {
     const X0 = 96, X1 = 610, TOP = 44, ROW = 36, H = 20;
-    svg.setAttribute("viewBox", `0 0 640 ${TOP + delay * ROW + 34}`);
     const segW = (X1 - X0) / delay, bitW = segW / bw;
+    const q = asking(pos), t = Math.ceil(pos - 1e-9), hot = q ? answered + 1 : t;
+    svg.innerHTML = "";
+    svg.setAttribute("viewBox", `0 0 640 ${TOP + delay * ROW + 34}`);
+    if (hot >= 1) svg.append(svgEl("rect", { x: 2, y: TOP + (hot - 1) * ROW - 14, width: 636, height: ROW, rx: 3, fill: "var(--hl-soft)" }));
     svg.append(svgEl("text", { x: X0, y: 14, "text-anchor": "middle", "font-size": 11, fill: "var(--ink-2)" }, "Sender"));
     svg.append(svgEl("text", { x: X1, y: 14, "text-anchor": "middle", "font-size": 11, fill: "var(--ink-2)" }, "Receiver"));
     svg.append(svgEl("line", { x1: X0, y1: 20, x2: X0, y2: TOP + delay * ROW, stroke: "var(--rule-strong)" }));
     svg.append(svgEl("line", { x1: X1, y1: 20, x2: X1, y2: TOP + delay * ROW, stroke: "var(--rule-strong)" }));
-    for (let t = 1; t <= delay; t++) {
-      const y = TOP + (t - 1) * ROW;
-      svg.append(svgEl("text", { x: X0 - 10, y: y + 14, "text-anchor": "end", "font-size": 11, fill: "var(--ink-dim)" }, `After ${t} s`));
-      for (let s = 1; s <= t; s++) {
-        const front = s === t; // the first bits sent are always at the head of the line
-        for (let b = 0; b < bw; b++) {
-          svg.append(svgEl("rect", { x: X0 + (s - 1) * segW + b * bitW, y, width: bitW, height: H, fill: front ? "var(--blue)" : (t - s) % 2 ? "var(--rule-strong)" : "var(--ink-dim)", stroke: "var(--paper)", "stroke-width": 1, opacity: front ? 0.9 : 0.75 }));
-        }
+    for (let r = 1; r <= delay; r++) {
+      const y = TOP + (r - 1) * ROW;
+      // Row r is the link during second r; once that second is over it stays as the slide's "After r s" row.
+      const shown = pos > r - 1 + 1e-9;
+      svg.append(svgEl("text", { x: X0 - 10, y: y + 14, "text-anchor": "end", "font-size": 11, fill: r === hot ? "var(--ink)" : "var(--ink-dim)", opacity: shown || r === hot ? 1 : 0.55 }, `After ${r} s`));
+      if (!shown) continue;
+      const head = Math.min(pos, r) * segW; // how far the first bit sent has travelled
+      for (let k = 0; head - k * bitW > 1e-6; k++) {
+        const right = head - k * bitW, left = Math.max(0, right - bitW), g = Math.floor(k / bw);
+        // The first bits sent are always at the head of the line; later seconds alternate two greys.
+        svg.append(svgEl("rect", { x: X0 + left, y, width: right - left, height: H, fill: g === 0 ? "var(--blue)" : g % 2 ? "var(--rule-strong)" : "var(--ink-dim)", stroke: "var(--paper)", "stroke-width": 1, opacity: g === 0 ? 0.9 : 0.75 }));
       }
-      svg.append(svgEl("text", { x: X0 + (t - 0.5) * segW, y: y - 4, "text-anchor": "middle", "font-size": 9, fill: "var(--blue)" }, `first ${bw} bit${bw === 1 ? "" : "s"}`));
+      svg.append(svgEl("text", { x: Math.max(X0 + head - segW / 2, X0 + 30), y: y - 4, "text-anchor": "middle", "font-size": 9, fill: "var(--blue)" }, `first ${bw} bit${bw === 1 ? "" : "s"}`));
     }
     const yb = TOP + delay * ROW + 6;
     for (let s = 0; s <= delay; s++) svg.append(svgEl("line", { x1: X0 + s * segW, y1: yb - 4, x2: X0 + s * segW, y2: yb + 6, stroke: "var(--ink-dim)" }));
     svg.append(svgEl("line", { x1: X0, y1: yb + 1, x2: X1, y2: yb + 1, stroke: "var(--ink-dim)" }));
     for (let s = 0; s < delay; s++) svg.append(svgEl("text", { x: X0 + (s + 0.5) * segW, y: yb + 20, "text-anchor": "middle", "font-size": 10, fill: "var(--ink-dim)" }, "1 s"));
-    const nBits = (n) => `${n} bit${n === 1 ? "" : "s"}`;
-    grid(out, [
-      ["Bandwidth", `${bw} bps`, "bits per second, the second meaning of bandwidth"],
-      ["Delay", `${delay} s`, "time for a bit to cross the link"],
-      ["Bandwidth × delay", nBits(bw * delay), `${bw} × ${delay}: the number of bits that can fill the link`],
-      ["2 × bandwidth × delay", nBits(2 * bw * delay), "burst size that fills the full-duplex channel, both directions"],
-    ]);
+
+    let text;
+    if (q) {
+      const now = bw * answered;
+      text = `${answered === 0 ? "The link is empty" : `After ${answered} s there ${now === 1 ? "is 1 bit" : `are ${now} bits`} on the link`}. The bandwidth is ${bw} bps. How many bits will be on the link after ${answered + 1} s?`;
+    } else if (t <= 0) text = `Press Play to fill the link one second at a time. The sender puts ${nBits(bw)} on the link each second (bandwidth ${bw} bps) and a bit takes ${delay} s to reach the receiver.`;
+    else {
+      text = stepText(t);
+      if (pos >= delay && asked > 0) text += ` ${firstTry} of ${asked} right on the first try.`;
+    }
+    if (caption.textContent !== text) caption.textContent = text;
+    renderAsk(pos);
+
+    const onLink = Math.min(bw * delay, Math.floor(pos * bw + 1e-6));
+    const key = `${bw}|${delay}|${onLink}`;
+    if (key !== gridKey) {
+      gridKey = key;
+      grid(out, [
+        ["On the link now", nBits(onLink), onLink === bw * delay ? "the link is full" : `it fills at ${bw} bps, the link holds ${bw * delay}`],
+        ["Bandwidth", `${bw} bps`, "bits per second, the second meaning of bandwidth"],
+        ["Delay", `${delay} s`, "time for a bit to cross the link"],
+        ["Bandwidth × delay", nBits(bw * delay), `${bw} × ${delay}: the number of bits that can fill the link`],
+        ["2 × bandwidth × delay", nBits(2 * bw * delay), "burst size that fills the full-duplex channel, both directions"],
+      ]);
+    }
+  }
+  function restart() {
+    answered = 0; asked = 0; firstTry = 0; missed = false; wrong = null; askKey = null; gridKey = null;
     note.textContent = bw === 5 && delay === 5
       ? "The slide figure: bandwidth 5 bps, delay 5 s, bandwidth × delay = 25 bits. Each second 5 more bits enter the link; after 5 s the first 5 bits reach the receiver and the link is full."
       : `Each second ${bw === 1 ? "1 more bit enters" : `${bw} more bits enter`} the link and every bit already on it moves one second closer to the receiver. After ${delay} s the first bits arrive and the link holds ${nBits(bw * delay)}.`;
+    pb.reset(delay);
   }
-  draw();
+  pb = createPlayback({
+    count: delay, unit: "second", onFrame: frame,
+    stepMs: () => cfg.stepMs || 1300,
+    limit: () => (predict ? answered : delay),
+    onBlocked: () => { ask.classList.remove("playback-nudge"); void ask.offsetWidth; ask.classList.add("playback-nudge"); },
+  });
+  box.append(pb.el, out, note);
+  predictBox.addEventListener("change", () => {
+    predict = predictBox.checked; pb.pause();
+    // Seconds already on screen count as answered; the questions start at the next one.
+    answered = Math.ceil(pb.pos() - 1e-9); asked = 0; firstTry = 0; missed = false; wrong = null; askKey = null;
+    pb.set(pb.pos());
+  });
+  restart();
 }
 
 // ---------- widget: tx-modes ----------
+// The same n bits sent both ways; one playback step is one clock tick.
 function txModes(box, cfg) {
   let bits = /^[01]{2,8}$/.test(cfg.bits || "") ? cfg.bits : "01100010";
-  let tick = 0;
   const FULL = bits;
+  let pb = null, gridKey = null;
   box.append(el("h4", null, cfg.title || "Parallel and serial transmission of the same bits"));
-  const sN = slider("Bits in the group, n", 2, FULL.length, 1, bits.length, (v) => { bits = FULL.slice(0, v); tick = 0; draw(); }, (v) => String(v));
-  const ctl = el("div", "viz-btn-row");
-  const prev = el("button", "viz-btn", "◀ tick"), next = el("button", "viz-btn", "tick ▶"), reset = el("button", "viz-btn", "reset");
-  const counter = el("span", "encap-pduname");
-  ctl.append(prev, next, reset, counter);
+  const sN = slider("Bits in the group, n", 2, FULL.length, 1, bits.length, (v) => { bits = FULL.slice(0, v); gridKey = null; pb.reset(bits.length); }, (v) => String(v));
   const svg = svgEl("svg", { viewBox: "0 0 640 400", class: "curve-svg net-svg" });
+  const caption = el("p", "playback-caption");
+  caption.setAttribute("aria-live", "polite");
   const out = el("div", "stat-grid");
   const note = el("p", "widget-note", "One clock tick moves one bit along one line. Parallel uses n lines to move n bits on each tick; serial has one line, so the group is converted to a stream at the sender and back to a group at the receiver.");
-  box.append(sN.row, ctl, svg, out, note);
+  box.append(sN.row, svg, caption);
   const box3 = (x, y, w, h, label, stroke = "var(--blue)") => {
     svg.append(svgEl("rect", { x, y, width: w, height: h, rx: 4, fill: "var(--paper-3)", stroke, "stroke-width": 1.5 }));
     const words = label.split("\n");
     words.forEach((wd, i) => svg.append(svgEl("text", { x: x + w / 2, y: y + h / 2 + 4 + (i - (words.length - 1) / 2) * 12, "text-anchor": "middle", "font-size": 10, fill: "var(--ink-2)" }, wd)));
   };
-  const bit = (x, y, b, on) => svg.append(svgEl("text", { x, y, "text-anchor": "middle", "font-size": 13, fill: on ? "var(--hl)" : "var(--ink-2)", "font-weight": on ? "700" : "400" }, b));
+  // `moving` marks a bit that is on its line during the tick in progress.
+  const bit = (x, y, b, on, moving) => {
+    if (moving) svg.append(svgEl("circle", { cx: x, cy: y - 4.5, r: 9, fill: "var(--hl-soft)", stroke: "var(--hl)", "stroke-width": 1 }));
+    svg.append(svgEl("text", { x, y, "text-anchor": "middle", "font-size": 13, fill: on ? "var(--hl)" : "var(--ink-2)", "font-weight": on ? "700" : "400" }, b));
+  };
   const arrow = (x1, y, x2) => {
     svg.append(svgEl("line", { x1, y1: y, x2: x2 - 6, y2: y, stroke: "var(--blue)", "stroke-width": 1.5 }));
     svg.append(svgEl("polygon", { points: `${x2},${y} ${x2 - 8},${y - 4} ${x2 - 8},${y + 4}`, fill: "var(--blue)" }));
   };
-  function draw() {
+  const ease = (f) => f * f * (3 - 2 * f);
+  function tickText(k, n) {
+    // The bit nearest the receiver leaves first: tick k sends bit n − k (counting from 0).
+    const b = bits[n - k];
+    if (k === 1) return `Tick 1: parallel sends all ${n} bits together, one on each of its ${n} lines. Serial has only one line, so its parallel/serial converter sends one bit, the ${b} nearest the line.`;
+    if (k < n) return `Tick ${k}: serial sends the next bit, a ${b}, on its one line. That is bit ${k} of ${n}; parallel delivered the whole group on tick 1.`;
+    return `Tick ${n}: serial sends the last bit, a ${b}, and the serial/parallel converter hands the group of ${n} to the receiver. Serial took ${n} ticks on 1 line; parallel took 1 tick on ${n} lines.`;
+  }
+  function frame(pos) {
     const n = bits.length;
+    const tick = Math.min(n, Math.floor(pos + 1e-9)), f = Math.max(0, pos - tick), cur = Math.ceil(pos - 1e-9);
     svg.innerHTML = "";
     const P0 = 34, GAP = 22, pH = n * GAP + 8;
     const S0 = P0 + pH + 58;
@@ -617,11 +726,12 @@ function txModes(box, cfg) {
     svg.append(svgEl("text", { x: 20, y: 18, "font-size": 12, fill: "var(--ink)" }, `Parallel: the ${n} bits are sent together on ${n} lines`));
     box3(20, P0, 70, pH, "Sender");
     box3(550, P0, 70, pH, "Receiver");
-    const pDone = tick >= 1;
+    const pDone = tick >= 1, pMoving = tick === 0 && f > 0;
+    const px = pDone ? 528 : 112 + (528 - 112) * ease(f);
     for (let i = 0; i < n; i++) {
       const y = P0 + 15 + i * GAP;
       arrow(90, y, 550);
-      bit(pDone ? 528 : 112, y - 4, bits[i], pDone);
+      bit(px, y - 4, bits[i], pDone || pMoving, pMoving);
     }
     // serial: one line, one bit per tick, a converter at each end
     svg.append(svgEl("text", { x: 20, y: S0 - 16, "font-size": 12, fill: "var(--ink)" }, `Serial: the ${n} bits are sent one after another on one line`));
@@ -630,26 +740,29 @@ function txModes(box, cfg) {
     box3(450, S0, 104, 60, "serial/parallel\nconverter", "var(--red)");
     box3(558, S0, 62, 60, "Receiver");
     arrow(190, S0 + 36, 450);
-    const sent = Math.min(tick, n);
     // The bit nearest the receiver leaves first, so the group arrives in its original order.
     for (let i = 0; i < n; i++) {
-      const delivered = i >= n - sent;
-      bit(delivered ? 436 - (n - 1 - i) * 15 : 204 + i * 15, S0 + 26, bits[i], delivered);
+      const delivered = i >= n - tick, moving = !delivered && f > 0 && i === n - 1 - tick;
+      const from = 204 + i * 15, to = 436 - (n - 1 - i) * 15;
+      bit(delivered ? to : moving ? from + (to - from) * ease(f) : from, S0 + 26, bits[i], delivered || moving, moving);
     }
     svg.append(svgEl("text", { x: 320, y: S0 + 80, "text-anchor": "middle", "font-size": 10, fill: "var(--ink-dim)" }, "bits on the left are still to be sent; highlighted bits have arrived"));
-    counter.textContent = `after ${tick} of ${n} clock ticks`;
-    prev.disabled = tick === 0; next.disabled = tick >= n;
-    grid(out, [
-      ["Parallel", `${n} lines, 1 tick`, `can increase the transfer speed by a factor of n = ${n} over serial`],
-      ["Serial", `1 line, ${n} ticks`, `reduces the cost of transmission over parallel by roughly a factor of n = ${n}`],
-      ["Parallel has delivered", `${pDone ? n : 0} of ${n} bits`, pDone ? "the whole group crossed on the first tick" : "nothing sent yet"],
-      ["Serial has delivered", `${sent} of ${n} bits`, sent === 0 ? "nothing sent yet" : sent < n ? "one bit per tick, still sending" : "the whole group has arrived"],
-    ]);
+
+    const text = cur <= 0 ? `Press Play to send the ${n} bits both ways. One clock tick moves one bit along one line.` : tickText(cur, n);
+    if (caption.textContent !== text) caption.textContent = text;
+    const key = `${n}|${tick}`;
+    if (key !== gridKey) {
+      gridKey = key;
+      grid(out, [
+        ["Parallel", `${n} lines, 1 tick`, `can increase the transfer speed by a factor of n = ${n} over serial`],
+        ["Serial", `1 line, ${n} ticks`, `reduces the cost of transmission over parallel by roughly a factor of n = ${n}`],
+        ["Parallel has delivered", `${pDone ? n : 0} of ${n} bits`, pDone ? "the whole group crossed on the first tick" : "nothing sent yet"],
+        ["Serial has delivered", `${tick} of ${n} bits`, tick === 0 ? "nothing sent yet" : tick < n ? "one bit per tick, still sending" : "the whole group has arrived"],
+      ]);
+    }
   }
-  prev.addEventListener("click", () => { tick = Math.max(0, tick - 1); draw(); });
-  next.addEventListener("click", () => { tick = Math.min(bits.length, tick + 1); draw(); });
-  reset.addEventListener("click", () => { tick = 0; draw(); });
-  draw();
+  pb = createPlayback({ count: bits.length, unit: "tick", onFrame: frame, stepMs: () => cfg.stepMs || 1100 });
+  box.append(pb.el, out, note);
 }
 
 export const WIDGETS = {

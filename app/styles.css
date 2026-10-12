@@ -575,6 +575,23 @@ select.q-input { width: auto; }
 .scrub-var.new { border-color: var(--blue); }
 .scrub-empty { font-size: 12px; color: var(--ink-dim); }
 .scrub-note { font-size: 12px; color: var(--ink-dim); padding: 4px 12px 8px; }
+/* Playback bar (app/playback.js) and the widgets built on it. */
+.playback { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 10px 0 12px; }
+.playback-btn { padding: 5px 9px; }
+.playback-btn:disabled { opacity: 0.4; cursor: default; }
+.playback-play { min-width: 92px; border-color: var(--hl); color: var(--hl); }
+.playback-slider { flex: 1; min-width: 140px; accent-color: var(--hl); }
+.playback-pos { font-size: 12px; color: var(--ink-dim); white-space: nowrap; font-variant-numeric: tabular-nums; min-width: 78px; text-align: right; }
+.playback-caption { font-size: 14.5px; color: var(--ink); margin: 8px 0 8px; min-height: 3em; }
+.playback-check { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--ink-2); margin: 8px 0; cursor: pointer; }
+.playback-check input { accent-color: var(--hl); }
+.playback-ask { align-items: center; min-height: 31px; margin-bottom: 4px; }
+.playback-ask[hidden] { display: none; }
+.playback-ask .viz-btn { min-width: 52px; font-size: 13.5px; }
+.playback-wrong { border-color: var(--red); color: var(--red); background: var(--red-soft); }
+.playback-feedback { font-size: 13px; color: var(--ink-2); flex-basis: 100%; }
+.playback-nudge .viz-btn { animation: playback-nudge 0.5s; }
+@keyframes playback-nudge { 30% { border-color: var(--hl); background: var(--hl-soft); } }
 .el-line.cur { background: var(--blue-soft); border-left-color: var(--blue); }
 .lesson code.ref.cur { background: var(--blue-soft); box-shadow: 0 0 0 1px var(--blue); }
 .out-line.linked { cursor: help; }

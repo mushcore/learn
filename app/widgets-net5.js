@@ -3,6 +3,7 @@
 // by multilevel multiplexing, multiple-slot allocation and pulse stuffing), link-layer addresses that
 // change at every hop, and ARP's broadcast request and unicast reply.
 import { el, slider, btnRow } from "./dom.js";
+import { createPlayback } from "./playback.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 function svgEl(tag, attrs = {}, text) {
@@ -366,6 +367,258 @@ function tdmFrames(box, cfg) {
   apply({ ...TDM_PRESETS["1 Mbps × 4 (slide 35)"], ...cfg });
 }
 
+// ---------- widget: tdm-play ----------
+// The multiplexer building each frame. One playback step = one frame: a round of units is taken from the
+// lines in turn, the frame travels down the link, and the demultiplexer hands each slot back to its line.
+const TDM_PLAY_PRESETS = {
+  "Slide figure (lines A, B, C)": TDM_PRESETS["Slide figure (lines A, B, C)"],
+  "1 Mbps × 4 (slide 35)": TDM_PRESETS["1 Mbps × 4 (slide 35)"],
+  "Empty slots and framing bits (slide 45)": { n: 3, rate: 0, unit: "kbps", slot: 1, streams: ["A1 A2 A3", "_ B2 B3", "C1 _ C3"], framing: true },
+};
+const isGap = (u) => /^[-_–—]+$/.test(u);
+const lerp = (a, b, t) => a + (b - a) * t;
+const easeIO = (t) => { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); };
+function tdmPlay(box, cfg) {
+  const presets = presetsOf(cfg, TDM_PLAY_PRESETS), names = Object.keys(presets);
+  const QL = 24, QR = 160, X0 = 222, X1 = 418, OL = 480, PA = 0.5, PB = 0.72; // a step: mux round to PA, travel to PB, demux to 1
+  let n = 3, slot = 1, rate = 0, units = [], silent = [], framing = false, bits = false, chars = 1, K = 1, uw = 26;
+  // Predict mode: `answered` frames may be played; the next one waits for the student's answer.
+  let predict = !!cfg.predict, answered = 0, asked = 0, firstTry = 0, missed = false, wrong = null, askKey = null, refocus = false, pb = null;
+
+  box.append(el("h4", null, cfg.title || "Watch the multiplexer build each frame"));
+  const fromCfg = Array.isArray(cfg.streams);
+  const startName = !fromCfg && names.includes(cfg.preset) ? cfg.preset : names[0];
+  if (names.length > 1) box.append(btnRow(names, (i) => { load(presets[names[i]]); restart(); }, fromCfg ? -1 : names.indexOf(startName)));
+  const fr = checkbox("framing bits (pattern 1 0 1 …)", false, (v) => { framing = v; restart(); });
+  const predictLabel = el("label", "playback-check");
+  const predictBox = document.createElement("input");
+  predictBox.type = "checkbox"; predictBox.checked = predict;
+  predictLabel.append(predictBox, " Predict each frame before it is built");
+  const svg = svgEl("svg", { viewBox: "0 0 640 150", class: "curve-svg net-svg" });
+  const caption = el("p", "playback-caption");
+  caption.setAttribute("aria-live", "polite");
+  const ask = el("div", "viz-btn-row playback-ask");
+  const note = el("p", "widget-note");
+  // The framing-bit toggle is offered only where framing is part of the lesson: a preset or the cfg uses it.
+  if (cfg.framing != null || names.some((k) => presets[k] && presets[k].framing)) box.append(fr.row);
+  box.append(predictLabel, svg, caption, ask);
+
+  function load(p) {
+    p = p || {};
+    const given = Array.isArray(p.streams) ? p.streams.map(String) : [];
+    n = clamp(Math.round(+p.n || given.length || 3), 2, 6);
+    slot = SLOT_SIZES.includes(+p.slot) ? +p.slot : 1;
+    const streams = given.slice(0, n);
+    while (streams.length < n) streams.push(genStream(streams.length, 8));
+    const u = RATE_UNITS.find(([name]) => name === p.unit) || RATE_UNITS[2];
+    rate = +p.rate > 0 ? +p.rate * u[1] : 0;
+    silent = streams.map((_, k) => !!(Array.isArray(p.silent) && p.silent[k]));
+    framing = !!p.framing; fr.input.checked = framing;
+    bits = streams.every(isBits);
+    units = streams.map((s) => unitsOf(s, slot));
+    chars = Math.max(1, ...units.flat().map((x) => x.length));
+    uw = Math.max(24, Math.round(chars * 6.4 + 8));
+    K = Math.max(1, Math.min(5, Math.floor((QR - QL) / uw), ...units.map((x) => x.length)));
+  }
+  const unitOf = (k, j) => (silent[k] || units[k][j] == null || isGap(units[k][j]) ? null : units[k][j]); // null: nothing to send
+  const anyEmpty = () => units.some((_, k) => { for (let j = 0; j < K; j++) if (unitOf(k, j) == null) return true; return false; });
+  const fbit = (j) => (j % 2 === 0 ? "1" : "0");
+  /** A frame as text, line n … line 1 from left to right as on the slide. `pick(k)` overrides the slot of line k. */
+  function frameText(j, pick, order) {
+    let parts = [];
+    for (let k = n - 1; k >= 0; k--) parts.push(pick ? pick(k) : unitOf(k, j));
+    if (order === "reverse") parts.reverse();
+    if (order === "squeeze") parts = parts.filter((x) => x != null);
+    return (framing ? `${fbit(j)} | ` : "") + parts.map((x) => (x == null ? "_" : x)).join(bits && chars === 1 ? "" : " ");
+  }
+  function times() {
+    const T = rate > 0 ? (bits ? slot : 1) / rate : 0, tu = bestUnit(T, TIME_UNITS), dur = (v) => `${num(v / tu[1], 4)} ${tu[0]}`;
+    return { T, dur, Tstr: T ? `T = ${dur(T)}` : "T", slotStr: T ? `T/${n} = ${dur(T / n)}` : `T/${n}`, word: bits ? (slot === 1 ? "bit" : `${slot}-bit unit`) : "unit" };
+  }
+  /** The question asked before frame j: its contents, or (frames 2 and 4) the slot or frame duration. */
+  function question(j) {
+    const tm = times();
+    let kind = framing ? "contents" : j % 4 === 1 ? "slot" : j % 4 === 3 ? "frame" : "contents";
+    let opts = [], text = "";
+    if (kind === "contents") {
+      const right = frameText(j), seen = new Set([right]);
+      opts.push({ label: right, ok: true });
+      const add = (label, why) => { if (!seen.has(label) && opts.length < 4) { seen.add(label); opts.push({ label, why }); } };
+      add(frameText(j, null, "reverse"), `Line 1's unit is sent first, so it is drawn at the right end: the frame reads line ${n} … line 1 from left to right.`);
+      const gaps = []; for (let k = 0; k < n; k++) if (unitOf(k, j) == null) gaps.push(k);
+      if (gaps.length) {
+        add(frameText(j, null, "squeeze"), "If a source does not have data to send, the corresponding slot in the output frame is empty. The slot is still there.");
+        add(frameText(j, (k) => { for (let d = 0; d < K; d++) for (const i of [j + d, j - d]) if (i >= 0 && i < K && unitOf(k, i) != null) return unitOf(k, i); return null; }),
+          "If a source does not have data to send, the corresponding slot in the output frame is empty. Its other units wait for their own frames.");
+      } else if (anyEmpty()) {
+        const g = units.findIndex((_, k) => { for (let i = 0; i < K; i++) if (unitOf(k, i) == null) return true; return false; });
+        add(frameText(j, (k) => (k === g ? null : unitOf(k, j))), `A slot is empty only when its source has no data to send. Line ${g + 1} has a unit for this frame.`);
+      }
+      for (const d of [1, -1, 2, -2]) if (j + d >= 0 && j + d < K) add(frameText(j, (k) => unitOf(k, j + d)), `Frame ${j + 1} carries unit ${j + 1} of every line: a round of data units from each input connection is collected into a frame.`);
+      if (opts.length < 2) { kind = "slot"; opts = []; }
+      else text = `Frame ${j + 1} is next. What will it contain, read left to right as it is drawn on the link?`;
+    }
+    if (kind !== "contents") {
+      const rule = "If the duration of the input unit is T, the duration of each slot is T/n and the duration of each frame is T.";
+      const lab = tm.T ? [tm.dur(tm.T / n), tm.dur(tm.T), tm.dur(tm.T * n)] : [`T/${n}`, "T", `${n}T`];
+      const right = kind === "slot" ? 0 : 1;
+      opts = lab.map((label, i) => ({ label, ok: i === right, why: rule }));
+      text = `Each of the ${n} lines sends one ${tm.word} every ${tm.Tstr}. How long does ${kind === "slot" ? "one slot" : `frame ${j + 1}`} last on the link?`;
+    }
+    const r = (j * 3 + 2) % opts.length;
+    return { text, opts: opts.slice(r).concat(opts.slice(0, r)) };
+  }
+  const asking = (pos) => predict && answered < K && Math.abs(pos - answered) < 1e-6;
+  function answer(o, e) {
+    asked += wrong == null && !missed ? 1 : 0;
+    if (!o.ok) { missed = true; wrong = o; refocus = e.detail === 0; frame(pb.pos()); return; }
+    if (!missed) firstTry++;
+    missed = false; wrong = null; refocus = e.detail === 0; answered++;
+    pb.next();
+  }
+  function renderAsk(pos) {
+    const key = asking(pos) ? `${answered}|${wrong ? wrong.label : ""}` : "";
+    if (key === askKey) return;
+    askKey = key; ask.innerHTML = ""; ask.hidden = !predict;
+    if (!key) return;
+    const btns = question(answered).opts.map((o) => {
+      const bad = wrong && o.label === wrong.label;
+      const b = el("button", "viz-btn" + (bad ? " playback-wrong" : ""), o.label);
+      b.type = "button";
+      b.addEventListener("click", (e) => answer(o, e));
+      ask.append(b);
+      return b;
+    });
+    if (wrong) ask.append(el("span", "playback-feedback", `Not ${wrong.label}. ${wrong.why}`));
+    if (refocus) { refocus = false; (btns.find((b) => !b.classList.contains("playback-wrong")) || btns[0]).focus(); }
+  }
+  function unitBox(x, y, w, k, label, o = {}) {
+    const empty = label == null;
+    svg.append(svgEl("rect", { x: x + 1, y: y - 11, width: Math.max(2, w - 2), height: 22, rx: 3, fill: empty ? "none" : LINE_FILL[k % LINE_FILL.length], "fill-opacity": 0.45,
+      stroke: o.hot ? "var(--hl)" : empty ? "var(--rule-strong)" : "none", "stroke-width": o.hot ? 2 : 1, "stroke-dasharray": empty ? "3 3" : "none" }));
+    if (!empty) svg.append(svgEl("text", { x: x + w / 2, y: y + 4, "text-anchor": "middle", "font-size": o.fs || (chars > 2 ? 9.5 : 11), fill: "var(--ink)" }, label));
+  }
+  function frame(pos) {
+    const tm = times(), q = asking(pos), started = pos > 1e-9;
+    const j = clamp(Math.ceil(pos - 1e-9) - 1, 0, K - 1), f = started ? clamp(pos - j, 0, 1) : 0; // the frame in progress, and how far
+    const off = framing ? 1 : 0, slots = n + off;
+    const sw = Math.min(uw, Math.floor(150 / slots)), fw = sw * slots, fs = clamp(sw / (chars * 0.62), 6, 11);
+    const yOf = (k) => 56 + k * 30, mid = (yOf(0) + yOf(n - 1)) / 2, H = Math.max(yOf(n - 1) + 28, mid + 50);
+    const a = (f / PA) * slots, c = ((f - PB) / (1 - PB)) * n; // turns taken by the multiplexer and by the demultiplexer
+    const fx = lerp(X0, X1 - fw, easeIO((f - PA) / (PB - PA))), shift = easeIO((f - PA) / (1 - PA));
+    const slotX = (k) => fx + (off + n - 1 - k) * sw;
+    const moving = [];
+    svg.innerHTML = "";
+    svg.setAttribute("viewBox", `0 0 640 ${H}`);
+    const dim = { "font-size": 10.5, fill: "var(--ink-dim)" };
+    const rateStr = rate > 0 ? withUnit(rate, RATE_UNITS, 3) : "";
+    svg.append(svgEl("text", { x: 8, y: 14, ...dim }, `${n} input lines${rateStr ? `, ${rateStr} each` : ""}`));
+    svg.append(svgEl("text", { x: 8, y: 28, ...dim }, `one ${tm.word} every ${tm.Tstr}`));
+    svg.append(svgEl("text", { x: 320, y: 14, "text-anchor": "middle", "font-size": 10.5, fill: "var(--ink)", "font-weight": "600" }, rateStr ? `link: ${n} × ${rateStr} = ${withUnit(n * rate, RATE_UNITS, 3)}` : `link: ${n} times the data rate of one line`));
+    svg.append(svgEl("text", { x: 632, y: 14, "text-anchor": "end", ...dim }, `${n} output lines`));
+    svg.append(svgEl("text", { x: 632, y: 28, "text-anchor": "end", ...dim }, `one ${tm.word} every ${tm.Tstr}`));
+    svg.append(svgEl("line", { x1: 214, y1: mid, x2: 426, y2: mid, stroke: "var(--rule-strong)", "stroke-width": 2 }));
+    svg.append(svgEl("polygon", { points: `166,${yOf(0) - 18} 166,${yOf(n - 1) + 18} 214,${mid + 13} 214,${mid - 13}`, fill: "var(--paper-3)", stroke: "var(--rule-strong)" }));
+    svg.append(svgEl("polygon", { points: `426,${mid - 13} 426,${mid + 13} 474,${yOf(n - 1) + 18} 474,${yOf(0) - 18}`, fill: "var(--paper-3)", stroke: "var(--rule-strong)" }));
+    svg.append(svgEl("text", { x: 188, y: mid + 4, "text-anchor": "middle", "font-size": 10.5, fill: "var(--ink)", "font-weight": "600" }, "MUX"));
+    svg.append(svgEl("text", { x: 453, y: mid + 4, "text-anchor": "middle", "font-size": 9.5, fill: "var(--ink)", "font-weight": "600" }, "DEMUX"));
+    svg.append(svgEl("text", { x: 320, y: mid - 25, "text-anchor": "middle", ...dim }, `a slot lasts ${tm.slotStr}`));
+    svg.append(svgEl("text", { x: 320, y: mid + 43, "text-anchor": "middle", ...dim }, `a frame lasts ${tm.Tstr}`));
+    for (let k = 0; k < n; k++) {
+      const y = yOf(k), ox = OL + (K - 1 - j) * uw;
+      svg.append(svgEl("text", { x: 12, y: y + 4, "text-anchor": "middle", ...dim }, String(k + 1)));
+      svg.append(svgEl("text", { x: 628, y: y + 4, "text-anchor": "middle", ...dim }, String(k + 1)));
+      svg.append(svgEl("line", { x1: QL - 4, y1: y + 14, x2: 166, y2: y + 14, stroke: "var(--rule-strong)" }));
+      svg.append(svgEl("line", { x1: 474, y1: y + 14, x2: OL + K * uw + 4, y2: y + 14, stroke: "var(--rule-strong)" }));
+      // Input queue: the unit nearest the MUX leaves first; the rest move up one place while the frame is on the link.
+      for (let i = j; i < K; i++) {
+        const lab = unitOf(k, i);
+        if (i === j && started) {
+          const t = a - (off + k);
+          if (t >= 1) continue;
+          if (t > 0 && lab != null) {
+            const e = easeIO(t), p = e < 0.5 ? e * 2 : e * 2 - 1;
+            moving.push(e < 0.5 ? [lerp(QR - uw, 198, p), lerp(y, mid, p), lerp(uw, sw, p), k, lab] : [lerp(198, slotX(k), p), mid, sw, k, lab]);
+          } else unitBox(QR - uw, y, uw, k, lab, { hot: t > 0 });
+          continue;
+        }
+        unitBox(QR - (i - j - (started ? shift : 0) + 1) * uw, y, uw, k, lab, { hot: q && i === answered });
+      }
+      // Output line: units already delivered, first one furthest right.
+      for (let i = 0; i < j; i++) unitBox(OL + (K - 1 - i) * uw, y, uw, k, unitOf(k, i));
+      const lab = unitOf(k, j), t = c - k;
+      if (started && t >= 1) unitBox(ox, y, uw, k, lab);
+      else if (started && t > 0 && lab != null) {
+        const e = easeIO(t), p = e < 0.5 ? e * 2 : e * 2 - 1;
+        moving.push(e < 0.5 ? [lerp(slotX(k), 432, p), mid, sw, k, lab] : [lerp(432, ox, p), lerp(mid, y, p), lerp(sw, uw, p), k, lab]);
+      } else if (started && t > 0.5) unitBox(ox, y, uw, k, null, { hot: true });
+    }
+    // The frame on the link: slots fill during the multiplexer's round and empty during the demultiplexer's.
+    if (started && f < 1 - 1e-9) {
+      if (off) {
+        const g = svgEl("g", { opacity: clamp(a * 2, 0, 1) });
+        g.append(svgEl("rect", { x: fx, y: mid - 12, width: sw, height: 24, fill: "var(--hl)", opacity: 0.75 }));
+        g.append(svgEl("text", { x: fx + sw / 2, y: mid + 4, "text-anchor": "middle", "font-size": 11, fill: "#101418", "font-weight": "700" }, fbit(j)));
+        svg.append(g);
+      }
+      for (let k = 0; k < n; k++) {
+        const lab = unitOf(k, j), tA = a - (off + k), tC = c - k, turn = (tA > 0 && tA < 1) || (tC > 0 && tC < 1);
+        svg.append(svgEl("rect", { x: slotX(k), y: mid - 12, width: sw, height: 24, fill: "none", stroke: "var(--rule-strong)", "stroke-width": 0.6 }));
+        if (lab == null) { if (turn || (tA >= 1 && tC <= 0)) unitBox(slotX(k), mid, sw, k, null, { hot: turn }); }
+        else if (tA >= 1 && tC <= 0) unitBox(slotX(k), mid, sw, k, lab, { fs });
+      }
+      svg.append(svgEl("rect", { x: fx, y: mid - 13, width: fw, height: 26, fill: "none", stroke: "var(--hl)", "stroke-width": 2 }));
+      svg.append(svgEl("path", { d: `M${fx + fw - sw + 1},${mid - 16} v-4 h${sw - 2} v4`, fill: "none", stroke: "var(--ink-dim)" }));
+      svg.append(svgEl("text", { x: fx + fw / 2, y: mid + 27, "text-anchor": "middle", "font-size": 10.5, fill: "var(--hl)", "font-weight": "600" }, `Frame ${j + 1}`));
+    }
+    for (const [x, y, w, k, lab] of moving) unitBox(x, y, w, k, lab, { hot: true, fs: Math.min(11, clamp(w / (chars * 0.62), 6, 11)) });
+
+    let text;
+    if (q) text = question(answered).text;
+    else if (!started) text = `Press Play: each step builds one frame, sends it and delivers it. Data are taken from each line every ${tm.Tstr}.`;
+    else {
+      const gaps = []; for (let k = 0; k < n; k++) if (unitOf(k, j) == null) gaps.push(k + 1);
+      const gapText = gaps.length ? ` Line ${gaps.join(" and line ")} has no data to send, so the corresponding slot in the frame is empty.` : "";
+      if (f < PA) {
+        const got = []; for (let k = 0; k < n; k++) if (unitOf(k, j) != null) got.push(unitOf(k, j));
+        text = `Frame ${j + 1}: a round of data units, one from each line in turn (${got.join(", ")}), is collected into a frame of ${n} time slots. Each slot lasts ${tm.slotStr}.${gapText}`
+          + (framing ? ` The framing bit ${fbit(j)} is added at the beginning of the frame.` : "");
+      } else if (f < PB) {
+        text = `Frame ${j + 1} = [${frameText(j)}] moves down the link. The frame lasts ${tm.Tstr}, the same as one input unit, so the data rate of the link must be n = ${n} times the data rate of a connection`
+          + (rateStr ? `: ${n} × ${rateStr} = ${withUnit(n * rate, RATE_UNITS, 3)}.` : ".");
+      } else {
+        text = `The demultiplexer hands each slot of frame ${j + 1} = [${frameText(j)}] back to its line, line 1 first.${gapText}`
+          + (framing ? " The framing bits follow the pattern 1 0 1 … frame to frame, so the demultiplexer can separate the time slots accurately." : "");
+        if (pos >= K && asked > 0) text += ` All ${K} frames are delivered: ${firstTry} of ${asked} right on the first try.`;
+      }
+    }
+    if (caption.textContent !== text) caption.textContent = text;
+    renderAsk(pos);
+  }
+  function restart() {
+    answered = 0; asked = 0; firstTry = 0; missed = false; wrong = null; askKey = null;
+    note.textContent = "If the duration of the input unit is T, the duration of each slot is T/n and the duration of each frame is T. The data rate of the output link must be n times the data rate of a connection to guarantee the flow of data."
+      + (anyEmpty() ? " If a source does not have data to send, the corresponding slot in the output frame is empty (dashed box)." : "")
+      + (framing ? " Framing bits are added to the beginning of each frame and follow the pattern 1 0 1 … frame to frame; the timing shown counts the data slots only." : "");
+    pb.reset(K);
+  }
+  load(fromCfg ? { ...cfg } : { ...presets[startName], ...cfg });
+  pb = createPlayback({
+    count: K, unit: "frame", onFrame: frame,
+    stepMs: () => cfg.stepMs || 2600 + 500 * n,
+    limit: () => (predict ? answered : K),
+    onBlocked: () => { ask.classList.remove("playback-nudge"); void ask.offsetWidth; ask.classList.add("playback-nudge"); },
+  });
+  box.append(pb.el, note);
+  predictBox.addEventListener("change", () => {
+    predict = predictBox.checked; pb.pause();
+    // Frames already delivered count as answered; the questions start at the next one.
+    answered = Math.ceil(pb.pos() - 1e-9); asked = 0; firstTry = 0; missed = false; wrong = null; askKey = null;
+    pb.set(pb.pos());
+  });
+  restart();
+}
+
 // ---------- widget: rate-manager ----------
 const RM_PRESETS = {
   "Multilevel multiplexing (slide 40)": "20 20 40 40 40",
@@ -570,15 +823,15 @@ function hopWalk(box, cfg) {
     } else steps.push({ link: i, phase: "frame", text: lk.text });
   });
   if (!drawMode && P.final) steps.push({ link: P.links.length - 1, phase: "final", text: P.final });
-  let step = 0;
+  // Playback: step i is on screen while pos is in (i, i + 1]; the fraction moves the frame along its link.
+  let step = 0, shown = -1, pb = null;
   const guess = P.links.map(() => ({ d: "", s: "" })), checked = P.links.map(() => false);
+  const solvedLink = (k) => checked[k] && normAddr(guess[k].d) === normAddr(P.links[k].ldst.key) && normAddr(guess[k].s) === normAddr(P.links[k].lsrc.key);
 
   box.append(el("h4", null, cfg.title || (drawMode ? "Write the link-layer addresses of each frame" : "The frame on every link: link-layer addresses change, IP addresses do not")));
   const svg = svgEl("svg", { viewBox: "0 0 640 200", class: "curve-svg net-svg" });
-  const ctl = el("div", "viz-btn-row");
-  const prev = el("button", "viz-btn", "◀ prev"), next = el("button", "viz-btn", "next ▶"), reset = el("button", "viz-btn", "reset");
-  const counter = el("span", "encap-pduname");
-  ctl.append(prev, next, reset, counter);
+  const gStatic = svgEl("g"), gMove = svgEl("g", { "pointer-events": "none" }), gHit = svgEl("g");
+  svg.append(gStatic, gMove, gHit);
   const detail = el("div", "net5-box");
   const frameRow = el("div", "net5-frame");
   const quizCtl = el("div", "viz-btn-row");
@@ -587,12 +840,22 @@ function hopWalk(box, cfg) {
   quizCtl.append(check, reveal, clear, verdict);
   const caption = el("div", "encap-caption");
   const note = el("p", "widget-note", "Order of addresses: IP addresses source–destination, link-layer addresses destination–source. The two link-layer addresses are changed every time the frame moves from one link to another; the IP pair is not.");
-  box.append(svg, ctl, detail, frameRow);
+  box.append(svg, detail, frameRow);
   if (drawMode) box.append(quizCtl);
   box.append(caption, note);
 
   const NX = [66, 230, 410, 574], NY = 100;
+  P.links.forEach((lk, i) => {
+    const xa = NX[i] + 24, xb = NX[i + 1] - 24;
+    const hit = svgEl("rect", { x: xa, y: NY - 30, width: xb - xa, height: 70, fill: "transparent", role: "button", tabindex: 0, style: "cursor:pointer", "aria-label": `show the frame on ${lk.name}` });
+    // Half-way through that link's frame step: the frame is drawn in the middle of the link.
+    const go = () => pb.set(steps.findIndex((s) => s.link === i && (s.phase === "frame" || s.phase === "draw")) + 0.5);
+    hit.addEventListener("click", go);
+    hit.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+    gHit.append(hit);
+  });
   function drawTopology() {
+    const svg = gStatic;
     svg.innerHTML = "";
     const cur = steps[step], hot = drawMode ? null : new Set([P.links[cur.link].ldst.key, P.links[cur.link].lsrc.key]);
     P.links.forEach((lk, i) => {
@@ -606,11 +869,6 @@ function hopWalk(box, cfg) {
         svg.append(svgEl("line", { x1: xa, y1: NY, x2: xb, y2: NY, stroke: active ? "var(--hl)" : "var(--ink-2)", "stroke-width": active ? 3 : 2, "stroke-dasharray": "6 4" }));
       }
       svg.append(svgEl("text", { x: (xa + xb) / 2, y: NY + 32, "text-anchor": "middle", "font-size": 11, fill: active ? "var(--hl)" : "var(--ink-dim)", "font-weight": active ? "700" : "400" }, lk.name));
-      const hit = svgEl("rect", { x: xa, y: NY - 30, width: xb - xa, height: 70, fill: "transparent", role: "button", tabindex: 0, style: "cursor:pointer", "aria-label": `show the frame on ${lk.name}` });
-      const go = () => { step = steps.findIndex((s) => s.link === i && (s.phase === "frame" || s.phase === "draw")); render(); };
-      hit.addEventListener("click", go);
-      hit.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
-      svg.append(hit);
     });
     P.nodes.forEach((nd, i) => {
       const x = NX[i], f = P.ifaces[i];
@@ -631,6 +889,32 @@ function hopWalk(box, cfg) {
     });
     svg.append(svgEl("text", { x: 8, y: 192, "font-size": 10.5, fill: "var(--ink-dim)" }, "N: IP address   L: link-layer address   (click a link to see its frame)"));
   }
+  /** What moves in the step on screen: the frame along its link, the ARP question out and the answer back. */
+  function drawMove(frac) {
+    gMove.innerHTML = "";
+    const cur = steps[step], lk = P.links[cur.link], xa = NX[cur.link] + 24, xb = NX[cur.link + 1] - 24;
+    const ease = (t) => { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); };
+    if (cur.phase === "table") {
+      const x = NX[cur.link];
+      gMove.append(P.nodes[cur.link].kind === "host"
+        ? svgEl("rect", { x: x - 25, y: NY - 18, width: 50, height: 36, rx: 6, fill: "none", stroke: "var(--hl)", "stroke-width": 2 })
+        : svgEl("ellipse", { cx: x, cy: NY, rx: 27, ry: 16, fill: "none", stroke: "var(--hl)", "stroke-width": 2 }));
+      return;
+    }
+    if (cur.phase === "arp") {
+      const out = frac < 0.5, t = ease(out ? frac * 2 : frac * 2 - 1), w = 40, color = out ? "var(--hl)" : "var(--blue)";
+      const x = out ? xa + (xb - w - xa) * t : xb - w - (xb - w - xa) * t;
+      gMove.append(svgEl("rect", { x, y: NY - 11, width: w, height: 22, rx: 11, fill: "var(--paper)", stroke: color, "stroke-width": 1.5 }));
+      gMove.append(svgLabel(x + w / 2, NY + 3, out ? [lk.hop, " ?"] : [lk.ldst], { "font-size": 10.5, "text-anchor": "middle", fill: color }));
+      return;
+    }
+    const w = 50, arrived = cur.phase === "final", x = arrived ? xb - w : xa + (xb - w - xa) * ease(frac);
+    const known = !drawMode || solvedLink(cur.link);
+    gMove.append(svgEl("rect", { x, y: NY - 15, width: w, height: 30, rx: 3, fill: "var(--paper)", stroke: arrived ? "var(--blue)" : "var(--hl)", "stroke-width": 1.5 }));
+    const top = svgLabel(x + w / 2, NY - 3, known ? [lk.ldst, " ", lk.lsrc] : ["L? L?"], { "font-size": 10.5, "text-anchor": "middle", fill: "var(--hl)" });
+    if (arrived) top.setAttribute("opacity", String(1 - ease(frac))); // the header is removed at Bob
+    gMove.append(top, svgLabel(x + w / 2, NY + 10, [P.nsrc, " ", P.ndst], { "font-size": 10.5, "text-anchor": "middle", fill: "var(--blue)" }));
+  }
   function cellOf(content, cls, small) {
     const c = el("div", `c ${cls}`);
     if (typeof content === "string") c.innerHTML = content; else c.append(content);
@@ -640,8 +924,6 @@ function hopWalk(box, cfg) {
   function render() {
     const cur = steps[step], lk = P.links[cur.link];
     drawTopology();
-    counter.textContent = `step ${step + 1} of ${steps.length} · ${lk.name}`;
-    prev.disabled = step === 0; next.disabled = step === steps.length - 1;
     caption.innerHTML = cur.text;
     frameRow.innerHTML = "";
     detail.innerHTML = "";
@@ -667,17 +949,26 @@ function hopWalk(box, cfg) {
       input.placeholder = "L?";
       const ok = normAddr(g[key]) === normAddr(answer.key);
       if (was) input.classList.add(ok ? "correct" : "incorrect");
-      input.addEventListener("input", () => { g[key] = input.value; checked[cur.link] = false; input.classList.remove("correct", "incorrect"); verdict.textContent = ""; });
+      input.addEventListener("input", () => { g[key] = input.value; checked[cur.link] = false; input.classList.remove("correct", "incorrect"); verdict.textContent = ""; drawMove(fracOf(pb.pos())); });
       return cellOf(input, "l" + (was ? (ok ? " hot" : " bad") : ""), label);
     };
     frameRow.append(mk("d", "link-layer destination", lk.ldst), mk("s", "link-layer source", lk.lsrc), cellOf(h(P.nsrc), "n", "IP source"), cellOf(h(P.ndst), "n", "IP destination"), cellOf("Data", "d"));
   }
+  const stepOf = (pos) => clamp(Math.ceil(pos - 1e-9) - 1, 0, steps.length - 1);
+  const fracOf = (pos) => (pos <= 0 ? 0 : clamp(pos - stepOf(pos), 0, 1));
+  /** One playback frame: the step's text and fields are rebuilt only when the step changes, the moving part every time. */
+  function frame(pos) {
+    const i = stepOf(pos);
+    if (i !== shown) { step = shown = i; verdict.textContent = ""; render(); }
+    drawMove(fracOf(pos));
+  }
+  const redraw = () => { render(); drawMove(fracOf(pb.pos())); };
   check.addEventListener("click", () => {
     const i = steps[step].link, lk = P.links[i], g = guess[i];
     checked[i] = true;
     const okD = normAddr(g.d) === normAddr(lk.ldst.key), okS = normAddr(g.s) === normAddr(lk.lsrc.key);
-    const solved = P.links.filter((l, k) => checked[k] && normAddr(guess[k].d) === normAddr(l.ldst.key) && normAddr(guess[k].s) === normAddr(l.lsrc.key)).length;
-    render();
+    const solved = P.links.filter((l, k) => solvedLink(k)).length;
+    redraw();
     verdict.textContent = okD && okS ? `Correct: [${addrText(lk.ldst)} | ${addrText(lk.lsrc)} | ${addrText(P.nsrc)} | ${addrText(P.ndst)} | Data]. ${solved} of ${P.links.length} frames right.`
       : !okD && !okS ? "Both link-layer addresses are wrong (red): destination first, then the sender's own address on this link."
       : !okD ? "The destination is wrong (red): the next node's address on this link." : "The source is wrong (red): the sender's own interface on this link.";
@@ -685,14 +976,16 @@ function hopWalk(box, cfg) {
   reveal.addEventListener("click", () => {
     const i = steps[step].link, lk = P.links[i];
     guess[i] = { d: addrText(lk.ldst), s: addrText(lk.lsrc) }; checked[i] = true;
-    render();
+    redraw();
     verdict.textContent = `[${addrText(lk.ldst)} | ${addrText(lk.lsrc)} | ${addrText(P.nsrc)} | ${addrText(P.ndst)} | Data]`;
   });
-  clear.addEventListener("click", () => { const i = steps[step].link; guess[i] = { d: "", s: "" }; checked[i] = false; verdict.textContent = ""; render(); });
-  prev.addEventListener("click", () => { step = Math.max(0, step - 1); verdict.textContent = ""; render(); });
-  next.addEventListener("click", () => { step = Math.min(steps.length - 1, step + 1); verdict.textContent = ""; render(); });
-  reset.addEventListener("click", () => { step = 0; verdict.textContent = ""; render(); });
-  render();
+  clear.addEventListener("click", () => { const i = steps[step].link; guess[i] = { d: "", s: "" }; checked[i] = false; verdict.textContent = ""; redraw(); });
+  const MS = { table: 1300, arp: 2200, frame: 1700, draw: 1700, final: 1300 };
+  pb = createPlayback({
+    count: steps.length, unit: "step", onFrame: frame,
+    stepMs: () => cfg.stepMs || MS[steps[clamp(Math.floor((pb ? pb.pos() : 0) + 1e-9), 0, steps.length - 1)].phase],
+  });
+  svg.after(pb.el);
 }
 
 // ---------- widget: arp-exchange ----------
@@ -713,11 +1006,9 @@ function arpExchange(box, cfg) {
   const quiz = !!cfg.quiz;
   const A = ARP_SYSTEMS[0], B = ARP_SYSTEMS[t - 1];
   const Nn = (s) => `N<sub>${s}</sub>`, Ln = (s) => `L<sub>${s}</sub>`;
-  let phase = 0, timer = null;
+  // Playback: step 1 is the broadcast request, step 2 the unicast reply; `frac` is how far the message has travelled.
+  let phase = 0, frac = 0, shown = -1;
   box.append(el("h4", null, cfg.title || `ARP: ${A.letter} needs the link-layer address of ${addrText(N(B.n))}`));
-  const ctl = el("div", "viz-btn-row");
-  const play = el("button", "viz-btn", `Resolve ${addrText(N(B.n))}`), bReq = el("button", "viz-btn", "Request"), bRep = el("button", "viz-btn", "Reply"), bReset = el("button", "viz-btn", "Reset");
-  ctl.append(play, bReq, bRep, bReset);
   const svg = svgEl("svg", { viewBox: "0 0 640 210", class: "curve-svg net-svg" });
   const caption = el("div", "encap-caption");
   const packets = el("div", "net5-packets");
@@ -726,7 +1017,7 @@ function arpExchange(box, cfg) {
   const verdict = el("span", "encap-pduname");
   quizCtl.append(check, reveal, clear, verdict);
   const note = el("p", "widget-note", "ARP is one of the auxiliary protocols defined in the network layer; it maps an IP address to a link-layer address. The request is broadcast (every system on the LAN receives it, only the owner of the IP address answers); the reply is unicast to the requester. Hosts and routers run ARP all the time in the background because they do not know when a request will come.");
-  box.append(ctl, svg, caption, packets);
+  box.append(svg, caption, packets);
   if (quiz) box.append(quizCtl);
   box.append(note);
 
@@ -799,14 +1090,24 @@ function arpExchange(box, cfg) {
     const hub = [320, 40];
     for (const s of ARP_SYSTEMS) svg.append(svgEl("line", { x1: hub[0], y1: hub[1], x2: s.x, y2: s.y - 15, stroke: "var(--ink-dim)" }));
     const hl = arrowMarker(svg, "var(--hl)"), bl = arrowMarker(svg, "var(--blue)");
+    // A message grows from its sender to the switch (first half of the step), then on to its receivers.
+    const t1 = easeIO(frac * 2), t2 = easeIO(frac * 2 - 1);
+    const leg = (from, to, t, color, marker) => {
+      if (t <= 0) return;
+      const x2 = lerp(from[0], to[0], t), y2 = lerp(from[1], to[1], t);
+      const attrs = { x1: from[0], y1: from[1], x2, y2, stroke: color, "stroke-width": 3 };
+      if (marker) attrs["marker-end"] = marker;
+      svg.append(svgEl("line", attrs));
+      if (frac < 1) svg.append(svgEl("circle", { cx: x2, cy: y2, r: 4.5, fill: color }));
+    };
     if (phase === 1) {
-      svg.append(svgEl("line", { x1: A.x, y1: A.y - 15, x2: hub[0], y2: hub[1], stroke: "var(--hl)", "stroke-width": 3 }));
-      for (const s of ARP_SYSTEMS) if (s !== A) svg.append(svgEl("line", { x1: hub[0], y1: hub[1], x2: s.x, y2: s.y - 15, stroke: "var(--hl)", "stroke-width": 3, "marker-end": hl }));
+      leg([A.x, A.y - 15], hub, t1, "var(--hl)", null);
+      for (const s of ARP_SYSTEMS) if (s !== A) leg(hub, [s.x, s.y - 15], t2, "var(--hl)", hl);
       svg.append(svgEl("rect", { x: 150, y: 44, width: 60, height: 18, rx: 3, fill: "var(--paper)", stroke: "var(--hl)" }));
       svg.append(svgEl("text", { x: 180, y: 57, "text-anchor": "middle", "font-size": 10.5, fill: "var(--hl)" }, "Request"));
     } else if (phase === 2) {
-      svg.append(svgEl("line", { x1: B.x, y1: B.y - 15, x2: hub[0], y2: hub[1], stroke: "var(--blue)", "stroke-width": 3 }));
-      svg.append(svgEl("line", { x1: hub[0], y1: hub[1], x2: A.x, y2: A.y - 15, stroke: "var(--blue)", "stroke-width": 3, "marker-end": bl }));
+      leg([B.x, B.y - 15], hub, t1, "var(--blue)", null);
+      leg(hub, [A.x, A.y - 15], t2, "var(--blue)", bl);
       svg.append(svgEl("rect", { x: 430, y: 44, width: 50, height: 18, rx: 3, fill: "var(--paper)", stroke: "var(--blue)" }));
       svg.append(svgEl("text", { x: 455, y: 57, "text-anchor": "middle", "font-size": 10.5, fill: "var(--blue)" }, "Reply"));
     }
@@ -823,6 +1124,8 @@ function arpExchange(box, cfg) {
   }
   function render() {
     drawLan();
+    if (phase === shown) return;
+    shown = phase;
     pReq.classList.toggle("cur", phase === 1); pReq.classList.toggle("dim", phase === 2);
     pRep.classList.toggle("cur", phase === 2); pRep.classList.toggle("dim", phase === 1);
     caption.innerHTML = phase === 0
@@ -830,11 +1133,11 @@ function arpExchange(box, cfg) {
       : phase === 1 ? `<b>ARP request is broadcast</b>: every system on the LAN receives the frame (destination BA, the broadcast address); only the one whose IP address is ${Nn(B.n)} answers. The destination hardware address field is all 0s because that is what is being asked.`
       : `<b>ARP reply is unicast</b>: System ${B.letter} answers ${A.letter} only, in a frame addressed to ${A.letter}. The reply's operation field is 2 and it carries ${Ln(B.l)} as the source hardware address.`;
   }
-  const setPhase = (p) => { if (timer) { clearTimeout(timer); timer = null; } phase = p; render(); };
-  play.addEventListener("click", () => { setPhase(1); timer = setTimeout(() => { timer = null; phase = 2; render(); }, 1200); });
-  bReq.addEventListener("click", () => setPhase(1));
-  bRep.addEventListener("click", () => setPhase(2));
-  bReset.addEventListener("click", () => setPhase(0));
+  const pb = createPlayback({
+    count: 2, unit: "message", stepMs: cfg.stepMs || 2000,
+    onFrame: (pos) => { phase = pos <= 0 ? 0 : Math.min(2, Math.ceil(pos - 1e-9)); frac = phase ? clamp(pos - (phase - 1), 0, 1) : 0; render(); },
+  });
+  svg.after(pb.el);
   check.addEventListener("click", () => {
     let bad = 0, total = 0;
     for (const f of Object.values(inputs)) { total++; const ok = f.answer(f.input.value); f.input.classList.toggle("correct", ok); f.input.classList.toggle("incorrect", !ok); if (!ok) bad++; }
@@ -933,6 +1236,7 @@ function muxLink(box, cfg) {
 export const WIDGETS = {
   "fdm-plan": fdmPlan,
   "tdm-frames": tdmFrames,
+  "tdm-play": tdmPlay,
   "rate-manager": rateManager,
   "hop-walk": hopWalk,
   "arp-exchange": arpExchange,

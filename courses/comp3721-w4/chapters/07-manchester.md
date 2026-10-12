@@ -39,6 +39,15 @@ The same bits 0 1 0 0 1 1 on the slide, with the level before the first bit take
 
 The complementary note (04a) states the same rule from the other side: a 1 has its first half equal to the last half of the previous bit's signal, a 0 has it opposite.
 
+### Play the six bits: the start of the bit, then the middle
+
+Each bit is drawn in two halves. In differential Manchester, watch the start of the bit: the signal either inverts there or carries on from where it was, and the transition at the middle follows either way. With **Predict each bit before it is drawn** ticked, you pick the level of the first half.
+
+```widget
+line-code-play
+{ "bits": "010011", "schemes": ["manchester", "diff-manchester"], "scheme": "diff-manchester", "title": "The slide's six bits, drawn one bit at a time" }
+```
+
 ### The slide's six bits in both schemes
 
 ```widget

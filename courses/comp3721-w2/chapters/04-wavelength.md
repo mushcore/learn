@@ -58,6 +58,15 @@ Only the red-light row is on the slides.
 
 The two 1 GHz rows: same frequency, slower medium, shorter wavelength.
 
+### Watch one period become one wavelength
+
+Each step of the playback is one period $T$. Watch the front of the signal: in every period it moves exactly one wavelength along the medium, so distance and time grow together. Switch between the two 1 GHz presets to see the slower medium shorten the wavelength, or tick the predict box to work out each distance before it is shown.
+
+```widget
+wave-travel
+{ "f": 4e14, "speed": 3e8, "title": "Red light: one period T, one wavelength of distance" }
+```
+
 ```quiz
 [
   {

@@ -31,6 +31,15 @@ op-counter
 { "preset": "SequentialSearch", "mode": "worst", "presets": false, "title": "SequentialSearch: flip the mode and watch line 3" }
 ```
 
+### One comparison at a time
+
+Each step below is one execution of the key comparison on line 3. Try the four presets and watch where the count stops: 1 when the key is first, $n$ when it is last or absent. Tick the predict box to give the count before the run and the result of each comparison.
+
+```widget
+find-play
+{ "array": [5, 2, 4, 6, 1, 3], "case": "last", "title": "SequentialSearch: the same n, a different count" }
+```
+
 ## The three cases, defined
 
 Slide 53, with the exact wording:

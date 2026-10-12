@@ -68,6 +68,15 @@ Slide wording: *Synchronization between the multiplexer and demultiplexer is a m
 
 The figure adds one framing bit in front of the A, B, C frames: Frame 1 = 1 | C1 _ A1, Frame 2 = 0 | _ B2 A2, Frame 3 = 1 | C3 B3 A3. The framing bits read 1 0 1 across the frames, and the blank slots are empty slots from a silent input, the inefficiency from the top of this lesson drawn in.
 
+### Watch the slide's three frames being built
+
+Each frame starts with its framing bit, and a line with no data leaves its slot empty. The slot still crosses the link. Tick the predict box to name each frame before it is built.
+
+```widget
+tdm-play
+{ "preset": "Empty slots and framing bits (slide 45)" }
+```
+
 A framing bit is overhead: a frame of $n$ slots plus one framing bit carries $n \times \text{unit} + 1$ bits, so the link rate rises by one bit per frame.
 
 ```quiz

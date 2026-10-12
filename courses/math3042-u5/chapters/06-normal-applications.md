@@ -58,6 +58,15 @@ normal-prob
 { "mu": 100, "sigma": 15, "lo": null, "hi": 120, "title": "IQ below 120: Z = (120 − 100)/15 = 1.33" }
 ```
 
+### Watch the curve being standardized
+
+Subtracting $\mu$ slides the curve to 0 and dividing by $\sigma$ squeezes it into the standard normal; the shaded area never changes. The other buttons play the radiation and noise examples from the sections below. Tick the predict box to give $Z$ and the table operation before each is shown.
+
+```widget
+standardize-play
+{ "preset": "IQ below 120" }
+```
+
 ## Cosmic radiation on a trans-Canada flight
 
 $X$ = the cosmic radiation dose on a trans-Canada flight, normal with $\mu = 4.35$ mrem and $\sigma = 0.500$ mrem.

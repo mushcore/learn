@@ -4,6 +4,7 @@
 import { el, esc, slider, btnRow, fmtNum } from "./dom.js";
 import { highlight } from "./highlight.js";
 import { inline } from "./markdown.js";
+import { createPlayback } from "./playback.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 function svgEl(tag, attrs = {}, text) {
@@ -760,10 +761,443 @@ function fibRace(box, cfg) {
   draw();
 }
 
+// =====================================================================
+// Playback widgets (app/playback.js owns time; every frame is a pure function of pos).
+// =====================================================================
+const ease = (t) => t * t * (3 - 2 * t);
+/** The "Predict …" checkbox used by the playback widgets. */
+function predictCheck(text, checked) {
+  const label = el("label", "playback-check");
+  const input = document.createElement("input");
+  input.type = "checkbox"; input.checked = checked;
+  label.append(input, " " + text);
+  return { label, input };
+}
+function playCaption() {
+  const p = el("p", "playback-caption");
+  p.setAttribute("aria-live", "polite");
+  return p;
+}
+const nudge = (ask) => () => { ask.classList.remove("playback-nudge"); void ask.offsetWidth; ask.classList.add("playback-nudge"); };
+const plural = (k, word) => `${k} ${word}${k === 1 ? "" : "s"}`;
+
+// ---------- widget: fib-tree-play ----------
+// The call tree of the recursive fib growing in the order the calls happen. A step is one call
+// (a base case returns inside its own step) or the return of a call that has both answers.
+const FT_RULE = "fib(n) with n > 1 calls fib(n-1) first, waits for its answer, then calls fib(n-2), and only then returns the sum; with n ≤ 1 it returns n at once.";
+function fibTrace(N) {
+  const nodes = [], steps = [], seen = new Map();
+  let slot = 0;
+  (function call(k, parent, which) {
+    const nd = { k, parent, which, d: parent ? parent.d + 1 : 0, prior: seen.get(k) || 0, kids: [] };
+    seen.set(k, nd.prior + 1);
+    nodes.push(nd); steps.push({ type: "call", nd }); nd.callStep = steps.length;
+    if (k <= 1) { nd.val = k; nd.x = slot++; nd.retStep = nd.callStep; }
+    else {
+      nd.kids = [call(k - 1, nd, 1), call(k - 2, nd, 2)];
+      nd.x = (nd.kids[0].x + nd.kids[1].x) / 2; nd.val = nd.kids[0].val + nd.kids[1].val;
+      steps.push({ type: "ret", nd }); nd.retStep = steps.length;
+    }
+    return nd;
+  })(N, null, 0);
+  return { nodes, steps, leaves: slot };
+}
+function fibTreePlay(box, cfg) {
+  let n = clamp(Math.round(cfg.n ?? 5), 2, 6);
+  let T = fibTrace(n);
+  // Predict mode: `answered` steps may be drawn. The first call, fib(n) itself, is given.
+  let predict = !!cfg.predict, answered = 1, asked = 0, firstTry = 0, missed = false, wrong = null, askKey = null, refocus = false;
+  let pb = null;
+
+  box.append(el("h4", null, cfg.title || "Watch fib(n) make its calls, one at a time"));
+  const s = slider("n", 2, 6, 1, n, (v) => { n = v; restart(); }, (v) => String(v));
+  const pc = predictCheck("Predict each call or return before it is shown", predict);
+  const svg = svgEl("svg", { viewBox: "0 0 640 240", class: "curve-svg fib-svg" });
+  svg.style.minWidth = "520px";
+  const wrap = el("div", "fib-tree-wrap");
+  wrap.append(svg);
+  const caption = playCaption();
+  const ask = el("div", "viz-btn-row playback-ask");
+  box.append(s.row, pc.label, wrap, caption, ask);
+
+  const total = () => T.steps.length;
+  const keyOf = (st) => (st.type === "call" ? "c" + st.nd.k : "ret");
+  const keyName = (k) => (k === "ret" ? "return to the caller" : `fib(${k.slice(1)})`);
+  /** The call that is running at rest point p: the deepest one that has not returned yet. */
+  const top = (p) => { let t = null; for (const nd of T.nodes) if (nd.callStep <= p && nd.retStep > p) t = nd; return t; };
+  const counts = (p) => { let calls = 0, rec = 0; for (const nd of T.nodes) if (nd.callStep <= p) { calls++; if (nd.prior) rec++; } return { calls, rec }; };
+  const asking = (pos) => predict && answered < total() && Math.abs(pos - answered) < 1e-6;
+  function answer(v, e) {
+    asked += wrong == null && !missed ? 1 : 0;
+    if (v !== keyOf(T.steps[answered])) { missed = true; wrong = v; refocus = e.detail === 0; frame(pb.pos()); return; }
+    if (!missed) firstTry++;
+    missed = false; wrong = null; refocus = e.detail === 0; answered++;
+    pb.next();
+  }
+  function renderAsk(pos) {
+    const key = asking(pos) ? `${n}|${answered}|${wrong}` : "";
+    if (key === askKey) return;
+    askKey = key; ask.innerHTML = ""; ask.hidden = !predict;
+    if (!key) return;
+    const opts = []; for (let j = n - 1; j >= 0; j--) opts.push("c" + j);
+    opts.push("ret");
+    const btns = opts.map((v) => {
+      const b = el("button", "viz-btn" + (v === wrong ? " playback-wrong" : ""), keyName(v));
+      b.type = "button";
+      b.addEventListener("click", (e) => answer(v, e));
+      ask.append(b);
+      return b;
+    });
+    if (wrong != null) ask.append(el("span", "playback-feedback", `Not ${keyName(wrong)}. ${FT_RULE}`));
+    if (refocus) { refocus = false; (btns.find((b) => !b.classList.contains("playback-wrong")) || btns[0]).focus(); }
+  }
+  function question(nd, p) {
+    const back = nd.kids.filter((c) => c.retStep <= p);
+    const have = back.length === 0 ? `fib(${nd.k}) has just been called, and ${nd.k} > 1`
+      : back.length === 1 ? `fib(${nd.k}) has fib(${nd.k - 1}) = ${back[0].val} back`
+      : `fib(${nd.k}) has fib(${nd.k - 1}) = ${back[0].val} and fib(${nd.k - 2}) = ${back[1].val} back`;
+    return `${have}. What happens next: which call, or a return?`;
+  }
+  function stepText(st, c) {
+    const nd = st.nd, p = nd.parent, tally = `${plural(c.calls, "call")} so far, ${c.rec} recomputed.`;
+    if (st.type === "ret") {
+      return `fib(${nd.k}) has both answers, so it returns fib(${nd.k - 1}) + fib(${nd.k - 2}) = ${nd.kids[0].val} + ${nd.kids[1].val} = ${nd.val}${p ? ` to its caller fib(${p.k})` : ""}. ${tally}`;
+    }
+    if (!p) return `fib(${nd.k}) is called. ${nd.k} > 1, so it will call fib(${nd.k - 1}) first and then fib(${nd.k - 2}). 1 call so far, 0 recomputed.`;
+    const who = nd.which === 1 ? `fib(${p.k}) calls fib(${nd.k}), its fib(n-1)` : `fib(${p.k}) has fib(${p.k - 1}) = ${p.kids[0].val} back, so it now calls fib(${nd.k}), its fib(n-2)`;
+    const fresh = nd.prior === 0 ? `This is the first time fib(${nd.k}) is needed, so the call is new.`
+      : `fib(${nd.k}) has already been computed ${nd.prior === 1 ? "once" : nd.prior + " times"}, and it is recomputed from scratch.`;
+    return `${who}. ${fresh}${nd.k <= 1 ? ` ${nd.k} ≤ 1, so it returns ${nd.k} at once.` : ""} ${tally}`;
+  }
+  function frame(pos) {
+    const N = total(), q = asking(pos), shown = Math.ceil(pos - 1e-9), done = Math.floor(pos + 1e-9), f = pos - done, moving = f > 1e-9;
+    const cur = shown > 0 ? T.steps[shown - 1] : null;
+    const big = n <= 5, pw = big ? 46 : 38, ph = 20, rowH = n <= 4 ? 50 : 46;
+    const slotW = Math.min(90, 580 / Math.max(1, T.leaves - 1)), left = (640 - slotW * (T.leaves - 1)) / 2;
+    const X = (v) => left + v * slotW, Y = (d) => 30 + d * rowH;
+    svg.innerHTML = "";
+    svg.setAttribute("viewBox", `0 0 640 ${30 + (n - 1) * rowH + 18}`);
+    const c = counts(shown);
+    svg.append(svgEl("rect", { x: 8, y: 7, width: 11, height: 11, rx: 2.5, fill: "var(--paper)", stroke: "var(--blue)", "stroke-width": 1.4 }));
+    svg.append(svgEl("text", { x: 25, y: 17, "font-size": 11, fill: "var(--ink)" }, `calls so far: ${c.calls}`));
+    svg.append(svgEl("rect", { x: 8, y: 24, width: 11, height: 11, rx: 2.5, fill: "var(--red-soft)", stroke: "var(--red)", "stroke-width": 1.4 }));
+    svg.append(svgEl("text", { x: 25, y: 34, "font-size": 11, fill: "var(--ink)" }, `recomputed: ${c.rec}`));
+    svg.append(svgEl("circle", { cx: 13.5, cy: 46.5, r: 5.5, fill: "var(--paper)", stroke: "var(--green)", "stroke-width": 1.4 }));
+    svg.append(svgEl("text", { x: 25, y: 50.5, "font-size": 11, fill: "var(--ink-dim)" }, "value returned"));
+
+    const calling = moving && cur.type === "call" ? cur.nd : null, returning = moving && cur.type === "ret" ? cur.nd : null;
+    const at = (nd) => {
+      const own = [X(nd.x), Y(nd.d)];
+      if (nd !== calling || !nd.parent) return own;
+      const t = ease(Math.min(1, f / 0.7)), a = [X(nd.parent.x), Y(nd.parent.d)];
+      return [a[0] + (own[0] - a[0]) * t, a[1] + (own[1] - a[1]) * t];
+    };
+    const hasVal = (nd) => nd.retStep <= done || nd === returning || (nd === calling && nd.k <= 1 && f >= 0.8);
+    const vis = T.nodes.filter((nd) => nd.callStep <= shown);
+    const hot = q ? top(answered) : cur ? cur.nd : null;
+    for (const nd of vis) {
+      if (!nd.parent) continue;
+      const [x, y] = at(nd), live = moving && nd === cur.nd;
+      svg.append(svgEl("line", { x1: X(nd.parent.x), y1: Y(nd.parent.d) + ph / 2, x2: x, y2: y - ph / 2, stroke: live ? "var(--hl)" : "var(--rule-strong)", "stroke-width": live ? 2 : 1.2 }));
+    }
+    for (const nd of vis) {
+      const [x, y] = at(nd), val = hasVal(nd), g = svgEl("g", !nd.parent && nd === calling ? { opacity: f } : {});
+      const r = { x: x - pw / 2, y: y - ph / 2, width: pw, height: ph, rx: 6 };
+      g.append(svgEl("rect", { ...r, fill: "var(--paper)" }));
+      g.append(svgEl("rect", { ...r, fill: nd.prior ? "var(--red-soft)" : "none", stroke: nd.prior ? "var(--red)" : "var(--blue)", "stroke-width": val ? 1.2 : 2.2 }));
+      if (nd === hot) g.append(svgEl("rect", { x: r.x - 3.5, y: r.y - 3.5, width: pw + 7, height: ph + 7, rx: 9, fill: "none", stroke: "var(--hl)", "stroke-width": 1.8 }));
+      g.append(svgEl("text", { x, y: y + 4, "text-anchor": "middle", "font-size": big ? 11.5 : 9.5, fill: val ? "var(--ink-dim)" : "var(--ink)" }, `fib(${nd.k})`));
+      if (val) {
+        const bx = x + pw / 2 - (big ? 1 : 5), by = y - ph / 2 - 1;
+        g.append(svgEl("circle", { cx: bx, cy: by, r: 8, fill: "var(--paper)", stroke: "var(--green)", "stroke-width": 1.4 }));
+        g.append(svgEl("text", { x: bx, y: by + 3.6, "text-anchor": "middle", "font-size": 10.5, "font-weight": 700, fill: "var(--green)" }, String(nd.val)));
+      }
+      svg.append(g);
+    }
+    // The answer travelling back up the edge to the caller.
+    if (returning && returning.parent) {
+      const a = [X(returning.x), Y(returning.d) - ph / 2], b = [X(returning.parent.x), Y(returning.parent.d) + ph / 2], t = ease(f);
+      const x = a[0] + (b[0] - a[0]) * t, y = a[1] + (b[1] - a[1]) * t;
+      svg.append(svgEl("circle", { cx: x, cy: y, r: 8, fill: "var(--green)" }));
+      svg.append(svgEl("text", { x, y: y + 3.6, "text-anchor": "middle", "font-size": 10.5, "font-weight": 700, fill: "var(--paper)" }, String(returning.val)));
+    }
+    let text;
+    if (q) text = question(top(answered), answered);
+    else if (!cur) text = `Press Play to run fib(${n}) one call at a time. ${FT_RULE}`;
+    else {
+      text = stepText(cur, c);
+      if (pos >= N) {
+        text = `fib(${n}) has both answers and returns ${T.nodes[0].kids[0].val} + ${T.nodes[0].kids[1].val} = ${T.nodes[0].val}. Done: ${c.calls} calls, ${c.rec} of them recomputations. fib2 stores successive results, so it computes each of the ${n + 1} values F[0] to F[${n}] exactly once.`;
+        if (asked > 0) text += ` ${firstTry} of ${asked} right on the first try.`;
+      }
+    }
+    if (caption.textContent !== text) caption.textContent = text;
+    renderAsk(pos);
+  }
+  function restart() {
+    T = fibTrace(n);
+    answered = 1; asked = 0; firstTry = 0; missed = false; wrong = null; askKey = null;
+    pb.reset(total());
+  }
+  pb = createPlayback({
+    count: total(), unit: "step", onFrame: frame, stepMs: () => cfg.stepMs || 1100,
+    limit: () => (predict ? answered : total()), onBlocked: nudge(ask),
+  });
+  box.append(pb.el, el("p", "widget-note", "A thick outline is a call still waiting for an answer. A red node is an argument that was already computed somewhere else in the tree."));
+  pc.input.addEventListener("change", () => {
+    predict = pc.input.checked; pb.pause();
+    // Steps already on screen count as answered; the questions start at the next one.
+    answered = Math.max(1, Math.ceil(pb.pos() - 1e-9)); asked = 0; firstTry = 0; missed = false; wrong = null; askKey = null;
+    pb.set(pb.pos());
+  });
+}
+
+// ---------- widget: find-play ----------
+// SequentialSearch (or find, the largest element) running on an array. One playback step is one
+// execution of the basic operation; the phases inside a step are the lines run around it.
+const FP = {
+  search: {
+    lines: ["SequentialSearch(A[0..n-1], K)", "  i ← 0", "  while i < n and A[i] ≠ K do", "    i ← i + 1", "  if i < n return i", "  else return -1"],
+    basic: 3, min: 1, array: [5, 2, 4, 6, 1, 3],
+    title: "Watch SequentialSearch run, one comparison at a time",
+    note: "★ marks the basic operation, the key comparison A[i] ≠ K on line 3. How many times it runs depends on the order of the input: C_best(n) = 1 and C_worst(n) = n.",
+    rule: "Line 3 compares A[0], A[1], … in turn and stops at the first element equal to K. If K is not in the list all n elements are compared, then i < n ends the loop.",
+  },
+  find: {
+    lines: ["Algo: find( A[0…n-1] )", "   m ← A[0]", "   for i ← 1 to n-1 do", "      if A[i] > m", "         m ← A[i]", "   return m"],
+    basic: 4, min: 2, array: [2, 5, 8],
+    title: "Watch find run, one comparison at a time",
+    note: "★ marks the basic operation, the comparison A[i] > m on line 4. It runs n − 1 times for every input of size n, so best case = worst case. Line 5 runs only when the comparison is true.",
+    rule: "The loop runs i = 1 to n − 1 with one comparison per pass, whatever the values are.",
+  },
+};
+/** Steps of the run. Each has the phases (a..b of the step, the line being executed, the pointer's move) and the comparison's result. */
+function fpTrace(algo, A, K) {
+  const n = A.length, steps = [];
+  if (algo === "find") {
+    let m = A[0], at = 0;
+    for (let i = 1; i < n; i++) {
+      const res = A[i] > m, ph = [];
+      if (i === 1) ph.push({ a: 0, b: 0.12, line: 2, from: 0, to: 0 });
+      ph.push({ a: i === 1 ? 0.12 : 0, b: 0.3, line: 3, from: i - 1, to: i });
+      ph.push({ a: 0.3, b: res ? 0.7 : 1, line: 4, cmp: true, from: i, to: i });
+      if (res) ph.push({ a: 0.7, b: 1, line: 5, assign: true, from: i, to: i });
+      steps.push({ i, res, ph, rev: res ? 0.5 : 0.6, m0: m, m1: res ? A[i] : m, at0: at, at1: res ? i : at });
+      if (res) { m = A[i]; at = i; }
+    }
+    return { steps, endLine: 6, ret: m };
+  }
+  let i = 0;
+  for (; i < n; i++) {
+    const res = A[i] !== K, exit = res && i === n - 1, m = exit ? 0.25 : 0.3, c = exit ? 0.7 : 1;
+    const ph = [{ a: 0, b: m, line: i === 0 ? 2 : 4, from: Math.max(0, i - 1), to: i }, { a: m, b: c, line: 3, cmp: true, from: i, to: i }];
+    // K is absent: after the last comparison line 4 still runs, and i = n ends the loop.
+    if (exit) ph.push({ a: c, b: 1, line: 4, from: i, to: n });
+    steps.push({ i, res, ph, rev: (m + c) / 2 });
+    if (!res) break;
+  }
+  return { steps, endLine: i < n ? 5 : 6, ret: i < n ? i : -1 };
+}
+function findPlay(box, cfg) {
+  const algo = cfg.algo === "find" ? "find" : "search", D = FP[algo], search = algo === "search";
+  const okNum = (v) => Number.isInteger(v) && v >= -99 && v <= 999;
+  const okArr = (a) => Array.isArray(a) && a.length >= D.min && a.length <= 10 && a.every(okNum);
+  let A = okArr(cfg.array) ? cfg.array.slice() : D.array.slice();
+  const caseKey = { best: (a) => a[0], middle: (a) => a[Math.floor((a.length - 1) / 2)], last: (a) => a[a.length - 1], absent: (a) => Math.max(...a) + 1 };
+  let K = okNum(cfg.key) ? cfg.key : (caseKey[cfg.case] || caseKey.last)(A);
+  let T = fpTrace(algo, A, K);
+  // Predict mode: first the total (`countDone`), then each comparison's result; `answered` steps may be drawn.
+  let predict = !!cfg.predict, countDone = false, answered = 0, asked = 0, firstTry = 0, missed = false, wrong = null, askKey = null, refocus = false;
+  let pb = null;
+
+  box.append(el("h4", null, cfg.title || D.title));
+  const row = el("div", "unit-row");
+  const mkInput = (label, value, width) => {
+    const l = el("label", null, label), input = document.createElement("input");
+    l.style.width = "auto"; input.type = "text"; input.value = value; input.style.width = width; input.setAttribute("aria-label", label);
+    row.append(l, input);
+    return input;
+  };
+  const aIn = mkInput("A", A.join(" "), "170px"), kIn = search ? mkInput("K", String(K), "64px") : null;
+  const presets = el("div", "viz-btn-row");
+  const setInputs = (a, k) => { A = a; aIn.value = A.join(" "); if (search) { K = k; kIn.value = String(K); } restart(); };
+  const PRE = search
+    ? [["best: key first", "best"], ["key in the middle", "middle"], ["worst: key last", "last"], ["worst: key absent", "absent"]].map(([t, c]) => [t, () => setInputs(A, caseKey[c](A))])
+    : [["ascending", () => setInputs(A.slice().sort((x, y) => x - y))], ["descending", () => setInputs(A.slice().sort((x, y) => y - x))], ["5 2 4 6 1 3", () => setInputs([5, 2, 4, 6, 1, 3])]];
+  for (const [t, fn] of PRE) { const b = el("button", "viz-btn", t); b.type = "button"; b.addEventListener("click", fn); presets.append(b); }
+  const pc = predictCheck("Predict the count, then each comparison, before it is shown", predict);
+  const svg = svgEl("svg", { viewBox: "0 0 640 128", class: "curve-svg net-svg" });
+  const table = el("div", "oc-table");
+  const head = el("div", "oc-row oc-head");
+  head.append(el("span", "oc-ln", "line"), el("span", "oc-code", "statement"), el("span", "oc-cnt", "runs"));
+  table.append(head);
+  const rows = D.lines.map((text, i) => {
+    const r = el("div", "oc-row" + (i + 1 === D.basic ? " basic" : "")), code = el("span", "oc-code"), cnt = el("span", "oc-cnt cur", "");
+    code.innerHTML = highlight("pseudo", text) || " ";
+    r.append(el("span", "oc-ln", String(i + 1)), code, cnt);
+    table.append(r);
+    return { r, cnt };
+  });
+  for (const e of table.querySelectorAll(".oc-code")) e.style.minWidth = "0";
+  for (const e of table.querySelectorAll(".oc-cnt")) e.style.width = "58px";
+  const caption = playCaption();
+  const ask = el("div", "viz-btn-row playback-ask");
+  const note = el("p", "widget-note", D.note);
+  box.append(row, presets, pc.label, svg, table, caption, ask);
+
+  const total = () => T.steps.length, n = () => A.length;
+  const cmpText = (st) => (search ? `${A[st.i]} ≠ ${K}` : `${A[st.i]} > ${st.m0}`);
+  const asking = (pos) => predict && answered < total() && Math.abs(pos - answered) < 1e-6;
+  const kind = () => (answered === 0 && !countDone ? "count" : "step");
+  const optName = (v) => (typeof v === "number" ? String(v) : search ? (v ? "true: keep going" : "false: stop") : v ? "true: m ← A[i]" : "false: m stays");
+  function answer(v, e) {
+    const k = kind(), right = k === "count" ? total() : T.steps[answered].res;
+    asked += wrong == null && !missed ? 1 : 0;
+    refocus = e.detail === 0;
+    if (v !== right) { missed = true; wrong = v; frame(pb.pos()); return; }
+    if (!missed) firstTry++;
+    missed = false; wrong = null;
+    if (k === "count") { countDone = true; frame(pb.pos()); return; }
+    answered++;
+    pb.next();
+  }
+  function renderAsk(pos) {
+    const k = kind(), key = asking(pos) ? `${k}|${answered}|${wrong}|${A}|${K}` : "";
+    if (key === askKey) return;
+    askKey = key; ask.innerHTML = ""; ask.hidden = !predict;
+    if (!key) return;
+    const opts = k === "count" ? Array.from({ length: n() + 2 }, (_, j) => j) : [true, false];
+    const btns = opts.map((v) => {
+      const b = el("button", "viz-btn" + (v === wrong ? " playback-wrong" : ""), optName(v));
+      b.type = "button";
+      b.addEventListener("click", (e) => answer(v, e));
+      ask.append(b);
+      return b;
+    });
+    if (wrong != null) {
+      const st = T.steps[answered];
+      const why = k === "count" ? `Not ${wrong}. ${D.rule}`
+        : search ? `${A[st.i]} and ${K} are ${st.res ? "different" : "equal"}, so A[i] ≠ K is ${st.res}: the loop ${st.res ? "goes on" : "stops"}.`
+        : `${A[st.i]} is ${st.res ? "" : "not "}greater than ${st.m0}, so A[i] > m is ${st.res}: ${st.res ? "line 5 runs" : "line 5 is skipped"}.`;
+      ask.append(el("span", "playback-feedback", why));
+    }
+    if (refocus) { refocus = false; (btns.find((b) => !b.classList.contains("playback-wrong")) || btns[0]).focus(); }
+  }
+  function question() {
+    if (kind() === "count") return search
+      ? `n = ${n()} and K = ${K}. How many times will the key comparison on line 3 run for this input?`
+      : `n = ${n()}. How many times will the comparison on line 4 run for this input?`;
+    const st = T.steps[answered];
+    return search ? `Comparison ${answered + 1}: A[${st.i}] = ${A[st.i]} and K = ${K}. Is A[i] ≠ K true or false?`
+      : `Comparison ${answered + 1}: A[${st.i}] = ${A[st.i]} and m = ${st.m0}. Is A[i] > m true or false?`;
+  }
+  function stepText(st, s) {
+    if (search) return `Comparison ${s + 1}: i = ${st.i}, so line 3 checks A[${st.i}] ≠ K, that is ${cmpText(st)}. ` + (st.res ? `True, so the loop goes on and line 4 makes i = ${st.i + 1}.` : `False: A[${st.i}] is the key, so the loop stops.`);
+    return `Comparison ${s + 1}: i = ${st.i}, so line 4 checks A[${st.i}] > m, that is ${cmpText(st)}. ` + (st.res ? `True, so line 5 sets m to ${A[st.i]}.` : `False, so line 5 is skipped and m stays ${st.m0}.`);
+  }
+  function endText(runs) {
+    const N = n(), c = total();
+    if (!search) {
+      const parts = runs.slice(1);
+      return `The loop has run i = 1 to n − 1 = ${N - 1}, so line 6 returns m = ${T.ret}. The comparison ran n − 1 = ${N - 1} ${N === 2 ? "time" : "times"}, as it does for any order of these ${N} elements: best case = worst case. Line 5 ran ${plural(runs[4], "time")}, and that does depend on the order. All statements: ${parts.join(" + ")} = ${parts.reduce((x, y) => x + y, 0)}.`;
+    }
+    const found = T.ret >= 0;
+    const how = found ? `Line 5 returns i = ${T.ret} after ${plural(c, "comparison")}.` : `Now i = ${N} = n, so i < n is false: the loop stops without another comparison and line 6 returns -1, after ${plural(c, "comparison")}.`;
+    const which = N === 1 ? "With n = 1 the best case and the worst case are the same single comparison."
+      : !found ? `This is the worst case, K is not in the list: C_worst(n) = n = ${N}.`
+      : c === 1 ? "This is the best case, K is the first element: C_best(n) = 1."
+      : c === N ? `This is the worst case, K is the last element: C_worst(n) = n = ${N}.`
+      : `That is between C_best(n) = 1 and C_worst(n) = n = ${N}: the count depends on where the key is, not only on n.`;
+    return `${how} ${which}`;
+  }
+  function frame(pos) {
+    const N = n(), C = total(), q = asking(pos), s = Math.ceil(pos - 1e-9) - 1, st = s >= 0 ? T.steps[s] : null, f = pos - s, end = pos >= C - 1e-9;
+    const ph = st ? st.ph.find((p) => f <= p.b + 1e-9) : null;
+    // How many times each line has run so far.
+    const runs = D.lines.map(() => 0);
+    for (let k = 0; k <= s; k++) for (const p of T.steps[k].ph) if (k < s || p.a < f - 1e-9) runs[p.line - 1]++;
+    if (end) runs[T.endLine - 1]++;
+    const curLine = !st ? 0 : end ? T.endLine : ph.line;
+    rows.forEach(({ r, cnt }, i) => {
+      const on = i + 1 === curLine, t = i === 0 ? "–" : String(runs[i]);
+      r.style.background = on ? "var(--hl-soft)" : ""; r.style.borderLeftColor = on ? "var(--hl)" : "";
+      if (cnt.textContent !== t) cnt.textContent = t;
+    });
+
+    const slots = N + (search ? 1 : 0), cw = Math.min(76, 600 / slots), x0 = (640 - cw * slots) / 2, cx = (v) => x0 + (v + 0.5) * cw;
+    svg.innerHTML = "";
+    const ptr = ph ? ph.from + (ph.to - ph.from) * ease(clamp((f - ph.a) / (ph.b - ph.a), 0, 1)) : null;
+    const revealed = (k) => k < s || (k === s && f >= st.rev - 1e-9);
+    const maxAt = !search && st ? (f >= 0.85 ? st.at1 : st.at0) : -1;
+    for (let k = 0; k < slots; k++) {
+      const ghost = k === N, here = ptr != null && Math.abs(ptr - k) < 0.5;
+      if (ghost && !(here && ptr > N - 0.5)) continue;
+      const seen = search && k <= s && revealed(k), hit = (seen && !T.steps[k].res) || k === maxAt;
+      svg.append(svgEl("rect", { x: x0 + k * cw + 2, y: 50, width: cw - 4, height: 46, rx: 6,
+        fill: hit ? "var(--green-soft)" : seen ? "var(--paper-2)" : "var(--paper)",
+        stroke: here ? "var(--hl)" : hit ? "var(--green)" : "var(--rule-strong)", "stroke-width": here || hit ? 2 : 1.2, "stroke-dasharray": ghost ? "4 3" : "" }));
+      if (!ghost) svg.append(svgEl("text", { x: cx(k), y: 80, "text-anchor": "middle", "font-size": 20, fill: seen && !hit ? "var(--ink-dim)" : "var(--ink)" }, String(A[k])));
+      svg.append(svgEl("text", { x: cx(k), y: 122, "text-anchor": "middle", "font-size": 14, "font-weight": here ? 700 : 400, fill: here ? "var(--hl)" : "var(--ink-dim)" }, here ? `i = ${k}` : String(k)));
+    }
+    if (ptr != null) {
+      const x = cx(ptr), init = s === 0 && ph === st.ph[0] ? clamp(f / ph.b, 0, 1) : 1;
+      svg.append(svgEl("path", { d: `M${x - 7} 108 L${x + 7} 108 L${x} 99 Z`, fill: "var(--hl)", opacity: init }));
+      // The chip above the pointer: the value being compared against, then the comparison and its result.
+      const mNow = search ? K : f >= 0.85 ? st.m1 : st.m0;
+      let chip = `${search ? "K" : "m"} = ${mNow}`;
+      if (ph.cmp || (ph.assign && f < 0.85)) chip = `${cmpText(st)} ${revealed(s) ? st.res : "?"}`;
+      const w = Math.max(66, chip.length * 9.2 + 20), bx = clamp(x, w / 2 + 2, 638 - w / 2);
+      const g = svgEl("g", { opacity: init });
+      g.append(svgEl("line", { x1: x, y1: 32, x2: x, y2: 50, stroke: "var(--hl)", "stroke-width": 1.4 }));
+      g.append(svgEl("rect", { x: bx - w / 2, y: 4, width: w, height: 28, rx: 7, fill: "var(--paper)", stroke: "var(--hl)", "stroke-width": 1.5 }));
+      g.append(svgEl("text", { x: bx, y: 23, "text-anchor": "middle", "font-size": 15, fill: "var(--ink)" }, chip));
+      svg.append(g);
+    }
+    let text;
+    if (q) text = question();
+    else if (!st) text = search
+      ? `Press Play to search for K = ${K} in ${plural(N, "item")}. Each step is one execution of the basic operation, the key comparison A[i] ≠ K on line 3.`
+      : `Press Play to run find on ${N} elements. Line 2 sets m to A[0] = ${A[0]}; each step is then one execution of the basic operation, the comparison A[i] > m on line 4.`;
+    else {
+      text = stepText(st, s);
+      if (end) { text += " " + endText(runs); if (asked > 0) text += ` ${firstTry} of ${asked} right on the first try.`; }
+    }
+    if (caption.textContent !== text) caption.textContent = text;
+    renderAsk(pos);
+  }
+  function restart() {
+    T = fpTrace(algo, A, K);
+    countDone = false; answered = 0; asked = 0; firstTry = 0; missed = false; wrong = null; askKey = null;
+    note.textContent = D.note;
+    pb.reset(total());
+  }
+  pb = createPlayback({
+    count: total(), unit: "comparison", onFrame: frame, stepMs: () => cfg.stepMs || 1500,
+    limit: () => (predict ? answered : total()), onBlocked: nudge(ask),
+  });
+  box.append(pb.el, note);
+  const onEdit = () => {
+    const a = aIn.value.trim().split(/[\s,]+/).filter(Boolean).map(Number), k = search ? Number(kIn.value.trim()) : 0;
+    if (!okArr(a)) { note.textContent = `Type ${D.min} to 10 whole numbers for A, separated by spaces.`; return; }
+    if (search && (kIn.value.trim() === "" || !okNum(k))) { note.textContent = "Type a whole number for K."; return; }
+    A = a; K = k; restart();
+  };
+  aIn.addEventListener("input", onEdit);
+  if (kIn) kIn.addEventListener("input", onEdit);
+  pc.input.addEventListener("change", () => {
+    predict = pc.input.checked; pb.pause();
+    // Comparisons already on screen count as answered; the count question is only asked from the start.
+    answered = Math.ceil(pb.pos() - 1e-9); countDone = answered > 0; asked = 0; firstTry = 0; missed = false; wrong = null; askKey = null;
+    pb.set(pb.pos());
+  });
+}
+
 export const WIDGETS = {
   "op-counter": opCounter,
   "loop-grid": loopGrid,
   "growth-plot": growthPlot,
   "big-o-check": bigOCheck,
   "fib-race": fibRace,
+  "fib-tree-play": fibTreePlay,
+  "find-play": findPlay,
 };

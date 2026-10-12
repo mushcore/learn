@@ -98,6 +98,15 @@ exp-wait
 { "beta": 2, "x": 2.5, "lo": 1.5, "hi": 2.5, "p": 0.75, "elapsed": 1, "title": "Bank teller, β = 2 min: the memoryless toggle redraws the remaining-time density after 1 minute; it coincides with the original" }
 ```
 
+### Watch the elapsed time cancel
+
+The tail beyond $s = 1$ is cut off, rescaled so its area is 1, and slid back by $s$: it lands on the original density, so the darker area is $P(X > 2) = 0.3679$. Tick the predict box to say what the conditional probability equals before the cut is made.
+
+```widget
+memoryless-play
+{ "beta": 2, "s": 1, "t": 2 }
+```
+
 :::quiz Memoryless cuts both ways
 A customer who has already taken 5 minutes is no closer to finishing than one who just sat down. The intuition "they must be nearly done" is the gambler's fallacy in continuous time, and the quiz can test it with a true/false.
 :::
