@@ -118,7 +118,7 @@ The difference, in the slide's words:
 
 ```widget
 fib-race
-{ "n": 6, "title": "fib vs fib2: how much work each one does" }
+{ "n": 5, "title": "fib vs fib2: how much work each one does" }
 ```
 
 The call count for `fib` multiplies by about 1.6 every time `n` goes up by one (the timing column does the same: 9, 11, 22, …, 1627 ms); `fib2` adds one loop iteration.

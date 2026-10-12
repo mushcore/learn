@@ -66,7 +66,7 @@ A unit is one bit here, so the frame rate equals the input bit rate.
 
 ```widget
 tdm-frames
-{ "n": 4, "rate": 1, "unit": "Mbps", "slot": 1, "streams": ["11111", "00000", "10101", "00100"], "framing": false, "presets": { "Four 1 Mbps lines (slide 35)": { "n": 4, "rate": 1, "unit": "Mbps", "slot": 1, "streams": ["11111", "00000", "10101", "00100"] }, "Lines A, B, C (slide 29)": { "n": 3, "rate": 1, "unit": "kbps", "slot": 1, "streams": ["111", "101", "100"] }, "Example 2 (four 100 kbps lines, 2-bit slots)": { "n": 4, "rate": 100, "unit": "kbps", "slot": 2, "streams": ["110100", "001011", "101010", "011100"] } } }
+{ "n": 4, "rate": 1, "unit": "Mbps", "slot": 1, "streams": ["11111", "00000", "10101", "00100"], "framing": false, "presets": { "Four 1 Mbps lines (slide 35)": { "n": 4, "rate": 1, "unit": "Mbps", "slot": 1, "streams": ["11111", "00000", "10101", "00100"] }, "Lines A, B, C (slide 29)": { "n": 3, "rate": 0, "slot": 1, "streams": ["A1 A2 A3", "B1 B2 B3", "C1 C2 C3"] }, "Example 2 (four 100 kbps lines, 2-bit slots)": { "n": 4, "rate": 100, "unit": "kbps", "slot": 2, "streams": ["110100", "001011", "101010", "011100"] } } }
 ```
 
 ### Watch the multiplexer build each frame
