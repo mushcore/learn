@@ -1,0 +1,138 @@
+{
+  "lang": "r",
+  "title": "MATH 3042 Statistics · Unit 4",
+  "subtitle": "Discrete probability distributions, with Lab 5 (conditional probability in R)",
+  "description": "Unit 4: a random variable's distribution as a table, histogram or formula; its mean (expected value) and standard deviation by hand and by simulation; then the four named distributions the course uses, binomial, hypergeometric, geometric and Poisson, each with its conditions, its formula, its mean and variance, the lecture examples worked to the number, and the R function that checks them. The 5% rule that lets a binomial stand in for a hypergeometric, the Z-score test for an unusual count, and Lab 5: filtering, segmenting and conditional probabilities from the SFU weather data. Ends with every example worked, a mock quiz and a formula sheet.",
+  "intro": ":::quiz Quiz scope\nThe quizzes run one unit and one lab behind the lectures: Quiz 3 was Unit 2 with Lab 3, Quiz 4's RStudio part was Lab 4. So expect **Quiz 5** to pair Unit 3's rules (two-way tables, Bayes) with **Lab 5** in R (filter, grouped mean and sd, `table()`, conditional probabilities, a pie or bar chart with a computed title), and **Quiz 6** to be this unit on paper: a probability table's $\\mu$ and $\\sigma$, one binomial, hypergeometric, geometric or Poisson probability with the formula written out, $\\mu$ and $\\sigma$ from the shortcut formulas, and 'is this value unusual?' by Z-score. Scientific calculator with nCr and $e^x$. The Unit 4 notes were posted with only the first three pages filled in; every later answer here is computed and checked against the demo notebook.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "mock-quiz-4",
+        "note": "take it cold first to find the gaps (about 35 min)"
+      },
+      {
+        "lesson": "discrete-distributions",
+        "note": "mu = sum of x P(x) and sigma by hand on the children table and the minimum of two dice"
+      },
+      {
+        "lesson": "binomial",
+        "note": "the four conditions, then nCx p^x q^(n-x) for P(X = 6) with n = 50, p = 0.25"
+      },
+      {
+        "lesson": "binomial-mean-variance",
+        "note": "mu = np, sigma = sqrt(npq); the printers' Z = -1.41 is not unusual"
+      },
+      {
+        "lesson": "hypergeometric",
+        "note": "without replacement: C(K,x) C(N-K,n-x)/C(N,n); the 5% rule; Mac users X = 8 is unusual"
+      },
+      {
+        "lesson": "geometric",
+        "note": "first success on trial x: q^(x-1) p; mu = 1/p"
+      },
+      {
+        "lesson": "poisson",
+        "note": "rescale lambda to the interval first: 1 per 2 s is 30 per minute"
+      },
+      {
+        "lesson": "choosing-distribution",
+        "note": "which formula: fixed n? with replacement? trials until first success? counts per interval?"
+      },
+      {
+        "lesson": "lab5-conditional-r",
+        "note": "filter, mean(~ | ~), table(), conditional from a row, Bayes from the three segments"
+      },
+      {
+        "lesson": "mock-quiz-4",
+        "note": "retake; aim for 90% or better"
+      },
+      {
+        "lesson": "formula-sheet-4",
+        "note": "print it; rewrite the five formula rows from memory once"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Random variables and their parameters",
+      "lessons": [
+        {
+          "id": "discrete-distributions",
+          "title": "Discrete random variables, their distributions, mean and standard deviation",
+          "file": "chapters/01-discrete-distributions.md"
+        }
+      ]
+    },
+    {
+      "title": "2. The binomial distribution",
+      "lessons": [
+        {
+          "id": "binomial",
+          "title": "Binomial experiments and the binomial formula",
+          "file": "chapters/02-binomial.md"
+        },
+        {
+          "id": "binomial-mean-variance",
+          "title": "Binomial mean and variance; is a count unusual?",
+          "file": "chapters/03-binomial-mean-variance.md"
+        }
+      ]
+    },
+    {
+      "title": "3. Hypergeometric, geometric, Poisson",
+      "lessons": [
+        {
+          "id": "hypergeometric",
+          "title": "Hypergeometric: sampling without replacement, and the 5% rule",
+          "file": "chapters/04-hypergeometric.md"
+        },
+        {
+          "id": "geometric",
+          "title": "Geometric: trials until the first success",
+          "file": "chapters/05-geometric.md"
+        },
+        {
+          "id": "poisson",
+          "title": "Poisson: counts per interval",
+          "file": "chapters/06-poisson.md"
+        },
+        {
+          "id": "choosing-distribution",
+          "title": "Which distribution, and the R function for each",
+          "file": "chapters/07-choosing-distribution.md"
+        }
+      ]
+    },
+    {
+      "title": "4. The lab in R",
+      "lessons": [
+        {
+          "id": "lab5-conditional-r",
+          "title": "Lab 5: conditional probability from the SFU weather data",
+          "file": "chapters/08-lab5-conditional-r.md"
+        }
+      ]
+    },
+    {
+      "title": "5. Quiz prep",
+      "lessons": [
+        {
+          "id": "examples-worked",
+          "title": "Every lecture example, worked",
+          "file": "chapters/09-examples-worked.md"
+        },
+        {
+          "id": "mock-quiz-4",
+          "title": "Mock quiz (Unit 4)",
+          "file": "chapters/10-mock-quiz-4.md"
+        },
+        {
+          "id": "formula-sheet-4",
+          "title": "Formula sheet (Unit 4)",
+          "file": "chapters/11-formula-sheet-4.md"
+        }
+      ]
+    }
+  ]
+}

@@ -136,6 +136,109 @@ sim-lab
 { "experiment": "cards", "n": 20, "m": 10000, "replace": false, "title": "Draw.Cards: toggle replace and compare the spread; the centre stays at n/2" }
 ```
 
+## Quiz 4 Part 2 as given: a match simulated, then "is X unusual?"
+
+The RStudio half of Quiz 4 was this lab turned into a quiz, and its posted solutions (two versions) share one pattern: simulate one game with `sample()`, wrap the match in a function, repeat it $m$ times, count the event, draw the distribution of $X$ with half-integer breaks, and decide whether an observed $X$ is unusual with a Z-score or a tail probability.
+
+**V1: Alice and Bob play checkers.** Alice wins a game with probability 0.6; a match is 13 games.
+
+```r
+# (a) one match: 13 games, each "A" with probability 0.6
+sample( c("A","B"), 13, replace=TRUE, prob = c(0.6,0.4))
+## [1] "A" "A" "A" "B" "B" "A" "A" "A" "A" "A" "B" "B" "A"
+
+# (b) many matches: X = number of games Alice wins
+Simulate.Trials <- function(m){
+  X.vals <- numeric(m)
+  for (i in 1:m) {
+    games <- sample( c("A","B"), 13, replace=TRUE, prob = c(0.6,0.4))
+    X.vals[i] <- sum(games == "A")
+  }
+  return(X.vals)
+}
+
+# (c) P(Alice wins the match) = P(X >= 7)
+m.trials <- 10^5
+X.vals <- Simulate.Trials(m.trials)
+p.Alice <- sum(X.vals >= 7)/(m.trials)
+paste0("The probability Alice wins the match is ", p.Alice)
+## [1] "The probability Alice wins the match is 0.77156"
+
+# (d) the distribution of X: one bar per integer, so breaks sit on the half-integers
+hist(X.vals, breaks=seq(-0.5, 13.5, by=1), freq = FALSE, col="lightgreen",
+     xlab="X = Alice Wins", ylab="Probability Density",
+     main=paste0("Number of Games Alice Wins (m = ", m.trials, " trials)"))
+
+# (e) mean, sd, and the Z-score of 3 wins
+mu.X <- mean(X.vals); sig.X <- sd(X.vals)
+c(mu.X, sig.X)                   ## 7.799920 1.765219
+Z <- (3 - mu.X)/sig.X; Z         ## -2.719164
+sum(X.vals <= 3)/m.trials        ## 0.0081
+```
+
+`prob = c(0.6,0.4)` is Task 2's loaded coin and `sum(games == "A")` the count idiom. `breaks=seq(-0.5, n+0.5, by=1)` (Task 12) gives each integer value of $X$ its own bar and `freq = FALSE` makes the heights relative frequencies, an estimate of the distribution of $X$. The 0.77156 estimates a number Unit 4 computes exactly (binomial: 0.7712). The verdict on $X = 3$, in the solution's words: *unusual*, justified *in terms of the Z-score, which is −2.7*, or because *the left-tail from X = 3 and below has probability 0.0080, which is smaller than 0.0250*. With the rounded 7.80 and 1.77, $Z = -2.71$.
+
+**V1, Q2: Alice takes pity.** Before each game a die is rolled; a 6 means Alice throws the game. One game is a function, a match is `replicate()` of it, the trials are `replicate()` of the match:
+
+```r
+Simulate.Game <- function() {
+  die.roll <- sample(1:6, 1)
+  if (die.roll == 6){
+    return("B")
+  }else{
+    return( sample(c("A", "B"), 1, prob=c(0.6, 0.4)) )
+  }
+}
+Simulate.Match <- function(n.games){
+  return( replicate(n.games, Simulate.Game()) )
+}
+Simulate.Trials <- function(m.trials){
+  return( sum(replicate(m.trials, sum(Simulate.Match(13) == "A") >= 7)) )
+}
+m.trials <- 10^5
+p.Alice <- Simulate.Trials(m.trials)/m.trials
+p.Alice                          ## 0.49895
+```
+
+Alice now wins a game with probability $(5/6)(0.6) = 0.5$ (AND rule), so the match is a fair coin.
+
+**V3: Chad and Deb play blackjack.** The deck is 52 values: Ace to 10 four times each, plus twelve face cards worth 10.
+
+```r
+cards <- c(rep(c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), 4), rep(10, 12))
+
+Chad.score <- function(){ return(sum(sample(cards, 2, replace=TRUE))) }
+Deb.score <- function(){
+  score <- sum(sample(cards, 3, replace=TRUE))
+  if(score > 21){ score <- 0 }       # bust
+  return(score)
+}
+
+p.Chad.Wins <- function(m){
+  k.Chad <- sum(replicate(m, Chad.score() > Deb.score()))
+  return( k.Chad/m )
+}
+print(paste0("The probability that Chad wins is ", round(p.Chad.Wins(10^5),4)*100, "%"))
+## [1] "The probability that Chad wins is 54.62%"
+
+# a function that returns two numbers: a list
+Chad.score.distribution <- function(m){
+  scores <- replicate(m, Chad.score())
+  res <- list(mean=mean(scores), sig=sd(scores))
+  hist(scores, freq=FALSE, breaks=seq(1.5, 20.5, by=1), col="lightblue",
+       xlab="X (Chad score)", ylab="Prob Density", main="Distribution of Chad's Blackjack Score")
+  return(res)
+}
+Chad.params <- Chad.score.distribution(10^5)     ## mean 13.10392, sig 4.460993
+Z <- (5 - Chad.params$mean)/Chad.params$sig; Z   ## -1.816618
+```
+
+`list(mean=, sig=)` returns two numbers from one function, read back as `Chad.params$mean` and `Chad.params$sig`; two cards score 2 to 20, so the breaks run 1.5 to 20.5. Typed answer: *No, Chad's score X = 5 is not unusual since it is less than two standard deviations away from its mean.* Q2 lets Chad hit on 18 or less (bust above 21 scores 0): 51.73%, lower.
+
+:::quiz Two accepted ways to say "unusual"
+Either $|Z| > 2$ (Alice: $Z = -2.72$, unusual; Chad: $Z = -1.82$, not unusual) or a tail probability below 0.025 (Alice: $P(X \le 3) = 0.0081 < 0.0250$). State the number and the cut-off; the verdict alone earns nothing.
+:::
+
 ```quiz
 [
   {

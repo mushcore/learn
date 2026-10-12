@@ -1,9 +1,9 @@
 {
   "lang": "r",
   "title": "MATH 3042 Statistics · Unit 3",
-  "subtitle": "Probability and counting, with Lab 3 (charts in R) and Lab 4 (simulations), preparing for Quiz 3",
-  "description": "Unit 3, probability from the ground up: random experiments, sample spaces and events, the classical and relative-frequency definitions and the law of large numbers, the fundamental counting rule with factorials, permutations and combinations on a deck of cards, the complement and addition rules, conditional probability and independence read off a two-way table, the multiplication rule, and Bayes' rule on a tree diagram. Plus the two labs of the week: Lab 3's pie, bar, stem, histogram, ogive and scatter charts of the survey data in R, and Lab 4's sample() and replicate() simulations. Every example in the notes is worked with its arithmetic; clickable sample spaces, a counting calculator, a two-way table, a Bayes tree and a simulation lab; a mock quiz and a formula sheet.",
-  "intro": ":::quiz Quiz 3 scope\nLecture Unit 03 (probability and counting) with Lab 3 and Lab 4. Expect the same two-part format as Quiz 2: a **paper and pencil** part (counting, the probability rules, a two-way table, a Bayes tree, with a scientific calculator and its nPr / nCr keys) and an **RStudio** part in the style of the labs (a chart of `survey` with a computed title, a `sample()` / `replicate()` simulation, a relative-frequency estimate). The Unit 3 notes were posted unfilled, so the worked examples here are checked by computation and by the demo notebook's simulations.\n:::",
+  "subtitle": "Probability and counting, with Lab 3 (charts in R) and Lab 4 (simulations), preparing for Quiz 4 Part 1 and Quiz 5",
+  "description": "Unit 3, probability from the ground up: random experiments, sample spaces and events, the classical and relative-frequency definitions and the law of large numbers, the fundamental counting rule with factorials, permutations and combinations on a deck of cards, the complement and addition rules, conditional probability and independence read off a two-way table, the multiplication rule, and Bayes' rule on a tree diagram. Plus the two labs of the week: Lab 3's pie, bar, stem, histogram, ogive and scatter charts of the survey data in R, and Lab 4's sample() and replicate() simulations, with Quiz 4 Part 2 as posted. Every example in the notes is worked with the instructor's arithmetic from the filled pages; the 28 posted practice problems worked; clickable sample spaces, a counting calculator, a two-way table, a Bayes tree and a simulation lab; a mock quiz and a formula sheet.",
+  "intro": ":::quiz Which quiz tests Unit 3\nThe quizzes follow one pattern: **Part 1, paper and pencil** (10 marks) on the previous lecture unit and **Part 2, RStudio** (10 marks) on the previous lab. Quiz 3 (posted solutions, Oct 8) was therefore Unit 2 + Lab 3, not this unit. By the same pattern, assumed here and not yet confirmed by a posted paper, Unit 3 is tested in **Quiz 4 Part 1** (counting, the NOT / OR / AND rules, a two-way table, a Bayes tree, with a scientific calculator and its nPr / nCr keys), and its rules return in **Quiz 5** beside Lab 5's conditional probability in R. Quiz 4 Part 2 (posted) was a Lab 4 simulation: a `sample()` / `replicate()` match, a histogram of X, and an \"is X unusual?\" verdict; it is worked in the Lab 4 lesson. The Unit 3 notes are now posted filled, and every worked example here carries the instructor's own numbers.\n:::",
   "plan": {
     "title": "If you only have tonight",
     "steps": [
@@ -12,8 +12,9 @@
       { "lesson": "conditional-independence", "note": "read every conditional off the two-way table, then test independence" },
       { "lesson": "bayes", "note": "draw the tree for the CPU example on paper, then check it in the widget" },
       { "lesson": "complement-addition", "note": "complement for 'at least', subtract the overlap for 'or'" },
-      { "lesson": "examples-worked", "note": "every lecture example with a blank line in the notes, worked; do them before reading" },
-      { "lesson": "lab4-simulations", "note": "sample(), replace=TRUE, replicate(): what the RStudio part will ask" },
+      { "lesson": "examples-worked", "note": "every lecture example worked with the instructor's numbers; do them before reading" },
+      { "lesson": "practice-problems", "note": "the 28 posted problems: answer each in the box, then check the rule named in the solution (NOT / OR / AND, counting, conditional, Bayes)" },
+      { "lesson": "lab4-simulations", "note": "sample(), replace=TRUE, replicate(), breaks=seq(-0.5, n+0.5, by=1), the unusual verdict: what Quiz 4 Part 2 asked" },
       { "lesson": "mock-quiz-3", "note": "retake; aim for 90% or better" },
       { "lesson": "formula-sheet-3", "note": "print it; rewrite the rules from memory once" }
     ]
@@ -51,6 +52,7 @@
       "title": "5. Quiz prep",
       "lessons": [
         { "id": "examples-worked", "title": "Every lecture example, worked", "file": "chapters/09-examples-worked.md" },
+        { "id": "practice-problems", "title": "Unit 3 practice problems (all 28, worked)", "file": "chapters/12-practice-problems.md" },
         { "id": "mock-quiz-3", "title": "Mock Quiz 3", "file": "chapters/10-mock-quiz-3.md" },
         { "id": "formula-sheet-3", "title": "Formula sheet (Unit 3)", "file": "chapters/11-formula-sheet-3.md" }
       ]

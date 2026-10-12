@@ -3,7 +3,7 @@ title: Every lecture example, worked
 minutes: 30
 ---
 
-The Unit 3 notes were posted with the answer lines blank. Every example is worked here in the order it appears, with the arithmetic that goes on the answer line and a check where the demo notebook simulated it. Cover the solution, write yours, then compare; the quiz at the end is the same problems with the numbers changed.
+Every example in the Unit 3 notes is worked here in the order it appears, with the arithmetic the instructor wrote on the answer line in the filled notes (posted 2026-10-12) and a check where the demo notebook simulated it. Cover the solution, write yours, then compare; the quiz at the end is the same problems with the numbers changed.
 
 ## 3.1 Probability
 
@@ -13,29 +13,29 @@ The Unit 3 notes were posted with the answer lines blank. Every example is worke
 
 **Five coins, at least two heads.** Fewer than two heads: 0 heads (1 way) + 1 head (5 ways) = 6. $P = 1 - 6/32 = 26/32 = 0.8125$.
 
-**Boxcars.** 36 equally likely pairs, one is (6, 6): $P(B) = 1/36 = 0.0278$. Simulation of $10^5$ trials: about 0.028; `1/(6^2)` in the notebook prints 0.02777778.
+**Boxcars.** 36 equally likely pairs, one is (6, 6): $P(B) = |B|/|S| = 1/36 = 0.0278$. The notes' simulation of $10^5$ trials: $P(B) \approx x/n = 0.0281$; `1/(6^2)` in the notebook prints 0.02777778.
 
 ## 3.2 Counting
 
-**A die rolled five times.** $6^5 = 7776$ outcomes.
+**A die rolled five times.** $|S| = 6 \times 6 \times 6 \times 6 \times 6 = 7776$ outcomes.
 
-**Five cards with replacement, first three red and last two Kings.** $(26/52)^3 (4/52)^2 = (1/2)^3 (1/13)^2 = 1/1352 = 0.00074$.
+**Five cards with replacement, first three red and last two Kings.** $P(A) = \dfrac{|A|}{|S|} = \dfrac{26 \times 26 \times 26 \times 4 \times 4}{52 \times 52 \times 52 \times 52 \times 52} = \dfrac{281\,216}{380\,204\,032} = 0.00074$ (equivalently $(1/2)^3 (1/13)^2 = 1/1352$).
 
-**Five cards without replacement, all red.** $\dfrac{26}{52} \cdot \dfrac{25}{51} \cdot \dfrac{24}{50} \cdot \dfrac{23}{49} \cdot \dfrac{22}{48} = 0.0253$ (equivalently $C(26, 5)/C(52, 5) = 65\,780 / 2\,598\,960$).
+**Five cards without replacement, all red.** $\dfrac{26 \times 25 \times 24 \times 23 \times 22}{52 \times 51 \times 50 \times 49 \times 48} = 0.0253$ (equivalently $C(26, 5)/C(52, 5) = 65\,780 / 2\,598\,960$). **With replacement**, the line the instructor added beside it: $\dfrac{26^5}{52^5} = 0.03125$.
 
-**Arrange the four Aces.** $4! = 24$. Notebook: `factorial(4)` is 24.
+**Arrange the four Aces.** $4 \times 3 \times 2 \times 1 = 24$; as a permutation $P(4, 4) = \dfrac{4!}{0!} = \dfrac{24}{1} = 24$. Notebook: `factorial(4)` is 24.
 
-**Select four cards and arrange them.** $P(52, 4) = 52 \cdot 51 \cdot 50 \cdot 49 = 6\,497\,400$. Notebook: `choose(52, 4) * factorial(4)`.
+**Select four cards and arrange them.** $n = 52$, $r = 4$: $P(52, 4) = \dfrac{52!}{48!} = 52 \cdot 51 \cdot 50 \cdot 49 = 6\,497\,400$. Notebook: `choose(52, 4) * factorial(4)`.
 
-**A hand of four cards.** $C(52, 4) = 6\,497\,400 / 24 = 270\,725$. Notebook: `choose(52, 4)`. Calculator: `52 2ndF nCr 4`.
+**A hand of four cards.** $C(52, 4) = \dfrac{52 \cdot 51 \cdot 50 \cdot 49}{4 \cdot 3 \cdot 2 \cdot 1} = 270\,725$ (sequences over sequences with the same four cards). Notebook: `choose(52, 4)`. Calculator: `52 2ndF nCr 4`.
 
-**90 students, 9 front-row seats.** Order matters (distinct seats): $P(90, 9) = 90 \cdot 89 \cdot 88 \cdot 87 \cdot 86 \cdot 85 \cdot 84 \cdot 83 \cdot 82 = 2.563 \times 10^{17}$.
+**90 students, 9 front-row seats.** The 9 seats define a sequence of students: $P(90, 9) = 2.56 \times 10^{17}$ on the calculator ($= 256\,284\,917\,589\,254\,400$).
 
-**Three cards in sequence, all diamonds.** $P(13, 3) = 13 \cdot 12 \cdot 11 = 1716$ sequences. (As a probability: $1716 / P(52, 3) = 1716 / 132\,600 = 0.0129$.)
+**Three cards in sequence, all diamonds.** $P(13, 3) = 13 \cdot 12 \cdot 11 = 1716$ sequences; as a probability, $P(\text{all diamonds}) = \dfrac{P(13, 3)}{P(52, 3)} = \dfrac{1716}{132\,600} = 0.0129$ (boxed in the notes).
 
-**A five-person committee from 20.** $C(20, 5) = \dfrac{20!}{5!\,15!} = 15\,504$.
+**A five-person committee from 20.** A combination (a set) of instructors: $C(20, 5) = \dfrac{20!}{15!\,5!} = \dfrac{20 \cdot 19 \cdot 18 \cdot 17 \cdot 16}{5 \cdot 4 \cdot 3 \cdot 2 \cdot 1} = 15\,504$.
 
-**Spade flush.** $\dfrac{C(13, 5)}{C(52, 5)} = \dfrac{1287}{2\,598\,960} = 0.000495$.
+**Spade flush.** $\dfrac{C(13, 5)}{C(52, 5)} = \dfrac{1287}{2\,598\,960} = 0.0005$ (0.000495 to six decimals); the notes also write it $\dfrac{P(13, 5)}{P(52, 5)} = 0.0005$.
 
 ```widget
 counting-calc
@@ -44,21 +44,23 @@ counting-calc
 
 ## 3.3 Probability rules
 
-**Two dice, sum less than 12.** Complement is sum = 12, one outcome: $1 - 1/36 = 35/36 = 0.9722$.
+**Two dice, sum less than 12** (NOT rule). $P(\text{sum} < 12) = 1 - P(\text{sum} = 12) = 1 - 1/36 = 0.9722$.
 
-**Birthday problem, 23 people.** $P(\text{all different}) = \dfrac{365 \cdot 364 \cdots 343}{365^{23}} = 0.4927$; $P(\text{match}) = 1 - 0.4927 = 0.5073$. Notebook simulation: about 0.507.
+**Birthday problem, 23 people** (NOT rule). $P(\text{match}) = 1 - P(\text{no match}) = 1 - \dfrac{365 \times 364 \times 363 \times \cdots \times 343}{365 \times 365 \times 365 \times \cdots \times 365} = 1 - \dfrac{P(365, 23)}{365^{23}} = 0.5073$. Notebook simulation: about 0.507.
 
-**Top card is a 7 or an Ace.** Mutually exclusive: $4/52 + 4/52 = 8/52 = 2/13 = 0.1538$.
+**Top card is black or a heart** (OR rule, mutually exclusive). $P(A \cup B) = P(A) + P(B) = 26/52 + 13/52 = 0.7500$.
 
-**Two-way table (71 students).** $P(\text{Right}) = 61/71 = 0.859$; $P(\text{iPhone} \mid \text{Right}) = 52/61 = 0.852$; $P(\text{Right} \mid \text{iPhone}) = 52/58 = 0.897$.
+**Top card is a red card or an Ace** (OR rule, not mutually exclusive; the instructor's in-class replacement for "7 or Ace"). $P(\text{Red} \cup \text{Ace}) = 26/52 + 4/52 - 2/52 = 0.5385$. The printed version, a 7 or an Ace, is mutually exclusive: $4/52 + 4/52 = 0.1538$.
 
-**Are Right and iPhone independent?** $P(\text{Right} \cap \text{iPhone}) = 52/71 = 0.732$ versus $P(\text{Right})\,P(\text{iPhone}) = (61/71)(58/71) = 0.702$. Not equal: dependent. (Or: $P(\text{iPhone} \mid \text{Right}) = 0.852 \ne P(\text{iPhone}) = 0.817$.)
+**Two-way table (71 students).** $P(\text{Right}) = 61/71 = 0.8592$; $P(\text{iPhone} \mid \text{Right}) = 52/61 = 0.8526$ (0.8525 by strict rounding); $P(\text{Right} \mid \text{iPhone}) = 52/58 = 0.8966$.
 
-**Two Aces.** (a) With replacement: $(4/52)(4/52) = 1/169 = 0.00592$. (b) Without: $(4/52)(3/51) = 1/221 = 0.00452$.
+**Are Right and iPhone independent?** $P(\text{Right} \cap \text{iPhone}) = 52/71 = 0.7324$; $P(\text{Right}) = 0.8592$; $P(\text{iPhone}) = 58/71 = 0.8169$. Check: $0.8592 \times 0.8169 = 0.7019 \ne 0.7324$, NOT INDEPENDENT. (Or: $P(\text{iPhone} \mid \text{Right}) = 0.8526 \ne P(\text{iPhone}) = 0.8169$.)
 
-**Sex and handedness.** (a) $P(L) = 0.60(0.05) + 0.40(0.15) = 0.03 + 0.06 = 0.09$. (b) $P(F \mid L) = 0.03/0.09 = 1/3 = 0.333$.
+**Two Aces** (AND rule). $A_1$ = 1st card is an Ace, $A_2$ = 2nd card is an Ace; $P(A_1 \cap A_2) = P(A_1) \times P(A_2 \mid A_1)$. (a) With replacement: $\dfrac{4}{52} \times \dfrac{4}{52} = 0.0059$. (b) Without: $\dfrac{4}{52} \times \dfrac{3}{51} = 0.0045$. These differ.
 
-**Defective CPUs.** (a) $P(D) = 0.85(0.01) + 0.10(0.03) + 0.05(0.02) = 0.0085 + 0.0030 + 0.0010 = 0.0125$. (b) $P(\text{Intel} \mid D) = 0.0085/0.0125 = 0.68$.
+**Sex and handedness.** (a) $P(\text{Left}) = P(F \cap L) + P(M \cap L) = P(F)\,P(L \mid F) + P(M)\,P(L \mid M) = 0.6 \times 0.05 + 0.4 \times 0.15 = 0.09$. (b) $P(\text{Female} \mid \text{Left}) = \dfrac{0.6 \times 0.05}{0.6 \times 0.05 + 0.4 \times 0.15} = 0.3333$: one third of left-handed students are female.
+
+**Defective CPUs.** Joint probabilities down the tree: $0.85 \times 0.01 = 0.0085$, $0.1 \times 0.03 = 0.0030$, $0.05 \times 0.02 = 0.0010$ (mutually exclusive). (a) $P(\text{Defective}) = 0.0085 + 0.0030 + 0.0010 = 0.0125$. (b) What fraction of defective CPUs are from Intel? $P(\text{Intel} \mid \text{Defective}) = \dfrac{0.85 \times 0.01}{0.85 \times 0.01 + 0.10 \times 0.03 + 0.05 \times 0.02} = \dfrac{0.0085}{0.0125} = 0.68$: 68% of defective units are from Intel.
 
 ```widget
 bayes-tree
@@ -114,6 +116,13 @@ Show the sample-space size or the formula name ($P$ or $C$), the substituted num
     "explain": "(13/52)(12/51)(11/50) = 1716/132600 = 0.01294."
   },
   {
+    "q": "Three cards WITH replacement: P(all three are hearts)? (4 decimals)",
+    "type": "numeric",
+    "answer": 0.0156,
+    "tolerance": 0.0002,
+    "explain": "(13/52)^3 = (1/4)^3 = 1/64 = 0.0156, above the without-replacement 0.0129, the same contrast as the notes' 26^5/52^5 = 0.03125 against 0.0253 for five red cards."
+  },
+  {
     "q": "How many ways can 6 runners finish first, second and third?",
     "type": "numeric",
     "answer": 120,
@@ -153,7 +162,14 @@ Show the sample-space size or the formula name ($P$ or $C$), the substituted num
     "type": "numeric",
     "answer": 0.5385,
     "tolerance": 0.0003,
-    "explain": "Not mutually exclusive (two red Kings): 4/52 + 26/52 - 2/52 = 28/52 = 0.5385."
+    "explain": "Not mutually exclusive (two red Kings): 4/52 + 26/52 - 2/52 = 28/52 = 0.5385, the same arithmetic as the instructor's red card or Ace."
+  },
+  {
+    "q": "Top card: P(a black card or a diamond)? (4 decimals)",
+    "type": "numeric",
+    "answer": 0.75,
+    "tolerance": 0.0003,
+    "explain": "Mutually exclusive (diamonds are red): 26/52 + 13/52 = 0.7500, the notes' black-or-heart example with the other red suit."
   },
   {
     "q": "From the handedness table, P(Android | Left)? (3 decimals)",

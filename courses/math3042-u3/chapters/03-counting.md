@@ -11,13 +11,19 @@ If sets $S_1, S_2, \ldots, S_k$ contain $n_1, n_2, \ldots, n_k$ elements, there 
 
 **Five cards with replacement, first three red and last two Kings.** With replacement, each draw is from the full deck and the draws are independent. A standard deck has 52 cards, half red (hearts and diamonds) and half black (spades and clubs); four suits of 13 (A, 2 to 10, J, Q, K); four cards of each rank; 12 face cards (J, Q, K in each suit). So
 
-$$P = \frac{26}{52} \cdot \frac{26}{52} \cdot \frac{26}{52} \cdot \frac{4}{52} \cdot \frac{4}{52} = \left(\frac{1}{2}\right)^3 \left(\frac{1}{13}\right)^2 = \frac{1}{1352} = 0.000740$$
+$$P(A) = \frac{|A|}{|S|} = \frac{26 \times 26 \times 26 \times 4 \times 4}{52 \times 52 \times 52 \times 52 \times 52} = \frac{281\,216}{380\,204\,032} = 0.00074$$
+
+$|A|$ and $|S|$ each by the counting rule, then one division; cancelling first gives the same $(1/2)^3 (1/13)^2 = 1/1352$.
 
 **Five cards without replacement, all red.** Now each draw removes a card: 26 red of 52, then 25 of 51, 24 of 50, 23 of 49, 22 of 48:
 
-$$P = \frac{26}{52} \cdot \frac{25}{51} \cdot \frac{24}{50} \cdot \frac{23}{49} \cdot \frac{22}{48} = \frac{7\,893\,600}{311\,875\,200} = 0.0253$$
+$$P(A) = \frac{26 \times 25 \times 24 \times 23 \times 22}{52 \times 51 \times 50 \times 49 \times 48} = \frac{7\,893\,600}{311\,875\,200} = 0.0253$$
 
-Both numerator and denominator are the counting rule applied to shrinking sets.
+Both numerator and denominator are the counting rule applied to shrinking sets. The filled notes put the with-replacement version beside it for contrast:
+
+$$P(A) = \frac{26^5}{52^5} = 0.03125 \quad \text{(with replacement)}$$
+
+With replacement every draw is 26/52; without, each red card drawn makes the next slightly less likely, which is why 0.0253 is below 0.03125.
 
 ## Factorials, permutations, combinations
 
@@ -36,13 +42,13 @@ counting-calc
 
 The notes' examples, all in the widget's presets:
 
-- **Arrange the four Aces in a sequence**: $4! = 24$.
-- **Select four cards from a deck and arrange them in a sequence**: $P(52, 4) = 52 \cdot 51 \cdot 50 \cdot 49 = 6\,497\,400$.
-- **A hand of four cards** (no sequence): $C(52, 4) = 6\,497\,400 / 24 = 270\,725$.
-- **90 students, a front row of 9 seats**: seats are distinguishable, so order matters: $P(90, 9) = 90 \cdot 89 \cdots 82 \approx 2.56 \times 10^{17}$.
-- **A sequence of 3 cards, all diamonds**: $P(13, 3) = 13 \cdot 12 \cdot 11 = 1716$ sequences.
-- **A five-person committee from 20 instructors**: $C(20, 5) = 15\,504$.
-- **A spade flush** (five cards, all spades): favourable hands $C(13, 5) = 1287$, all hands $C(52, 5) = 2\,598\,960$, so $P = 1287 / 2\,598\,960 = 0.000495$, about one hand in 2020.
+- **Arrange the four Aces in a sequence**: $4 \times 3 \times 2 \times 1 = 24$. As a permutation, $P(4, 4) = \dfrac{4!}{(4 - 4)!} = \dfrac{24}{0!} = \dfrac{24}{1} = 24$, which is why $0! = 1$ by definition.
+- **Select four cards from a deck and arrange them in a sequence**: $n = 52$ available, $r = 4$ selected, $P(52, 4) = \dfrac{52!}{48!} = 52 \cdot 51 \cdot 50 \cdot 49 = 6\,497\,400$.
+- **A hand of four cards** (no sequence): the number of sequences over the number of sequences with the same four cards, $C(52, 4) = \dfrac{52 \cdot 51 \cdot 50 \cdot 49}{4 \cdot 3 \cdot 2 \cdot 1} = 270\,725$.
+- **90 students, a front row of 9 seats**: *the 9 seats define a sequence of students*, so $P(90, 9) = 2.56 \times 10^{17}$ *(using calculator)*; written out, $90 \cdot 89 \cdots 82 = 256\,284\,917\,589\,254\,400$.
+- **A sequence of 3 cards, all diamonds**: $n = 52$, $r = 3$; $P(13, 3) = 13 \cdot 12 \cdot 11 = 1716$ sequences, and the notes go on to the probability, $P(\text{all diamonds}) = \dfrac{P(13, 3)}{P(52, 3)} = \dfrac{1716}{132\,600} = 0.0129$.
+- **A five-person committee from 20 instructors**: *the committee is a combination (i.e. set) of instructors*, $C(20, 5) = \dfrac{20!}{15!\,5!} = \dfrac{20 \cdot 19 \cdot 18 \cdot 17 \cdot 16}{5 \cdot 4 \cdot 3 \cdot 2 \cdot 1} = 15\,504$.
+- **A spade flush** (five cards, all spades, no replacement): favourable hands $C(13, 5) = 1287$, all hands $C(52, 5) = 2\,598\,960$, so $P = \dfrac{C(13, 5)}{C(52, 5)} = 0.0005$ to the notes' four decimals (0.000495, about one hand in 2020). The notes also write it as $\dfrac{P(13, 5)}{P(52, 5)} = 0.0005$: sequences over sequences gives the same ratio, because the $5!$ cancels.
 
 On the calculator: $C(52, 4)$ is `52  2nd F  nCr  4`; `nPr` gives permutations and `n!` factorials. In R: `factorial(4)`, `choose(52, 4) * factorial(4)` for $P(52, 4)$, `choose(52, 4)` for $C(52, 4)$.
 
@@ -54,7 +60,7 @@ On the calculator: $C(52, 4)$ is `52  2nd F  nCr  4`; `nPr` gives permutations a
 | order matters (a sequence, a row of seats, first/second/third)? | yes, no repeats | $P(n, r)$ |
 | order does not matter (a hand, a committee, a group)? | no repeats | $C(n, r)$ |
 
-A probability is then favourable count over total count, both computed the same way: the spade flush uses $C$ above and below the line, the diamonds sequence would use $P(13, 3) / P(52, 3) = 1716 / 132\,600 = 0.0129$.
+A probability is then favourable count over total count, both computed the same way: the spade flush uses $C$ above and below the line (or $P$ above and below, same answer), the diamonds sequence uses $P(13, 3) / P(52, 3) = 1716 / 132\,600 = 0.0129$. Mixing them, $C$ above and $P$ below, is the error to avoid.
 
 :::quiz Sequence versus hand
 "Sequence", "arrange", "in order", "first and second" mean $P$. "Hand", "committee", "select a group", "choose" mean $C$. The same four cards give 24 sequences but one hand; $C$ is always the smaller number.
@@ -73,7 +79,7 @@ A probability is then favourable count over total count, both computed the same 
     "q": "Five cards drawn with replacement. P(first three red and last two Kings)?",
     "options": ["$(26/52)^3 (4/52)^2 = 1/1352$", "$26/52 + 4/52$", "$(26/52)(25/51)(24/50)(4/49)(3/48)$", "$C(26,3) C(4,2) / C(52,5)$"],
     "answer": 0,
-    "explain": "With replacement every draw is from the full deck, so multiply the five independent probabilities: (1/2)^3 (1/13)^2 = 1/1352 = 0.00074."
+    "explain": "With replacement every draw is from the full deck, so multiply the five independent probabilities: 281 216 / 380 204 032 = (1/2)^3 (1/13)^2 = 1/1352 = 0.00074."
   },
   {
     "q": "Five cards without replacement, all red. Which product is correct?",
@@ -82,11 +88,18 @@ A probability is then favourable count over total count, both computed the same 
     "explain": "Each red card drawn removes one red card and one card from the deck: 0.0253. Equivalently C(26,5)/C(52,5)."
   },
   {
+    "q": "Five cards drawn WITH replacement, all red? (5 decimals)",
+    "type": "numeric",
+    "answer": 0.03125,
+    "tolerance": 0.00003,
+    "explain": "The deck is whole for every draw: 26^5 / 52^5 = (1/2)^5 = 0.03125. Without replacement the same event is 0.0253, smaller because each red card drawn thins the reds that remain."
+  },
+  {
     "q": "How many ways can the four Aces be arranged in a sequence?",
     "type": "numeric",
     "answer": 24,
     "tolerance": 0,
-    "explain": "4! = 4 × 3 × 2 × 1 = 24."
+    "explain": "4! = 4 × 3 × 2 × 1 = 24, or P(4, 4) = 4!/0! with 0! = 1."
   },
   {
     "q": "$P(52, 4)$ = ?",

@@ -66,6 +66,20 @@ Computed from the slide formula with $c = \frac{1}{2}$; the slide works only the
 
 A larger $r$ sends the same data rate at a lower signal rate. Dividing by a fraction is where slips happen: $r = \frac{1}{2}$ doubles the signal rate.
 
+## E04: the ratio and the levels from two rates
+
+The Week 4 exercise sheet turns the formula around. *An analog signal has a bit rate of 8000 bps and a baud rate of 1000 baud. How many data elements are carried by each signal element? How many signal elements do we need? Assume c = 1 and each signal element corresponds to a signal level.*
+
+Both rates are given, so solve $S = c \times N \times \frac{1}{r}$ for $r$. With the sheet's $c = 1$:
+
+$$r = \frac{N}{S} = \frac{8000}{1000} = 8\ \text{bits per baud}$$
+
+Each signal element corresponds to a signal level, so a signal element carrying $r$ bits needs one level for every $r$-bit pattern, $r = \log_2 L$:
+
+$$L = 2^{r} = 2^{8} = 256\ \text{signal elements}$$
+
+The "assume $c = 1$" matters: the same two rates with the slide example's $c = \frac{1}{2}$ would give $r = \frac{c \times N}{S} = 4$.
+
 ## Signal rate from N, r and c
 
 ```widget
@@ -162,6 +176,14 @@ signal-rate
     "type": "tf",
     "answer": false,
     "explain": "$S = c \\times N \\times \\frac{1}{r}$: doubling $r$ halves the signal rate. Each signal element carries more bits, so fewer are needed each second."
+  },
+  {
+    "q": "E04 exercise 2: an analog signal has a bit rate of 8000 bps and a baud rate of 1000 baud, $c = 1$, and each signal element corresponds to a signal level. How many signal elements (levels) do we need?",
+    "type": "numeric",
+    "answer": 256,
+    "tolerance": 0.5,
+    "unit": "signal elements",
+    "explain": "$r = \\frac{N}{S} = \\frac{8000}{1000} = 8$ bits per baud, and $r = \\log_{2} L$ gives $L = 2^{8} = 256$."
   }
 ]
 ```

@@ -1,7 +1,7 @@
 {
   "title": "COMP 3721 · Week 4",
   "subtitle": "Digital-to-digital conversion: line coding, preparing for Quiz 4",
-  "description": "Lecture 04 and its complementary note: data elements and signal elements, data rate and signal rate, the bandwidth of a digital signal, baseline wandering, DC components, self-synchronization, and the line coding schemes (unipolar NRZ, polar NRZ-L and NRZ-I, Manchester, differential Manchester, bipolar AMI). Every worked number from the slides, a live widget for each idea, and waveforms you draw yourself and check. Finish with Mock Quiz 4 and the Week 4 study note.",
+  "description": "Lecture 04 and its complementary note: data elements and signal elements, data rate and signal rate, the bandwidth of a digital signal, baseline wandering, DC components, self-synchronization, and the line coding schemes (unipolar NRZ, polar NRZ-L and NRZ-I, Manchester, differential Manchester, bipolar AMI), with E04 worked. Every worked number from the slides and the exercise sheet, a live widget for each idea, and waveforms you draw yourself and check. Finish with Mock Quiz 4 and the Week 4 study note.",
   "intro": ":::quiz Quiz 4 scope\nThe lab quizzes follow the lectures one week behind, so Quiz 4 is expected to cover Lecture 04, all of it in this module. The calculations are the signal rate and bandwidth formulas and the extra bits from a clock difference: write baud for a signal rate, bps for a data rate and Hz for a bandwidth. Be ready to turn a bit pattern into a signal, and a signal back into bits, for each scheme. One A4 or letter page of notes, single-sided and preferably hand-written, is allowed; the last lesson is the Week 4 block of that page.\n:::",
   "plan": {
     "title": "If you only have tonight",

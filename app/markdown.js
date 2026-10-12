@@ -30,6 +30,7 @@ const SYMBOLS = {
   min: "min", max: "max", ln: "ln", log: "log", exp: "exp", sin: "sin", cos: "cos", tan: "tan",
   Theta: "Θ", lfloor: "⌊", rfloor: "⌋", lceil: "⌈", rceil: "⌉", subset: "⊂", subseteq: "⊆", notin: "∉", forall: "∀", exists: "∃", equiv: "≡", ll: "≪", gg: "≫",
   cap: "∩", cup: "∪", emptyset: "∅", varnothing: "∅", setminus: "∖", vert: "|", lvert: "|", rvert: "|", neg: "¬", land: "∧", lor: "∨",
+  int: "∫", sim: "∼", propto: "∝", partial: "∂", nabla: "∇", leftrightarrow: "↔", Leftrightarrow: "⇔", mapsto: "↦",
 };
 function mathParse(src) {
   let i = 0;
@@ -328,7 +329,7 @@ export function parseFrontMatter(src) {
   const meta = {};
   for (const line of m[1].split("\n")) {
     const kv = line.match(/^(\w+):\s*(.*)$/);
-    if (kv) meta[kv[1]] = kv[2].trim();
+    if (kv) meta[kv[1]] = kv[2].trim().replace(/^(["'])(.*)\1$/, "$2");
   }
   return { meta, body: src.slice(m[0].length) };
 }

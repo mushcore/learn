@@ -1048,3 +1048,111 @@ select.q-input { width: auto; }
 .prob-axis { display: flex; gap: 3px; font-family: var(--mono); font-size: 10.5px; color: var(--ink-dim); }
 .prob-axis span { flex: 1; text-align: center; min-width: 4px; overflow: hidden; }
 @media (max-width: 640px) { .prob-cell { font-size: 10px; padding: 4px 2px; } }
+
+/* ---------- Week 5 conversion widgets (widgets-net4.js, COMP 3721) ---------- */
+.net4-wrap { overflow-x: auto; margin: 10px 0; }
+.net4-wrap:empty { display: none; }
+.net4-table { border-collapse: collapse; font-size: 12.5px; font-family: var(--mono); white-space: nowrap; }
+.net4-table th, .net4-table td { border: 1px solid var(--rule); padding: 4px 9px; text-align: center; color: var(--ink-2); }
+.net4-table th { text-align: left; font-family: var(--body); font-weight: 500; color: var(--ink-dim); }
+.net4-table tr.word td { color: var(--hl); font-weight: 600; }
+.net4-table input.q-input { width: 56px; padding: 4px 6px; text-align: center; }
+
+/* ---------- Unit 4 distribution widgets (widgets-prob2.js, MATH 3042 Unit 4) ---------- */
+.prob2-table input.q-input.small { width: 84px; }
+.prob2-table td, .prob2-table th { font-family: var(--mono); font-size: 12.5px; }
+.prob2-sum.bad, .prob2-bad { color: var(--red); font-weight: 600; }
+.group-table td.prob2-hit { color: var(--hl); font-weight: 600; background: var(--hl-soft); }
+.prob2-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px; margin: 10px 0; }
+.prob2-card { background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 12px; font-size: 13px; color: var(--ink-2); display: flex; flex-direction: column; gap: 8px; }
+.prob2-card select.q-input { width: 100%; }
+.prob2-card.ok { border-color: var(--green); }
+.prob2-card.bad { border-color: var(--red); }
+.prob2-card.bad select { color: var(--red); border-color: var(--red); }
+.prob2-card .why { font-size: 12px; color: var(--ink-dim); min-height: 0; }
+
+/* ---------- Week 6 network widgets (widgets-net5.js, COMP 3721) ---------- */
+.net5-check { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink-2); cursor: pointer; margin: 4px 10px 4px 0; }
+.net5-check input { accent-color: var(--hl); margin: 0; }
+.net5-lines .unit-row label { width: 56px; }
+.net5-box { border: 1px solid var(--rule-strong); border-radius: 6px; padding: 8px 12px; margin: 8px 0; font-size: 13.5px; line-height: 1.6; color: var(--ink); background: var(--paper); }
+.net5-box b { color: var(--blue); }
+.net5-frame { display: flex; gap: 3px; align-items: stretch; flex-wrap: wrap; margin: 8px 0; font-family: var(--mono); font-size: 13px; }
+.net5-frame .c { padding: 6px 10px; border: 1px solid var(--rule-strong); border-radius: 4px; background: var(--paper); color: var(--ink); min-width: 48px; text-align: center; }
+.net5-frame .c.l { background: var(--paper-3); }
+.net5-frame .c.n { border-color: var(--blue); color: var(--blue); }
+.net5-frame .c.d { background: var(--blue); color: #101418; flex: 1; min-width: 70px; }
+.net5-frame .c.hot { border-color: var(--hl); color: var(--hl); background: var(--hl-soft); }
+.net5-frame .c.bad { border-color: var(--red); color: var(--red); }
+.net5-frame .c small { display: block; font-size: 10px; color: var(--ink-dim); font-family: var(--body); margin-top: 2px; }
+.net5-frame .c input.q-input { width: 84px; padding: 2px 5px; font-size: 12.5px; }
+.net5-packets { display: flex; gap: 14px; flex-wrap: wrap; margin: 6px 0; }
+.net5-pkt-wrap { flex: 1 1 280px; min-width: 260px; border-radius: 6px; padding: 4px; }
+.net5-pkt-wrap.cur { outline: 2px solid var(--hl); }
+.net5-pkt-wrap.dim { opacity: 0.55; }
+.net5-pkt { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; font-family: var(--mono); font-size: 12.5px; margin: 4px 0; }
+.net5-pkt .f { background: var(--paper); border: 1px solid var(--rule); border-radius: 4px; padding: 4px 6px; text-align: center; grid-column: span 4; }
+.net5-pkt .f.w1 { grid-column: span 1; }
+.net5-pkt .f.w2 { grid-column: span 2; }
+.net5-pkt .f small { display: block; color: var(--ink-dim); font-size: 10.5px; font-family: var(--body); }
+.net5-pkt .f b { color: var(--hl); font-weight: 600; }
+.net5-pkt .f.key { border-color: var(--blue); }
+.net5-pkt .f input.q-input { width: 74px; padding: 2px 5px; font-size: 12px; margin: 2px 0; }
+
+/* ---------- continuous distributions (widgets-cont.js, MATH 3042 Unit 5) ---------- */
+.cont-panels { display: flex; gap: 12px; flex-wrap: wrap; }
+.cont-panels > svg { flex: 1 1 300px; min-width: 0; width: auto; }
+.cont-handle { cursor: ew-resize; outline: none; }
+.cont-handle:focus circle { stroke: var(--ink); stroke-width: 2; }
+.cont-ztable-wrap { max-height: 300px; overflow: auto; border: 1px solid var(--rule); border-radius: 6px; margin: 10px 0; position: relative; }
+.cont-ztable { border-collapse: collapse; font-family: var(--mono); font-size: 12px; width: 100%; margin: 0; }
+.cont-ztable th, .cont-ztable td { padding: 3px 7px; text-align: right; border: none; border-bottom: 1px solid var(--rule); color: var(--ink-2); white-space: nowrap; font-family: var(--mono); font-weight: 400; }
+.cont-ztable thead th { position: sticky; top: 0; background: var(--paper-2); color: var(--ink); z-index: 2; }
+.cont-ztable tbody th { position: sticky; left: 0; background: var(--paper-2); color: var(--ink); z-index: 1; }
+.cont-ztable tr.cont-z-row td { background: var(--blue-soft); color: var(--blue); }
+.cont-ztable tr.cont-z-row th, .cont-ztable th.cont-z-col { box-shadow: inset 0 0 0 999px var(--blue-soft); color: var(--blue); }
+.cont-ztable td.cont-z-hit, .cont-ztable td.cont-z-near { background: var(--hl-soft); color: var(--hl); font-weight: 700; outline: 1px solid var(--hl); outline-offset: -1px; }
+.cont-ztable td.cont-z-near { outline-style: dashed; }
+
+/* ---------- STL widgets (widgets-stl.js, COMP 3522 Week 6) ---------- */
+.stl-cells { display: flex; gap: 6px; flex-wrap: wrap; align-items: flex-end; margin: 12px 0; font-family: var(--mono); }
+.stl-cell { display: flex; flex-direction: column; align-items: center; min-width: 52px; }
+.stl-ptrs { min-height: 36px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; font-size: 11.5px; font-weight: 700; line-height: 1.15; }
+.stl-ptr::after { content: "\2193"; display: block; font-weight: 400; text-align: center; }
+.stl-ptr.green { color: var(--green); }
+.stl-ptr.red { color: var(--red); }
+.stl-box { border: 1px solid var(--hl); border-radius: 5px; background: var(--paper); text-align: center; padding: 6px 8px; min-width: 52px; font-size: 14px; color: var(--hl); box-sizing: border-box; }
+.stl-box.end { border-style: dashed; border-color: var(--rule-strong); color: var(--ink-dim); font-size: 11px; padding: 8px 6px; }
+.stl-box.t { border-color: var(--green); color: var(--green); }
+.stl-box.f { border-color: var(--rule-strong); color: var(--ink-2); }
+.stl-idx { font-size: 10px; color: var(--ink-dim); margin-top: 3px; }
+.stl-reqs { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 6px 0 10px; }
+.stl-table { border-collapse: collapse; font-size: 13px; width: 100%; }
+.stl-table th, .stl-table td { border: 1px solid var(--rule); padding: 4px 8px; text-align: left; vertical-align: top; }
+.stl-table th { color: var(--ink-dim); font-weight: 600; }
+.stl-table .c { text-align: center; }
+.stl-table .sel { background: var(--blue-soft); }
+.stl-table code { font-family: var(--mono); background: var(--paper-3); padding: 1px 5px; border-radius: 4px; color: var(--hl); font-size: 0.92em; }
+.stl-yes { color: var(--green); font-weight: 700; }
+.stl-no { color: var(--ink-dim); }
+.stl-log { max-height: 240px; overflow: auto; }
+.stl-inline { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 8px 0; }
+.stl-inline .comp-input { width: 160px; }
+.stl-inline .stat-label { margin-left: 4px; }
+.pv-msg code { font-family: var(--mono); background: var(--paper-3); padding: 1px 5px; border-radius: 4px; color: var(--hl); font-size: 0.92em; }
+.stl-off { opacity: 0.55; text-decoration: line-through; }
+
+/* ---------- Week 5 C++ widgets (widgets-cpp3.js, COMP 3522 Week 5) ---------- */
+.cpp3-handler .idx { font-family: var(--mono); font-size: 12px; color: var(--ink-dim); width: 4.2em; }
+.cpp3-handler button { padding: 3px 8px; font-size: 12px; }
+.oop-code .pl.cpp3-dead, .pv-code .pl.cpp3-dead { opacity: 0.4; }
+.cpp3-out .err { color: var(--red); }
+.cpp3-node, .cpp3-chip { cursor: pointer; }
+.cpp3-chip.sel { cursor: grabbing; }
+.cpp3-frame.throwing { border-color: var(--red); }
+.cpp3-frame.handler { border-color: var(--green); border-style: solid; }
+.cpp3-frame.unwinding { opacity: 0.55; }
+.cpp3-frame.terminate { border-color: var(--red); opacity: 0.55; }
+.cpp3-choices { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
+.cpp3-choices .viz-btn.right { border-color: var(--green); color: var(--green); background: var(--green-soft); }
+.cpp3-choices .viz-btn.wrong { border-color: var(--red); color: var(--red); background: var(--red-soft); }

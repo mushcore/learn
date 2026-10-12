@@ -111,6 +111,12 @@ The lab quizzes follow the lectures one week behind, so Quiz 4 is expected to co
     "explain": "$r = 4/3$ and $N = S \\times r = 3000 \\times \\frac{4}{3} = 4000$ bps."
   },
   {
+    "q": "An analog signal has a bit rate of 8000 bps and a baud rate of 1000 baud. How many data elements are carried by each signal element? How many signal elements do we need? Assume $c = 1$ and each signal element corresponds to a signal level.",
+    "options": ["$r = 8$ and $L = 8$", "$r = 8$ and $L = 256$", "$r = 1/8$ and $L = 256$", "$r = 8$ and $L = 16$"],
+    "answer": 1,
+    "explain": "E04 exercise 2. $S = c \\times N \\times \\frac{1}{r}$ with $c = 1$ gives $r = \\frac{N}{S} = \\frac{8000}{1000} = 8$ bits per baud. Each signal element is a level, so $r = \\log_{2} L$ and $L = 2^{8} = 256$ signal elements."
+  },
+  {
     "q": "The relationship between data rate and signal rate depends on the pattern of the data, which gives three cases. Which case has the maximum signal rate?",
     "options": ["The best case", "The average case", "None: the signal rate depends on $r$ alone", "The worst case"],
     "answer": 3,
@@ -191,6 +197,14 @@ The lab quizzes follow the lectures one week behind, so Quiz 4 is expected to co
     "explain": "1 Mbps: 1000000 bits sent in 1 s. $1000000 \\times (1 + 0.1\\%) = 1001000$ bits received in 1 s, which is 1000 extra bps."
   },
   {
+    "q": "In a digital transmission, the receiver clock is 0.2 percent faster than the sender clock. How many extra bits per second does the receiver receive if the data rate is 1 Mbps?",
+    "type": "numeric",
+    "answer": 2000,
+    "tolerance": 0.5,
+    "unit": "bps",
+    "explain": "E04 exercise 1. $0.2\\% \\times 1000000 = 0.002 \\times 1000000 = 2000$ extra bps; bits received per second $= 1000000 + 2000 = 1002000$."
+  },
+  {
     "q": "A receiver clock is 0.5 percent faster than the sender clock and the data rate is 64 kbps. How many extra bits per second does the receiver receive?",
     "type": "numeric",
     "answer": 320,
@@ -219,6 +233,12 @@ The lab quizzes follow the lectures one week behind, so Quiz 4 is expected to co
       ["Bipolar", "three voltage levels: positive, negative, zero"]
     ],
     "explain": "Unipolar: NRZ. Polar: NRZ, RZ, and biphase (Manchester, and differential Manchester). Bipolar: AMI."
+  },
+  {
+    "q": "A figure shows the bit sequence 0 1 0 0 1 1 0 0 0 1 1 encoded using two different line coding schemes: (a) `+ − + + − − + + + − −` and (b) `0 + 0 0 − + 0 0 0 − +`. Indicate the category (unipolar, polar, bipolar) of the line coding schemes used in (a) and (b).",
+    "options": ["(a) unipolar, (b) polar", "(a) polar, (b) polar", "(a) bipolar, (b) polar", "(a) polar, (b) bipolar"],
+    "answer": 3,
+    "explain": "E04 exercise 3. (a) Polar, since we have two voltage levels on both sides of the time axis. (b) Bipolar (AMI), since we have three voltage levels on both sides of the time axis (positive, negative and zero) and the voltage level for bit 1 alternates between positive and negative. Unipolar would keep every level on one side of the axis."
   },
   {
     "q": "In the unipolar NRZ scheme, positive voltage defines bit 1 and the zero voltage defines bit 0.",

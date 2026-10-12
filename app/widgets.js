@@ -8,8 +8,14 @@ import * as net2 from "./widgets-net2.js";
 import * as oop from "./widgets-oop.js";
 import * as prob from "./widgets-prob.js";
 import * as net3 from "./widgets-net3.js";
+import * as net4 from "./widgets-net4.js";
+import * as net5 from "./widgets-net5.js";
+import * as prob2 from "./widgets-prob2.js";
+import * as stl from "./widgets-stl.js";
+import * as cont from "./widgets-cont.js";
+import * as cpp3 from "./widgets-cpp3.js";
 
-const REGISTRY = { ...cpp.WIDGETS, ...stats.WIDGETS, ...net.WIDGETS, ...viz.WIDGETS, ...cpp2.WIDGETS, ...algo.WIDGETS, ...net2.WIDGETS, ...oop.WIDGETS, ...prob.WIDGETS, ...net3.WIDGETS };
+const REGISTRY = { ...cpp.WIDGETS, ...stats.WIDGETS, ...net.WIDGETS, ...viz.WIDGETS, ...cpp2.WIDGETS, ...algo.WIDGETS, ...net2.WIDGETS, ...oop.WIDGETS, ...prob.WIDGETS, ...net3.WIDGETS, ...net4.WIDGETS, ...net5.WIDGETS, ...prob2.WIDGETS, ...stl.WIDGETS, ...cont.WIDGETS, ...cpp3.WIDGETS };
 
 export function widgetNames() {
   return Object.keys(REGISTRY);

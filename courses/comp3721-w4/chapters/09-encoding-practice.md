@@ -3,11 +3,7 @@ title: Encoding practice: bits to waveforms
 minutes: 20
 ---
 
-Turning a bit pattern into a waveform is one rule per scheme, applied bit by bit. The six rules of Lecture 04 are drilled here on new bit patterns, in both directions: bits to waveform and waveform to bits.
-
-:::info No Week 4 exercise sheet is posted
-E01 to E03 came from the instructor. There is no E04 so far, so the bit patterns here are our own. The rules are the slides'.
-:::
+Turning a bit pattern into a waveform is one rule per scheme, applied bit by bit. The six rules of Lecture 04 are drilled here on bit patterns of our own, in both directions: bits to waveform and waveform to bits. The Week 4 exercise sheet (E04) closes the lesson with the instructor's answers.
 
 ## Six schemes, six rules
 
@@ -81,6 +77,90 @@ line-code
 ```widget
 line-code
 { "bits": "01101001", "compare": true, "title": "0 1 1 0 1 0 0 1 in all six schemes" }
+```
+
+## E04, worked
+
+The Week 4 exercise sheet has three questions: the extra bits from a faster receiver clock, the ratio and the signal levels behind a baud rate, and the category of two drawn signals. The answers are the instructor's.
+
+### Exercise 1
+
+> In a digital transmission, the receiver clock is 0.2 percent faster than the sender clock. How many extra bits per second does the receiver receive if the data rate is 1 Mbps?
+
+```quiz
+[
+  {
+    "q": "E04 exercise 1: receiver clock 0.2 percent faster, data rate 1 Mbps. How many extra bits per second does the receiver receive?",
+    "type": "numeric",
+    "answer": 2000,
+    "tolerance": 0.5,
+    "unit": "bps",
+    "explain": "$0.2\\% \\times 1000000 = 0.002 \\times 1000000 = 2000$ extra bps. The receiver reads $1000000 + 2000 = 1002000$ bits in 1 s."
+  }
+]
+```
+
+**Instructor's answer.** Data rate = 1 Mbps = 1,000,000 bps, so 1,000,000 bits are sent per second. Bits received per second $= 1000000 + 1000000 \times 0.2\% = 1002000$, which is **2,000 extra bps**. Or in one step: $0.2\% \times 1000000 = 0.002 \times 1000000 = 2000$ extra bps.
+
+### Exercise 2
+
+> An analog signal has a bit rate of 8000 bps and a baud rate of 1000 baud. How many data elements are carried by each signal element? How many signal elements do we need? Assume c = 1 and each signal element corresponds to a signal level.
+
+```quiz
+[
+  {
+    "q": "E04 exercise 2: bit rate 8000 bps, baud rate 1000 baud, $c = 1$. How many data elements are carried by each signal element?",
+    "type": "numeric",
+    "answer": 8,
+    "tolerance": 0.01,
+    "unit": "bits per baud",
+    "explain": "$S = c \\times N \\times \\frac{1}{r}$ with $c = 1$, so $r = \\frac{N}{S} = \\frac{8000}{1000} = 8$ data elements per signal element."
+  },
+  {
+    "q": "E04 exercise 2: each signal element corresponds to a signal level. How many signal elements (levels) does the signal need?",
+    "type": "numeric",
+    "answer": 256,
+    "tolerance": 0.5,
+    "unit": "signal elements",
+    "explain": "$r = \\log_{2} L$, so $L = 2^{r} = 2^{8} = 256$. Eight bits per signal element need 256 distinct levels, one per 8-bit pattern."
+  }
+]
+```
+
+**Instructor's answer.** $S = c \times N \times \frac{1}{r}$, so $r = \frac{N}{S} = \frac{8000}{1000} = 8$ bits per baud. Since each signal element corresponds to a signal level, $r = \log_2 L$ and $L = 2^r = 2^8 = 256$ signal elements.
+
+### Exercise 3
+
+> The figure below shows the encoding of a bit sequence using two different line coding schemes. Indicate the category (unipolar, polar, bipolar) of the line coding schemes used in (a) and (b). Give the reasoning for your answer.
+
+The figure's bits are 0 1 0 0 1 1 0 0 0 1 1. Signal (a) is high for every 0 and low for every 1: `+ − + + − − + + + − −`. Signal (b) sits on the time axis for every 0 and the 1s go `+`, `−`, `+`, `−`: `0 + 0 0 − + 0 0 0 − +`.
+
+```quiz
+[
+  {
+    "q": "E04 exercise 3 (a): `+ − + + − − + + + − −` for the bits 0 1 0 0 1 1 0 0 0 1 1. Which category is the scheme?",
+    "options": ["Unipolar", "Polar", "Bipolar"],
+    "answer": 1,
+    "explain": "Instructor's reasoning: polar scheme since we have two voltage levels on both sides of the time axis. It is NRZ-L as slide 55 draws it, positive for 0 and negative for 1."
+  },
+  {
+    "q": "E04 exercise 3 (b): `0 + 0 0 − + 0 0 0 − +` for the same bits. Which category is the scheme?",
+    "options": ["Bipolar", "Unipolar", "Polar"],
+    "answer": 0,
+    "explain": "Instructor's reasoning: bipolar scheme (AMI) since we have three voltage levels on both sides of the time axis (positive, negative and zero) and the voltage level for data element (bit) 1 alternates between positive and negative."
+  }
+]
+```
+
+**Instructor's answer.** (a) *Polar scheme since we have two voltage levels on both sides of the time axis.* (b) *Bipolar scheme (AMI) since we have three voltage levels on both sides of the time axis (positive, negative and zero) and the voltage level for data element (bit) 1 alternates between positive and negative.*
+
+The sheet draws (a) with 0 high and 1 low, the NRZ-L convention of slide 55, so the slides' polarity is the one to use on the quiz.
+
+### The E04 pattern as NRZ-L and AMI
+
+```widget
+line-code
+{ "bits": "01001100011", "schemes": ["nrz-l", "ami"], "compare": true, "title": "0 1 0 0 1 1 0 0 0 1 1 as E04 draws it: (a) NRZ-L, two levels either side of the axis; (b) AMI, three levels with the 1s alternating" }
 ```
 
 ```quiz

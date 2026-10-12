@@ -1,0 +1,135 @@
+{
+  "lang": "r",
+  "title": "MATH 3042 Statistics · Unit 5",
+  "subtitle": "Continuous probability distributions: uniform, normal, exponential",
+  "description": "Unit 5: why a continuous variable has P(X = x) = 0 and probabilities become areas; the probability density function and the cumulative function F(x); the uniform distribution on [a, b] and the bus-wait example; the normal distribution's shape and parameters, the standard normal Z table read forwards (areas) and backwards (percentiles), standardizing any normal X, the IQ, cosmic-radiation and Gaussian-noise bit-error examples; and the exponential distribution for waiting times, its cdf 1 - e^(-x/beta), mean = sd = beta, percentiles, and the memoryless property on the bank-teller example. Every example computed and checked with pnorm, qnorm, pexp, qexp. Ends with the examples worked, a mock quiz and a formula sheet.",
+  "intro": ":::quiz Quiz scope\nThe Unit 5 notes were posted blank and ahead of the lecture; every answer here is computed and labelled so, and the in-class numbers replace them if they differ. By the one-unit-behind pattern this unit's paper quiz will ask for: an area under a uniform density, a Z-table lookup in each direction (left tail, right tail, between, and a percentile), a normal problem that needs Z = (X - mu)/sigma first, and an exponential probability or percentile from F(x) = 1 - e^(-x/beta). Bring the Z table the course provides and a calculator with e^x and ln. The RStudio half will follow Lab 6, not yet posted.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "mock-quiz-5",
+        "note": "take it cold first to find the gaps (about 35 min)"
+      },
+      {
+        "lesson": "standard-normal-z-table",
+        "note": "read P(Z <= -1.96), P(Z > 2.33), P(0.55 <= Z <= 1.10) off the table yourself"
+      },
+      {
+        "lesson": "normal-applications",
+        "note": "standardize first: IQ below 120, radiation 4.35 to 5.00, the 95th percentile at z = 1.645"
+      },
+      {
+        "lesson": "exponential",
+        "note": "F(x) = 1 - e^(-x/beta); 95th percentile is -beta ln 0.05"
+      },
+      {
+        "lesson": "exponential-memoryless",
+        "note": "the teller's conditional answer equals the unconditional one"
+      },
+      {
+        "lesson": "uniform",
+        "note": "the bus: (11 - 8)/20, (20 - 12)/20, and exactly 4 minutes is 0"
+      },
+      {
+        "lesson": "examples-worked",
+        "note": "every example with blank answer lines, worked; do them before reading"
+      },
+      {
+        "lesson": "mock-quiz-5",
+        "note": "retake; aim for 90% or better"
+      },
+      {
+        "lesson": "formula-sheet-5",
+        "note": "print it; rewrite the three distributions' rows from memory once"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Continuous variables and densities",
+      "lessons": [
+        {
+          "id": "continuous-random-variables",
+          "title": "Continuous random variables: why P(X = x) = 0",
+          "file": "chapters/01-continuous-random-variables.md"
+        },
+        {
+          "id": "uniform",
+          "title": "The uniform distribution: waiting for the bus",
+          "file": "chapters/02-uniform.md"
+        },
+        {
+          "id": "pdf-cdf",
+          "title": "Probability density functions and F(x)",
+          "file": "chapters/03-pdf-cdf.md"
+        }
+      ]
+    },
+    {
+      "title": "2. The normal distribution",
+      "lessons": [
+        {
+          "id": "normal-distribution",
+          "title": "The normal distribution: shape, mu and sigma",
+          "file": "chapters/04-normal-distribution.md"
+        },
+        {
+          "id": "standard-normal-z-table",
+          "title": "The standard normal distribution and the Z table",
+          "file": "chapters/05-standard-normal-z-table.md"
+        },
+        {
+          "id": "normal-applications",
+          "title": "Standardizing: IQ, cosmic radiation, Gaussian noise",
+          "file": "chapters/06-normal-applications.md"
+        }
+      ]
+    },
+    {
+      "title": "3. The exponential distribution",
+      "lessons": [
+        {
+          "id": "exponential",
+          "title": "The exponential distribution: waiting between requests",
+          "file": "chapters/07-exponential.md"
+        },
+        {
+          "id": "exponential-memoryless",
+          "title": "Percentiles and the memoryless property: the bank teller",
+          "file": "chapters/08-exponential-memoryless.md"
+        }
+      ]
+    },
+    {
+      "title": "4. In R",
+      "lessons": [
+        {
+          "id": "continuous-in-r",
+          "title": "punif, pnorm, qnorm, pexp, qexp and curve()",
+          "file": "chapters/09-continuous-in-r.md"
+        }
+      ]
+    },
+    {
+      "title": "5. Quiz prep",
+      "lessons": [
+        {
+          "id": "examples-worked",
+          "title": "Every lecture example, worked",
+          "file": "chapters/10-examples-worked.md"
+        },
+        {
+          "id": "mock-quiz-5",
+          "title": "Mock quiz (Unit 5)",
+          "file": "chapters/11-mock-quiz-5.md"
+        },
+        {
+          "id": "formula-sheet-5",
+          "title": "Formula sheet (Unit 5)",
+          "file": "chapters/12-formula-sheet-5.md"
+        }
+      ]
+    }
+  ]
+}

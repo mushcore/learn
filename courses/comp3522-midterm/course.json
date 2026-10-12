@@ -1,0 +1,78 @@
+{
+  "lang": "cpp",
+  "title": "COMP 3522 C++ · Midterm",
+  "subtitle": "Wednesday Oct 29, 3:30 pm, SW03-1710, 90 minutes, one double-sided cheat sheet: Weeks 1 to 7",
+  "description": "The practice midterm, worked: sixteen theory questions with model answers written the way the marker expects, the three read-the-code questions traced line by line with the real output, the six Fraction questions built into one program you can run, and a mock midterm in the real format (multiple choice and true/false, definitions, write the output, a short and a guided long coding question). Ends with a cheat-sheet draft for both sides of the page.",
+  "intro": ":::quiz Midterm facts\n**Wednesday Oct 29, 3:30 pm, room SW03-1710, 90 minutes, on paper.** Arrive 10 minutes early (you will not be let in early). Covers everything up to and including Week 7. One page, double-sided cheat sheet, handwritten or printed in Arial 10 pt or larger (the practice paper's \"no cheat sheets\" line is the old rule). Format: multiple choice and true/false; definitions; read a code snippet and write the output; a short coding question; a long coding question broken into guided parts. Instructor's strategy: slides and their links, the sample code referenced in the slides, labs and assignments, the coding challenges in the lectures, this practice midterm, your old quiz attempts (Activities > Quizzes > Quiz 2 > Submissions > Attempt 1), and \"topic geeks for geeks\" searches. Next week is review; anonymous topic requests at https://forms.gle/HAcpDu8cZTw5yY9bA.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "mock-midterm",
+        "note": "take it cold, on paper, 90 minutes, no notes"
+      },
+      {
+        "lesson": "output-traces",
+        "note": "Q20, Q27, Q28: write the output before you run; count the lines"
+      },
+      {
+        "lesson": "fraction-program",
+        "note": "write the six Fraction answers on paper, then build them into the runnable program"
+      },
+      {
+        "lesson": "theory-questions",
+        "note": "answer every Part A question in two or three sentences, then compare with the model answers"
+      },
+      {
+        "lesson": "mock-midterm",
+        "note": "retake; aim for 90% or better"
+      },
+      {
+        "lesson": "cheat-sheet-midterm",
+        "note": "hand-write both sides from this draft, Arial 10 if printed"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. The practice midterm, worked",
+      "lessons": [
+        {
+          "id": "midterm-format",
+          "title": "What the midterm looks like and how to study",
+          "file": "chapters/01-midterm-format.md"
+        },
+        {
+          "id": "theory-questions",
+          "title": "Part A: the sixteen theory questions",
+          "file": "chapters/02-theory-questions.md"
+        },
+        {
+          "id": "output-traces",
+          "title": "Part B: write the output (Q20, Q27, Q28)",
+          "file": "chapters/03-output-traces.md"
+        },
+        {
+          "id": "fraction-program",
+          "title": "Part B: the Fraction questions (Q21 to Q26)",
+          "file": "chapters/04-fraction-program.md"
+        }
+      ]
+    },
+    {
+      "title": "2. Mock midterm and cheat sheet",
+      "lessons": [
+        {
+          "id": "mock-midterm",
+          "title": "Mock midterm (90 minutes)",
+          "file": "chapters/05-mock-midterm.md"
+        },
+        {
+          "id": "cheat-sheet-midterm",
+          "title": "Double-sided cheat sheet (Weeks 1 to 6, Week 7 pending)",
+          "file": "chapters/06-cheat-sheet-midterm.md"
+        }
+      ]
+    }
+  ]
+}

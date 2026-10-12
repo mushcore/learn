@@ -3,13 +3,15 @@ title: The complement and addition rules
 minutes: 20
 ---
 
-Two rules turn hard counts into easy ones. The complement rule counts what you do not want; the addition rule combines two events without counting their overlap twice.
+Two rules turn hard counts into easy ones. The complement rule counts what you do not want; the addition rule combines two events without counting their overlap twice. The filled notes call section 3.3 the *"short cut"* and nickname the three rules by the English word each one handles: the complement rule is the **NOT rule**, the addition rule is the **OR rule**, and the multiplication rule of the next lesson is the **AND rule**. Read a problem, find its not / or / and, and you have found the rule.
 
-## The complement rule
+## The complement rule (NOT)
 
-For any event $A$ in a sample space $S$, the **complementary event** is everything else, $\bar{A} = S - A$, and since $A$ and $\bar{A}$ together are all of $S$,
+For any event $A$ in a sample space $S$, the **complementary event** is everything else, $\bar{A} = S - A = \{x \in S \mid x \notin A\}$, and since $A$ and $\bar{A}$ together are all of $S$,
 
-$$P(\bar{A}) = 1 - P(A)$$
+$$P(\bar{A}) = \frac{|\bar{A}|}{|S|} = \frac{|S| - |A|}{|S|} = 1 - P(A)$$
+
+The instructor's one-line example: $P(\text{Not Rain}) = 1 - P(\text{Rain})$.
 
 **Two dice, sum less than 12.** The only sum that is not less than 12 is 12 itself, the single outcome (6, 6). So $P(\text{sum} < 12) = 1 - 1/36 = 35/36 = 0.9722$. Counting the 35 favourable outcomes directly gives the same answer with 35 times the work.
 
@@ -30,26 +32,32 @@ More likely than not, with only 23 people. The demo notebook's simulation (`samp
 birthday
 ```
 
-## The addition rule
+## The addition rule (OR)
 
 For one trial and two events $A$ and $B$,
 
 $$P(A \cup B) = P(A) + P(B) - P(A \cap B)$$
 
-$A \cup B$ is "$A$ or $B$ (or both)"; $A \cap B$ is "both". The subtraction removes the outcomes in both events, which $P(A) + P(B)$ counted twice.
+$A \cup B$ is "$A$ or $B$ (or both)", the *union*; $A \cap B$ is "$A$ and $B$", the *intersection*. The subtraction *avoids double counting*: the outcomes in both events were counted twice in $P(A) + P(B)$.
 
 Events $A$ and $B$ are **mutually exclusive** if they cannot both occur in one trial: $A$ = draw a black card and $B$ = draw a heart. Then $P(A \cap B) = 0$ and the rule simplifies to $P(A \cup B) = P(A) + P(B)$.
 
-**Top card is a 7 or an Ace.** A card cannot be both, so the events are mutually exclusive: $P = 4/52 + 4/52 = 8/52 = 2/13 = 0.1538$.
+**Top card is black or a heart.** The notes' mutually exclusive pair, worked to a number: $P(A \cup B) = \dfrac{26}{52} + \dfrac{13}{52} = 0.7500$. The subtraction term is crossed out because it is zero.
 
-**Top card is a heart or an Ace** (for contrast). The Ace of hearts is in both, so $P = 13/52 + 4/52 - 1/52 = 16/52 = 0.3077$; forgetting the subtraction gives 17/52 and counts the Ace of hearts twice.
+**Top card is a red card or an Ace.** The printed notes asked for "a 7 or an Ace"; in class the instructor crossed out the 7 and worked *red card or Ace* instead, *changed problem to illustrate when A and B are not mutually exclusive*. Two Aces are red, so
+
+$$P(\text{Red} \cup \text{Ace}) = P(\text{Red}) + P(\text{Ace}) - P(\text{Red} \cap \text{Ace}) = \frac{26}{52} + \frac{4}{52} - \frac{2}{52} = 0.5385$$
+
+**Top card is a 7 or an Ace** (the printed version). A card cannot be both, so the events are mutually exclusive: $P = 4/52 + 4/52 = 8/52 = 2/13 = 0.1538$.
+
+**Top card is a heart or an Ace** (one more overlap). The Ace of hearts is in both, so $P = 13/52 + 4/52 - 1/52 = 16/52 = 0.3077$; forgetting the subtraction gives 17/52 and counts the Ace of hearts twice.
 
 ```widget
 prob-rules
-{ "preset": "7 or Ace (top card)" }
+{ "preset": "black card or heart" }
 ```
 
-Switch to "heart or Ace" to see the overlap appear, and to "black card or heart" for the notes' mutually exclusive pair.
+Switch to "heart or Ace" to see the overlap appear, and to "7 or Ace" for the printed version of the second example.
 
 :::quiz Mutually exclusive is about one trial
 Black and heart cannot both happen to the same card. They can certainly both happen across two draws. The addition rule and the definition of mutually exclusive always refer to **one trial** of the experiment.
@@ -113,6 +121,26 @@ Black and heart cannot both happen to the same card. They can certainly both hap
     "options": ["17/52", "16/52", "13/52", "4/52"],
     "answer": 1,
     "explain": "13/52 + 4/52 - 1/52 (the Ace of hearts is in both): 16/52 = 0.3077."
+  },
+  {
+    "q": "Top card: P(a red card or an Ace)? (4 decimals)",
+    "type": "numeric",
+    "answer": 0.5385,
+    "tolerance": 0.0003,
+    "explain": "The in-class example. Not mutually exclusive, two Aces are red: 26/52 + 4/52 - 2/52 = 28/52 = 0.5385."
+  },
+  {
+    "q": "Top card: P(a black card or a heart)? (4 decimals)",
+    "type": "numeric",
+    "answer": 0.75,
+    "tolerance": 0.0003,
+    "explain": "Mutually exclusive, so the subtraction term is 0: 26/52 + 13/52 = 39/52 = 0.7500."
+  },
+  {
+    "q": "Which nickname does the instructor give each rule?",
+    "options": ["complement = AND, addition = OR, multiplication = NOT", "complement = OR, addition = NOT, multiplication = AND", "complement = NOT, addition = OR, multiplication = AND", "all three are the OR rule"],
+    "answer": 2,
+    "explain": "NOT rule: P(not A) = 1 - P(A). OR rule: P(A or B) = P(A) + P(B) - P(A and B). AND rule: P(A and B) = P(A) P(B | A). The English word in the question names the rule."
   },
   {
     "q": "'Draw a black card' and 'draw a heart' are mutually exclusive.",

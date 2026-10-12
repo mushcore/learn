@@ -46,6 +46,8 @@ clock-drift
 
 The extra bits are the data rate times the percentage: $0.001 \times 1000 = 1$ and $0.001 \times 1000000 = 1000$. The same clock error costs 1000 times as many bits at 1000 times the data rate.
 
+E04 asks the same question with a clock *0.2 percent faster* at 1 Mbps. The instructor's answer: $0.2\% \times 1000000 = 0.002 \times 1000000 = 2000$ extra bps, or as bits received, $1000000 + 1000000 \times 0.2\% = 1002000$. Twice the clock error, twice the extra bits.
+
 A slower receiver clock works the other way. The slides do not show it, but the same arithmetic with $(1 - 0.1\%)$ gives 999 bits read for 1000 sent.
 
 ## Complementary note: the clock is recovered from the signal
@@ -100,6 +102,14 @@ The note counts this as the second problem caused by long strings of 1s or 0s. T
     "tolerance": 0.5,
     "unit": "bps",
     "explain": "$250000 \\times 0.2\\% = 250000 \\times 0.002 = 500$ extra bps. The receiver reads 250500 bits in 1 s."
+  },
+  {
+    "q": "E04 exercise 1: in a digital transmission, the receiver clock is 0.2 percent faster than the sender clock. How many extra bits per second does the receiver receive if the data rate is 1 Mbps?",
+    "type": "numeric",
+    "answer": 2000,
+    "tolerance": 0.5,
+    "unit": "bps",
+    "explain": "$0.2\\% \\times 1000000 = 0.002 \\times 1000000 = 2000$ extra bps; the receiver reads 1002000 bits in 1 s. Twice the slide example's 0.1 percent, so twice its 1000 extra bps."
   },
   {
     "q": "The receiver clock is 0.1 percent faster than the sender clock and the data rate is 10 Mbps. How many bits does the receiver receive in 1 s?",

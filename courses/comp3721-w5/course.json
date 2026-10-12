@@ -1,0 +1,54 @@
+{
+  "title": "COMP 3721 · Week 5",
+  "subtitle": "Analog-to-digital (PCM), digital-to-analog (ASK, FSK, PSK, QAM) and analog-to-analog (AM, FM, PM) conversion, preparing for Quiz 5",
+  "description": "Lecture 05a: digitization by pulse code modulation, sampling methods, the Nyquist rate, quantization zones and codes on the slide's nine-sample example, bits per sample and bit rate, quantization error and SNR, the bandwidth cost of PCM. Lecture 05b: the carrier, amplitude / frequency / phase shift keying and QAM with their bandwidth boxes, constellation diagrams for every slide example, and AM, FM and PM with the radio allocations. Every worked number from the slides, a live widget for each idea, E05 worked, Mock Quiz 5 and the Week 5 study note.",
+  "intro": ":::quiz Quiz 5 scope\nQuiz 4 covered Lecture 04, so Quiz 5 is expected to cover Lectures 05a and 05b, all of it in this module. The calculations are the Nyquist sampling rate, n_b = log2 L, bit rate = f_s × n_b, B_min = n_b × B_analog, the quantization table (normalize, zone, midpoint, error, code) and a constellation point's amplitude from its I and Q components. Write samples/s for a sampling rate, bps for a bit rate and Hz for a bandwidth. One A4 or letter page of notes, single-sided and preferably hand-written, is allowed; the last lesson is the Week 5 block of that page.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      { "lesson": "mock-quiz-5", "note": "take it cold first to find the gaps (about 35 min)" },
+      { "lesson": "nyquist-sampling", "note": "f_s ≥ 2 f_max; low-pass gives f_max = bandwidth, bandpass does not" },
+      { "lesson": "quantization", "note": "redo the nine-sample table by hand: normalize, zone, midpoint, error, code" },
+      { "lesson": "encoding-bit-rate", "note": "n_b = log2 L, bit rate = f_s × n_b, B_min = n_b × B_analog; E05 1 and 2" },
+      { "lesson": "ask-fsk-psk", "note": "which property changes, which stay constant, the three bandwidth boxes" },
+      { "lesson": "constellation", "note": "draw the five slide examples on paper, then check them in the widget" },
+      { "lesson": "am-fm-pm", "note": "B_AM = 2B, B_FM = 2(1 + β)B, 10 kHz and 200 kHz" },
+      { "lesson": "mock-quiz-5", "note": "retake; aim for 90% or better" },
+      { "lesson": "study-note", "note": "hand-write the Week 5 block of your A4 page from this draft" }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Analog-to-digital conversion: PCM (05a)",
+      "lessons": [
+        { "id": "digitization-pcm", "title": "Digitization and the PCM encoder", "file": "chapters/01-digitization-pcm.md" },
+        { "id": "sampling-methods", "title": "Sampling: T_s, f_s and the three methods", "file": "chapters/02-sampling-methods.md" },
+        { "id": "nyquist-sampling", "title": "The Nyquist theorem and the sampling rate", "file": "chapters/03-nyquist-sampling.md" },
+        { "id": "quantization", "title": "Quantization: zones, midpoints, codes, error", "file": "chapters/04-quantization.md" },
+        { "id": "encoding-bit-rate", "title": "Encoding, bits per sample and the bit rate", "file": "chapters/05-encoding-bit-rate.md" },
+        { "id": "quantization-error-bandwidth", "title": "Quantization error, nonuniform quantization and PCM bandwidth", "file": "chapters/06-quantization-error-bandwidth.md" }
+      ]
+    },
+    {
+      "title": "2. Digital-to-analog conversion (05b)",
+      "lessons": [
+        { "id": "ask-fsk-psk", "title": "The carrier, ASK, FSK and PSK", "file": "chapters/07-carrier-ask-fsk-psk.md" },
+        { "id": "constellation", "title": "QAM and constellation diagrams", "file": "chapters/08-qam-constellation.md" }
+      ]
+    },
+    {
+      "title": "3. Analog-to-analog conversion (05b)",
+      "lessons": [
+        { "id": "am-fm-pm", "title": "AM, FM and PM, and the radio bands", "file": "chapters/09-am-fm-pm.md" }
+      ]
+    },
+    {
+      "title": "4. Quiz prep",
+      "lessons": [
+        { "id": "e05-worked", "title": "E05 worked, and the seven conversions compared", "file": "chapters/10-e05-worked.md" },
+        { "id": "mock-quiz-5", "title": "Mock Quiz 5 (Week 5)", "file": "chapters/11-mock-quiz-5.md" },
+        { "id": "study-note", "title": "Your one-page study note (Week 5)", "file": "chapters/12-study-note.md" }
+      ]
+    }
+  ]
+}

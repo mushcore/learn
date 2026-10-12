@@ -1,0 +1,124 @@
+{
+  "lang": "cpp",
+  "title": "COMP 3522 C++ · Week 5",
+  "subtitle": "Exceptions and assertions, noexcept and the standard exceptions; coupling and cohesion, the five SOLID principles and the Law of Demeter, preparing for Quiz 5 and the midterm",
+  "description": "Everything in the Week 5 deck and the Week5 sample programs: assertions versus exceptions, throw and try-catch, the six catch guidelines (by reference, first match, child before parent, the ellipsis last, terminate or rethrow), noexcept and why destructors never throw, std::exception and what(), the logic_error and runtime_error families, terminate; then design: coupling and cohesion, dependencies and decoupling with abstractions, Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion, and the Law of Demeter. Every program runnable with its real output, the design examples redrawn as UML you can click, and the practice-midterm Fraction constructor worked. A mock quiz and a cheat sheet close the week.",
+  "intro": ":::quiz Quiz 5 scope and the midterm\nSame format as before (multiple choice, true/false, matching, what-does-this-print) at the start of lab, covering the **Week 5 slides** and the **Week5 sample programs** (exception.cpp to exception5.cpp). The midterm on **Wednesday Oct 29, 3:30 pm, SW03-1710** (90 minutes, one double-sided cheat sheet) covers Weeks 1 to 7; the practice midterm asks you to write a Fraction constructor that throws, which is this week's material.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "mock-quiz-5",
+        "note": "take it cold first, so you know where the gaps are (about 40 min)"
+      },
+      {
+        "lesson": "catch-guidelines",
+        "note": "by reference, first match, child before parent, ellipsis last; play the matcher until every case is obvious"
+      },
+      {
+        "lesson": "noexcept-std-exceptions",
+        "note": "what() is virtual; logic_error vs runtime_error; what terminate does; exception5.cpp line by line"
+      },
+      {
+        "lesson": "throw-try-catch",
+        "note": "throw anything, but define a type; read_matrix_file with an error code and with an exception"
+      },
+      {
+        "lesson": "solid-srp-ocp",
+        "note": "one reason to change; open for extension, closed for modification; the UIWidget if-chain"
+      },
+      {
+        "lesson": "solid-lsp-isp",
+        "note": "vector<UIWidget*>; no client forced to depend on functions it does not use"
+      },
+      {
+        "lesson": "dip-demeter",
+        "note": "both sides depend on the abstraction; count the dots in a train wreck"
+      },
+      {
+        "lesson": "practice-fraction-design",
+        "note": "write the throwing Fraction constructor on paper, then the character-creation redesign"
+      },
+      {
+        "lesson": "mock-quiz-5",
+        "note": "retake; aim for 90% or better"
+      },
+      {
+        "lesson": "cheat-sheet-5",
+        "note": "print it and read it on the way in"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Exceptions",
+      "lessons": [
+        {
+          "id": "errors-assertions",
+          "title": "Errors, assertions and the trouble with error codes",
+          "file": "chapters/01-errors-assertions.md"
+        },
+        {
+          "id": "throw-try-catch",
+          "title": "throw, try and catch",
+          "file": "chapters/02-throw-try-catch.md"
+        },
+        {
+          "id": "catch-guidelines",
+          "title": "The six catch guidelines and stack unwinding",
+          "file": "chapters/03-catch-guidelines.md"
+        },
+        {
+          "id": "noexcept-std-exceptions",
+          "title": "noexcept, std::exception and terminate",
+          "file": "chapters/04-noexcept-std-exceptions.md"
+        }
+      ]
+    },
+    {
+      "title": "2. Design principles",
+      "lessons": [
+        {
+          "id": "coupling-cohesion",
+          "title": "Coupling, cohesion and dependencies",
+          "file": "chapters/05-coupling-cohesion.md"
+        },
+        {
+          "id": "solid-srp-ocp",
+          "title": "Single Responsibility and Open/Closed",
+          "file": "chapters/06-solid-srp-ocp.md"
+        },
+        {
+          "id": "solid-lsp-isp",
+          "title": "Liskov Substitution and Interface Segregation",
+          "file": "chapters/07-solid-lsp-isp.md"
+        },
+        {
+          "id": "dip-demeter",
+          "title": "Dependency Inversion and the Law of Demeter",
+          "file": "chapters/08-dip-demeter.md"
+        }
+      ]
+    },
+    {
+      "title": "3. Quiz and midterm prep",
+      "lessons": [
+        {
+          "id": "practice-fraction-design",
+          "title": "Practice: a throwing Fraction and a SOLID redesign",
+          "file": "chapters/09-practice-fraction-design.md"
+        },
+        {
+          "id": "mock-quiz-5",
+          "title": "Mock Quiz 5",
+          "file": "chapters/10-mock-quiz-5.md"
+        },
+        {
+          "id": "cheat-sheet-5",
+          "title": "One-page cheat sheet (Week 5)",
+          "file": "chapters/11-cheat-sheet.md"
+        }
+      ]
+    }
+  ]
+}

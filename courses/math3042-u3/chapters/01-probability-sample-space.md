@@ -7,7 +7,7 @@ Units 1 and 2 described samples. From here on the sample is treated as the outco
 
 ## What "64% chance of rain" means
 
-The probability of an event is a measure of how likely that event is. The forecast's 64% is a relative frequency: of all the days whose conditions looked like Thursday's, rain fell on about 64 in every 100. It does not mean 64% of Thursday will be wet, or that rain is "expected". Probability is a number between 0 and 1 (0% and 100%) attached to an event before the event is resolved.
+The probability of an event is a measure of how likely that event is. The instructor's answer in the filled notes: *64% of model simulation runs produced rain.* The forecaster runs the weather model many times from slightly different starting conditions, and the fraction of runs that rained is the number on the screen: a relative frequency over simulated days, not over past Thursdays. It does not mean 64% of Thursday will be wet, or that rain is "expected". Probability runs *from 0 to 1 (0% to 100%)* and is attached to an event before the event is resolved.
 
 ## Random experiment, sample space, random variable
 
@@ -30,7 +30,7 @@ Move the slider to five coins and press "all the same" and "at least k heads" wi
 
 ## Events and the classical definition
 
-An **event** $A$ is any subset of the sample space $S$: "exactly one head" is the subset {HTT, THT, TTH}. If the outcomes in $S$ are **equally likely**, the probability of $A$ is
+An **event** $A$ is any subset of the sample space $S$: "exactly one head" is the subset {HTT, THT, TTH}. The filled notes add that an event *can contain 0 or more outcomes*, so the empty set and all of $S$ are events too. If the outcomes in $S$ are **equally likely**, the probability of $A$ is
 
 $$P(A) = \frac{|A|}{|S|}$$
 

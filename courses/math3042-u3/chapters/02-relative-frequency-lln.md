@@ -11,6 +11,8 @@ Perform $n$ trials of a random experiment and find that event $A$ occurs $x$ tim
 
 $$P(A) \approx \frac{x}{n}$$
 
+The filled notes label the fraction *x (# success)* over *n (# trials)* and call it the *relative freq definition*.
+
 **The law of large numbers**: if you perform the random experiment enough times, $x/n$ must approach the exact classical probability $P(A)$. For a small $n$ the fraction wanders; as $n$ grows it settles.
 
 ## Boxcars, both ways
@@ -42,7 +44,7 @@ prob.B
 [1] 0.02799
 ```
 
-`sample(c(1,2,3,4,5,6), n.dice, replace=TRUE)` rolls two dice (`replace=TRUE` lets both show the same number, lesson 8). `success` is `TRUE` or `FALSE`, and adding it to `X.success` counts the TRUEs. After 100 000 trials the fraction is 0.028, against the exact 0.02778; the demo notebook's `prob.B.classical <- 1/(6^2)` prints the same 0.02777778.
+`sample(c(1,2,3,4,5,6), n.dice, replace=TRUE)` rolls two dice (`replace=TRUE` lets both show the same number, lesson 8). `success` is `TRUE` or `FALSE`, and adding it to `X.success` counts the TRUEs. The run in the filled notes gave $P(B) \approx x/n = 0.0281$, against the exact $1/36 = 0.0278$; the demo notebook's `prob.B.classical <- 1/(6^2)` prints 0.02777778. Every run lands on a slightly different third decimal, which is the point of the next widget.
 
 ```widget
 lln-sim

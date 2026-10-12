@@ -2,7 +2,7 @@
 
 Source files: `D:/BCIT/COMP3721/lectures/COMP3721 - 04 - Week 4 - Copy.pdf` (64 slides, file dated 2026-10-01, downloaded 2026-10-06),
 `lectures/COMP3721 - 04a - Complementary Notes.pdf` (2 pages, "Baseline Wandering and Self-Synchronization (Clock Recovery)", from Peterson & Davie, *Computer Networks: A Systems Approach*, 5th ed., ch. 2).
-No Week 4 exercise sheet (E04) is posted; lesson 09 uses bit patterns of our own.
+Exercise sheet: `exercises/COMP3721 - E04 - Week 4 Exercises with Answers.pdf` (7 pages, posted after the 2026-10-06 build; worked in lessons 02, 05 and 09 and in the mock quiz, see the E04 section at the end). Lesson 09's drawing patterns are still our own.
 Textbook: Forouzan, *Data Communications and Networking with TCP/IP Protocol Suite*, 6th ed. Reading for 04: Ch 2 §2.3.1, §2.8 (practice test).
 **The 6th edition's §2.3.1 has one paragraph on line coding (Figure 2.8, encoder/decoder) and no schemes, and §2.8 has no line-coding problems.** The slide figures carry an earlier edition's labels ("Figure 4.6"). The slides and 04a are the only sources for this module.
 
@@ -54,7 +54,7 @@ Textbook: Forouzan, *Data Communications and Networking with TCP/IP Protocol Sui
 - Manchester: the exclusive OR of the NRZ-encoded data and the clock (clock alternates low to high); **0 is low-to-high, 1 is high-to-low, the mirror image of slide 57.** Differential Manchester: 1 has its first half equal to the last half of the previous bit's signal, 0 opposite (agrees with slide 57).
 
 ## Conflicts the lessons flag
-- NRZ-L polarity: slide 55 (0 positive) against slide 4's chart, the slide-46 figure and 04a (1 high). Lessons use slide 55.
+- NRZ-L polarity: slide 55 (0 positive) against slide 4's chart, the slide-46 figure and 04a (1 high). Lessons use slide 55. **E04 figure (a) draws 0 high and 1 low, so the posted answer sheet agrees with slide 55; the conflict is resolved in favour of the slides.**
 - Manchester polarity: slide 57 against 04a. Lessons use slide 57.
 
 ## Beyond the slides (labelled as such in the lessons)
@@ -62,3 +62,9 @@ Textbook: Forouzan, *Data Communications and Networking with TCP/IP Protocol Sui
 - AMI's properties (no transition in a run of 0s, mean near zero) and unipolar NRZ's are derived from the rules; the slides state properties only for polar NRZ and the Manchester schemes.
 - Slower-clock arithmetic (1 − p%) and the two-thirds reading of the 8-to-12-bit figure are computed, not printed.
 - The widgets' running average (time constant of 6 bit durations) and the `clock-drift` rule that a sample on an edge reads the higher level are modelling choices; the second one reproduces the slide's 110111000011 at 1.5×.
+
+## E04 (posted after the build) — questions and official answers
+Source: `exercises/COMP3721 - E04 - Week 4 Exercises with Answers.pdf`, 7 pages, each question on one page and its answer on the next.
+1. "In a digital transmission, the receiver clock is 0.2 percent faster than the sender clock. How many extra bits per second does the receiver receive if the data rate is 1 Mbps?" Answer: data rate 1 Mbps = 1,000,000 bps; bits received per second = 1,000,000 + 1,000,000 × 0.2% = 1,002,000, **2,000 extra bps**. "Or 0.2% × 1000,000 = 0.002 × 1000,000 = 2,000 extra bps." (Lesson 05 paragraph and quiz item; lesson 09; mock quiz. The 250 kbps / 500 bps item in lesson 05 is ours and stays.)
+2. "An analog signal has a bit rate of 8000 bps and a baud rate of 1000 baud. How many data elements are carried by each signal element? How many signal elements do we need? Assume c = 1 and each signal element corresponds to a signal level." Answer: S = c × N × 1/r → r = N/S = 8000/1000 = **8 bits per baud**; since each signal element corresponds to a signal level, r = log2 L → L = 2^r = 2^8 = **256**. (Lesson 02 section "E04: the ratio and the levels from two rates"; lesson 09; mock quiz. The remark that c = 1/2 would give r = 4 is ours.)
+3. "The figure below shows the encoding of a bit sequence using two different line coding schemes. Indicate the category (unipolar, polar, bipolar) of the line coding schemes used in (a) and (b). Give the reasoning for your answer." Figure: bits 0 1 0 0 1 1 0 0 0 1 1 over a shared time axis; (a) a two-level signal, **high for 0 and low for 1** (`+ − + + − − + + + − −`); (b) 0 on the axis, 1s alternating + − + − (`0 + 0 0 − + 0 0 0 − +`). Answer: a) "Polar scheme since we have two voltage levels on both sides of the time axis." b) "Bipolar scheme (AMI) since we have three voltage levels on both sides of the time axis (positive, negative and zero) and the voltage level for data element (bit) 1 alternates between positive and negative." **Figure (a) draws 0 high, agreeing with slide 55's NRZ-L convention.** (Lesson 09 section "E04, worked" with a `line-code` compare widget on `01001100011`; mock quiz, with the two signals written in the lesson's `+ − 0` notation since the quiz cannot show the figure.)

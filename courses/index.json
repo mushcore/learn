@@ -4,7 +4,7 @@
       "id": "comp3522",
       "code": "COMP 3522",
       "title": "Object Oriented Programming in C++",
-      "description": "Jeff Yim's lectures and sample code, one module per week. Runnable C++ in every lesson.",
+      "description": "Jeff Yim's lectures and sample code, one module per week, plus a Midterm module. Runnable C++ in every lesson.",
       "modules": [
         {
           "id": "comp3522",
@@ -29,6 +29,24 @@
           "title": "Week 4",
           "subtitle": "abstract classes, interfaces, multiple inheritance, the diamond, friends, operator overloading, copy-and-swap",
           "description": "Built from both Week 4 decks and the twelve sample projects. An abstract-class checker, a diamond builder that shows one or two grandparents and which constructor ran, a friendship checker, an operator-call rewriter and a copy-and-swap stepper; every program runnable with its real output. Ends with the midterm practice questions worked, a mock quiz and a cheat sheet."
+        },
+        {
+          "id": "comp3522-w5",
+          "title": "Week 5",
+          "subtitle": "exceptions, assertions, noexcept, coupling and cohesion, SOLID, the Law of Demeter",
+          "description": "Built from the Week 5 deck and the five exception programs. A catch-clause matcher, a stack-unwinding stepper, the std::exception family tree, a coupling picture you can rearrange, a SOLID violation spotter and a Demeter train-wreck checker; every program runnable with its real output. Ends with the practice-midterm Fraction constructor, a mock quiz and a cheat sheet."
+        },
+        {
+          "id": "comp3522-w6",
+          "title": "Week 6",
+          "subtitle": "auto, ranged for, the STL: containers, pair and map, set and strict weak ordering, typedefs, the five iterator kinds, algorithms and partition",
+          "description": "Built from the Week 6 deck and the twelve Week6 programs. A container picker, a begin/end walker, an iterator-operations table that shows what compiles, a strict-weak-ordering checker, a map insert visualizer and a partition stepper; every program runnable with its real output and the three activities worked (cities, the Date operator<, two structures and two algorithms). Ends with a mock quiz and a cheat sheet."
+        },
+        {
+          "id": "comp3522-midterm",
+          "title": "Midterm",
+          "subtitle": "Oct 29, 3:30 pm, SW03-1710: the practice midterm worked, the theory questions drilled, a double-sided cheat sheet",
+          "description": "Built from the Midterm Info slides and the COMP 3522 Practice Midterm. Every Part A theory question with a model answer and the lesson that teaches it, every Part B program traced with its verified output, the Fraction questions built up as challenges into one program, a mock midterm in the real format, and a cheat-sheet draft for Weeks 1 to 6 (Week 7 to be added when its deck is posted)."
         }
       ]
     },
@@ -55,6 +73,18 @@
           "title": "Unit 3",
           "subtitle": "probability and counting, Lab 3 charts in R, Lab 4 simulations",
           "description": "Sample spaces, classical and relative-frequency probability, the law of large numbers, the counting rule, permutations and combinations, the complement, addition and multiplication rules, conditional probability and independence on a two-way table, Bayes' rule on a tree; Lab 3's charts of the survey data and Lab 4's sample()/replicate() simulations. Built from the Unit 3 notes, the demo notebook and both lab solutions; every lecture example worked in full, with clickable sample spaces, a counting calculator, a Bayes tree and a simulation lab. Ends with a mock quiz and a formula sheet."
+        },
+        {
+          "id": "math3042-u4",
+          "title": "Unit 4",
+          "subtitle": "discrete probability distributions, and Lab 5 conditional probability in R",
+          "description": "Discrete random variables and their mean and standard deviation, the binomial, hypergeometric, geometric and Poisson distributions with every lecture example worked and checked in R, when to use which, and Lab 5's conditional probabilities on the SFU weather data. Built from the Unit 4 notes, the demo notebook and the Lab 5 notebook; ends with the examples worked, a mock quiz and a formula sheet."
+        },
+        {
+          "id": "math3042-u5",
+          "title": "Unit 5",
+          "subtitle": "continuous probability distributions: uniform, normal, exponential",
+          "description": "Continuous random variables and densities, the uniform bus wait, the normal distribution with the Z table and R, standardizing, percentiles, the Gaussian bit-error example, and the exponential waiting time with its memoryless property. Built from the (unfilled) Unit 5 notes with every example computed and checked in R; a draggable area widget, an interactive Z table, a mock quiz and a formula sheet."
         }
       ]
     },
@@ -86,7 +116,19 @@
           "id": "comp3721-w4",
           "title": "Week 4",
           "subtitle": "digital-to-digital conversion, line coding",
-          "description": "Lecture 04 and the 04a note: data and signal elements, data rate and signal rate, bandwidth of a digital signal, baseline wandering, self-synchronization, DC components, and unipolar NRZ, NRZ-L, NRZ-I, Manchester, differential Manchester and AMI, with waveforms to draw and check. Expected scope of Quiz 4."
+          "description": "Lecture 04 and the 04a note: data and signal elements, data rate and signal rate, bandwidth of a digital signal, baseline wandering, self-synchronization, DC components, and unipolar NRZ, NRZ-L, NRZ-I, Manchester, differential Manchester and AMI, waveforms to draw and check, with E04 worked. Expected scope of Quiz 4."
+        },
+        {
+          "id": "comp3721-w5",
+          "title": "Week 5",
+          "subtitle": "analog-to-digital (PCM) and digital-to-analog / analog-to-analog conversion",
+          "description": "Lectures 05a and 05b: sampling and the Nyquist rate, quantization with the slide's nine-sample table, encoding and bit rate, quantization error, PCM bandwidth; ASK, FSK, PSK, QAM with their bandwidth boxes, constellation diagrams drawn and read, AM, FM and PM with the radio allocations, with E05 worked. Expected scope of Quiz 5."
+        },
+        {
+          "id": "comp3721-w6",
+          "title": "Week 6",
+          "subtitle": "bandwidth utilization: FDM, WDM, TDM; the data-link layer, MAC addresses and ARP",
+          "description": "Lectures 06a and 06b: multiplexing a link into channels, FDM with guard bands and the three-voice-channel example, WDM, synchronous TDM frames, slots and rates with both slide examples, multilevel multiplexing, multiple-slot allocation and pulse stuffing, framing bits; the data-link layer's services and sublayers, link-layer addresses that change at every hop, ARP request and reply, and the Alice-to-Bob walk through two routers. No E06 is posted. Expected scope of Quiz 6."
         }
       ]
     },

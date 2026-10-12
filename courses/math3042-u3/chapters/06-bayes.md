@@ -9,15 +9,15 @@ You know how often each group produces an outcome ($P(B \mid A_i)$: 5% of women 
 
 A class is 60% female and 40% male; 5% of the women are left-handed, 15% of the men.
 
-**(a) Pick a random student: P(left-handed)?** The left-handers come from two branches, and the branches are mutually exclusive, so add the two paths:
+**(a) Pick a random student: P(left-handed)?** The instructor's sketch is a box split into an F column and an M column with the left-handers as a shaded strip crossing both: the left-handers come from two branches, the branches are mutually exclusive, so add the two pieces, and each piece is the AND rule:
 
-$$P(L) = P(F)\,P(L \mid F) + P(M)\,P(L \mid M) = 0.60(0.05) + 0.40(0.15) = 0.03 + 0.06 = 0.09$$
+$$P(L) = P(F \cap L) + P(M \cap L) = P(F)\,P(L \mid F) + P(M)\,P(L \mid M) = 0.6 \times 0.05 + 0.4 \times 0.15 = 0.09$$
 
-**(b) Pick a random left-handed student: P(female)?** Of the 0.09 left-handers, 0.03 came through the female branch:
+**(b) Pick a random left-handed student: P(female)?** Of the 0.09 left-handers, 0.03 came through the female branch. The notes label this step *[Bayes']*:
 
-$$P(F \mid L) = \frac{P(F \cap L)}{P(L)} = \frac{0.03}{0.09} = \frac{1}{3}$$
+$$P(\text{Female} \mid \text{Left}) = \frac{P(\text{Female} \cap \text{Left})}{P(\text{Left})} = \frac{0.6 \times 0.05}{0.6 \times 0.05 + 0.4 \times 0.15} = 0.3333$$
 
-Women are the majority of the class yet the minority of its left-handers, because men are three times as likely to be left-handed and that outweighs the 60/40 split.
+The instructor's conclusion sentence, in words: *One third of left-handed students are female.* Write a sentence like it after every Bayes answer; the number alone does not say which way the conditioning runs. Women are the majority of the class yet the minority of its left-handers, because men are three times as likely to be left-handed and that outweighs the 60/40 split.
 
 ```widget
 bayes-tree
@@ -26,7 +26,7 @@ bayes-tree
 
 ## The rule for two branches
 
-Suppose $S$ is made up of two **exhaustive and mutually exclusive** events $A_1$ and $A_2$ (together they cover $S$, and they do not overlap). Then for any event $B$,
+Suppose $S$ is made up of two **exhaustive and mutually exclusive** events $A_1$ and $A_2$ (together they cover $S$, and they do not overlap), $S = A_1 \cup A_2$, *like Male ∪ Female*. Then for any event $B$,
 
 $$P(A_1 \mid B) = \frac{P(A_1 \cap B)}{P(B)} = \frac{P(A_1)\,P(B \mid A_1)}{P(A_1)\,P(B \mid A_1) + P(A_2)\,P(B \mid A_2)}$$
 
@@ -42,6 +42,8 @@ which is the **law of total probability**, and for any of the $A_i$
 
 $$P(A_i \mid B) = \frac{P(A_i)\,P(B \mid A_i)}{P(A_1)\,P(B \mid A_1) + \cdots + P(A_k)\,P(B \mid A_k)}$$
 
+The notes' caption for this box is *Bayes' Theorem in General*: the two-branch rule with $k$ branches in the denominator.
+
 ## Defective CPUs
 
 | Company | Market share | Percent defective |
@@ -50,17 +52,19 @@ $$P(A_i \mid B) = \frac{P(A_i)\,P(B \mid A_i)}{P(A_1)\,P(B \mid A_1) + \cdots + 
 | AMD | 10.0% | 3.0% |
 | Other | 5.0% | 2.0% |
 
-The tree has three first-level branches ($A_1$ = Intel 0.85, $A_2$ = AMD 0.10, $A_3$ = Other 0.05), each splitting into Defective and Non-Defective.
+The tree starts at a node the instructor labels *Start* and has three first-level branches ($A_1$ = Intel 0.85, $A_2$ = AMD 0.10, $A_3$ = Other 0.05), each splitting into Defective and Non-Defective. Beside each Defective leaf the notes write the joint probability of that path:
 
-**(a) Pick a random CPU: P(defective)?**
+$$P(\text{Intel} \cap \text{Defective}) = 0.85 \times 0.01 = 0.0085, \quad P(\text{AMD} \cap \text{Defective}) = 0.1 \times 0.03 = 0.0030, \quad P(\text{Other} \cap \text{Defective}) = 0.05 \times 0.02 = 0.0010$$
 
-$$P(D) = 0.85(0.01) + 0.10(0.03) + 0.05(0.02) = 0.0085 + 0.0030 + 0.0010 = 0.0125$$
+**(a) Pick a random CPU: P(defective)?** The three paths are *mutually exclusive* (a CPU has one maker), so their probabilities add:
 
-**(b) Pick a random defective unit: P(Intel)?**
+$$P(\text{Defective}) = P(\text{Intel} \cap \text{Def}) + P(\text{AMD} \cap \text{Def}) + P(\text{Other} \cap \text{Def}) = 0.0085 + 0.0030 + 0.0010 = 0.0125$$
 
-$$P(\text{Intel} \mid D) = \frac{0.0085}{0.0125} = 0.68$$
+**(b) Pick a random defective unit: P(Intel)?** The instructor rewords the question first, *What fraction of defective CPUs are from Intel?*, then applies Bayes:
 
-AMD accounts for $0.0030/0.0125 = 0.24$ of the defective units and Other for $0.0010/0.0125 = 0.08$; the three posteriors add to 1, as they must. Intel's share of the defective units (68%) is below its market share (85%) because its defect rate is the lowest.
+$$P(\text{Intel} \mid \text{Defective}) = \frac{P(\text{Intel} \cap \text{Def})}{P(\text{Defective})} = \frac{0.85 \times 0.01}{0.85 \times 0.01 + 0.10 \times 0.03 + 0.05 \times 0.02} = \frac{0.0085}{0.0125} = 0.68$$
+
+Conclusion sentence: *68% of defective units are from Intel.* AMD accounts for $0.0030/0.0125 = 0.24$ of the defective units and Other for $0.0010/0.0125 = 0.08$; the three posteriors add to 1, as they must. Intel's share of the defective units (68%) is below its market share (85%) because its defect rate is the lowest.
 
 ```widget
 bayes-tree
@@ -83,11 +87,17 @@ The last column of the widget's table restates the tree in whole numbers: of 10 
     "explain": "0.60 × 0.05 + 0.40 × 0.15 = 0.03 + 0.06 = 0.09: add the two paths that end in left-handed."
   },
   {
-    "q": "Same class. P(female | left-handed)? (3 decimals)",
+    "q": "Same class. P(female | left-handed)? (4 decimals)",
     "type": "numeric",
-    "answer": 0.333,
-    "tolerance": 0.002,
-    "explain": "P(F ∩ L) / P(L) = 0.03 / 0.09 = 1/3. The female path over the total left-handed probability."
+    "answer": 0.3333,
+    "tolerance": 0.0005,
+    "explain": "P(F ∩ L) / P(L) = (0.6 × 0.05) / (0.6 × 0.05 + 0.4 × 0.15) = 0.03 / 0.09 = 0.3333. In words: one third of left-handed students are female."
+  },
+  {
+    "q": "Which sentence correctly states the result P(Female | Left) = 0.3333?",
+    "options": ["One third of female students are left-handed", "One third of left-handed students are female", "One third of students are female and left-handed", "Left-handed students are one third of the class"],
+    "answer": 1,
+    "explain": "The condition (after the bar) is the group you are talking about: among left-handed students, one third are female. 'Of female students, 5% are left-handed' is the other direction, P(L | F)."
   },
   {
     "q": "Events $A_1, \\ldots, A_k$ are exhaustive and mutually exclusive when...",

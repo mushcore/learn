@@ -1,0 +1,129 @@
+{
+  "lang": "cpp",
+  "title": "COMP 3522 C++ · Week 6",
+  "subtitle": "auto and the ranged for, the Standard Template Library: containers, pair, map, set and strict weak ordering, typedefs, iterators and algorithms, preparing for Quiz 6 and the midterm",
+  "description": "Everything in the Week 6 deck and the Week6 sample programs: auto and trailing return types, the four ranged-for forms, what the STL is made of (containers, iterators, algorithms), value semantics and half-open ranges, sequence versus associative versus unordered containers, first-class containers versus adaptors, pair and make_pair, map and multimap, set and multiset, the compare concept and the three rules of a strict weak ordering, typedefs and the restaurant analogy, the standard container typedefs, begin and end, the five iterator kinds and what each supports, the algorithm families, and std::partition traced step by step. Every program runnable with its real output; the three activities worked; a mock quiz and a cheat sheet close the week.",
+  "intro": ":::quiz Quiz 6 scope and the midterm\nSame format as before at the start of lab, covering the **Week 6 slides** and the **Week6 sample programs** (pair, map, multimap, multiset, deque, priorityqueue, typedefs, iterator, randomAccessIterator, partitionOdd, partition, Date). The midterm on **Wednesday Oct 29, 3:30 pm, SW03-1710** (90 minutes, one double-sided cheat sheet) covers Weeks 1 to 7; the practice midterm is in the Week 6 folder and is worked in the Midterm module.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "mock-quiz-6",
+        "note": "take it cold first, so you know where the gaps are (about 40 min)"
+      },
+      {
+        "lesson": "iterator-kinds",
+        "note": "the five kinds and which operations each supports; iterator.cpp and randomAccessIterator line by line"
+      },
+      {
+        "lesson": "set-strict-weak-ordering",
+        "note": "irreflexive, antisymmetric, transitive; the three ways to define the ordering"
+      },
+      {
+        "lesson": "algorithms-partition",
+        "note": "[first, last), a predicate, the returned bound; trace {1,2,3,4,5} by hand"
+      },
+      {
+        "lesson": "containers-pair-map",
+        "note": "value_type is a pair; insert refuses duplicate keys; multimap keeps them"
+      },
+      {
+        "lesson": "typedefs-restaurant",
+        "note": "why every container has an iterator typedef; size_type is unsigned"
+      },
+      {
+        "lesson": "stl-overview-vector",
+        "note": "value semantics, half-open ranges, insert and erase with begin() + n"
+      },
+      {
+        "lesson": "activities-worked",
+        "note": "write Date's operator< on paper, then run it"
+      },
+      {
+        "lesson": "mock-quiz-6",
+        "note": "retake; aim for 90% or better"
+      },
+      {
+        "lesson": "cheat-sheet-6",
+        "note": "print it and read it on the way in"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. auto, ranged for and the STL",
+      "lessons": [
+        {
+          "id": "auto-ranged-for",
+          "title": "auto and the ranged for",
+          "file": "chapters/01-auto-ranged-for.md"
+        },
+        {
+          "id": "stl-overview-vector",
+          "title": "The STL: containers, iterators, algorithms, and the vector again",
+          "file": "chapters/02-stl-overview-vector.md"
+        }
+      ]
+    },
+    {
+      "title": "2. Containers",
+      "lessons": [
+        {
+          "id": "containers-pair-map",
+          "title": "First-class containers and adaptors, pair, map and multimap",
+          "file": "chapters/03-containers-pair-map.md"
+        },
+        {
+          "id": "set-strict-weak-ordering",
+          "title": "set, multiset and strict weak ordering",
+          "file": "chapters/04-set-strict-weak-ordering.md"
+        },
+        {
+          "id": "typedefs-restaurant",
+          "title": "typedefs: the restaurant analogy and the standard container typedefs",
+          "file": "chapters/05-typedefs-restaurant.md"
+        }
+      ]
+    },
+    {
+      "title": "3. Iterators and algorithms",
+      "lessons": [
+        {
+          "id": "begin-end",
+          "title": "Iterators: begin, end and one past the last",
+          "file": "chapters/06-begin-end.md"
+        },
+        {
+          "id": "iterator-kinds",
+          "title": "The five kinds of iterator",
+          "file": "chapters/07-iterator-kinds.md"
+        },
+        {
+          "id": "algorithms-partition",
+          "title": "STL algorithms and std::partition",
+          "file": "chapters/08-algorithms-partition.md"
+        }
+      ]
+    },
+    {
+      "title": "4. Activities, quiz and midterm prep",
+      "lessons": [
+        {
+          "id": "activities-worked",
+          "title": "The three activities, worked",
+          "file": "chapters/09-activities-worked.md"
+        },
+        {
+          "id": "mock-quiz-6",
+          "title": "Mock Quiz 6",
+          "file": "chapters/10-mock-quiz-6.md"
+        },
+        {
+          "id": "cheat-sheet-6",
+          "title": "One-page cheat sheet (Week 6)",
+          "file": "chapters/11-cheat-sheet.md"
+        }
+      ]
+    }
+  ]
+}
