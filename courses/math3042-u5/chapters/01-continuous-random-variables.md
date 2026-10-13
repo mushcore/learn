@@ -55,6 +55,20 @@ Slide wording: "In this course, we will consider the following continuous probab
 - **Normal**: the bell curve, with $\mu$ and $\sigma$ as its parameters. Heights, IQ, measurement noise.
 - **Exponential**: a right-skewed density starting at 0; the waiting time in a memoryless system. Time between web requests.
 
+## Endpoints for a sprint time and a goal count
+
+X = a sprinter's 100 m time in seconds, a continuous variable with P(X ≤ 11.2) = 0.64.
+
+```quiz
+[
+  {"q": "P(X < 11.2) = ? (2 decimals)", "type": "numeric", "answer": 0.64, "tolerance": 0.006, "explain": "For a continuous X the single point 11.2 has probability 0, so excluding it changes nothing: P(X < 11.2) = P(X ≤ 11.2) = 0.64."},
+  {"q": "P(X = 11.2) = ?", "type": "numeric", "answer": 0, "tolerance": 0.0001, "explain": "An exact value is an interval of width zero, so its area under the density is 0. A stopwatch reading of 11.2 is really an interval such as 11.15 to 11.25."},
+  {"q": "Write P(X ≥ 11.2) as one subtraction with the number in, no spaces.", "type": "text", "answer": ["1-0.64", "1-.64", "1-0.6400"], "explain": "X ≥ 11.2 is the complement of X < 11.2, which has the same probability as X ≤ 11.2: 1 − 0.64 = 0.36."},
+  {"q": "Y = the number of goals in a hockey game. Is Y discrete or continuous?", "type": "text", "answer": ["discrete"], "explain": "Goals are counted, 0, 1, 2, …: a countable set of values, so Y is discrete and its single values carry probability."},
+  {"q": "For the goal count Y, P(Y ≤ 4) = 0.80 and P(Y = 4) = 0.12. P(Y < 4) = ? (2 decimals)", "type": "numeric", "answer": 0.68, "tolerance": 0.006, "explain": "For a discrete variable the bar at 4 has probability, so dropping it matters: P(Y < 4) = P(Y ≤ 4) − P(Y = 4) = 0.80 − 0.12 = 0.68. Only a continuous variable lets ≤ and < give the same answer."}
+]
+```
+
 ```quiz
 [
   {

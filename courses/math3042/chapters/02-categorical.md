@@ -76,6 +76,21 @@ table(TenMileRace$sex)
 
 The set of possible values a non-numerical variable can take (here, `"F"` and `"M"`) is called its **levels** in R — check with `levels(TenMileRace$sex)`.
 
+## Proportions and the mode for a commute survey
+
+A sample of BCIT students reported how they get to campus: Bus 74, Car 41, SkyTrain 88, Bike 12, Walk 25.
+
+```quiz
+[
+  {"q": "What is the sample size $n$?", "type": "numeric", "answer": 240, "tolerance": 0, "explain": "Add the frequencies: $74 + 41 + 88 + 12 + 25 = 240$."},
+  {"q": "Compute the sample proportion of SkyTrain riders. (4 decimals)", "type": "numeric", "answer": 0.3667, "tolerance": 6e-05, "explain": "$\\hat{p}(\\text{SkyTrain}) = x/n = 88/240 = 0.366667 \\approx 0.3667$, or 36.67%."},
+  {"q": "Which symbol labels the number you just computed?", "type": "text", "answer": ["p̂", "p hat", "p-hat", "phat", "\\hat{p}", "p^"], "explain": "It describes a sample, so it is the statistic $\\hat{p} = x/n$ (read p-hat). The population proportion would be $p = X/N$."},
+  {"q": "What proportion of the sample takes the Bus or walks? (4 decimals)", "type": "numeric", "answer": 0.4125, "tolerance": 6e-05, "explain": "Both categories share the same $n$, so add the counts first: $(74 + 25)/240 = 99/240 = 0.4125$."},
+  {"q": "What is the modal way of getting to campus?", "type": "text", "answer": ["SkyTrain", "Sky Train", "skytrain"], "explain": "SkyTrain has the largest frequency, 88. The mode is the category name, not the count 88."},
+  {"type": "fill", "q": "Fill the blank so the line prints the proportion of cyclists.", "code": "Commute.Freq <- c(Bus = 74, Car = 41, SkyTrain = 88, Bike = 12, Walk = 25)\nCommute.Freq[[\"Bike\"]] / ___(Commute.Freq)\n## [1] 0.05", "answer": ["sum"], "explain": "`sum(Commute.Freq)` is $n = 240$, and `Commute.Freq[[\"Bike\"]]` is the bare count 12, so the line prints $12/240 = 0.05$."}
+]
+```
+
 ```quiz
 [
   {

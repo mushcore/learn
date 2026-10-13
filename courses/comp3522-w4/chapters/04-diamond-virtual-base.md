@@ -213,6 +213,71 @@ int main()
 
 One more shipped file, diamondmethods.cpp: grandparent has `virtual void foo()`, father and mother (virtual bases) override it, and child overrides it again; `grandparent &gp = a; gp.foo();` on a child prints `child.foo`, because dynamic dispatch through the shared base reaches the most derived override. Remove child's override and the call is ambiguous: father and mother both claim to be the final overrider.
 
+## Trace a `Copier` diamond with and without `virtual`
+
+Device on top, Scanner and Printer in the middle, Copier at the bottom; this time Copier lists Printer first.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Device {\npublic:\n    Device() { cout << \"Device \"; }\n    ~Device() { cout << \"~Device \"; }\n};\n\nclass Scanner : public virtual Device {\npublic:\n    Scanner() { cout << \"Scanner \"; }\n    ~Scanner() { cout << \"~Scanner \"; }\n};\n\nclass Printer : virtual public Device {\npublic:\n    Printer() { cout << \"Printer \"; }\n    ~Printer() { cout << \"~Printer \"; }\n};\n\nclass Copier : public Printer, public Scanner {\npublic:\n    Copier() { cout << \"Copier \"; }\n    ~Copier() { cout << \"~Copier \"; }\n};\n\nint main() {\n    {\n        Copier c;\n        cout << \"| \";\n    }\n    cout << endl;\n    return 0;\n}",
+    "options": [
+      "`Device Printer Scanner Copier | ~Copier ~Scanner ~Printer ~Device`",
+      "`Device Scanner Printer Copier | ~Copier ~Printer ~Scanner ~Device`",
+      "`Device Printer Device Scanner Copier | ~Copier ~Scanner ~Device ~Printer ~Device`",
+      "`Copier Printer Scanner Device | ~Device ~Scanner ~Printer ~Copier`"
+    ],
+    "answer": 0,
+    "explain": "Both middle classes inherit Device virtually, so there is one Device, and a virtual base is built before anything else: `Device`. Then the direct bases in the order Copier lists them, `public Printer, public Scanner`: `Printer Scanner`, then `Copier`. The order the middle classes were declared in the file does not matter. `| ` prints inside the block, and at the closing brace destruction runs in exact reverse: `~Copier ~Scanner ~Printer ~Device`."
+  },
+  {
+    "q": "Remove `virtual` from both middle classes. How many times does the Device constructor print?",
+    "type": "numeric",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Device {\npublic:\n    Device() { cout << \"Device \"; }\n    ~Device() { cout << \"~Device \"; }\n};\n\nclass Scanner : public Device {\npublic:\n    Scanner() { cout << \"Scanner \"; }\n    ~Scanner() { cout << \"~Scanner \"; }\n};\n\nclass Printer : public Device {\npublic:\n    Printer() { cout << \"Printer \"; }\n    ~Printer() { cout << \"~Printer \"; }\n};\n\nclass Copier : public Printer, public Scanner {\npublic:\n    Copier() { cout << \"Copier \"; }\n    ~Copier() { cout << \"~Copier \"; }\n};\n\nint main() {\n    {\n        Copier c;\n        cout << \"| \";\n    }\n    cout << endl;\n    return 0;\n}",
+    "answer": 2,
+    "tolerance": 0,
+    "explain": "Without virtual inheritance each middle class contains its own Device. The output becomes `Device Printer Device Scanner Copier | ~Copier ~Scanner ~Device ~Printer ~Device`: Printer's Device, Printer, Scanner's Device, Scanner, Copier, then the reverse. Device is constructed 2 times."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nclass Device {\n    string name;\npublic:\n    Device() : name(\"?\") {}\n    Device(const string& n) : name(n) {}\n    string get() const { return name; }\n};\n\nclass Scanner : public virtual Device {\npublic:\n    Scanner(const string& n) : Device(n) {}\n};\n\nclass Printer : public virtual Device {\npublic:\n    Printer(const string& n) : Device(n) {}\n};\n\nclass Copier : public Printer, public Scanner {\npublic:\n    Copier(const string& n) : Printer(n + \"-P\"), Scanner(n + \"-S\") {}\n};\n\nint main() {\n    Copier c(\"lab\");\n    Scanner s(\"desk\");\n    cout << c.get() << \" \" << s.get() << endl;\n    return 0;\n}",
+    "options": [
+      "`? desk`",
+      "`lab-P desk`",
+      "`lab-S desk`",
+      "`lab desk`"
+    ],
+    "answer": 0,
+    "explain": "Device is a virtual base, so the most derived class, Copier, is responsible for constructing it. Copier's list names only Printer and Scanner, so the compiler inserts `Device()` and the name is `?`; the `Device(n)` calls written in Printer and Scanner are ignored when they run as part of a Copier. `Scanner s(\"desk\")` is constructed directly, so there Scanner is the most derived class and its `Device(n)` runs: `desk`."
+  },
+  {
+    "q": "Fix Copier so `c.get()` returns `lab`: name the base the most derived class must construct.",
+    "type": "fill",
+    "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nclass Device {\n    string name;\npublic:\n    Device() : name(\"?\") {}\n    Device(const string& n) : name(n) {}\n    string get() const { return name; }\n};\n\nclass Scanner : public virtual Device {\npublic:\n    Scanner(const string& n) : Device(n) {}\n};\n\nclass Printer : public virtual Device {\npublic:\n    Printer(const string& n) : Device(n) {}\n};\n\nclass Copier : public Printer, public Scanner {\npublic:\n    Copier(const string& n) : ___(n), Printer(n + \"-P\"), Scanner(n + \"-S\") {}\n};\n\nint main() {\n    Copier c(\"lab\");\n    Scanner s(\"desk\");\n    cout << c.get() << \" \" << s.get() << endl;\n    return 0;\n}",
+    "answer": [
+      "Device"
+    ],
+    "explain": "`: Device(n), Printer(n + \"-P\"), Scanner(n + \"-S\")`. The most derived class calls the shared virtual base's constructor directly, even though Device is not a direct base. Now the output is `lab desk`."
+  },
+  {
+    "q": "What does this print? (Dad does not override `hello`.)",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Grand {\npublic:\n    virtual ~Grand() = default;\n    virtual void hello() const { cout << \"Grand\" << endl; }\n};\n\nclass Mom : public virtual Grand {\npublic:\n    void hello() const override { cout << \"Mom\" << endl; }\n};\n\nclass Dad : public virtual Grand { };\n\nclass Kid : public Mom, public Dad { };\n\nint main() {\n    Kid k;\n    Grand& g = k;\n    g.hello();\n    k.hello();\n    return 0;\n}",
+    "options": [
+      "`Mom`\n`Mom`",
+      "`Grand`\n`Mom`",
+      "`Grand`\n`Grand`",
+      "a compile error: `hello` is ambiguous"
+    ],
+    "answer": 0,
+    "explain": "There is one shared Grand. Mom overrides `hello`; Dad only inherits Grand's. Mom's version is more derived than Grand's on every path, so it is the unique final overrider and wins (dominance): `g.hello()` through the Grand reference dispatches to Mom, and `k.hello()` finds Mom's too. It would be ambiguous only if Dad also overrode `hello`, which is the diamondmethods case without child's override."
+  }
+]
+```
+
+```challenge
+{"prompt": "Device is a virtual base of Scanner and Printer. Write the <code>Copier</code> constructor <code>Copier(const string&amp; n, int d, int p)</code> so that Device is constructed once with the name, and Scanner and Printer get their numbers. The default <code>Device()</code> must not run.", "starter": "#include <iostream>\n#include <string>\nusing namespace std;\n\nclass Device {\nprotected:\n    string name;\npublic:\n    Device() : name(\"unnamed\") { cout << \"Device()\" << endl; }\n    Device(const string& n) : name(n) { cout << \"Device(\" << n << \")\" << endl; }\n    virtual ~Device() = default;\n};\n\nclass Scanner : public virtual Device {\nprotected:\n    int dpi;\npublic:\n    Scanner(int d) : dpi(d) { cout << \"Scanner(\" << d << \")\" << endl; }\n};\n\nclass Printer : public virtual Device {\nprotected:\n    int ppm;\npublic:\n    Printer(int p) : ppm(p) { cout << \"Printer(\" << p << \")\" << endl; }\n};\n\nclass Copier : public Scanner, public Printer {\npublic:\n    // write Copier(const string& n, int d, int p) here\n    void info() const { cout << name << \": \" << dpi << \" dpi, \" << ppm << \" ppm\" << endl; }\n};\n\nint main() {\n    Copier c(\"office\", 600, 30);\n    c.info();\n    return 0;\n}\n", "expected": "Device(office)\nScanner(600)\nPrinter(30)\noffice: 600 dpi, 30 ppm", "hints": ["Without Device in Copier's list, the output starts <code>Device()</code> and the name is <code>unnamed</code>.", "The most derived class names the virtual base itself: <code>: Device(n), Scanner(d), Printer(p)</code>"], "solution": "#include <iostream>\n#include <string>\nusing namespace std;\n\nclass Device {\nprotected:\n    string name;\npublic:\n    Device() : name(\"unnamed\") { cout << \"Device()\" << endl; }\n    Device(const string& n) : name(n) { cout << \"Device(\" << n << \")\" << endl; }\n    virtual ~Device() = default;\n};\n\nclass Scanner : public virtual Device {\nprotected:\n    int dpi;\npublic:\n    Scanner(int d) : dpi(d) { cout << \"Scanner(\" << d << \")\" << endl; }\n};\n\nclass Printer : public virtual Device {\nprotected:\n    int ppm;\npublic:\n    Printer(int p) : ppm(p) { cout << \"Printer(\" << p << \")\" << endl; }\n};\n\nclass Copier : public Scanner, public Printer {\npublic:\n    Copier(const string& n, int d, int p) : Device(n), Scanner(d), Printer(p) {}\n    void info() const { cout << name << \": \" << dpi << \" dpi, \" << ppm << \" ppm\" << endl; }\n};\n\nint main() {\n    Copier c(\"office\", 600, 30);\n    c.info();\n    return 0;\n}\n"}
+```
 ```quiz
 [
   {

@@ -135,6 +135,66 @@ main.cpp:5:31: error: 'endl' was not declared in this scope; did you mean 'std::
 
 This is a compiler error, not a preprocessor error: name lookup runs during compilation, after the preprocessor has inserted `<iostream>`. g++ suggests the fix (`did you mean 'std::cout'?`) but does not apply it.
 
+## Decide what compiles in four new namespace programs
+
+The `using` declarations and `#define` lines move around; trace what the preprocessor and the compiler see.
+
+```quiz
+[
+  {
+    "q": "What does this program print? (lines separated by /)",
+    "code": "#include <iostream>\nusing std::cout;\n\nint main()\n{\n    cout << \"one\" << std::endl;\n    cout << \"two\" << '\\n';\n    return 0;\n}",
+    "options": [
+      "`one` / `two`",
+      "`error: 'endl' was not declared in this scope`",
+      "`one two`",
+      "`error: 'cout' was not declared in this scope`"
+    ],
+    "answer": 0,
+    "explain": "`using std::cout;` unlocks only `cout`. `endl` is still reachable because it is written with its prefix, `std::endl`. Output: `one` / `two`."
+  },
+  {
+    "type": "spotbug",
+    "q": "Click the line that fails to compile.",
+    "code": "#include <iostream>\n\nvoid greet()\n{\n    using std::cout;\n    cout << \"hi\\n\";\n}\n\nint main()\n{\n    greet();\n    cout << \"bye\\n\";\n    return 0;\n}",
+    "answer": 12,
+    "explain": "The `using std::cout;` on line 5 is inside `greet`, so the shortcut ends at `greet`'s closing brace. Line 12 in `main` uses plain `cout`, which is not declared there: `'cout' was not declared in this scope`."
+  },
+  {
+    "q": "What does this program print? (lines separated by /)",
+    "code": "#include <iostream>\n#define DEBUG\n\nint main()\n{\n#ifdef DEBUG\n    std::cout << \"debug on\" << '\\n';\n#endif\n#ifndef DEBUG\n    std::cout << \"debug off\" << '\\n';\n#endif\n    std::cout << \"done\" << '\\n';\n    return 0;\n}",
+    "options": [
+      "`debug on` / `done`",
+      "`debug off` / `done`",
+      "`debug on` / `debug off` / `done`",
+      "`done`"
+    ],
+    "answer": 0,
+    "explain": "`#define DEBUG` defines the name, so the preprocessor keeps the `#ifdef DEBUG` block and deletes the `#ifndef DEBUG` block before the compiler runs. Output: `debug on` / `done`."
+  },
+  {
+    "type": "numeric",
+    "q": "Two namespaces each declare a variable named `count`. What does the program print?",
+    "code": "#include <iostream>\n\nnamespace lab { int count = 3; }\nnamespace quiz { int count = 7; }\n\nint main()\n{\n    std::cout << lab::count + quiz::count << std::endl;\n    return 0;\n}",
+    "answer": 10,
+    "explain": "Namespaces prevent the name collision: `lab::count` is 3 and `quiz::count` is 7, two different variables. 3 + 7 = `10`."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "Declare a namespace <code>comp3522</code> holding <code>int labs = 10;</code> and <code>int quizzes = 10;</code>. In <code>main</code>, put <code>using std::cout;</code> and <code>using std::endl;</code> inside the function and print <code>labs + quizzes = 20</code>, reading both numbers through <code>comp3522::</code>.",
+  "starter": "#include <iostream>\n\n// namespace here\n\nint main()\n{\n    // using declarations and output here\n    return 0;\n}\n",
+  "expected": "labs + quizzes = 20\n",
+  "hints": [
+    "<code>namespace comp3522 { int labs = 10; int quizzes = 10; }</code>",
+    "<code>cout << \"labs + quizzes = \" << comp3522::labs + comp3522::quizzes << endl;</code>"
+  ],
+  "solution": "#include <iostream>\n\nnamespace comp3522\n{\n    int labs = 10;\n    int quizzes = 10;\n}\n\nint main()\n{\n    using std::cout;\n    using std::endl;\n    cout << \"labs + quizzes = \" << comp3522::labs + comp3522::quizzes << endl;\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

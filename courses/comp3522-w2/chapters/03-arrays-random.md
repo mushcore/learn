@@ -174,6 +174,70 @@ The slide's comment: "Check it out! We're using a random number generator to gen
 
 The lecture's suggested exercise: a guessing game that picks a number from 1 to 10 (`rand() % 10 + 1`) and answers "too high" or "too low" until the player gets it.
 
+## Read four new arrays and ranges
+
+Partly initialized arrays, an array passed to a function, and new `rand()` ranges.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int a[6] = {4, 9};\n    int sum = 0;\n    for (int i = 0; i < 6; ++i)\n    {\n        sum += a[i];\n    }\n    cout << sum << ' ' << a[5] << ' ' << sizeof(a) / sizeof(a[0]) << endl;\n    return 0;\n}",
+    "options": [
+      "`13 0 6`",
+      "`13 9 6`",
+      "`13 0 24`",
+      "`garbage 0 6`"
+    ],
+    "answer": 0,
+    "explain": "Listing fewer values than the size fills the rest with 0: `{4, 9, 0, 0, 0, 0}`. The sum is 13, `a[5]` is 0, and `sizeof(a) / sizeof(a[0])` is 24 / 4 = 6 elements. Output: `13 0 6`."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nvoid doubleAll(int arr[], int n)\n{\n    for (int i = 0; i < n; ++i)\n    {\n        arr[i] *= 2;\n    }\n}\n\nint main()\n{\n    int values[] = {1, 5, 8};\n    doubleAll(values, 3);\n    cout << values[0] << ' ' << values[1] << ' ' << values[2] << endl;\n    return 0;\n}",
+    "options": [
+      "`2 10 16`",
+      "`1 5 8`",
+      "`2 5 8`",
+      "`1 10 16`"
+    ],
+    "answer": 0,
+    "explain": "An array parameter is really a pointer to the caller's first element, so the function changes the caller's array, not a copy. Output: `2 10 16`."
+  },
+  {
+    "q": "Which expression produces a random integer from 10 to 15 inclusive?",
+    "options": [
+      "`rand() % 6 + 10`",
+      "`rand() % 15 + 10`",
+      "`rand() % 5 + 10`",
+      "`rand() % 16`"
+    ],
+    "answer": 0,
+    "explain": "`rand() % 6` gives 0 to 5 (the right side is not inclusive). Adding 10 shifts that to 10 to 15. `% 5 + 10` stops at 14, `% 15 + 10` reaches 24, and `% 16` starts at 0."
+  },
+  {
+    "type": "numeric",
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <cstdlib>\nusing namespace std;\n\nint main()\n{\n    srand(42);\n    int a = rand();\n    srand(42);\n    int b = rand();\n    cout << (a == b) << endl;\n    return 0;\n}",
+    "answer": 1,
+    "explain": "`rand()` is a pseudo-random sequence fixed by its seed. Seeding with 42 twice restarts the same sequence, so both calls return the same number and `a == b` prints 1. That is why `srand` is called once, never in a loop."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "Write <code>int maxOf(int arr[], int n)</code> that returns the largest of the first <code>n</code> elements. <code>main</code> prints <code>17 -1</code>.",
+  "starter": "#include <iostream>\nusing namespace std;\n\n// maxOf here\n\nint main()\n{\n    int a[] = {3, 17, 8, -2, 11};\n    int b[] = {-5, -1, -9};\n    cout << maxOf(a, 5) << ' ' << maxOf(b, 3) << endl;\n    return 0;\n}\n",
+  "expected": "17 -1\n",
+  "hints": [
+    "Start from the first element, not from 0, or the all-negative array breaks.",
+    "<code>int best = arr[0]; for (int i = 1; i < n; ++i) if (arr[i] > best) best = arr[i];</code>"
+  ],
+  "solution": "#include <iostream>\nusing namespace std;\n\nint maxOf(int arr[], int n)\n{\n    int best = arr[0];\n    for (int i = 1; i < n; ++i)\n    {\n        if (arr[i] > best)\n        {\n            best = arr[i];\n        }\n    }\n    return best;\n}\n\nint main()\n{\n    int a[] = {3, 17, 8, -2, 11};\n    int b[] = {-5, -1, -9};\n    cout << maxOf(a, 5) << ' ' << maxOf(b, 3) << endl;\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

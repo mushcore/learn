@@ -136,6 +136,21 @@ The `+ 1` is because `p.vals[1]` is $P(0)$. The bars rise to a peak at 29 and 30
 Convert the rate before using it: 3 per hour over 20 minutes is $\lambda = 1$, not 3. And $\sigma$ is $\sqrt{\lambda}$, not $\lambda$.
 :::
 
+## Help-desk tickets in a 20-minute window
+
+A help desk receives 18 tickets per hour on average, at random and independently. X = the number of tickets in a 20-minute window.
+
+```quiz
+[
+  {"q": "Name the distribution of X (one word).", "type": "text", "answer": ["poisson", "poisson distribution"], "explain": "X counts occurrences over an interval, the tickets arrive with uniform probability and independently, and the mean count is known: Poisson."},
+  {"q": "λ for the 20-minute window = ?", "type": "numeric", "answer": 6.0, "tolerance": 0.001, "explain": "Rescale the rate to the interval asked: 18 per hour × 20/60 hour = 6 tickets per 20 minutes. Using 18 would answer a question about a whole hour."},
+  {"q": "P(X = 4) = ? (4 decimals)", "type": "numeric", "answer": 0.1339, "tolerance": 6e-05, "explain": "λ^x e^(−λ)/x! = 6⁴ e^(−6)/4! = 1296 × 0.002479/24 = 0.1339."},
+  {"type": "fill", "q": "Complete the R call for P(X = 4).", "code": "dpois(___, ___)", "answer": ["4", "6"], "explain": "dpois(x, lambda): the count 4, then λ = 6 for the 20-minute window. It returns 0.1338526."},
+  {"q": "P(at most 2 tickets) = ? (4 decimals)", "type": "numeric", "answer": 0.062, "tolerance": 6e-05, "explain": "P(0) + P(1) + P(2) = e^(−6)(1 + 6 + 6²/2) = 0.002479 × 25 = 0.0620. In R, ppois(2, 6)."},
+  {"q": "Is a window with 12 tickets unusual? Z = ? (2 decimals)", "type": "numeric", "answer": 2.45, "tolerance": 0.01, "explain": "μ = λ = 6 and σ = √λ = √6 = 2.4495, so Z = (12 − 6)/2.4495 = 2.45. Above 2: 12 tickets is unusually high."}
+]
+```
+
 ```quiz
 [
   {

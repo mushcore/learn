@@ -213,6 +213,61 @@ int main() {
 
 g++ rejects both marked lines: `list<int>::iterator it = l.begin() + 2;` gives `error: no match for 'operator+' (operand types are 'std::list<int>::iterator' and 'int')` followed by every `operator+` it tried, and `fi--;` gives `error: no 'operator--(int)' declared for postfix '--'`. To reach the third element of a list, increment twice or use `std::next(l.begin(), 2)`, which repeats `++` for you.
 
+## Step a list iterator back and jump a vector iterator forward
+
+Bidirectional moves on a list, random-access arithmetic on the letters of `program`, and a set iterator asked to do too much.
+
+```quiz
+[
+  {
+    "q": "Type the line this prints.",
+    "type": "text",
+    "code": "#include <iostream>\n#include <list>\nusing namespace std;\n\nint main() {\n    list<int> L = {10, 20, 30, 40};\n    auto it = L.end();\n    --it;\n    --it;\n    auto keep = it--;\n    *it += 1;\n    cout << *keep << \" \" << *it << \" \" << *L.begin() << endl;\n    return 0;\n}",
+    "answer": [
+      "30 21 10"
+    ],
+    "explain": "end() is one past the 40. Two decrements reach the 30. `keep = it--` is postfix: keep gets the old position (30) and it moves back to the 20. `*it += 1` writes through the bidirectional iterator: 21. The front is still 10."
+  },
+  {
+    "q": "Type the line this prints.",
+    "type": "text",
+    "code": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    vector<char> v = {'p', 'r', 'o', 'g', 'r', 'a', 'm'};\n    auto a = v.begin() + 2;\n    auto b = v.end() - 2;\n    cout << *a << *b << (b - a) << a[1] << (a < b) << endl;\n    return 0;\n}",
+    "answer": [
+      "oa3g1"
+    ],
+    "explain": "Indexes p0 r1 o2 g3 r4 a5 m6. a = begin() + 2 is 'o'. b = end() - 2: end() is position 7, so b is position 5, 'a'. b - a = 5 - 2 = 3, a difference_type. a[1] is *(a + 1), 'g'. a < b is true, printed as 1. Every one of these needs a random access iterator."
+  },
+  {
+    "q": "Click the line the compiler rejects.",
+    "type": "spotbug",
+    "code": "#include <iostream>\n#include <set>\nusing namespace std;\n\nint main() {\n    set<int> s = {5, 10, 15, 20};\n    auto it = s.begin();\n    ++it;\n    auto later = it + 2;\n    cout << *later << endl;\n    return 0;\n}",
+    "answer": [
+      9
+    ],
+    "explain": "A set hands out bidirectional iterators: `++it` on the line before is fine, `it + 2` is not, because only random access iterators add an integer. Write `std::next(it, 2)` or increment twice."
+  },
+  {
+    "q": "For `map<string, int>::iterator it`, which expressions compile? (select all)",
+    "options": [
+      "`++it`",
+      "`--it`",
+      "`it->second = 5`",
+      "`it + 1`",
+      "`it->first = \"x\"`"
+    ],
+    "answer": [
+      0,
+      1,
+      2
+    ],
+    "explain": "A map's iterator is bidirectional, so ++ and -- work and the value can be written (`it->second = 5`). `it + 1` needs random access. The key is const (`pair<const string, int>`), so `it->first = \"x\"` is rejected: changing a key could break the sorted order."
+  }
+]
+```
+
+```challenge
+{"prompt": "Write <code>print_reverse</code> with a <code>list&lt;string&gt;::const_iterator</code> that starts at <code>l.end()</code> and steps back with <code>--</code> until it has printed the first element. No <code>reverse_iterator</code>, no index; an empty list prints nothing.", "starter": "#include <iostream>\n#include <list>\n#include <string>\nusing namespace std;\n\n// print the elements last to first, one space after each, using a\n// list<string>::const_iterator and -- (no reverse_iterator, no index)\nvoid print_reverse(const list<string>& l) {\n}\n\nint main() {\n    print_reverse({\"a\", \"b\", \"c\"});\n    cout << endl;\n    print_reverse({});\n    cout << \"done\" << endl;\n    return 0;\n}\n", "expected": "c b a \ndone", "hints": ["Never dereference end(): decrement first, then print.", "<code>while (it != l.begin()) { --it; cout &lt;&lt; *it &lt;&lt; \" \"; }</code>"], "solution": "#include <iostream>\n#include <list>\n#include <string>\nusing namespace std;\n\n// print the elements last to first, one space after each, using a\n// list<string>::const_iterator and -- (no reverse_iterator, no index)\nvoid print_reverse(const list<string>& l) {\n    list<string>::const_iterator it = l.end();\n    while (it != l.begin()) {\n        --it;\n        cout << *it << \" \";\n    }\n}\n\nint main() {\n    print_reverse({\"a\", \"b\", \"c\"});\n    cout << endl;\n    print_reverse({});\n    cout << \"done\" << endl;\n    return 0;\n}\n"}
+```
 ```quiz
 [
   {

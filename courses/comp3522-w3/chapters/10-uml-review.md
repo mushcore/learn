@@ -62,6 +62,80 @@ Each step draws one call, return, self or create message down the lifelines, and
 sequence-play
 ```
 
+## Classify six new relationships and number a new collaboration
+
+New classes, the same six arrows; ask whether A inherits, implements, holds, owns or merely uses B.
+
+```quiz
+[
+  {
+    "type": "match",
+    "q": "Match each scenario to its UML relationship.",
+    "pairs": [
+      [
+        "A `Library` holds `Book*` pointers; books stay when the library closes",
+        "Aggregation (hollow diamond)"
+      ],
+      [
+        "A `House` is made of `Room`s that are destroyed with it",
+        "Composition (filled diamond)"
+      ],
+      [
+        "`Report::print(Printer& p)` uses a printer only as a parameter",
+        "Dependency (dashed arrow)"
+      ],
+      [
+        "`class Manager : public Employee`",
+        "Generalization (hollow triangle)"
+      ],
+      [
+        "`Dog` implements every pure virtual function of the interface `Pet`",
+        "Realization (dashed line, hollow triangle)"
+      ],
+      [
+        "`Teacher` has a member `Course* current;`",
+        "Association (solid line)"
+      ]
+    ],
+    "explain": "Inheritance is generalization; implementing an interface is realization. A part held by value and destroyed with the whole is composition; a pointer to something that outlives the holder is aggregation. A plain member reference is an association, and use as a parameter or local only is a dependency."
+  },
+  {
+    "q": "Which relationship does this C++ describe? `class Invoice { std::vector<LineItem> items; };`",
+    "options": [
+      "Composition: the line items are held by value and die with the invoice",
+      "Aggregation: the invoice only references the items",
+      "Dependency: the invoice uses LineItem in a method",
+      "Generalization: Invoice is a kind of LineItem"
+    ],
+    "answer": 0,
+    "explain": "The `LineItem`s live inside the invoice's vector, so destroying the `Invoice` destroys them: the parts cannot exist without the whole, a filled diamond at `Invoice`. This is the deck's order and order_items example in new names."
+  },
+  {
+    "q": "The program prints each message as it is sent. On a collaboration diagram numbered from `1: checkout()`, which number does `charge()` get?",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Payment\n{\npublic:\n    void charge() { cout << \"charge \"; }\n};\n\nclass Cart\n{\n    Payment payment;\npublic:\n    int total() { cout << \"total \"; return 42; }\n    void checkout()\n    {\n        cout << \"checkout \";\n        total();\n        payment.charge();\n    }\n};\n\nint main()\n{\n    Cart cart;\n    cart.checkout();\n    cout << endl;\n    return 0;\n}",
+    "options": [
+      "`1.2`",
+      "`2`",
+      "`3`",
+      "`1.1`"
+    ],
+    "answer": 0,
+    "explain": "The actor's call is `1: checkout()`. Messages sent while `checkout` is still running get decimals in order: `total()` is 1.1 and `charge()` is 1.2. The output `checkout total charge` shows the same order a sequence diagram would draw top to bottom."
+  },
+  {
+    "q": "On a sequence diagram of the same program, which kind of message is `total()` from `Cart` to itself?",
+    "options": [
+      "A self message",
+      "A create message",
+      "A return message",
+      "A call message to another lifeline"
+    ],
+    "answer": 0,
+    "explain": "`checkout()` calls `total()` on the same `Cart` object, so the arrow loops back to the same lifeline: a self message. `charge()` is a call message to the `Payment` lifeline, and `return 42` would be drawn as a dashed return."
+  }
+]
+```
+
 ```quiz
 [
   {

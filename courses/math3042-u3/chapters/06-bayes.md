@@ -84,6 +84,21 @@ bayes-flow-play
 (a) asks for $P(B)$: multiply along each path and **add**. (b) asks for $P(A_i \mid B)$: one path **divided** by that sum. Read which is which before touching the calculator: "randomly select a CPU" is (a); "randomly select a defective unit" restricts the sample space to $B$ and is (b).
 :::
 
+## Bayes for a screening test and three factory shifts
+
+A condition affects 2% of people; a screening test is positive for 95% of people with it and for 8% of people without it. A factory makes 50% of its parts on the day shift (2% defective), 30% on the evening shift (3%) and 20% on the night shift (5%).
+
+```quiz
+[
+  {"q": "Screening: $P(\\text{positive})$ for a random person? (4 decimals)", "type": "numeric", "answer": 0.0974, "tolerance": 6e-05, "explain": "Add the two paths that end in positive: $0.02 \\times 0.95 + 0.98 \\times 0.08 = 0.0190 + 0.0784 = 0.0974$."},
+  {"q": "$P(\\text{condition} \\mid \\text{positive})$? (4 decimals)", "type": "numeric", "answer": 0.1951, "tolerance": 6e-05, "explain": "One path over the total: $0.0190/0.0974 = 0.1951$. In words: only about 19.5% of people who test positive have the condition."},
+  {"q": "Which sentence states $P(\\text{condition} \\mid \\text{positive})$ correctly?", "options": ["About 19.5% of people who test positive have the condition", "About 19.5% of people with the condition test positive", "95% of people who test positive have the condition", "About 19.5% of all people test positive"], "answer": 0, "explain": "The condition after the bar is the group you are talking about: among positives. \"95% of people with the condition test positive\" is the other direction, $P(+ \\mid \\text{condition})$."},
+  {"q": "Factory: $P(\\text{defective})$ for a random part? (4 decimals)", "type": "numeric", "answer": 0.029, "tolerance": 6e-05, "explain": "$0.5(0.02) + 0.3(0.03) + 0.2(0.05) = 0.0100 + 0.0090 + 0.0100 = 0.0290$ (law of total probability)."},
+  {"q": "A part is found defective. $P(\\text{night shift} \\mid \\text{defective})$? (4 decimals)", "type": "numeric", "answer": 0.3448, "tolerance": 6e-05, "explain": "$0.0100/0.0290 = 0.3448$: 34.5% of defective parts come from the night shift, which makes only 20% of the parts."},
+  {"q": "Out of 10 000 parts, how many are defective night-shift parts?", "type": "numeric", "answer": 100, "tolerance": 0, "explain": "2000 night-shift parts × 5% = 100, out of 290 defective parts in all (100 day, 90 evening, 100 night)."}
+]
+```
+
 ```quiz
 [
   {

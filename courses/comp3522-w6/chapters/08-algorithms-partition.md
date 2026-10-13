@@ -165,6 +165,67 @@ int main() {
 { "prompt": "Partition <code>v = {3, 8, 1, 9, 5, 6, 2, 7}</code> so the values greater than 5 come first, using a named predicate function <code>GreaterThanFive</code>. Print the true group after <code>greater than 5:</code> and the false group after <code>the rest:</code>, one space before each value, then <code>size still 8</code>. The expected order is what g++'s <code>std::partition</code> produces.", "starter": "#include <iostream>\n#include <algorithm>\n#include <vector>\nusing namespace std;\n\n// TODO: the unary predicate\n\nint main() {\n    vector<int> v = {3, 8, 1, 9, 5, 6, 2, 7};\n    // TODO: partition and keep the returned bound\n\n    cout << \"greater than 5:\";\n    // TODO: print [begin, bound)\n    cout << '\\n';\n\n    cout << \"the rest:\";\n    // TODO: print [bound, end)\n    cout << '\\n';\n\n    cout << \"size still \" << v.size() << '\\n';\n    return 0;\n}\n", "expected": "greater than 5: 7 8 6 9\nthe rest: 5 1 2 3\nsize still 8", "hints": ["The predicate takes one <code>int</code> and returns <code>i &gt; 5</code>.", "<code>vector&lt;int&gt;::iterator bound = partition(v.begin(), v.end(), GreaterThanFive);</code>", "First loop: <code>for (auto it = v.begin(); it != bound; ++it)</code>; second loop starts at <code>bound</code> and stops at <code>v.end()</code>."], "solution": "#include <iostream>\n#include <algorithm>\n#include <vector>\nusing namespace std;\n\nbool GreaterThanFive(int i)\n{\n    return i > 5;\n}\n\nint main() {\n    vector<int> v = {3, 8, 1, 9, 5, 6, 2, 7};\n    vector<int>::iterator bound = partition(v.begin(), v.end(), GreaterThanFive);\n\n    cout << \"greater than 5:\";\n    for (auto it = v.begin(); it != bound; ++it)\n        cout << ' ' << *it;\n    cout << '\\n';\n\n    cout << \"the rest:\";\n    for (auto it = bound; it != v.end(); ++it)\n        cout << ' ' << *it;\n    cout << '\\n';\n\n    cout << \"size still \" << v.size() << '\\n';\n    return 0;\n}\n" }
 ```
 
+## Run `partition`, `find_if`, `sort` and `remove_if` with predicates
+
+Each algorithm gets a range as two iterators and a function; the data and the predicates are new.
+
+```quiz
+[
+  {
+    "q": "Type the line this prints (g++'s `std::partition` works from both ends: it finds the first false element from the front, the last true element from the back, and swaps them).",
+    "type": "text",
+    "code": "#include <algorithm>\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nbool IsEven(int i) { return i % 2 == 0; }\n\nint main() {\n    vector<int> v = {12, 5, 8, 21, 3, 14};\n    auto bound = partition(v.begin(), v.end(), IsEven);\n    for (auto it = v.begin(); it != bound; ++it) cout << *it << \" \";\n    cout << \"|\";\n    for (auto it = bound; it != v.end(); ++it) cout << \" \" << *it;\n    cout << endl;\n    return 0;\n}",
+    "answer": [
+      "12 14 8 | 21 3 5"
+    ],
+    "explain": "From the front: 12 is even (true), 5 is false, so the front stops at 5. From the back: 14 is true, so 5 and 14 swap: 12 14 8 21 3 5. The front moves on: 8 is true, 21 is false and stops. From the back: 5 and 3 are false, and the back reaches 21, where the front is: done. True group 12 14 8, bound at 21, false group 21 3 5. The 5 moved from second place to last: relative order is not kept."
+  },
+  {
+    "q": "Type the line this prints.",
+    "type": "text",
+    "code": "#include <algorithm>\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nbool IsNegative(int i) { return i < 0; }\nbool Big(int i) { return i > 10; }\n\nint main() {\n    vector<int> v = {4, -2, 11, -7, 15, 0};\n    cout << count_if(v.begin(), v.end(), IsNegative) << \" \";\n    auto it = find_if(v.begin(), v.end(), Big);\n    cout << *it << \" \" << (it - v.begin()) << \" \";\n    auto none = find_if(v.begin(), v.begin() + 2, Big);\n    cout << (none == v.begin() + 2) << endl;\n    return 0;\n}",
+    "answer": [
+      "2 11 2 1"
+    ],
+    "explain": "count_if counts the elements where the predicate is true: -2 and -7, so 2. find_if returns an iterator to the first element > 10: the 11, at position 2 (it - begin()). Searching only [begin, begin + 2) finds nothing, and a failed search returns the end of the range it was given, begin() + 2: true, printed 1."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <algorithm>\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nbool Greater(int a, int b) { return a > b; }\nvoid Show(int x) { cout << x << \" \"; }\n\nint main() {\n    vector<int> v = {3, 9, 1, 7};\n    sort(v.begin(), v.end(), Greater);\n    for_each(v.begin(), v.end(), Show);\n    cout << endl;\n    return 0;\n}",
+    "options": [
+      "`9 7 3 1`",
+      "`1 3 7 9`",
+      "`3 9 1 7`",
+      "`9 3 7 1`"
+    ],
+    "answer": 0,
+    "explain": "sort's third argument is a binary predicate saying which of two elements goes first; `a > b` puts larger values first: 9 7 3 1. for_each then calls Show on every element of [begin, end) in order."
+  },
+  {
+    "q": "Type the line this prints.",
+    "type": "text",
+    "code": "#include <algorithm>\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nbool IsEven(int i) { return i % 2 == 0; }\n\nint main() {\n    vector<int> v = {1, 2, 3, 4, 5, 6};\n    auto newEnd = remove_if(v.begin(), v.end(), IsEven);\n    for (auto it = v.begin(); it != newEnd; ++it) cout << *it << \" \";\n    cout << \"| size \" << v.size() << endl;\n    return 0;\n}",
+    "answer": [
+      "1 3 5 | size 6"
+    ],
+    "explain": "remove_if moves the elements to keep (the odd ones, where IsEven is false) to the front, in order, and returns the new logical end. An algorithm never changes the size of a container, so v.size() is still 6; the elements after newEnd are leftovers, which is why the loop stops at newEnd."
+  },
+  {
+    "q": "Pass the predicate so the short words come first.",
+    "type": "fill",
+    "code": "#include <algorithm>\n#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nbool IsShort(const string& s) { return s.size() <= 3; }\n\nint main() {\n    vector<string> w = {\"bus\", \"train\", \"car\", \"bicycle\"};\n    auto bound = stable_partition(w.begin(), w.end(), ___);\n    for (const string& s : w) cout << s << \" \";\n    cout << \"| \" << *bound << endl;\n    return 0;\n}",
+    "answer": [
+      "IsShort",
+      "&IsShort"
+    ],
+    "explain": "The third argument is the unary predicate itself, the function name without parentheses: `stable_partition(w.begin(), w.end(), IsShort)`. stable_partition keeps the original order inside each group: bus car, then train bicycle, and the returned bound points at train."
+  }
+]
+```
+
+```challenge
+{"prompt": "Write the unary predicate <code>IsVowel(char c)</code> (true for a, e, i, o, u). Print how many vowels <code>word</code> has with <code>std::count_if</code>, then move the vowels to the front with <code>std::stable_partition</code>, keeping the order inside each group, and print the word.", "starter": "#include <algorithm>\n#include <iostream>\n#include <string>\nusing namespace std;\n\n// write the unary predicate IsVowel(char c): true for a, e, i, o, u\n\nint main() {\n    string word = \"partition\";\n    // 1. print how many vowels word has, with std::count_if\n\n    // 2. move the vowels to the front, keeping their order, with std::stable_partition\n\n    cout << word << endl;\n    return 0;\n}\n", "expected": "4\naiioprttn", "hints": ["A string is a range: <code>word.begin()</code>, <code>word.end()</code>.", "<code>count_if(word.begin(), word.end(), IsVowel)</code> returns the count.", "Plain <code>partition</code> may reorder the consonants; the expected output needs <code>stable_partition</code>."], "solution": "#include <algorithm>\n#include <iostream>\n#include <string>\nusing namespace std;\n\nbool IsVowel(char c) {\n    return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';\n}\n\nint main() {\n    string word = \"partition\";\n    cout << count_if(word.begin(), word.end(), IsVowel) << endl;\n    stable_partition(word.begin(), word.end(), IsVowel);\n    cout << word << endl;\n    return 0;\n}\n"}
+```
 ```quiz
 [
   {

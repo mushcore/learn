@@ -48,6 +48,20 @@ $1 - \frac{1}{k^2} = 1 - \frac{1}{4} = 0.75 = \mathbf{75\%}$
 
 At least 75% of moisture readings fall between 17 and 19, whatever the true shape of the distribution.
 
+## Chebyshev bounds for café wait times
+
+Wait times at a café have $\mu = 12$ min and $\sigma = 2$ min; the shape is unknown.
+
+```quiz
+[
+  {"q": "For the interval 7 to 17 minutes, what is $k$?", "type": "numeric", "answer": 2.5, "tolerance": 0, "explain": "Both ends are 5 minutes from the mean: $k = 5/\\sigma = 5/2 = 2.5$."},
+  {"q": "At least what percentage of waits fall between 7 and 17 minutes?", "type": "numeric", "answer": 84, "tolerance": 0.05, "unit": "%", "explain": "$1 - 1/k^2 = 1 - 1/2.5^2 = 1 - 1/6.25 = 1 - 0.16 = 0.84 = 84\\%$."},
+  {"q": "Which two words go in front of that 84%?", "type": "text", "answer": ["at least", "at-least"], "explain": "Chebyshev is a guaranteed lower bound for any shape: at least 84%. The empirical rule would say \"approximately\", and only for normal data."},
+  {"q": "At most what percentage of waits fall outside 7 to 17 minutes?", "type": "numeric", "answer": 16, "tolerance": 0.05, "unit": "%", "explain": "If at least 84% are inside, at most $100 - 84 = 16\\%$ are outside ($1/k^2 = 0.16$)."},
+  {"q": "At least what percentage fall between 4 and 20 minutes? (2 decimals)", "type": "numeric", "answer": 93.75, "tolerance": 0.006, "unit": "%", "explain": "Distance 8 from the mean, $k = 8/2 = 4$: $1 - 1/16 = 0.9375 = 93.75\\%$."}
+]
+```
+
 ```quiz
 [
   {

@@ -59,6 +59,47 @@ Real links quote the bandwidth in Mbps and the delay in ms. Convert both to bps 
 
 $$1\ \text{Mbps} \times 2\ \text{ms} = 10^{6}\ \text{bps} \times 0.002\ \text{s} = 2000\ \text{bits}$$
 
+## Count the bits in flight on four more links
+
+Bandwidth in bps times delay in seconds; double it for the burst.
+
+```quiz
+[
+  {
+    "q": "A link has a bandwidth of 3 bps and a delay of 7 s. How many bits can fill the link?",
+    "type": "numeric",
+    "answer": 21,
+    "tolerance": 0.1,
+    "unit": "bits",
+    "explain": "Bandwidth × delay $= 3 \\times 7 = 21$ bits. After 1 s the first 3 bits are on the link; after 7 s it holds $7 \\times 3 = 21$."
+  },
+  {
+    "q": "A link has a bandwidth of 1 Gbps and a delay of 5 ms. How many bits can fill the link?",
+    "type": "numeric",
+    "answer": 5000000,
+    "tolerance": 10,
+    "unit": "bits",
+    "explain": "$10^{9}\\ \\text{bps} \\times 0.005\\ \\text{s} = 5000000$ bits (5 million)."
+  },
+  {
+    "q": "Same link (1 Gbps, 5 ms). What burst size uses the maximum capability of the full-duplex link?",
+    "type": "numeric",
+    "answer": 10000000,
+    "tolerance": 10,
+    "unit": "bits",
+    "explain": "$2 \\times \\text{bandwidth} \\times \\text{delay} = 2 \\times 5000000 = 10000000$ bits: both directions of the full-duplex channel are filled."
+  },
+  {
+    "q": "A 16 Mbps link is filled by 48000 bits. What is its delay, in ms?",
+    "type": "numeric",
+    "answer": 3,
+    "tolerance": 0.01,
+    "unit": "ms",
+    "explain": "Delay $= \\frac{\\text{bits that fill the link}}{\\text{bandwidth}} = \\frac{48000}{16 \\times 10^{6}} = 0.003$ s $= 3$ ms."
+  }
+]
+```
+
 ```quiz
 [
   {

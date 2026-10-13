@@ -85,6 +85,63 @@ decibel
 | 10 | $+10$ |
 | 100 | $+20$ |
 
+## Find the decibels and the power along four more paths
+
+Point 2 goes on top of the ratio, and decibels along a path add.
+
+```quiz
+[
+  {
+    "q": "A signal's power drops from 50 mW at point 1 to 4 mW at point 2. What is the change in dB? Include the sign (2 decimals).",
+    "type": "numeric",
+    "answer": -10.97,
+    "tolerance": 0.006,
+    "unit": "dB",
+    "explain": "$10 \\log_{10} \\frac{P_2}{P_1} = 10 \\log_{10} \\frac{4}{50} = 10 \\log_{10} 0.08 = 10(-1.0969) = -10.97$ dB. Negative: the signal is attenuated."
+  },
+  {
+    "q": "An amplifier raises a signal from 0.2 mW to 3 mW. What is its gain in dB (2 decimals)?",
+    "type": "numeric",
+    "answer": 11.76,
+    "tolerance": 0.006,
+    "unit": "dB",
+    "explain": "$10 \\log_{10} \\frac{3}{0.2} = 10 \\log_{10} 15 = 10(1.1761) = 11.76$ dB. Positive: the signal is amplified. Both powers are in mW, so the units cancel without converting."
+  },
+  {
+    "q": "A cable has a loss of $-0.25$ dB/km. A signal enters it at 6 mW. What is its power after 12 km, in mW (2 decimals)?",
+    "type": "numeric",
+    "answer": 3.01,
+    "tolerance": 0.006,
+    "unit": "mW",
+    "explain": "Whole cable: $12 \\times (-0.25) = -3$ dB. $P_2 = P_1 \\times 10^{\\text{dB}/10} = 6 \\times 10^{-3/10} = 6 \\times 0.5012 = 3.01$ mW. A loss of $-3$ dB leaves about half the power."
+  },
+  {
+    "q": "A signal passes a cable section of $-4.5$ dB, then an amplifier of $+10$ dB, then a second cable section of $-2.5$ dB. What is the total change in dB?",
+    "type": "numeric",
+    "answer": 3,
+    "tolerance": 0.006,
+    "unit": "dB",
+    "explain": "Decibels add along the path: $-4.5 + 10 + (-2.5) = +3$ dB. Positive overall: the amplifier more than makes up for the two losses."
+  },
+  {
+    "q": "Same path ($+3$ dB in total). The signal enters at 1 mW. What power leaves the second cable section, in mW (2 decimals)?",
+    "type": "numeric",
+    "answer": 2.0,
+    "tolerance": 0.006,
+    "unit": "mW",
+    "explain": "$P_2 = 1 \\times 10^{3/10} = 1 \\times 1.9953 = 2.00$ mW. A gain of $+3$ dB roughly doubles the power."
+  },
+  {
+    "q": "A signal's voltage falls from 5 V at point 1 to 0.5 V at point 2. What is the change in dB? Include the sign.",
+    "type": "numeric",
+    "answer": -20,
+    "tolerance": 0.006,
+    "unit": "dB",
+    "explain": "With voltages the multiplier is 20: $20 \\log_{10} \\frac{0.5}{5} = 20 \\log_{10} 0.1 = 20(-1) = -20$ dB."
+  }
+]
+```
+
 ```quiz
 [
   {

@@ -83,6 +83,53 @@ sampling-play
 Both start with a 2, and both come from the same theorem, but they answer different questions. A question that gives a bandwidth and asks for samples per second wants this week's formula; a question that gives a bandwidth and $L$ and asks for bps wants Week 3's.
 
 
+## Find the Nyquist rate for five new signals
+
+The Nyquist rate is $2 f_{max}$, so first decide what $f_{max}$ is.
+
+```quiz
+[
+  {
+    "q": "What is the minimum sampling rate for a low-pass signal with a bandwidth of 12 kHz, in samples per second?",
+    "type": "numeric",
+    "answer": 24000,
+    "tolerance": 1,
+    "unit": "samples/s",
+    "explain": "Low-pass: bandwidth = highest frequency, so $f_{max} = 12000$ Hz and $f_N = 2 \\times 12000 = 24000$ samples/s."
+  },
+  {
+    "q": "A bandpass signal occupies 30 kHz to 45 kHz. What is its Nyquist rate, in samples per second?",
+    "type": "numeric",
+    "answer": 90000,
+    "tolerance": 1,
+    "unit": "samples/s",
+    "explain": "Here $f_{max}$ is given: 45 kHz. $f_N = 2 \\times 45000 = 90000$ samples/s. Doubling the 15 kHz bandwidth (30 000) would be wrong: for a bandpass signal bandwidth < highest frequency."
+  },
+  {
+    "q": "What is the Nyquist interval for a low-pass signal with a bandwidth of 250 kHz, in μs?",
+    "type": "numeric",
+    "answer": 2,
+    "tolerance": 0.01,
+    "unit": "μs",
+    "explain": "$f_N = 2 \\times 250000 = 500000$ samples/s, and the Nyquist interval is $\\frac{1}{500000} = 2 \\times 10^{-6}$ s $= 2$ μs."
+  },
+  {
+    "q": "A 3 kHz sine wave is sampled at 4000 samples/s. Is this Nyquist rate sampling, oversampling or undersampling?",
+    "type": "text",
+    "answer": ["undersampling", "under sampling", "under-sampling"],
+    "explain": "The Nyquist rate for a 3 kHz sine is $2 \\times 3000 = 6000$ samples/s. 4000 is below it, so this is **undersampling**: the samples produce a signal that does not look like the original."
+  },
+  {
+    "q": "A converter samples at 50 000 samples/s. What is the highest frequency it can reproduce, in kHz?",
+    "type": "numeric",
+    "answer": 25,
+    "tolerance": 0.01,
+    "unit": "kHz",
+    "explain": "Run the theorem backwards: $f_{max} = f_s / 2 = 50000 / 2 = 25000$ Hz $= 25$ kHz."
+  }
+]
+```
+
 ```quiz
 [
   {

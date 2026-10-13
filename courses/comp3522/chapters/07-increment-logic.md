@@ -141,6 +141,71 @@ int main()
 }
 ```
 
+## Trace increments and short-circuits in four new programs
+
+Track each variable after every statement; for `&&` and `||`, decide whether the right side runs at all.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int a = 4;\n    int b = a++ * 2;\n    int c = ++a * 2;\n    cout << a << ' ' << b << ' ' << c << endl;\n    return 0;\n}",
+    "options": [
+      "`6 8 12`",
+      "`6 10 12`",
+      "`5 8 10`",
+      "`6 8 10`"
+    ],
+    "answer": 0,
+    "explain": "`a++` yields the old 4 and then makes a 5, so b = 4 × 2 = 8. `++a` makes a 6 first and yields 6, so c = 12. Output: `6 8 12`."
+  },
+  {
+    "type": "numeric",
+    "q": "How many times does `check()` run? The program prints the count.",
+    "code": "#include <iostream>\nusing namespace std;\n\nint calls = 0;\n\nbool check()\n{\n    ++calls;\n    return true;\n}\n\nint main()\n{\n    int x = 0;\n    if (x > 0 && check()) { }\n    if (x == 0 || check()) { }\n    if (x == 0 && check()) { }\n    cout << calls << endl;\n    return 0;\n}",
+    "answer": 1,
+    "explain": "First `if`: `x > 0` is false, so `&&` skips `check()`. Second: `x == 0` is true, so `||` already knows the answer and skips `check()`. Third: `x == 0` is true, so `&&` must evaluate `check()`. One call."
+  },
+  {
+    "q": "What does this print? (g++ warns about the condition but compiles it.)",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int lives = 3;\n    if (lives = 0)\n        cout << \"game over\" << endl;\n    else\n        cout << \"lives: \" << lives << endl;\n    return 0;\n}",
+    "options": [
+      "`lives: 0`",
+      "`lives: 3`",
+      "`game over`",
+      "`a compile error`"
+    ],
+    "answer": 0,
+    "explain": "`lives = 0` is an assignment, not a comparison: it stores 0 and its value is 0, which is false. The `else` branch runs and prints the new value: `lives: 0`. `-Wall` flags it with `suggest parentheses around assignment used as truth value`."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    cout << boolalpha << (7 > 3 && 2 > 5) << ' ' << !(4 != 4) << ' ' << (3 <= 3) << endl;\n    return 0;\n}",
+    "options": [
+      "`false true true`",
+      "`true false true`",
+      "`0 1 1`",
+      "`false false true`"
+    ],
+    "answer": 0,
+    "explain": "`7 > 3` is true but `2 > 5` is false, so `&&` gives false. `4 != 4` is false and `!` flips it to true. `3 <= 3` is true. `boolalpha` prints words: `false true true`."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "Write <code>bool inRange(int x)</code> that returns <code>true</code> when <code>x</code> is from 100 to 999 inclusive, using one <code>&&</code>. <code>main</code> is written and prints <code>false true true false</code>.",
+  "starter": "#include <iostream>\nusing namespace std;\n\n// inRange here\n\nint main()\n{\n    cout << boolalpha << inRange(99) << ' ' << inRange(100) << ' '\n         << inRange(999) << ' ' << inRange(1000) << endl;\n    return 0;\n}\n",
+  "expected": "false true true false\n",
+  "hints": [
+    "Both bounds are inclusive: <code>>=</code> and <code><=</code>.",
+    "<code>return x >= 100 && x <= 999;</code>"
+  ],
+  "solution": "#include <iostream>\nusing namespace std;\n\nbool inRange(int x)\n{\n    return x >= 100 && x <= 999;\n}\n\nint main()\n{\n    cout << boolalpha << inRange(99) << ' ' << inRange(100) << ' '\n         << inRange(999) << ' ' << inRange(1000) << endl;\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

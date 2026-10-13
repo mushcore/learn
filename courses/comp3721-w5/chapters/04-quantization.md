@@ -95,6 +95,57 @@ pcm-play
 { "vmin": -20, "vmax": 20, "levels": 8, "samples": "-6.1 7.5 16.2 19.7 11.0 -5.5 -11.3 -9.4 -6.0", "ask": "code" }
 ```
 
+## Quantize two samples on a −12 V to +12 V range
+
+A signal between −12 V and +12 V is quantized with $L = 8$, zones numbered 0 at the bottom to 7 at the top; the last item uses a second signal.
+
+```quiz
+[
+  {
+    "q": "What is $\\Delta$, in volts?",
+    "type": "numeric",
+    "answer": 3,
+    "tolerance": 0.001,
+    "unit": "V",
+    "explain": "$\\Delta = \\frac{V_{max} - V_{min}}{L} = \\frac{12 - (-12)}{8} = \\frac{24}{8} = 3$ V."
+  },
+  {
+    "q": "What is the normalized PAM value of the sample 4.9 V? (Two decimals.)",
+    "type": "numeric",
+    "answer": 1.63,
+    "tolerance": 0.006,
+    "explain": "Normalized PAM value = actual amplitude / $\\Delta$ = $4.9 / 3 = 1.6333$, about 1.63."
+  },
+  {
+    "q": "What is the 3-bit encoded word of the sample 4.9 V?",
+    "type": "text",
+    "answer": ["101"],
+    "explain": "1.63 lies between $D$ and $2D$. Counting zones from the bottom ($-4D$ to $-3D$ is zone 0), $D$ to $2D$ is zone 5, so the code is 5 and the word is 101."
+  },
+  {
+    "q": "What quantized value, in volts, replaces the sample 4.9 V?",
+    "type": "numeric",
+    "answer": 4.5,
+    "tolerance": 0.01,
+    "unit": "V",
+    "explain": "Zone 5 has midpoint 1.50 (normalized), and $1.50 \\times 3 = 4.5$ V."
+  },
+  {
+    "q": "What is the normalized error of the sample −8.2 V? (Two decimals, quantized − PAM.)",
+    "type": "numeric",
+    "answer": 0.23,
+    "tolerance": 0.006,
+    "explain": "PAM: $-8.2 / 3 = -2.7333$, between $-3D$ and $-2D$, zone 1, midpoint -2.50. Error $= -2.50 - (-2.7333) = +0.2333$, about +0.23. Positive because the sample is below its midpoint."
+  },
+  {
+    "q": "A second signal lies between 0 V and 16 V and is quantized with $L = 4$. What is the 2-bit encoded word of the sample 9.3 V?",
+    "type": "text",
+    "answer": ["10"],
+    "explain": "$\\Delta = 16 / 4 = 4$ V, so the zones from the bottom are 0 to 4 (code 0), 4 to 8 (1), 8 to 12 (2), 12 to 16 (3). 9.3 V is in zone 2, word 10."
+  }
+]
+```
+
 ```quiz
 [
   {

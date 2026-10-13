@@ -120,6 +120,21 @@ ogive-play
 {}
 ```
 
+## Cumulative table and ogive for delivery times
+
+Fifty delivery times in minutes were grouped into classes 10–14, 15–19, 20–24, 25–29, 30–34, 35–39 with frequencies 4, 11, 18, 9, 6, 2.
+
+```quiz
+[
+  {"q": "Cumulative relative frequency of the class 20–24? (3 decimals)", "type": "numeric", "answer": 0.66, "tolerance": 0.0006, "explain": "Cumulative frequency $4 + 11 + 18 = 33$; divide by $n = 50$: $33/50 = 0.660$."},
+  {"q": "How many deliveries took less than 25 minutes?", "type": "numeric", "answer": 33, "tolerance": 0, "explain": "Everything up to and including the class ending at 24: the cumulative frequency 33."},
+  {"q": "The ogive gets one extra point at height 0. What is its $x$-coordinate?", "type": "numeric", "answer": 9, "tolerance": 0, "explain": "The upper limit just before the first class: 10 − 1 = 9, so the curve starts at (9, 0) and then plots (14, 0.08), (19, 0.30), …"},
+  {"q": "Which class contains the median?", "options": ["20–24", "15–19", "25–29", "30–34"], "answer": 0, "explain": "The cumulative relative frequencies are 0.08, 0.30, 0.66, 0.84, 0.96, 1.00. 0.5 is first passed in the class 20–24 (0.30 below it, 0.66 at its upper limit)."},
+  {"q": "What percentage of deliveries took 15 to 29 minutes?", "type": "numeric", "answer": 76, "tolerance": 0.5, "unit": "%", "explain": "Height at 29 minus height at 14: $0.84 - 0.08 = 0.76$, i.e. 76% (or $(11 + 18 + 9)/50 = 38/50$)."},
+  {"type": "fill", "q": "Fill the function that turns frequencies into running totals.", "code": "freqs <- c(4, 11, 18, 9, 6, 2)\n___(freqs)\n## [1]  4 15 33 42 48 50", "answer": ["cumsum"], "explain": "`cumsum()` adds each frequency to the previous total; the last value equals $n = 50$, the arithmetic check."}
+]
+```
+
 ```quiz
 [
   {"q": "Old Faithful classes have frequencies 12, 39, 20, 18, ... What is the cumulative frequency of the third class (2.0 to 2.199)?", "type": "numeric", "answer": 71, "tolerance": 0, "explain": "$12 + 39 = 51$, then $51 + 20 = 71$."},

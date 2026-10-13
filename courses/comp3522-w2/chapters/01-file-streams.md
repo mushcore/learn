@@ -235,6 +235,63 @@ int main()
 
 `outFile << inFile.rdbuf();` is the entire copy, and `cout << check.rdbuf();` uses the same trick to display a file.
 
+## Predict four new programs that write a file and read it back
+
+Each program creates its own file first, so it runs as shown; follow what the open mode does to the old contents.
+
+```quiz
+[
+  {
+    "type": "numeric",
+    "q": "How many characters does the read loop count?",
+    "code": "#include <iostream>\n#include <fstream>\nusing namespace std;\n\nint main()\n{\n    ofstream out{\"notes.txt\"};\n    out << \"ab\" << 12 << '\\n';\n    out.close();\n\n    ifstream in{\"notes.txt\"};\n    int count = 0;\n    char c;\n    while ((c = in.get()) != EOF)\n    {\n        ++count;\n    }\n    cout << count << endl;\n    return 0;\n}",
+    "answer": 5,
+    "explain": "The file holds `a`, `b`, `1`, `2` and the newline: `<< 12` writes the two digit characters. `get()` returns every character, whitespace included, so the loop counts 5 before `get()` returns EOF."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\n\nint main()\n{\n    ofstream a{\"log.txt\"};\n    a << \"one\";\n    a.close();\n\n    ofstream b{\"log.txt\"};\n    b << \"two\";\n    b.close();\n\n    ofstream c{\"log.txt\", ios_base::out | ios_base::app};\n    c << \"three\";\n    c.close();\n\n    ifstream in{\"log.txt\"};\n    string text;\n    in >> text;\n    cout << text << endl;\n    return 0;\n}",
+    "options": [
+      "`twothree`",
+      "`onetwothree`",
+      "`three`",
+      "`two`"
+    ],
+    "answer": 0,
+    "explain": "An `ofstream` opened with no mode truncates: the second open erases `one` and writes `two`. Opening with `app` moves to the end before every write, so `three` lands after `two`. The file holds `twothree`, read as one word. Output: `twothree`."
+  },
+  {
+    "type": "text",
+    "q": "`nope.txt` does not exist. What does this print?",
+    "code": "#include <iostream>\n#include <fstream>\nusing namespace std;\n\nint main()\n{\n    ofstream out{\"fresh.txt\"};\n    ifstream in{\"nope.txt\"};\n    cout << out.is_open() << in.is_open() << endl;\n    return 0;\n}",
+    "answer": [
+      "10"
+    ],
+    "explain": "An `ofstream` creates a missing file, so `out.is_open()` is true (1). An `ifstream` cannot read a file that is not there, so `in.is_open()` is false (0). Output: `10`. This is why the slides test `if (!f.is_open())` before reading."
+  },
+  {
+    "type": "numeric",
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <fstream>\nusing namespace std;\n\nint main()\n{\n    ofstream out{\"nums.txt\"};\n    out << 3 << 5 << ' ' << 7;\n    out.close();\n\n    ifstream in{\"nums.txt\"};\n    int a, b;\n    in >> a >> b;\n    cout << a + b << endl;\n    return 0;\n}",
+    "answer": 42,
+    "explain": "`<<` writes no separators of its own, so the file holds `35 7`. Reading back, `a` gets 35 and `b` gets 7: 35 + 7 = 42, not 3 + 5 + 7 = 15."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "The program writes three scores to <code>scores.txt</code>. Open it with an <code>ifstream</code>, read every score with <code>while (in >> score)</code>, and print <code>total 246</code> and <code>average 82</code> on two lines.",
+  "starter": "#include <iostream>\n#include <fstream>\nusing namespace std;\n\nint main()\n{\n    ofstream out{\"scores.txt\"};\n    out << 70 << '\\n' << 85 << '\\n' << 91 << '\\n';\n    out.close();\n\n    // read scores.txt here\n    return 0;\n}\n",
+  "expected": "total 246\naverage 82\n",
+  "hints": [
+    "<code>ifstream in{\"scores.txt\"}; int score, total = 0, count = 0;</code>",
+    "The average is <code>total / count</code>: 246 / 3 = 82."
+  ],
+  "solution": "#include <iostream>\n#include <fstream>\nusing namespace std;\n\nint main()\n{\n    ofstream out{\"scores.txt\"};\n    out << 70 << '\\n' << 85 << '\\n' << 91 << '\\n';\n    out.close();\n\n    ifstream in{\"scores.txt\"};\n    int score, total = 0, count = 0;\n    while (in >> score)\n    {\n        total += score;\n        ++count;\n    }\n    cout << \"total \" << total << endl;\n    cout << \"average \" << total / count << endl;\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

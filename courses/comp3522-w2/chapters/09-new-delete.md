@@ -215,6 +215,56 @@ int main()
 
 `int * my_pointer = new (nothrow) int[100];` passes the `nothrow` object (from `<new>`) to `new`, so `if (my_pointer == nullptr)` can test for a failed allocation instead of catching an exception.
 
+## Keep the tally of `new` and `delete` in four new programs
+
+Every `new` needs one `delete`, every `new[]` one `delete[]`; follow which pointer holds each heap block.
+
+```quiz
+[
+  {
+    "type": "numeric",
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int* p = new int{5};\n    int* q = p;\n    *q = 9;\n    cout << *p << endl;\n    delete p;\n    return 0;\n}",
+    "answer": 9,
+    "explain": "`q = p` copies the address, not the int, so both point at the one heap block. Writing 9 through `q` is visible through `p`. There is one `new`, so exactly one `delete`: deleting `q` as well would free the same block twice."
+  },
+  {
+    "type": "numeric",
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int* arr = new int[4];\n    for (int i = 0; i < 4; ++i)\n    {\n        arr[i] = i * i;\n    }\n    cout << arr[3] + arr[1] << endl;\n    delete[] arr;\n    return 0;\n}",
+    "answer": 10,
+    "explain": "The loop stores 0, 1, 4, 9. `arr[3] + arr[1]` is 9 + 1 = 10. Memory from `new int[4]` is returned with `delete[]`."
+  },
+  {
+    "type": "spotbug",
+    "q": "Click the line that leaks the block holding 1.",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int* p = new int{1};\n    cout << *p << endl;\n    p = new int{2};\n    cout << *p << endl;\n    delete p;\n    return 0;\n}",
+    "answer": 8,
+    "explain": "Line 8 re-points `p` at a new block while the block holding 1 is still allocated. Nothing points at it any more, so it can never be deleted: a leak. The `delete p` on line 10 frees only the block holding 2. Fix: `delete p;` before line 8."
+  },
+  {
+    "type": "spotbug",
+    "q": "This compiles, but it frees one block twice. Click the line that does the second free.",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int* a = new int{3522};\n    int* b = a;\n    cout << *b << endl;\n    delete a;\n    delete b;\n    return 0;\n}",
+    "answer": 10,
+    "explain": "`b = a` copies the address, so one `new` on line 6 made one block with two pointers to it. Line 9 frees it; line 10 frees the same address again, which is undefined behaviour. The tally is one `new`, so one `delete`."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "Write <code>int* makeSquares(int n)</code> that allocates an array of <code>n</code> ints with <code>new[]</code>, fills element <code>i</code> with <code>i * i</code> and returns it. <code>main</code> prints <code>0 1 4 9 16</code> and frees the array.",
+  "starter": "#include <iostream>\nusing namespace std;\n\n// makeSquares here\n\nint main()\n{\n    int* squares = makeSquares(5);\n    for (int i = 0; i < 5; ++i)\n    {\n        cout << squares[i] << ' ';\n    }\n    cout << endl;\n    delete[] squares;\n    return 0;\n}\n",
+  "expected": "0 1 4 9 16 \n",
+  "hints": [
+    "<code>int* arr = new int[n];</code>",
+    "The heap block outlives the function, so returning the pointer is safe; the caller owns the <code>delete[]</code>."
+  ],
+  "solution": "#include <iostream>\nusing namespace std;\n\nint* makeSquares(int n)\n{\n    int* arr = new int[n];\n    for (int i = 0; i < n; ++i)\n    {\n        arr[i] = i * i;\n    }\n    return arr;\n}\n\nint main()\n{\n    int* squares = makeSquares(5);\n    for (int i = 0; i < 5; ++i)\n    {\n        cout << squares[i] << ' ';\n    }\n    cout << endl;\n    delete[] squares;\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

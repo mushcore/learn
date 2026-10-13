@@ -181,6 +181,21 @@ Z
 
 `phyper(4, K, N-K, n)` is the cumulative $P(X \le 4)$ in one call.
 
+## Engineering students on a committee of 6
+
+A club has 30 members, 12 of them engineering students, and a committee of 6 is picked at random with nobody picked twice. X = the number of engineering students on the committee.
+
+```quiz
+[
+  {"q": "Name the distribution of X (one word).", "type": "text", "answer": ["hypergeometric", "hypergeometric distribution"], "explain": "Sampling without replacement from a finite population: N = 30, K = 12 successes, n = 6. The sample is 6/30 = 20 % of the club, far above 5 %, so the binomial is not a stand-in."},
+  {"q": "P(X = 3) = ? (4 decimals)", "type": "numeric", "answer": 0.3023, "tolerance": 6e-05, "explain": "C(12, 3) · C(18, 3) / C(30, 6) = 220 × 816 / 593 775 = 179 520 / 593 775 = 0.3023."},
+  {"type": "fill", "q": "Complete the R call for P(X = 3).", "code": "dhyper(3, ___, ___, 6)", "answer": ["12", "18"], "explain": "dhyper(x, K, N − K, n): the successes K = 12, then the failures N − K = 30 − 12 = 18, then the sample size. It returns 0.3023367."},
+  {"q": "μ = ? (2 decimals)", "type": "numeric", "answer": 2.4, "tolerance": 0.006, "explain": "μ = n · K/N = 6 × 12/30 = 2.40 engineering students."},
+  {"q": "σ = ? (2 decimals)", "type": "numeric", "answer": 1.09, "tolerance": 0.006, "explain": "σ² = n · (K/N) · ((N − K)/N) · ((N − n)/(N − 1)) = 6 × 0.4 × 0.6 × 24/29 = 1.1917; σ = 1.0917 ≈ 1.09. Without the correction factor 24/29 the binomial σ would be 1.20."},
+  {"q": "P(at most 1 engineering student) = ? (4 decimals)", "type": "numeric", "answer": 0.2044, "tolerance": 6e-05, "explain": "P(0) + P(1) = C(18, 6)/C(30, 6) + C(12, 1) C(18, 5)/C(30, 6) = 18 564/593 775 + 12 × 8568/593 775 = 0.0313 + 0.1732 = 0.2044. In R, phyper(1, 12, 18, 6)."}
+]
+```
+
 ```quiz
 [
   {

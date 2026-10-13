@@ -120,6 +120,63 @@ In the frequency domain:
 | **periodic** (rare in data communications) | infinite | **discrete** |
 | **nonperiodic** (the usual case) | infinite | **continuous** |
 
+## Work six more bit rates, bit lengths and levels
+
+Bit duration is one over the bit rate; bit length is speed times bit duration; bits per level round up.
+
+```quiz
+[
+  {
+    "q": "A signal has a bit rate of 100 kbps and travels at $2.5 \\times 10^{8}$ m/s. What is its bit length in metres?",
+    "type": "numeric",
+    "answer": 2500,
+    "tolerance": 1,
+    "unit": "m",
+    "explain": "Bit duration $= 1/(100 \\times 10^{3}) = 10^{-5}$ s $= 10$ μs. Bit length $= 2.5 \\times 10^{8} \\times 10^{-5} = 2.5 \\times 10^{3} = 2500$ m."
+  },
+  {
+    "q": "A 1 Gbps signal travels through a fibre at $2 \\times 10^{8}$ m/s. What is its bit length in metres?",
+    "type": "numeric",
+    "answer": 0.2,
+    "tolerance": 0.001,
+    "unit": "m",
+    "explain": "Bit duration $= 1/10^{9} = 1$ ns. Bit length $= 2 \\times 10^{8} \\times 10^{-9} = 0.2$ m: one bit occupies 20 cm of fibre."
+  },
+  {
+    "q": "A digital signal has 40 levels. How many bits are needed per level?",
+    "type": "numeric",
+    "answer": 6,
+    "tolerance": 0.01,
+    "unit": "bits",
+    "explain": "$\\log_{2} 40 = \\log 40 / \\log 2 = 1.6021 / 0.3010 = 5.32$, not an integer, so round up: ⌈5.32⌉ = 6 bits. Five bits name only $2^{5} = 32$ levels; 6 bits name 64, leaving 24 patterns unused."
+  },
+  {
+    "q": "A signal uses 8 levels and sends 500 signal elements per second. What is its bit rate, in bps?",
+    "type": "numeric",
+    "answer": 1500,
+    "tolerance": 1,
+    "unit": "bps",
+    "explain": "Each element carries $\\log_{2} 8 = 3$ bits, so the bit rate is $500 \\times 3 = 1500$ bps."
+  },
+  {
+    "q": "Documents are downloaded at 30 pages per second, 40 lines per page, 60 characters per line, 8 bits per character. What bit rate is required, in bps?",
+    "type": "numeric",
+    "answer": 576000,
+    "tolerance": 50,
+    "unit": "bps",
+    "explain": "$30 \\times 40 \\times 60 \\times 8 = 576\\,000$ bps $= 576$ kbps. Pages/s × lines/page × characters/line × bits/character leaves bits/s."
+  },
+  {
+    "q": "A device sends at 9600 bps. How many seconds does it take to send 5000 characters of 8 bits each (2 decimals)?",
+    "type": "numeric",
+    "answer": 4.17,
+    "tolerance": 0.01,
+    "unit": "s",
+    "explain": "$5000 \\times 8 = 40\\,000$ bits; $40\\,000\\ \\text{b} \\times \\frac{1\\ \\text{s}}{9600\\ \\text{b}} = 4.17$ s."
+  }
+]
+```
+
 ```quiz
 [
   {

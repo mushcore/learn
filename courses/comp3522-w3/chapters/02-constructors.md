@@ -170,6 +170,66 @@ Members can carry a default in the class itself, `double r = 0.0, i = 0.0;`, so 
 Containers of a type without one (lists, trees, matrices of Circles) are cumbersome; a default constructor eliminates uninitialized variables of the type; a variable declared in an outer scope for algorithmic reasons must already hold a meaningful value. Ask: does this type have a natural default state? Circle chose radius 10, Complex chose 0 + 0i.
 :::
 
+## Predict four new constructor calls
+
+Default arguments, the most vexing parse, initialization order and `const` getters on new classes.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Timer\n{\n    int minutes, seconds;\npublic:\n    Timer(int minutes = 0, int seconds = 30) : minutes(minutes), seconds(seconds) { }\n    int total() const { return minutes * 60 + seconds; }\n};\n\nint main()\n{\n    Timer a;\n    Timer b(2);\n    Timer c(1, 5);\n    cout << a.total() << ' ' << b.total() << ' ' << c.total() << endl;\n    return 0;\n}",
+    "options": [
+      "`30 150 65`",
+      "`0 120 65`",
+      "`30 2 65`",
+      "`30 150 6`"
+    ],
+    "answer": 0,
+    "explain": "Default arguments fill from the right. `a` uses both defaults: 0 × 60 + 30 = 30. `b(2)` sets minutes only: 120 + 30 = 150. `c(1, 5)`: 60 + 5 = 65. One constructor serves all three, so it is also the default constructor. Output: `30 150 65`."
+  },
+  {
+    "type": "spotbug",
+    "q": "g++ warns `empty parentheses were disambiguated as a function declaration`, then errors further down. Click the line that declares a function instead of an object.",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Widget\n{\npublic:\n    Widget() { }\n    void show() { cout << \"widget\" << endl; }\n};\n\nint main()\n{\n    Widget w();\n    w.show();\n    return 0;\n}",
+    "answer": 13,
+    "explain": "Line 13 is the most vexing parse: `Widget w();` declares a function named `w` that returns a `Widget`. Line 14 then fails because `w` is not an object (`request for member 'show' in 'w', which is of non-class type`). Write `Widget w;` or `Widget w{};`."
+  },
+  {
+    "q": "What does this print? (g++ warns with `-Wreorder`.)",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Tag\n{\npublic:\n    Tag(char c) { cout << c; }\n};\n\nclass Pair\n{\n    Tag second;\n    Tag first;\npublic:\n    Pair() : first('F'), second('S') { cout << endl; }\n};\n\nint main()\n{\n    Pair p;\n    return 0;\n}",
+    "options": [
+      "`SF`",
+      "`FS`",
+      "`F`",
+      "`S`"
+    ],
+    "answer": 0,
+    "explain": "Members are initialized in the order they are **declared** in the class, not the order of the initialization list. `second` is declared first, so `Tag('S')` runs, then `first` with `'F'`. Output: `SF`."
+  },
+  {
+    "type": "spotbug",
+    "q": "Click the line that breaks the promise made by `const`.",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Counter\n{\n    int count = 0;\npublic:\n    void add() { ++count; }\n    int get() const\n    {\n        ++count;\n        return count;\n    }\n};\n\nint main()\n{\n    Counter c;\n    c.add();\n    cout << c.get() << endl;\n    return 0;\n}",
+    "answer": 11,
+    "explain": "`int get() const` promises not to change any member variable. Line 11 increments `count` inside it, so g++ reports `increment of member 'Counter::count' in read-only object`. `add()` is not const, so its `++count` on line 8 is fine."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "Write <code>class Account</code> with private <code>string owner;</code> and <code>double balance;</code>, one constructor <code>Account(string owner, double balance = 0)</code> that uses a member initialization list, and const getters <code>getOwner()</code> and <code>getBalance()</code>. <code>main</code> prints <code>Ana 0</code> and <code>Bo 25.5</code>.",
+  "starter": "#include <iostream>\n#include <string>\nusing namespace std;\n\n// class Account here\n\nint main()\n{\n    Account a{\"Ana\"};\n    Account b{\"Bo\", 25.5};\n    cout << a.getOwner() << ' ' << a.getBalance() << endl;\n    cout << b.getOwner() << ' ' << b.getBalance() << endl;\n    return 0;\n}\n",
+  "expected": "Ana 0\nBo 25.5\n",
+  "hints": [
+    "The same names are allowed: <code>: owner(owner), balance(balance)</code>",
+    "<code>double getBalance() const { return balance; }</code>"
+  ],
+  "solution": "#include <iostream>\n#include <string>\nusing namespace std;\n\nclass Account\n{\n    string owner;\n    double balance;\npublic:\n    Account(string owner, double balance = 0) : owner(owner), balance(balance) { }\n    string getOwner() const { return owner; }\n    double getBalance() const { return balance; }\n};\n\nint main()\n{\n    Account a{\"Ana\"};\n    Account b{\"Bo\", 25.5};\n    cout << a.getOwner() << ' ' << a.getBalance() << endl;\n    cout << b.getOwner() << ' ' << b.getBalance() << endl;\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

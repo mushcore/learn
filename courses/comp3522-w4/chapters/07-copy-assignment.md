@@ -120,6 +120,53 @@ A class that owns a resource through a pointer needs all three written by hand, 
 
 Think of assignment as replacing the object's old state with a copy of some other object's state.
 
+## Count the copies in a `Buffer` and write `Playlist`'s copy-and-swap
+
+A buffer whose copy constructor and destructor announce themselves, including one assignment of an object to itself.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <utility>\nusing namespace std;\n\nclass Buffer {\n    size_t n;\n    int* data;\npublic:\n    Buffer(size_t size) : n(size), data(new int[size]()) {}\n    Buffer(const Buffer& other) : n(other.n), data(new int[other.n]) {\n        for (size_t i = 0; i < n; ++i) data[i] = other.data[i];\n        cout << \"copy\" << n << \" \";\n    }\n    ~Buffer() { cout << \"free\" << n << \" \"; delete[] data; }\n    void mySwap(Buffer& a, Buffer& b) {\n        using std::swap;\n        swap(a.n, b.n);\n        swap(a.data, b.data);\n    }\n    Buffer& operator=(Buffer other) {\n        mySwap(*this, other);\n        return *this;\n    }\n};\n\nint main() {\n    Buffer a(5), b(2);\n    b = a;\n    a = a;\n    cout << \"| \";\n    return 0;\n}",
+    "options": [
+      "`copy5 free2 copy5 free5 | free5 free5`",
+      "`copy5 free5 | free5 free5`",
+      "`copy5 free2 | free5 free5`",
+      "`copy2 free5 copy5 free5 | free5 free2`"
+    ],
+    "answer": 0,
+    "explain": "`b = a`: the by-value parameter `other` is copy constructed from a (`copy5`), mySwap gives b the 5-element copy and `other` b's old 2-element array, and `other` is destroyed as the call ends (`free2`). `a = a`: copy-and-swap does not check for self-assignment, so it copies a again (`copy5`), swaps a with an identical copy, and frees the swapped-out old array (`free5`). Then `| ` and main's two objects are destroyed, b then a, each holding 5: `free5 free5`."
+  },
+  {
+    "q": "What number does this print?",
+    "type": "numeric",
+    "code": "#include <iostream>\n#include <utility>\nusing namespace std;\n\nclass Buffer {\n    size_t n;\n    int* data;\npublic:\n    static int copies;\n    Buffer(size_t size) : n(size), data(new int[size]()) {}\n    Buffer(const Buffer& other) : n(other.n), data(new int[other.n]) {\n        for (size_t i = 0; i < n; ++i) data[i] = other.data[i];\n        ++copies;\n    }\n    ~Buffer() { delete[] data; }\n    void mySwap(Buffer& a, Buffer& b) { std::swap(a.n, b.n); std::swap(a.data, b.data); }\n    Buffer& operator=(Buffer other) { mySwap(*this, other); return *this; }\n};\nint Buffer::copies = 0;\n\nint main() {\n    Buffer x(3), y(4);\n    Buffer z = x;\n    y = z;\n    z = y;\n    x = x;\n    cout << Buffer::copies << endl;\n    return 0;\n}",
+    "answer": 4,
+    "tolerance": 0,
+    "explain": "Count every copy constructor call. `Buffer z = x;` creates a new object: 1. `y = z;`, `z = y;` and `x = x;` are assignments, and each copy-and-swap assignment copy constructs its by-value parameter: 3 more. 1 + 3 = 4. (`Buffer x(3), y(4);` use the size constructor, not the copy constructor.)"
+  },
+  {
+    "q": "This compiles, but `b = a;` never returns. Click the line responsible.",
+    "type": "spotbug",
+    "code": "#include <utility>\n#include <cstddef>\n\nclass Grid {\n    std::size_t n;\n    int* cells;\npublic:\n    Grid(std::size_t size) : n(size), cells(new int[size]()) {}\n    Grid(const Grid& other) : n(other.n), cells(new int[other.n]) {\n        for (std::size_t i = 0; i < n; ++i) cells[i] = other.cells[i];\n    }\n    ~Grid() { delete[] cells; }\n    Grid& operator=(Grid other) {\n        std::swap(*this, other);\n        return *this;\n    }\n};\n\nint main() {\n    Grid a(3), b(5);\n    b = a;\n    return 0;\n}",
+    "answer": [
+      14
+    ],
+    "explain": "`std::swap(*this, other)` swaps whole Grid objects, and std::swap is written with the copy constructor and the copy assignment operator: it calls `Grid::operator=`, which calls `std::swap` again, without end until the stack overflows. Swap the members one by one: `std::swap(n, other.n); std::swap(cells, other.cells);`."
+  },
+  {
+    "q": "Copy-and-swap handles `a = a;` correctly without an `if (this != &other)` test.",
+    "type": "tf",
+    "answer": true,
+    "explain": "In the Buffer program `a = a` printed `copy5 free5`: the parameter is a fresh copy of a, the swap gives a that copy, and the destructor frees a's old array. Nothing is freed before it has been copied, so self-assignment is safe; it just does a copy it did not need."
+  }
+]
+```
+
+```challenge
+{"prompt": "Playlist owns a <code>string*</code> array. Its copy constructor and destructor are written. Add a <code>mySwap</code> that swaps both members with <code>std::swap</code>, and the canonical copy-and-swap <code>operator=</code>. After <code>b = a;</code>, renaming a song in <code>a</code> must not change <code>b</code>.", "starter": "#include <iostream>\n#include <string>\n#include <utility>\nusing namespace std;\n\nclass Playlist {\n    size_t count;\n    string* songs;\npublic:\n    Playlist(size_t n, const string& genre) : count(n), songs(new string[n]) {\n        for (size_t i = 0; i < n; ++i) songs[i] = genre + to_string(i + 1);\n    }\n    Playlist(const Playlist& other) : count(other.count), songs(new string[other.count]) {\n        for (size_t i = 0; i < count; ++i) songs[i] = other.songs[i];\n    }\n    ~Playlist() { delete[] songs; }\n    void rename(size_t i, const string& s) { songs[i] = s; }\n    void print() const {\n        cout << count << \":\";\n        for (size_t i = 0; i < count; ++i) cout << \" \" << songs[i];\n        cout << endl;\n    }\n    // write mySwap and the copy-and-swap operator= here\n};\n\nint main() {\n    Playlist a(3, \"rock\"), b(1, \"jazz\");\n    b = a;\n    a.rename(0, \"blues\");\n    a.print();\n    b.print();\n    Playlist c(2, \"pop\");\n    c = c;\n    c.print();\n    return 0;\n}\n", "expected": "3: blues rock2 rock3\n3: rock1 rock2 rock3\n2: pop1 pop2", "hints": ["<code>void mySwap(Playlist&amp; first, Playlist&amp; second) { using std::swap; swap(first.count, second.count); swap(first.songs, second.songs); }</code>", "<code>Playlist&amp; operator=(Playlist other)</code>: the parameter is by value.", "Swap the members, never the whole object."], "solution": "#include <iostream>\n#include <string>\n#include <utility>\nusing namespace std;\n\nclass Playlist {\n    size_t count;\n    string* songs;\npublic:\n    Playlist(size_t n, const string& genre) : count(n), songs(new string[n]) {\n        for (size_t i = 0; i < n; ++i) songs[i] = genre + to_string(i + 1);\n    }\n    Playlist(const Playlist& other) : count(other.count), songs(new string[other.count]) {\n        for (size_t i = 0; i < count; ++i) songs[i] = other.songs[i];\n    }\n    ~Playlist() { delete[] songs; }\n    void rename(size_t i, const string& s) { songs[i] = s; }\n    void print() const {\n        cout << count << \":\";\n        for (size_t i = 0; i < count; ++i) cout << \" \" << songs[i];\n        cout << endl;\n    }\n    void mySwap(Playlist& first, Playlist& second) {\n        using std::swap;\n        swap(first.count, second.count);\n        swap(first.songs, second.songs);\n    }\n    Playlist& operator=(Playlist other) {\n        mySwap(*this, other);\n        return *this;\n    }\n};\n\nint main() {\n    Playlist a(3, \"rock\"), b(1, \"jazz\");\n    b = a;\n    a.rename(0, \"blues\");\n    a.print();\n    b.print();\n    Playlist c(2, \"pop\");\n    c = c;\n    c.print();\n    return 0;\n}\n"}
+```
 ```quiz
 [
   {

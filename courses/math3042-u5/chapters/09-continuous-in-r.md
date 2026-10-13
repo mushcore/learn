@@ -145,6 +145,21 @@ mean(Y < 120)                      # near 0.9088
 
 Without `set.seed` each run prints different numbers; with the seed every run repeats the same draws. Either way the results sit within a few hundredths of the formula values. `mean(X <= 4)` is Lab 4's $k/m$ estimate written in one call.
 
+## Three new problems in R
+
+A part's machining time is uniform on [5, 25] minutes, exam scores are N(500, 100²), and the wait for a taxi is exponential with mean 6 minutes.
+
+```quiz
+[
+  {"type": "fill", "q": "Complete the call for P(machining time ≤ 12 minutes).", "code": "punif(12, ___, ___)", "answer": ["5", "25"], "explain": "punif(x, min, max) with the interval [5, 25]: (12 − 5)/(25 − 5) = 7/20, so it prints 0.35."},
+  {"type": "fill", "q": "Complete the call for the 90th percentile of exam scores.", "code": "qnorm(___, 500, 100)", "answer": ["0.9", "0.90", ".9", ".90"], "explain": "qnorm takes the probability first, as a proportion: qnorm(0.90, 500, 100) = 628.1552. By the table, z = 1.28 gives 500 + 128 = 628."},
+  {"q": "Write the R line for P(score > 650), no spaces.", "type": "text", "answer": ["1-pnorm(650,500,100)", "pnorm(650,500,100,lower.tail=FALSE)", "pnorm(650,500,100,lower.tail=F)", "pnorm(650,mean=500,sd=100,lower.tail=FALSE)", "1-pnorm(650,mean=500,sd=100)"], "explain": "pnorm is the left tail P(X ≤ 650), so the right tail is 1 minus it: 1 - pnorm(650, 500, 100)."},
+  {"q": "What does `1 - pnorm(650, 500, 100)` print, to 4 decimals?", "type": "numeric", "answer": 0.0668, "tolerance": 6e-05, "explain": "Z = (650 − 500)/100 = 1.50 exactly, so R and the table agree: 1 − 0.9332 = 0.0668 (R prints 0.0668072)."},
+  {"type": "shade", "q": "Shade P(score > 650) on the exam-score curve. What percentage is it?", "mu": 500, "sigma": 100, "answer": 6.68, "tolerance": 1, "region": "above", "lo": 1.5, "explain": "650 is μ + 1.5σ; the right tail beyond it is 6.68 %."},
+  {"type": "fill", "q": "Complete the call for P(taxi wait ≤ 3 minutes).", "code": "pexp(3, rate = ___)", "answer": ["1/6", "0.1667", ".1667", "0.16667"], "explain": "rate = 1/β = 1/6 per minute: pexp(3, rate = 1/6) = 1 − e^(−0.5) = 0.3934693. pexp(3, 6) would mean an average wait of 10 seconds."}
+]
+```
+
 ```quiz
 [
   {

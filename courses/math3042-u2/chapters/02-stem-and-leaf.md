@@ -163,6 +163,21 @@ The instructor crossed the chart out and wrote **"Not recommended"**, for two re
 
 A histogram fixes it by dividing the whole range into classes of equal width, so every value has a place on the axis.
 
+## A stem-and-leaf plot of commute times
+
+Eighteen commute times in minutes: 23, 41, 35, 18, 27, 44, 31, 29, 36, 52, 25, 38, 33, 47, 29, 34, 22, 39.
+
+```quiz
+[
+  {"q": "Write the line for stem 3, leaves sorted (format `3 | 1 2 3`).", "type": "text", "answer": ["3 | 1 3 4 5 6 8 9", "3|1 3 4 5 6 8 9", "3 | 1345689", "3|1345689", "3 |1 3 4 5 6 8 9", "3| 1 3 4 5 6 8 9"], "explain": "The 30s are 35, 31, 36, 38, 33, 34, 39: leaves 5, 1, 6, 8, 3, 4, 9, sorted to 1 3 4 5 6 8 9. The whole plot: 1 | 8; 2 | 2 3 5 7 9 9; 3 | 1 3 4 5 6 8 9; 4 | 1 4 7; 5 | 2"},
+  {"q": "How many leaves are on stem 2?", "type": "numeric", "answer": 6, "tolerance": 0, "explain": "23, 27, 29, 25, 29, 22: six values in the 20s, so `2 | 2 3 5 7 9 9`."},
+  {"q": "What is the mode of the commute times?", "type": "numeric", "answer": 29, "tolerance": 0, "unit": "min", "explain": "The only repeated leaf on a line is the 9 twice on stem 2: 29 appears twice, every other value once."},
+  {"q": "R prints \"The decimal point is 1 digit(s) to the left of the |\". What value is `37 | 4`?", "type": "numeric", "answer": 3.74, "tolerance": 0.0001, "explain": "Join stem and leaf (374) and put the decimal point one digit left of the bar: 3.74."},
+  {"q": "A value of 6.384 goes into a plot whose leaves are hundredths. Write its stem and leaf (format `63 | 8`).", "type": "text", "answer": ["63 | 8", "63|8", "63 |8", "63| 8"], "explain": "Round first: 6.384 → 6.38. The last digit, 8, is the leaf; everything before it, 63, is the stem."},
+  {"q": "R prints \"The decimal point is 2 digit(s) to the right of the |\". What value is `12 | 7`?", "type": "numeric", "answer": 1270, "tolerance": 0, "explain": "Join to 127, then the decimal point sits two digits right of the bar: 12|7 → 1270."}
+]
+```
+
 ```quiz
 [
   {"q": "In a stem-and-leaf plot of heights in cm, the value 163 is split as...", "options": ["stem 16, leaf 3", "stem 1, leaf 63", "stem 163, leaf 0", "stem 3, leaf 16"], "answer": 0, "explain": "The leaf is the last digit (3); the stem is everything before it (16)."},

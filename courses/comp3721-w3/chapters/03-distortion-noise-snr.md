@@ -85,6 +85,54 @@ snr-noise
 { "signal": 10, "signalUnit": "mW", "noise": 1, "noiseUnit": "μW" }
 ```
 
+## Find the SNR of four more links
+
+Bring both powers to one prefix before dividing.
+
+```quiz
+[
+  {
+    "q": "The average signal power is 40 mW and the average noise power is 50 μW. What is the SNR?",
+    "type": "numeric",
+    "answer": 800,
+    "tolerance": 0.5,
+    "explain": "Convert to one prefix: $40\\ \\text{mW} = 40000\\ \\text{μW}$. $\\text{SNR} = 40000 / 50 = 800$, with no unit."
+  },
+  {
+    "q": "Same link (SNR = 800). What is $\\text{SNR}_{dB}$ (2 decimals)?",
+    "type": "numeric",
+    "answer": 29.03,
+    "tolerance": 0.006,
+    "unit": "dB",
+    "explain": "$\\text{SNR}_{dB} = 10 \\log_{10} 800 = 10(2.9031) = 29.03$ dB."
+  },
+  {
+    "q": "A 3 W signal reaches a receiver that also picks up the noise of 4 devices, each adding 0.25 mW of noise. What is $\\text{SNR}_{dB}$ (2 decimals)?",
+    "type": "numeric",
+    "answer": 34.77,
+    "tolerance": 0.006,
+    "unit": "dB",
+    "explain": "Noise powers add: $4 \\times 0.25 = 1$ mW. Signal: $3\\ \\text{W} = 3000\\ \\text{mW}$. $\\text{SNR} = 3000 / 1 = 3000$ and $\\text{SNR}_{dB} = 10 \\log_{10} 3000 = 10(3.4771) = 34.77$ dB."
+  },
+  {
+    "q": "A link has an $\\text{SNR}_{dB}$ of 25 dB and an average noise power of 2 μW. What is the average signal power, in mW (3 decimals)?",
+    "type": "numeric",
+    "answer": 0.632,
+    "tolerance": 0.001,
+    "unit": "mW",
+    "explain": "Ratio first: $\\text{SNR} = 10^{25/10} = 10^{2.5} = 316.23$. Signal $= \\text{SNR} \\times \\text{noise} = 316.23 \\times 2\\ \\text{μW} = 632.5\\ \\text{μW} = 0.632$ mW."
+  },
+  {
+    "q": "The signal voltage is 4 V and the noise voltage is 0.05 V. What is $\\text{SNR}_{dB}$ (2 decimals)?",
+    "type": "numeric",
+    "answer": 38.06,
+    "tolerance": 0.006,
+    "unit": "dB",
+    "explain": "Voltage ratio $4 / 0.05 = 80$. Power goes with the square of the voltage, so $\\text{SNR} = 80^{2} = 6400$ and $10 \\log_{10} 6400 = 38.06$ dB. The voltage form gives it in one step: $20 \\log_{10} 80 = 20(1.9031) = 38.06$ dB."
+  }
+]
+```
+
 ```quiz
 [
   {

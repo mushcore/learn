@@ -174,6 +174,54 @@ int main() {
 
 g++ rejects `*it = 0;` with "assignment of read-only location". The const applies to the **element**, not to the iterator: `++it;` still moves it.
 
+## Alias an array, a reference and a map's iterator
+
+Three home-made typedefs, then the containers' own: `reverse_iterator`, `size_type` and `const_iterator` on new data.
+
+```quiz
+[
+  {
+    "q": "Type the line this prints.",
+    "type": "text",
+    "code": "#include <iostream>\nusing namespace std;\n\ntypedef double real;\ntypedef int counts[4];\ntypedef int& int_ref;\n\nint main() {\n    counts c = {3, 1, 4, 1};\n    int_ref r = c[2];\n    r *= 10;\n    real avg = (c[0] + c[1] + c[2] + c[3]) / 4.0;\n    cout << c[2] << \" \" << avg << endl;\n    return 0;\n}",
+    "answer": [
+      "40 11.25"
+    ],
+    "explain": "`counts` is an alias for 'array of 4 int' and `int_ref` for `int&`. r is bound to c[2], so `r *= 10` makes c[2] 40. The sum is 3 + 1 + 40 + 1 = 45, and 45 / 4.0 = 11.25, stored in a `real`, which is a double."
+  },
+  {
+    "q": "Type the line this prints.",
+    "type": "text",
+    "code": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    vector<char> v = {'s', 't', 'o', 'p'};\n    for (vector<char>::reverse_iterator r = v.rbegin(); r != v.rend(); ++r)\n        cout << *r;\n    vector<char>::iterator first = v.begin();\n    *first = 't';\n    vector<char>::const_reverse_iterator last = v.rbegin();\n    cout << \" \" << *last << v.front() << endl;\n    return 0;\n}",
+    "answer": [
+      "pots pt"
+    ],
+    "explain": "rbegin() starts at the last element and ++ moves toward the front: p, o, t, s. Then a plain iterator writes 't' over the front. A const_reverse_iterator from rbegin() still points at the last element, 'p', and front() is now 't': ` pt`."
+  },
+  {
+    "q": "Complete the counter's type so the comparison with `words.size()` is unsigned on both sides.",
+    "type": "fill",
+    "code": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nint main() {\n    vector<string> words = {\"to\", \"be\", \"or\"};\n    for (vector<string>::___ i = 0; i < words.size(); ++i)\n        cout << i << words[i] << \" \";\n    cout << endl;\n    return 0;\n}",
+    "answer": [
+      "size_type"
+    ],
+    "explain": "`vector<string>::size_type` is the unsigned type that size() returns, so `i < words.size()` compares like with like and g++ gives no -Wsign-compare warning."
+  },
+  {
+    "q": "Click the line the compiler rejects.",
+    "type": "spotbug",
+    "code": "#include <iostream>\n#include <list>\nusing namespace std;\n\nint main() {\n    list<int> nums = {3, 6, 9};\n    list<int>::const_iterator it = nums.begin();\n    ++it;\n    *it = 60;\n    cout << *it << endl;\n    return 0;\n}",
+    "answer": [
+      9
+    ],
+    "explain": "A const_iterator makes the element read-only: `*it = 60;` is 'assignment of read-only location'. `++it;` on the line before is fine, because the iterator itself is not const."
+  }
+]
+```
+
+```challenge
+{"prompt": "Write the two typedefs, <code>Inventory</code> for <code>map&lt;string, int&gt;</code> and <code>InvIter</code> for its <code>const_iterator</code>, then finish <code>total</code> with an <code>InvIter</code> loop that adds every value.", "starter": "#include <iostream>\n#include <map>\n#include <string>\nusing namespace std;\n\n// 1. typedef map<string, int> as Inventory\n// 2. typedef Inventory's const_iterator as InvIter\n\nint total(const Inventory& inv) {\n    int sum = 0;\n    // 3. loop from inv.begin() to inv.end() with an InvIter and add each value\n    return sum;\n}\n\nint main() {\n    Inventory shelf = {{\"bolts\", 40}, {\"nuts\", 25}, {\"washers\", 12}};\n    cout << total(shelf) << endl;\n    InvIter first = shelf.begin();\n    cout << first->first << endl;\n    return 0;\n}\n", "expected": "77\nbolts", "hints": ["<code>typedef map&lt;string, int&gt; Inventory;</code>", "<code>typedef Inventory::const_iterator InvIter;</code> — total takes a const reference, so a plain iterator would not bind.", "<code>sum += it-&gt;second;</code>"], "solution": "#include <iostream>\n#include <map>\n#include <string>\nusing namespace std;\n\ntypedef map<string, int> Inventory;\ntypedef Inventory::const_iterator InvIter;\n\nint total(const Inventory& inv) {\n    int sum = 0;\n    for (InvIter it = inv.begin(); it != inv.end(); ++it) {\n        sum += it->second;\n    }\n    return sum;\n}\n\nint main() {\n    Inventory shelf = {{\"bolts\", 40}, {\"nuts\", 25}, {\"washers\", 12}};\n    cout << total(shelf) << endl;\n    InvIter first = shelf.begin();\n    cout << first->first << endl;\n    return 0;\n}\n"}
+```
 ```quiz
 [
   {

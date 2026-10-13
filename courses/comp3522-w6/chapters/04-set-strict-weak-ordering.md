@@ -132,6 +132,62 @@ These are DateTester.cpp's three queues, worked in lesson 09. A `set` takes the 
 { "prompt": "Give <code>struct Student { string name; int grade; }</code> an <code>operator&lt;</code> that orders by <b>grade</b>, and by <b>name</b> when the grades tie. Insert Sam 85, Ali 92, Kim 85 and Sam 85 again into a <code>set&lt;Student&gt;</code>, print each as <code>grade name</code>, then <code>size N</code>.", "starter": "#include <iostream>\n#include <set>\n#include <string>\nusing namespace std;\n\nstruct Student {\n    string name;\n    int grade;\n};\n\n// bool operator<(const Student& lhs, const Student& rhs) { ... }\n\nint main() {\n    set<Student> roster;\n    roster.insert({\"Sam\", 85});\n    roster.insert({\"Ali\", 92});\n    roster.insert({\"Kim\", 85});\n    roster.insert({\"Sam\", 85});\n    for (const Student& s : roster) {\n        cout << s.grade << \" \" << s.name << endl;\n    }\n    cout << \"size \" << roster.size() << endl;\n    return 0;\n}\n", "expected": "85 Kim\n85 Sam\n92 Ali\nsize 3", "hints": ["Compare grades first: <code>if (lhs.grade != rhs.grade) return lhs.grade &lt; rhs.grade;</code>", "Only when the grades are equal fall through to <code>return lhs.name &lt; rhs.name;</code>. The second Sam 85 is equivalent to the first and is refused, so the size is 3."], "solution": "#include <iostream>\n#include <set>\n#include <string>\nusing namespace std;\n\nstruct Student {\n    string name;\n    int grade;\n};\n\nbool operator<(const Student& lhs, const Student& rhs) {\n    if (lhs.grade != rhs.grade) return lhs.grade < rhs.grade;\n    return lhs.name < rhs.name;\n}\n\nint main() {\n    set<Student> roster;\n    roster.insert({\"Sam\", 85});\n    roster.insert({\"Ali\", 92});\n    roster.insert({\"Kim\", 85});\n    roster.insert({\"Sam\", 85});\n    for (const Student& s : roster) {\n        cout << s.grade << \" \" << s.name << endl;\n    }\n    cout << \"size \" << roster.size() << endl;\n    return 0;\n}\n" }
 ```
 
+## Order words by length and numbers by remainder
+
+Two new orderings that make different elements equivalent, a multiset erased two ways, and four comparators to test against the three rules.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <set>\n#include <string>\nusing namespace std;\n\nstruct Word { string text; };\n\nbool operator<(const Word& lhs, const Word& rhs) {\n    return lhs.text.size() < rhs.text.size();      // shorter first\n}\n\nint main() {\n    set<Word> s;\n    for (string w : {\"pear\", \"fig\", \"plum\", \"kiwi\", \"banana\"})\n        s.insert({w});\n    for (const Word& w : s) cout << w.text << \" \";\n    cout << \"size \" << s.size() << endl;\n    return 0;\n}",
+    "options": [
+      "`fig pear banana size 3`",
+      "`fig kiwi pear plum banana size 5`",
+      "`fig plum banana size 3`",
+      "`banana fig kiwi pear plum size 5`"
+    ],
+    "answer": 0,
+    "explain": "The set orders by length only, so two words of the same length are equivalent (neither is less than the other) and the later one is refused. pear (4) goes in; fig (3) goes in; plum and kiwi (both 4) are equivalent to pear and refused; banana (6) goes in. Sorted shortest first: fig, pear, banana. Size 3."
+  },
+  {
+    "q": "Type the line this prints.",
+    "type": "text",
+    "code": "#include <iostream>\n#include <set>\nusing namespace std;\n\nint main() {\n    multiset<int> ms = {5, 1, 5, 3, 9, 5};\n    ms.erase(ms.find(5));\n    cout << ms.count(5) << \" |\";\n    ms.erase(5);\n    for (int x : ms) cout << \" \" << x;\n    cout << endl;\n    return 0;\n}",
+    "answer": [
+      "2 | 1 3 9"
+    ],
+    "explain": "The multiset holds 1 3 5 5 5 9. `erase(ms.find(5))` erases the one element the iterator points at: two 5s remain, count 2. `erase(5)` by key erases every 5: 1 3 9."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <set>\nusing namespace std;\n\nstruct ByRemainder {\n    bool operator()(int a, int b) const { return a % 3 < b % 3; }\n};\n\nint main() {\n    set<int, ByRemainder> s;\n    for (int x : {4, 7, 2, 9, 5})\n        s.insert(x);\n    for (int x : s) cout << x << \" \";\n    cout << endl;\n    return 0;\n}",
+    "options": [
+      "`9 4 2`",
+      "`2 4 5 7 9`",
+      "`4 7 2 9 5`",
+      "`9 7 5`"
+    ],
+    "answer": 0,
+    "explain": "The functor compares remainders mod 3, which is a valid strict weak ordering whose equivalent elements share a remainder. 4 (remainder 1) is kept, 7 (1) is refused, 2 (2) is kept, 9 (0) is kept, 5 (2) is refused. Sorted by remainder 0, 1, 2: 9 4 2."
+  },
+  {
+    "q": "Which of these comparisons on ints is a strict weak ordering?",
+    "options": [
+      "`a > b`",
+      "`a <= b`",
+      "`a != b`",
+      "`a % 2 <= b % 2`"
+    ],
+    "answer": 0,
+    "explain": "`a > b` is just descending order: never true for x with itself, never both ways, and transitive. `a <= b` fails irreflexivity (x <= x). `a != b` fails antisymmetry (1 != 2 and 2 != 1). `a % 2 <= b % 2` fails irreflexivity too (x with itself gives true). A brute-force check of the three rules over 1 to 4 agrees: only `a > b` passes."
+  }
+]
+```
+
+```challenge
+{"prompt": "Write the functor <code>CaseInsensitive</code>: its <code>operator()</code> compares two strings character by character after <code>tolower</code>, and when one is a prefix of the other the shorter comes first. Strings that differ only in case are then equivalent, so the set keeps the first spelling inserted.", "starter": "#include <cctype>\n#include <iostream>\n#include <set>\n#include <string>\nusing namespace std;\n\n// write the functor CaseInsensitive: operator() compares the two strings\n// character by character after tolower; a shorter prefix comes first\n\nint main() {\n    set<string, CaseInsensitive> fruit;\n    for (string f : {\"Apple\", \"apple\", \"Banana\", \"cherry\", \"BANANA\"})\n        fruit.insert(f);\n    for (const string& f : fruit) cout << f << \" \";\n    cout << \"size \" << fruit.size() << endl;\n    return 0;\n}\n", "expected": "Apple Banana cherry size 3", "hints": ["<code>struct CaseInsensitive { bool operator()(const string&amp; a, const string&amp; b) const { ... } };</code>", "Return at the first position where the lower-case characters differ; if none differs, return <code>a.size() &lt; b.size()</code>.", "Never return true for two equal strings: irreflexivity."], "solution": "#include <cctype>\n#include <iostream>\n#include <set>\n#include <string>\nusing namespace std;\n\nstruct CaseInsensitive {\n    bool operator()(const string& a, const string& b) const {\n        size_t n = a.size() < b.size() ? a.size() : b.size();\n        for (size_t i = 0; i < n; ++i) {\n            char x = tolower(a[i]), y = tolower(b[i]);\n            if (x != y) return x < y;\n        }\n        return a.size() < b.size();\n    }\n};\n\nint main() {\n    set<string, CaseInsensitive> fruit;\n    for (string f : {\"Apple\", \"apple\", \"Banana\", \"cherry\", \"BANANA\"})\n        fruit.insert(f);\n    for (const string& f : fruit) cout << f << \" \";\n    cout << \"size \" << fruit.size() << endl;\n    return 0;\n}\n"}
+```
 ```quiz
 [
   {

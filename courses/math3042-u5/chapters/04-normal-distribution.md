@@ -64,6 +64,21 @@ Slide wording: "It is challenging to compute areas from the pdf $f(x)$ since the
 
 Property 3 of the last lesson still holds, $P(a \le X \le b) = F(b) - F(a)$, but there is no formula for $F$. Its values were computed numerically once and printed as the Z table; R's `pnorm` computes the same numbers. The empirical rule is three entries of that table: the areas inside $\mu \pm \sigma$, $\mu \pm 2\sigma$ and $\mu \pm 3\sigma$ are 0.6827, 0.9545 and 0.9973, rounded in Unit 1 to 68 %, 95 % and 99.7 %.
 
+## Bolt lengths with μ = 50 mm and σ² = 6.25
+
+Bolt lengths are normal with μ = 50 mm and variance σ² = 6.25 mm², the way the p. 78 legend labels its curves.
+
+```quiz
+[
+  {"q": "σ = ? (mm)", "type": "numeric", "answer": 2.5, "tolerance": 0.006, "unit": "mm", "explain": "The legend-style label is the variance; σ = √6.25 = 2.5 mm."},
+  {"q": "The inflection point above the mean is at x = ? (mm)", "type": "numeric", "answer": 52.5, "tolerance": 0.006, "unit": "mm", "explain": "The inflection points sit one σ from the centre: 50 ± 2.5, so 47.5 mm and 52.5 mm."},
+  {"q": "Write the peak height f(50) = 1/(σ√(2π)) with the number in, no spaces, using `sqrt(...)`, `pi` and `*`.", "type": "text", "answer": ["1/(2.5*sqrt(2*pi))", "1/(2.5*sqrt(2pi))", "1/(sqrt(2*pi)*2.5)", "1/2.5/sqrt(2*pi)"], "explain": "At x = μ the exponent is 0 and e⁰ = 1, leaving 1/(σ√(2π)) = 1/(2.5 × 2.5066) = 0.1596."},
+  {"q": "Peak height f(50) = ? (4 decimals)", "type": "numeric", "answer": 0.1596, "tolerance": 6e-05, "explain": "1/(2.5√(2π)) = 1/6.2666 = 0.1596, lower than the σ = 1 peak 0.3989 because the wider curve must keep area 1."},
+  {"type": "shade", "q": "Shade the bolts longer than the upper inflection point, 52.5 mm. What percentage is it?", "mu": 50, "sigma": 2.5, "answer": 15.87, "tolerance": 1, "region": "above", "lo": 1, "explain": "52.5 is μ + σ. The band μ ± σ holds 68.27 %, leaving 31.73 % in two equal tails: 15.87 % above 52.5 mm."},
+  {"type": "fill", "q": "Complete the R line for the area between the two inflection points.", "code": "pnorm(52.5, 50, ___) - pnorm(47.5, 50, 2.5)", "answer": ["2.5"], "explain": "pnorm takes σ, not the variance: pnorm(52.5, 50, 2.5) − pnorm(47.5, 50, 2.5) = 0.6826895, the 68 % of the empirical rule. Typing 6.25 would make the curve far too wide."}
+]
+```
+
 ```quiz
 [
   {

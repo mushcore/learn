@@ -288,6 +288,29 @@ barplot(pct, col="lightblue", ylim=c(0,100),
 
 **December** has the greatest probability of precipitation given a warm day, 78.2% (390 of 499 warm December days); July's 5.7% is the lowest.
 
+## Wind segments against precipitation
+
+Suppose days are segmented by wind speed instead of temperature, and `tab4 <- table(Weather[c("Wind.Seg", "has.Precip")])` prints the table below.
+
+```text
+        has.Precip
+Wind.Seg FALSE TRUE
+  Breezy  1800 2000
+  Calm    2100 1500
+  Windy    900 1700
+```
+
+```quiz
+[
+  {"q": "From tab4, P(Precip > 0 | Windy) = ? (4 decimals)", "type": "numeric", "answer": 0.6538, "tolerance": 6e-05, "explain": "Condition on the Windy row: its wet cell over its row total, 1700/(900 + 1700) = 1700/2600 = 0.6538."},
+  {"type": "fill", "q": "Complete the R line for P(Precip > 0 | Windy).", "code": "tab4[\"Windy\",\"TRUE\"]/sum(tab4[___,])", "answer": ["\"Windy\"", "'Windy'"], "explain": "The denominator is the Windy row total, so the row index is the string \"Windy\" and the column index is left empty. tab4[ ,\"TRUE\"] would be the whole wet column instead."},
+  {"q": "P(Precip > 0) over all days = ? (4 decimals)", "type": "numeric", "answer": 0.52, "tolerance": 6e-05, "explain": "The wet column over the grand total: (2000 + 1500 + 1700)/10 000 = 5200/10 000 = 0.5200. In R, sum(tab4[ ,\"TRUE\"])/sum(tab4)."},
+  {"q": "Precipitation is independent of the wind segment in this table.", "type": "tf", "answer": false, "explain": "Independence needs P(Precip | Windy) = P(Precip). Here 0.6538 is well above 0.5200, so windy days are wetter: dependent."},
+  {"q": "P(Windy | Precip > 0) = ? (4 decimals)", "type": "numeric", "answer": 0.3269, "tolerance": 6e-05, "explain": "Bayes with P(Calm, Breezy, Windy) = 0.36, 0.38, 0.26 and P(Precip | segment) = 0.4167, 0.5263, 0.6538: 0.26 × 0.6538 / (0.36 × 0.4167 + 0.38 × 0.5263 + 0.26 × 0.6538) = 0.17/0.52 = 0.3269. The table check: 1700/5200 = 0.3269."},
+  {"type": "fill", "q": "Complete the segmenting line: Calm below 10 km/h, Breezy from 10 up to and including 25 km/h, Windy above 25.", "code": "Weather$Wind.Seg <- with(Weather, ifelse(Wind.kmh < 10, \"Calm\", ifelse(Wind.kmh ___ 25, \"Breezy\", \"Windy\")))", "answer": ["<="], "explain": "The inner ifelse only sees days with Wind.kmh ≥ 10; \"up to and including 25\" is <= 25, and everything left (above 25) falls to \"Windy\". Task 4's Mid segment used <= 0.4307 the same way."}
+]
+```
+
 ```quiz
 [
   {

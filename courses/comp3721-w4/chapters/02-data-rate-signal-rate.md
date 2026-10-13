@@ -77,6 +77,47 @@ signal-rate
 { "show": "signal", "N": 100, "unit": "kbps", "r": "1", "c": "1/2" }
 ```
 
+## Convert four more data rates and signal rates
+
+Use $S = c \times N \times \frac{1}{r}$ and convert kbps to bps before substituting.
+
+```quiz
+[
+  {
+    "q": "A scheme uses two signal elements per bit ($r = \\frac{1}{2}$). The data rate is 300 kbps and the worst case $c = 1$ applies. What is the signal rate, in kbaud?",
+    "type": "numeric",
+    "answer": 600,
+    "tolerance": 0.5,
+    "unit": "kbaud",
+    "explain": "$\\frac{1}{r} = 2$. $S = 1 \\times 300000 \\times 2 = 600000$ baud $= 600$ kbaud."
+  },
+  {
+    "q": "A scheme carries four data elements per three signal elements ($r = \\frac{4}{3}$). The data rate is 36 kbps and $c = \\frac{1}{2}$. What is the average signal rate, in kbaud?",
+    "type": "numeric",
+    "answer": 13.5,
+    "tolerance": 0.02,
+    "unit": "kbaud",
+    "explain": "$\\frac{1}{r} = \\frac{3}{4}$. $S = \\frac{1}{2} \\times 36000 \\times \\frac{3}{4} = 13500$ baud $= 13.5$ kbaud."
+  },
+  {
+    "q": "An NRZ signal ($r = 1$) has an average signal rate of 6000 baud with $c = \\frac{1}{2}$. What is the data rate, in bps?",
+    "type": "numeric",
+    "answer": 12000,
+    "tolerance": 5,
+    "unit": "bps",
+    "explain": "Solve for $N$: $N = \\frac{S \\times r}{c} = \\frac{6000 \\times 1}{1/2} = 12000$ bps."
+  },
+  {
+    "q": "A signal has a bit rate of 6000 bps and a baud rate of 2000 baud, with $c = 1$ and each signal element one signal level. How many levels does it need?",
+    "type": "numeric",
+    "answer": 8,
+    "tolerance": 0.01,
+    "unit": "levels",
+    "explain": "$r = \\frac{N}{S} = \\frac{6000}{2000} = 3$ bits per baud, and $r = \\log_{2} L$ gives $L = 2^{3} = 8$."
+  }
+]
+```
+
 ```quiz
 [
   {

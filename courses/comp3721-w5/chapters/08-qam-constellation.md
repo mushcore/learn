@@ -107,6 +107,61 @@ The slide nests 4-, 16-, 32- and 64-QAM on one grid:
 
 E05 exercise 4 uses $\log_2 n$ and the amplitude formula; it is worked in [E05 worked](#/comp3721-w5/e05-worked).
 
+## Read five new constellation points
+
+Amplitude is the distance from the origin, $\sqrt{I^2 + Q^2}$, and phase is the angle from the positive I axis.
+
+```quiz
+[
+  {
+    "q": "A constellation diagram has 64 points. How many bits does each signal element carry?",
+    "type": "numeric",
+    "answer": 6,
+    "tolerance": 0.01,
+    "unit": "bits",
+    "explain": "$\\log_{2} 64 = 6$ bits per signal element."
+  },
+  {
+    "q": "A 32-QAM signal runs at 2000 baud. What is its bit rate, in bps?",
+    "type": "numeric",
+    "answer": 10000,
+    "tolerance": 1,
+    "unit": "bps",
+    "explain": "$r = \\log_{2} 32 = 5$, so $N = S \\times r = 2000 \\times 5 = 10000$ bps."
+  },
+  {
+    "q": "A constellation point has $I = 5$ V and $Q = 12$ V. What is its amplitude, in V?",
+    "type": "numeric",
+    "answer": 13,
+    "tolerance": 0.01,
+    "unit": "V",
+    "explain": "$\\sqrt{5^2 + 12^2} = \\sqrt{25 + 144} = \\sqrt{169} = 13$ V."
+  },
+  {
+    "q": "A constellation point has an amplitude of 2.5 V and a quadrature component of 1.5 V. What is its in-phase component, in V?",
+    "type": "numeric",
+    "answer": 2,
+    "tolerance": 0.01,
+    "unit": "V",
+    "explain": "$2.5^2 = I^2 + 1.5^2$, so $I^2 = 6.25 - 2.25 = 4$ and $I = 2$ V."
+  },
+  {
+    "q": "In Example 6's 16-QAM grid, what is the phase of the dot at $I = A$, $Q = 3A$, in degrees?",
+    "type": "numeric",
+    "answer": 71.57,
+    "tolerance": 0.1,
+    "unit": "°",
+    "explain": "The dot is in the first quadrant: $\\varphi = \\tan^{-1}\\frac{3A}{A} = \\tan^{-1} 3 = 71.57°$. Its amplitude is $\\sqrt{A^2 + 9A^2} = \\sqrt{10}A \\approx 3.16A$."
+  },
+  {
+    "q": "Which 4-bit label does Example 6 give the dot at $I = A$, $Q = 3A$?",
+    "type": "text",
+    "answer": ["0001"],
+    "explain": "The row $Q = 3A$ reads 0010, 0011, 0001, 0000 from $I = -3A$ to $I = 3A$, so $I = A$ is **0001**."
+  }
+]
+```
+
 ```quiz
 [
   {

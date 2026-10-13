@@ -52,6 +52,81 @@ The **Application, Presentation, and Session** layers of OSI are **combined into
 "Transport" is layer 4 in **both** models; "Application" is layer 5 in TCP/IP but layer 7 in OSI. TCP/IP layer 5 is Application; OSI layer 5 is Session.
 :::
 
+## Place six jobs in their layers
+
+Each item describes a job; name the TCP/IP layer that does it unless the item asks for OSI.
+
+```quiz
+[
+  {
+    "q": "A mail server receives a segment and hands it to the mail program, not the web server running on the same machine. Which TCP/IP layer does that?",
+    "type": "text",
+    "answer": [
+      "transport",
+      "transport layer",
+      "the transport layer"
+    ],
+    "explain": "Picking the right program on a host is **process-to-process** delivery: the **transport** layer."
+  },
+  {
+    "q": "A datagram from a host in Vancouver has to reach a host in Paris across many networks. Which TCP/IP layer routes it?",
+    "type": "text",
+    "answer": [
+      "network",
+      "network layer",
+      "the network layer",
+      "ip",
+      "ip layer"
+    ],
+    "explain": "Routing datagrams from source to destination is **host-to-host** communication: the **network** (IP) layer."
+  },
+  {
+    "q": "A laptop sends a frame to the Wi-Fi access point one hop away. Which TCP/IP layer is responsible for that hop?",
+    "type": "text",
+    "answer": [
+      "data link",
+      "data-link",
+      "datalink",
+      "data link layer",
+      "data-link layer",
+      "link"
+    ],
+    "explain": "Data transfer between **neighbouring** network elements, one link, in a frame: the **data-link** layer."
+  },
+  {
+    "q": "A fibre transceiver turns the bits of a frame into pulses of light. Which TCP/IP layer is that?",
+    "type": "text",
+    "answer": [
+      "physical",
+      "physical layer",
+      "the physical layer"
+    ],
+    "explain": "Turning the bits of a frame into signals on the medium is the **physical** layer's job; its protocols are link dependent."
+  },
+  {
+    "q": "A video-conference program re-synchronizes the exchange after a dropped connection. Which OSI layer provides that service?",
+    "type": "text",
+    "answer": [
+      "session",
+      "session layer",
+      "the session layer"
+    ],
+    "explain": "Session management and synchronization of data exchange belong to the OSI **session** layer (L5)."
+  },
+  {
+    "q": "In the TCP/IP suite, that same re-synchronizing service lives in which layer?",
+    "options": [
+      "Application",
+      "Transport",
+      "Network",
+      "Data link"
+    ],
+    "answer": 0,
+    "explain": "OSI's application, presentation and session layers are combined into the TCP/IP **application** layer."
+  }
+]
+```
+
 ```quiz
 [
   {

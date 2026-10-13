@@ -97,6 +97,63 @@ vector-viz
 
 The slide asks you to (re-)familiarize yourself with the vector's members: `empty()`, `size()`, `capacity()`, `clear()`, `insert()`, `push_back()` and `pop_back()`, `front()` and `back()`.
 
+## Edit a new vector with iterators and watch value semantics copy a `Box`
+
+Inserts and erases at iterator positions on `{5, 10, 15, 20}`, a vector built from part of an array, and a struct pushed in twice.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    vector<int> v = {5, 10, 15, 20};\n    v.insert(v.begin() + 2, 99);\n    v.erase(v.begin());\n    v.insert(v.end(), 1);\n    v.pop_back();\n    for (int x : v) cout << x << \" \";\n    cout << \"| \" << v.size() << \" \" << v.front() << \" \" << v.back() << endl;\n    return 0;\n}",
+    "options": [
+      "`10 99 15 20 | 4 10 20`",
+      "`5 10 99 15 20 | 5 5 20`",
+      "`10 15 99 20 | 4 10 20`",
+      "`10 99 15 20 1 | 5 10 1`"
+    ],
+    "answer": 0,
+    "explain": "insert before index 2: 5 10 99 15 20. erase(begin()) removes the 5: 10 99 15 20. insert(end(), 1) appends: 10 99 15 20 1. pop_back removes the 1. Size 4, front 10, back 20."
+  },
+  {
+    "q": "Type the line this prints.",
+    "type": "text",
+    "code": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int a[] = {2, 4, 6, 8, 10, 12};\n    vector<int> v(a + 1, a + 4);\n    for (int x : v) cout << x << \" \";\n    cout << v.size() << endl;\n    return 0;\n}",
+    "answer": [
+      "4 6 8 3"
+    ],
+    "explain": "The constructor copies the half-open range [a + 1, a + 4): a[1], a[2], a[3] = 4, 6, 8, and a + 4 (the 10) is excluded. Three elements."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nstruct Box { int n; };\n\nint main() {\n    vector<Box> v;\n    Box b{1};\n    v.push_back(b);\n    b.n = 2;\n    v.push_back(b);\n    v[0].n += 10;\n    cout << b.n << \" \" << v[0].n << \" \" << v[1].n << endl;\n    return 0;\n}",
+    "options": [
+      "`2 11 2`",
+      "`2 12 2`",
+      "`2 11 12`",
+      "`12 12 12`"
+    ],
+    "answer": 0,
+    "explain": "Value semantics: each push_back stores a copy. The first copy holds 1; changing b to 2 does not touch it; the second copy holds 2. `v[0].n += 10` changes the first copy only: 11. b itself is 2."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <stdexcept>\n#include <vector>\nusing namespace std;\n\nint main() {\n    vector<int> v = {1, 2, 3};\n    try {\n        cout << v.at(1) << \" \";\n        cout << v.at(3) << \" \";\n    } catch (out_of_range&) {\n        cout << \"out of range\";\n    }\n    cout << endl;\n    return 0;\n}",
+    "options": [
+      "`2 out of range`",
+      "`2 0`",
+      "`out of range`",
+      "`2 3`"
+    ],
+    "answer": 0,
+    "explain": "`at(1)` is the second element, 2. `at(3)` is one past the end, and at() is the member that checks: it throws std::out_of_range before anything is printed for it. `v[3]` would not check at all; reading it is undefined behaviour."
+  }
+]
+```
+
+```challenge
+{"prompt": "Write <code>insert_sorted</code> with an iterator: advance from <code>v.begin()</code> while the element is not greater than <code>x</code> (and you have not reached <code>v.end()</code>), then call <code>v.insert(it, x)</code>. The vector must stay sorted.", "starter": "#include <iostream>\n#include <vector>\nusing namespace std;\n\n// insert x before the first element greater than x (at the end if there is none)\nvoid insert_sorted(vector<int>& v, int x) {\n    // walk an iterator from v.begin(); stop at v.end() or at the first element > x,\n    // then call v.insert(it, x)\n}\n\nint main() {\n    vector<int> v = {3, 5, 9};\n    insert_sorted(v, 7);\n    insert_sorted(v, 1);\n    insert_sorted(v, 12);\n    for (int x : v) cout << x << \" \";\n    cout << endl;\n    return 0;\n}\n", "expected": "1 3 5 7 9 12 ", "hints": ["<code>vector&lt;int&gt;::iterator it = v.begin();</code>", "Test <code>it != v.end()</code> first, then <code>*it &lt;= x</code>: never dereference end().", "<code>insert</code> puts the new value before the iterator's element."], "solution": "#include <iostream>\n#include <vector>\nusing namespace std;\n\n// insert x before the first element greater than x (at the end if there is none)\nvoid insert_sorted(vector<int>& v, int x) {\n    vector<int>::iterator it = v.begin();\n    while (it != v.end() && *it <= x) {\n        ++it;\n    }\n    v.insert(it, x);\n}\n\nint main() {\n    vector<int> v = {3, 5, 9};\n    insert_sorted(v, 7);\n    insert_sorted(v, 1);\n    insert_sorted(v, 12);\n    for (int x : v) cout << x << \" \";\n    cout << endl;\n    return 0;\n}\n"}
+```
 ```quiz
 [
   {

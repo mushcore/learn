@@ -153,6 +153,65 @@ Java's `throws` clause lists what a method may throw and the compiler forces cal
 }
 ```
 
+## Throw from `greet`, an `Account` constructor and five kinds of value
+
+Three new throwers: a greeting that refuses an empty name, a function that throws a different type for each argument, and a constructor that refuses a negative balance.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct empty_name { };\n\nstring greet(const string& name) {\n    if (name.empty()) throw empty_name();\n    return \"hi \" + name;\n}\n\nint main() {\n    string names[] = {\"Ada\", \"\", \"Lin\"};\n    for (const string& n : names) {\n        try {\n            cout << greet(n) << endl;\n            cout << \"ok\" << endl;\n        } catch (empty_name&) {\n            cout << \"no name\" << endl;\n        }\n    }\n    cout << \"end\" << endl;\n    return 0;\n}",
+    "options": [
+      "`hi Ada`\n`ok`\n`no name`\n`hi Lin`\n`ok`\n`end`",
+      "`hi Ada`\n`ok`\n`no name`\n`ok`\n`hi Lin`\n`ok`\n`end`",
+      "`hi Ada`\n`ok`\n`no name`\n`end`",
+      "`hi Ada`\n`ok`\n`hi `\n`ok`\n`hi Lin`\n`ok`\n`end`"
+    ],
+    "answer": 0,
+    "explain": "The try block is inside the loop, so each name gets its own try. \"Ada\": greet returns, both lines print. \"\": greet throws before returning, so neither `cout` in the try runs (not even `ok`); the handler prints `no name` and the loop continues. \"Lin\" prints normally, then `end`."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nvoid f(int k) {\n    if (k == 0) throw 7;\n    if (k == 1) throw 2.5;\n    if (k == 2) throw \"two\";\n    if (k == 3) throw string(\"three\");\n}\n\nint main() {\n    for (int k = 0; k < 5; ++k) {\n        try { f(k); cout << \"none \"; }\n        catch (int n) { cout << \"int\" << n << \" \"; }\n        catch (double d) { cout << \"double\" << d << \" \"; }\n        catch (const char* s) { cout << \"cstr:\" << s << \" \"; }\n        catch (string& s) { cout << \"string:\" << s << \" \"; }\n    }\n    cout << endl;\n    return 0;\n}",
+    "options": [
+      "`int7 double2.5 cstr:two string:three none`",
+      "`int7 int2 cstr:two cstr:three none`",
+      "`int7 double2.5 string:two string:three none`",
+      "`int7 double2.5 cstr:two string:three`"
+    ],
+    "answer": 0,
+    "explain": "A handler is chosen by the exact type thrown; no conversions apply. `7` is an int; `2.5` is a double (it is not converted to int); `\"two\"` is a string literal, a `const char*`; `string(\"three\")` is a std::string. k = 4 throws nothing, so `none` prints after the call. Every try ends with a space."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <stdexcept>\nusing namespace std;\n\nclass Account {\n    int balance;\npublic:\n    Account(int b) : balance(b) {\n        cout << \"checking \" << b << endl;\n        if (b < 0) throw invalid_argument(\"negative balance\");\n        cout << \"opened \" << b << endl;\n    }\n    ~Account() { cout << \"closed \" << balance << endl; }\n};\n\nint main() {\n    try {\n        Account a(100);\n        Account b(-5);\n        cout << \"both open\" << endl;\n    } catch (invalid_argument& e) {\n        cout << e.what() << endl;\n    }\n    return 0;\n}",
+    "options": [
+      "`checking 100`\n`opened 100`\n`checking -5`\n`closed 100`\n`negative balance`",
+      "`checking 100`\n`opened 100`\n`checking -5`\n`closed -5`\n`closed 100`\n`negative balance`",
+      "`checking 100`\n`opened 100`\n`checking -5`\n`negative balance`\n`closed 100`",
+      "`checking 100`\n`opened 100`\n`checking -5`\n`opened -5`\n`both open`"
+    ],
+    "answer": 0,
+    "explain": "a is built completely (`checking 100`, `opened 100`). b's constructor prints `checking -5` and throws, so b never becomes an object and `closed -5` never prints. Leaving the try block destroys a (`closed 100`) before the handler runs, and the handler prints the message `negative balance`."
+  },
+  {
+    "q": "Complete the handler so the thrown string literal is caught.",
+    "type": "fill",
+    "code": "#include <iostream>\nusing namespace std;\n\nvoid load() {\n    throw \"file missing\";\n}\n\nint main() {\n    try {\n        load();\n    } catch (___ msg) {\n        cout << \"caught: \" << msg << endl;\n    }\n    return 0;\n}",
+    "answer": [
+      "const char*",
+      "const char *",
+      "char const*"
+    ],
+    "explain": "A string literal is thrown as a `const char*`. `catch (const char* msg)` matches it; `catch (string& msg)` would not, and with no other handler the program would call terminate."
+  }
+]
+```
+
+```challenge
+{"prompt": "Make <code>parse_digit</code> throw <code>std::invalid_argument(\"not a digit\")</code> for any character outside <code>'0'</code> to <code>'9'</code>. In main, call it for each character inside a try block: print the digit, or catch the exception by reference and print its <code>what()</code>.", "starter": "#include <iostream>\n#include <stdexcept>\n#include <string>\nusing namespace std;\n\nint parse_digit(char c) {\n    // throw std::invalid_argument(\"not a digit\") unless c is '0'..'9'\n    return c - '0';\n}\n\nint main() {\n    string input = \"4x7\";\n    for (char c : input) {\n        // call parse_digit(c) inside a try block; print the digit,\n        // or print what() of the exception\n    }\n    return 0;\n}\n", "expected": "4\nnot a digit\n7", "hints": ["<code>if (c &lt; '0' || c &gt; '9') { throw std::invalid_argument(\"not a digit\"); }</code>", "Put the try inside the loop, so the 7 is still read after the x fails."], "solution": "#include <iostream>\n#include <stdexcept>\n#include <string>\nusing namespace std;\n\nint parse_digit(char c) {\n    if (c < '0' || c > '9') {\n        throw std::invalid_argument(\"not a digit\");\n    }\n    return c - '0';\n}\n\nint main() {\n    string input = \"4x7\";\n    for (char c : input) {\n        try {\n            cout << parse_digit(c) << endl;\n        } catch (std::invalid_argument& e) {\n            cout << e.what() << endl;\n        }\n    }\n    return 0;\n}\n"}
+```
 ```quiz
 [
   {

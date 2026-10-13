@@ -76,6 +76,47 @@ The slide's figure shows the two cases: the data-link layer of a **broadcast lin
 "MAC" here is the sublayer that controls access to a shared link. The MAC address of the next lesson is named after it, but the MAC sublayer is about shared links, not about addresses.
 :::
 
+## Count the hops on a four-link path
+
+A laptop sends to a server along laptop, LAN, router RA, point-to-point network, router RB, point-to-point network, router RC, LAN, server.
+
+```quiz
+[
+  {
+    "q": "How many nodes are on the path?",
+    "type": "numeric",
+    "answer": 5,
+    "tolerance": 0.01,
+    "unit": "nodes",
+    "explain": "Hosts and routers are nodes: the laptop, RA, RB, RC and the server, 5 nodes."
+  },
+  {
+    "q": "How many links are on the path?",
+    "type": "numeric",
+    "answer": 4,
+    "tolerance": 0.01,
+    "unit": "links",
+    "explain": "LANs and point-to-point networks are links: LAN, point-to-point, point-to-point, LAN, 4 links. A path of 5 nodes always has $5 - 1 = 4$ links."
+  },
+  {
+    "q": "How many times is the data-link layer used, one use per hop?",
+    "type": "numeric",
+    "answer": 4,
+    "tolerance": 0.01,
+    "unit": "hops",
+    "explain": "One hop per link, laptop to RA, RA to RB, RB to RC, RC to server: 4."
+  },
+  {
+    "q": "How many routers decapsulate the frame and encapsulate the datagram in a new frame?",
+    "type": "numeric",
+    "answer": 3,
+    "tolerance": 0.01,
+    "unit": "routers",
+    "explain": "Every intermediate node does it: RA, RB and RC, 3 routers. The datagram inside is not changed; the frame is rebuilt each time."
+  }
+]
+```
+
 ```quiz
 [
   {

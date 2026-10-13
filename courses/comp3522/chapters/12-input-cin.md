@@ -135,6 +135,71 @@ cin-sim
 { "reads": ["char firstName[5] (setw(5))"], "input": "Jonathan", "presets": { "full name": "Jonathan", "short name": "Al" } }
 ```
 
+## Feed new input to four `cin` reads
+
+The input is given with each program; `>>` skips leading whitespace and stops at the first character that does not fit the type.
+
+```quiz
+[
+  {
+    "q": "The input is `7 2.5 kg`. What does this print?",
+    "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main()\n{\n    int a;\n    double b;\n    string s;\n    cin >> a >> b >> s;\n    cout << a * b << s << endl;\n    return 0;\n}",
+    "options": [
+      "`17.5kg`",
+      "`17.5 kg`",
+      "`14kg`",
+      "`72.5kg`"
+    ],
+    "answer": 0,
+    "explain": "`a` reads 7, `b` reads 2.5, `s` reads the word `kg`. 7 × 2.5 = 17.5, printed with no space before `s`. Output: `17.5kg`."
+  },
+  {
+    "type": "text",
+    "q": "The input is `BCIT2026`. What does this print?",
+    "code": "#include <iostream>\n#include <iomanip>\nusing namespace std;\n\nint main()\n{\n    char code[4];\n    cin >> setw(4) >> code;\n    cout << code << endl;\n    return 0;\n}",
+    "answer": [
+      "BCI"
+    ],
+    "explain": "`setw(4)` on input reads at most 4 − 1 = 3 characters and leaves room for the `'\\0'` terminator, so `code` holds `BCI`. The rest, `T2026`, stays in the buffer."
+  },
+  {
+    "q": "The input is `42abc`. What does this print?",
+    "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main()\n{\n    int n;\n    string rest;\n    cin >> n >> rest;\n    cout << n + 1 << ' ' << rest << endl;\n    return 0;\n}",
+    "options": [
+      "`43 abc`",
+      "`43 42abc`",
+      "`1 abc`",
+      "`43`"
+    ],
+    "answer": 0,
+    "explain": "The int read takes digits until the first non-digit: n = 42, and `a` is left in the buffer. The string read then takes `abc`. 42 + 1 = 43. Output: `43 abc`."
+  },
+  {
+    "type": "text",
+    "q": "The input is `Grace Hopper`. What does this print?",
+    "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main()\n{\n    string first;\n    cin >> first;\n    cout << \"[\" << first << \"]\" << endl;\n    return 0;\n}",
+    "answer": [
+      "[Grace]"
+    ],
+    "explain": "`>>` into a string reads one whitespace-separated word, so it stops at the space: `first` is `Grace`. Reading the whole line needs `getline`, which comes in Week 2."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "Read two integers from <code>cin</code> and print their sum and product as <code>sum 15 product 54</code> (the test input is <code>6 9</code>).",
+  "starter": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    // read m and n, then print\n    return 0;\n}\n",
+  "stdin": "6 9\n",
+  "expected": "sum 15 product 54\n",
+  "hints": [
+    "<code>int m, n; cin >> m >> n;</code>",
+    "<code>cout << \"sum \" << m + n << \" product \" << m * n << endl;</code>"
+  ],
+  "solution": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int m, n;\n    cin >> m >> n;\n    cout << \"sum \" << m + n << \" product \" << m * n << endl;\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

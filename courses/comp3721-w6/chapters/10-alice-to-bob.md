@@ -88,6 +88,48 @@ The lecture's summary slide (slide 34) lists the layer's responsibilities:
 
 Every item says "along the link" or "to another node": the data-link layer's whole world is one hop.
 
+## Trace Erin's datagram to Frank through three routers
+
+Erin (L_E, N_E) reaches Frank (L_F, N_F) through R1 (L1 N1 toward Erin, L2 N2 toward R2), R2 (L3 N3 toward R1, L4 N4 toward R3) and R3 (L5 N5 toward R2, L6 N6 toward Frank); type addresses as `L5`, `N_E`.
+
+```quiz
+[
+  {
+    "q": "At R2, what does the forwarding table return when the network layer looks up N_F?",
+    "type": "text",
+    "answer": ["N5", "N₅", "n5"],
+    "explain": "The next hop from R2 toward Frank is R3, and the IP address of R3's interface facing R2 is **N5**."
+  },
+  {
+    "q": "Fill in the frame R2 sends to R3.",
+    "type": "fill",
+    "code": "[ ___ | ___ | ___ | ___ | Data ]",
+    "answer": ["L5", "L4", "N_E", "N_F"],
+    "explain": "R2's ARP asks for N5 and R3 answers L5, the destination. The source is R2's outgoing interface, L4. The IP pair stays N_E, N_F. Frame [L5 | L4 | N_E | N_F | Data]."
+  },
+  {
+    "q": "How many ARP request-reply exchanges take place on the way from Erin to Frank, one per link?",
+    "type": "numeric",
+    "answer": 4,
+    "tolerance": 0.01,
+    "unit": "exchanges",
+    "explain": "Four links (Erin to R1, R1 to R2, R2 to R3, R3 to Frank), and each sender resolves its next hop: answered by R1, R2, R3 and Frank."
+  },
+  {
+    "q": "At R3, what does the forwarding table return for N_F?",
+    "type": "text",
+    "answer": ["N_F", "NF", "N F", "N_f"],
+    "explain": "Frank is directly connected to R3's LAN, so the next hop is the destination itself, **N_F**, as at R2 in the slide's walk."
+  },
+  {
+    "q": "Which frame does Frank receive?",
+    "options": ["[L_F | L6 | N_E | N_F | Data]", "[L6 | L_F | N_E | N_F | Data]", "[L_F | L_E | N_E | N_F | Data]", "[L_F | L6 | N6 | N_F | Data]"],
+    "answer": 0,
+    "explain": "R3 sends it: destination Frank (L_F), source R3's interface toward Frank (L6). The IP addresses N_E and N_F have not been changed during the whole journey."
+  }
+]
+```
+
 ```quiz
 [
   {

@@ -168,6 +168,63 @@ When the class lives in `Circle.hpp` and `Circle.cpp`, `main.cpp` must `#include
 { "prompt": "Write a class <code>Rectangle</code> with private <code>int width, height;</code>, a public <code>void set_values(int a, int b)</code> that stores them, and a public <code>int area()</code> that returns their product. main is written for you and must print <code>20</code>.", "starter": "#include <iostream>\nusing namespace std;\n\n// your class here\n\nint main()\n{\n    Rectangle rect;\n    rect.set_values(4, 5);\n    cout << rect.area() << endl;\n    return 0;\n}\n", "expected": "20", "hints": ["Remember the semicolon after the class's closing brace.", "Members are private by default: put <code>public:</code> before the two functions.", "<code>int area() { return width * height; }</code>"], "solution": "#include <iostream>\nusing namespace std;\n\nclass Rectangle\n{\n    private:\n        int width, height;\n    public:\n        void set_values(int a, int b) { width = a; height = b; }\n        int area() { return width * height; }\n};\n\nint main()\n{\n    Rectangle rect;\n    rect.set_values(4, 5);\n    cout << rect.area() << endl;\n    return 0;\n}\n" }
 ```
 
+## Read four new structs and classes
+
+New types with the slide's shape: data members, member functions, and the one difference between `struct` and `class`.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nstruct Point\n{\n    int x;\n    int y;\n};\n\nint main()\n{\n    Point p;\n    p.x = 3;\n    p.y = 4;\n    Point q = p;\n    q.x = 10;\n    cout << p.x + q.x << ' ' << p.y * q.y << endl;\n    return 0;\n}",
+    "options": [
+      "`13 16`",
+      "`20 16`",
+      "`13 8`",
+      "`6 16`"
+    ],
+    "answer": 0,
+    "explain": "`struct` members are public, so `main` may set them. `Point q = p;` copies both members into a separate object, so changing `q.x` leaves `p.x` at 3. 3 + 10 = 13 and 4 × 4 = 16. Output: `13 16`."
+  },
+  {
+    "type": "spotbug",
+    "q": "Click the line that fails to compile.",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Box\n{\n    int width;\npublic:\n    void setWidth(int w) { width = w; }\n    int getWidth() { return width; }\n};\n\nint main()\n{\n    Box b;\n    b.setWidth(5);\n    b.width = 6;\n    cout << b.getWidth() << endl;\n    return 0;\n}",
+    "answer": 16,
+    "explain": "`width` comes before any access specifier in a `class`, so it is private by default. Line 15 goes through the public setter and is fine; line 16 touches the private member from `main`: `'int Box::width' is private within this context`. With `struct Box` it would compile."
+  },
+  {
+    "type": "numeric",
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Temperature\n{\nprivate:\n    double celsius;\npublic:\n    void setCelsius(double c);\n    double fahrenheit();\n};\n\nvoid Temperature::setCelsius(double c)\n{\n    celsius = c;\n}\n\ndouble Temperature::fahrenheit()\n{\n    return celsius * 9 / 5 + 32;\n}\n\nint main()\n{\n    Temperature t;\n    t.setCelsius(25);\n    cout << t.fahrenheit() << endl;\n    return 0;\n}",
+    "answer": 77,
+    "explain": "`setCelsius(25)` stores 25.0. Because `celsius` is a `double`, the arithmetic is floating point: 25 × 9 = 225, 225 / 5 = 45, 45 + 32 = 77."
+  },
+  {
+    "type": "fill",
+    "q": "`area` is declared inside `class Square`. Fill in what the definition in `Square.cpp` needs before the function name.",
+    "code": "double ___area()\n{\n    return side * side;\n}",
+    "answer": [
+      "Square::"
+    ],
+    "explain": "Outside the class, the scope operator says which class the function belongs to: `double Square::area()`. Without `Square::` it is a free function that cannot see `side`."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "Write a <code>class Rectangle</code> with private <code>int width, height;</code> and public <code>void set(int w, int h)</code>, <code>int area()</code> and <code>int perimeter()</code>. Define <code>area</code> and <code>perimeter</code> outside the class with <code>Rectangle::</code>. <code>main</code> prints <code>28 22</code>.",
+  "starter": "#include <iostream>\nusing namespace std;\n\n// class Rectangle here\n\nint main()\n{\n    Rectangle r;\n    r.set(4, 7);\n    cout << r.area() << ' ' << r.perimeter() << endl;\n    return 0;\n}\n",
+  "expected": "28 22\n",
+  "hints": [
+    "End the class with <code>};</code>",
+    "<code>int Rectangle::perimeter() { return 2 * (width + height); }</code>"
+  ],
+  "solution": "#include <iostream>\nusing namespace std;\n\nclass Rectangle\n{\nprivate:\n    int width, height;\npublic:\n    void set(int w, int h)\n    {\n        width = w;\n        height = h;\n    }\n    int area();\n    int perimeter();\n};\n\nint Rectangle::area()\n{\n    return width * height;\n}\n\nint Rectangle::perimeter()\n{\n    return 2 * (width + height);\n}\n\nint main()\n{\n    Rectangle r;\n    r.set(4, 7);\n    cout << r.area() << ' ' << r.perimeter() << endl;\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

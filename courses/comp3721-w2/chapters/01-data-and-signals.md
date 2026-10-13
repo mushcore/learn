@@ -75,6 +75,61 @@ The slides give two everyday sine waves:
 
 Neither carries data, which is why data communication needs composite signals.
 
+## Classify five more data and signals
+
+Apply the slide definitions: continuous or discrete, many levels or a limited number, one sine or several.
+
+```quiz
+[
+  {
+    "q": "The temperature of a room, which can take any value between 18.0 °C and 25.0 °C, is...",
+    "options": [
+      "analog data",
+      "digital data",
+      "a digital signal",
+      "a composite signal"
+    ],
+    "answer": 0,
+    "explain": "Temperature takes on **continuous** values, so it is analog data. Data is the information itself; a signal is what carries it on a medium."
+  },
+  {
+    "q": "The number of students present in a class, counted each morning, is...",
+    "options": [
+      "analog data",
+      "digital data",
+      "an analog signal",
+      "a periodic signal"
+    ],
+    "answer": 1,
+    "explain": "A head count takes on **discrete** values (24, 25, 26 students, never 25.3), so it is digital data."
+  },
+  {
+    "q": "A control wire that only ever sits at 0 V or 5 V carries an analog signal.",
+    "type": "tf",
+    "answer": false,
+    "explain": "A signal with a **limited number of defined values** (here two: 0 V and 5 V) is a digital signal. An analog signal has many levels of intensity over a period of time."
+  },
+  {
+    "q": "A transformer hums with a single pure 50 Hz sine wave. Fill in the blank: it is a ______ periodic analog signal.",
+    "type": "text",
+    "answer": [
+      "simple"
+    ],
+    "explain": "One sine wave is a **simple** periodic analog signal: it cannot be decomposed into simpler signals."
+  },
+  {
+    "q": "A 1 kHz sine wave and a 3 kHz sine wave are added and sent together. Fill in the blank: the result is a ______ signal.",
+    "type": "text",
+    "answer": [
+      "composite",
+      "composite periodic",
+      "composite analog"
+    ],
+    "explain": "A signal made of more than one sine wave is **composite**. Fourier analysis would decompose it back into the 1 kHz and 3 kHz components."
+  }
+]
+```
+
 ```quiz
 [
   {

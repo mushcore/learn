@@ -116,6 +116,63 @@ $$\phi = 40° \times \frac{2\pi}{360°}\ \text{rad} = \frac{2\pi}{9}\ \text{rad}
 
 The general recipe: **phase in degrees = fraction of a cycle × 360°** and **phase in radians = fraction of a cycle × 2π**.
 
+## Read two more sine equations and three more phases
+
+Whatever multiplies $t$ is $2\pi f$; a fraction of a cycle times 360° (or $2\pi$) is the phase.
+
+```quiz
+[
+  {
+    "q": "$s(t) = 12\\sin(400\\pi t)$. What is the frequency in Hz?",
+    "type": "numeric",
+    "answer": 200,
+    "tolerance": 0.5,
+    "unit": "Hz",
+    "explain": "Inside the sine, $2\\pi f = 400\\pi$, so $f = 400\\pi / 2\\pi = 200$ Hz. The peak amplitude is the number in front: $A = 12$ V."
+  },
+  {
+    "q": "$s(t) = 12\\sin(400\\pi t)$. What is the period in ms?",
+    "type": "numeric",
+    "answer": 5,
+    "tolerance": 0.01,
+    "unit": "ms",
+    "explain": "$T = 1/f = 1/200 = 0.005$ s $= 5$ ms."
+  },
+  {
+    "q": "$s(t) = 2\\sin(30t)$. What is the frequency in Hz (2 decimals)?",
+    "type": "numeric",
+    "answer": 4.77,
+    "tolerance": 0.01,
+    "unit": "Hz",
+    "explain": "No $\\pi$ inside, so divide by the full $2\\pi$: $f = 30/(2\\pi) = 30/6.283 = 4.77$ Hz. Then $T = 1/4.77 = 0.209$ s."
+  },
+  {
+    "q": "A sine wave is offset $\\frac{1}{12}$ of a cycle from time 0. What is its phase in degrees?",
+    "type": "numeric",
+    "answer": 30,
+    "tolerance": 0.1,
+    "unit": "°",
+    "explain": "$\\phi = \\frac{1}{12} \\times 360° = 30°$. In radians: $\\frac{1}{12} \\times 2\\pi = \\frac{\\pi}{6} = 0.524$ rad."
+  },
+  {
+    "q": "A sine wave is offset $\\frac{3}{8}$ of a cycle from time 0. What is its phase in radians (3 decimals)?",
+    "type": "numeric",
+    "answer": 2.356,
+    "tolerance": 0.002,
+    "unit": "rad",
+    "explain": "$\\phi = \\frac{3}{8} \\times 2\\pi = \\frac{3\\pi}{4} = 2.356$ rad. In degrees: $\\frac{3}{8} \\times 360° = 135°$."
+  },
+  {
+    "q": "A 25 Hz wave is written $A\\sin(\\omega t - 90°)$. It is $A\\sin(\\omega t)$ shifted to the right by how many ms?",
+    "type": "numeric",
+    "answer": 10,
+    "tolerance": 0.05,
+    "unit": "ms",
+    "explain": "A minus inside shifts right by $\\phi/\\omega$. $\\phi = 90° = \\pi/2$ rad and $\\omega = 2\\pi \\times 25 = 50\\pi$ rad/s, so $\\phi/\\omega = \\frac{\\pi/2}{50\\pi} = \\frac{1}{100}$ s $= 10$ ms. Check: $90°$ is a quarter cycle and $T = 1/25 = 40$ ms, so $40/4 = 10$ ms."
+  }
+]
+```
+
 ```quiz
 [
   {

@@ -143,6 +143,71 @@ bitwise
 
 `const_vs_constexpr.cpp` chains two of these, `a <<= 3` and `a |= b`, on one variable; it is worked in the [constants lesson](#/comp3522/constants).
 
+## Evaluate the ternary, comma and bitwise operators on new values
+
+New operands for each assorted operator; write the binary out for the bitwise item.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int t = 18;\n    cout << (t >= 19 ? \"adult\" : \"minor\") << ' ' << (t % 2 == 0 ? t / 2 : t * 3) << endl;\n    return 0;\n}",
+    "options": [
+      "`minor 9`",
+      "`adult 9`",
+      "`minor 54`",
+      "`adult 54`"
+    ],
+    "answer": 0,
+    "explain": "`t >= 19` is false, so the first ternary picks `\"minor\"`. `t % 2 == 0` is true (18 is even), so the second picks `t / 2` = 9. Output: `minor 9`."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int k = 3;\n    int r = (k += 2, k * 10);\n    cout << k << ' ' << r << endl;\n    return 0;\n}",
+    "options": [
+      "`5 50`",
+      "`3 30`",
+      "`5 5`",
+      "`5 30`"
+    ],
+    "answer": 0,
+    "explain": "The comma operator evaluates left to right and keeps the last value. `k += 2` makes k 5, then `k * 10` is 50, which is stored in r. Output: `5 50`."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int p = 12, q = 10;\n    cout << (p & q) << ' ' << (p | q) << ' ' << (p ^ q) << ' ' << (p >> 2) << ' ' << (q << 1) << endl;\n    return 0;\n}",
+    "options": [
+      "`8 14 6 3 20`",
+      "`1 1 0 3 20`",
+      "`8 14 2 3 20`",
+      "`8 22 6 48 5`"
+    ],
+    "answer": 0,
+    "explain": "12 is 1100 and 10 is 1010. AND keeps bits set in both: 1000 = 8. OR: 1110 = 14. XOR keeps bits set in exactly one: 0110 = 6. 12 >> 2 = 0011 = 3. 10 << 1 = 10100 = 20. Output: `8 14 6 3 20`."
+  },
+  {
+    "type": "numeric",
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int f = 5;\n    f |= 2;\n    f &= 6;\n    f ^= 3;\n    cout << f << endl;\n    return 0;\n}",
+    "answer": 5,
+    "explain": "5 is 101. `|= 2` (010) sets the middle bit: 111 = 7. `&= 6` (110) clears the low bit: 110 = 6. `^= 3` (011) flips the two low bits: 101 = 5."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "Write <code>int maxOf(int a, int b)</code> whose body is a single <code>return</code> with the ternary operator. <code>main</code> prints <code>8 -2</code>.",
+  "starter": "#include <iostream>\nusing namespace std;\n\n// maxOf here\n\nint main()\n{\n    cout << maxOf(3, 8) << ' ' << maxOf(-2, -9) << endl;\n    return 0;\n}\n",
+  "expected": "8 -2\n",
+  "hints": [
+    "<code>condition ? valueIfTrue : valueIfFalse</code>",
+    "<code>return a > b ? a : b;</code>"
+  ],
+  "solution": "#include <iostream>\nusing namespace std;\n\nint maxOf(int a, int b)\n{\n    return a > b ? a : b;\n}\n\nint main()\n{\n    cout << maxOf(3, 8) << ' ' << maxOf(-2, -9) << endl;\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

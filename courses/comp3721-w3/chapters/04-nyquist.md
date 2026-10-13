@@ -72,6 +72,55 @@ data-rate
 { "show": "nyquist", "bandwidth": 30, "unit": "kHz", "levels": 2, "target": 265, "targetUnit": "kbps", "presets": { "Example 1: 265 kbps over 30 kHz": { "bandwidth": 30, "unit": "kHz", "levels": 2, "target": 265, "targetUnit": "kbps" }, "3000 Hz, 2 levels": { "bandwidth": 3000, "unit": "Hz", "levels": 2 }, "3000 Hz, 4 levels": { "bandwidth": 3000, "unit": "Hz", "levels": 4 }, "20 kHz, 16 levels": { "bandwidth": 20, "unit": "kHz", "levels": 16 } } }
 ```
 
+## Size five more noiseless channels
+
+Write the formula with bps and Hz, then solve for the unknown.
+
+```quiz
+[
+  {
+    "q": "A noiseless channel has a bandwidth of 4 kHz and the signal has 16 levels. What is the maximum bit rate, in kbps?",
+    "type": "numeric",
+    "answer": 32,
+    "tolerance": 0.05,
+    "unit": "kbps",
+    "explain": "$\\text{BitRate} = 2 \\times 4000 \\times \\log_{2} 16 = 2 \\times 4000 \\times 4 = 32000$ bps $= 32$ kbps."
+  },
+  {
+    "q": "We need to send 144 kbps over a noiseless channel with a bandwidth of 12 kHz. How many signal levels do we need?",
+    "type": "numeric",
+    "answer": 64,
+    "tolerance": 0.1,
+    "unit": "levels",
+    "explain": "$144000 = 2 \\times 12000 \\times \\log_{2} L$, so $\\log_{2} L = 144000 / 24000 = 6$ and $L = 2^{6} = 64$. A power of 2, so it can be used as it is."
+  },
+  {
+    "q": "We need to send 120 kbps over a noiseless channel with a bandwidth of 18 kHz. What does the Nyquist formula give for $L$ (2 decimals)?",
+    "type": "numeric",
+    "answer": 10.08,
+    "tolerance": 0.01,
+    "unit": "levels",
+    "explain": "$\\log_{2} L = 120000 / (2 \\times 18000) = 120000 / 36000 = 3.333$, so $L = 2^{3.333} = 10.08$ levels. Not a power of 2: increase the number of levels or reduce the bit rate."
+  },
+  {
+    "q": "Same 18 kHz channel. If we reduce the bit rate to fit the nearest power of 2 below 10.08 levels, what bit rate do we send, in kbps?",
+    "type": "numeric",
+    "answer": 108,
+    "tolerance": 0.05,
+    "unit": "kbps",
+    "explain": "The power of 2 below 10.08 is 8. $2 \\times 18000 \\times \\log_{2} 8 = 2 \\times 18000 \\times 3 = 108000$ bps $= 108$ kbps. Increasing to 16 levels instead gives $2 \\times 18000 \\times 4 = 144$ kbps."
+  },
+  {
+    "q": "A noiseless channel must carry 60 kbps using 4 signal levels. What bandwidth is needed, in kHz?",
+    "type": "numeric",
+    "answer": 15,
+    "tolerance": 0.05,
+    "unit": "kHz",
+    "explain": "$60000 = 2 \\times B \\times \\log_{2} 4 = 2 \\times B \\times 2 = 4B$, so $B = 15000$ Hz $= 15$ kHz."
+  }
+]
+```
+
 ```quiz
 [
   {

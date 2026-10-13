@@ -59,6 +59,65 @@ Unverified: these answers were written from memory of a textbook treatment of th
 - Cellular phones: *their allocated bandwidth is very wide, so, why not sending the digital signal without conversion?* The band is divided among many calls at once. One caller gets a slice of it, and a slice does not start from zero, so it is a bandpass channel.
 :::
 
+## Classify five more channels
+
+Each item describes a channel by the frequencies it passes. Decide whether a digital signal can go on it as it is or needs a modem.
+
+```quiz
+[
+  {
+    "q": "A coaxial cable passes every frequency from 0 Hz up to 500 MHz. Which transmission can send a digital signal over it without changing it to an analog signal?",
+    "options": [
+      "Baseband transmission",
+      "Broadband transmission only",
+      "Neither: a cable cannot carry a digital signal",
+      "Both need a modem on this cable"
+    ],
+    "answer": 0,
+    "explain": "The channel starts at 0 Hz, so it is a **low-pass channel**, and a low-pass channel is what baseband transmission requires. Its 500 MHz width is very wide, so the received shape stays close to the sent one."
+  },
+  {
+    "q": "A radio channel is allotted the band from 88.1 MHz to 88.3 MHz. Digital data sent on it must first be converted to an analog signal by a modem.",
+    "type": "tf",
+    "answer": true,
+    "explain": "The band does not start from zero (its lowest frequency is 88.1 MHz), so it is a **bandpass channel**. A digital signal cannot be sent directly to a bandpass channel; a modem converts it to an analog signal first (broadband transmission)."
+  },
+  {
+    "q": "A channel passes frequencies from 2 kHz to 6 kHz. Fill in the blank: it is a ________ channel.",
+    "type": "text",
+    "answer": [
+      "bandpass",
+      "band-pass",
+      "band pass",
+      "bandpass channel"
+    ],
+    "explain": "It passes signals between two frequency limits, 2 kHz and 6 kHz, and its bandwidth does not start from zero: a bandpass channel. Its width is $6 - 2 = 4$ kHz, but the width is not what decides the name; the lower limit is."
+  },
+  {
+    "q": "Select the channels that are **low-pass** channels.",
+    "options": [
+      "0 Hz to 4 kHz",
+      "300 Hz to 3400 Hz",
+      "0 Hz to 1 GHz",
+      "54 MHz to 60 MHz"
+    ],
+    "answer": [
+      0,
+      2
+    ],
+    "explain": "A low-pass channel's lowest frequency is zero: 0 Hz to 4 kHz and 0 Hz to 1 GHz. The other two start above zero (300 Hz and 54 MHz), so they are bandpass channels whatever their width."
+  },
+  {
+    "q": "A baseband link needs a channel bandwidth of 5 MHz to carry 10 Mbps. Using the slide rule that the required bandwidth is proportional to the bit rate, what bandwidth does 25 Mbps need, in MHz?",
+    "type": "numeric",
+    "answer": 12.5,
+    "tolerance": 0.05,
+    "unit": "MHz",
+    "explain": "Proportional means the ratio stays fixed: $5\\ \\text{MHz} / 10\\ \\text{Mbps} = 0.5$ MHz per Mbps. For 25 Mbps: $25 \\times 0.5 = 12.5$ MHz. Sending bits 2.5 times faster needs 2.5 times the bandwidth."
+  }
+]
+```
+
 ```quiz
 [
   {

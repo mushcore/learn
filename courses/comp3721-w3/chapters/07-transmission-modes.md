@@ -52,6 +52,55 @@ tx-modes
 { "bits": "01100010", "predict": true }
 ```
 
+## Time 16-bit groups and a file transfer
+
+Each line carries one bit per clock tick.
+
+```quiz
+[
+  {
+    "q": "How many lines does parallel transmission need to send a group of 16 bits together?",
+    "type": "numeric",
+    "answer": 16,
+    "tolerance": 0.1,
+    "unit": "lines",
+    "explain": "One line per bit: $n = 16$ bits need sixteen lines."
+  },
+  {
+    "q": "A device sends 4 groups of 16 bits over 16 parallel lines. How many clock ticks does it take?",
+    "type": "numeric",
+    "answer": 4,
+    "tolerance": 0.1,
+    "unit": "ticks",
+    "explain": "All 16 bits of a group move together in one tick, so 4 groups take 4 ticks."
+  },
+  {
+    "q": "The same 4 groups of 16 bits are sent serially over one line. How many clock ticks does it take?",
+    "type": "numeric",
+    "answer": 64,
+    "tolerance": 0.1,
+    "unit": "ticks",
+    "explain": "One bit per tick on one line: $4 \\times 16 = 64$ bits take 64 ticks, $n = 16$ times longer than parallel, which is the slide's factor of $n$."
+  },
+  {
+    "q": "A 300 MB file (1 MB $= 10^{6}$ bytes, 8 bits per byte) is copied at the USB 2.0 speed in the slide's table. How many seconds does it take?",
+    "type": "numeric",
+    "answer": 5,
+    "tolerance": 0.01,
+    "unit": "s",
+    "explain": "$300 \\times 10^{6} \\times 8 = 2.4 \\times 10^{9}$ bits. USB 2.0 is 480 Mbps: $\\frac{2.4 \\times 10^{9}}{480 \\times 10^{6}} = 5$ s."
+  },
+  {
+    "q": "The same 300 MB file at the USB 3.2 Gen 2 speed. How many seconds does it take?",
+    "type": "numeric",
+    "answer": 0.24,
+    "tolerance": 0.001,
+    "unit": "s",
+    "explain": "USB 3.2 Gen 2 is 10 Gbps: $\\frac{2.4 \\times 10^{9}}{10 \\times 10^{9}} = 0.24$ s."
+  }
+]
+```
+
 ```quiz
 [
   {

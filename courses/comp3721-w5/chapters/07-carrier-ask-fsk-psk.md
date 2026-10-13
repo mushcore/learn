@@ -81,6 +81,61 @@ shift-keying-play
 { "bits": "10110", "scheme": "ask", "schemes": ["ask", "fsk", "psk"] }
 ```
 
+## Key 0111001 onto a carrier and size four more signals
+
+Type `f1` or `f2` for each BFSK element and `0` or `180` for each BPSK phase in degrees (the slide figure draws a 1 as the carrier itself).
+
+```quiz
+[
+  {
+    "q": "Write the carrier frequency of each BFSK signal element.",
+    "type": "fill",
+    "code": "bit:    0   1   1   1   0   0   1\nlevel: ___ ___ ___ ___ ___ ___ ___",
+    "answer": ["f1", "f2", "f2", "f2", "f1", "f1", "f2"],
+    "explain": "BFSK: f₁ for a data element 0, f₂ for a 1. Bits 0 1 1 1 0 0 1 give `f1 f2 f2 f2 f1 f1 f2`."
+  },
+  {
+    "q": "Write the phase, in degrees, of each BPSK signal element.",
+    "type": "fill",
+    "code": "bit:    0   1   1   1   0   0   1\nlevel: ___ ___ ___ ___ ___ ___ ___",
+    "answer": ["180", "0", "0", "0", "180", "180", "0"],
+    "explain": "BPSK uses 0° and 180°; a 1 is the carrier (0°) and a 0 is the carrier turned upside down (180°): `180 0 0 0 180 180 0`."
+  },
+  {
+    "q": "A binary ASK signal carries 25 kbps with $d = 0.5$. What is its bandwidth, in kHz?",
+    "type": "numeric",
+    "answer": 37.5,
+    "tolerance": 0.05,
+    "unit": "kHz",
+    "explain": "$r = 1$, so $S = N = 25$ kbaud. $B = (1 + d)S = 1.5 \\times 25 = 37.5$ kHz."
+  },
+  {
+    "q": "A binary FSK signal carries 8 kbps with $d = 0$, using $f_1 = 40$ kHz and $f_2 = 52$ kHz. What is its bandwidth, in kHz?",
+    "type": "numeric",
+    "answer": 20,
+    "tolerance": 0.05,
+    "unit": "kHz",
+    "explain": "$S = N = 8$ kbaud and $2\\Delta f = f_2 - f_1 = 52 - 40 = 12$ kHz. $B = (1 + 0) \\times 8 + 12 = 20$ kHz."
+  },
+  {
+    "q": "A multi-level ASK scheme uses 4 amplitudes to carry 12 kbps. What is its baud rate, in kbaud?",
+    "type": "numeric",
+    "answer": 6,
+    "tolerance": 0.01,
+    "unit": "kbaud",
+    "explain": "$r = \\log_{2} 4 = 2$ bits per signal element, so $S = N / r = 12 / 2 = 6$ kbaud."
+  },
+  {
+    "q": "A multilevel FSK scheme uses 16 frequencies. How many bits does each signal element carry?",
+    "type": "numeric",
+    "answer": 4,
+    "tolerance": 0.01,
+    "unit": "bits",
+    "explain": "$r = \\log_{2} 16 = 4$ bits per signal element."
+  }
+]
+```
+
 ```quiz
 [
   {

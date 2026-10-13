@@ -118,6 +118,46 @@ fib-tree-play
 
 [Counting statements](#/comp3760-l1/counting-statements) turns "much faster" into something you can compute from the pseudocode before writing a line of Java.
 
+## Trace two algorithms for the tribonacci numbers
+
+The tribonacci numbers start 1, 1, 1, and each later one is the sum of the three before it: `trib` follows that definition recursively, `trib2` fills an array from the bottom.
+
+```quiz
+[
+  {
+    "q": "What does `trib(6)` return?",
+    "code": "Algo: trib( n )\n   if n ≤ 2\n      return 1\n   else\n      return trib( n-1 ) + trib( n-2 ) + trib( n-3 )",
+    "type": "numeric",
+    "answer": 17,
+    "tolerance": 0,
+    "explain": "trib(0) = trib(1) = trib(2) = 1. Then trib(3) = 1 + 1 + 1 = 3, trib(4) = 3 + 1 + 1 = 5, trib(5) = 5 + 3 + 1 = 9, trib(6) = 9 + 5 + 3 = 17."
+  },
+  {
+    "q": "How many calls to `trib` (including the first one) happen when `trib(6)` runs?",
+    "code": "Algo: trib( n )\n   if n ≤ 2\n      return 1\n   else\n      return trib( n-1 ) + trib( n-2 ) + trib( n-3 )",
+    "type": "numeric",
+    "answer": 25,
+    "tolerance": 0,
+    "explain": "calls(n) = 1 for n ≤ 2, and calls(n) = 1 + calls(n−1) + calls(n−2) + calls(n−3) otherwise. calls(3) = 1 + 1 + 1 + 1 = 4; calls(4) = 1 + 4 + 1 + 1 = 7; calls(5) = 1 + 7 + 4 + 1 = 13; calls(6) = 1 + 13 + 7 + 4 = 25. Twenty-five calls to produce 17."
+  },
+  {
+    "q": "Of those calls, how many are `trib(3)`?",
+    "type": "numeric",
+    "answer": 4,
+    "tolerance": 0,
+    "explain": "trib(6) calls trib(5), trib(4), trib(3): one trib(3). trib(5) calls trib(4), trib(3), trib(2): a second trib(3), and a second trib(4). Each of the two trib(4) calls makes trib(3), trib(2), trib(1): two more. 1 + 1 + 2 = 4 computations of the same value, 3. That repetition is what trib2 avoids."
+  },
+  {
+    "q": "How many times does the loop body `T[i] ← T[i-1] + T[i-2] + T[i-3]` execute in `trib2(20)`?",
+    "code": "Algo: trib2( n )\n   T[0] ← 1; T[1] ← 1; T[2] ← 1;\n   for i ← 3 to n do\n      T[i] ← T[i-1] + T[i-2] + T[i-3]\n   return T[n]",
+    "type": "numeric",
+    "answer": 18,
+    "tolerance": 0,
+    "explain": "i runs from 3 to 20 inclusive: 20 − 3 + 1 = 18 iterations, one per array cell above T[2]. Each T[i] is computed once and stored, so trib2 grows by one iteration when n grows by one, while the call count of trib nearly doubles (13 → 25 from n = 5 to n = 6)."
+  }
+]
+```
+
 ```quiz
 [
   {

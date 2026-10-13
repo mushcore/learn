@@ -215,6 +215,69 @@ solid-spotter
 }
 ```
 
+## Find the reasons to change in an `Invoice` and extend `Shipping`
+
+A discount if-chain that meets a customer type nobody planned for, its open/closed replacement for shipping, and an invoice with too many jobs.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\ndouble final_price(const string& customer, double price) {\n    if (customer == \"member\")\n        return price * 0.9;\n    else if (customer == \"senior\")\n        return price * 0.8;\n    else\n        return price;\n}\n\nint main() {\n    string customers[] = {\"member\", \"senior\", \"student\"};\n    for (const string& c : customers)\n        cout << final_price(c, 50) << \" \";\n    cout << endl;\n    return 0;\n}",
+    "options": [
+      "`45 40 50`",
+      "`45 40 45`",
+      "`45 40 0`",
+      "`5 10 0`"
+    ],
+    "answer": 0,
+    "explain": "member: 50 * 0.9 = 45. senior: 50 * 0.8 = 40. \"student\" matches no branch and falls to the final else, full price 50. Supporting a student discount means editing final_price again: the modification the Open/Closed Principle forbids."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nclass Shipping {\npublic:\n    virtual ~Shipping() {}\n    virtual int cost(int kg) const = 0;\n};\n\nclass Ground : public Shipping {\npublic:\n    int cost(int kg) const override { return 5 + 2 * kg; }\n};\n\nclass Air : public Shipping {\npublic:\n    int cost(int kg) const override { return 12 + 4 * kg; }\n};\n\nclass Drone : public Shipping {        // added later; Shipping untouched\npublic:\n    int cost(int kg) const override { return kg <= 2 ? 15 : 99; }\n};\n\nint main() {\n    Ground g;\n    Air a;\n    Drone d;\n    vector<Shipping*> options = { &g, &a, &d };\n    for (int kg : {2, 3}) {\n        for (Shipping* s : options) cout << s->cost(kg) << \" \";\n        cout << endl;\n    }\n    return 0;\n}",
+    "options": [
+      "`9 20 15`\n`11 24 99`",
+      "`9 20 15`\n`11 24 15`",
+      "`7 16 15`\n`8 20 99`",
+      "`9 20 99`\n`11 24 99`"
+    ],
+    "answer": 0,
+    "explain": "2 kg: Ground 5 + 2 * 2 = 9, Air 12 + 4 * 2 = 20, Drone 15 (2 <= 2). 3 kg: Ground 5 + 6 = 11, Air 12 + 12 = 24, Drone 99. Drone was added as a new class; the loop and Shipping were not opened, and the virtual call picks each class's cost."
+  },
+  {
+    "q": "Which members of `Invoice` give it a reason to change that has nothing to do with being an invoice? (select all)",
+    "code": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nclass Invoice {\n    vector<double> lines;\npublic:\n    void add(double amount) { lines.push_back(amount); }\n    double total() const {\n        double t = 0;\n        for (double x : lines) t += x;\n        return t;\n    }\n    void printPdf() const { cout << \"PDF: \" << total() << endl; }\n    void saveToDatabase() const { cout << \"INSERT \" << total() << endl; }\n    void emailCustomer(const string& to) const { cout << \"mail \" << to << endl; }\n};\n\nint main() {\n    Invoice inv;\n    inv.add(20);\n    inv.add(5.5);\n    inv.printPdf();\n    return 0;\n}",
+    "options": [
+      "`printPdf`",
+      "`saveToDatabase`",
+      "`emailCustomer`",
+      "`total`"
+    ],
+    "answer": [
+      0,
+      1,
+      2
+    ],
+    "explain": "Ask the SRP question: are there multiple reasons to change this class? A new PDF layout, a new database schema and a new mail server would each force an edit to Invoice. Adding lines and computing the total (20 + 5.5 = 25.5) is the invoice's own job; the other three belong in a printer, a repository and a mailer class."
+  },
+  {
+    "q": "The Shipping design is closed for modification because...",
+    "options": [
+      "adding Drone required a new class only, with no edit to Shipping, Ground, Air or the loop",
+      "Shipping has no data members",
+      "every cost is an int",
+      "the loop uses a vector"
+    ],
+    "answer": 0,
+    "explain": "Open for extension: a new behaviour is a new derived class that overrides cost. Closed for modification: the existing code is not edited to support the special case."
+  }
+]
+```
+
+```challenge
+{"prompt": "Extend <code>Discount</code> with two classes: <code>StudentDiscount</code>, whose <code>apply</code> takes 10% off, and <code>ClearanceDiscount</code>, whose <code>apply</code> halves the price. main is written and must not change.", "starter": "#include <iostream>\nusing namespace std;\n\nclass Discount {\npublic:\n    virtual ~Discount() {}\n    virtual double apply(double price) const = 0;\n};\n\n// write StudentDiscount (10% off) and ClearanceDiscount (half price) here\n\nint main() {\n    StudentDiscount student;\n    ClearanceDiscount clearance;\n    const Discount* discounts[] = { &student, &clearance };\n    for (const Discount* d : discounts)\n        cout << d->apply(80) << endl;\n    return 0;\n}\n", "expected": "72\n40", "hints": ["<code>double apply(double price) const override { return price * 0.9; }</code>", "Keep the <code>const</code>: main calls apply through a <code>const Discount*</code>."], "solution": "#include <iostream>\nusing namespace std;\n\nclass Discount {\npublic:\n    virtual ~Discount() {}\n    virtual double apply(double price) const = 0;\n};\n\nclass StudentDiscount : public Discount {\npublic:\n    double apply(double price) const override { return price * 0.9; }\n};\n\nclass ClearanceDiscount : public Discount {\npublic:\n    double apply(double price) const override { return price / 2; }\n};\n\nint main() {\n    StudentDiscount student;\n    ClearanceDiscount clearance;\n    const Discount* discounts[] = { &student, &clearance };\n    for (const Discount* d : discounts)\n        cout << d->apply(80) << endl;\n    return 0;\n}\n"}
+```
 ```quiz
 [
   {

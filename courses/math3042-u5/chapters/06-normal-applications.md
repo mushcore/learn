@@ -131,6 +131,21 @@ bit-error
 
 Raising $\sigma$ grows the tails that cross 2.5 V; moving the levels apart shrinks them. This is COMP 3721's bit error rate as a function of the signal-to-noise ratio.
 
+## Phone battery life, N(40, 4²) hours
+
+A phone model's battery lasts X hours on a full charge, normal with μ = 40 hours and σ = 4 hours.
+
+```quiz
+[
+  {"q": "Write the standardizing step for P(X < 45), the Z value as a fraction with no spaces, in the form `(x-mu)/sigma` with the numbers in.", "type": "text", "answer": ["(45-40)/4"], "explain": "Z = (x − μ)/σ = (45 − 40)/4 = 5/4 = 1.25."},
+  {"q": "P(X < 45) from the Z table = ? (4 decimals)", "type": "numeric", "answer": 0.8944, "tolerance": 6e-05, "explain": "Z = 1.25; row 1.2, column .05: P(Z ≤ 1.25) = 0.8944. Here Z is exact, so R agrees: pnorm(45, 40, 4) = 0.8943502."},
+  {"type": "fill", "q": "Complete the R call for P(X < 45).", "code": "pnorm(45, ___, ___)", "answer": ["40", "4"], "explain": "pnorm(x, mean, sd): μ = 40, then σ = 4 (not the variance 16)."},
+  {"type": "shade", "q": "Shade P(36 ≤ X ≤ 46), between 36 and 46 hours. What percentage is it?", "mu": 40, "sigma": 4, "answer": 77.45, "tolerance": 1, "lo": -1, "hi": 1.5, "explain": "Z = (36 − 40)/4 = −1.00 and (46 − 40)/4 = 1.50. Between: 0.9332 − 0.1587 = 0.7745, so 77.45 %. The handles go to −1σ and +1.5σ."},
+  {"q": "P(36 ≤ X ≤ 46) = ? (4 decimals)", "type": "numeric", "answer": 0.7745, "tolerance": 6e-05, "explain": "P(Z ≤ 1.50) − P(Z ≤ −1.00) = 0.9332 − 0.1587 = 0.7745. In R, pnorm(46, 40, 4) − pnorm(36, 40, 4)."},
+  {"q": "The 10th percentile of battery life, the life only 10 % of phones fall below = ? (2 decimals, hours)", "type": "numeric", "answer": 34.88, "tolerance": 0.006, "unit": "h", "explain": "Backwards: P(Z ≤ z) = 0.10 is nearest 0.1003 at z = −1.28 (0.0985 at −1.29 is farther). x = μ + zσ = 40 + (−1.28)(4) = 40 − 5.12 = 34.88 hours. qnorm(0.10, 40, 4) = 34.8738."}
+]
+```
+
 ```quiz
 [
   {

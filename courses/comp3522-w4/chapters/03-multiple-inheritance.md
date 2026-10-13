@@ -115,6 +115,61 @@ A cleaner fix is to override `all_info` in math_student and call both base versi
 The compiler never picks one base for you. With no qualifier it refuses; with `student::` or `mathematician::` it complies; with an override in the most derived class the call is unambiguous again.
 :::
 
+## Build a `SmartPhone` from two bases and resolve its clashes
+
+Three new two-parent classes: a smartphone whose bases both have an `id`, an amphibious car, and a clock radio whose bases both have `status()`.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Phone {\npublic:\n    int id;\n    Phone(int number) : id(number) { cout << \"Phone \"; }\n};\n\nclass Camera {\npublic:\n    int id;\n    Camera(int megapixels) : id(megapixels) { cout << \"Camera \"; }\n};\n\nclass SmartPhone : public Phone, public Camera {\npublic:\n    SmartPhone() : Phone(604), Camera(48) { cout << \"SmartPhone \"; }\n};\n\nint main() {\n    SmartPhone s;\n    cout << s.Camera::id << \" \" << s.Phone::id << endl;\n    return 0;\n}",
+    "options": [
+      "`Phone Camera SmartPhone 48 604`",
+      "`Camera Phone SmartPhone 48 604`",
+      "`SmartPhone Phone Camera 604 48`",
+      "a compile error: `id` is ambiguous"
+    ],
+    "answer": 0,
+    "explain": "Bases are constructed in the order they are listed after the colon, `public Phone, public Camera`, then the derived body: `Phone Camera SmartPhone`. Both bases have an `id`, which would be ambiguous unqualified, but `s.Camera::id` is 48 and `s.Phone::id` is 604, so the scoped reads compile and print `48 604`."
+  },
+  {
+    "q": "The same classes, with main changed to read the id without a qualifier. Click the line the compiler rejects.",
+    "type": "spotbug",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Phone {\npublic:\n    int id;\n    Phone(int number) : id(number) { cout << \"Phone \"; }\n};\n\nclass Camera {\npublic:\n    int id;\n    Camera(int megapixels) : id(megapixels) { cout << \"Camera \"; }\n};\n\nclass SmartPhone : public Phone, public Camera {\npublic:\n    SmartPhone() : Phone(604), Camera(48) { cout << \"SmartPhone \"; }\n};\n\nint main() {\n    SmartPhone s;\n    cout << s.id << endl;\n    return 0;\n}",
+    "answer": [
+      23
+    ],
+    "explain": "SmartPhone inherits two members named `id`, one from each base, with no priority for either. `s.id` is a compile error: request for member 'id' is ambiguous. Qualify it as `s.Phone::id` or `s.Camera::id`."
+  },
+  {
+    "q": "Complete the initializer list so each base gets its own argument (base names, in the order listed).",
+    "type": "fill",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Car {\npublic:\n    int wheels;\n    Car(int w) : wheels(w) {}\n};\n\nclass Boat {\npublic:\n    int props;\n    Boat(int p) : props(p) {}\n};\n\nclass Amphibian : public Car, public Boat {\npublic:\n    Amphibian(int w, int p) : ___(w), ___(p) {}\n};\n\nint main() {\n    Amphibian a(6, 2);\n    cout << a.wheels << \" wheels, \" << a.props << \" props\" << endl;\n    return 0;\n}",
+    "answer": [
+      "Car",
+      "Boat"
+    ],
+    "explain": "Each base is initialized by its class name in the derived constructor's list: `: Car(w), Boat(p)`. Neither base has a default constructor, so leaving either out is a compile error. `Amphibian a(6, 2)` stores 6 wheels and 2 props."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Radio {\npublic:\n    void status() const { cout << \"FM 101.1\"; }\n};\n\nclass Clock {\npublic:\n    void status() const { cout << \"07:30\"; }\n};\n\nclass ClockRadio : public Radio, public Clock {\npublic:\n    void status() const {\n        Clock::status();\n        cout << \", \";\n        Radio::status();\n        cout << endl;\n    }\n};\n\nint main() {\n    ClockRadio cr;\n    cr.status();\n    cr.Radio::status();\n    cout << endl;\n    return 0;\n}",
+    "options": [
+      "`07:30, FM 101.1`\n`FM 101.1`",
+      "`FM 101.1, 07:30`\n`FM 101.1`",
+      "`07:30, FM 101.1`\n`07:30`",
+      "a compile error: `status` is ambiguous"
+    ],
+    "answer": 0,
+    "explain": "ClockRadio declares its own `status()`, which hides both inherited ones, so `cr.status()` is not ambiguous. Its body calls Clock's first (`07:30`), then `, `, then Radio's (`FM 101.1`) and ends the line. `cr.Radio::status()` names the Radio version explicitly and prints `FM 101.1`, followed by main's endl."
+  }
+]
+```
+
+```challenge
+{"prompt": "Write <code>TeachingAssistant</code>, derived publicly from both <code>Student</code> and <code>Employee</code>. Its constructor takes the program and the hours and passes each to its base. Both bases define <code>describe()</code>, so give TeachingAssistant its own <code>describe()</code> that calls Student's version, then Employee's.", "starter": "#include <iostream>\n#include <string>\nusing namespace std;\n\nclass Student {\n    string program;\npublic:\n    Student(const string& p) : program(p) {}\n    void describe() const { cout << \"studies \" << program << endl; }\n};\n\nclass Employee {\n    int hours;\npublic:\n    Employee(int h) : hours(h) {}\n    void describe() const { cout << \"works \" << hours << \" h\" << endl; }\n};\n\n// write TeachingAssistant here\n\nint main() {\n    TeachingAssistant ta(\"CST\", 10);\n    ta.describe();\n    return 0;\n}\n", "expected": "studies CST\nworks 10 h", "hints": ["<code>class TeachingAssistant : public Student, public Employee</code>", "<code>TeachingAssistant(const string&amp; p, int h) : Student(p), Employee(h) {}</code>", "Inside describe: <code>Student::describe(); Employee::describe();</code>"], "solution": "#include <iostream>\n#include <string>\nusing namespace std;\n\nclass Student {\n    string program;\npublic:\n    Student(const string& p) : program(p) {}\n    void describe() const { cout << \"studies \" << program << endl; }\n};\n\nclass Employee {\n    int hours;\npublic:\n    Employee(int h) : hours(h) {}\n    void describe() const { cout << \"works \" << hours << \" h\" << endl; }\n};\n\nclass TeachingAssistant : public Student, public Employee {\npublic:\n    TeachingAssistant(const string& p, int h) : Student(p), Employee(h) {}\n    void describe() const {\n        Student::describe();\n        Employee::describe();\n    }\n};\n\nint main() {\n    TeachingAssistant ta(\"CST\", 10);\n    ta.describe();\n    return 0;\n}\n"}
+```
 ```quiz
 [
   {

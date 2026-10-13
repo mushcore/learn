@@ -69,6 +69,53 @@ A router is generally considered a **network-layer device**, and the addresses a
 
 E01 exercises 3 and 4 use these facts; both are worked in [E01 and the sample quiz](#/comp3721-w1/e01-sample-quiz).
 
+## Follow one frame through a hub, a switch and a router
+
+Each device below receives one frame and does what its highest layer allows.
+
+```quiz
+[
+  {
+    "q": "A 6-port hub receives a frame on port 2. Out of how many ports does it send the signal?",
+    "type": "numeric",
+    "answer": 5,
+    "tolerance": 0,
+    "explain": "A hub repeats the signal out all ports except the one it came in on: $6 - 1 = 5$ ports."
+  },
+  {
+    "q": "An 8-port link-layer switch receives a frame on port 1 addressed to the host on port 6. Out of how many ports does it send the frame?",
+    "type": "numeric",
+    "answer": 1,
+    "tolerance": 0,
+    "explain": "A switch reads the destination MAC address and filters: the frame goes out port 6 only, 1 port."
+  },
+  {
+    "q": "A router connects 4 networks, one interface on each. How many link-layer (MAC) addresses does it have?",
+    "type": "numeric",
+    "answer": 4,
+    "tolerance": 0,
+    "explain": "Difference 1: a router has a link-layer address and an IP address for **each** interface, so 4 MAC addresses (and 4 IP addresses)."
+  },
+  {
+    "q": "A frame arrives at a router interface, but its link-layer destination address is another device's. The router forwards it anyway.",
+    "type": "tf",
+    "answer": false,
+    "explain": "Difference 2: a router acts only on packets whose link-layer destination address matches the address of the interface at which the packet arrives. This frame is not for the router."
+  },
+  {
+    "q": "A device regenerates the signal and reads the source and destination MAC addresses, but never the IP address. Which device is it?",
+    "options": [
+      "Hub",
+      "Link-layer switch",
+      "Router",
+      "Modem"
+    ],
+    "answer": 1,
+    "explain": "Reading MAC addresses needs the data-link layer, and not reading IP addresses means it stops there: a **link-layer switch** (physical + data link). A hub reads no addresses; a router also reads the IP address."
+  }
+]
+```
+
 ```quiz
 [
   {

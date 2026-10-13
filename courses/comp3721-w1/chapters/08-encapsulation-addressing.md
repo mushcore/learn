@@ -86,6 +86,73 @@ A logical (IP) address is global: it identifies a host on the whole Internet. A 
 
 The answer, with the reason the upper layers are untouched, is worked in [E01 and the sample quiz](#/comp3721-w1/e01-sample-quiz).
 
+## Trace a message across two routers
+
+Host A sends a message to host B through router R1 and then router R2, so the path has three links: A to R1, R1 to R2, R2 to B.
+
+```quiz
+[
+  {
+    "q": "Which header stack leaves A's data-link layer?",
+    "options": [
+      "$H_L\\ H_N\\ H_T\\ M$",
+      "$H_N\\ H_T\\ M$",
+      "$H_T\\ H_N\\ H_L\\ M$",
+      "$H_L\\ M$"
+    ],
+    "answer": 0,
+    "explain": "Each layer adds its header in front of what it got from above: $M$, then $H_T\\ M$ (segment), then $H_N\\ H_T\\ M$ (datagram), then $H_L\\ H_N\\ H_T\\ M$ (frame)."
+  },
+  {
+    "q": "How many different link-layer headers does the message carry on its way from A to B?",
+    "type": "numeric",
+    "answer": 3,
+    "tolerance": 0,
+    "explain": "One per link. A writes the first $H_L$; R1 strips it and writes a new one for the R1–R2 link; R2 does the same for the R2–B link: 3 link-layer headers."
+  },
+  {
+    "q": "The network-layer header that reaches B is the one A wrote.",
+    "type": "tf",
+    "answer": true,
+    "explain": "Routers read $H_N$ to choose the next link but leave it, $H_T$ and $M$ untouched. Only $H_L$ is replaced at each router."
+  },
+  {
+    "q": "Which header does R2 replace?",
+    "options": [
+      "Only $H_L$",
+      "$H_L$ and $H_N$",
+      "$H_N$ only",
+      "All three headers"
+    ],
+    "answer": 0,
+    "explain": "R2 runs network, data link and physical. Its data-link layer strips $H_L$, its network layer reads $H_N$, and its data-link layer writes a new $H_L$ for the link to B."
+  },
+  {
+    "type": "match",
+    "q": "Match each address seen on this trip to its level.",
+    "pairs": [
+      [
+        "alice@bcit.ca",
+        "application: name"
+      ],
+      [
+        "port 8080",
+        "transport: port number"
+      ],
+      [
+        "142.232.230.10",
+        "network: logical (IP) address"
+      ],
+      [
+        "3C:52:82:1A:7F:09",
+        "data link: link-layer (MAC) address"
+      ]
+    ],
+    "explain": "An email address is an application-layer name; a port number identifies a process on a host; a dotted IP address is the logical address of a host on the Internet; the six-byte hexadecimal address is a link-layer (MAC) address, valid in one network and rewritten at each router."
+  }
+]
+```
+
 ```quiz
 [
   {

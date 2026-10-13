@@ -96,6 +96,20 @@ scatter-corr
 { "preset": "mtcars: wt vs mpg (Unit 2)", "title": "mtcars: fuel efficiency versus weight (drag the points)" }
 ```
 
+## A scatter plot of apartment rent against size
+
+Six apartments: size (m²) 45, 60, 52, 75, 68, 90 and monthly rent in dollars 1650, 2150, 1750, 2450, 2400, 2850, in a data frame `apts` with columns `size` and `rent`.
+
+```quiz
+[
+  {"q": "Rent is explained by size. Which variable goes on the horizontal axis?", "options": ["size", "rent", "either; it makes no difference to the picture", "neither; use a bar chart"], "answer": 0, "explain": "Y (rent) is the response on the vertical axis; X (size) is horizontal. The formula is `rent ~ size`."},
+  {"q": "The points rise from left to right. What sign does $r$ have?", "type": "text", "answer": ["positive", "+", "plus"], "explain": "An upward trend means larger X goes with larger Y, so $r > 0$."},
+  {"q": "Compute `cor(apts$size, apts$rent)`. (3 decimals)", "type": "numeric", "answer": 0.985, "tolerance": 0.0015, "explain": "Using the Unit 1 formula on the six pairs, $r = 0.9846$: a very strong positive linear relationship."},
+  {"q": "The regression line is rent = 27.45 · size + 424.3. Predict the rent of an 80 m² apartment. (nearest dollar)", "type": "numeric", "answer": 2620, "tolerance": 1, "unit": "dollars", "explain": "$27.45 \\times 80 + 424.3 = 2196.0 + 424.3 = 2620.3 \\approx 2620$."},
+  {"type": "fill", "q": "Fill the two blanks to draw the points with a regression line in lattice.", "code": "xyplot(___ ~ size, data=apts, pch=19,\n       main=paste0(\"Rent versus Size for n = \", nrow(apts), \" apartments\"),\n       type=c(\"p\", \"___\"))", "answer": ["rent", "r"], "explain": "Left of `~` is Y, so `rent ~ size`. `type=c(\"p\", \"r\")` draws the data points (p) and a regression line (r)."}
+]
+```
+
 ```quiz
 [
   {"q": "A scatter plot requires how many numerical variables measured on each individual?", "options": ["Two", "One", "At least three", "None; it uses categories"], "answer": 0, "explain": "'When we measure two or more numerical variables for each individual/unit, then it is possible to create a scatter plot': one point (X, Y) per unit."},

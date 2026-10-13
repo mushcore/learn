@@ -88,6 +88,54 @@ Each method pairs with a shift-keying scheme: AM with ASK, FM with FSK, PM with 
 
 *When we have a bandpass channel, we require analog transmission.* Digital data gets there by digital-to-analog conversion (ASK, FSK, PSK, QAM); analog data by analog-to-analog conversion (AM, FM, PM).
 
+## Bandwidth for five more modulated signals
+
+Use $B_{AM} = 2B$ and $B_{FM} = 2(1 + \beta)B$, where $B$ is the bandwidth of the modulating signal.
+
+```quiz
+[
+  {
+    "q": "An 8 kHz audio signal is sent by AM. What is the bandwidth of the modulated signal, in kHz?",
+    "type": "numeric",
+    "answer": 16,
+    "tolerance": 0.01,
+    "unit": "kHz",
+    "explain": "$B_{AM} = 2 \\times 8 = 16$ kHz, centred on the carrier frequency."
+  },
+  {
+    "q": "A 10 kHz signal is sent by FM with $\\beta = 3$. What is $B_{FM}$, in kHz?",
+    "type": "numeric",
+    "answer": 80,
+    "tolerance": 0.01,
+    "unit": "kHz",
+    "explain": "$B_{FM} = 2(1 + 3) \\times 10 = 2 \\times 4 \\times 10 = 80$ kHz."
+  },
+  {
+    "q": "A 15 kHz stereo signal sent by FM needs $B_{FM} = 180$ kHz. What is $\\beta$?",
+    "type": "numeric",
+    "answer": 5,
+    "tolerance": 0.01,
+    "explain": "$180 = 2(1 + \\beta) \\times 15 = 30(1 + \\beta)$, so $1 + \\beta = 6$ and $\\beta = 5$."
+  },
+  {
+    "q": "A band 1170 kHz wide is given to AM stations at 10 kHz each. How many stations fit side by side?",
+    "type": "numeric",
+    "answer": 117,
+    "tolerance": 0.01,
+    "unit": "stations",
+    "explain": "$1170 / 10 = 117$ stations, each $2 \\times 5$ kHz wide."
+  },
+  {
+    "q": "An AM station's carrier is at 1000 kHz. What is the lowest carrier frequency the next station above it may use, in kHz?",
+    "type": "numeric",
+    "answer": 1010,
+    "tolerance": 0.01,
+    "unit": "kHz",
+    "explain": "Carriers must be separated by at least 10 kHz, so the next carrier up is at $1000 + 10 = 1010$ kHz."
+  }
+]
+```
+
 ```quiz
 [
   {

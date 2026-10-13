@@ -272,6 +272,61 @@ map-insert
 { "prompt": "Read words from <code>cin</code> until it runs out, count each word in a <code>map&lt;string, int&gt;</code> using <code>[]</code>, then print one <code>word count</code> line per key. The map keeps the keys sorted for you.", "starter": "#include <iostream>\n#include <map>\n#include <string>\nusing namespace std;\n\nint main() {\n    map<string, int> counts;\n    string word;\n    // read every word and count it\n\n    // print each key and its count\n\n    return 0;\n}\n", "stdin": "the cat and the dog and the bird", "expected": "and 2\nbird 1\ncat 1\ndog 1\nthe 3", "hints": ["<code>while (cin &gt;&gt; word) counts[word]++;</code> — <code>[]</code> creates the key with 0 the first time it is seen.", "Walk it with iterators: <code>for (auto it = counts.begin(); it != counts.end(); ++it) cout &lt;&lt; it-&gt;first &lt;&lt; \" \" &lt;&lt; it-&gt;second &lt;&lt; endl;</code>"], "solution": "#include <iostream>\n#include <map>\n#include <string>\nusing namespace std;\n\nint main() {\n    map<string, int> counts;\n    string word;\n    while (cin >> word) {\n        counts[word]++;\n    }\n    for (auto it = counts.begin(); it != counts.end(); ++it) {\n        cout << it->first << \" \" << it->second << endl;\n    }\n    return 0;\n}\n" }
 ```
 
+## Stock a `map`, group a `multimap` and drain a `priority_queue`
+
+An office-supply map where insert and `[]` behave differently, a multimap of weather by day, and a priority queue of strings.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <map>\n#include <string>\nusing namespace std;\n\nint main() {\n    map<string, int> stock;\n    stock.insert(make_pair(\"pens\", 12));\n    stock.insert(make_pair(\"ink\", 3));\n    stock.insert(make_pair(\"pens\", 50));     // same key\n    stock[\"ink\"] += 4;\n    stock[\"tape\"];                           // never assigned\n    auto result = stock.insert(make_pair(\"glue\", 6));\n    cout << result.second << \" \" << stock.size() << endl;\n    for (const auto& p : stock) cout << p.first << \"=\" << p.second << \" \";\n    cout << endl;\n    return 0;\n}",
+    "options": [
+      "`1 4`\n`glue=6 ink=7 pens=12 tape=0`",
+      "`1 3`\n`glue=6 ink=7 pens=50`",
+      "`1 4`\n`pens=12 ink=7 tape=0 glue=6`",
+      "`0 4`\n`glue=6 ink=3 pens=12 tape=0`"
+    ],
+    "answer": 0,
+    "explain": "The second pens insert is refused: the key exists, so pens stays 12. `stock[\"ink\"] += 4` overwrites through `[]`: 3 + 4 = 7. `stock[\"tape\"]` alone creates tape with the default int 0. Inserting glue succeeds, so `result.second` is true (prints 1) and there are 4 keys. The loop prints in key order: glue, ink, pens, tape."
+  },
+  {
+    "q": "Type the line this prints.",
+    "type": "text",
+    "code": "#include <iostream>\n#include <map>\n#include <string>\nusing namespace std;\n\nint main() {\n    multimap<int, string> days;\n    days.insert(make_pair(3, \"ice\"));\n    days.insert(make_pair(1, \"sun\"));\n    days.insert(make_pair(3, \"fog\"));\n    days.insert(make_pair(2, \"rain\"));\n    days.insert(make_pair(3, \"hail\"));\n    cout << days.count(3) << \":\";\n    auto range = days.equal_range(3);\n    for (auto it = range.first; it != range.second; ++it) cout << \" \" << it->second;\n    cout << \" | first \" << days.begin()->first << \" \" << days.begin()->second << endl;\n    return 0;\n}",
+    "answer": [
+      "3: ice fog hail | first 1 sun"
+    ],
+    "explain": "A multimap keeps every pair, sorted by key, and equal keys in insertion order. Key 3 appears 3 times: ice, fog, hail. equal_range(3) is the half-open range of those three. The smallest key is 1, so begin() is `1 sun`."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <queue>\n#include <string>\nusing namespace std;\n\nint main() {\n    priority_queue<string> pq;\n    pq.push(\"kiwi\");\n    pq.push(\"apple\");\n    pq.push(\"pear\");\n    pq.push(\"fig\");\n    cout << pq.top() << \" \";\n    pq.pop();\n    cout << pq.top() << \" \" << pq.size() << endl;\n    return 0;\n}",
+    "options": [
+      "`pear kiwi 3`",
+      "`apple fig 3`",
+      "`kiwi apple 3`",
+      "`pear kiwi 4`"
+    ],
+    "answer": 0,
+    "explain": "A priority_queue's top is the largest element by `<`, and strings compare alphabetically: pear > kiwi > fig > apple. top is `pear`; after pop the largest left is `kiwi`, with 3 elements."
+  },
+  {
+    "q": "Complete the lookup (two blanks, in order).",
+    "type": "fill",
+    "code": "#include <iostream>\n#include <map>\n#include <string>\nusing namespace std;\n\nint main() {\n    map<string, int> stock = {{\"ink\", 7}, {\"pens\", 12}};\n    auto it = stock.find(\"pens\");\n    if (it != stock.___())\n        cout << it->first << \" \" << it->___ << endl;\n    return 0;\n}",
+    "answer": [
+      "end",
+      "second"
+    ],
+    "explain": "find returns end() when the key is missing, so compare with `stock.end()` before dereferencing. The iterator points at a pair: `it->first` is the key, `it->second` the value 12."
+  }
+]
+```
+
+```challenge
+{"prompt": "Insert every entry into the map with <code>insert</code>, so a repeated name keeps its first score. Print the size, then look up <code>ana</code> and <code>dan</code> with <code>find</code>: print <code>name score</code> when found, <code>name not found</code> otherwise.", "starter": "#include <iostream>\n#include <map>\n#include <string>\n#include <utility>\n#include <vector>\nusing namespace std;\n\nint main() {\n    vector<pair<string, int>> entries = {{\"ana\", 70}, {\"ben\", 85}, {\"ana\", 90}, {\"cy\", 60}};\n    map<string, int> scores;\n    // 1. insert every entry with insert(): a repeated name keeps its FIRST score\n\n    cout << scores.size() << endl;\n    // 2. look up \"ana\" and \"dan\" with find(): print \"name score\" or \"name not found\"\n\n    return 0;\n}\n", "expected": "3\nana 70\ndan not found", "hints": ["<code>for (const auto&amp; e : entries) scores.insert(e);</code> — a pair is the map's value_type.", "<code>auto it = scores.find(name); if (it != scores.end()) ...</code>", "<code>scores[name]</code> would create dan; use find."], "solution": "#include <iostream>\n#include <map>\n#include <string>\n#include <utility>\n#include <vector>\nusing namespace std;\n\nint main() {\n    vector<pair<string, int>> entries = {{\"ana\", 70}, {\"ben\", 85}, {\"ana\", 90}, {\"cy\", 60}};\n    map<string, int> scores;\n    for (const auto& e : entries) {\n        scores.insert(e);\n    }\n    cout << scores.size() << endl;\n    for (string name : {\"ana\", \"dan\"}) {\n        auto it = scores.find(name);\n        if (it != scores.end())\n            cout << it->first << \" \" << it->second << endl;\n        else\n            cout << name << \" not found\" << endl;\n    }\n    return 0;\n}\n"}
+```
 ```quiz
 [
   {

@@ -118,6 +118,21 @@ z-table
 
 The two-decimal split: 1.96 is row 1.9 and column .06, never row 1.96 or column .96. A right tail needs the $1 -$; the entry alone is the left tail, and 0.9901 is not $P(Z > 2.33)$. And a "between" is the larger entry minus the smaller, never the two added.
 
+## Four more table reads, forward and backward
+
+Z is standard normal, N(0, 1); read each answer from the left-tail table with z to 2 decimals.
+
+```quiz
+[
+  {"q": "Write the table arithmetic for P(Z > 1.47) as one subtraction with the entry in, no spaces.", "type": "text", "answer": ["1-0.9292"], "explain": "A right tail is 1 minus the entry: row 1.4, column .07 gives 0.9292, so 1 − 0.9292 = 0.0708."},
+  {"q": "P(Z > 1.47) = ? (4 decimals)", "type": "numeric", "answer": 0.0708, "tolerance": 6e-05, "explain": "1 − P(Z ≤ 1.47) = 1 − 0.9292 = 0.0708. R: 1 − pnorm(1.47) = 0.0707809."},
+  {"q": "P(−1.23 ≤ Z ≤ 0.68) = ? (4 decimals)", "type": "numeric", "answer": 0.6424, "tolerance": 6e-05, "explain": "Between: entry at 0.68 minus entry at −1.23 = 0.7517 − 0.1093 = 0.6424. (Row −1.2, column .03 is 0.1093; by symmetry also 1 − 0.8907.)"},
+  {"type": "fill", "q": "Complete the R line for P(−1.23 ≤ Z ≤ 0.68).", "code": "pnorm(0.68) - pnorm(___)", "answer": ["-1.23"], "explain": "Upper left tail minus lower left tail: pnorm(0.68) − pnorm(−1.23) = 0.6423992, the table's 0.6424."},
+  {"q": "Which z has P(Z ≤ z) = 0.80? (2 decimals)", "type": "numeric", "answer": 0.84, "tolerance": 0.005, "explain": "Backwards: no entry is exactly 0.8000. Row 0.8 has 0.7995 at .04 and 0.8023 at .05; 0.7995 is nearer, so z = 0.84. qnorm(0.80) = 0.8416."},
+  {"type": "shade", "q": "Shade P(Z > 0.5) on the standard normal curve. What percentage is it?", "mu": 0, "sigma": 1, "answer": 30.85, "tolerance": 1, "region": "above", "lo": 0.5, "explain": "Right tail: 1 − P(Z ≤ 0.50) = 1 − 0.6915 = 0.3085, so 30.85 %. Drag the lower handle to 0.5; the region to its right is the tail."}
+]
+```
+
 ```quiz
 [
   {

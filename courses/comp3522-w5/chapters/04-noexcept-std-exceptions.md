@@ -203,6 +203,63 @@ unwind-stepper
 { "preset": "no handler anywhere" }
 ```
 
+## Break a `noexcept` promise and trace a `Car` whose engine throws
+
+A noexcept function handed an odd number, three library calls that throw standard exceptions, and a class whose middle member fails to construct.
+
+```quiz
+[
+  {
+    "q": "What is printed to stdout before the program stops?",
+    "code": "#include <iostream>\n#include <stdexcept>\nusing namespace std;\n\nint half(int x) noexcept {\n    if (x % 2 != 0) throw invalid_argument(\"odd\");\n    return x / 2;\n}\n\nint main() {\n    try {\n        cout << half(8) << endl;\n        cout << half(3) << endl;\n        cout << half(4) << endl;\n    } catch (...) {\n        cout << \"caught\" << endl;\n    }\n    cout << \"end\" << endl;\n    return 0;\n}",
+    "options": [
+      "`4`",
+      "`4`\n`caught`\n`end`",
+      "`4`\n`caught`",
+      "`4`\n`2`\n`end`"
+    ],
+    "answer": 0,
+    "explain": "half(8) returns 4. half(3) throws, but half is noexcept, so the exception may not leave it: std::terminate is called at the function's boundary and the program ends. main's `catch (...)` never gets a chance, so neither `caught` nor `end` prints. g++ even warns that this throw will always call terminate."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <stdexcept>\n#include <string>\n#include <vector>\nusing namespace std;\n\nint main() {\n    vector<int> v = {1, 2, 3};\n    try {\n        cout << v.at(2) << endl;\n        cout << v.at(3) << endl;\n    } catch (out_of_range&) {\n        cout << \"out_of_range\" << endl;\n    }\n    string inputs[] = {\"12\", \"x9\"};\n    for (const string& s : inputs) {\n        try { cout << stoi(s) << endl; }\n        catch (logic_error&) { cout << \"logic_error\" << endl; }\n    }\n    return 0;\n}",
+    "options": [
+      "`3`\n`out_of_range`\n`12`\n`logic_error`",
+      "`3`\n`0`\n`12`\n`0`",
+      "`3`\n`out_of_range`\n`12`\n`9`",
+      "`3`\n`out_of_range`\n`12`"
+    ],
+    "answer": 0,
+    "explain": "`v.at(2)` is the third element, 3. `v.at(3)` is past the end, and at() checks: it throws std::out_of_range, caught by the first handler. `stoi(\"12\")` gives 12. `stoi(\"x9\")` cannot read a number from the first character and throws std::invalid_argument, which derives from logic_error, so `catch (logic_error&)` takes it."
+  },
+  {
+    "q": "Complete the override of `what()`.",
+    "type": "fill",
+    "code": "#include <iostream>\n#include <exception>\nusing namespace std;\n\nstruct not_ready : public exception {\n    const char* what() const ___ override { return \"printer not ready\"; }\n};\n\nint main() {\n    try {\n        throw not_ready();\n    } catch (exception& e) {\n        cout << e.what() << endl;\n    }\n    return 0;\n}",
+    "answer": [
+      "noexcept"
+    ],
+    "explain": "std::exception declares `virtual const char* what() const noexcept`, and an override may not promise less, so it must say `noexcept` too: `const char* what() const noexcept override`. The handler holds an `exception&`, so the call dispatches to it and prints `printer not ready`."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <stdexcept>\n#include <string>\nusing namespace std;\n\nstruct Part {\n    string n;\n    Part(string n) : n(n) { cout << \"+\" << n << \" \"; }\n    ~Part() { cout << \"-\" << n << \" \"; }\n};\n\nstruct Engine {\n    Engine() { cout << \"+engine \"; throw runtime_error(\"seized\"); }\n    ~Engine() { cout << \"-engine \"; }\n};\n\nstruct Car {\n    Part wheel{\"wheel\"};\n    Engine engine;\n    Part seat{\"seat\"};\n    Car() { cout << \"+car \"; }\n    ~Car() { cout << \"-car \"; }\n};\n\nint main() {\n    try {\n        Car c;\n    } catch (exception& e) {\n        cout << e.what();\n    }\n    cout << endl;\n    return 0;\n}",
+    "options": [
+      "`+wheel +engine -wheel seized`",
+      "`+wheel +engine -engine -wheel seized`",
+      "`+wheel +engine +seat -seat -wheel seized`",
+      "`+wheel +engine -wheel -car seized`"
+    ],
+    "answer": 0,
+    "explain": "Members are built in declaration order: wheel, then engine. Engine's constructor prints `+engine` and throws, so the engine never exists (no `-engine`), seat is never built, and Car's body never runs (no `+car`, and no `-car`, because no Car object was created). Only the fully built wheel is destroyed on the way out: `-wheel`. The handler prints `seized`."
+  }
+]
+```
+
+```challenge
+{"prompt": "Write <code>negative_age</code>, a class derived publicly from <code>std::exception</code> whose <code>what()</code> override returns <code>\"age cannot be negative\"</code>. Use the exact signature of the base's <code>what()</code>.", "starter": "#include <iostream>\n#include <exception>\nusing namespace std;\n\n// write negative_age here\n\nvoid set_age(int age) {\n    if (age < 0) throw negative_age();\n    cout << \"age set to \" << age << endl;\n}\n\nint main() {\n    int tries[] = {30, -2};\n    for (int a : tries) {\n        try {\n            set_age(a);\n        } catch (exception& e) {\n            cout << e.what() << endl;\n        }\n    }\n    return 0;\n}\n", "expected": "age set to 30\nage cannot be negative", "hints": ["<code>class negative_age : public exception { public: ... };</code>", "<code>const char* what() const noexcept override { return \"age cannot be negative\"; }</code>"], "solution": "#include <iostream>\n#include <exception>\nusing namespace std;\n\nclass negative_age : public exception {\npublic:\n    const char* what() const noexcept override {\n        return \"age cannot be negative\";\n    }\n};\n\nvoid set_age(int age) {\n    if (age < 0) throw negative_age();\n    cout << \"age set to \" << age << endl;\n}\n\nint main() {\n    int tries[] = {30, -2};\n    for (int a : tries) {\n        try {\n            set_age(a);\n        } catch (exception& e) {\n            cout << e.what() << endl;\n        }\n    }\n    return 0;\n}\n"}
+```
 ```quiz
 [
   {

@@ -101,6 +101,21 @@ arrivals-play
 { "mode": "gaps" }
 ```
 
+## Gaps between cars at a toll booth, mean 8 s
+
+The time X between cars arriving at a toll booth is a memoryless waiting time with an average of 8 seconds.
+
+```quiz
+[
+  {"q": "Name the distribution of X (one word).", "type": "text", "answer": ["exponential", "exponential distribution"], "explain": "A waiting time in a memoryless system: exponential with β = 8 s, f(x) = (1/8)e^(−x/8) for x ≥ 0, and μ = σ = 8 s."},
+  {"q": "R's rate for this X = ? (3 decimals, per second)", "type": "numeric", "answer": 0.125, "tolerance": 0.0006, "explain": "rate = 1/β = 1/8 = 0.125 cars per second."},
+  {"q": "P(X ≤ 5), the next car within 5 s = ? (4 decimals)", "type": "numeric", "answer": 0.4647, "tolerance": 6e-05, "explain": "F(5) = 1 − e^(−5/8) = 1 − e^(−0.625) = 1 − 0.5353 = 0.4647."},
+  {"type": "fill", "q": "Complete the R call for P(X ≤ 5).", "code": "pexp(5, rate = ___)", "answer": ["1/8", "0.125", ".125"], "explain": "pexp takes the rate 1/β, not β: pexp(5, rate = 1/8) = 0.4647386. pexp(5, 8) would describe a mean gap of 1/8 s."},
+  {"q": "P(4 ≤ X ≤ 12) = ? (4 decimals)", "type": "numeric", "answer": 0.3834, "tolerance": 6e-05, "explain": "F(12) − F(4) = e^(−4/8) − e^(−12/8) = e^(−0.5) − e^(−1.5) = 0.6065 − 0.2231 = 0.3834."},
+  {"q": "Write P(X > 12) from the cdf with the numbers in, no spaces, using `e^(...)`.", "type": "text", "answer": ["e^(-12/8)", "e^(-1.5)", "1-(1-e^(-12/8))", "exp(-12/8)", "exp(-1.5)"], "explain": "P(X > x) = 1 − F(x) = e^(−x/β), so P(X > 12) = e^(−12/8) = e^(−1.5) = 0.2231."}
+]
+```
+
 ```quiz
 [
   {

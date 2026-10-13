@@ -77,6 +77,60 @@ data-rate
 { "bandwidth": 1, "unit": "MHz", "snr": 63, "levels": 8, "presets": { "Example 2: 1 MHz, SNR 63": { "bandwidth": 1, "unit": "MHz", "snr": 63, "levels": 8 }, "Same channel, 16 levels": { "bandwidth": 1, "unit": "MHz", "snr": 63, "levels": 16 }, "Extremely noisy: SNR 0": { "bandwidth": 1, "unit": "MHz", "snr": 0, "levels": 2 }, "Telephone line (textbook): 3000 Hz, SNR 3162": { "bandwidth": 3000, "unit": "Hz", "snr": 3162, "levels": 2 } } }
 ```
 
+## Find the capacity and the levels of three more channels
+
+Shannon gives the upper limit; Nyquist then gives the levels for that bit rate.
+
+```quiz
+[
+  {
+    "q": "A channel has a bandwidth of 200 kHz and an SNR of 255. What is its capacity, in Mbps?",
+    "type": "numeric",
+    "answer": 1.6,
+    "tolerance": 0.005,
+    "unit": "Mbps",
+    "explain": "$C = 200000 \\log_{2}(1 + 255) = 200000 \\log_{2} 256 = 200000 \\times 8 = 1600000$ bps $= 1.6$ Mbps."
+  },
+  {
+    "q": "Same channel (200 kHz, capacity 1.6 Mbps). Using the capacity as the bit rate, how many signal levels does Nyquist give?",
+    "type": "numeric",
+    "answer": 16,
+    "tolerance": 0.05,
+    "unit": "levels",
+    "explain": "$1600000 = 2 \\times 200000 \\times \\log_{2} L$, so $\\log_{2} L = 1600000 / 400000 = 4$ and $L = 2^{4} = 16$."
+  },
+  {
+    "q": "A channel has a bandwidth of 50 kHz and an $\\text{SNR}_{dB}$ of 20 dB. What is its capacity, in kbps (1 decimal)?",
+    "type": "numeric",
+    "answer": 332.9,
+    "tolerance": 0.1,
+    "unit": "kbps",
+    "explain": "Ratio first: $\\text{SNR} = 10^{20/10} = 100$. $C = 50000 \\log_{2}(1 + 100) = 50000 \\times 6.658 = 332911$ bps $= 332.9$ kbps. Putting 20 into the formula in place of 100 would give only 219.6 kbps."
+  },
+  {
+    "q": "A channel with a bandwidth of 8 kHz has to carry 56 kbps. What is the minimum SNR?",
+    "type": "numeric",
+    "answer": 127,
+    "tolerance": 0.5,
+    "explain": "$\\log_{2}(1 + \\text{SNR}) = 56000 / 8000 = 7$, so $1 + \\text{SNR} = 2^{7} = 128$ and $\\text{SNR} = 127$."
+  },
+  {
+    "q": "Same requirement (SNR = 127). What is the minimum $\\text{SNR}_{dB}$ (2 decimals)?",
+    "type": "numeric",
+    "answer": 21.04,
+    "tolerance": 0.006,
+    "unit": "dB",
+    "explain": "$\\text{SNR}_{dB} = 10 \\log_{10} 127 = 10(2.1038) = 21.04$ dB."
+  },
+  {
+    "q": "A channel has a bandwidth of 3 MHz and an SNR of 7. With 16 signal levels, Nyquist gives $2 \\times 3\\ \\text{MHz} \\times 4 = 24$ Mbps, so the channel can carry 24 Mbps.",
+    "type": "tf",
+    "answer": false,
+    "explain": "Shannon sets the upper limit: $C = 3 \\times 10^{6} \\log_{2}(1 + 7) = 3 \\times 10^{6} \\times 3 = 9$ Mbps. No matter how many levels we have, we cannot go above 9 Mbps. For 9 Mbps Nyquist needs $\\log_{2} L = 9 / 6 = 1.5$, i.e. $L = 2.83$ levels."
+  }
+]
+```
+
 ```quiz
 [
   {

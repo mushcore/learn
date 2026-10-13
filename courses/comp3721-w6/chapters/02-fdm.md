@@ -82,6 +82,53 @@ Slide wording: *In many cases, no need for a physical multiplexer/demultiplexer.
 
 *Five channels, each with a 100-kHz bandwidth, are to be multiplexed together. What is the minimum bandwidth of the link if there is a need for a guard band of 10 kHz between the channels to prevent interference?* It is worked in [Multiplexing examples](#/comp3721-w6/multiplexing-examples).
 
+## Plan five more FDM links
+
+$n$ channels need $n - 1$ guard bands, so $B_{link} = n \times B_{channel} + (n - 1) \times \text{guard}$.
+
+```quiz
+[
+  {
+    "q": "Four channels of 25 kHz are multiplexed with a 5 kHz guard band between neighbouring channels. What is the minimum link bandwidth, in kHz?",
+    "type": "numeric",
+    "answer": 115,
+    "tolerance": 0.01,
+    "unit": "kHz",
+    "explain": "4 channels need 3 guard bands: $4 \\times 25 + 3 \\times 5 = 100 + 15 = 115$ kHz."
+  },
+  {
+    "q": "The same four channels start at 200 kHz. Which band does channel 3 occupy? (Answer in the form `100 to 125 kHz`.)",
+    "type": "text",
+    "answer": ["260 to 285 kHz", "260 to 285", "260-285 kHz", "260-285", "260 - 285 kHz", "260 – 285 kHz", "260–285 kHz"],
+    "explain": "Each channel starts 25 + 5 = 30 kHz after the one before: channel 1 is 200 to 225, channel 2 is 230 to 255, channel 3 is **260 to 285 kHz** (channel 4 ends at 315, and $315 - 200 = 115$ checks)."
+  },
+  {
+    "q": "A link of 1 MHz carries channels of 90 kHz with a 10 kHz guard band between neighbours. How many channels fit at most?",
+    "type": "numeric",
+    "answer": 10,
+    "tolerance": 0.01,
+    "unit": "channels",
+    "explain": "$90n + 10(n - 1) \\le 1000$ gives $100n \\le 1010$, so $n = 10$: $10 \\times 90 + 9 \\times 10 = 990$ kHz fits; 11 channels would need 1090 kHz."
+  },
+  {
+    "q": "Six channels of 30 kHz must share a 200 kHz link with equal guard bands between neighbours. How wide can each guard band be, in kHz?",
+    "type": "numeric",
+    "answer": 4,
+    "tolerance": 0.01,
+    "unit": "kHz",
+    "explain": "The channels use $6 \\times 30 = 180$ kHz, leaving $200 - 180 = 20$ kHz for $6 - 1 = 5$ guard bands: $20 / 5 = 4$ kHz each."
+  },
+  {
+    "q": "How many guard bands does an FDM link with 12 channels need?",
+    "type": "numeric",
+    "answer": 11,
+    "tolerance": 0.01,
+    "unit": "guard bands",
+    "explain": "One between each pair of neighbours: $12 - 1 = 11$."
+  }
+]
+```
+
 ```quiz
 [
   {

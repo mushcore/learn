@@ -111,6 +111,72 @@ int main()
 
 Two strategies close the deck. **Test-driven development**: write the tests first, implement, the code is complete when the tests pass, refactor and pass again. **Simplify**: find the simplest input that provokes the bug, which is often not the input that revealed it; take pieces away until the bug disappears, or add them until it appears; binary-search the statements between the first good and the first bad intermediate result.
 
+## Choose tests and find the bug in four new functions
+
+New specifications for partitions and boundaries, and new bugs for the output that reveals them.
+
+```quiz
+[
+  {
+    "type": "numeric",
+    "q": "What does this print? (g++ warns about the loop.)",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int total = 0;\n    for (int i = 1; i <= 3; i++);\n    {\n        total += 5;\n    }\n    cout << total << endl;\n    return 0;\n}",
+    "answer": 5,
+    "explain": "The `;` right after the `for (...)` is the loop's whole body, an empty statement run three times. The braces are an ordinary block that runs once afterwards: total = 0 + 5 = 5, not 15."
+  },
+  {
+    "q": "A function accepts ages from 18 to 65 inclusive. Which five test values follow the deck's recipe (way off below, both boundaries, a typical inside value, way off above)?",
+    "options": [
+      "5, 18, 40, 65, 90",
+      "17, 18, 19, 64, 65",
+      "18, 30, 40, 50, 65",
+      "0, 17, 66, 100, 200"
+    ],
+    "answer": 0,
+    "explain": "The partitions are below 18, 18 to 65, and above 65. The deck's pattern for 100 to 999 was 50, 100, 500, 999, 1500: one value well outside each side, both boundaries, one typical value inside. Here: 5, 18, 40, 65, 90."
+  },
+  {
+    "type": "numeric",
+    "q": "`sumTo(n)` should return 1 + 2 + ... + n. A test calls `sumTo(4)` and expects 10. What does the program print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint sumTo(int n)\n{\n    int sum = 0;\n    for (int i = 1; i < n; ++i)\n    {\n        sum += i;\n    }\n    return sum;\n}\n\nint main()\n{\n    cout << sumTo(4) << endl;\n    return 0;\n}",
+    "answer": 6,
+    "explain": "The test reveals the bug's existence: 6 instead of 10. Debugging pinpoints the source: `i < n` stops at 3, so 1 + 2 + 3 = 6. The fix is `i <= n`, and the test stays in the suite as a regression test."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#define NDEBUG\n#include <cassert>\n#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int x = -1;\n    assert(x > 0);\n    cout << \"done \" << x << endl;\n    return 0;\n}",
+    "options": [
+      "`done -1`",
+      "`Assertion failed: x > 0`",
+      "`nothing: the program aborts`",
+      "`done 0`"
+    ],
+    "answer": 0,
+    "explain": "`#define NDEBUG` before `#include <cassert>` turns every `assert` into nothing, so the false condition is never checked and the program runs on. Output: `done -1`. Without NDEBUG it would stop with `Assertion failed`."
+  },
+  {
+    "type": "numeric",
+    "q": "`grade(int score)` accepts 0 to 100 and returns pass for 50 or more. How many disjoint equivalence partitions cover every int input?",
+    "answer": 4,
+    "tolerance": 0,
+    "explain": "Inputs processed the same way form one partition: below 0 (invalid), 0 to 49 (fail), 50 to 100 (pass), above 100 (invalid). Four partitions, each tested by at least one value, with boundary tests at -1, 0, 49, 50, 100 and 101."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "Write <code>bool isValidPercent(int p)</code> that accepts 0 to 100 inclusive. The boundary tests in <code>main</code> are written and must print:<pre>-1 false\n0 true\n50 true\n100 true\n101 false</pre>",
+  "starter": "#include <iostream>\nusing namespace std;\n\n// isValidPercent here\n\nint main()\n{\n    int tests[] = {-1, 0, 50, 100, 101};\n    for (int t : tests)\n    {\n        cout << t << ' ' << boolalpha << isValidPercent(t) << endl;\n    }\n    return 0;\n}\n",
+  "expected": "-1 false\n0 true\n50 true\n100 true\n101 false\n",
+  "hints": [
+    "Both ends are valid: <code>>=</code> and <code><=</code>.",
+    "<code>return p >= 0 && p <= 100;</code>"
+  ],
+  "solution": "#include <iostream>\nusing namespace std;\n\nbool isValidPercent(int p)\n{\n    return p >= 0 && p <= 100;\n}\n\nint main()\n{\n    int tests[] = {-1, 0, 50, 100, 101};\n    for (int t : tests)\n    {\n        cout << t << ' ' << boolalpha << isValidPercent(t) << endl;\n    }\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

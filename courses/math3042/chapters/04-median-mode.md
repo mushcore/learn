@@ -88,6 +88,21 @@ drag-data
 ]}
 ```
 
+## Medians and modes of four new samples
+
+Sort each data set before locating its middle.
+
+```quiz
+[
+  {"q": "Find $Q_2$ for 41, 37, 52, 29, 46, 33, 58.", "type": "numeric", "answer": 41, "tolerance": 0, "explain": "Sorted: 29, 33, 37, **41**, 46, 52, 58. $n = 7$ is odd, so the median is the 4th value, 41."},
+  {"q": "Find $\\tilde{X}$ for 6.2, 4.8, 7.5, 5.1, 9.0, 6.6, 5.9, 8.3.", "type": "numeric", "answer": 6.4, "tolerance": 0.001, "explain": "Sorted: 4.8, 5.1, 5.9, **6.2, 6.6**, 7.5, 8.3, 9.0. $n = 8$ is even, so average the 4th and 5th values: $(6.2 + 6.6)/2 = 6.4$, a number that is not in the data."},
+  {"q": "Shoe sizes 9, 10, 8, 10, 11, 9, 10, 12, 10. What is the mode?", "type": "numeric", "answer": 10, "tolerance": 0, "explain": "Tally: 8 once, 9 twice, 10 four times, 11 once, 12 once. 10 occurs most often, so the mode is 10."},
+  {"q": "For 12, 14, 15, 15, 16, 61, compute the mean $\\bar{X}$. (2 decimals)", "type": "numeric", "answer": 22.17, "tolerance": 0.006, "explain": "$\\sum X = 12 + 14 + 15 + 15 + 16 + 61 = 133$, $n = 6$, so $\\bar{X} = 133/6 = 22.17$. The single 61 drags it above five of the six values."},
+  {"q": "Same data, 12, 14, 15, 15, 16, 61. What is $Q_2$, the better typical value here?", "type": "numeric", "answer": 15.0, "tolerance": 0, "explain": "Already sorted, $n = 6$: average the 3rd and 4th values, $(15 + 15)/2 = 15$. The median ignores how far out 61 is, so it stays with the bulk of the data while the mean (22.17) does not."},
+  {"type": "fill", "q": "Fill the blank with what R prints.", "code": "median(c(6.2, 4.8, 7.5, 5.1, 9.0, 6.6, 5.9, 8.3))\n## [1] ___", "answer": ["6.4"], "explain": "`median()` sorts first, then averages the two middle values of an even-sized vector: $(6.2 + 6.6)/2 = 6.4$."}
+]
+```
+
 ```quiz
 [
   {

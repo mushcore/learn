@@ -92,6 +92,76 @@ int main()
 
 `char` is an **integer type** that `cout` prints as a character by default; `cout << (int)letter << endl;` asks for its numeric code instead. `bool` has the same default: it prints as a number until the `boolalpha` manipulator from the output lesson is on.
 
+## Read four new declarations and their output
+
+New variables of each fundamental type; the trick in each is how the type stores the value.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    char c = 'a';\n    c = c + 2;\n    cout << c << ' ' << (int)c << endl;\n    return 0;\n}",
+    "options": [
+      "`c 99`",
+      "`a2 99`",
+      "`c c`",
+      "`99 c`"
+    ],
+    "answer": 0,
+    "explain": "`char` is an integer type: `'a'` is 97, and 97 + 2 = 99, which is the code for `'c'`. Printed as a `char` it shows `c`; cast to `int` it shows 99. Output: `c 99`."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    bool done = 7;\n    cout << done << ' ' << done + done << endl;\n    return 0;\n}",
+    "options": [
+      "`1 2`",
+      "`7 14`",
+      "`true 2`",
+      "`1 1`"
+    ],
+    "answer": 0,
+    "explain": "Any non-zero value stored in a `bool` becomes `true`, which `cout` prints as `1`. In `done + done` each `bool` is promoted to the `int` 1, so the sum is 2. Output: `1 2`."
+  },
+  {
+    "q": "Which of these are valid C++ identifiers? (select all)",
+    "options": [
+      "`_count`",
+      "`2ndPlace`",
+      "`total_score`",
+      "`my-var`",
+      "`int`"
+    ],
+    "answer": [
+      0,
+      2
+    ],
+    "explain": "Identifiers use letters, digits and underscores and cannot start with a digit: `_count` and `total_score` are valid. `2ndPlace` starts with a digit, `my-var` contains a minus sign (it would parse as `my - var`), and `int` is a keyword."
+  },
+  {
+    "type": "text",
+    "q": "On the lab machines' g++, what does this print? Type the digits.",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    cout << sizeof(char) << sizeof(short) << sizeof(int) << sizeof(long long) << endl;\n    return 0;\n}",
+    "answer": [
+      "1248"
+    ],
+    "explain": "`sizeof` gives bytes: `char` 1, `short` 2, `int` 4, `long long` 8. With no separators the four numbers print as `1248`. Only `sizeof(char)` is guaranteed to be 1; the others are what this compiler uses."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "Declare an <code>int</code> named <code>labs</code> holding 10, a <code>double</code> named <code>weight</code> holding 2.5, a <code>char</code> named <code>grade</code> holding <code>'B'</code> and a <code>bool</code> named <code>passed</code> holding <code>true</code>. Print them on one line separated by single spaces: <code>10 2.5 B 1</code>.",
+  "starter": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    // declarations here\n\n    // one cout line here\n    return 0;\n}\n",
+  "expected": "10 2.5 B 1\n",
+  "hints": [
+    "A char literal uses single quotes: <code>'B'</code>.",
+    "Without <code>boolalpha</code>, <code>true</code> prints as <code>1</code>."
+  ],
+  "solution": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int labs = 10;\n    double weight = 2.5;\n    char grade = 'B';\n    bool passed = true;\n    cout << labs << ' ' << weight << ' ' << grade << ' ' << passed << endl;\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

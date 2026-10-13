@@ -168,6 +168,21 @@ pmf-table
 { "preset": "minimum of three dice", "simulate": true, "title": "Minimum of three dice: the exact 216-cell table beside a simulation" }
 ```
 
+## μ and σ for solder defects on a circuit board
+
+X = the number of solder defects on a board, never more than 3: P(0) = 0.50, P(1) = 0.25 and P(2) = 0.15; the record for P(3) was lost.
+
+```quiz
+[
+  {"q": "Defects on a board: the possible values 0, 1, 2, 3 can be listed. Is X a discrete or a continuous random variable?", "type": "text", "answer": ["discrete"], "explain": "X counts defects, so its values can be listed, 0, 1, 2, 3: a finite number of values makes it discrete. A measured quantity such as the board's thickness would be continuous."},
+  {"q": "P(3) = ? (2 decimals)", "type": "numeric", "answer": 0.1, "tolerance": 0.006, "explain": "The probabilities of all the possible values add to 1: P(3) = 1 − (0.50 + 0.25 + 0.15) = 1 − 0.90 = 0.10. It is also between 0 and 1, so the table is a valid distribution."},
+  {"q": "The expected number of defects μ = E[X] = ? (2 decimals)", "type": "numeric", "answer": 0.85, "tolerance": 0.006, "explain": "μ = Σ x P(x) = 0(0.50) + 1(0.25) + 2(0.15) + 3(0.10) = 0 + 0.25 + 0.30 + 0.30 = 0.85."},
+  {"q": "The standard deviation σ = ? (2 decimals)", "type": "numeric", "answer": 1.01, "tolerance": 0.006, "explain": "σ² = (0 − 0.85)²(0.50) + (1 − 0.85)²(0.25) + (2 − 0.85)²(0.15) + (3 − 0.85)²(0.10) = 0.3613 + 0.0056 + 0.1984 + 0.4622 = 1.0275; σ = √1.0275 = 1.0137 ≈ 1.01. One square root, of the whole sum."},
+  {"q": "P(X ≥ 2), a board with at least 2 defects = ? (4 decimals)", "type": "numeric", "answer": 0.25, "tolerance": 6e-05, "explain": "At least 2 means 2 or 3: P(2) + P(3) = 0.15 + 0.10 = 0.2500."},
+  {"type": "fill", "q": "Complete the demo-notebook lines for μ and σ of the defect table (`X.vals <- c(0,1,2,3)`, `p.vals <- c(0.50, 0.25, 0.15, 0.10)`).", "code": "mu <- sum( X.vals * ___ )\nsig <- sqrt( sum((X.vals - ___)^2 * p.vals) )\nc(mu, sig)", "answer": ["p.vals", "mu"], "explain": "μ is the sum of x · P(x), so the first blank multiplies by `p.vals`; σ squares the distances from `mu` and roots the whole sum. `c(mu, sig)` prints 0.85 and 1.013657."}
+]
+```
+
 ```quiz
 [
   {

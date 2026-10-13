@@ -74,6 +74,67 @@ Each unit of code is split into a header (`.hpp`) with the declarations and a so
 
 The shipped headers open with an include guard, `#ifndef CIRCLE_CIRCLE_HPP` / `#define CIRCLE_CIRCLE_HPP` / `#endif`, so a header pasted twice into one file defines the class only once. `#pragma once` from Week 1 does the same in one line. Default argument values go in the header prototypes (lesson 2); the definitions in the source repeat the signatures without them.
 
+## Decide what a forward-declared `Engine` allows
+
+After `class Engine;` the compiler knows the name but not the size or the members.
+
+```quiz
+[
+  {
+    "q": "Each line is a member of `class Car`, written after `class Engine;` and before `Engine` is defined. Which compile? (select all)",
+    "options": [
+      "`Engine* engine;`",
+      "`Engine& spare;`",
+      "`Engine engine;`",
+      "`Engine parts[2];`"
+    ],
+    "answer": [
+      0,
+      1
+    ],
+    "explain": "A pointer or a reference has a known size whatever it points at, so both compile. A member held by value (alone or in an array) needs the size of `Engine`, which a forward declaration does not give: `field 'engine' has incomplete type 'Engine'`."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nclass Owner;\n\nclass Pet\n{\n    string name;\n    Owner* owner;\npublic:\n    Pet(string name, Owner* owner) : name(name), owner(owner) { }\n    void describe();\n};\n\nclass Owner\n{\npublic:\n    string name;\n    Owner(string name) : name(name) { }\n};\n\nvoid Pet::describe()\n{\n    cout << name << \" belongs to \" << owner->name << endl;\n}\n\nint main()\n{\n    Owner sam(\"Sam\");\n    Pet rex(\"Rex\", &sam);\n    rex.describe();\n    return 0;\n}",
+    "options": [
+      "`Rex belongs to Sam`",
+      "`error: invalid use of incomplete type 'class Owner'`",
+      "`Sam belongs to Rex`",
+      "`Rex belongs to`"
+    ],
+    "answer": 0,
+    "explain": "Inside `Pet`, the forward declaration is enough for the member `Owner* owner`. `describe` reads `owner->name`, which needs the full class, so its body is written after `Owner` is defined. That ordering is what makes it compile. Output: `Rex belongs to Sam`."
+  },
+  {
+    "type": "spotbug",
+    "q": "Click the line that gives `field 'gear' has incomplete type`.",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Gear;\n\nclass Bike\n{\n    Gear* front;\n    Gear gear;\n};\n\nclass Gear\n{\n    int teeth;\n};\n\nint main()\n{\n    return 0;\n}",
+    "answer": 9,
+    "explain": "Line 8, a pointer, needs only the name. Line 9 holds a `Gear` by value, so the compiler must know its size while `Gear` is still incomplete. Make it a pointer or a reference, or define `Gear` before `Bike`."
+  },
+  {
+    "type": "tf",
+    "q": "Inside the body of `class Wheel`, written after `class Car;` and before `Car` is defined, a member function is `int speed() { return car->topSpeed(); }` where `car` is a `Car*`. This compiles.",
+    "answer": false,
+    "explain": "Declaring the pointer only needs the name, but calling `car->topSpeed()` needs to know `Car`'s members. g++ reports `invalid use of incomplete type 'class Car'`. Declare `speed()` in the class and define it in `Wheel.cpp`, which includes `Car.hpp`."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "<code>Course</code> is defined before <code>Teacher</code> and holds a <code>Teacher*</code>. Add the forward declaration, and move the body of <code>Course::print</code> below <code>Teacher</code>, so the program prints <code>COMP 3522 taught by Jeff</code>.",
+  "starter": "#include <iostream>\n#include <string>\nusing namespace std;\n\nclass Course\n{\n    string code;\n    Teacher* teacher;\npublic:\n    Course(string code, Teacher* teacher) : code(code), teacher(teacher) { }\n    void print() { cout << code << \" taught by \" << teacher->name << endl; }\n};\n\nclass Teacher\n{\npublic:\n    string name;\n    Teacher(string name) : name(name) { }\n};\n\nint main()\n{\n    Teacher jeff(\"Jeff\");\n    Course c(\"COMP 3522\", &jeff);\n    c.print();\n    return 0;\n}\n",
+  "expected": "COMP 3522 taught by Jeff\n",
+  "hints": [
+    "<code>class Teacher;</code> above <code>Course</code>.",
+    "Declare <code>void print();</code> in the class and write <code>void Course::print() { ... }</code> after <code>Teacher</code>."
+  ],
+  "solution": "#include <iostream>\n#include <string>\nusing namespace std;\n\nclass Teacher;\n\nclass Course\n{\n    string code;\n    Teacher* teacher;\npublic:\n    Course(string code, Teacher* teacher) : code(code), teacher(teacher) { }\n    void print();\n};\n\nclass Teacher\n{\npublic:\n    string name;\n    Teacher(string name) : name(name) { }\n};\n\nvoid Course::print()\n{\n    cout << code << \" taught by \" << teacher->name << endl;\n}\n\nint main()\n{\n    Teacher jeff(\"Jeff\");\n    Course c(\"COMP 3522\", &jeff);\n    c.print();\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

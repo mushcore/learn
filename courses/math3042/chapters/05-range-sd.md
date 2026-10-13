@@ -77,6 +77,21 @@ grouped-mean
 { "rows": [[10.00, 40], [10.01, 75], [10.02, 100], [10.03, 90], [10.04, 45]], "title": "Steel rod diameters (Lab 1, pencil problem 2)" }
 ```
 
+## Compute s, σ and R for five quiz scores
+
+Five quiz scores out of 20: 12, 15, 9, 14, 10.
+
+```quiz
+[
+  {"q": "Compute $\\bar{X}$.", "type": "numeric", "answer": 12, "tolerance": 0, "explain": "$\\sum X = 12 + 15 + 9 + 14 + 10 = 60$, $n = 5$, $\\bar{X} = 60/5 = 12$."},
+  {"q": "Compute $\\sum (X - \\bar{X})^2$.", "type": "numeric", "answer": 26, "tolerance": 0, "explain": "Deviations: $0, 3, -3, 2, -2$. Squared: $0 + 9 + 9 + 4 + 4 = 26$."},
+  {"q": "Compute the sample standard deviation $s$. (3 decimals)", "type": "numeric", "answer": 2.55, "tolerance": 0.002, "explain": "Divide by $n - 1 = 4$: $26/4 = 6.5$, then $s = \\sqrt{6.5} = 2.5495$."},
+  {"q": "Treat the five scores as the whole population. Compute $\\sigma$. (3 decimals)", "type": "numeric", "answer": 2.28, "tolerance": 0.002, "explain": "Divide by $N = 5$ instead: $26/5 = 5.2$, $\\sigma = \\sqrt{5.2} = 2.2804$, smaller than $s$."},
+  {"q": "What is the range $R$?", "type": "numeric", "answer": 6, "tolerance": 0, "explain": "$R = \\max - \\min = 15 - 9 = 6$. It uses only two of the five values."},
+  {"type": "fill", "q": "Fill the blank with the R function that prints $s$.", "code": "___(c(12, 15, 9, 14, 10))\n## [1] 2.54951", "answer": ["sd"], "explain": "`sd()` always divides by $n - 1$: $\\sqrt{26/4} = 2.54951$."}
+]
+```
+
 ```quiz
 [
   {

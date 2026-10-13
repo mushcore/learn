@@ -72,6 +72,55 @@ signal-rate
 { "show": "nyquist", "B": 200, "bUnit": "kHz", "c": "1/2", "levels": 4 }
 ```
 
+## Size the channel for five more signals
+
+Use $B = c \times N \times \frac{1}{r}$ for a signal and $N = \frac{1}{c} \times B \times r$ for a channel.
+
+```quiz
+[
+  {
+    "q": "An NRZ-L signal ($r = 1$) carries 6 Mbps with $c = \\frac{1}{2}$. What bandwidth does the slide formula give, in MHz?",
+    "type": "numeric",
+    "answer": 3,
+    "tolerance": 0.01,
+    "unit": "MHz",
+    "explain": "$B = \\frac{1}{2} \\times 6000000 \\times 1 = 3000000$ Hz $= 3$ MHz."
+  },
+  {
+    "q": "A Manchester signal ($r = \\frac{1}{2}$) carries 2.5 Mbps in the worst case, $c = 1$. What bandwidth does the slide formula give, in MHz?",
+    "type": "numeric",
+    "answer": 5,
+    "tolerance": 0.01,
+    "unit": "MHz",
+    "explain": "$\\frac{1}{r} = 2$. $B = 1 \\times 2500000 \\times 2 = 5000000$ Hz $= 5$ MHz."
+  },
+  {
+    "q": "A channel has a bandwidth of 30 kHz and the signal has 16 levels, one signal element per level. With $c = \\frac{1}{2}$, what is $N_{max}$, in kbps?",
+    "type": "numeric",
+    "answer": 240,
+    "tolerance": 0.5,
+    "unit": "kbps",
+    "explain": "$r = \\log_{2} 16 = 4$ and $\\frac{1}{c} = 2$. $N_{max} = 2 \\times 30000 \\times 4 = 240000$ bps $= 240$ kbps, the same as Nyquist's $2 \\times B \\times \\log_{2} L$."
+  },
+  {
+    "q": "A channel has a bandwidth of 600 kHz. With $r = 2$ and $c = \\frac{1}{2}$, what is the data rate of the channel, in Mbps?",
+    "type": "numeric",
+    "answer": 2.4,
+    "tolerance": 0.01,
+    "unit": "Mbps",
+    "explain": "$N = \\frac{1}{c} \\times B \\times r = 2 \\times 600000 \\times 2 = 2400000$ bps $= 2.4$ Mbps."
+  },
+  {
+    "q": "A scheme with $r = \\frac{4}{3}$ must carry 900 kbps with $c = \\frac{1}{2}$. What bandwidth does it need, in kHz?",
+    "type": "numeric",
+    "answer": 337.5,
+    "tolerance": 0.1,
+    "unit": "kHz",
+    "explain": "$\\frac{1}{r} = \\frac{3}{4}$. $B = \\frac{1}{2} \\times 900000 \\times \\frac{3}{4} = 337500$ Hz $= 337.5$ kHz."
+  }
+]
+```
+
 ```quiz
 [
   {

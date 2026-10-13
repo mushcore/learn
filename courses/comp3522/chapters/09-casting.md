@@ -110,6 +110,71 @@ float aFloat = (float)anInt;
 
 C-style casting is compact but blunt: the compiler cannot tell what kind of conversion you meant. Later this term you'll meet four named C++ casting operators that make the intent explicit: `static_cast`, `dynamic_cast`, `const_cast`, and `reinterpret_cast`. For now, recognize the names.
 
+## Place the cast and predict four new results
+
+Where the `(type)` sits decides whether it runs before or after the arithmetic.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    double d = -7.9;\n    cout << (int)d << ' ' << (int)(d + 0.5) << endl;\n    return 0;\n}",
+    "options": [
+      "`-7 -7`",
+      "`-8 -7`",
+      "`-8 -8`",
+      "`-7 -8`"
+    ],
+    "answer": 0,
+    "explain": "A cast to `int` truncates toward zero: -7.9 becomes -7. The \"add 0.5 then truncate\" rounding trick fails for negatives: -7.9 + 0.5 = -7.4, which also truncates to -7 (rounding would give -8). Output: `-7 -7`."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int total = 17, count = 4;\n    cout << total / count << ' ' << (double)total / count << ' ' << (double)(total / count) << endl;\n    return 0;\n}",
+    "options": [
+      "`4 4.25 4`",
+      "`4 4.25 4.25`",
+      "`4.25 4.25 4`",
+      "`4 4 4`"
+    ],
+    "answer": 0,
+    "explain": "17 / 4 is int division: 4. `(double)total / count` casts first, so the division is 17.0 / 4 = 4.25. `(double)(total / count)` divides first (4) and then casts, giving 4.0, which prints as 4. Output: `4 4.25 4`."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    cout << (char)72 << (char)('a' - 32) << ' ' << (int)'0' << ' ' << (bool)-3 << endl;\n    return 0;\n}",
+    "options": [
+      "`HA 48 1`",
+      "`72A 0 1`",
+      "`Ha 48 -3`",
+      "`HA 0 0`"
+    ],
+    "answer": 0,
+    "explain": "72 is the code for `H`. `'a'` is 97 and 97 − 32 = 65, the code for `A`. The character `'0'` has code 48, not 0. Any non-zero number cast to `bool` is true, printed as 1. Output: `HA 48 1`."
+  },
+  {
+    "type": "numeric",
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    float f = 9.99f;\n    int i = (int)f * 2;\n    cout << i << endl;\n    return 0;\n}",
+    "answer": 18,
+    "explain": "The cast binds tighter than `*`, so it applies to `f` alone: `(int)9.99f` is 9, then 9 × 2 = 18. Writing `(int)(f * 2)` would give `(int)19.98` = 19."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "Write <code>double average(int a, int b, int c)</code> that returns the true average, using a C-style cast so the division is not integer division. <code>main</code> prints <code>8.33333 3</code>.",
+  "starter": "#include <iostream>\nusing namespace std;\n\n// average here\n\nint main()\n{\n    cout << average(7, 8, 10) << ' ' << average(2, 3, 4) << endl;\n    return 0;\n}\n",
+  "expected": "8.33333 3\n",
+  "hints": [
+    "Cast the sum before dividing: <code>(double)(a + b + c) / 3</code>.",
+    "<code>(double)((a + b + c) / 3)</code> would give 8 for the first call."
+  ],
+  "solution": "#include <iostream>\nusing namespace std;\n\ndouble average(int a, int b, int c)\n{\n    return (double)(a + b + c) / 3;\n}\n\nint main()\n{\n    cout << average(7, 8, 10) << ' ' << average(2, 3, 4) << endl;\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

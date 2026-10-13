@@ -445,6 +445,21 @@ p3 # too low
 
 Chebyshev holds, as it must; the empirical rule misses at $k = 1$ and $3$: **the empirical rule does not hold for `Days`, since it is not a normally distributed variable. It cannot be, since it is significantly skewed, as shown by $Sk$ earlier.**
 
+## favstats, fences and Z-scores for gym visits
+
+Sixteen gym members logged visits in one month, eight on each plan: Basic 4, 6, 2, 8, 5, 3, 7, 12 and Premium 10, 14, 9, 16, 11, 25, 13, 12.
+
+```quiz
+[
+  {"type": "fill", "q": "Fill the blank to get one row of statistics per plan.", "code": "gym <- data.frame(Visits = c(4, 6, 2, 8, 5, 3, 7, 12, 10, 14, 9, 16, 11, 25, 13, 12),\n                  Plan = rep(c(\"Basic\", \"Premium\"), each = 8))\nfavstats(Visits ~ ___, data=gym)\n##      Plan min    Q1 median    Q3 max   mean       sd n missing\n## 1   Basic   2  3.75    5.5  7.25  12  5.875 3.181981 8       0\n## 2 Premium   9 10.75   12.5 14.50  25 13.750 5.063878 8       0", "answer": ["Plan"], "explain": "`Y ~ G` gives the statistics of Y separately for each level of G. mosaic's quartiles are R's: Basic sorted 2, 3, 4, 5, 6, 7, 8, 12 gives $Q_1 = 3 + 0.75(4 - 3) = 3.75$ and $Q_3 = 7 + 0.25(8 - 7) = 7.25$."},
+  {"q": "From the Basic row, compute Pearson's $Sk$. (2 decimals)", "type": "numeric", "answer": 0.35, "tolerance": 0.006, "explain": "$Sk = 3(\\bar{X} - Q_2)/s = 3(5.875 - 5.5)/3.181981 = 1.125/3.181981 = 0.3536$: mildly skewed right."},
+  {"q": "From the Premium row, compute the upper fence. (3 decimals)", "type": "numeric", "answer": 20.125, "tolerance": 0.0006, "explain": "$IQR = 14.5 - 10.75 = 3.75$; upper fence $= 14.5 + 1.5(3.75) = 20.125$. The 25 visits are beyond it: one outlier."},
+  {"type": "fill", "q": "Fill the blank so `quantile()` gives the 90th percentile of all sixteen members.", "code": "quantile(~Visits, probs=___, data=gym)\n## 90%\n## 15", "answer": ["0.9", ".9", "0.90"], "explain": "`probs=` takes the percentage as a decimal. Sorted, R's type-7 rule puts $P_{90}$ at position $1 + 0.9(15) = 14.5$, halfway between the 14th and 15th values (14 and 16): 15."},
+  {"q": "`round(100*percent_rank(gym$Visits))` starts with the member who made 4 visits. What number is printed for that member?", "type": "numeric", "answer": 13, "tolerance": 0, "explain": "2 of the other 15 members made fewer than 4 visits (2 and 3): $2/15 = 0.1333$, which rounds to 13."},
+  {"q": "Compute the Z-score that `scale(gym$Visits)` gives the 25 visits. (2 decimals)", "type": "numeric", "answer": 2.63, "tolerance": 0.006, "explain": "All sixteen values: $\\bar{X} = 157/16 = 9.8125$, $s = 5.7645$. $Z = (25 - 9.8125)/5.7645 = 2.6347$: more than 2, so unusual as well as an outlier."}
+]
+```
+
 ```quiz
 [
   {

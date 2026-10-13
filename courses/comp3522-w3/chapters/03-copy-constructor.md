@@ -126,6 +126,68 @@ copy-viz
 
 With a destructor that does `delete[] data` (next lesson), the shallow copy is not just a surprise but a crash: two destructors free the same array. The rule this sets up: a class that owns a pointer needs its own copy constructor, its own destructor, and, in Week 4, its own assignment operator.
 
+## Write the copy constructor for a `Matrix`
+
+First count copy-constructor calls and spot shallow copies in new classes, then write a deep copy.
+
+```quiz
+[
+  {
+    "type": "text",
+    "q": "The copy constructor prints `C` and the assignment operator prints `A`. What does the program print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass T\n{\npublic:\n    T() { }\n    T(const T&) { cout << \"C\"; }\n    T& operator=(const T&) { cout << \"A\"; return *this; }\n};\n\nvoid take(T) { }\n\nint main()\n{\n    T a;\n    T b(a);\n    T c = b;\n    c = a;\n    take(a);\n    cout << endl;\n    return 0;\n}",
+    "answer": [
+      "CCAC"
+    ],
+    "explain": "`T b(a)` and `T c = b` both create a new object from an existing one: two copies. `c = a` assigns to an object that already exists, so it calls the assignment operator (`A`), not the copy constructor. Passing `a` by value to `take` builds the parameter by copying: a third `C`. Output: `CCAC`."
+  },
+  {
+    "q": "There is no user-written copy constructor. What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Buffer\n{\npublic:\n    int size;\n    int* data;\n    Buffer() : size(2), data(new int[2]) { data[0] = 1; data[1] = 2; }\n};\n\nint main()\n{\n    Buffer a;\n    Buffer b = a;\n    b.data[0] = 99;\n    cout << a.data[0] << ' ' << (a.data == b.data) << endl;\n    delete[] a.data;\n    return 0;\n}",
+    "options": [
+      "`99 1`",
+      "`1 0`",
+      "`1 1`",
+      "`99 0`"
+    ],
+    "answer": 0,
+    "explain": "The compiler-generated copy constructor copies each member, so `b.data` receives the same address as `a.data`: a shallow copy. Writing 99 through `b.data` changes the one array both share, and the two pointers compare equal. Output: `99 1`. Only one `delete[]` is written because there is only one array."
+  },
+  {
+    "q": "Now `Buffer` has a deep copy constructor. What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Buffer\n{\npublic:\n    int size;\n    int* data;\n    Buffer() : size(2), data(new int[2]) { data[0] = 1; data[1] = 2; }\n    Buffer(const Buffer& other) : size(other.size), data(new int[other.size])\n    {\n        for (int i = 0; i < size; ++i)\n            data[i] = other.data[i];\n    }\n};\n\nint main()\n{\n    Buffer a;\n    Buffer b = a;\n    b.data[0] = 99;\n    cout << a.data[0] << ' ' << b.data[0] << ' ' << (a.data == b.data) << endl;\n    delete[] a.data;\n    delete[] b.data;\n    return 0;\n}",
+    "options": [
+      "`1 99 0`",
+      "`99 99 1`",
+      "`1 99 1`",
+      "`99 1 0`"
+    ],
+    "answer": 0,
+    "explain": "The deep copy allocates a second array and copies the values 1 and 2 into it. `b.data[0] = 99` changes only b's array; a keeps 1, and the addresses differ. Output: `1 99 0`."
+  },
+  {
+    "type": "spotbug",
+    "q": "Click the line g++ rejects.",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Point\n{\n    int x, y;\npublic:\n    Point(int x, int y) : x(x), y(y) { }\n    Point(Point p) : x(p.x), y(p.y) { }\n};\n\nint main()\n{\n    Point a(1, 2);\n    Point b = a;\n    return 0;\n}",
+    "answer": 9,
+    "explain": "A copy constructor taking its parameter by value would need a copy to make the parameter, which would call the copy constructor again, forever. g++ refuses line 9: `invalid constructor; you probably meant 'Point (const Point&)'`."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "<code>Matrix</code> owns a heap array of <code>rows * cols</code> doubles. Write its deep copy constructor so that changing the copy leaves the original alone. <code>main</code> prints <code>original: 1 2 3 4</code> and <code>copy: 1 20 3 4</code>.",
+  "starter": "#include <iostream>\nusing namespace std;\n\nclass Matrix\n{\npublic:\n    int rows, cols;\n    double* cells;\n    Matrix(int r, int c) : rows(r), cols(c), cells(new double[r * c])\n    {\n        for (int i = 0; i < r * c; ++i)\n            cells[i] = i + 1;\n    }\n    // copy constructor here\n    ~Matrix() { delete[] cells; }\n    void print() const\n    {\n        for (int i = 0; i < rows * cols; ++i)\n            cout << ' ' << cells[i];\n        cout << endl;\n    }\n};\n\nint main()\n{\n    Matrix m(2, 2);\n    Matrix copy = m;\n    copy.cells[1] = 20;\n    cout << \"original:\";\n    m.print();\n    cout << \"copy:\";\n    copy.print();\n    return 0;\n}\n",
+  "expected": "original: 1 2 3 4\ncopy: 1 20 3 4\n",
+  "hints": [
+    "Signature: <code>Matrix(const Matrix& other)</code>",
+    "Allocate a new array in the initialization list, then copy every cell: <code>cells(new double[other.rows * other.cols])</code>."
+  ],
+  "solution": "#include <iostream>\nusing namespace std;\n\nclass Matrix\n{\npublic:\n    int rows, cols;\n    double* cells;\n    Matrix(int r, int c) : rows(r), cols(c), cells(new double[r * c])\n    {\n        for (int i = 0; i < r * c; ++i)\n            cells[i] = i + 1;\n    }\n    Matrix(const Matrix& other) : rows(other.rows), cols(other.cols), cells(new double[other.rows * other.cols])\n    {\n        for (int i = 0; i < rows * cols; ++i)\n            cells[i] = other.cells[i];\n    }\n    ~Matrix() { delete[] cells; }\n    void print() const\n    {\n        for (int i = 0; i < rows * cols; ++i)\n            cout << ' ' << cells[i];\n        cout << endl;\n    }\n};\n\nint main()\n{\n    Matrix m(2, 2);\n    Matrix copy = m;\n    copy.cells[1] = 20;\n    cout << \"original:\";\n    m.print();\n    cout << \"copy:\";\n    copy.print();\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

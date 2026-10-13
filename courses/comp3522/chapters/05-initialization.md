@@ -89,6 +89,75 @@ Swap the literals for the `double x, y, z` variables (`int sum{x + y + z};`) and
 Uniform initialization (`{}`) is a **C++11** feature. The `=` and `()` forms are older and both allow narrowing; only `{}` blocks it.
 :::
 
+## Predict truncation and narrowing in four new initializations
+
+Each item mixes the three forms with `double` sources; decide which truncate and which refuse to compile.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    double d = 3.75;\n    int a = d;\n    int b(d + 2.5);\n    cout << a << ' ' << b << ' ' << a + b << endl;\n    return 0;\n}",
+    "options": [
+      "`3 6 9`",
+      "`3.75 6.25 10`",
+      "`4 6 10`",
+      "`error: narrowing conversion`"
+    ],
+    "answer": 0,
+    "explain": "The C-like and constructor forms convert silently and truncate: `a` gets 3 from 3.75, `b` gets 6 from 6.25. 3 + 6 = 9. Output: `3 6 9`."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int a(7);\n    int b{a};\n    int c = b + a;\n    cout << a << ' ' << b << ' ' << c << endl;\n    return 0;\n}",
+    "options": [
+      "`7 7 14`",
+      "`7 0 7`",
+      "`7 7 7`",
+      "`error: {} needs a literal`"
+    ],
+    "answer": 0,
+    "explain": "All three forms are valid and here no conversion happens (int to int), so `{}` has nothing to refuse: a = 7, b = 7, c = 14. Output: `7 7 14`."
+  },
+  {
+    "q": "Which of these declarations compile? (select all)",
+    "options": [
+      "`int a{7};`",
+      "`double d{7};`",
+      "`int b{7.0};`",
+      "`char c{65};`",
+      "`char big{300};`"
+    ],
+    "answer": [
+      0,
+      1,
+      3
+    ],
+    "explain": "Braces reject only narrowing. `int a{7}` needs no conversion. `double d{7}` and `char c{65}` convert constants that fit exactly, which is not narrowing. `int b{7.0}` is floating to integer, always narrowing, so it is an error even though 7.0 is whole. `char big{300}` is an error because 300 does not fit in a `char` (-128 to 127)."
+  },
+  {
+    "type": "spotbug",
+    "q": "Click the line that fails to compile.",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int dollars = 9.99;\n    int cents(0.75 * 100);\n    int total{19.99 * 100};\n    cout << dollars << ' ' << cents << ' ' << total << endl;\n    return 0;\n}",
+    "answer": 8,
+    "explain": "Lines 6 and 7 use `=` and `()`, which truncate silently (9.99 to 9; 0.75 × 100 is 75.0, stored as 75). Line 8 uses `{}` on a `double` value, so g++ stops with `narrowing conversion of '1.9989999999999998e+3' from 'double' to 'int'`. The value is computed at compile time, which is why g++ makes this an error rather than the `-Wnarrowing` warning it gives for `double` variables."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "Three lab marks are <code>8.5</code>, <code>9.25</code> and <code>7.75</code>. Store their sum in a <code>double</code> named <code>total</code> using uniform initialization, then store the truncated whole number in an <code>int</code> named <code>whole</code> using the C-like form. Print <code>total: 25.5 whole: 25</code>.",
+  "starter": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    double m1 = 8.5, m2 = 9.25, m3 = 7.75;\n    // total and whole here\n    return 0;\n}\n",
+  "expected": "total: 25.5 whole: 25\n",
+  "hints": [
+    "<code>double total{m1 + m2 + m3};</code> is fine: no narrowing from double to double.",
+    "<code>int whole{total};</code> would not compile; <code>int whole = total;</code> truncates."
+  ],
+  "solution": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    double m1 = 8.5, m2 = 9.25, m3 = 7.75;\n    double total{m1 + m2 + m3};\n    int whole = total;\n    cout << \"total: \" << total << \" whole: \" << whole << endl;\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

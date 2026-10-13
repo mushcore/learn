@@ -170,6 +170,45 @@ END
 
 The first loop fills `A[i]` with $1 + 2 + \ldots + i$ (the $i$-th triangular number); the second loop adds them up. It returns the **sum of the first $N$ triangular numbers**. Its shape, a double loop whose inner bound is `i` followed by a single loop, comes back when choosing basic operations.
 
+## Judge and trace two new algorithms
+
+Test each one against the four requirements, then trace it on a small input.
+
+```quiz
+[
+  {
+    "q": "Is this a valid algorithm? A legitimate input is any integer n.",
+    "code": "Algorithm StepDown(n)\n    while n ≠ 0 do\n        n ← n - 2\n    endwhile\n    return \"done\"\nEND",
+    "options": ["Yes", "No"],
+    "answer": 1,
+    "explain": "No. Look for one legitimate input that breaks it: n = 5 goes 5, 3, 1, −1, −3, … and steps over 0, so the loop never ends (every odd n and every negative n does the same). n = 4 goes 4, 2, 0 and stops, but the definition needs a finite amount of time for **any** legitimate input."
+  },
+  {
+    "type": "spotbug",
+    "lang": "pseudo",
+    "q": "Click the line that keeps StepDown running forever when n = 7.",
+    "code": "Algorithm StepDown(n)\n    while n ≠ 0 do\n        n ← n - 2\n    endwhile\n    return \"done\"\nEND",
+    "answer": 2,
+    "explain": "Line 2, `while n ≠ 0 do`. For n = 7 the values are 7, 5, 3, 1, −1, −3, …: n is never exactly 0, so the test is true forever and line 5 is never reached. Line 3 only subtracts; it is the loop test that never fails."
+  },
+  {
+    "q": "What does `Tally(12)` return?",
+    "code": "Algorithm Tally(n)    // n ≥ 1\n    count ← 0\n    for k ← 1 to n do\n        if n % k = 0 then\n            count ← count + 1\n        endif\n    endfor\n    return count\nEND",
+    "type": "numeric",
+    "answer": 6,
+    "tolerance": 0,
+    "explain": "k runs 1, 2, …, 12. 12 % k = 0 for k = 1, 2, 3, 4, 6 and 12 (12 = 1·12 = 2·6 = 3·4), and is nonzero for 5, 7, 8, 9, 10, 11. So count is incremented 6 times and Tally(12) returns 6."
+  },
+  {
+    "q": "What does `Tally(n)` compute?",
+    "code": "Algorithm Tally(n)    // n ≥ 1\n    count ← 0\n    for k ← 1 to n do\n        if n % k = 0 then\n            count ← count + 1\n        endif\n    endfor\n    return count\nEND",
+    "options": ["The number of divisors of n", "The sum of the divisors of n", "Whether n is prime", "The largest divisor of n that is smaller than n"],
+    "answer": 0,
+    "explain": "count goes up once for each k from 1 to n that divides n with no remainder, so it returns how many divisors n has: 6 for n = 12, 2 for a prime such as 7 (k = 1 and k = 7). It would only be a primality test if it went on to compare the count with 2, and it adds 1 each time, not k, so it is not the sum of the divisors."
+  }
+]
+```
+
 ```quiz
 [
   {

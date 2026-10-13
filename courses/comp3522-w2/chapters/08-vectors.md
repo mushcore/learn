@@ -146,6 +146,85 @@ One `push_back` per step: when size equals capacity, watch the new block appear,
 vector-grow-play
 ```
 
+## Push, erase and loop over four new vectors
+
+Track the elements, `size()` and `capacity()` after every call.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main()\n{\n    vector<int> v;\n    v.push_back(4);\n    v.push_back(8);\n    v.push_back(15);\n    v.push_back(16);\n    v.push_back(23);\n    v.erase(v.begin() + 2);\n    v.erase(v.begin());\n    for (int value : v)\n    {\n        cout << value << ' ';\n    }\n    cout << \"size \" << v.size() << endl;\n    return 0;\n}",
+    "options": [
+      "`8 16 23 size 3`",
+      "`4 8 16 size 3`",
+      "`8 15 16 23 size 4`",
+      "`16 23 size 2`"
+    ],
+    "answer": 0,
+    "explain": "After the pushes: 4 8 15 16 23. `erase(v.begin() + 2)` removes index 2, the 15: 4 8 16 23. `erase(v.begin())` removes the 4: 8 16 23. Output: `8 16 23 size 3`."
+  },
+  {
+    "q": "On g++, what does this print?",
+    "code": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main()\n{\n    vector<int> v;\n    for (int i = 1; i <= 6; ++i)\n    {\n        v.push_back(i * 10);\n    }\n    cout << v.size() << ' ' << v.capacity() << ' ';\n    v.clear();\n    cout << v.size() << ' ' << v.capacity() << endl;\n    return 0;\n}",
+    "options": [
+      "`6 8 0 8`",
+      "`6 6 0 0`",
+      "`6 8 0 0`",
+      "`6 12 0 6`"
+    ],
+    "answer": 0,
+    "explain": "g++ doubles the capacity when a push finds the vector full: 1, 2, 4, then 8 at the fifth push, so 6 elements sit in room for 8. `clear()` removes the elements (size 0) but keeps the memory (capacity 8). Output: `6 8 0 8`."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main()\n{\n    vector<int> v;\n    v.push_back(1);\n    v.push_back(2);\n    v.push_back(3);\n    for (int x : v)\n    {\n        x *= 10;\n    }\n    cout << v[0] << ' ' << v[1] << ' ' << v[2] << endl;\n    return 0;\n}",
+    "options": [
+      "`1 2 3`",
+      "`10 20 30`",
+      "`1 2 30`",
+      "`0 0 0`"
+    ],
+    "answer": 0,
+    "explain": "In `for (int x : v)`, `x` is a copy of each element, so `x *= 10` changes only the copy. The vector still holds 1 2 3. Output: `1 2 3`."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <vector>\n#include <stdexcept>\nusing namespace std;\n\nint main()\n{\n    vector<int> v;\n    v.push_back(7);\n    v.push_back(9);\n    try\n    {\n        cout << v.at(1) << ' ';\n        cout << v.at(2) << ' ';\n    }\n    catch (out_of_range& e)\n    {\n        cout << \"caught\";\n    }\n    cout << endl;\n    return 0;\n}",
+    "options": [
+      "`9 caught`",
+      "`9 0`",
+      "`9 garbage`",
+      "`7 9 caught`"
+    ],
+    "answer": 0,
+    "explain": "`v.at(1)` is the second element, 9. Index 2 is past the end (size 2), and `at` checks bounds, so it throws `std::out_of_range` before printing; the `catch` prints `caught`. Output: `9 caught`. With `v[2]` there would be no check."
+  },
+  {
+    "type": "fill",
+    "q": "Fill in the member function so the call erases the element at index 1.",
+    "code": "v.erase(v.___() + 1);",
+    "answer": [
+      "begin"
+    ],
+    "explain": "`erase` takes an iterator, not an index. `v.begin()` refers to index 0, so `v.begin() + 1` refers to index 1."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "Write <code>vector<int> positives(const vector<int>& v)</code> that returns a new vector holding only the elements greater than 0, in order. <code>main</code> prints <code>3 7 2</code> and <code>size 3</code>.",
+  "starter": "#include <iostream>\n#include <vector>\nusing namespace std;\n\n// positives here\n\nint main()\n{\n    vector<int> v;\n    v.push_back(3); v.push_back(-1); v.push_back(0);\n    v.push_back(7); v.push_back(-4); v.push_back(2);\n    vector<int> p = positives(v);\n    for (int x : p)\n    {\n        cout << x << ' ';\n    }\n    cout << endl << \"size \" << p.size() << endl;\n    return 0;\n}\n",
+  "expected": "3 7 2 \nsize 3\n",
+  "hints": [
+    "Start with an empty <code>vector<int> result;</code>",
+    "Loop with <code>for (int x : v)</code> and <code>push_back</code> each <code>x > 0</code>."
+  ],
+  "solution": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nvector<int> positives(const vector<int>& v)\n{\n    vector<int> result;\n    for (int x : v)\n    {\n        if (x > 0)\n        {\n            result.push_back(x);\n        }\n    }\n    return result;\n}\n\nint main()\n{\n    vector<int> v;\n    v.push_back(3); v.push_back(-1); v.push_back(0);\n    v.push_back(7); v.push_back(-4); v.push_back(2);\n    vector<int> p = positives(v);\n    for (int x : p)\n    {\n        cout << x << ' ';\n    }\n    cout << endl << \"size \" << p.size() << endl;\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

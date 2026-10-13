@@ -59,6 +59,83 @@ The *effectiveness of a data communications system* has **four** characteristics
 
 The slide does not print the name next to the definition; "multipoint", also called multidrop, comes from the textbook (Forouzan §1.2, assigned reading).
 
+## Classify the links, devices and failures of a home network
+
+A home has a desktop with a wired keyboard, five tablets and phones sharing one Wi-Fi channel by taking turns, a Wi-Fi router and a cable modem.
+
+```quiz
+[
+  {
+    "q": "The keyboard's cable connects only the keyboard and the desktop. What type of connection is it?",
+    "options": [
+      "Point-to-point",
+      "Multipoint, spatially shared",
+      "Multipoint, timeshared",
+      "Switched"
+    ],
+    "answer": 0,
+    "explain": "A dedicated link between two devices, with its capacity reserved for them: **point-to-point**."
+  },
+  {
+    "q": "The five tablets and phones share the single Wi-Fi channel by taking turns. What type of connection is it?",
+    "options": [
+      "Point-to-point",
+      "Multipoint, spatially shared",
+      "Multipoint, timeshared",
+      "Full-duplex"
+    ],
+    "answer": 2,
+    "explain": "More than two devices share a single link, so it is **multipoint**; because users must take turns, its capacity is **timeshared**. Spatial sharing would let them use it simultaneously."
+  },
+  {
+    "q": "Which devices in this home are hosts (end systems)? Select all that apply.",
+    "options": [
+      "Desktop",
+      "Tablet",
+      "Wi-Fi router",
+      "Cable modem",
+      "Phone"
+    ],
+    "answer": [
+      0,
+      1,
+      4
+    ],
+    "explain": "Hosts are end systems such as desktops, laptops and cellular phones; tablets belong with them. The router and the modem are connecting (networking) devices."
+  },
+  {
+    "q": "After a power cut the network takes two hours to come back. Which network criterion does that measure badly?",
+    "options": [
+      "Performance",
+      "Reliability",
+      "Security",
+      "Jitter"
+    ],
+    "answer": 1,
+    "explain": "**Reliability** is measured by accuracy of delivery, failure rate, **recovery time from failure** and robustness."
+  },
+  {
+    "q": "Downloads crawl at a fraction of the speed the family pays for. Which network criterion is suffering?",
+    "options": [
+      "Performance",
+      "Reliability",
+      "Security",
+      "Delivery"
+    ],
+    "answer": 0,
+    "explain": "**Performance** is mainly measured in terms of throughput and delay; slow downloads are low throughput."
+  },
+  {
+    "q": "A neighbour joins the Wi-Fi without permission and reads files on the desktop. Fill in the blank: the criterion that failed is ______.",
+    "type": "text",
+    "answer": [
+      "security"
+    ],
+    "explain": "**Security** is protecting data from unauthorized access or damage, with policies and procedures for recovery from breaches."
+  }
+]
+```
+
 ```quiz
 [
   {

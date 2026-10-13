@@ -213,6 +213,63 @@ solid-spotter
 { "cases": ["dip", "demeter"], "shuffle": false }
 ```
 
+## Swap a `Notifier`'s sender and find a courier's train wreck
+
+A notifier that depends on an abstract sender, and a courier that reaches three objects deep for a city name.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nclass MessageSender {                 // the abstraction\npublic:\n    virtual ~MessageSender() {}\n    virtual void send(const string& to, const string& text) = 0;\n};\n\nclass EmailSender : public MessageSender {\npublic:\n    void send(const string& to, const string& text) override {\n        cout << \"email to \" << to << \": \" << text << endl;\n    }\n};\n\nclass SmsSender : public MessageSender {\npublic:\n    void send(const string& to, const string& text) override {\n        cout << \"sms to \" << to << \": \" << text.substr(0, 5) << endl;\n    }\n};\n\nclass Notifier {                      // high level: depends on the abstraction only\n    MessageSender& sender;\npublic:\n    Notifier(MessageSender& s) : sender(s) {}\n    void remind(const string& who) { sender.send(who, \"Lab due Friday\"); }\n};\n\nint main() {\n    EmailSender email;\n    SmsSender sms;\n    Notifier n1(email), n2(sms);\n    n1.remind(\"ana\");\n    n2.remind(\"ben\");\n    return 0;\n}",
+    "options": [
+      "`email to ana: Lab due Friday`\n`sms to ben: Lab d`",
+      "`email to ana: Lab due Friday`\n`sms to ben: Lab due Friday`",
+      "`email to ana: Lab due Friday`\n`email to ben: Lab due Friday`",
+      "`email to ana: Lab d`\n`sms to ben: Lab d`"
+    ],
+    "answer": 0,
+    "explain": "Notifier holds a `MessageSender&` and never names a concrete sender. n1 was given the EmailSender, which prints the whole text. n2 was given the SmsSender, whose `text.substr(0, 5)` keeps the first five characters, `Lab d` (L, a, b, space, d). Same high-level code, different low-level module."
+  },
+  {
+    "q": "Click the line that breaks the Law of Demeter.",
+    "type": "spotbug",
+    "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nclass Address {\n    string city = \"Burnaby\";\npublic:\n    string getCity() const { return city; }\n};\n\nclass Customer {\n    Address address;\npublic:\n    const Address& getAddress() const { return address; }\n};\n\nclass Order {\n    Customer customer;\npublic:\n    const Customer& getCustomer() const { return customer; }\n};\n\nclass Courier {\npublic:\n    void deliver(const Order& order) {\n        string city = order.getCustomer().getAddress().getCity();\n        cout << \"driving to \" << city << endl;\n    }\n};\n\nint main() {\n    Order o;\n    Courier c;\n    c.deliver(o);\n    return 0;\n}",
+    "answer": [
+      26
+    ],
+    "explain": "Courier talks to Order (a friend), then to the Customer it returns, then to that customer's Address: knowledge of public members two classes away. Give Order a `getDeliveryCity()` that asks its own customer, and Customer a `getCity()` that asks its own address, so each class talks only to its neighbour."
+  },
+  {
+    "q": "In the Notifier program, which classes would change if the team adds a `PushSender`? (select all)",
+    "options": [
+      "none of the existing classes; PushSender is new and derives from MessageSender",
+      "Notifier",
+      "MessageSender",
+      "EmailSender"
+    ],
+    "answer": [
+      0
+    ],
+    "explain": "Both levels depend on the abstraction. The new detail depends on MessageSender and the high-level Notifier works with it unchanged: Open/Closed plus Liskov, combined into Dependency Inversion."
+  },
+  {
+    "q": "`Notifier` declares a member `EmailSender email;` and calls `email.send(...)`. Which rule does that break?",
+    "options": [
+      "High-level modules should not depend on low-level modules; both should depend on abstractions",
+      "Each unit should only talk to its friends",
+      "Catch exceptions by reference",
+      "Many client-specific interfaces are better than one general-purpose interface"
+    ],
+    "answer": 0,
+    "explain": "Notifier (high level) would depend directly on EmailSender (low level, a detail), so switching to SMS means editing Notifier. Dependency Inversion rule 1 points both at MessageSender."
+  }
+]
+```
+
+```challenge
+{"prompt": "<code>OrderService</code> depends only on the abstract <code>Logger</code>. Write two details that depend on it: <code>ConsoleLogger</code>, whose <code>log</code> prints <code>[log] </code> and the message, and <code>CountingLogger</code>, whose <code>log</code> only counts and whose <code>count()</code> returns the number of calls.", "starter": "#include <iostream>\n#include <string>\nusing namespace std;\n\nclass Logger {\npublic:\n    virtual ~Logger() {}\n    virtual void log(const string& msg) = 0;\n};\n\n// write ConsoleLogger: prints \"[log] \" then the message\n// write CountingLogger: counts calls; count() returns how many\n\nclass OrderService {                  // high level: knows only Logger\n    Logger& logger;\npublic:\n    OrderService(Logger& l) : logger(l) {}\n    void place(int id) { logger.log(\"order \" + to_string(id)); }\n};\n\nint main() {\n    ConsoleLogger console;\n    CountingLogger counter;\n    OrderService shop(console), test(counter);\n    shop.place(7);\n    test.place(1);\n    test.place(2);\n    cout << counter.count() << endl;\n    return 0;\n}\n", "expected": "[log] order 7\n2", "hints": ["<code>class ConsoleLogger : public Logger { public: void log(const string&amp; msg) override { ... } };</code>", "CountingLogger needs an <code>int</code> member starting at 0."], "solution": "#include <iostream>\n#include <string>\nusing namespace std;\n\nclass Logger {\npublic:\n    virtual ~Logger() {}\n    virtual void log(const string& msg) = 0;\n};\n\nclass ConsoleLogger : public Logger {\npublic:\n    void log(const string& msg) override { cout << \"[log] \" << msg << endl; }\n};\n\nclass CountingLogger : public Logger {\n    int n = 0;\npublic:\n    void log(const string&) override { ++n; }\n    int count() const { return n; }\n};\n\nclass OrderService {                  // high level: knows only Logger\n    Logger& logger;\npublic:\n    OrderService(Logger& l) : logger(l) {}\n    void place(int id) { logger.log(\"order \" + to_string(id)); }\n};\n\nint main() {\n    ConsoleLogger console;\n    CountingLogger counter;\n    OrderService shop(console), test(counter);\n    shop.place(7);\n    test.place(1);\n    test.place(2);\n    cout << counter.count() << endl;\n    return 0;\n}\n"}
+```
 ```quiz
 [
   {

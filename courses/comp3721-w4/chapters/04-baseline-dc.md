@@ -82,6 +82,55 @@ dc-offset
 { "dc": 1 }
 ```
 
+## Find the DC component of 1110111100 in three schemes
+
+The ten bits 1 1 1 0 1 1 1 1 0 0 are sent at $+3$ V and $-3$ V (NRZ-L, Manchester) or at $+3$ V and 0 V (unipolar NRZ).
+
+```quiz
+[
+  {
+    "q": "What is the mean amplitude of the NRZ-L signal (slide 55: positive for 0, negative for 1), in volts?",
+    "type": "numeric",
+    "answer": -1.2,
+    "tolerance": 0.01,
+    "unit": "V",
+    "explain": "The bits hold 3 0s at $+3$ V and 7 1s at $-3$ V. Mean $= \\frac{3 \\times (+3) + 7 \\times (-3)}{10} = \\frac{9 - 21}{10} = -1.2$ V. Not zero, so the signal has a DC component."
+  },
+  {
+    "q": "What is the mean amplitude of the unipolar NRZ signal (positive voltage for 1, zero for 0), in volts?",
+    "type": "numeric",
+    "answer": 2.1,
+    "tolerance": 0.01,
+    "unit": "V",
+    "explain": "Mean $= \\frac{7 \\times 3 + 3 \\times 0}{10} = 2.1$ V. Every level is on one side of the axis, so a unipolar mean can only be zero if every bit is 0."
+  },
+  {
+    "q": "What is the mean amplitude of the Manchester signal, in volts?",
+    "type": "numeric",
+    "answer": 0,
+    "tolerance": 0.01,
+    "unit": "V",
+    "explain": "Each bit spends half its time at $+3$ V and half at $-3$ V, so every bit averages $\\frac{3 + (-3)}{2} = 0$ and the whole signal has mean 0 V: no DC component."
+  },
+  {
+    "q": "In the NRZ-L signal, what is the longest stretch at one level, in bits? This is the run that pulls the baseline furthest.",
+    "type": "numeric",
+    "answer": 4,
+    "tolerance": 0.01,
+    "unit": "bits",
+    "explain": "NRZ-L levels: `- - - + - - - - + +`. The four 1s in a row (bits 5 to 8) stay at $-3$ V, a run of 4 bits with no transition."
+  },
+  {
+    "q": "A composite analog signal swings between $-0.5$ V and $0.5$ V. After a DC component is added its lowest value is 1.5 V. What is its new highest value, in volts?",
+    "type": "numeric",
+    "answer": 2.5,
+    "tolerance": 0.01,
+    "unit": "V",
+    "explain": "The DC component moves every point up by the same amount: $1.5 - (-0.5) = 2$ V. The highest value becomes $0.5 + 2 = 2.5$ V; the shape is unchanged."
+  }
+]
+```
+
 ```quiz
 [
   {

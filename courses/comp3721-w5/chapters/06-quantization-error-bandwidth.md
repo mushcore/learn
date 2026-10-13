@@ -95,6 +95,55 @@ pcm-calc
 
 Slide 49: *PCM is a technique for analog-to-digital conversion. PCM includes sampling, quantizing and encoding. PCM requires more bandwidth than the bandwidth of the input analog signal.*
 
+## Error bound, SNR and channel width for new PCM systems
+
+The analog signal in the bandwidth items is low-pass with a bandwidth of 15 kHz and $L = 1024$.
+
+```quiz
+[
+  {
+    "q": "A signal between −6 V and +6 V is quantized with $L = 32$. What is the largest possible magnitude of the quantization error, in volts?",
+    "type": "numeric",
+    "answer": 0.1875,
+    "tolerance": 0.0005,
+    "unit": "V",
+    "explain": "$\\Delta = \\frac{6 - (-6)}{32} = 0.375$ V, and $-\\Delta/2 \\le$ error $\\le \\Delta/2$, so the bound is $0.375 / 2 = 0.1875$ V."
+  },
+  {
+    "q": "A PCM system uses 10 bits per sample. What SNR$_{dB}$ does the slide formula give?",
+    "type": "numeric",
+    "answer": 61.96,
+    "tolerance": 0.006,
+    "unit": "dB",
+    "explain": "$\\text{SNR}_{dB} = 6.02 \\times 10 + 1.76 = 60.2 + 1.76 = 61.96$ dB."
+  },
+  {
+    "q": "The 15 kHz signal is digitized with $L = 1024$ and sent with NRZ ($c = \\frac{1}{2}$, $r = 1$). What is $B_{min}$, in kHz?",
+    "type": "numeric",
+    "answer": 150,
+    "tolerance": 0.1,
+    "unit": "kHz",
+    "explain": "$n_b = \\log_{2} 1024 = 10$. With $c = \\frac{1}{2}$ and $r = 1$, $B_{min} = n_b \\times B_{analog} = 10 \\times 15 = 150$ kHz."
+  },
+  {
+    "q": "The same digitized signal is sent with Manchester ($r = \\frac{1}{2}$, $c = \\frac{1}{2}$). What is $B_{min}$, in kHz?",
+    "type": "numeric",
+    "answer": 300,
+    "tolerance": 0.1,
+    "unit": "kHz",
+    "explain": "$B_{min} = c \\times n_b \\times 2 \\times B_{analog} \\times \\frac{1}{r} = \\frac{1}{2} \\times 10 \\times 2 \\times 15 \\times 2 = 300$ kHz, twice the NRZ figure."
+  },
+  {
+    "q": "A system needs an SNR$_{dB}$ of at least 70 dB from quantization. What is the smallest whole number of bits per sample that gives it?",
+    "type": "numeric",
+    "answer": 12,
+    "tolerance": 0.01,
+    "unit": "bits",
+    "explain": "Solve $6.02\\, n_b + 1.76 \\ge 70$: $n_b \\ge \\frac{70 - 1.76}{6.02} = 11.34$. 11 bits give 67.98 dB (too low); 12 bits give 74.00 dB."
+  }
+]
+```
+
 ```quiz
 [
   {

@@ -156,6 +156,78 @@ Without the standalone declaration line, the call in `main` is a compile error, 
 6. Put function declarations and definitions in the source file.
 7. Use `#pragma once` instead of `#ifndef` to ensure a header file is only included once.
 
+## Name the stage that fails in four new builds
+
+A new project has `main.cpp`, `shapes.hpp` and `shapes.cpp`; each item changes one file or one build command.
+
+```quiz
+[
+  {
+    "q": "`shapes.hpp` declares `int square(int side);`, `shapes.cpp` defines it, and `main.cpp` (below) prints `square(9)`. The project is built with `g++ main.cpp shapes.cpp`. What happens?",
+    "code": "// main.cpp\n#include <iostream>\n#include \"shapes.hpp\"\nusing namespace std;\n\nint main()\n{\n    cout << square(9) << endl;\n    return 0;\n}",
+    "options": [
+      "`81`",
+      "a compile error: `square` was not declared",
+      "a link error: undefined reference to `square(int)`",
+      "`18`"
+    ],
+    "answer": 0,
+    "explain": "The header gives `main.cpp` the declaration, so it compiles; `shapes.cpp` supplies the definition, so the linker finds it. 9 × 9 = 81."
+  },
+  {
+    "q": "Same three files, but the build command is `g++ main.cpp` (shapes.cpp left out). Where does the build fail?",
+    "options": [
+      "At the link stage: `undefined reference to 'square(int)'`",
+      "At the compile stage: `'square' was not declared in this scope`",
+      "At the preprocessor: `shapes.hpp` not found",
+      "It builds and prints 81"
+    ],
+    "answer": 0,
+    "explain": "`main.cpp` still includes the header, so it compiles: the compiler only needs the declaration. No object file contains the body of `square`, so the linker reports `undefined reference to 'square(int)'`."
+  },
+  {
+    "q": "`shapes.hpp` still declares `int square(int side);`, but `shapes.cpp` now defines `int square(int side, int scale) { return side * side * scale; }`. Built with `g++ main.cpp shapes.cpp`, what happens?",
+    "options": [
+      "A link error: `undefined reference to 'square(int)'`",
+      "A compile error in `main.cpp`",
+      "It prints 81",
+      "It prints 0"
+    ],
+    "answer": 0,
+    "explain": "C++ functions are identified by name **and** parameter list. `main.cpp` calls the one-parameter `square(int)` from the header; `shapes.cpp` only defines the two-parameter version. Each file compiles, the linker finds no `square(int)`. This is why the definition should match the header's declaration."
+  },
+  {
+    "type": "text",
+    "q": "One file, a declaration above `main` and the definition below. What does it print?",
+    "code": "#include <iostream>\n\nint twice(int n);\n\nint main()\n{\n    std::cout << twice(21) << std::endl;\n    return 0;\n}\n\nint twice(int n)\n{\n    return n * 2;\n}",
+    "answer": [
+      "42"
+    ],
+    "explain": "The non-defining declaration `int twice(int n);` tells the compiler the function exists before `main` calls it; the body later in the file satisfies the linker. 21 × 2 = `42`."
+  },
+  {
+    "type": "spotbug",
+    "q": "The declaration has been deleted. Click the line g++ reports as an error.",
+    "code": "#include <iostream>\n\nint main()\n{\n    std::cout << twice(21) << std::endl;\n    return 0;\n}\n\nint twice(int n)\n{\n    return n * 2;\n}",
+    "answer": 5,
+    "explain": "The compiler reads top to bottom. At line 5 it has not seen `twice` yet: `'twice' was not declared in this scope`. The definition further down comes too late."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "<code>main</code> calls <code>perimeter</code> before its body appears. Add the non-defining declaration above <code>main</code> and write the definition below it so the program prints <code>22</code> then <code>40</code>.",
+  "starter": "#include <iostream>\n\n// declaration here\n\nint main()\n{\n    std::cout << perimeter(3, 8) << std::endl;\n    std::cout << perimeter(10, 10) << std::endl;\n    return 0;\n}\n\n// definition here\n",
+  "expected": "22\n40\n",
+  "hints": [
+    "The declaration is the header line ending in <code>;</code>: <code>int perimeter(int width, int height);</code>",
+    "Perimeter is <code>2 * (width + height)</code>."
+  ],
+  "solution": "#include <iostream>\n\nint perimeter(int width, int height);\n\nint main()\n{\n    std::cout << perimeter(3, 8) << std::endl;\n    std::cout << perimeter(10, 10) << std::endl;\n    return 0;\n}\n\nint perimeter(int width, int height)\n{\n    return 2 * (width + height);\n}\n"
+}
+```
+
 ```quiz
 [
   {

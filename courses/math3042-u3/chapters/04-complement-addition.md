@@ -72,6 +72,21 @@ The diagram shows the in-class example: 26 red cards and 4 Aces overlap in the 2
 Black and heart cannot both happen to the same card. They can certainly both happen across two draws. The addition rule and the definition of mutually exclusive always refer to **one trial** of the experiment.
 :::
 
+## NOT and OR on dice, birthdays and cards
+
+Each question names a NOT or an OR; pick the rule before computing.
+
+```quiz
+[
+  {"q": "Three dice are rolled. $P(\\text{at least one 6})$? (4 decimals)", "type": "numeric", "answer": 0.4213, "tolerance": 6e-05, "explain": "NOT rule: the complement is no 6 on any die, $(5/6)^3 = 125/216 = 0.5787$. So $1 - 0.5787 = 0.4213$."},
+  {"q": "Ten people are in a room. $P(\\text{at least two share a birthday})$? (4 decimals)", "type": "numeric", "answer": 0.1169, "tolerance": 6e-05, "explain": "$P(\\text{all different}) = P(365, 10)/365^{10} = (365 \\times 364 \\times \\cdots \\times 356)/365^{10} = 0.8831$, so $P(\\text{match}) = 1 - 0.8831 = 0.1169$."},
+  {"q": "Top card of a shuffled deck: $P(\\text{face card or heart})$? (4 decimals)", "type": "numeric", "answer": 0.4231, "tolerance": 6e-05, "explain": "OR rule with overlap: 12 face cards, 13 hearts, 3 heart face cards (J, Q, K of hearts). $12/52 + 13/52 - 3/52 = 22/52 = 0.4231$."},
+  {"q": "Top card: $P(\\text{a 2, a 3 or a 4})$? (4 decimals)", "type": "numeric", "answer": 0.2308, "tolerance": 6e-05, "explain": "Mutually exclusive ranks, so just add: $4/52 + 4/52 + 4/52 = 12/52 = 0.2308$."},
+  {"q": "\"Face card\" and \"heart\" are mutually exclusive.", "type": "tf", "answer": false, "explain": "The J, Q and K of hearts are both, so $P(\\text{face} \\cap \\text{heart}) = 3/52 \\ne 0$ and the subtraction is needed."},
+  {"type": "fill", "q": "Fill the blank so R prints the ten-person birthday probability.", "code": "1 - prod(365:___) / 365^10\n## [1] 0.1169482", "answer": ["356"], "explain": "Ten factors from 365 down: 365, 364, …, 356, which is $P(365, 10)$. `prod()` multiplies them."}
+]
+```
+
 ```quiz
 [
   {

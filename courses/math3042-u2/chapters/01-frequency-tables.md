@@ -119,6 +119,21 @@ barplot(freq.tab,  col=c("black","lightblue","brown","lightgreen","white"),
 A pie chart can be drawn straight from percentages when a question gives those instead of counts (Lab 3 does it with `pie(percents, labels)`).
 :::
 
+## A frequency table of favourite languages
+
+A CST cohort named its favourite programming language: Python 48, Java 21, C++ 33, JavaScript 27, Rust 6. The raw answers are in `cohort$Lang`, and `freq.tab <- table(cohort$Lang)`.
+
+```quiz
+[
+  {"q": "How many students are in the sample?", "type": "numeric", "answer": 135, "tolerance": 0, "explain": "The frequencies add to $n$: $48 + 21 + 33 + 27 + 6 = 135$."},
+  {"q": "Compute $\\hat{p}$ for Python. (4 decimals)", "type": "numeric", "answer": 0.3556, "tolerance": 6e-05, "explain": "$\\hat{p} = 48/135 = 0.3556$, about 35.6% of the cohort."},
+  {"q": "What is the modal language?", "type": "text", "answer": ["Python"], "explain": "Python has the largest frequency, 48. The mode is the category, not the count."},
+  {"q": "What does `freq.tab[[2]]` print?", "options": ["`[1] 21`", "`[1] 48`", "`Java` above `21`", "`[1] 33`"], "answer": 0, "explain": "`table()` lists the categories alphabetically: C++ (1), Java (2), JavaScript (3), Python (4), Rust (5). Position 2 is Java, and double brackets drop the name, so R prints `[1] 21`."},
+  {"q": "In `pie(freq.tab)`, how many degrees of the circle does the C++ slice take? (1 decimal)", "type": "numeric", "answer": 88.0, "tolerance": 0.06, "unit": "°", "explain": "A slice's angle is its relative frequency of 360°: $33/135 = 0.2444$, and $0.2444 \\times 360° = 88.0°$."},
+  {"type": "fill", "q": "Fill the blank so the title's $n$ is computed from the data frame, not typed.", "code": "barplot(freq.tab, col=\"lightgreen\", xlab=\"Language\", ylab=\"Frequency\",\n        main=paste0(\"Favourite Language (n = \", ___(cohort), \")\"))", "answer": ["nrow"], "explain": "`nrow(cohort)` counts the rows, one per student, so the title reads n = 135 and stays right if the data changes."}
+]
+```
+
 ```quiz
 [
   {"q": "Which R function builds a frequency table from a categorical column?", "options": ["`table(x)`", "`freq(x)`", "`summary(x)`", "`hist(x)`"], "answer": 0, "explain": "`table()` counts how many rows fall in each category; the notes assign it to `freq.tab` and feed that to both `pie()` and `barplot()`."},

@@ -75,6 +75,42 @@ hop-walk
 { "preset": "small internet (slides 18-21)", "draw": true }
 ```
 
+## Write the frames between Carol and Dave
+
+Carol (N1 L1) is on Link 1 with router RA (N2 L2 on Link 1, N3 L3 on Link 2), and router RB (N4 L4 on Link 2, N5 L5 on Link 3) connects Link 2 to Dave (N6 L6) on Link 3; type addresses as `L2`, `N6`.
+
+```quiz
+[
+  {
+    "q": "Carol sends a datagram to Dave. Fill in the frame on Link 1, in the slide's field order.",
+    "type": "fill",
+    "code": "[ ___ | ___ | ___ | ___ | Data ]",
+    "answer": ["L2", "L1", "N1", "N6"],
+    "explain": "Link-layer addresses destination-source: RA's interface on Link 1 ($L_2$), then Carol ($L_1$). IP addresses source-destination: $N_1$ then $N_6$. Frame $[L_2 \\mid L_1 \\mid N_1 \\mid N_6 \\mid \\text{Data}]$."
+  },
+  {
+    "q": "Fill in the frame on Link 3 for the same datagram.",
+    "type": "fill",
+    "code": "[ ___ | ___ | ___ | ___ | Data ]",
+    "answer": ["L6", "L5", "N1", "N6"],
+    "explain": "On Link 3 RB sends to Dave: destination $L_6$, source $L_5$ (RB's interface on Link 3). The IP pair is still $N_1\\ N_6$. Frame $[L_6 \\mid L_5 \\mid N_1 \\mid N_6 \\mid \\text{Data}]$."
+  },
+  {
+    "q": "Dave replies to Carol. Fill in the frame of the reply on Link 2.",
+    "type": "fill",
+    "code": "[ ___ | ___ | ___ | ___ | Data ]",
+    "answer": ["L3", "L4", "N6", "N1"],
+    "explain": "On Link 2 RB forwards to RA: destination $L_3$ (RA's interface on Link 2), source $L_4$ (RB's). The reply's IP source is Dave, $N_6$, and its destination Carol, $N_1$. Frame $[L_3 \\mid L_4 \\mid N_6 \\mid N_1 \\mid \\text{Data}]$."
+  },
+  {
+    "q": "Which part of the MAC address 3C:22:FB:9A:01:7E is the Organizationally Unique Identifier?",
+    "type": "text",
+    "answer": ["3C:22:FB", "3c:22:fb", "3C-22-FB", "3C22FB"],
+    "explain": "The OUI is the first three bytes (24 bits, 6 hex digits): **3C:22:FB**. The last three bytes, 9A:01:7E, identify the device."
+  }
+]
+```
+
 ```quiz
 [
   {

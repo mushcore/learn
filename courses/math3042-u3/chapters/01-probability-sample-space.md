@@ -44,6 +44,21 @@ the number of outcomes in $A$ divided by the number in $S$. Three consequences f
 The classical formula only applies when every outcome in $S$ has the same chance. Three coins with $S = \{0, 1, 2, 3 \text{ heads}\}$ is a legal sample space, but its four outcomes are **not** equally likely (one way to get 0 heads, three ways to get 1), so $|A|/|S|$ on it gives wrong answers. List the outcomes at the level where they are equally likely: the eight strings.
 :::
 
+## Four coins and a spinner
+
+Flip four fair coins and let $X$ be the number of heads. Separately, a spinner with three equal sectors (red, blue, green) is spun twice.
+
+```quiz
+[
+  {"q": "How many equally likely outcomes are in $S$ for four coins?", "type": "numeric", "answer": 16, "tolerance": 0, "explain": "Each coin doubles the count: $2^4 = 16$ strings, from HHHH to TTTT."},
+  {"q": "Compute $P(X = 2)$. (4 decimals)", "type": "numeric", "answer": 0.375, "tolerance": 6e-05, "explain": "HHTT, HTHT, HTTH, THHT, THTH, TTHH: $|A| = 6$, so $P(X = 2) = 6/16 = 0.3750$."},
+  {"q": "Compute $P(X = 3)$. (4 decimals)", "type": "numeric", "answer": 0.25, "tolerance": 6e-05, "explain": "The single tail can be any of the four coins: HHHT, HHTH, HTHH, THHH. $4/16 = 0.2500$."},
+  {"q": "Which is more likely with four coins?", "options": ["$X = 2$", "$X = 3$", "they are equally likely", "$X = 4$"], "answer": 0, "explain": "6 outcomes against 4: $0.375 > 0.25$. With three coins $X = 1$ and $X = 2$ tied; with four they do not."},
+  {"q": "Spinner, two spins: $P(\\text{same colour both times})$? (4 decimals)", "type": "numeric", "answer": 0.3333, "tolerance": 6e-05, "explain": "$S$ = {RR, RB, RG, BR, BB, BG, GR, GB, GG}, 9 equally likely outcomes; RR, BB, GG match: $3/9 = 0.3333$."},
+  {"q": "What is the name of the set {RR, RB, RG, BR, BB, BG, GR, GB, GG}?", "type": "text", "answer": ["sample space", "the sample space", "S"], "explain": "The set of all possible outcomes of the random experiment is its sample space $S$; any subset of it, such as {RR, BB, GG}, is an event."}
+]
+```
+
 ```quiz
 [
   {

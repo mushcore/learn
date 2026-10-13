@@ -132,6 +132,68 @@ The return value is spent on the status, so the matrix itself must come back thr
 }
 ```
 
+## Run an asserting `average` and a C-style `parse_age`
+
+A loop that hands `average` a zero count, the same program with `NDEBUG` in the wrong place, and an error-code parser whose result travels through a reference.
+
+```quiz
+[
+  {
+    "q": "What is printed to stdout before the program stops?",
+    "code": "#include <iostream>\n#include <cassert>\nusing namespace std;\n\nint average(int total, int count) {\n    assert(count > 0);\n    return total / count;\n}\n\nint main() {\n    int counts[] = {4, 2, 0, 5};\n    for (int c : counts) {\n        cout << average(20, c) << endl;\n    }\n    cout << \"done\" << endl;\n    return 0;\n}",
+    "options": [
+      "`5`\n`10`",
+      "`5`\n`10`\n`0`\n`4`\n`done`",
+      "`5`",
+      "`5`\n`10`\n`done`"
+    ],
+    "answer": 0,
+    "explain": "average(20, 4) = 5 and average(20, 2) = 10 print. The third count is 0, so `assert(count > 0)` is false: the failure message goes to stderr and the program terminates at once. The division by zero, the 5 and `done` are never reached."
+  },
+  {
+    "q": "The same program with `#define NDEBUG` placed on the line AFTER `#include <cassert>`. What is printed to stdout?",
+    "code": "#include <iostream>\n#include <cassert>\n#define NDEBUG\nusing namespace std;\n\nint average(int total, int count) {\n    assert(count > 0);\n    return total / count;\n}\n\nint main() {\n    int counts[] = {4, 2, 0, 5};   // NDEBUG is defined AFTER the include\n    for (int c : counts) {\n        cout << average(20, c) << endl;\n    }\n    cout << \"done\" << endl;\n    return 0;\n}",
+    "options": [
+      "`5`\n`10`",
+      "`5`\n`10`\n`0`\n`4`\n`done`",
+      "nothing: the assert is gone and 20 / 0 crashes first",
+      "`5`\n`10`\n`done`"
+    ],
+    "answer": 0,
+    "explain": "<cassert> reads NDEBUG at the moment it is included. Here it was not yet defined, so assert is still the checking version and the program stops at count 0 exactly as before: `5`, `10`. Only a `#define NDEBUG` before the include switches assertions off."
+  },
+  {
+    "q": "Which of these are a job for an exception rather than an assertion? (select all)",
+    "options": [
+      "the file name the user typed does not exist",
+      "the network connection drops during a download",
+      "a sort function's own loop leaves the array unsorted",
+      "a private helper receives an index its own class computed wrongly"
+    ],
+    "answer": [
+      0,
+      1
+    ],
+    "explain": "Exceptions are for situations that prevent proper continuation and come from outside the code: a missing file, a network interruption. An unsorted result from your own sort and a wrong index computed by your own class are programming errors, which is what assertions detect."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint parse_age(const string& s, int& age) {\n    if (s.empty() || s[0] < '0' || s[0] > '9') return 1;   // 1 means error\n    age = stoi(s);\n    return 0;                                              // 0 means success\n}\n\nint main() {\n    int age = -1;\n    int code = parse_age(\"42\", age);\n    cout << code << \" \" << age << endl;\n    code = parse_age(\"abc\", age);\n    cout << code << \" \" << age << endl;\n    parse_age(\"x9\", age);\n    cout << age << endl;\n    return 0;\n}",
+    "options": [
+      "`0 42`\n`1 42`\n`42`",
+      "`0 42`\n`1 -1`\n`-1`",
+      "`0 42`\n`1 0`\n`9`",
+      "`0 42`\n`1 42`\n`9`"
+    ],
+    "answer": 0,
+    "explain": "The return value carries the status, so the age comes back through the `int&` parameter. \"42\" succeeds: code 0 and age 42. \"abc\" fails the first-character test: code 1, and age is not touched, so it is still 42. \"x9\" also fails, and its code is silently dropped, so main prints the stale 42 as if it had been read. That is problem #1: the code can be ignored."
+  }
+]
+```
+
+```challenge
+{"prompt": "Write the C-style <code>int root_code(double x, double&amp; result)</code>: return <code>1</code> without touching <code>result</code> when <code>x &lt; 0</code>; otherwise store <code>sqrt(x)</code> in <code>result</code>, assert the postcondition <code>result &gt;= 0.0</code>, and return <code>0</code>.", "starter": "#include <iostream>\n#include <cassert>\n#include <cmath>\nusing namespace std;\n\n// int root_code(double x, double& result) ...\n\nint main() {\n    double r = 0;\n    int code = root_code(9, r);\n    cout << code << \" \" << r << endl;\n    code = root_code(-4, r);\n    cout << code << \" \" << r << endl;\n    return 0;\n}\n", "expected": "0 3\n1 3", "hints": ["The negative check comes first and returns 1: a negative x is the caller's mistake, not a bug in this function.", "<code>assert(result &gt;= 0.0);</code> goes after the calculation."], "solution": "#include <iostream>\n#include <cassert>\n#include <cmath>\nusing namespace std;\n\nint root_code(double x, double& result) {\n    if (x < 0) return 1;      // the caller's mistake: report it\n    result = sqrt(x);\n    assert(result >= 0.0);    // our own postcondition\n    return 0;\n}\n\nint main() {\n    double r = 0;\n    int code = root_code(9, r);\n    cout << code << \" \" << r << endl;\n    code = root_code(-4, r);\n    cout << code << \" \" << r << endl;\n    return 0;\n}\n"}
+```
 ```quiz
 [
   {

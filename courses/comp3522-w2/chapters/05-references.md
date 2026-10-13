@@ -255,6 +255,71 @@ pointer-viz
 { "preset": "test(int& x, int y, int* z)", "presets": false, "title": "One frame, three parameter kinds" }
 ```
 
+## Track four new aliases
+
+A reference is a second name for the same box; it never moves to another box after initialization.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int a = 5;\n    int& r = a;\n    int b = 12;\n    r = b;\n    r += 1;\n    b = 0;\n    cout << a << ' ' << r << ' ' << b << endl;\n    return 0;\n}",
+    "options": [
+      "`13 13 0`",
+      "`5 0 0`",
+      "`5 13 0`",
+      "`13 1 0`"
+    ],
+    "answer": 0,
+    "explain": "`r = b` copies 12 into a (r is a's nickname, it does not re-seat). `r += 1` makes a 13. `b = 0` changes only b. Output: `13 13 0`."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nvoid f(int a, int& b, int* c)\n{\n    a *= 2;\n    b *= 2;\n    *c *= 2;\n}\n\nint main()\n{\n    int p = 1, q = 2, s = 3;\n    f(p, q, &s);\n    cout << p << ' ' << q << ' ' << s << endl;\n    return 0;\n}",
+    "options": [
+      "`1 4 6`",
+      "`2 4 6`",
+      "`1 2 3`",
+      "`1 4 3`"
+    ],
+    "answer": 0,
+    "explain": "`a` is a copy, so p stays 1. `b` is a reference to q, so q doubles to 4. `c` holds s's address, so `*c *= 2` doubles s to 6. Output: `1 4 6`."
+  },
+  {
+    "type": "spotbug",
+    "q": "Click the line that fails to compile.",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int count{4};\n    const double& half{count / 2.0};\n    double& share = count;\n    cout << half << share << endl;\n    return 0;\n}",
+    "answer": 8,
+    "explain": "Line 7 is legal: a `const` reference may bind to a temporary, here the `double` 2.0. Line 8 asks a plain `double&` to alias an `int`; the types differ, so the compiler would need a temporary `double`, which a non-const reference cannot bind to. It is the slide's `long& ref = n;` case."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int x = 1;\n    int& y = x;\n    int& z = y;\n    z = 7;\n    cout << x << ' ' << (&x == &z) << endl;\n    return 0;\n}",
+    "options": [
+      "`7 1`",
+      "`1 0`",
+      "`7 0`",
+      "`1 1`"
+    ],
+    "answer": 0,
+    "explain": "`y` names x, and `int& z = y` names whatever y names, which is x. So `z = 7` writes into x, and x, y and z share one address: `&x == &z` is true. Output: `7 1`."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "Write <code>void sortTwo(int& a, int& b)</code> that swaps the caller's variables when <code>a</code> is larger, so afterwards <code>a <= b</code>. <code>main</code> prints <code>3 8</code> and <code>2 5</code>.",
+  "starter": "#include <iostream>\nusing namespace std;\n\n// sortTwo here\n\nint main()\n{\n    int x = 8, y = 3;\n    sortTwo(x, y);\n    cout << x << ' ' << y << endl;\n    int m = 2, n = 5;\n    sortTwo(m, n);\n    cout << m << ' ' << n << endl;\n    return 0;\n}\n",
+  "expected": "3 8\n2 5\n",
+  "hints": [
+    "Only swap when <code>a > b</code>.",
+    "<code>int temp{a}; a = b; b = temp;</code> changes the caller's variables because a and b are references."
+  ],
+  "solution": "#include <iostream>\nusing namespace std;\n\nvoid sortTwo(int& a, int& b)\n{\n    if (a > b)\n    {\n        int temp{a};\n        a = b;\n        b = temp;\n    }\n}\n\nint main()\n{\n    int x = 8, y = 3;\n    sortTwo(x, y);\n    cout << x << ' ' << y << endl;\n    int m = 2, n = 5;\n    sortTwo(m, n);\n    cout << m << ' ' << n << endl;\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

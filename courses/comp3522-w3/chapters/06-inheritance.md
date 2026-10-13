@@ -172,6 +172,65 @@ lifetime-trace
 
 The shipped `private.cpp` shows two wrong ways and the right way to initialize a base's private member from a derived constructor: `B(int x) : x{x}` fails with `member initializer 'x' does not name a non-static data member or base class` (x belongs to A, and a derived list may only name its own members and direct bases); `B(int x) { set_x(x); }` compiles but default-constructs A and then assigns, the "NO DON'T DO THIS" of the slide; the right way is `B(int x) : A{x}`.
 
+## Trace base constructors and access in four new hierarchies
+
+The base part is always built first; the derived constructor's initialization list picks which base constructor.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Base\n{\npublic:\n    Base() { cout << \"B\"; }\n    Base(int) { cout << \"Bi\"; }\n};\n\nclass Kid : public Base\n{\npublic:\n    Kid(int) { cout << \"K\"; }\n};\n\nclass Kid2 : public Base\n{\npublic:\n    Kid2(int x) : Base(x) { cout << \"K2\"; }\n};\n\nint main()\n{\n    Kid a(1);\n    cout << '|';\n    Kid2 b(2);\n    cout << endl;\n    return 0;\n}",
+    "options": [
+      "`BK|BiK2`",
+      "`BiK|BiK2`",
+      "`K|K2`",
+      "`BK|BK2`"
+    ],
+    "answer": 0,
+    "explain": "`Kid(int)` has no initialization list, so the base part is built with the default `Base()`: `B`, then `K`, even though an int was passed. `Kid2(int x) : Base(x)` calls `Base(int)`: `Bi`, then `K2`. Output: `BK|BiK2`."
+  },
+  {
+    "type": "spotbug",
+    "q": "Click the line that fails to compile.",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Account\n{\nprivate:\n    double balance = 0;\nprotected:\n    int id = 7;\n};\n\nclass Savings : public Account\n{\npublic:\n    int getId() { return id; }\n    double getBalance() { return balance; }\n};\n\nint main()\n{\n    Savings s;\n    cout << s.getId() << endl;\n    return 0;\n}",
+    "answer": 16,
+    "explain": "A derived class can use the base's protected members (line 15 reads `id`) but never its private ones. Line 16 reads `balance`: `'double Account::balance' is private within this context`."
+  },
+  {
+    "type": "numeric",
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Vehicle\n{\nprotected:\n    int fuel = 50;\npublic:\n    void drive(int km) { fuel -= km / 10; }\n};\n\nclass Car : public Vehicle\n{\npublic:\n    int range() const { return fuel * 12; }\n};\n\nint main()\n{\n    Car c;\n    c.drive(100);\n    cout << c.range() << endl;\n    return 0;\n}",
+    "answer": 480,
+    "explain": "`Car` inherits `drive` and the protected `fuel`. `drive(100)` uses 100 / 10 = 10, leaving 40. `range()` reads the inherited member: 40 × 12 = 480."
+  },
+  {
+    "q": "`class Door { public: void open(); };` and `class Guard : protected Door { };`. In `main`, `Guard g; g.open();`. What happens?",
+    "options": [
+      "It fails to compile: `open` is protected in `Guard`",
+      "It compiles: `open` was public in `Door`",
+      "It compiles, but only inside a member function of `Guard`",
+      "It fails at link time"
+    ],
+    "answer": 0,
+    "explain": "Protected inheritance caps every inherited member at protected, so `Door`'s public `open` becomes protected in `Guard`. `main` is not a member or a derived class, so it cannot call it. With `public Door` the call would compile."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "Write <code>class Square : public Shape</code> with a constructor <code>Square(int side)</code> that passes <code>\"square\"</code> to the base constructor in its initialization list, and <code>int area() const</code>. <code>main</code> prints <code>square 25</code>.",
+  "starter": "#include <iostream>\n#include <string>\nusing namespace std;\n\nclass Shape\n{\n    string name;\npublic:\n    Shape(string name) : name(name) { }\n    string getName() const { return name; }\n};\n\n// class Square here\n\nint main()\n{\n    Square s(5);\n    cout << s.getName() << ' ' << s.area() << endl;\n    return 0;\n}\n",
+  "expected": "square 25\n",
+  "hints": [
+    "<code>Shape</code> has no default constructor, so <code>Square</code> must call <code>Shape(\"square\")</code> in its list.",
+    "<code>Square(int side) : Shape(\"square\"), side(side) { }</code>"
+  ],
+  "solution": "#include <iostream>\n#include <string>\nusing namespace std;\n\nclass Shape\n{\n    string name;\npublic:\n    Shape(string name) : name(name) { }\n    string getName() const { return name; }\n};\n\nclass Square : public Shape\n{\n    int side;\npublic:\n    Square(int side) : Shape(\"square\"), side(side) { }\n    int area() const { return side * side; }\n};\n\nint main()\n{\n    Square s(5);\n    cout << s.getName() << ' ' << s.area() << endl;\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

@@ -196,6 +196,60 @@ solid-spotter
 { "cases": ["lsp", "isp"], "shuffle": false }
 ```
 
+## Substitute a `Square` for a `Rectangle` and split a fat `Machine`
+
+A subtype that compiles but breaks its caller's expectation, then an office machine split into small interfaces.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Rectangle {\nprotected:\n    int w = 0, h = 0;\npublic:\n    virtual ~Rectangle() {}\n    virtual void setWidth(int x) { w = x; }\n    virtual void setHeight(int y) { h = y; }\n    int area() const { return w * h; }\n};\n\nclass Square : public Rectangle {\npublic:\n    void setWidth(int x) override { w = h = x; }\n    void setHeight(int y) override { w = h = y; }\n};\n\nint resize_and_measure(Rectangle& r) {\n    r.setWidth(5);\n    r.setHeight(4);\n    return r.area();          // the caller expects 5 * 4\n}\n\nint main() {\n    Rectangle r;\n    Square s;\n    cout << resize_and_measure(r) << \" \" << resize_and_measure(s) << endl;\n    return 0;\n}",
+    "options": [
+      "`20 16`",
+      "`20 20`",
+      "`16 16`",
+      "`20 25`"
+    ],
+    "answer": 0,
+    "explain": "For the Rectangle, width 5 then height 4 gives 5 * 4 = 20. For the Square, `setWidth(5)` sets both sides to 5, then `setHeight(4)` sets both to 4: 4 * 4 = 16. The Square compiles as a Rectangle but changes the result a function written for the base relies on, so substituting it alters the program's correctness: a Liskov violation."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Printable {\npublic:\n    virtual ~Printable() {}\n    virtual void print() = 0;\n};\n\nclass Scannable {\npublic:\n    virtual ~Scannable() {}\n    virtual void scan() = 0;\n};\n\nclass BasicPrinter : public Printable {\npublic:\n    void print() override { cout << \"basic prints\" << endl; }\n};\n\nclass OfficeMachine : public Printable, public Scannable {\npublic:\n    void print() override { cout << \"office prints\" << endl; }\n    void scan() override { cout << \"office scans\" << endl; }\n};\n\nint main() {\n    BasicPrinter basic;\n    OfficeMachine office;\n    Printable* printers[] = { &basic, &office };\n    for (Printable* p : printers) p->print();\n    Scannable& s = office;\n    s.scan();\n    return 0;\n}",
+    "options": [
+      "`basic prints`\n`office prints`\n`office scans`",
+      "`basic prints`\n`office prints`\n`office prints`\n`office scans`",
+      "`office prints`\n`basic prints`\n`office scans`",
+      "a compile error: OfficeMachine is ambiguous"
+    ],
+    "answer": 0,
+    "explain": "The array holds a BasicPrinter and an OfficeMachine as `Printable*`, and print is virtual: `basic prints`, `office prints`. `Scannable& s = office;` refers to the same object through its other interface: `office scans`. The two interfaces share no base, so there is no diamond and nothing is ambiguous."
+  },
+  {
+    "q": "The same classes, with the scan made through a `Printable&` instead. Click the line the compiler rejects.",
+    "type": "spotbug",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Printable {\npublic:\n    virtual ~Printable() {}\n    virtual void print() = 0;\n};\n\nclass Scannable {\npublic:\n    virtual ~Scannable() {}\n    virtual void scan() = 0;\n};\n\nclass BasicPrinter : public Printable {\npublic:\n    void print() override { cout << \"basic prints\" << endl; }\n};\n\nclass OfficeMachine : public Printable, public Scannable {\npublic:\n    void print() override { cout << \"office prints\" << endl; }\n    void scan() override { cout << \"office scans\" << endl; }\n};\n\nint main() {\n    BasicPrinter basic;\n    OfficeMachine office;\n    Printable* printers[] = { &basic, &office };\n    for (Printable* p : printers) p->print();\n    Printable& p = office;\n    p.scan();\n    return 0;\n}",
+    "answer": [
+      33
+    ],
+    "explain": "A Printable reference exposes only what Printable declares: `print()`. The object behind it can scan, but `p.scan()` is an error: 'class Printable' has no member named 'scan'. Each client sees only the small interface it depends on."
+  },
+  {
+    "q": "Click the first line that shows `Machine` breaks the Interface Segregation Principle.",
+    "type": "spotbug",
+    "code": "#include <iostream>\n#include <stdexcept>\nusing namespace std;\n\nclass Machine {\npublic:\n    virtual ~Machine() {}\n    virtual void print() = 0;\n    virtual void scan() = 0;\n    virtual void fax() = 0;\n};\n\nclass BasicPrinter : public Machine {\npublic:\n    void print() override { cout << \"printing\" << endl; }\n    void scan() override { throw logic_error(\"cannot scan\"); }\n    void fax() override { throw logic_error(\"cannot fax\"); }\n};\n\nint main() {\n    BasicPrinter p;\n    p.print();\n    return 0;\n}",
+    "answer": [
+      16
+    ],
+    "explain": "BasicPrinter is forced to implement `scan()` and `fax()` it cannot do, so it fills them with throws. No client should be forced to depend on functions it does not use: split Machine into Printable, Scannable and Faxable, and BasicPrinter derives from Printable only."
+  }
+]
+```
+
+```challenge
+{"prompt": "Implement the two small interfaces: <code>Copier</code> derives from both <code>Printable</code> and <code>Scannable</code> (prints <code>copier prints</code>, scans <code>copier scans</code>); <code>Receipt</code> derives from <code>Printable</code> only and prints <code>receipt prints</code>.", "starter": "#include <iostream>\nusing namespace std;\n\nclass Printable {\npublic:\n    virtual ~Printable() {}\n    virtual void print() = 0;\n};\n\nclass Scannable {\npublic:\n    virtual ~Scannable() {}\n    virtual void scan() = 0;\n};\n\n// write Copier (prints \"copier prints\", scans \"copier scans\")\n// and Receipt (prints \"receipt prints\"; it cannot scan) here\n\nvoid printAll(Printable* list[], int n) {\n    for (int i = 0; i < n; ++i) list[i]->print();\n}\n\nint main() {\n    Copier copier;\n    Receipt receipt;\n    Printable* list[] = { &receipt, &copier };\n    printAll(list, 2);\n    Scannable& s = copier;\n    s.scan();\n    return 0;\n}\n", "expected": "receipt prints\ncopier prints\ncopier scans", "hints": ["<code>class Copier : public Printable, public Scannable</code>", "Receipt has no scan() at all: that is the point of segregation."], "solution": "#include <iostream>\nusing namespace std;\n\nclass Printable {\npublic:\n    virtual ~Printable() {}\n    virtual void print() = 0;\n};\n\nclass Scannable {\npublic:\n    virtual ~Scannable() {}\n    virtual void scan() = 0;\n};\n\nclass Copier : public Printable, public Scannable {\npublic:\n    void print() override { cout << \"copier prints\" << endl; }\n    void scan() override { cout << \"copier scans\" << endl; }\n};\n\nclass Receipt : public Printable {\npublic:\n    void print() override { cout << \"receipt prints\" << endl; }\n};\n\nvoid printAll(Printable* list[], int n) {\n    for (int i = 0; i < n; ++i) list[i]->print();\n}\n\nint main() {\n    Copier copier;\n    Receipt receipt;\n    Printable* list[] = { &receipt, &copier };\n    printAll(list, 2);\n    Scannable& s = copier;\n    s.scan();\n    return 0;\n}\n"}
+```
 ```quiz
 [
   {

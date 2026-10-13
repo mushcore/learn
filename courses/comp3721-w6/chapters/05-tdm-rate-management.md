@@ -88,6 +88,61 @@ tdm-play
 
 A framing bit is overhead: a frame of $n$ slots plus one framing bit carries $n \times \text{unit} + 1$ bits, so the link rate rises by one bit per frame.
 
+## Pick the strategy and the link rate for three new input sets
+
+Raise or split the inputs until every slot carries the same rate, then multiply by the number of slots.
+
+```quiz
+[
+  {
+    "q": "Inputs of 16, 16, 32 and 32 kbps are to be multiplexed by first combining the two 16 kbps lines. Which strategy is this?",
+    "options": ["Multilevel multiplexing", "Multiple-slot allocation", "Pulse stuffing", "Statistical TDM"],
+    "answer": 0,
+    "explain": "32 is a multiple of 16, and the two slow lines are pre-multiplexed into one 32 kbps line: **multilevel multiplexing**, as in the slide's 20 + 20 → 40."
+  },
+  {
+    "q": "What is the output rate for those inputs, 16, 16, 32 and 32 kbps, in kbps?",
+    "type": "numeric",
+    "answer": 96,
+    "tolerance": 0.01,
+    "unit": "kbps",
+    "explain": "$16 + 16 = 32$, so the main MUX sees three 32 kbps inputs: $3 \\times 32 = 96$ kbps."
+  },
+  {
+    "q": "A 120 kbps line joins three 40 kbps lines with multiple-slot allocation. How many slots in each frame does the 120 kbps line get?",
+    "type": "numeric",
+    "answer": 3,
+    "tolerance": 0.01,
+    "unit": "slots",
+    "explain": "$120 / 40 = 3$: a demultiplexer splits it into three 40 kbps lines, so it has 3 slots of the 6 in each frame and the link runs at $6 \\times 40 = 240$ kbps."
+  },
+  {
+    "q": "Inputs of 64, 64 and 61 kbps are multiplexed with pulse stuffing. What is the output rate, in kbps?",
+    "type": "numeric",
+    "answer": 192,
+    "tolerance": 0.01,
+    "unit": "kbps",
+    "explain": "61 is not a multiple of 64, so 64 kbps is the dominant rate and the 61 kbps line is padded to 64: $3 \\times 64 = 192$ kbps."
+  },
+  {
+    "q": "In that pulse-stuffing case, how many dummy bits per second are added to the 61 kbps line?",
+    "type": "numeric",
+    "answer": 3000,
+    "tolerance": 1,
+    "unit": "bits/s",
+    "explain": "$64000 - 61000 = 3000$ dummy bits each second."
+  },
+  {
+    "q": "Four 100 kbps lines with 1-bit slots get one framing bit at the start of each frame. What is the link bit rate, in kbps?",
+    "type": "numeric",
+    "answer": 500,
+    "tolerance": 0.5,
+    "unit": "kbps",
+    "explain": "Frame rate $= 100000$ frames/s and each frame holds $4 \\times 1 + 1 = 5$ bits, so $100000 \\times 5 = 500000$ bps $= 500$ kbps, 100 kbps more than without framing."
+  }
+]
+```
+
 ```quiz
 [
   {

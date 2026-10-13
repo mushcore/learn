@@ -82,6 +82,63 @@ tdm-play
 
 *A multiplexer combines four 100-kbps channels using a time slot of 2 bits. 1. What is the frame rate? 2. What is the frame duration? 3. What is the bit rate of the shared channel? 4. What is the bit duration?* It is worked in [Multiplexing examples](#/comp3721-w6/multiplexing-examples).
 
+## Six 48 kbps lines with 3-bit slots
+
+A synchronous TDM multiplexer combines six 48 kbps lines using a time slot of 3 bits.
+
+```quiz
+[
+  {
+    "q": "What is the frame rate, in frames per second?",
+    "type": "numeric",
+    "answer": 16000,
+    "tolerance": 1,
+    "unit": "frames/s",
+    "explain": "Frame rate = input unit rate = $48000 / 3 = 16000$ frames/s; each frame carries one 3-bit unit from every line."
+  },
+  {
+    "q": "What is the frame duration, in μs?",
+    "type": "numeric",
+    "answer": 62.5,
+    "tolerance": 0.01,
+    "unit": "μs",
+    "explain": "$1 / 16000 = 6.25 \\times 10^{-5}$ s $= 62.5$ μs, the same as the duration of one input unit."
+  },
+  {
+    "q": "What is the bit rate of the link, in kbps?",
+    "type": "numeric",
+    "answer": 288,
+    "tolerance": 0.5,
+    "unit": "kbps",
+    "explain": "$n \\times$ input rate $= 6 \\times 48 = 288$ kbps."
+  },
+  {
+    "q": "What is the bit duration on the link, in μs? (Two decimals.)",
+    "type": "numeric",
+    "answer": 3.47,
+    "tolerance": 0.006,
+    "unit": "μs",
+    "explain": "$1 / 288000 = 3.4722 \\times 10^{-6}$ s, about 3.47 μs."
+  },
+  {
+    "q": "How many bits does one frame carry?",
+    "type": "numeric",
+    "answer": 18,
+    "tolerance": 0.01,
+    "unit": "bits",
+    "explain": "6 slots of 3 bits: $6 \\times 3 = 18$ bits. Check: $16000 \\times 18 = 288000$ bps, the link rate."
+  },
+  {
+    "q": "What is the duration of one slot on the link, in μs? (Two decimals.)",
+    "type": "numeric",
+    "answer": 10.42,
+    "tolerance": 0.006,
+    "unit": "μs",
+    "explain": "A slot is $T / n$: $62.5 / 6 = 10.4167$ μs, about 10.42 μs (3 bits of 3.47 μs)."
+  }
+]
+```
+
 ```quiz
 [
   {

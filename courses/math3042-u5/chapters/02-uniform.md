@@ -80,6 +80,21 @@ The height 0.05 is not the probability of anything: a uniform on $[0, 0.5]$ has 
 
 Units must match the interval. If the same bus question is posed in hours, the wait is uniform on $[0, \frac{1}{3}]$ and "more than 0.2 hours" is $\dfrac{1/3 - 0.2}{1/3} = 0.40$, the same answer as 12 minutes. Mixing a limit in minutes with an interval in hours gives nonsense.
 
+## A train delay uniform on [2, 14] minutes
+
+A commuter train is always between 2 and 14 minutes late, and every delay in that range is equally likely. T = the delay in minutes.
+
+```quiz
+[
+  {"q": "Name the distribution of T (one word).", "type": "text", "answer": ["uniform", "uniform distribution", "continuous uniform"], "explain": "A flat density on an interval: uniform on [a, b] = [2, 14], with height 1/(14 − 2) = 1/12 = 0.0833."},
+  {"q": "P(5 ≤ T ≤ 10) = ? (4 decimals)", "type": "numeric", "answer": 0.4167, "tolerance": 6e-05, "explain": "Width over total width: (10 − 5)/(14 − 2) = 5/12 = 0.4167. The total width is 12, not 14: the interval starts at 2."},
+  {"type": "fill", "q": "Complete the R line for P(5 ≤ T ≤ 10).", "code": "punif(10, ___, ___) - punif(5, 2, 14)", "answer": ["2", "14"], "explain": "punif(x, a, b) is F(x) = (x − a)/(b − a), so both calls take a = 2 and b = 14: (8/12) − (3/12) = 0.4166667."},
+  {"q": "Write the set-up for P(T > 11) in the form `(d-c)/(b-a)` with the numbers in, no spaces.", "type": "text", "answer": ["(14-11)/(14-2)"], "explain": "The interval is 11 to 14, the whole is 2 to 14: (14 − 11)/(14 − 2) = 3/12 = 0.2500. In R, 1 − punif(11, 2, 14)."},
+  {"q": "The mean delay μ = ? (minutes)", "type": "numeric", "answer": 8.0, "tolerance": 0.006, "unit": "min", "explain": "μ = (a + b)/2 = (2 + 14)/2 = 8 minutes, the midpoint of the interval."},
+  {"q": "σ = ? (2 decimals, minutes)", "type": "numeric", "answer": 3.46, "tolerance": 0.006, "unit": "min", "explain": "σ = (b − a)/√12 = 12/√12 = √12 = 3.4641 ≈ 3.46 minutes."}
+]
+```
+
 ```quiz
 [
   {

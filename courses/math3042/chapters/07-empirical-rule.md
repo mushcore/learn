@@ -68,6 +68,20 @@ $6280.683 - 3(139.7298) = 5861.493$ to $6280.683 + 3(139.7298) = 6699.873$
 
 By the empirical rule, 99.7% of values (assuming approximate normality) fall inside that interval, so the chance of a value falling **outside** $\pm 3s$ is $100\% - 99.7\% = 0.3\%$.
 
+## The 68-95-99.7 rule for battery life
+
+Battery life of a phone model is normal with $\mu = 40$ hours and $\sigma = 3$ hours.
+
+```quiz
+[
+  {"q": "Upper end of the interval holding 99.7% of battery lives?", "type": "numeric", "answer": 49, "tolerance": 0, "unit": "h", "explain": "$\\mu + 3\\sigma = 40 + 3(3) = 49$ hours (the interval is 31 to 49)."},
+  {"q": "What percentage of batteries last more than 46 hours?", "type": "numeric", "answer": 2.5, "tolerance": 0.05, "unit": "%", "explain": "$46 = 40 + 2(3) = \\mu + 2\\sigma$. 95% is inside $\\mu \\pm 2\\sigma$, so 5% is outside, split evenly: 2.5% above 46."},
+  {"q": "What percentage of batteries last less than 37 hours?", "type": "numeric", "answer": 16, "tolerance": 0.5, "unit": "%", "explain": "$37 = \\mu - \\sigma$. Below the mean is 50%; between $\\mu - \\sigma$ and $\\mu$ is half of 68% = 34%; so $50 - 34 = 16\\%$."},
+  {"q": "What percentage last between 34 and 43 hours?", "type": "numeric", "answer": 81.5, "tolerance": 0.3, "unit": "%", "explain": "34 is $\\mu - 2\\sigma$ and 43 is $\\mu + \\sigma$. From $\\mu - 2\\sigma$ to $\\mu$: half of 95% = 47.5%. From $\\mu$ to $\\mu + \\sigma$: half of 68% = 34%. Total $47.5 + 34 = 81.5\\%$."},
+  {"type": "shade", "q": "Shade the batteries lasting between 34 and 43 hours.", "mu": 40, "sigma": 3, "answer": 81.5, "tolerance": 1, "lo": -2, "hi": 1, "explain": "Drag the handles to $-2\\sigma$ (34) and $+1\\sigma$ (43). The rule gives $47.5 + 34 = 81.5\\%$; the exact normal area is 81.86%."}
+]
+```
+
 ```quiz
 [
   {

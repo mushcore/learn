@@ -47,6 +47,66 @@ duplex-play
 {}
 ```
 
+## Name the parts and the flow of three new systems
+
+A baby monitor sends the sound of a sleeping baby by radio to a parent unit that has no microphone; two truckers share one CB radio channel by pressing to talk; two friends talk at the same time on a video call.
+
+```quiz
+[
+  {
+    "q": "Which data-flow mode does the baby monitor use?",
+    "options": [
+      "Simplex",
+      "Half-duplex",
+      "Full-duplex",
+      "Multipoint"
+    ],
+    "answer": 0,
+    "explain": "Sound travels only from the baby unit to the parent unit, which cannot send back: unidirectional, so **simplex**."
+  },
+  {
+    "q": "Which data-flow mode does the CB radio channel use?",
+    "options": [
+      "Simplex",
+      "Half-duplex",
+      "Full-duplex",
+      "Point-to-point"
+    ],
+    "answer": 1,
+    "explain": "Both truckers can send, but only one at a time (press to talk, release to listen): two-directional, one at a time, so **half-duplex**."
+  },
+  {
+    "q": "Which data-flow mode does the video call use?",
+    "options": [
+      "Simplex",
+      "Half-duplex",
+      "Full-duplex",
+      "Timeshared"
+    ],
+    "answer": 2,
+    "explain": "Both directions are active at once: two-directional, simultaneously, so **full-duplex**. The two directions share the capacity of the link."
+  },
+  {
+    "q": "In the baby monitor, the parent unit is which of the five components?",
+    "type": "text",
+    "answer": [
+      "receiver",
+      "the receiver"
+    ],
+    "explain": "The parent unit is the device that receives the message: the **receiver**. The baby unit is the sender, the sound is the message, and the air carrying the radio waves is the transmission medium."
+  },
+  {
+    "q": "Both baby-monitor units must use the same channel and the same way of turning sound into bits, or the parent hears nothing useful. Which component is that agreement?",
+    "type": "text",
+    "answer": [
+      "protocol",
+      "the protocol"
+    ],
+    "explain": "A **protocol** is a set of rules that govern data communications and represents an agreement between the communicating devices."
+  }
+]
+```
+
 ```quiz
 [
   {

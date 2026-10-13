@@ -104,6 +104,73 @@ lifetime-trace
 
 This is the efficiency argument for references from Week 2 restated in terms of constructors: passing a large object by value costs a copy constructor and a destructor per call.
 
+## Order the constructor and destructor calls in three new programs
+
+`Noisy` prints `+` and its letter when constructed and `-` and its letter when destroyed.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Noisy\n{\n    char name;\npublic:\n    Noisy(char c) : name(c) { cout << '+' << name; }\n    ~Noisy() { cout << '-' << name; }\n};\n\nint main()\n{\n    Noisy a('a');\n    {\n        Noisy b('b');\n        Noisy c('c');\n    }\n    Noisy d('d');\n    return 0;\n}",
+    "options": [
+      "`+a+b+c-c-b+d-d-a`",
+      "`+a+b+c-b-c+d-a-d`",
+      "`+a+b+c+d-d-c-b-a`",
+      "`+a+b+c-c-b+d-a-d`"
+    ],
+    "answer": 0,
+    "explain": "`b` and `c` die at the inner closing brace, in reverse order of construction: `-c` then `-b`. `d` is built after that. At the end of `main`, `d` and `a` are destroyed in reverse order: `-d-a`. Output: `+a+b+c-c-b+d-d-a`."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Noisy\n{\n    char name;\npublic:\n    Noisy(char c) : name(c) { cout << '+' << name; }\n    ~Noisy() { cout << '-' << name; }\n};\n\nint main()\n{\n    Noisy* p = new Noisy('h');\n    Noisy s('s');\n    delete p;\n    cout << '|';\n    return 0;\n}",
+    "options": [
+      "`+h+s-h|-s`",
+      "`+h+s|-s-h`",
+      "`+h+s-s-h|`",
+      "`+h+s|-s`"
+    ],
+    "answer": 0,
+    "explain": "A heap object lives until `delete`, so `-h` prints at the `delete p` line, before `|`. The stack object `s` is destroyed at the end of `main`, after `|`. Output: `+h+s-h|-s`. Without the `delete`, `-h` would never print: a leak."
+  },
+  {
+    "q": "`show` takes its parameter by value, and `Noisy` uses the compiler-generated copy constructor (which prints nothing). What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Noisy\n{\n    char name;\npublic:\n    Noisy(char c) : name(c) { cout << '+' << name; }\n    ~Noisy() { cout << '-' << name; }\n};\n\nvoid show(Noisy n)\n{\n    cout << '*';\n}\n\nint main()\n{\n    Noisy a('a');\n    show(a);\n    return 0;\n}",
+    "options": [
+      "`+a*-a-a`",
+      "`+a*-a`",
+      "`+a+a*-a-a`",
+      "`+a-a*`"
+    ],
+    "answer": 0,
+    "explain": "Passing by value copies `a` into the parameter `n` through the silent generated copy constructor, so there is no second `+`. The copy is destroyed when `show` returns (`-a` after `*`), and the original at the end of `main`: two destructor calls for one visible construction. Output: `+a*-a-a`."
+  },
+  {
+    "type": "fill",
+    "q": "Complete the destructor of `Playlist`, which owns `songs = new int[count];`.",
+    "code": "___() { delete[] songs; }",
+    "answer": [
+      "~Playlist"
+    ],
+    "explain": "A destructor is named `~` plus the class name, with no return type and no parameters. It pairs the constructor's `new int[count]` with `delete[]`."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "Give <code>Buffer</code> a destructor that prints <code>freeing N ints</code> (N is its size) and releases its array. <code>main</code> is written; the output must be:<pre>freeing 2 ints\nend of main\nfreeing 4 ints</pre>",
+  "starter": "#include <iostream>\nusing namespace std;\n\nclass Buffer\n{\n    int size;\n    int* data;\npublic:\n    Buffer(int n) : size(n), data(new int[n]) { }\n    // destructor here\n};\n\nint main()\n{\n    Buffer a(4);\n    {\n        Buffer b(2);\n    }\n    cout << \"end of main\" << endl;\n    return 0;\n}\n",
+  "expected": "freeing 2 ints\nend of main\nfreeing 4 ints\n",
+  "hints": [
+    "<code>~Buffer() { ... }</code>",
+    "Memory from <code>new int[n]</code> is released with <code>delete[] data;</code>"
+  ],
+  "solution": "#include <iostream>\nusing namespace std;\n\nclass Buffer\n{\n    int size;\n    int* data;\npublic:\n    Buffer(int n) : size(n), data(new int[n]) { }\n    ~Buffer()\n    {\n        cout << \"freeing \" << size << \" ints\" << endl;\n        delete[] data;\n    }\n};\n\nint main()\n{\n    Buffer a(4);\n    {\n        Buffer b(2);\n    }\n    cout << \"end of main\" << endl;\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

@@ -112,6 +112,60 @@ The complementary note builds Manchester another way: it *does a more explicit j
 
 Both 0s and 1s result in a transition, so the receiver can recover the clock. The note's result is the mirror image of slide 57: 0 low-to-high, 1 high-to-low. Use slide 57 unless a question states its own.
 
+## Encode 0011101 in Manchester and differential Manchester
+
+Type each bit as its two halves, such as `+-` for positive then negative; the differential Manchester level before the first bit is positive, and the bits are sent at 10 Mbps.
+
+```quiz
+[
+  {
+    "q": "Write the Manchester halves for each bit (slide 57: 0 is high-to-low, 1 is low-to-high).",
+    "type": "fill",
+    "code": "bit:    0   0   1   1   1   0   1\nlevel: ___ ___ ___ ___ ___ ___ ___",
+    "answer": ["+-", "+-", "-+", "-+", "-+", "+-", "-+"],
+    "explain": "Each 0 is `+-` and each 1 is `-+`, whatever came before: `+- +- -+ -+ -+ +- -+`."
+  },
+  {
+    "q": "Write the differential Manchester halves for each bit (inversion at the start for 0, none for 1; the level before the first bit is positive).",
+    "type": "fill",
+    "code": "bit:    0   0   1   1   1   0   1\nlevel: ___ ___ ___ ___ ___ ___ ___",
+    "answer": ["-+", "-+", "+-", "-+", "+-", "+-", "-+"],
+    "explain": "Track the last half. Start `+`. Bit 0: invert → `-+`. Bit 0: last `+`, invert → `-+`. Bit 1: last `+`, no inversion → `+-`. Bit 1: last `-` → `-+`. Bit 1: last `+` → `+-`. Bit 0: last `-`, invert → `+-`. Bit 1: last `-` → `-+`. Result: `-+ -+ +- -+ +- +- -+`."
+  },
+  {
+    "q": "How many signal elements does the Manchester signal use for the 7 bits?",
+    "type": "numeric",
+    "answer": 14,
+    "tolerance": 0.01,
+    "unit": "signal elements",
+    "explain": "Two signal elements (halves) per bit: $7 \\times 2 = 14$."
+  },
+  {
+    "q": "What is $r$ for Manchester?",
+    "type": "numeric",
+    "answer": 0.5,
+    "tolerance": 0.001,
+    "explain": "One data element per two signal elements: $r = \\frac{7}{14} = \\frac{1}{2}$."
+  },
+  {
+    "q": "At 10 Mbps with $c = \\frac{1}{2}$, what is the average signal rate of the Manchester signal, in Mbaud?",
+    "type": "numeric",
+    "answer": 10,
+    "tolerance": 0.01,
+    "unit": "Mbaud",
+    "explain": "$\\frac{1}{r} = 2$. $S = \\frac{1}{2} \\times 10000000 \\times 2 = 10000000$ baud $= 10$ Mbaud, twice what NRZ-L would need."
+  },
+  {
+    "q": "In your Manchester signal, what is the longest stretch without a transition, in bit durations?",
+    "type": "numeric",
+    "answer": 1,
+    "tolerance": 0.01,
+    "unit": "bit durations",
+    "explain": "Halves in order: `+ - + - - + - + - + + - - +`. Where a 0 meets a 1 (bits 2 and 3, and bits 6 and 7) the second half of one bit and the first half of the next are both `-` or both `+`: two halves, 1 bit duration. The mid-bit transition means it never gets longer."
+  }
+]
+```
+
 ```quiz
 [
   {

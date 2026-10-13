@@ -118,6 +118,21 @@ geometric-calc
 { "p": 0.05, "x": 15, "preset": "expert shot misses (p = 0.05)", "title": "Practice Problem 23: fourteen hits, then the first miss" }
 ```
 
+## Cold calls until the first sale
+
+Each cold call a salesperson makes ends in a sale with probability 0.35, independently of the other calls. X = the number of calls up to and including the first sale.
+
+```quiz
+[
+  {"q": "Name the distribution of X (one word).", "type": "text", "answer": ["geometric", "geometric distribution"], "explain": "X counts the trials it takes to get the first success, with the same p = 0.35 on every independent call: geometric, possible values 1, 2, 3, …. There is no fixed n, so it is not binomial."},
+  {"q": "P(X = 4), the first sale on the 4th call = ? (4 decimals)", "type": "numeric", "answer": 0.0961, "tolerance": 6e-05, "explain": "Three failures then a success: q³ · p = 0.65³ × 0.35 = 0.274625 × 0.35 = 0.0961."},
+  {"type": "fill", "q": "Complete the R call for P(X = 4).", "code": "dgeom(___, 0.35)", "answer": ["3"], "explain": "R counts the failures before the first success, so the lecture's X = 4 is R's 4 − 1 = 3: dgeom(3, 0.35) = 0.0961188. dgeom(4, 0.35) would be the first sale on the 5th call."},
+  {"q": "E[X], the expected number of calls = ? (2 decimals)", "type": "numeric", "answer": 2.86, "tolerance": 0.006, "explain": "μ = 1/p = 1/0.35 = 2.8571 ≈ 2.86 calls."},
+  {"q": "σ = ? (2 decimals)", "type": "numeric", "answer": 2.3, "tolerance": 0.006, "explain": "σ² = (1 − p)/p² = 0.65/0.1225 = 5.3061; σ = 2.3035 ≈ 2.30."},
+  {"q": "P(X ≥ 5), no sale in the first 4 calls = ? (4 decimals)", "type": "numeric", "answer": 0.1785, "tolerance": 6e-05, "explain": "X ≥ 5 means the first 4 calls all fail: q⁴ = 0.65⁴ = 0.1785. The long way, 1 − P(1) − P(2) − P(3) − P(4), gives the same; in R, 1 − pgeom(3, 0.35)."}
+]
+```
+
 ```quiz
 [
   {

@@ -129,6 +129,62 @@ uml-relations
 { "relation": "Realization (implementation)", "title": "The dashed line with a hollow triangle under DataSource: Text File implements the interface" }
 ```
 
+## Price a decoupled `Pizza` and count its dependencies
+
+The sushi idea on a new menu: a Pizza that holds `Topping*` and never names a concrete topping.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nclass Topping {                        // <<Abstract>>\npublic:\n    virtual ~Topping() {}\n    virtual string name() const = 0;\n    virtual int price() const = 0;\n};\n\nclass Cheese : public Topping {\npublic:\n    string name() const override { return \"cheese\"; }\n    int price() const override { return 2; }\n};\n\nclass Basil : public Topping {\npublic:\n    string name() const override { return \"basil\"; }\n    int price() const override { return 1; }\n};\n\nclass Pizza {\n    int base = 8;\n    vector<Topping*> toppings;         // Pizza knows only the abstraction\npublic:\n    Pizza(vector<Topping*> t) : toppings(t) {}\n    int total() const {\n        int sum = base;\n        for (Topping* t : toppings) sum += t->price();\n        return sum;\n    }\n};\n\nint main() {\n    Cheese cheese;\n    Basil basil;\n    Pizza margherita({&cheese, &basil});\n    Pizza plain({});\n    Pizza extra({&cheese, &cheese, &basil});\n    cout << margherita.total() << \" \" << plain.total() << \" \" << extra.total() << endl;\n    return 0;\n}",
+    "options": [
+      "`11 8 13`",
+      "`3 0 5`",
+      "`11 8 11`",
+      "`10 8 12`"
+    ],
+    "answer": 0,
+    "explain": "Every pizza starts at base 8 and adds each topping's price through the virtual call. margherita: 8 + 2 (cheese) + 1 (basil) = 11. plain: no toppings, 8. extra: 8 + 2 + 2 + 1 = 13; the same Cheese object may appear twice in the vector."
+  },
+  {
+    "q": "How many classes does `Pizza` depend on (uses in a member, a parameter or a call)?",
+    "type": "numeric",
+    "code": "#include <vector>\n\nclass Dough { };\nclass Topping { public: virtual ~Topping() {} };\nclass Oven { public: void heat(int degrees) { (void)degrees; } };\nclass Mushroom : public Topping { };\n\nclass Pizza {\n    Dough dough;\n    std::vector<Topping*> toppings;\npublic:\n    void bake(Oven& oven) { oven.heat(250); }\n};\n\nint main() {\n    Mushroom m;\n    Pizza p;\n    Oven o;\n    p.bake(o);\n    (void)m;\n    return 0;\n}",
+    "answer": 3,
+    "tolerance": 0,
+    "explain": "Pizza uses `Dough` (a member), `Topping` (the vector's element type) and `Oven` (bake's parameter, whose heat it calls): 3. `Mushroom` is never named inside Pizza; it reaches Pizza only as a `Topping*`, which is exactly the weak dependency the abstraction buys."
+  },
+  {
+    "q": "A new topping, Olive, is added to the program. Which classes must be edited? (select all)",
+    "options": [
+      "none of the existing classes: Olive is a new class derived from Topping",
+      "Pizza",
+      "Topping",
+      "Cheese"
+    ],
+    "answer": [
+      0
+    ],
+    "explain": "Pizza depends on the abstraction, so a new filling is a new class, `class Olive : public Topping`, and Pizza, Topping and Cheese are untouched. Had Pizza held a `Cheese cheese;` member, every new topping would mean editing Pizza: tight coupling."
+  },
+  {
+    "q": "A function `processGrades()` reads a file, computes the average, prints a report and emails the instructor. Which description fits it?",
+    "options": [
+      "low cohesion: one function doing several tasks",
+      "high cohesion: everything about grades is in one place",
+      "tight coupling: it depends on too many modules",
+      "loose coupling: it calls nothing else"
+    ],
+    "answer": 0,
+    "explain": "Cohesion is about how many tasks one unit is responsible for. Four tasks in one function is the #BAD low-cohesion case: hard to name, test or reuse. Split it into a reader, a calculator, a report printer and a mailer, each with one task."
+  }
+]
+```
+
+```challenge
+{"prompt": "Extend the menu without touching <code>Pizza</code> or <code>Topping</code>: add an <code>Olive</code> topping whose <code>name()</code> is <code>\"olive\"</code> and <code>price()</code> is <code>3</code>.", "starter": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nclass Topping {                        // <<Abstract>>\npublic:\n    virtual ~Topping() {}\n    virtual string name() const = 0;\n    virtual int price() const = 0;\n};\n\nclass Cheese : public Topping {\npublic:\n    string name() const override { return \"cheese\"; }\n    int price() const override { return 2; }\n};\n\nclass Basil : public Topping {\npublic:\n    string name() const override { return \"basil\"; }\n    int price() const override { return 1; }\n};\n\n// add Olive here: name \"olive\", price 3\n\nclass Pizza {\n    int base = 8;\n    vector<Topping*> toppings;         // Pizza knows only the abstraction\npublic:\n    Pizza(vector<Topping*> t) : toppings(t) {}\n    int total() const {\n        int sum = base;\n        for (Topping* t : toppings) sum += t->price();\n        return sum;\n    }\n};\n\nint main() {\n    Cheese cheese;\n    Olive olive;\n    Pizza greek({&cheese, &olive, &olive});\n    cout << greek.total() << endl;\n    return 0;\n}\n", "expected": "16", "hints": ["<code>class Olive : public Topping</code> with both pure functions overridden.", "8 + 2 + 3 + 3 = 16."], "solution": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nclass Topping {                        // <<Abstract>>\npublic:\n    virtual ~Topping() {}\n    virtual string name() const = 0;\n    virtual int price() const = 0;\n};\n\nclass Cheese : public Topping {\npublic:\n    string name() const override { return \"cheese\"; }\n    int price() const override { return 2; }\n};\n\nclass Basil : public Topping {\npublic:\n    string name() const override { return \"basil\"; }\n    int price() const override { return 1; }\n};\n\nclass Olive : public Topping {\npublic:\n    string name() const override { return \"olive\"; }\n    int price() const override { return 3; }\n};\n\nclass Pizza {\n    int base = 8;\n    vector<Topping*> toppings;         // Pizza knows only the abstraction\npublic:\n    Pizza(vector<Topping*> t) : toppings(t) {}\n    int total() const {\n        int sum = base;\n        for (Topping* t : toppings) sum += t->price();\n        return sum;\n    }\n};\n\nint main() {\n    Cheese cheese;\n    Olive olive;\n    Pizza greek({&cheese, &olive, &olive});\n    cout << greek.total() << endl;\n    return 0;\n}\n"}
+```
 ```quiz
 [
   {

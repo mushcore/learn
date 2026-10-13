@@ -88,6 +88,21 @@ The **"Curved (r≈0 but related!)"** preset traces a perfect parabola ($y = x^2
 
 Even a strong $r$ never tells you that one variable causes the other. Ice cream consumption and boating accidents are positively correlated across the months of the year, but eating ice cream does not cause boating accidents: both rise and fall with a hidden third factor (warm weather, more people out on boats and buying ice cream). Always ask whether a third variable could explain a correlation before claiming causation.
 
+## Compute r for study hours and exam scores
+
+Six students: hours studied $x$ = 2, 4, 5, 6, 8, 9 and exam score $y$ = 55, 62, 66, 70, 74, 85.
+
+```quiz
+[
+  {"q": "Compute $\\sum xy$.", "type": "numeric", "answer": 2465, "tolerance": 0, "explain": "$2(55) + 4(62) + 5(66) + 6(70) + 8(74) + 9(85) = 110 + 248 + 330 + 420 + 592 + 765 = 2465$."},
+  {"q": "Compute the numerator $n\\sum xy - (\\sum x)(\\sum y)$.", "type": "numeric", "answer": 782, "tolerance": 0, "explain": "$\\sum x = 34$, $\\sum y = 412$: $6(2465) - (34)(412) = 14790 - 14008 = 782$."},
+  {"q": "Compute $r$. (4 decimals)", "type": "numeric", "answer": 0.9757, "tolerance": 0.0002, "explain": "$\\sum x^2 = 226$, $\\sum y^2 = 28826$. $n\\sum x^2 - (\\sum x)^2 = 1356 - 1156 = 200$; $n\\sum y^2 - (\\sum y)^2 = 172956 - 169744 = 3212$. $r = 782/(\\sqrt{200} \\cdot \\sqrt{3212}) = 782/(14.142 \\times 56.675) = 0.9757$."},
+  {"q": "What does this $r$ say?", "options": ["Strong positive linear correlation", "Strong negative linear correlation", "No linear correlation", "Studying causes higher scores"], "answer": 0, "explain": "$r = 0.9757$ is close to 1: a strong positive linear relationship. It says nothing about cause."},
+  {"q": "Which symbol would name the same measure for every student in the course (the population)?", "type": "text", "answer": ["ρ", "rho"], "explain": "The sample statistic is $r$; the population parameter is $\\rho$ (rho)."},
+  {"type": "fill", "q": "Fill the blank so R prints $r$.", "code": "hours <- c(2, 4, 5, 6, 8, 9)\nscore <- c(55, 62, 66, 70, 74, 85)\ncor(hours, ___)\n## [1] 0.9756723", "answer": ["score"], "explain": "`cor(X, Y)` takes the two paired vectors; swapping them gives the same $r$."}
+]
+```
+
 ```quiz
 [
   {

@@ -61,6 +61,20 @@ The notes' phrase is exact: the relative frequency **must** approach $P(A)$, but
 Classical: count outcomes, exact, needs equally likely outcomes you can list. Relative frequency: run trials, approximate, works for any experiment you can repeat. Lab 4 lives entirely in the second world; the pencil part of the quiz in the first.
 :::
 
+## A sum of 10 from two dice, two ways
+
+A simulation rolled two dice 2000 times and saw a sum of 10 on 171 of them.
+
+```quiz
+[
+  {"q": "Relative-frequency estimate of $P(\\text{sum} = 10)$? (4 decimals)", "type": "numeric", "answer": 0.0855, "tolerance": 6e-05, "explain": "$P(A) \\approx x/n = 171/2000 = 0.0855$."},
+  {"q": "Classical $P(\\text{sum} = 10)$? (4 decimals)", "type": "numeric", "answer": 0.0833, "tolerance": 6e-05, "explain": "(4, 6), (5, 5), (6, 4): 3 of the 36 equally likely outcomes, $3/36 = 0.0833$."},
+  {"q": "How many sums of 10 would the classical probability predict in 2000 rolls? (1 decimal)", "type": "numeric", "answer": 166.7, "tolerance": 0.06, "explain": "$2000 \\times 3/36 = 166.7$. The 171 observed is close, as the law of large numbers says it should be for large $n$."},
+  {"q": "A second run of only 20 rolls would give a relative frequency closer to 0.0833 than this run did.", "type": "tf", "answer": false, "explain": "Fewer trials means more wander: 20 rolls can only give 0, 0.05, 0.10, …, so it will usually miss by more. $x/n$ settles only as $n$ grows."},
+  {"type": "fill", "q": "Edit the notes' boxcars loop to count sums of 10.", "code": "n.trials <- 2000\nX.success <- 0\nfor (i.trial in 1:n.trials){\n    dice <- sample(c(1,2,3,4,5,6), 2, replace=TRUE)\n    success <- (dice[1] + dice[2]) == ___\n    X.success <- X.success + success\n}\nprob.A <- X.success / ___", "answer": ["10", "n.trials"], "explain": "The event is a sum of 10, so compare the sum with 10; the estimate is successes over trials, `X.success / n.trials`, about 0.0855 in the run above."}
+]
+```
+
 ```quiz
 [
   {

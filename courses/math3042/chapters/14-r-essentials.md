@@ -285,6 +285,21 @@ library(mosaicData)
 
 `require()` returns `TRUE`/`FALSE` instead of erroring like a bare `library()` call would if the package were missing, so it can drive an `if`.
 
+## Predict R's output for new vectors
+
+Each item runs one Lab 1 function on a new vector.
+
+```quiz
+[
+  {"type": "fill", "q": "Fill the blank so ties share the lowest rank.", "code": "rank(c(14, 9, 21, 9, 30, 14), ties.method=\"___\")\n## [1] 3 1 5 1 6 3", "answer": ["min"], "explain": "Sorted: 9, 9, 14, 14, 21, 30. The two 9s share rank 1, the two 14s share rank 3 (ranks 1 and 2 are used up), then 21 is 5 and 30 is 6."},
+  {"type": "fill", "q": "Fill the comparison so `sum()` counts the values above 10.", "code": "x <- c(7, 15, 3, 22, 18, 9)\nsum(x ___ 10)\n## [1] 3", "answer": [">"], "explain": "`x > 10` is FALSE TRUE FALSE TRUE TRUE FALSE; `sum()` counts the TRUEs: 15, 22, 18 make 3."},
+  {"type": "fill", "q": "Fill the two positions that pick out 15 and 22.", "code": "x <- c(7, 15, 3, 22, 18, 9)\nx[c(___, ___)]\n## [1] 15 22", "answer": ["2", "4"], "explain": "R counts from 1: position 2 holds 15 and position 4 holds 22."},
+  {"q": "`scores <- c(71, 85, 64, 90, 78)`. What does `sd(scores)` print? (4 decimals)", "type": "numeric", "answer": 10.4547, "tolerance": 0.0001, "explain": "$\\bar{X} = 388/5 = 77.6$; $\\sum(X - \\bar{X})^2 = 437.2$; `sd` divides by $n - 1 = 4$: $\\sqrt{437.2/4} = 10.4547$ (R prints 10.45466)."},
+  {"q": "Same `scores`. What does `IQR(scores)` print?", "type": "numeric", "answer": 14.0, "tolerance": 0, "explain": "Sorted 64, 71, 78, 85, 90. With $n = 5$, R's quartiles land exactly on the 2nd and 4th values: $Q_1 = 71$, $Q_3 = 85$, so $IQR = 14$."},
+  {"q": "`hist(x, breaks=seq(60, 100, by=10), right=FALSE)`. A value of exactly 80 is counted in which class?", "options": ["[80, 90)", "[70, 80)", "both", "neither"], "answer": 0, "explain": "right=FALSE closes each class on the left and opens it on the right, so 80 starts the class [80, 90) and is excluded from [70, 80)."}
+]
+```
+
 ```quiz
 [
   {

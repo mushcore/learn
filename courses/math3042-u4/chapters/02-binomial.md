@@ -175,6 +175,20 @@ dbinom(1, 5, 4/52)
 "At least 2" is $1 - P(0) - P(1)$, not $1 - P(2)$. The failure factor is $q^{n - x}$: for 2 jacks in 5 cards it is $(48/52)^3$, three failures, not $(48/52)^2$.
 :::
 
+## Defective bulbs in a box of 12
+
+Each LED bulb off a line is defective with probability 0.08, independently of the others. An inspector tests a box of 12 and X counts the defective bulbs.
+
+```quiz
+[
+  {"q": "Name the distribution of X (one word).", "type": "text", "answer": ["binomial", "binomial distribution"], "explain": "All four conditions hold: fixed n = 12 bulbs, each defective or not, the same p = 0.08 for every bulb, and bulbs independent. X counts successes (here a success is a defective bulb), so X is binomial with n = 12, p = 0.08."},
+  {"q": "P(X = 2) = ? (4 decimals)", "type": "numeric", "answer": 0.1835, "tolerance": 6e-05, "explain": "C(12, 2) · 0.08² · 0.92¹⁰ = 66 × 0.0064 × 0.434388 = 0.1835. The q exponent is the number of good bulbs, 12 − 2 = 10."},
+  {"type": "fill", "q": "Complete the R call for P(X = 2).", "code": "dbinom(___, ___, 0.08)", "answer": ["2", "12"], "explain": "dbinom(x, n, p): the count x = 2 first, then the trials n = 12, then p. It returns 0.1834857."},
+  {"q": "P(at least 2 defective bulbs) = ? (4 decimals)", "type": "numeric", "answer": 0.2487, "tolerance": 6e-05, "explain": "Complement of {0, 1}: P(0) = 0.92¹² = 0.3677; P(1) = 12 × 0.08 × 0.92¹¹ = 0.3837; 1 − 0.3677 − 0.3837 = 0.2487."},
+  {"type": "fill", "q": "Complete the R line for P(at least 2 defective bulbs).", "code": "1 - pbinom(___, 12, 0.08)", "answer": ["1"], "explain": "pbinom(1, 12, 0.08) is P(X ≤ 1) = P(0) + P(1), and at least 2 is its complement: 1 − pbinom(1, 12, 0.08) = 0.2486817. pbinom(2, …) would also remove the X = 2 bar."}
+]
+```
+
 ```quiz
 [
   {

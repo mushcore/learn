@@ -261,6 +261,76 @@ int main()
 
 `swapElements(numbers, 0, 3);` passes the array name, which decays to the address of its first element, so `array[i] = array[j];` writes into the caller's array. Writing the parameter as `int arr[]` changes nothing: in a parameter list it means `int* arr`, and g++ warns that `sizeof` on it returns the size of `int*`. Square brackets on a pointer are a second way to dereference (`array[i]` is `*(array + i)`): "we use `*` or `[]`."
 
+## Follow the arrows in four new pointer programs
+
+Draw each variable as a box and each pointer as an arrow; `*p` means the box the arrow reaches.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int a = 3, b = 8;\n    int* p = &a;\n    int* q = &b;\n    *p += *q;\n    p = q;\n    *p = 1;\n    cout << a << ' ' << b << ' ' << *p << endl;\n    return 0;\n}",
+    "options": [
+      "`11 1 1`",
+      "`1 8 1`",
+      "`11 8 1`",
+      "`3 1 1`"
+    ],
+    "answer": 0,
+    "explain": "`*p += *q` adds b's 8 into a: a = 11. `p = q` re-points p at b (a is untouched). `*p = 1` writes into b. So a = 11, b = 1, and `*p` reads b: 1. Output: `11 1 1`."
+  },
+  {
+    "type": "numeric",
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nvoid noBump(int n)\n{\n    n += 10;\n}\n\nvoid bump(int* n)\n{\n    *n += 10;\n}\n\nint main()\n{\n    int x = 5;\n    noBump(x);\n    bump(&x);\n    bump(&x);\n    cout << x << endl;\n    return 0;\n}",
+    "answer": 25,
+    "explain": "`noBump` changes its own copy, so x stays 5. Each `bump(&x)` receives x's address and adds 10 through it: 5 + 10 + 10 = 25."
+  },
+  {
+    "type": "spotbug",
+    "q": "This compiles but crashes when run. Click the line that crashes.",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int value = 4;\n    int* p = nullptr;\n    cout << value << endl;\n    *p = value;\n    cout << *p << endl;\n    return 0;\n}",
+    "answer": 9,
+    "explain": "Line 7 is safe: assigning `nullptr` just marks the pointer as pointing nowhere. Line 9 dereferences it, writing to address 0, and the program crashes (segmentation fault). Point it at a real box first: `p = &value;`."
+  },
+  {
+    "type": "fill",
+    "q": "Complete `reset` so it sets the caller's variable to 0. Fill both blanks.",
+    "code": "void reset(int___ value)\n{\n    ___value = 0;\n}",
+    "answer": [
+      "*",
+      "*"
+    ],
+    "explain": "The parameter must be a pointer, `int* value`, so it can receive `&x`. Inside, `*value = 0` writes into the box the pointer reaches. Without the `*` on the second line you would be assigning 0 to the pointer itself (making it null)."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int arr[] = {10, 20, 30};\n    int* p = arr;\n    p[1] = 25;\n    cout << *p << ' ' << p[2] << ' ' << arr[1] << endl;\n    return 0;\n}",
+    "options": [
+      "`10 30 25`",
+      "`10 30 20`",
+      "`20 30 25`",
+      "`0 30 25`"
+    ],
+    "answer": 0,
+    "explain": "An array name converts to a pointer to its first element, so `p` points at `arr[0]`. `*p` is 10, `p[2]` is 30, and `p[1] = 25` writes into `arr[1]` itself. Output: `10 30 25`."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "Write <code>void minMax(int a, int b, int* lo, int* hi)</code> that stores the smaller value through <code>lo</code> and the larger through <code>hi</code>. <code>main</code> prints <code>4 9</code> and <code>-1 6</code>.",
+  "starter": "#include <iostream>\nusing namespace std;\n\n// minMax here\n\nint main()\n{\n    int small, big;\n    minMax(9, 4, &small, &big);\n    cout << small << ' ' << big << endl;\n    minMax(-1, 6, &small, &big);\n    cout << small << ' ' << big << endl;\n    return 0;\n}\n",
+  "expected": "4 9\n-1 6\n",
+  "hints": [
+    "Write through the pointers: <code>*lo = ...;</code>",
+    "<code>if (a < b) { *lo = a; *hi = b; } else { *lo = b; *hi = a; }</code>"
+  ],
+  "solution": "#include <iostream>\nusing namespace std;\n\nvoid minMax(int a, int b, int* lo, int* hi)\n{\n    if (a < b)\n    {\n        *lo = a;\n        *hi = b;\n    }\n    else\n    {\n        *lo = b;\n        *hi = a;\n    }\n}\n\nint main()\n{\n    int small, big;\n    minMax(9, 4, &small, &big);\n    cout << small << ' ' << big << endl;\n    minMax(-1, 6, &small, &big);\n    cout << small << ' ' << big << endl;\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

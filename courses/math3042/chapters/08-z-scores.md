@@ -96,6 +96,21 @@ $\mu = 98.20$, $\sigma = 0.62$. The "usual" range is $\mu \pm 2\sigma = 98.20 \p
 - $96.90$: below 96.96 → **unusual**.
 - $96.98$: inside 96.96–99.44 → **usual** (just barely).
 
+## Z-scores on a midterm
+
+Midterm scores are normal with $\mu = 72$ and $\sigma = 8$.
+
+```quiz
+[
+  {"q": "Compute $Z$ for a score of 90. (2 decimals)", "type": "numeric", "answer": 2.25, "tolerance": 0.006, "explain": "$Z = (X - \\mu)/\\sigma = (90 - 72)/8 = 18/8 = 2.25$."},
+  {"q": "Is a score of 90 usual or unusual?", "type": "text", "answer": ["unusual", "it is unusual"], "explain": "$Z = 2.25 > 2$, so 90 is unusual: more than two standard deviations above the mean."},
+  {"q": "Compute $Z$ for a score of 60. (2 decimals)", "type": "numeric", "answer": -1.5, "tolerance": 0.006, "explain": "$Z = (60 - 72)/8 = -12/8 = -1.50$: one and a half standard deviations below the mean, usual."},
+  {"q": "Which score has $Z = -2.5$?", "type": "numeric", "answer": 52, "tolerance": 0, "explain": "$X = \\mu + Z\\sigma = 72 + (-2.5)(8) = 72 - 20 = 52$."},
+  {"q": "Above which score is a result unusually high?", "type": "numeric", "answer": 88, "tolerance": 0, "explain": "Unusual means $Z > 2$: $X = \\mu + 2\\sigma = 72 + 16 = 88$. The low cutoff is $72 - 16 = 56$."},
+  {"type": "shade", "q": "Shade the scores above 88.", "mu": 72, "sigma": 8, "answer": 2.5, "tolerance": 1, "region": "above", "lo": 2, "explain": "88 is $Z = 2$. Outside $\\pm 2\\sigma$ is 5%, half of it above: 2.5% (exact normal area 2.28%)."}
+]
+```
+
 ```quiz
 [
   {

@@ -271,6 +271,76 @@ int main()
 
 The instructor's sample, unmodified, with input `3 4`. `setw(10)` pads only the one field after it, `pi`, and pads on the left because `right` is the default. `cout.precision()` reads the current precision without changing it, and `setprecision(precision)` puts the saved value back.
 
+## Format 200, -45 and 2/3 with the manipulators
+
+New values through the same manipulators; remember which ones stick and which last one field.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int n = 200;\n    cout << hex << n << ' ' << showbase << n << ' ' << uppercase << n << ' ' << oct << n << ' ' << dec << n << endl;\n    return 0;\n}",
+    "options": [
+      "`c8 0xc8 0XC8 0310 200`",
+      "`c8 0xc8 0XC8 310 200`",
+      "`C8 0xC8 0XC8 0310 0d200`",
+      "`c8 0xc8 0xC8 0310 200`"
+    ],
+    "answer": 0,
+    "explain": "200 = 12 × 16 + 8, so hex is `c8`. `showbase` adds `0x`; `uppercase` turns both the digits and the prefix upper case: `0XC8`. These flags stick, so octal (200 = 3 × 64 + 1 × 8 + 0) shows its base as a leading 0: `0310`. Decimal has no prefix. Output: `c8 0xc8 0XC8 0310 200`."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <iomanip>\nusing namespace std;\n\nint main()\n{\n    cout << setfill('.');\n    cout << setw(7) << left << -45 << '|';\n    cout << setw(7) << internal << -45 << '|';\n    cout << setw(7) << right << 45 << '|' << endl;\n    return 0;\n}",
+    "options": [
+      "`-45....|-....45|.....45|`",
+      "`....-45|-....45|45.....|`",
+      "`-45....|....-45|.....45|`",
+      "`-45|-45|45|`"
+    ],
+    "answer": 0,
+    "explain": "Each field is 7 wide and padded with `.`. `left` pads after `-45` (3 characters, 4 dots). `internal` puts the padding between the sign and the digits: `-....45`. `right` pads before `45` (5 dots). `setw` is re-applied each time because it lasts one field. Output: `-45....|-....45|.....45|`."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <iomanip>\nusing namespace std;\n\nint main()\n{\n    double v = 2.0 / 3;\n    cout << v << ' ' << setprecision(3) << v << ' ' << fixed << v << ' ' << scientific << v << endl;\n    return 0;\n}",
+    "options": [
+      "`0.666667 0.667 0.667 6.667e-01`",
+      "`0.666667 0.667 0.667 6.67e-01`",
+      "`0.666667 0.667 0.666667 6.666667e-01`",
+      "`0.67 0.667 0.667 6.667E-01`"
+    ],
+    "answer": 0,
+    "explain": "Default precision 6 means six significant digits: 0.666667. `setprecision(3)` alone gives three significant digits: 0.667. Under `fixed` the precision counts digits after the point: 0.667. Under `scientific` it also counts digits after the point: 6.667e-01 (lower-case e without `uppercase`). Output: `0.666667 0.667 0.667 6.667e-01`."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    cout << showpos << 0 << ' ' << 12 << noshowpos << ' ' << boolalpha << (2 > 1) << ' ' << showpoint << 5.0 << endl;\n    return 0;\n}",
+    "options": [
+      "`+0 +12 true 5.00000`",
+      "`0 +12 true 5`",
+      "`+0 +12 1 5.0`",
+      "`+0 +12 true 5.0`"
+    ],
+    "answer": 0,
+    "explain": "`showpos` puts `+` on non-negative numbers, zero included: `+0 +12`. `noshowpos` turns it off before the bool. `boolalpha` prints `true`. `showpoint` keeps the trailing zeros up to the default precision of 6 significant digits: `5.00000`. Output: `+0 +12 true 5.00000`."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "Print a two-line receipt. Each name is left-aligned in a field of 10, each price right-aligned in a field of 8 with exactly two decimals, and the padding character is <code>.</code>:<pre>Coffee........4.50\nMuffin........3.25</pre>",
+  "starter": "#include <iostream>\n#include <iomanip>\nusing namespace std;\n\nint main()\n{\n    double coffee = 4.5, muffin = 3.25;\n    // your code here\n    return 0;\n}\n",
+  "expected": "Coffee........4.50\nMuffin........3.25\n",
+  "hints": [
+    "Set the sticky ones once: <code>cout << setfill('.') << fixed << setprecision(2);</code>",
+    "<code>setw</code> lasts one field, and the alignment changes between name and price: <code>setw(10) << left << \"Coffee\" << setw(8) << right << coffee</code>."
+  ],
+  "solution": "#include <iostream>\n#include <iomanip>\nusing namespace std;\n\nint main()\n{\n    double coffee = 4.5, muffin = 3.25;\n    cout << setfill('.') << fixed << setprecision(2);\n    cout << setw(10) << left << \"Coffee\" << setw(8) << right << coffee << endl;\n    cout << setw(10) << left << \"Muffin\" << setw(8) << right << muffin << endl;\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

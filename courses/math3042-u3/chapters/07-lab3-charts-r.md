@@ -120,6 +120,21 @@ They repeat Lab 2's. **Class width**: $n = 250$, min 51.3, max 135.4. $\sqrt{250
 
 Scatter plots use lattice's model formula, `xyplot(Wr.Hnd ~ Height, data=survey, col="black")`, a spread-out cloud with little correlation. Task 8 draws two: `xyplot(Pulse ~ Height, ...)` and `xyplot(Wr.Hnd ~ NW.Hnd, ...)`, each with `pch=19`, a hex colour and `main=paste0("... (n = ", nrow(survey), ")")`. Writing hand against non-writing hand is the far stronger linear relation (the two spans are nearly equal for everyone; $r \approx 0.95$), while pulse against height is a cloud ($r \approx -0.07$). `cor(x, y, use="complete.obs")` confirms it with the NAs skipped.
 
+## Pie labels, missing values and classes for trip data
+
+A data frame `trips` has a categorical `Mode` (Bike 12, Bus 41, Car 27, Walk 20) and a numerical `Minutes` with a few `NA` values.
+
+```quiz
+[
+  {"type": "fill", "q": "Fill the blank so each pie label shows the count under the name.", "code": "freq.tab <- table(trips$Mode)\nnew.labels <- paste0(names(freq.tab), \"\\n(\", ___, \")\")\nnew.labels\n## [1] \"Bike\\n(12)\" \"Bus\\n(41)\"  \"Car\\n(27)\"  \"Walk\\n(20)\"", "answer": ["freq.tab"], "explain": "`paste0()` works element by element: each name, a line break, then the matching count from `freq.tab`."},
+  {"q": "`main=paste0(\"Travel Mode (n = \", sum(freq.tab), \")\")`. What does the title read?", "options": ["Travel Mode (n = 100)", "Travel Mode (n = 4)", "Travel Mode (n = sum(freq.tab))", "Travel Mode (n = 41)"], "answer": 0, "explain": "`sum(freq.tab)` adds the counts, $12 + 41 + 27 + 20 = 100$; `length(freq.tab)` would be the 4 categories."},
+  {"type": "fill", "q": "`range(trips$Minutes)` prints `NA NA`. Fill the blank that keeps only the recorded values.", "code": "minutes <- trips$Minutes[ ___(trips$Minutes) ]\nrange(minutes)", "answer": ["!is.na"], "explain": "`is.na()` is TRUE for missing values; `!` flips it, so the logical index keeps every recorded value."},
+  {"type": "fill", "q": "Fill the argument that makes each class closed on the left.", "code": "table(cut(minutes, breaks=seq(0, 50, by=10), right=___))\n## [0,10) [10,20) [20,30) [30,40) [40,50)\n##       3       8      12       5       2", "answer": ["FALSE", "F"], "explain": "`right=FALSE` gives classes like [10,20): 10 is in, 20 starts the next class, Unit 2's convention."},
+  {"q": "`cumsum()` of those frequencies is 3, 11, 23, 28, 30. How many trips took less than 30 minutes?", "type": "numeric", "answer": 23, "tolerance": 0, "explain": "Classes [0,10), [10,20), [20,30) all lie below 30: $3 + 8 + 12 = 23$, the third cumulative count."},
+  {"q": "Lab 3's ogive is `plot(seq(0, 50, by=10), c(0, cumsum(freqs)))`. At which $x$ is the point with height 23 drawn?", "type": "numeric", "answer": 30, "tolerance": 0, "explain": "The padded counts 0, 3, 11, 23, 28, 30 pair with 0, 10, 20, 30, 40, 50: each count sits at its class's right boundary, so 23 (everything below 30) is at $x = 30$."}
+]
+```
+
 ```quiz
 [
   {

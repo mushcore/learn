@@ -129,6 +129,50 @@ topology
 
 The written answer gives the formula and both bus parts; it is worked in [E01 and the sample quiz](#/comp3721-w1/e01-sample-quiz).
 
+## Count the links for five more networks
+
+Mesh is one link per pair, star and ring one per device, bus one backbone plus a drop line per device.
+
+```quiz
+[
+  {
+    "q": "A network with 15 devices is arranged in a mesh topology. How many cable links are needed?",
+    "type": "numeric",
+    "answer": 105,
+    "tolerance": 0,
+    "explain": "$\\frac{n(n-1)}{2} = \\frac{15 \\times 14}{2} = \\frac{210}{2} = 105$ links."
+  },
+  {
+    "q": "A network with 11 devices is arranged in a ring. How many cable links are needed?",
+    "type": "numeric",
+    "answer": 11,
+    "tolerance": 0,
+    "explain": "Each device links to its next neighbour and the last link closes the ring: $n = 11$ links."
+  },
+  {
+    "q": "A bus topology connects 20 devices. How many cable lines are needed in all, counting the backbone?",
+    "type": "numeric",
+    "answer": 21,
+    "tolerance": 0,
+    "explain": "One backbone line and $n = 20$ drop lines: $1 + 20 = 21$. A written answer names both parts: 20 drop lines and 1 backbone."
+  },
+  {
+    "q": "A full mesh has 120 links. How many devices does it connect?",
+    "type": "numeric",
+    "answer": 16,
+    "tolerance": 0,
+    "explain": "Solve $\\frac{n(n-1)}{2} = 120$: $n(n-1) = 240 = 16 \\times 15$, so $n = 16$. Check: $\\frac{16 \\times 15}{2} = 120$."
+  },
+  {
+    "q": "A mesh of 14 devices gains a 15th device. How many new links must be installed?",
+    "type": "numeric",
+    "answer": 14,
+    "tolerance": 0,
+    "explain": "The new device needs a dedicated link to every existing device: 14 new links. Check: $\\frac{15 \\times 14}{2} - \\frac{14 \\times 13}{2} = 105 - 91 = 14$."
+  }
+]
+```
+
 ```quiz
 [
   {

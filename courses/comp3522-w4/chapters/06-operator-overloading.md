@@ -185,6 +185,61 @@ int main() {
 
 `Character& operator+=(const Character& rhs)` is the member that changes the left operand and returns it by reference. `Character operator+(Character lhs, const Character& rhs)` is the friendly non-member that takes its **left parameter by copy**, adds with `lhs += rhs;`, and returns that copy: `a + b` is expected to be a new value, so `operator+` returns a new value, and `a` is untouched by the line `Character b = a + one;`. The shipped operators project does the same on a `Character` holding `'A'` and `'B'`; this version adds small numbers so every result stays a printable letter.
 
+## Trace `Money`, `Ticket` and `Version` operators, then write `Vec2`'s
+
+Four new classes with canonical operators: money that adds in cents, a ticket counter that steps by 3, and a two-part version number.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Money {\n    int cents;\npublic:\n    Money(int c = 0) : cents(c) {}\n    Money& operator+=(const Money& rhs) { cents += rhs.cents; return *this; }\n    friend Money operator+(Money lhs, const Money& rhs) { lhs += rhs; return lhs; }\n    friend ostream& operator<<(ostream& os, const Money& m) {\n        os << '$' << m.cents / 100 << '.' << (m.cents % 100 < 10 ? \"0\" : \"\") << m.cents % 100;\n        return os;\n    }\n};\n\nint main() {\n    Money a(150), b(275);\n    Money c = a + b;\n    a += b;\n    a += c;\n    cout << a << \" \" << b << \" \" << c << endl;\n    return 0;\n}",
+    "options": [
+      "`$8.50 $2.75 $4.25`",
+      "`$11.25 $2.75 $4.25`",
+      "`$4.25 $2.75 $4.25`",
+      "`$8.50 $7.00 $4.25`"
+    ],
+    "answer": 0,
+    "explain": "`operator+` takes its left operand by copy, so `a + b` adds 150 + 275 = 425 into the copy and leaves a at 150: c = 425. `a += b` makes a 150 + 275 = 425, then `a += c` makes it 425 + 425 = 850. b never changes. Printed as dollars: `$8.50 $2.75 $4.25`. If `+` modified its left operand, a would be 425 before the two `+=` and end at 1125."
+  },
+  {
+    "q": "Type the line this prints.",
+    "type": "text",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Ticket {\n    int n;\npublic:\n    Ticket(int start) : n(start) {}\n    Ticket& operator++() { n += 3; return *this; }\n    Ticket operator++(int) { Ticket tmp(*this); operator++(); return tmp; }\n    int value() const { return n; }\n};\n\nint main() {\n    Ticket t(10);\n    Ticket a = t++;\n    Ticket b = ++t;\n    Ticket c = ++(++t);\n    cout << t.value() << \" \" << a.value() << \" \" << b.value() << \" \" << c.value() << endl;\n    return 0;\n}",
+    "answer": [
+      "22 10 16 22"
+    ],
+    "explain": "Prefix adds 3 and returns `*this`; postfix copies, calls prefix, returns the copy. t = 10. `a = t++`: a gets the old 10, t becomes 13. `b = ++t`: t becomes 16 and b copies 16. `c = ++(++t)`: the inner prefix returns t itself by reference, so the outer one increments t again: 16 to 19 to 22, and c = 22. Printed in the order t, a, b, c: `22 10 16 22`."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Version {\n    int release, patch;\npublic:\n    Version(int r, int p) : release(r), patch(p) {}\n    friend bool operator==(const Version& l, const Version& r) { return l.release == r.release && l.patch == r.patch; }\n    friend bool operator!=(const Version& l, const Version& r) { return !(l == r); }\n    friend bool operator<(const Version& l, const Version& r) {\n        return l.release < r.release || (l.release == r.release && l.patch < r.patch);\n    }\n    friend bool operator>(const Version& l, const Version& r) { return r < l; }\n    friend bool operator<=(const Version& l, const Version& r) { return !(l > r); }\n    friend bool operator>=(const Version& l, const Version& r) { return !(l < r); }\n};\n\nint main() {\n    Version v1(2, 10), v2(3, 1), v3(2, 10);\n    cout << boolalpha << (v1 < v2) << \" \" << (v2 <= v1) << \" \"\n         << (v1 >= v3) << \" \" << (v1 != v3) << endl;\n    return 0;\n}",
+    "options": [
+      "`true false true false`",
+      "`true true true false`",
+      "`true false false false`",
+      "`false false true true`"
+    ],
+    "answer": 0,
+    "explain": "Only `==` and `<` compare fields. `v1 < v2`: release 2 < 3, true. `v2 <= v1` is `!(v2 > v1)` = `!(v1 < v2)` = `!true` = false. `v1 >= v3` is `!(v1 < v3)`: 2.10 is not less than 2.10, so `!false` = true. `v1 != v3` is `!(v1 == v3)` = `!true` = false."
+  },
+  {
+    "q": "Complete the canonical extraction operator (same text in both blanks). With input `4 7` it prints `4.7`.",
+    "type": "fill",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Version {\n    int release, patch;\npublic:\n    Version() : release(0), patch(0) {}\n    friend ___ operator>>(___ in, Version& v) {\n        in >> v.release >> v.patch;\n        return in;\n    }\n    friend ostream& operator<<(ostream& os, const Version& v) {\n        return os << v.release << '.' << v.patch;\n    }\n};\n\nint main() {\n    Version v;\n    cin >> v;\n    cout << v << endl;\n    return 0;\n}",
+    "answer": [
+      "istream&",
+      "istream&"
+    ],
+    "explain": "`friend istream& operator>>(istream& in, Version& v)`: the stream comes in by reference and goes back out by reference so reads chain (`cin >> v1 >> v2`), and the Version is a non-const reference because it is being filled. Input 4 and 7 go into release and patch; `<<` prints `4.7`."
+  }
+]
+```
+
+```challenge
+{"prompt": "Give <code>Vec2</code> its canonical operators: member <code>operator+=</code> returning <code>*this</code> by reference, a friendly non-member <code>operator+</code> that takes its left operand by copy and uses <code>+=</code>, a friendly <code>operator==</code>, and a friendly <code>operator&lt;&lt;</code> that prints <code>(x, y)</code>.", "starter": "#include <iostream>\nusing namespace std;\n\nclass Vec2 {\n    int x, y;\npublic:\n    Vec2(int x = 0, int y = 0) : x(x), y(y) {}\n    // operator+=  member, returns *this by reference\n    // operator+   friendly non-member, written with +=\n    // operator==  friendly non-member\n    // operator<<  prints (x, y)\n};\n\nint main() {\n    Vec2 a(1, 2), b(3, -5);\n    Vec2 c = a + b;\n    a += b;\n    a += Vec2(10, 0);\n    cout << a << \" \" << b << \" \" << c << endl;\n    cout << boolalpha << (c == Vec2(4, -3)) << \" \" << (a == c) << endl;\n    return 0;\n}\n", "expected": "(14, -3) (3, -5) (4, -3)\ntrue false", "hints": ["<code>Vec2&amp; operator+=(const Vec2&amp; rhs) { x += rhs.x; y += rhs.y; return *this; }</code>", "<code>friend Vec2 operator+(Vec2 lhs, const Vec2&amp; rhs) { lhs += rhs; return lhs; }</code>", "<code>friend ostream&amp; operator&lt;&lt;(ostream&amp; os, const Vec2&amp; v)</code> must <code>return os;</code>"], "solution": "#include <iostream>\nusing namespace std;\n\nclass Vec2 {\n    int x, y;\npublic:\n    Vec2(int x = 0, int y = 0) : x(x), y(y) {}\n    Vec2& operator+=(const Vec2& rhs) {\n        x += rhs.x;\n        y += rhs.y;\n        return *this;\n    }\n    friend Vec2 operator+(Vec2 lhs, const Vec2& rhs) {\n        lhs += rhs;\n        return lhs;\n    }\n    friend bool operator==(const Vec2& lhs, const Vec2& rhs) {\n        return lhs.x == rhs.x && lhs.y == rhs.y;\n    }\n    friend ostream& operator<<(ostream& os, const Vec2& v) {\n        os << \"(\" << v.x << \", \" << v.y << \")\";\n        return os;\n    }\n};\n\nint main() {\n    Vec2 a(1, 2), b(3, -5);\n    Vec2 c = a + b;\n    a += b;\n    a += Vec2(10, 0);\n    cout << a << \" \" << b << \" \" << c << endl;\n    cout << boolalpha << (c == Vec2(4, -3)) << \" \" << (a == c) << endl;\n    return 0;\n}\n"}
+```
 ```quiz
 [
   {

@@ -198,6 +198,74 @@ The lab's own advice: test the edge cases with an ordinary `main` first, and onl
 
 Out of 10: 2 for committing and pushing after every non-trivial change, 3 for the data structure exactly as described, 3 for testing it exactly as described, 2 for style (comments, names, atomic functions, constants instead of magic numbers). A program that does not compile earns zero. Submit through GitHub, not the Learning Hub. If Cygwin complains "too many sections" or "File too big" when compiling the Catch file, add `-Wa,-mbig-obj` to `CMAKE_CXX_FLAGS` in CMakeLists.txt.
 
+## Run new operations on a three-slot stack
+
+`SmallStack` follows the lab's rules with a maximum size of 3: positive ints only, `false` when full, `-1` from `top()` when empty.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nconstexpr int MAX = 3;\n\nclass SmallStack\n{\n    int items[MAX];\n    int topIndex;\npublic:\n    SmallStack() : topIndex(-1) { }\n    bool push(int v)\n    {\n        if (topIndex == MAX - 1 || v < 0) return false;\n        items[++topIndex] = v;\n        return true;\n    }\n    void pop() { if (topIndex != -1) --topIndex; }\n    int top() const { return topIndex == -1 ? -1 : items[topIndex]; }\n    bool empty() const { return topIndex == -1; }\n};\n\nint main()\n{\n    SmallStack s;\n    s.push(4);\n    s.push(9);\n    s.pop();\n    s.push(2);\n    cout << s.top() << ' ';\n    s.pop();\n    s.pop();\n    cout << s.top() << ' ' << boolalpha << s.empty() << endl;\n    return 0;\n}",
+    "options": [
+      "`2 -1 true`",
+      "`9 4 false`",
+      "`2 4 true`",
+      "`2 0 true`"
+    ],
+    "answer": 0,
+    "explain": "Push 4, push 9, pop removes 9, push 2: the stack is 4 2 and `top()` is 2. Two pops empty it, so `top()` returns the lab's -1 and `empty()` is true. Output: `2 -1 true`."
+  },
+  {
+    "type": "text",
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nconstexpr int MAX = 3;\n\nclass SmallStack\n{\n    int items[MAX];\n    int topIndex;\npublic:\n    SmallStack() : topIndex(-1) { }\n    bool push(int v)\n    {\n        if (topIndex == MAX - 1 || v < 0) return false;\n        items[++topIndex] = v;\n        return true;\n    }\n    void pop() { if (topIndex != -1) --topIndex; }\n    int top() const { return topIndex == -1 ? -1 : items[topIndex]; }\n    bool empty() const { return topIndex == -1; }\n};\n\nint main()\n{\n    SmallStack s;\n    cout << s.push(1) << s.push(-5) << s.push(2) << s.push(3) << s.push(4) << endl;\n    return 0;\n}",
+    "answer": [
+      "10110"
+    ],
+    "explain": "The operands of one `<<` chain are evaluated left to right in C++17 and later. `push(1)` succeeds (1). `push(-5)` is refused because the lab stores positive ints only (0). `push(2)` and `push(3)` fill the three slots (1 1). `push(4)` finds the stack full (0). Output: `10110`."
+  },
+  {
+    "q": "A student's `empty()` returns `topIndex == 0`. Which of these Catch tests fail? (select all)",
+    "options": [
+      "`MyStack s; REQUIRE(s.empty());`",
+      "`MyStack s; s.push(5); REQUIRE(!s.empty());`",
+      "`MyStack s; s.push(5); s.push(6); REQUIRE(!s.empty());`",
+      "`MyStack s; REQUIRE(s.top() == -1);`"
+    ],
+    "answer": [
+      0,
+      1
+    ],
+    "explain": "A new stack has topIndex -1, so `empty()` returns false and the first test fails. After one push topIndex is 0, so `empty()` wrongly returns true and the second fails. After two pushes topIndex is 1, which the bug reports correctly, and `top()` does not use `empty()`. Testing the boundaries zero and one catches it."
+  },
+  {
+    "q": "`pop()` is written as `void pop() { --topIndex; }` with no check. On a new stack, `pop()` then `push(8)` runs. What goes wrong?",
+    "options": [
+      "topIndex goes to -2, and the push writes to `items[-1]`, outside the array",
+      "Nothing: `push` resets topIndex to 0",
+      "The pop throws an exception",
+      "The compiler rejects `--topIndex` on a negative value"
+    ],
+    "answer": 0,
+    "explain": "-1 − 1 = -2. `push` then does `items[++topIndex]` with topIndex -1: an out-of-bounds write that corrupts memory without any error message. That is why the lab's suggested tests include \"pop an empty stack, then add values\"."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "Write <code>class CharStack</code> in the lab's style (array of size <code>MAX</code>, top index starting at -1) with <code>push(char)</code>, <code>pop()</code>, <code>top() const</code> and <code>empty() const</code>. <code>main</code> pushes the letters of <code>stack</code> and pops them all, printing <code>kcats</code>.",
+  "starter": "#include <iostream>\n#include <string>\nusing namespace std;\n\nconstexpr int MAX = 10;\n\n// class CharStack here\n\nint main()\n{\n    CharStack s;\n    string word = \"stack\";\n    for (char c : word)\n    {\n        s.push(c);\n    }\n    while (!s.empty())\n    {\n        cout << s.top();\n        s.pop();\n    }\n    cout << endl;\n    return 0;\n}\n",
+  "expected": "kcats\n",
+  "hints": [
+    "Members: <code>char items[MAX]; int topIndex;</code> and a constructor setting <code>topIndex(-1)</code>.",
+    "<code>push</code>: refuse when <code>topIndex == MAX - 1</code>, else <code>items[++topIndex] = c;</code>"
+  ],
+  "solution": "#include <iostream>\n#include <string>\nusing namespace std;\n\nconstexpr int MAX = 10;\n\nclass CharStack\n{\n    char items[MAX];\n    int topIndex;\npublic:\n    CharStack() : topIndex(-1) { }\n    bool push(char c)\n    {\n        if (topIndex == MAX - 1) return false;\n        items[++topIndex] = c;\n        return true;\n    }\n    void pop()\n    {\n        if (!empty()) --topIndex;\n    }\n    char top() const { return items[topIndex]; }\n    bool empty() const { return topIndex == -1; }\n};\n\nint main()\n{\n    CharStack s;\n    string word = \"stack\";\n    for (char c : word)\n    {\n        s.push(c);\n    }\n    while (!s.empty())\n    {\n        cout << s.top();\n        s.pop();\n    }\n    cout << endl;\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

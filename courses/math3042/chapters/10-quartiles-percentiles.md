@@ -78,6 +78,21 @@ boxplot
 { "data": "1.800 1.950 2.283 2.883 3.333 3.600 3.600 4.350 4.533 4.700", "note": "First 10 faithful eruption durations (minutes)" }
 ```
 
+## Hand quartiles for two new data sets
+
+Data set A ($n = 9$): 14, 22, 9, 17, 30, 11, 25, 19, 13. Data set B ($n = 10$): 3.1, 4.5, 2.8, 5.0, 3.9, 4.2, 6.1, 3.3, 4.8, 5.6.
+
+```quiz
+[
+  {"q": "Data set A: find $Q_2$.", "type": "numeric", "answer": 17, "tolerance": 0, "explain": "Sorted: 9, 11, 13, 14, **17**, 19, 22, 25, 30. The 5th of 9 values is 17."},
+  {"q": "Data set A: find $Q_1$ by the hand method.", "type": "numeric", "answer": 12, "tolerance": 0, "explain": "$n$ is odd, so leave out the median 17. Lower half 9, 11, 13, 14; its median is $(11 + 13)/2 = 12$."},
+  {"q": "Data set A: find $Q_3$ by the hand method.", "type": "numeric", "answer": 23.5, "tolerance": 0, "explain": "Upper half (17 excluded) 19, 22, 25, 30; its median is $(22 + 25)/2 = 23.5$."},
+  {"q": "Data set B: find $Q_1$ by the hand method.", "type": "numeric", "answer": 3.3, "tolerance": 0.001, "explain": "Sorted: 2.8, 3.1, 3.3, 3.9, 4.2 | 4.5, 4.8, 5.0, 5.6, 6.1 ($Q_2 = (4.2 + 4.5)/2 = 4.35$). $n$ is even, nothing is excluded; the lower half's middle value is 3.3."},
+  {"q": "Which symbol names the value with 75% of the data below it? (either name)", "type": "text", "answer": ["Q3", "Q_3", "P75", "P_75", "Q₃", "P₇₅"], "explain": "The third quartile $Q_3$, which is also the 75th percentile $P_{75}$."},
+  {"type": "fill", "q": "Data set A in R. Fill the blank so `quantile()` returns $P_{75}$.", "code": "A <- c(14, 22, 9, 17, 30, 11, 25, 19, 13)\nquantile(A, ___)\n## 75%\n##  22", "answer": ["0.75", ".75"], "explain": "Give the percentage as a decimal: 0.75. R interpolates differently from the hand method (22 against the hand $Q_3 = 23.5$; for $P_{25}$ it gives 13 against 12). Slight disagreement is OK."}
+]
+```
+
 ```quiz
 [
   {

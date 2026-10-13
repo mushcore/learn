@@ -124,6 +124,68 @@ int main()
 }
 ```
 
+## Work out integer division and remainders on new numbers
+
+New operands, including negatives and a time conversion; every result follows truncation toward zero.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    cout << 23 / 4 << ' ' << 23 % 4 << ' ' << -23 / 4 << ' ' << -23 % 4 << endl;\n    return 0;\n}",
+    "options": [
+      "`5 3 -5 -3`",
+      "`5 3 -6 1`",
+      "`5.75 3 -5.75 -3`",
+      "`5 3 -5 3`"
+    ],
+    "answer": 0,
+    "explain": "23 / 4 is 5 remainder 3. With the minus sign the quotient truncates toward zero, -5.75 to -5 (not down to -6), and the remainder takes the sign of the left operand: -23 = (-5)(4) + (-3). Output: `5 3 -5 -3`."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int total = 47;\n    int n = 2;\n    cout << total / n << ' ' << total / 2.0 << endl;\n    return 0;\n}",
+    "options": [
+      "`23 23.5`",
+      "`23.5 23.5`",
+      "`23 23`",
+      "`24 23.5`"
+    ],
+    "answer": 0,
+    "explain": "`total / n` is int / int, so 23.5 truncates to 23. `total / 2.0` has a `double` operand, so the whole division is done in `double`: 23.5. Output: `23 23.5`."
+  },
+  {
+    "type": "numeric",
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int x = 9;\n    x *= 3;\n    x -= 4;\n    x %= 5;\n    cout << x << endl;\n    return 0;\n}",
+    "answer": 3,
+    "explain": "Each compound operator updates x in place: 9 × 3 = 27, 27 − 4 = 23, 23 % 5 = 3 (23 = 4 × 5 + 3)."
+  },
+  {
+    "type": "text",
+    "q": "What does this print? Type it exactly.",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int seconds = 3725;\n    cout << seconds / 3600 << \":\" << seconds % 3600 / 60 << \":\" << seconds % 60 << endl;\n    return 0;\n}",
+    "answer": [
+      "1:2:5"
+    ],
+    "explain": "3725 / 3600 = 1 hour. `seconds % 3600 / 60` groups left to right as `(3725 % 3600) / 60` = 125 / 60 = 2 minutes. 3725 % 60 = 5 seconds (3725 = 62 × 60 + 5). Output: `1:2:5` (no zero padding)."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "<code>minutes</code> holds 200. Using only <code>/</code> and <code>%</code>, print it as hours and minutes: <code>3 h 20 min</code>.",
+  "starter": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int minutes = 200;\n    // your code here\n    return 0;\n}\n",
+  "expected": "3 h 20 min\n",
+  "hints": [
+    "Hours: <code>minutes / 60</code>.",
+    "Leftover minutes: <code>minutes % 60</code>."
+  ],
+  "solution": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int minutes = 200;\n    cout << minutes / 60 << \" h \" << minutes % 60 << \" min\" << endl;\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

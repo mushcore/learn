@@ -100,6 +100,56 @@ friend-check
 
 Friends matter next lesson: the stream operators `<<` and `>>` cannot be members of your class, and they need to read its private data, so they are declared friends.
 
+## Trace a `Wallet` friend and a `Vault` friend class
+
+A friend function that moves money between two private balances, then a vault that trusts one class and nobody that class trusts.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Wallet {\n    int cents;\n    friend void transfer(Wallet& from, Wallet& to, int amount);\npublic:\n    Wallet(int c) : cents(c) {}\n    int balance() const { return cents; }\n};\n\nvoid transfer(Wallet& from, Wallet& to, int amount) {\n    if (amount > from.cents) amount = from.cents;\n    from.cents -= amount;\n    to.cents += amount;\n}\n\nint main() {\n    Wallet a(500), b(120);\n    transfer(a, b, 350);\n    transfer(b, a, 900);\n    cout << a.balance() << \" \" << b.balance() << endl;\n    return 0;\n}",
+    "options": [
+      "`620 0`",
+      "`150 470`",
+      "`1050 -430`",
+      "`500 120`"
+    ],
+    "answer": 0,
+    "explain": "`transfer` is a friend, so it may read and change the private `cents` of both wallets. First call: 350 is not more than a's 500, so a = 500 - 350 = 150 and b = 120 + 350 = 470. Second call: 900 is more than b's 470, so the amount is capped at 470: b = 0 and a = 150 + 470 = 620. Output `620 0`."
+  },
+  {
+    "q": "What number does this print?",
+    "type": "numeric",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Vault {\n    friend class Auditor;\n    int gold;\npublic:\n    Vault(int g) : gold(g) {}\n};\n\nclass Auditor {\npublic:\n    int count(const Vault& v) const { return v.gold; }\n    void skim(Vault& v, int n) const { v.gold -= n; }\n};\n\nint main() {\n    Vault v(80);\n    Auditor a;\n    a.skim(v, 15);\n    a.skim(v, 4);\n    cout << a.count(v) << endl;\n    return 0;\n}",
+    "answer": 61,
+    "tolerance": 0,
+    "explain": "`friend class Auditor;` lets every Auditor member reach `gold`. The vault starts at 80; `skim(v, 15)` leaves 65 and `skim(v, 4)` leaves 61; `count` returns 61."
+  },
+  {
+    "q": "Intern derives from Auditor, Vault's friend. Click the line the compiler rejects.",
+    "type": "spotbug",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Vault {\n    friend class Auditor;\n    int gold;\npublic:\n    Vault(int g) : gold(g) {}\n};\n\nclass Auditor {\npublic:\n    int count(const Vault& v) const { return v.gold; }\n};\n\nclass Intern : public Auditor {\npublic:\n    int peek(const Vault& v) const { return v.gold; }\n};\n\nint main() {\n    Vault v(80);\n    Intern i;\n    cout << i.count(v) << i.peek(v) << endl;\n    return 0;\n}",
+    "answer": [
+      18
+    ],
+    "explain": "Friendship is not inherited. Vault befriended Auditor, so `Auditor::count` may read `v.gold`, but Intern's own member `peek` is not a friend: 'int Vault::gold' is private within this context. `i.count(v)` in main is fine, because count is Auditor's function."
+  },
+  {
+    "q": "A befriends B, and B befriends C. Click the line the compiler rejects.",
+    "type": "spotbug",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass A {\n    friend class B;\n    int secret = 42;\n};\n\nclass B {\n    friend class C;\npublic:\n    int read(const A& a) const { return a.secret; }\n};\n\nclass C {\npublic:\n    int read(const A& a) const { return a.secret; }\n};\n\nint main() {\n    A a;\n    cout << B().read(a) << C().read(a) << endl;\n    return 0;\n}",
+    "answer": [
+      17
+    ],
+    "explain": "Friendship is not transitive. B may read `a.secret` because A named B. C is B's friend, which gives C access to B's private members only, not A's, so `C::read` fails: 'int A::secret' is private within this context."
+  }
+]
+```
+
+```challenge
+{"prompt": "Make <code>manhattan</code> a friend of <code>Point</code> and define it outside the class: it returns |x1 - x2| + |y1 - y2| for two points. Do not add getters.", "starter": "#include <iostream>\n#include <cstdlib>\nusing namespace std;\n\nclass Point {\n    int x, y;\n    // declare the friend here\npublic:\n    Point(int x, int y) : x(x), y(y) {}\n};\n\n// define manhattan here\n\nint main() {\n    Point a(1, 2), b(4, -2), c(-3, 5);\n    cout << manhattan(a, b) << endl;\n    cout << manhattan(b, c) << endl;\n    return 0;\n}\n", "expected": "7\n14", "hints": ["Inside the class: <code>friend int manhattan(const Point&amp; p, const Point&amp; q);</code>", "The definition has no <code>Point::</code> prefix: it is not a member.", "<code>abs</code> is in <code>&lt;cstdlib&gt;</code>."], "solution": "#include <iostream>\n#include <cstdlib>\nusing namespace std;\n\nclass Point {\n    int x, y;\n    friend int manhattan(const Point& p, const Point& q);\npublic:\n    Point(int x, int y) : x(x), y(y) {}\n};\n\nint manhattan(const Point& p, const Point& q) {\n    return abs(p.x - q.x) + abs(p.y - q.y);\n}\n\nint main() {\n    Point a(1, 2), b(4, -2), c(-3, 5);\n    cout << manhattan(a, b) << endl;\n    cout << manhattan(b, c) << endl;\n    return 0;\n}\n"}
+```
 ```quiz
 [
   {

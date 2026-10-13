@@ -61,6 +61,45 @@ sampling-play
 { "f": 1, "fs": 4, "method": "flat", "methods": ["ideal", "natural", "flat"], "title": "Flat-top sampling, one tick of the sampling clock at a time" }
 ```
 
+## Convert three more sample periods and rates
+
+Use $f_s = 1 / T_s$ and keep the prefix: 1 μs is $10^{-6}$ s.
+
+```quiz
+[
+  {
+    "q": "A signal is sampled every 40 μs. What is the sampling rate, in samples per second?",
+    "type": "numeric",
+    "answer": 25000,
+    "tolerance": 1,
+    "unit": "samples/s",
+    "explain": "$f_s = \\frac{1}{40 \\times 10^{-6}} = 25000$ samples/s."
+  },
+  {
+    "q": "The sampling rate is 48 000 samples/s. What is the sample period, in μs? (Two decimals.)",
+    "type": "numeric",
+    "answer": 20.83,
+    "tolerance": 0.006,
+    "unit": "μs",
+    "explain": "$T_s = \\frac{1}{48000} = 2.0833 \\times 10^{-5}$ s $= 20.83$ μs."
+  },
+  {
+    "q": "A 2 ms clip is sampled at 16 000 samples/s. How many samples does it produce?",
+    "type": "numeric",
+    "answer": 32,
+    "tolerance": 0.01,
+    "unit": "samples",
+    "explain": "$16000 \\times 0.002 = 32$ samples. Equivalently $T_s = 62.5$ μs and $2000 / 62.5 = 32$."
+  },
+  {
+    "q": "A converter reads the signal once per period and keeps that value constant until the end of the pulse. Which sampling method is this?",
+    "options": ["Ideal sampling", "Natural sampling", "Flat-top sampling", "Impulse sampling"],
+    "answer": 2,
+    "explain": "Holding the value flat is sample-and-hold, **flat-top sampling**, the most commonly used method. In natural sampling the pulse top follows the curve; ideal (impulse) sampling has pulses of zero width."
+  }
+]
+```
+
 ```quiz
 [
   {

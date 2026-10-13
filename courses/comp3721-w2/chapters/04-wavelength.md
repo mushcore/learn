@@ -67,6 +67,55 @@ wave-travel
 { "f": 4e14, "speed": 3e8, "title": "Red light: one period T, one wavelength of distance" }
 ```
 
+## Find five more wavelengths and frequencies
+
+Divide the speed by the frequency, or multiply it by the period; the answer comes out in metres.
+
+```quiz
+[
+  {
+    "q": "Light with a frequency of $3.75 \\times 10^{14}$ Hz travels in a vacuum at $3 \\times 10^{8}$ m/s. What is its wavelength in μm?",
+    "type": "numeric",
+    "answer": 0.8,
+    "tolerance": 0.005,
+    "unit": "μm",
+    "explain": "$\\lambda = \\frac{3 \\times 10^{8}}{3.75 \\times 10^{14}} = 0.8 \\times 10^{-6}$ m $= 0.8$ μm. Divide $3 / 3.75 = 0.8$ and subtract the exponents, $10^{8-14} = 10^{-6}$."
+  },
+  {
+    "q": "A 5 GHz Wi-Fi signal propagates at $3 \\times 10^{8}$ m/s. What is its wavelength in metres?",
+    "type": "numeric",
+    "answer": 0.06,
+    "tolerance": 0.0005,
+    "unit": "m",
+    "explain": "$\\lambda = \\frac{3 \\times 10^{8}}{5 \\times 10^{9}} = 0.6 \\times 10^{-1} = 0.06$ m (6 cm)."
+  },
+  {
+    "q": "The same 5 GHz signal travels through a cable at $2 \\times 10^{8}$ m/s. What is its wavelength in metres?",
+    "type": "numeric",
+    "answer": 0.04,
+    "tolerance": 0.0005,
+    "unit": "m",
+    "explain": "$\\lambda = \\frac{2 \\times 10^{8}}{5 \\times 10^{9}} = 0.04$ m. Same frequency (it depends on the sender), slower medium, shorter wavelength."
+  },
+  {
+    "q": "A signal has a period of 2.5 ns and travels through a fibre at $2.4 \\times 10^{8}$ m/s. What is its wavelength in metres?",
+    "type": "numeric",
+    "answer": 0.6,
+    "tolerance": 0.005,
+    "unit": "m",
+    "explain": "Use $\\lambda = c \\times T = 2.4 \\times 10^{8} \\times 2.5 \\times 10^{-9} = 6 \\times 10^{-1} = 0.6$ m."
+  },
+  {
+    "q": "Light in a vacuum ($3 \\times 10^{8}$ m/s) has a wavelength of 1.2 μm. What is its frequency in Hz?",
+    "type": "numeric",
+    "answer": 250000000000000,
+    "tolerance": 1000000000000,
+    "unit": "Hz",
+    "explain": "$f = c/\\lambda = \\frac{3 \\times 10^{8}}{1.2 \\times 10^{-6}} = 2.5 \\times 10^{14}$ Hz. Enter it as 250000000000000 or 2.5e14."
+  }
+]
+```
+
 ```quiz
 [
   {

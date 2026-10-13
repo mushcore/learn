@@ -200,6 +200,72 @@ int main()
 
 `oss << "COMP " << a << " and " << b;` formats as `cout` would, but into memory, and `string output = oss.str();` extracts the result. Manipulators such as `setprecision` work here too, which is how you round a number into a string.
 
+## Extract from four new strings
+
+An `istringstream` reads its string exactly as `cin` reads the keyboard, failbit and eofbit included.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <sstream>\n#include <string>\nusing namespace std;\n\nint main()\n{\n    istringstream iss{\"42 7.5 x9\"};\n    int a;\n    double b;\n    string c;\n    iss >> a >> b >> c;\n    cout << a + b << ' ' << c << endl;\n    return 0;\n}",
+    "options": [
+      "`49.5 x9`",
+      "`49 x9`",
+      "`42 7.5`",
+      "`49.5 9`"
+    ],
+    "answer": 0,
+    "explain": "`a` reads 42, `b` reads 7.5, `c` reads the word `x9`. 42 + 7.5 = 49.5 (the int is promoted to double). Output: `49.5 x9`."
+  },
+  {
+    "type": "numeric",
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <sstream>\nusing namespace std;\n\nint main()\n{\n    istringstream iss{\"8 9 ten 11\"};\n    int n, sum = 0;\n    while (iss >> n)\n    {\n        sum += n;\n    }\n    cout << sum << endl;\n    return 0;\n}",
+    "answer": 17,
+    "explain": "The loop reads 8 and 9 (sum 17), then fails on `ten`. Failbit ends the loop, so 11 is never read."
+  },
+  {
+    "q": "The input lines are `5`, `6` and `7`. This version reuses one stream but never calls `clear()`. What does it print?",
+    "code": "#include <iostream>\n#include <sstream>\n#include <string>\nusing namespace std;\n\nint main()\n{\n    string line;\n    istringstream iss;\n    int n, sum = 0;\n    while (getline(cin, line))\n    {\n        iss.str(line);\n        if (iss >> n)\n        {\n            sum += n;\n        }\n    }\n    cout << sum << endl;\n    return 0;\n}",
+    "options": [
+      "`5`",
+      "`18`",
+      "`0`",
+      "`7`"
+    ],
+    "answer": 0,
+    "explain": "Reading 5 from `\"5\"` hits the end of the string and sets eofbit. `str(line)` replaces the text but does not reset the state bits, so every later `iss >> n` fails at once. Only the first line counts: `5`. With `iss.clear();` first, the sum is 18."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <sstream>\n#include <string>\nusing namespace std;\n\nint main()\n{\n    ostringstream oss;\n    oss << \"Lab\" << 3 << '-' << 2.50;\n    string s = oss.str();\n    cout << s << ' ' << s.size() << endl;\n    return 0;\n}",
+    "options": [
+      "`Lab3-2.5 8`",
+      "`Lab3-2.50 9`",
+      "`Lab 3 - 2.5 11`",
+      "`Lab3-2.5 7`"
+    ],
+    "answer": 0,
+    "explain": "An `ostringstream` formats exactly like `cout`: no separators, and 2.50 prints as `2.5` under the default format. The string is `Lab3-2.5`, which has 8 characters. Output: `Lab3-2.5 8`."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "Each input line is a name and a score. Read the lines with <code>getline</code>, pull the two fields out with an <code>istringstream</code>, and print the best student and the average:<pre>best: Bo 95\naverage: 82.3333</pre>",
+  "starter": "#include <iostream>\n#include <sstream>\n#include <string>\nusing namespace std;\n\nint main()\n{\n    string line, name, bestName;\n    int score, bestScore = -1, total = 0, count = 0;\n    // your code here\n    return 0;\n}\n",
+  "stdin": "Ana 80\nBo 95\nCy 72\n",
+  "expected": "best: Bo 95\naverage: 82.3333\n",
+  "hints": [
+    "A fresh stream per line needs no <code>clear()</code>: <code>istringstream iss{line}; iss >> name >> score;</code>",
+    "Divide as a double: <code>(double)total / count</code>."
+  ],
+  "solution": "#include <iostream>\n#include <sstream>\n#include <string>\nusing namespace std;\n\nint main()\n{\n    string line, name, bestName;\n    int score, bestScore = -1, total = 0, count = 0;\n    while (getline(cin, line))\n    {\n        istringstream iss{line};\n        if (iss >> name >> score)\n        {\n            total += score;\n            ++count;\n            if (score > bestScore)\n            {\n                bestScore = score;\n                bestName = name;\n            }\n        }\n    }\n    cout << \"best: \" << bestName << ' ' << bestScore << endl;\n    cout << \"average: \" << (double)total / count << endl;\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

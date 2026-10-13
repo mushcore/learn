@@ -105,6 +105,60 @@ line-code
 { "bits": "1111111100000000", "schemes": ["unipolar", "nrz-l", "nrz-i"], "compare": true, "title": "Long runs: where each NRZ scheme stops changing" }
 ```
 
+## Encode 10011101 in NRZ-L and NRZ-I
+
+Type `+` for the positive level and `-` for the negative level; the NRZ-I level before the first bit is positive, and the bits are sent at 4 Mbps.
+
+```quiz
+[
+  {
+    "q": "Write the NRZ-L level for each bit (slide 55: positive for 0, negative for 1).",
+    "type": "fill",
+    "code": "bit:    1   0   0   1   1   1   0   1\nlevel: ___ ___ ___ ___ ___ ___ ___ ___",
+    "answer": ["-", "+", "+", "-", "-", "-", "+", "-"],
+    "explain": "NRZ-L reads each bit on its own: 1 → `-`, 0 → `+`. Bits 1 0 0 1 1 1 0 1 give `- + + - - - + -`."
+  },
+  {
+    "q": "Write the NRZ-I level for each bit (invert for 1, hold for 0; the level before the first bit is positive).",
+    "type": "fill",
+    "code": "bit:    1   0   0   1   1   1   0   1\nlevel: ___ ___ ___ ___ ___ ___ ___ ___",
+    "answer": ["-", "-", "-", "+", "-", "+", "+", "-"],
+    "explain": "Start at `+`. Bit 1: invert → `-`. Bit 0: hold `-`. Bit 0: hold `-`. Bit 1: invert → `+`. Bit 1: invert → `-`. Bit 1: invert → `+`. Bit 0: hold `+`. Bit 1: invert → `-`. Result: `- - - + - + + -`."
+  },
+  {
+    "q": "How many signal elements does NRZ-L use for the 8 bits?",
+    "type": "numeric",
+    "answer": 8,
+    "tolerance": 0.01,
+    "unit": "signal elements",
+    "explain": "NRZ holds one level for the whole bit: one signal element per bit, 8 signal elements."
+  },
+  {
+    "q": "What is $r$ for NRZ-L?",
+    "type": "numeric",
+    "answer": 1,
+    "tolerance": 0.001,
+    "explain": "One data element per signal element: $r = \\frac{8}{8} = 1$."
+  },
+  {
+    "q": "At 4 Mbps with $c = \\frac{1}{2}$, what is the average signal rate of the NRZ-L signal, in Mbaud?",
+    "type": "numeric",
+    "answer": 2,
+    "tolerance": 0.01,
+    "unit": "Mbaud",
+    "explain": "$S = c \\times N \\times \\frac{1}{r} = \\frac{1}{2} \\times 4000000 \\times 1 = 2000000$ baud $= 2$ Mbaud."
+  },
+  {
+    "q": "In your NRZ-I signal, what is the longest stretch without a transition, in bits?",
+    "type": "numeric",
+    "answer": 3,
+    "tolerance": 0.01,
+    "unit": "bits",
+    "explain": "NRZ-I levels `- - - + - + + -`: the first 1 inverts to `-` and the two 0s after it hold, so bits 1 to 3 stay at `-` for 3 bit durations. A run of 0s is where NRZ-I goes flat."
+  }
+]
+```
+
 ```quiz
 [
   {

@@ -83,6 +83,21 @@ drag-data
 ]}
 ```
 
+## Fences and outliers for twelve delivery times
+
+Twelve delivery times in minutes: 18, 22, 25, 21, 19, 24, 47, 23, 20, 26, 14, 22.
+
+```quiz
+[
+  {"q": "Find $Q_1$ by the hand method.", "type": "numeric", "answer": 19.5, "tolerance": 0, "explain": "Sorted: 14, 18, 19, 20, 21, 22 | 22, 23, 24, 25, 26, 47. Lower half 14, 18, 19, 20, 21, 22; its median is $(19 + 20)/2 = 19.5$."},
+  {"q": "Find $Q_3$ by the hand method.", "type": "numeric", "answer": 24.5, "tolerance": 0, "explain": "Upper half 22, 23, 24, 25, 26, 47; its median is $(24 + 25)/2 = 24.5$."},
+  {"q": "Compute the upper fence.", "type": "numeric", "answer": 32.0, "tolerance": 0, "explain": "$IQR = 24.5 - 19.5 = 5$. Upper fence $= Q_3 + 1.5 \\times IQR = 24.5 + 7.5 = 32$."},
+  {"q": "Compute the lower fence.", "type": "numeric", "answer": 12.0, "tolerance": 0, "explain": "$Q_1 - 1.5 \\times IQR = 19.5 - 7.5 = 12$. The minimum 14 is inside it, so there is no low outlier."},
+  {"q": "Only 47 is beyond a fence. Where does the boxplot's upper whisker end?", "type": "numeric", "answer": 26, "tolerance": 0, "unit": "min", "explain": "47 > 32 is drawn as its own circle; the whisker stops at the largest value still inside the fence, 26."},
+  {"type": "fill", "q": "The same check in R. Fill the blank in the fence rule.", "code": "times <- c(18, 22, 25, 21, 19, 24, 47, 23, 20, 26, 14, 22)\nQ1 <- quantile(times, 0.25)   # 19.75\nQ3 <- quantile(times, 0.75)   # 24.25\nupper.fence <- Q3 + ___*(Q3 - Q1)\nsum(times > upper.fence)\n## [1] 1", "answer": ["1.5"], "explain": "R's quartiles (19.75, 24.25) differ slightly from the hand ones, so its upper fence is $24.25 + 1.5(4.5) = 31$; the verdict is the same, one outlier (47)."}
+]
+```
+
 ```quiz
 [
   {

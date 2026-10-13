@@ -150,6 +150,64 @@ int main() {
 
 The six answers in one file, in the order the paper asks for them. `fractions.push(Fraction(num, den));` builds each Fraction with the Q21 constructor and copies it into the stack with the Q22 copy constructor; `cout << fractions.top() << endl;` is the Q24 operator; the Q25 operator is declared and defined but unused here, because the loop reads two ints and lets the constructor validate them. The final `try` block exercises Q21 and prints the fourth line, `caught: Denominator cannot be zero`.
 
+## Build a `Time` class the way Q21 to Q26 build Fraction
+
+The same guided long question on a new class: a `Time` of hours and minutes that refuses minutes outside 0 to 59, read from a file into a `std::queue`.
+
+```quiz
+[
+  {
+    "q": "Q21 style. Complete the guard so 0 and 59 are accepted and 60 is rejected.",
+    "type": "fill",
+    "code": "#include <iostream>\n#include <stdexcept>\nusing namespace std;\n\nclass Time {\n    int hours, minutes;\npublic:\n    Time(int hours, int minutes) : hours(hours), minutes(minutes) {\n        if (minutes < 0 || minutes ___ 59) {\n            throw invalid_argument(\"minutes must be 0 to 59\");\n        }\n    }\n};\n\nint main() {\n    for (int m : {0, 59, 60}) {\n        try {\n            Time t(8, m);\n            cout << m << \" ok \";\n        } catch (invalid_argument& e) {\n            cout << m << \" rejected\";\n        }\n    }\n    cout << endl;\n    return 0;\n}",
+    "answer": [
+      ">"
+    ],
+    "explain": "Valid minutes are 0 to 59 inclusive, so the constructor throws when `minutes < 0 || minutes > 59`. With `>=` the 59 would be rejected too. The loop prints `0 ok 59 ok 60 rejected`."
+  },
+  {
+    "q": "Q26 style. What does this print? (The rows are pushed into both a queue and a stack.)",
+    "code": "#include <iostream>\n#include <queue>\n#include <stack>\n#include <stdexcept>\nusing namespace std;\n\nclass Time {\nprivate:\n    int hours;\n    int minutes;\npublic:\n    Time(int hours, int minutes) : hours(hours), minutes(minutes) {\n        if (minutes < 0 || minutes > 59) {\n            throw invalid_argument(\"minutes must be 0 to 59\");\n        }\n    }\n    Time(const Time& other) : hours(other.hours), minutes(other.minutes) {}\n    ~Time() {}\n    friend ostream& operator<<(ostream& os, const Time& t);\n};\n\nostream& operator<<(ostream& os, const Time& t) {\n    os << t.hours << \":\" << (t.minutes < 10 ? \"0\" : \"\") << t.minutes;\n    return os;\n}\n\nint main() {\n    queue<Time> line;\n    stack<Time> pile;\n    int rows[3][2] = {{9, 5}, {12, 30}, {17, 0}};\n    for (auto& r : rows) {\n        line.push(Time(r[0], r[1]));\n        pile.push(Time(r[0], r[1]));\n    }\n    cout << line.front() << \" \" << pile.top() << \" \" << line.back() << endl;\n    return 0;\n}",
+    "options": [
+      "`9:05 17:00 17:00`",
+      "`9:05 9:05 17:00`",
+      "`17:00 9:05 9:05`",
+      "`9:5 17:0 17:0`"
+    ],
+    "answer": 0,
+    "explain": "A queue is FIFO: `front()` is the first row pushed, 9:05, and `back()` the last, 17:00. A stack is LIFO: `top()` is the last row pushed, 17:00. The operator pads a minute below 10 with a 0, so 5 prints as `05` and 0 as `00`."
+  },
+  {
+    "q": "Q22 style. Click the line the compiler rejects.",
+    "type": "spotbug",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Time {\n    int hours, minutes;\npublic:\n    Time(int h, int m) : hours(h), minutes(m) {}\n    Time(Time other) : hours(other.hours), minutes(other.minutes) {}\n};\n\nint main() {\n    Time a(9, 30);\n    Time b(a);\n    return 0;\n}",
+    "answer": [
+      8
+    ],
+    "explain": "A copy constructor that takes its parameter by value would need the copy constructor to build that parameter, forever, so g++ refuses: invalid constructor; you probably meant 'Time (const Time&)'. Write `Time(const Time& other)`."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <stdexcept>\nusing namespace std;\n\nclass Time {\n    int hours, minutes;\npublic:\n    Time(int h, int m) : hours(h), minutes(m) {\n        if (m < 0 || m > 59) throw invalid_argument(\"bad minutes\");\n        cout << \"made \" << h << endl;\n    }\n    Time(const Time& other) : hours(other.hours), minutes(other.minutes) { cout << \"copy \" << hours << endl; }\n    ~Time() { cout << \"gone \" << hours << endl; }\n};\n\nint main() {\n    try {\n        Time a(7, 15);\n        Time b = a;\n        Time c(2, 75);\n        cout << \"all made\" << endl;\n    } catch (invalid_argument& e) {\n        cout << \"caught: \" << e.what() << endl;\n    }\n    return 0;\n}",
+    "options": [
+      "`made 7`\n`copy 7`\n`gone 7`\n`gone 7`\n`caught: bad minutes`",
+      "`made 7`\n`copy 7`\n`caught: bad minutes`\n`gone 7`\n`gone 7`",
+      "`made 7`\n`copy 7`\n`gone 2`\n`gone 7`\n`gone 7`\n`caught: bad minutes`",
+      "`made 7`\n`copy 7`\n`all made`\n`gone 2`\n`gone 7`\n`gone 7`"
+    ],
+    "answer": 0,
+    "explain": "a is made (`made 7`) and b is copied from it (`copy 7`). `Time c(2, 75)` throws before printing, so c never exists and `gone 2` never prints, and `all made` is skipped. Leaving the try block destroys b and a, in reverse order, before the handler runs: `gone 7`, `gone 7`. Then `caught: bad minutes`."
+  }
+]
+```
+
+```challenge
+{"prompt": "Parts (a) to (e) of the long question on <code>Time</code>: (a) a constructor that stores both members and throws <code>invalid_argument(\"minutes must be 0 to 59\")</code> for minutes outside 0 to 59; (b) a copy constructor; (c) a destructor; (d) and (e) a friend <code>operator&lt;&lt;</code> that prints <code>hours:mm</code> with two-digit minutes and returns the stream.", "starter": "#include <iostream>\n#include <stdexcept>\nusing namespace std;\n\nclass Time {\nprivate:\n    int hours;\n    int minutes;\npublic:\n    // (a) constructor Time(int hours, int minutes): store both, and throw\n    //     invalid_argument(\"minutes must be 0 to 59\") when minutes is outside 0..59\n    // (b) copy constructor\n    // (c) destructor\n    // (d) friend declaration of operator<<\n};\n\n// (e) operator<< prints hours, ':', then minutes with two digits (9:05, 12:30)\n\nint main() {\n    Time a(9, 5);\n    Time b(a);\n    cout << a << \" \" << b << \" \" << Time(12, 30) << endl;\n    try {\n        Time bad(3, 60);\n    } catch (const invalid_argument& e) {\n        cout << \"caught: \" << e.what() << endl;\n    }\n    return 0;\n}\n", "expected": "9:05 9:05 12:30\ncaught: minutes must be 0 to 59", "hints": ["(a) <code>Time(int hours, int minutes) : hours(hours), minutes(minutes) { if (minutes &lt; 0 || minutes &gt; 59) throw invalid_argument(\"minutes must be 0 to 59\"); }</code>", "(b) <code>Time(const Time&amp; other) : hours(other.hours), minutes(other.minutes) {}</code>", "(e) <code>os &lt;&lt; t.hours &lt;&lt; \":\" &lt;&lt; (t.minutes &lt; 10 ? \"0\" : \"\") &lt;&lt; t.minutes; return os;</code>"], "solution": "#include <iostream>\n#include <stdexcept>\nusing namespace std;\n\nclass Time {\nprivate:\n    int hours;\n    int minutes;\npublic:\n    Time(int hours, int minutes) : hours(hours), minutes(minutes) {\n        if (minutes < 0 || minutes > 59) {\n            throw invalid_argument(\"minutes must be 0 to 59\");\n        }\n    }\n    Time(const Time& other) : hours(other.hours), minutes(other.minutes) {}\n    ~Time() {}\n    friend ostream& operator<<(ostream& os, const Time& t);\n};\n\nostream& operator<<(ostream& os, const Time& t) {\n    os << t.hours << \":\" << (t.minutes < 10 ? \"0\" : \"\") << t.minutes;\n    return os;\n}\n\nint main() {\n    Time a(9, 5);\n    Time b(a);\n    cout << a << \" \" << b << \" \" << Time(12, 30) << endl;\n    try {\n        Time bad(3, 60);\n    } catch (const invalid_argument& e) {\n        cout << \"caught: \" << e.what() << endl;\n    }\n    return 0;\n}\n"}
+```
+
+```challenge
+{"prompt": "Part (f), the program: read rows of <code>hours minutes</code> from <code>cin</code> (in the exam, <code>ifstream in(\"Times.txt\")</code>) and push a <code>Time</code> for each into a <code>std::queue&lt;Time&gt;</code>. A row whose constructor throws is caught, skipped and counted. Print the queue front to back with <code>front()</code> and <code>pop()</code>, then <code>skipped N</code>.", "starter": "#include <iostream>\n#include <queue>\n#include <stdexcept>\nusing namespace std;\n\nclass Time {\nprivate:\n    int hours;\n    int minutes;\npublic:\n    Time(int hours, int minutes) : hours(hours), minutes(minutes) {\n        if (minutes < 0 || minutes > 59) {\n            throw invalid_argument(\"minutes must be 0 to 59\");\n        }\n    }\n    Time(const Time& other) : hours(other.hours), minutes(other.minutes) {}\n    ~Time() {}\n    friend ostream& operator<<(ostream& os, const Time& t);\n};\n\nostream& operator<<(ostream& os, const Time& t) {\n    os << t.hours << \":\" << (t.minutes < 10 ? \"0\" : \"\") << t.minutes;\n    return os;\n}\n\nint main() {\n    // Rows of \"hours minutes\" arrive on cin (standing in for ifstream in(\"Times.txt\")).\n    // Push a Time for each valid row into a std::queue<Time>. A row whose Time\n    // constructor throws is skipped and counted. Then print the queue front to back,\n    // one Time per line, and finally \"skipped N\".\n    return 0;\n}\n", "expected": "9:05\n13:30\nskipped 1", "stdin": "9 5\n10 75\n13 30", "hints": ["<code>while (cin &gt;&gt; h &gt;&gt; m)</code> stops by itself at the end of input.", "Put the <code>try</code> around the push inside the loop, so one bad row does not end the reading.", "<code>while (!times.empty()) { cout &lt;&lt; times.front() &lt;&lt; endl; times.pop(); }</code>"], "solution": "#include <iostream>\n#include <queue>\n#include <stdexcept>\nusing namespace std;\n\nclass Time {\nprivate:\n    int hours;\n    int minutes;\npublic:\n    Time(int hours, int minutes) : hours(hours), minutes(minutes) {\n        if (minutes < 0 || minutes > 59) {\n            throw invalid_argument(\"minutes must be 0 to 59\");\n        }\n    }\n    Time(const Time& other) : hours(other.hours), minutes(other.minutes) {}\n    ~Time() {}\n    friend ostream& operator<<(ostream& os, const Time& t);\n};\n\nostream& operator<<(ostream& os, const Time& t) {\n    os << t.hours << \":\" << (t.minutes < 10 ? \"0\" : \"\") << t.minutes;\n    return os;\n}\n\nint main() {\n    queue<Time> times;\n    int skipped = 0;\n    int h, m;\n    while (cin >> h >> m) {\n        try {\n            times.push(Time(h, m));\n        } catch (const invalid_argument&) {\n            ++skipped;\n        }\n    }\n    while (!times.empty()) {\n        cout << times.front() << endl;\n        times.pop();\n    }\n    cout << \"skipped \" << skipped << endl;\n    return 0;\n}\n"}
+```
 ```quiz
 [
   {

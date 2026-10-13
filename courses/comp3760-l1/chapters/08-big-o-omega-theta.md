@@ -88,6 +88,62 @@ big-o-check
 
 Slides 82-85 give the lecture's examples their classes: max element (basic operation **comparison**) $n - 1 \in O(n)$; matrix multiplication (input size **matrix dimensions or total number of elements**, basic operation **multiplication of two numbers**) $n^3 \in O(n^3)$; element uniqueness $\frac{n^2}{2} - \frac{n}{2} \in O(n^2)$ ([the algebra](#/comp3760-l1/counting-with-sums)).
 
+## Bound and classify one new fragment and two new functions
+
+Count `Blend`'s basic operation and name its class, then find the constants that prove two bounds.
+
+```quiz
+[
+  {
+    "type": "spotbug",
+    "lang": "pseudo",
+    "q": "Click the line that is the basic operation of `Blend`.",
+    "code": "Algorithm Blend(A[0..n-1])\n    s ← 0\n    for i ← 0 to n-1 do\n        for j ← 0 to i do\n            s ← s + A[j] * A[i]\n        endfor\n    endfor\n    for k ← 0 to n-1 do\n        s ← s - A[k]\n    endfor\n    return s",
+    "answer": 5,
+    "explain": "Line 5 runs i + 1 times on pass i, $\\frac{n(n+1)}{2}$ in total; line 9 runs only n times. Count decides before any tie-breaker: line 5 (a multiplication and an addition) is the basic operation."
+  },
+  {
+    "q": "`Blend` is run on n = 10 elements. How many times is line 5 executed?",
+    "type": "numeric",
+    "answer": 55,
+    "tolerance": 0,
+    "explain": "$\\sum_{i=0}^{n-1} \\sum_{j=0}^{i} 1 = \\sum_{i=0}^{n-1} (i + 1) = 1 + 2 + \\ldots + 10 = \\frac{10 \\cdot 11}{2} = 55$. Line 9 runs 10 times."
+  },
+  {
+    "type": "text",
+    "q": "What is the efficiency class of `Blend`? (write it as O(…))",
+    "answer": ["o(n^2)", "o(n²)", "n^2", "n²", "quadratic", "θ(n^2)", "θ(n²)", "o(n*n)"],
+    "explain": "C(n) = $\\frac{n(n+1)}{2} = \\frac{n^2}{2} + \\frac{n}{2}$. Drop the lower-order term and the constant factor: O(n²). Even counting line 9 as well, $\\frac{n^2}{2} + \\frac{3n}{2}$ is still O(n²): a sequential linear loop never changes a quadratic class."
+  },
+  {
+    "type": "reorder",
+    "lang": "pseudo",
+    "q": "Put the proof that 3n + 20 ∈ O(n) in order.",
+    "lines": [
+      "want: 3n + 20 ≤ c·n for all n ≥ n0",
+      "pick c = 5: need 3n + 20 ≤ 5n",
+      "subtract 3n from both sides: 20 ≤ 2n",
+      "divide by 2: n ≥ 10, so take n0 = 10",
+      "so 3n + 20 ∈ O(n) with c = 5 and n0 = 10"
+    ],
+    "explain": "State the definition, choose a c larger than the leading coefficient 3, solve the inequality for n, read off n₀, conclude. Check at the boundary: n = 10 gives 50 ≤ 50, and n = 9 gives 47 > 45, so n₀ = 10 is the smallest that works for c = 5."
+  },
+  {
+    "q": "To show $n^2 + 30n \\in O(n^2)$ with $c = 2$, what is the smallest $n_0$ that works?",
+    "type": "numeric",
+    "answer": 30,
+    "tolerance": 0,
+    "explain": "$n^2 + 30n \\le 2n^2$ is the same as $30n \\le n^2$, i.e. $30 \\le n$ for $n > 0$. At $n = 30$: $900 + 900 = 1800 \\le 1800$. At $n = 29$: $841 + 870 = 1711 > 1682$. So $n_0 = 30$."
+  },
+  {
+    "q": "$n \\log_2 n \\in \\Omega(n)$.",
+    "type": "tf",
+    "answer": true,
+    "explain": "True. Ω needs $f(n) \\ge c \\cdot g(n)$ for all $n \\ge n_0$. With $c = 1$, $n_0 = 2$: $\\log_2 n \\ge 1$ for $n \\ge 2$, so $n \\log_2 n \\ge n$. n log n grows at least as fast as n (it is not in O(n), so it is not in Θ(n))."
+  }
+]
+```
+
 ```quiz
 [
   {

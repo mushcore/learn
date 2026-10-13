@@ -109,6 +109,69 @@ dispatch-viz
 { "title": "The same question for print(): with the pointer's static type Base, only virtual reaches the derived version" }
 ```
 
+## Delete a `Report` through its interface and sort three classes
+
+A printable report that owns a logo, then three classes from a water system to place in the interface / abstract / concrete table.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Printable {\npublic:\n    virtual ~Printable() { cout << \"~Printable\" << endl; }\n    virtual void print() const = 0;\n};\n\nclass Logo {\npublic:\n    ~Logo() { cout << \"~Logo\" << endl; }\n};\n\nclass Report : public Printable {\n    Logo logo;\npublic:\n    ~Report() { cout << \"~Report\" << endl; }\n    void print() const override { cout << \"report\" << endl; }\n};\n\nint main() {\n    Printable* p = new Report;\n    p->print();\n    delete p;\n    return 0;\n}",
+    "options": [
+      "`report`\n`~Report`\n`~Logo`\n`~Printable`",
+      "`report`\n`~Printable`",
+      "`report`\n`~Printable`\n`~Logo`\n`~Report`",
+      "`report`\n`~Logo`\n`~Report`\n`~Printable`"
+    ],
+    "answer": 0,
+    "explain": "`p->print()` is virtual: `report`. `~Printable` is virtual, so `delete p` starts at the dynamic type, Report. A destructor runs its own body first (`~Report`), then destroys the members (`~Logo`), then the base (`~Printable`): the reverse of construction (base, members, body). Without `virtual` on ~Printable only `~Printable` would be reached, and the logo would never be destroyed."
+  },
+  {
+    "type": "match",
+    "q": "Match each class to its column of the table.",
+    "pairs": [
+      [
+        "`class Sensor { public: virtual ~Sensor() {} virtual int read() const = 0; };`",
+        "interface"
+      ],
+      [
+        "`class Tank { protected: int litres = 0; public: virtual ~Tank() {} virtual void fill() = 0; int level() const { return litres; } };`",
+        "abstract class"
+      ],
+      [
+        "`class Valve : public Tank { public: void fill() override { litres = 50; } };`",
+        "concrete class"
+      ]
+    ],
+    "explain": "Sensor has only pure virtual functions and the virtual destructor, no data: an interface. Tank has a pure `fill()` but also a data member and a function with a body: abstract, partly implemented. Valve overrides the last pure function, so it can be instantiated: concrete (a compiled check gives is_abstract 1, 1, 0 and a filled Valve reports 50)."
+  },
+  {
+    "q": "`Drawable` is meant to be an interface. Click the line that stops it being one.",
+    "type": "spotbug",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Drawable {\npublic:\n    virtual ~Drawable() {}\n    virtual void draw() const = 0;\n    int drawCount = 0;\n    virtual void resize(double factor) = 0;\n};\n\nint main() {\n    return 0;\n}",
+    "answer": [
+      8
+    ],
+    "explain": "An interface has pure virtual functions, a virtual destructor and no data. `int drawCount = 0;` is a data member, which makes Drawable an abstract class instead. It still compiles; it just no longer matches the interface column of the table."
+  },
+  {
+    "q": "In the Report program, remove `virtual` from `~Printable`. Which lines does `delete p;` still reach?",
+    "options": [
+      "only `~Printable` (and the behaviour is undefined)",
+      "`~Report`, `~Logo`, `~Printable` as before",
+      "none of them",
+      "`~Report` only"
+    ],
+    "answer": 0,
+    "explain": "A non-virtual destructor is chosen by the pointer's static type, Printable. Only `~Printable` runs; `~Report` and therefore the Logo member's destructor are skipped. Deleting a derived object through a base pointer without a virtual destructor is undefined behaviour, which is why the interface declares one."
+  }
+]
+```
+
+```challenge
+{"prompt": "Write an interface <code>Sensor</code> with a virtual destructor that prints <code>~Sensor</code> and a pure virtual <code>int read() const</code>. Then write <code>Thermometer</code>, which implements it: <code>read()</code> returns <code>21</code> and its destructor prints <code>~Thermometer</code>. main deletes through a <code>Sensor*</code>.", "starter": "#include <iostream>\nusing namespace std;\n\n// write the interface Sensor and the class Thermometer here\n\nint main() {\n    Sensor* s = new Thermometer;\n    cout << s->read() << endl;\n    delete s;\n    return 0;\n}\n", "expected": "21\n~Thermometer\n~Sensor", "hints": ["<code>virtual ~Sensor() { cout &lt;&lt; \"~Sensor\" &lt;&lt; endl; }</code>", "<code>virtual int read() const = 0;</code>", "If <code>~Thermometer</code> is missing from the output, the Sensor destructor is not virtual."], "solution": "#include <iostream>\nusing namespace std;\n\nclass Sensor {\npublic:\n    virtual ~Sensor() { cout << \"~Sensor\" << endl; }\n    virtual int read() const = 0;\n};\n\nclass Thermometer : public Sensor {\npublic:\n    ~Thermometer() { cout << \"~Thermometer\" << endl; }\n    int read() const override { return 21; }\n};\n\nint main() {\n    Sensor* s = new Thermometer;\n    cout << s->read() << endl;\n    delete s;\n    return 0;\n}\n"}
+```
 ```quiz
 [
   {

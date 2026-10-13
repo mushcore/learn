@@ -78,6 +78,21 @@ $$P(B \mid A) = \frac{P(A \cap B)}{P(A)}$$
 
 This is the form Bayes' rule (next lesson) is built from.
 
+## Conditionals from a coffee-and-year table
+
+A survey of 130 students: Year 1 drinks Coffee 28, Tea 14, Neither 18 (row total 60); Year 2 drinks Coffee 44, Tea 6, Neither 20 (row total 70); column totals Coffee 72, Tea 20, Neither 38.
+
+```quiz
+[
+  {"q": "Pick a student at random. $P(\\text{Coffee})$? (4 decimals)", "type": "numeric", "answer": 0.5538, "tolerance": 6e-05, "explain": "Column total over grand total: $72/130 = 0.5538$."},
+  {"q": "$P(\\text{Coffee} \\mid \\text{Year 2})$? (4 decimals)", "type": "numeric", "answer": 0.6286, "tolerance": 6e-05, "explain": "Restrict to the Year 2 row: $44/70 = 0.6286$."},
+  {"q": "$P(\\text{Year 2} \\mid \\text{Coffee})$? (4 decimals)", "type": "numeric", "answer": 0.6111, "tolerance": 6e-05, "explain": "Restrict to the Coffee column: the same cell over the column total, $44/72 = 0.6111$."},
+  {"q": "Compute $P(\\text{Year 2}) \\cdot P(\\text{Coffee})$ for the independence check. (4 decimals)", "type": "numeric", "answer": 0.2982, "tolerance": 6e-05, "explain": "$(70/130)(72/130) = 0.5385 \\times 0.5538 = 0.2982$, against $P(\\text{Year 2} \\cap \\text{Coffee}) = 44/130 = 0.3385$."},
+  {"q": "Are \"Year 2\" and \"Coffee\" independent or dependent?", "type": "text", "answer": ["dependent", "not independent"], "explain": "$0.2982 \\ne 0.3385$, so dependent. Equivalently $P(\\text{Coffee} \\mid \\text{Year 2}) = 0.6286 \\ne P(\\text{Coffee}) = 0.5538$."},
+  {"q": "Two cards drawn without replacement. $P(\\text{both hearts})$? (4 decimals)", "type": "numeric", "answer": 0.0588, "tolerance": 6e-05, "explain": "AND rule, dependent: $P(H_1) \\times P(H_2 \\mid H_1) = (13/52)(12/51) = 156/2652 = 0.0588$. With replacement it would be $(1/4)^2 = 0.0625$."}
+]
+```
+
 ```quiz
 [
   {

@@ -233,6 +233,66 @@ The mode `ios::in | ios::out | ios::trunc` is needed because a plain `fstream` r
 `g` for input, `p` for output, either for `fstream`.
 :::
 
+## Work out cursor positions in four new files
+
+Positions start at 0, and the end of an n-character file is position n. Every `get()` moves the cursor one place forward.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <fstream>\nusing namespace std;\n\nint main()\n{\n    ofstream out{\"letters.txt\"};\n    out << \"ABCDEFGHIJ\";\n    out.close();\n\n    ifstream in{\"letters.txt\"};\n    in.seekg(3);\n    char first = in.get();\n    cout << first << ' ' << in.tellg() << ' ';\n    in.seekg(-2, ios::end);\n    char second = in.get();\n    in.seekg(-5, ios::cur);\n    char third = in.get();\n    cout << second << ' ' << third << endl;\n    return 0;\n}",
+    "options": [
+      "`D 4 I E`",
+      "`C 3 H D`",
+      "`D 3 I E`",
+      "`D 4 H D`"
+    ],
+    "answer": 0,
+    "explain": "`seekg(3)` puts the cursor before `D`; `get()` reads `D` and moves to 4. `seekg(-2, ios::end)` is 10 − 2 = 8, before `I`; reading it moves to 9. `seekg(-5, ios::cur)` is 9 − 5 = 4, before `E`. Output: `D 4 I E`."
+  },
+  {
+    "type": "numeric",
+    "q": "The file holds `Fall 2026` (9 characters, no newline). What does the program print?",
+    "code": "#include <iostream>\n#include <fstream>\nusing namespace std;\n\nint main()\n{\n    ofstream out{\"term.txt\"};\n    out << \"Fall 2026\";\n    out.close();\n\n    ifstream in{\"term.txt\"};\n    streampos begin = in.tellg();\n    in.seekg(0, ios::end);\n    streampos end = in.tellg();\n    cout << end - begin << endl;\n    return 0;\n}",
+    "answer": 9,
+    "explain": "`tellg()` starts at 0. `seekg(0, ios::end)` moves to the end, which is position 9 because the space counts as a character. 9 − 0 = 9 bytes."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <fstream>\n#include <string>\nusing namespace std;\n\nint main()\n{\n    ofstream first{\"word.txt\"};\n    first << \"Hello\";\n    first.close();\n\n    ofstream out{\"word.txt\", ios::app};\n    out.seekp(0);\n    out << \"X\";\n    out.close();\n\n    ifstream in{\"word.txt\"};\n    string text;\n    in >> text;\n    cout << text << endl;\n    return 0;\n}",
+    "options": [
+      "`HelloX`",
+      "`Xello`",
+      "`XHello`",
+      "`X`"
+    ],
+    "answer": 0,
+    "explain": "`seekp(0)` moves the put cursor to the start, but `app` means the position indicator goes to the end before **each** output operation, so `X` is appended after `Hello` rather than overwriting the `H`. Output: `HelloX`."
+  },
+  {
+    "type": "numeric",
+    "q": "The file holds `0123456789`. What does `tellg()` print after the two seeks?",
+    "code": "#include <iostream>\n#include <fstream>\nusing namespace std;\n\nint main()\n{\n    ofstream out{\"digits.txt\"};\n    out << \"0123456789\";\n    out.close();\n\n    ifstream in{\"digits.txt\"};\n    in.seekg(-3, ios::end);\n    in.seekg(-4, ios::cur);\n    cout << in.tellg() << endl;\n    return 0;\n}",
+    "answer": 3,
+    "explain": "The end is position 10. `seekg(-3, ios::end)` gives 10 − 3 = 7, then `seekg(-4, ios::cur)` gives 7 − 4 = 3."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "The file holds <code>Object Oriented</code>. Print its size in bytes, then its last 8 characters, using <code>seekg</code> from the end and <code>get()</code>:<pre>size 15\nOriented</pre>",
+  "starter": "#include <iostream>\n#include <fstream>\nusing namespace std;\n\nint main()\n{\n    ofstream out{\"title.txt\"};\n    out << \"Object Oriented\";\n    out.close();\n\n    ifstream in{\"title.txt\"};\n    // your code here\n    return 0;\n}\n",
+  "expected": "size 15\nOriented\n",
+  "hints": [
+    "Size: <code>in.seekg(0, ios::end);</code> then <code>in.tellg()</code>.",
+    "Then <code>in.seekg(-8, ios::end);</code> and read 8 characters with <code>in.get()</code> in a loop."
+  ],
+  "solution": "#include <iostream>\n#include <fstream>\nusing namespace std;\n\nint main()\n{\n    ofstream out{\"title.txt\"};\n    out << \"Object Oriented\";\n    out.close();\n\n    ifstream in{\"title.txt\"};\n    in.seekg(0, ios::end);\n    cout << \"size \" << in.tellg() << endl;\n    in.seekg(-8, ios::end);\n    for (int i = 0; i < 8; ++i)\n    {\n        cout << (char)in.get();\n    }\n    cout << endl;\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

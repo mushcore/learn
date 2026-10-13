@@ -79,6 +79,55 @@ The exercise sheet only goes forwards, but the same two formulas invert:
 
 A 64 kbps stream at 8 bits per sample was sampled at $64000 / 8 = 8000$ samples/s, which is the Nyquist rate for $f_{max} = 4$ kHz.
 
+## Bit rates for five more PCM signals
+
+Each signal is low-pass and sampled at exactly the Nyquist rate.
+
+```quiz
+[
+  {
+    "q": "With $L = 32$ quantization levels, how many bits per sample are needed?",
+    "type": "numeric",
+    "answer": 5,
+    "tolerance": 0.01,
+    "unit": "bits",
+    "explain": "$n_b = \\log_{2} 32 = 5$, because $2^{5} = 32$."
+  },
+  {
+    "q": "A signal with frequencies up to 20 kHz is digitized with 12 bits per sample. What is the bit rate, in kbps?",
+    "type": "numeric",
+    "answer": 480,
+    "tolerance": 0.5,
+    "unit": "kbps",
+    "explain": "$f_s = 2 \\times 20000 = 40000$ samples/s. Bit rate $= f_s \\times n_b = 40000 \\times 12 = 480000$ bps $= 480$ kbps."
+  },
+  {
+    "q": "A heart-monitor signal has a highest frequency of 250 Hz and is quantized with $L = 1024$. What is the bit rate, in bps?",
+    "type": "numeric",
+    "answer": 5000,
+    "tolerance": 1,
+    "unit": "bps",
+    "explain": "$n_b = \\log_{2} 1024 = 10$. $f_s = 2 \\times 250 = 500$ samples/s. Bit rate $= 500 \\times 10 = 5000$ bps."
+  },
+  {
+    "q": "A PCM stream runs at 180 kbps with 9 bits per sample. What was the highest frequency of the analog signal, in kHz?",
+    "type": "numeric",
+    "answer": 10,
+    "tolerance": 0.01,
+    "unit": "kHz",
+    "explain": "$f_s = 180000 / 9 = 20000$ samples/s, and $f_{max} = f_s / 2 = 10000$ Hz $= 10$ kHz."
+  },
+  {
+    "q": "A code word has 11 bits. How many quantization levels can it name?",
+    "type": "numeric",
+    "answer": 2048,
+    "tolerance": 0.01,
+    "unit": "levels",
+    "explain": "$L = 2^{n_b} = 2^{11} = 2048$."
+  }
+]
+```
+
 ```quiz
 [
   {

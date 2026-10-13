@@ -72,6 +72,46 @@ signal-elements
 { "case": "a" }
 ```
 
+## Find r and the signal-element count for four new schemes
+
+None of these schemes is on the slides; $r$ is still data elements over signal elements.
+
+```quiz
+[
+  {
+    "q": "A scheme sends 6 data elements as 4 signal elements. What is $r$?",
+    "type": "numeric",
+    "answer": 1.5,
+    "tolerance": 0.01,
+    "explain": "$r = \\frac{\\text{data elements}}{\\text{signal elements}} = \\frac{6}{4} = 1.5$. More than one bit rides in each signal element on average, so $r > 1$."
+  },
+  {
+    "q": "A scheme with $r = \\frac{3}{2}$ sends 30 bits. How many signal elements does it use?",
+    "type": "numeric",
+    "answer": 20,
+    "tolerance": 0.01,
+    "unit": "signal elements",
+    "explain": "Each signal element carries $\\frac{3}{2}$ data elements, so the count is $30 \\div \\frac{3}{2} = 30 \\times \\frac{2}{3} = 20$ signal elements."
+  },
+  {
+    "q": "Each signal element of a scheme carries 3 bits, and each signal element is one voltage level. How many levels $L$ does the signal need?",
+    "type": "numeric",
+    "answer": 8,
+    "tolerance": 0.01,
+    "unit": "levels",
+    "explain": "A signal with $L$ levels carries $\\log_{2} L$ bits per level, so $\\log_{2} L = 3$ and $L = 2^{3} = 8$ levels."
+  },
+  {
+    "q": "A scheme with $r = \\frac{1}{2}$ sends a 9-bit code. How many signal elements does it use?",
+    "type": "numeric",
+    "answer": 18,
+    "tolerance": 0.01,
+    "unit": "signal elements",
+    "explain": "Two signal elements per data element: $9 \\div \\frac{1}{2} = 9 \\times 2 = 18$ signal elements."
+  }
+]
+```
+
 ```quiz
 [
   {

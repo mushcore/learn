@@ -86,6 +86,21 @@ $$\mu = \int_{-\infty}^{+\infty} x \cdot f(x)\,dx, \qquad \sigma^2 = \int_{-\inf
 
 These are Unit 4's $\mu = \sum x \cdot P(x)$ and $\sigma^2 = \sum (x - \mu)^2 P(x)$ with the sum replaced by an integral and $P(x)$ by $f(x)\,dx$. You will not evaluate them; each distribution's result is given to you: $\frac{a + b}{2}$ and $\frac{(b - a)^2}{12}$ for the uniform, the parameters $\mu$ and $\sigma^2$ themselves for the normal, and $\beta$ and $\beta^2$ for the exponential.
 
+## A density of x²/9 on [0, 3]
+
+X has density f(x) = x²/9 for 0 ≤ x ≤ 3 and 0 elsewhere, so its cumulative function is F(x) = x³/27 on [0, 3].
+
+```quiz
+[
+  {"q": "Total area: F(3) = ?", "type": "numeric", "answer": 1, "tolerance": 0.0001, "explain": "F(3) = 3³/27 = 27/27 = 1. Together with f(x) = x²/9 ≥ 0 this makes f a valid pdf."},
+  {"q": "P(X ≤ 2) = ? (4 decimals)", "type": "numeric", "answer": 0.2963, "tolerance": 6e-05, "explain": "P(X ≤ 2) is F(2) = 2³/27 = 8/27 = 0.2963."},
+  {"q": "Write P(1 ≤ X ≤ 2) as F(2) − F(1) with the numbers in, no spaces, in the form `8/27-1/27`-style fractions.", "type": "text", "answer": ["8/27-1/27", "2^3/27-1^3/27", "(8-1)/27", "8/27-1^3/27"], "explain": "F(2) − F(1) = 2³/27 − 1³/27 = 8/27 − 1/27 = 7/27 = 0.2593."},
+  {"q": "P(X > 1.5) = ? (4 decimals)", "type": "numeric", "answer": 0.875, "tolerance": 6e-05, "explain": "1 − F(1.5) = 1 − 1.5³/27 = 1 − 3.375/27 = 1 − 0.125 = 0.8750."},
+  {"q": "μ = ∫ x f(x) dx over [0, 3] = ? (2 decimals)", "type": "numeric", "answer": 2.25, "tolerance": 0.006, "explain": "∫₀³ x · x²/9 dx = [x⁴/36]₀³ = 81/36 = 2.25. The mean sits right of the midpoint 1.5 because the density rises toward 3."},
+  {"type": "fill", "q": "Y has density f(y) = 1/5 on [4, 9]. Complete the R line for P(5 ≤ Y ≤ 8) = F(8) − F(5).", "code": "punif(8, 4, 9) - punif(___, 4, 9)", "answer": ["5"], "explain": "A flat density on [4, 9] is uniform with a = 4, b = 9. F(8) − F(5) = 4/5 − 1/5 = 0.6; punif returns F, so the second call is at the lower bound 5."}
+]
+```
+
 ```quiz
 [
   {

@@ -88,6 +88,21 @@ drag-data
 | Highly skewed left | — | $Sk < -1$ |
 | Highly skewed right | — | $Sk > +1$ |
 
+## Pearson's Sk for three new distributions
+
+House prices (in thousands of dollars) have mean 640, median 585 and $s = 150$; exam scores have mean 68, median 72 and $s = 10$. A small sample reads 2, 3, 3, 4, 5, 12.
+
+```quiz
+[
+  {"q": "House prices: compute $Sk$. (2 decimals)", "type": "numeric", "answer": 1.1, "tolerance": 0.006, "explain": "$Sk = 3(\\bar{X} - Q_2)/s = 3(640 - 585)/150 = 165/150 = 1.10$."},
+  {"q": "How are the house prices skewed?", "options": ["Highly skewed right", "Mildly skewed right", "Highly skewed left", "Symmetric"], "answer": 0, "explain": "$Sk = 1.10 > 1$: highly skewed right. A few expensive houses pull the mean above the median."},
+  {"q": "Exam scores: compute $Sk$. (2 decimals)", "type": "numeric", "answer": -1.2, "tolerance": 0.006, "explain": "$Sk = 3(68 - 72)/10 = -12/10 = -1.20$."},
+  {"q": "Which way are the exam scores skewed (one word)?", "type": "text", "answer": ["left", "skewed left", "negatively", "negative"], "explain": "Mean below median gives $Sk < 0$: skewed left, and highly so since $-1.20 < -1$."},
+  {"q": "Sample 2, 3, 3, 4, 5, 12: compute $Sk$. (2 decimals)", "type": "numeric", "answer": 1.09, "tolerance": 0.006, "explain": "$\\bar{X} = 29/6 = 4.8333$, $Q_2 = (3 + 4)/2 = 3.5$, $\\sum(X - \\bar{X})^2 = 66.8333$ so $s = \\sqrt{66.8333/5} = 3.6560$. $Sk = 3(4.8333 - 3.5)/3.6560 = 1.0941$: just over 1, so highly skewed right, all from the one value 12."},
+  {"type": "fill", "q": "Fill the blank in Pearson's formula for the small sample.", "code": "x <- c(2, 3, 3, 4, 5, 12)\n3*(mean(x) - ___(x))/sd(x)\n## [1] 1.094078", "answer": ["median"], "explain": "$Sk = 3(\\bar{X} - Q_2)/s$ uses the median, not the mode. `sd()` divides by $n - 1$."}
+]
+```
+
 ```quiz
 [
   {

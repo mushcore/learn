@@ -219,6 +219,65 @@ op-counter
 
 Line 4 runs $n$ times, and so does whichever of lines 5 and 7 the branch selects. A **key comparison** (tie-breaker 3) beats assignments (4): the basic operation is line 4, executed **n** times, not $n/2$ and not $2n$.
 
+## Pick the basic operation in three new fragments
+
+Apply the order of precedence to each: count first, then loop depth, then slide 41's cost list.
+
+```quiz
+[
+  {
+    "type": "spotbug",
+    "lang": "pseudo",
+    "q": "`search(A, x)` walks all of A looking for x. Click the line that is the basic operation.",
+    "code": "Algorithm Opposites(A[0..n-1])\n    c ← 0\n    for i ← 0 to n-1 do\n        if A[i] > 0 then\n            c ← c + 1\n        endif\n        if search(A, -A[i]) then\n            c ← c + 1\n        endif\n    endfor\n    return c",
+    "answer": 7,
+    "explain": "Count: lines 3, 4 and 7 run n times each; lines 5 and 8 at most n times; lines 2 and 11 once. Depth: lines 3, 4 and 7 are all one loop deep. Cost: line 7 makes a **function call whose work grows with N** (search walks all n elements), the top of slide 41's list, so it beats the key comparison on line 4. Basic operation: line 7, n calls."
+  },
+  {
+    "type": "text",
+    "q": "Which entry of slide 41's tie-breaker list decides the basic operation of `Opposites`? (two or three words)",
+    "answer": ["function call", "function calls", "a function call", "function call growing with n", "function calls growing with n", "function call (growing with n)", "function calls (growing with n)", "function calls (growing with N)", "function call (growing with N)"],
+    "explain": "Lines 4 and 7 tie on count (n each) and on depth (one loop). The list in order: 1 function calls (growing with N), 2 function calls (constant time), 3 key comparisons, 4 assignments, 5 expression evaluations. `search(A, -A[i])` is a function call growing with N, entry 1, so it outranks the key comparison `A[i] > 0` (entry 3)."
+  },
+  {
+    "type": "spotbug",
+    "lang": "pseudo",
+    "q": "Click the line that is the basic operation.",
+    "code": "Algorithm LongestRun(A[0..n-1])\n    best ← 0\n    for i ← 0 to n-1 do\n        j ← i\n        while j < n and A[j] = A[i] do\n            j ← j + 1\n        endwhile\n        if j - i > best then\n            best ← j - i\n        endif\n    endfor\n    return best",
+    "answer": 5,
+    "explain": "Lines 4, 8 run n times; lines 5 and 6 run once per pass of the inner `while`, which is up to n − i times on pass i (all of it when every element is equal), so they have the largest count. Line 5 is the `while` test and counts as inside its own loop, as deep as line 6. Cost decides: line 5 holds the key comparison `A[j] = A[i]` (comparing data), line 6 only adds 1 to a counter. Basic operation: line 5."
+  },
+  {
+    "q": "`LongestRun` is run on 8 elements that are all equal. How many times is the key comparison `A[j] = A[i]` evaluated?",
+    "type": "numeric",
+    "answer": 36,
+    "tolerance": 0,
+    "explain": "On pass i the inner loop compares j = i, i + 1, …, 7, all true, so 8 − i comparisons; at j = 8 the test `j < n` fails first and A[8] is never read. Passes i = 0 to 7 give 8 + 7 + 6 + 5 + 4 + 3 + 2 + 1 = 36 = 8·9/2."
+  },
+  {
+    "type": "reorder",
+    "lang": "pseudo",
+    "q": "Put the reasoning that picks the basic operation of `LongestRun` in order.",
+    "lines": [
+      "count each line: lines 5 and 6 run the most, up to n(n+1)/2 times",
+      "lines 4 and 8 run only n times, so they drop out",
+      "line 5 is the while test, as deep as line 6, so depth does not split them",
+      "cost decides: line 5 compares data, line 6 adds 1 to a counter",
+      "basic operation: the key comparison A[j] = A[i] on line 5"
+    ],
+    "explain": "The order of precedence is count, then depth, then cost. Count leaves lines 5 and 6 (n(n + 1)/2 each when all elements are equal: 36 at n = 8). A loop's test is inside that loop, so both are two loops deep. Slide 41's list ranks a key comparison (3) above an assignment (4), so line 5 wins."
+  },
+  {
+    "type": "spotbug",
+    "lang": "pseudo",
+    "q": "`lookup(x)` is a constant-time function call. Click the line that is the basic operation.",
+    "code": "Algorithm Spread(A[0..n-1])\n    d ← 0\n    for i ← 0 to n-1 do\n        m ← lookup(A[i])\n        for j ← 0 to n-1 do\n            d ← d + (A[i] - A[j]) * m\n        endfor\n    endfor\n    return d",
+    "answer": 6,
+    "explain": "Count comes first. Line 4 runs n times (once per pass of the i loop); line 6 runs n × n = n² times (49 at n = 7). The function call on line 4 would win a tie on cost (tie-breaker 2), but there is no tie: n² > n for every n ≥ 2. Basic operation: line 6, C(n) = n²."
+  }
+]
+```
+
 ```quiz
 [
   {

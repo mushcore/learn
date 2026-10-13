@@ -55,6 +55,71 @@ Jitter is the odd one out. It is uneven delay, not total delay, and it matters f
 - **Cost saving**
 - **Expanded social engagement**
 
+## Name the characteristic each failure breaks
+
+Each system below fails at one of the four effectiveness characteristics.
+
+```quiz
+[
+  {
+    "q": "A video call's packets arrive on time on average, but some come 20 ms apart and others 200 ms apart, so the picture stutters. Which characteristic is broken?",
+    "options": [
+      "Delivery",
+      "Accuracy",
+      "Timeliness",
+      "Jitter"
+    ],
+    "answer": 3,
+    "explain": "Uneven delay in the delivery of audio or video packets is **jitter**. The average delay is fine, so timeliness is not the problem; the rhythm is."
+  },
+  {
+    "q": "An email addressed to a classmate lands in a stranger's inbox. Which characteristic is broken?",
+    "options": [
+      "Delivery",
+      "Accuracy",
+      "Timeliness",
+      "Jitter"
+    ],
+    "answer": 0,
+    "explain": "**Delivery** means delivering data to the correct destination. The message arrived intact and quickly, but at the wrong place."
+  },
+  {
+    "q": "A sensor sends a reading of 21.5 °C and the display receives 12.5 °C. Which characteristic is broken?",
+    "options": [
+      "Delivery",
+      "Accuracy",
+      "Timeliness",
+      "Jitter"
+    ],
+    "answer": 1,
+    "explain": "The data reached the right device but was altered on the way: **accuracy**."
+  },
+  {
+    "q": "A stock price reaches a trader ten minutes after trading has closed. Which characteristic is broken?",
+    "options": [
+      "Delivery",
+      "Accuracy",
+      "Timeliness",
+      "Jitter"
+    ],
+    "answer": 2,
+    "explain": "Correct data at the correct destination, but too late to be useful: **timeliness**, delivering data in a timely manner."
+  },
+  {
+    "q": "A laptop's Wi-Fi radio sends data to an access point across the room. Fill in the blank: the transmission medium is ______.",
+    "type": "text",
+    "answer": [
+      "air",
+      "air or space",
+      "air/space",
+      "the air",
+      "space"
+    ],
+    "explain": "Air (or space) carries radio waves, which are electromagnetic waves. No conductive material is needed because the link is not wired."
+  }
+]
+```
+
 ```quiz
 [
   {

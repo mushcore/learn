@@ -85,6 +85,57 @@ Slides 60-61, the textbook's eight classes (bold marks what the instructor highl
 The table says "typically". If the inner loop runs a constant number of times (say 1 to 10), the count is $10n$, which is linear. Count the loop bounds, not the loops.
 :::
 
+## Name the class of three new running times
+
+Count each fragment, then place the count in one of the eight classes.
+
+```quiz
+[
+  {
+    "q": "`Thirds(81)` runs. How many times is line 6, `i ← i / 3` (integer division), executed?",
+    "code": "1. Algorithm Thirds(n)\n2.    c ← 0\n3.    i ← n\n4.    while i ≥ 1 do\n5.        c ← c + 1\n6.        i ← i / 3\n7.    endwhile\n8.    return c",
+    "type": "numeric",
+    "answer": 5,
+    "tolerance": 0,
+    "explain": "The values of i that pass the test are 81, 27, 9, 3, 1; then i becomes 0 and the loop stops. Five passes: ⌊log₃ 81⌋ + 1 = 4 + 1 = 5. Tripling n adds one pass."
+  },
+  {
+    "type": "text",
+    "q": "What is the efficiency class of `Thirds`? (one word, or a function of n)",
+    "answer": ["logarithmic", "log n", "logn", "log(n)", "o(log n)", "log3 n", "log₃ n", "θ(log n)"],
+    "explain": "i is divided by the constant 3 on each pass, so the count is ⌊log₃ n⌋ + 1. The textbook's comment on the logarithmic class: a result of cutting a problem's size by a constant factor on each iteration. The base only changes a constant factor (log₃ n = log₂ n / log₂ 3), so it is the same class as halving."
+  },
+  {
+    "q": "How many calls to `Double` (including the first) happen when `Double(5)` runs?",
+    "code": "Algo: Double( n )\n   if n = 0\n      return 1\n   else\n      return Double( n-1 ) + Double( n-1 )",
+    "type": "numeric",
+    "answer": 63,
+    "tolerance": 0,
+    "explain": "calls(0) = 1 and calls(n) = 1 + 2·calls(n − 1): calls(1) = 3, calls(2) = 7, calls(3) = 15, calls(4) = 31, calls(5) = 63. In general calls(n) = 2ⁿ⁺¹ − 1: every extra 1 in n doubles the work."
+  },
+  {
+    "type": "text",
+    "q": "What is the efficiency class of `Double`? (one word, or a function of n)",
+    "answer": ["exponential", "2^n", "2ⁿ", "o(2^n)", "o(2ⁿ)", "θ(2^n)"],
+    "explain": "2ⁿ⁺¹ − 1 = 2 · 2ⁿ − 1: drop the constant factor 2 and the −1 and the class is 2ⁿ, exponential, the same doubling that drives the recursive fib. At n = 100 that is 2¹⁰¹ − 1 ≈ 2.5 · 10³⁰ calls, twice Table 2.1's 2¹⁰⁰ ≈ 1.3 · 10³⁰."
+  },
+  {
+    "type": "reorder",
+    "q": "Order these running times from slowest-growing (top) to fastest-growing (bottom).",
+    "lines": [
+      "C(n) = 3 log₂ n + 40",
+      "C(n) = 5n + 100",
+      "C(n) = 4n log₂ n",
+      "C(n) = n²/4",
+      "C(n) = n³ + n",
+      "C(n) = 2ⁿ",
+      "C(n) = n!"
+    ],
+    "explain": "Drop constants and lower-order terms to get each class: log n, n, n log n, n², n³, 2ⁿ, n!. That is the textbook's order of the classes. The constants (40, 100, the 4 and the 1/4) only move small-n crossovers; for example 4n log₂ n passes 5n + 100 from n = 12 on."
+  }
+]
+```
+
 ```quiz
 [
   {

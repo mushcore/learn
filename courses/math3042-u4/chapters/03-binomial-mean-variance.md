@@ -122,6 +122,21 @@ pbinom(14, 200, 0.1)
 [1] 0.09294618
 ```
 
+## Escalated calls: μ, σ and an unusual day
+
+15 % of a call centre's calls are escalated to a supervisor, independently of each other. One day 160 calls come in and 35 of them are escalated.
+
+```quiz
+[
+  {"q": "X = the number of the 160 calls that are escalated. Name its distribution (one word).", "type": "text", "answer": ["binomial", "binomial distribution"], "explain": "Fixed n = 160 calls, each escalated or not, the same p = 0.15, calls independent: binomial with n = 160, p = 0.15."},
+  {"q": "μ = ? (1 decimal)", "type": "numeric", "answer": 24.0, "tolerance": 0.06, "explain": "μ = np = 160 × 0.15 = 24.0 escalations."},
+  {"q": "σ = ? (2 decimals)", "type": "numeric", "answer": 4.52, "tolerance": 0.006, "explain": "σ = √(npq) = √(160 × 0.15 × 0.85) = √20.4 = 4.5166 ≈ 4.52. The square root goes over npq; σ is not npq."},
+  {"q": "Z for the 35 escalations = ? (2 decimals)", "type": "numeric", "answer": 2.44, "tolerance": 0.01, "explain": "Z = (x − μ)/σ = (35 − 24)/4.52 = 11/4.52 = 2.43; with the unrounded σ = 4.5166 it is 2.44. Either is accepted."},
+  {"q": "Is 35 escalations unusual?", "options": ["Yes, unusually high: Z is above 2", "No, because 35 is within 2 of μ = 24", "Yes, unusually low", "No, because any count below n is possible"], "answer": 0, "explain": "Z = 2.44 > 2, so 35 is unusually high. The tail test agrees: P(X ≥ 35) = 0.0128, below 0.025. The 2 in the rule counts standard deviations, not escalations."},
+  {"type": "fill", "q": "Complete the R line for the high-side tail P(X ≥ 35).", "code": "1 - pbinom(___, 160, 0.15)", "answer": ["34"], "explain": "pbinom(34, …) is P(X ≤ 34), so 1 − pbinom(34, 160, 0.15) = P(X ≥ 35) = 0.0128409. Using 35 would drop the X = 35 bar from the tail."}
+]
+```
+
 ```quiz
 [
   {

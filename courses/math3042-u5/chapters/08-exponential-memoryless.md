@@ -107,6 +107,21 @@ memoryless-play
 A customer who has already taken 5 minutes is no closer to finishing than one who just sat down. The intuition "they must be nearly done" is the gambler's fallacy in continuous time.
 :::
 
+## A cooling fan with a mean life of 5 years
+
+A cooling fan's lifetime X is exponential with mean β = 5 years.
+
+```quiz
+[
+  {"q": "Write the 80th-percentile set-up x_p = −β ln(1 − p) with the numbers in, no spaces, using `ln(...)` and `*`.", "type": "text", "answer": ["-5*ln(1-0.8)", "-5*ln(0.2)", "-5*ln(1-0.80)", "-5*ln(.2)", "5*ln(5)"], "explain": "Solve F(x) = 0.8: 1 − e^(−x/5) = 0.8 ⇒ e^(−x/5) = 0.2 ⇒ x = −5 ln(0.2) = 8.0472."},
+  {"q": "The 80th percentile of the lifetime = ? (2 decimals, years)", "type": "numeric", "answer": 8.05, "tolerance": 0.006, "unit": "years", "explain": "x = −5 ln(1 − 0.8) = −5 ln 0.2 = 5 × 1.6094 = 8.05 years."},
+  {"q": "The median lifetime (50th percentile) = ? (2 decimals, years)", "type": "numeric", "answer": 3.47, "tolerance": 0.006, "unit": "years", "explain": "x = −5 ln(0.5) = 5 ln 2 = 5 × 0.6931 = 3.47 years, below the mean 5 because the density is right-skewed."},
+  {"q": "A fan has run for 3 years. P(X > 7 | X > 3), it lasts past 7 years in total = ? (4 decimals)", "type": "numeric", "answer": 0.4493, "tolerance": 6e-05, "explain": "P(X > 7)/P(X > 3) = e^(−7/5)/e^(−3/5) = e^(−4/5) = 0.4493. The 3 years cancel: only the 4 further years count."},
+  {"type": "fill", "q": "Complete the R line for P(X > 7 | X > 3).", "code": "(1 - pexp(7, 1/5)) / (1 - pexp(___, 1/5))", "answer": ["3"], "explain": "The conditional is P(X > 7) over P(X > 3), each a 1 − pexp: the denominator is at the elapsed 3 years. It prints 0.4493290."},
+  {"q": "For this fan, P(X > 7 | X > 3) equals P(X > 4) for a brand-new fan.", "type": "tf", "answer": true, "explain": "Memoryless: P(X > 4) = e^(−4/5) = 0.4493, the same number. A used fan's remaining life has the same distribution as a new fan's life."}
+]
+```
+
 ```quiz
 [
   {

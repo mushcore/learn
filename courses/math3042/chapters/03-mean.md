@@ -67,6 +67,21 @@ Lab 1's pencil problem 2: rod diameters given as a frequency table (diameter : c
 
 $$\bar{X} = 10.02071 \text{ mm}$$
 
+## Means of commute times and screen time
+
+Nine commute times in minutes: 34, 18, 27, 45, 22, 31, 19, 40, 26. A second sample gives daily screen time only as a frequency table, with class marks 1, 3, 5, 7, 9 hours and frequencies 6, 14, 19, 8, 3.
+
+```quiz
+[
+  {"q": "Commute times: what is $\\sum X$?", "type": "numeric", "answer": 262, "tolerance": 0, "explain": "$34 + 18 + 27 + 45 + 22 + 31 + 19 + 40 + 26 = 262$."},
+  {"q": "Compute the sample mean $\\bar{X}$ of the commute times. (2 decimals)", "type": "numeric", "answer": 29.11, "tolerance": 0.006, "unit": "min", "explain": "$\\bar{X} = \\sum X / n = 262/9 = 29.1111 \\approx 29.11$ minutes."},
+  {"q": "The nine commuters are a sample. Which symbol names their mean?", "type": "text", "answer": ["X̄", "x̄", "x bar", "X bar", "x-bar", "xbar", "\\bar{X}"], "explain": "A sample mean is the statistic $\\bar{X}$ (read X-bar); $\\mu$ is reserved for the mean of a whole population."},
+  {"q": "Screen time table: compute $\\sum f_i X_i$.", "type": "numeric", "answer": 226, "tolerance": 0, "explain": "$6(1) + 14(3) + 19(5) + 8(7) + 3(9) = 6 + 42 + 95 + 56 + 27 = 226$."},
+  {"q": "Compute the grouped mean screen time. (2 decimals)", "type": "numeric", "answer": 4.52, "tolerance": 0.006, "unit": "h", "explain": "$\\sum f_i = 6 + 14 + 19 + 8 + 3 = 50$, so $\\bar{X} = 226/50 = 4.52$ hours. Every student in a class is counted at its class mark."},
+  {"type": "fill", "q": "Fill the blank so R prints the commute-time mean.", "code": "times <- c(34, 18, 27, 45, 22, 31, 19, 40, 26)\n___(times)\n## [1] 29.11111", "answer": ["mean"], "explain": "`mean(times)` is $\\sum X / n = 262/9$, printed to 7 significant digits as 29.11111."}
+]
+```
+
 ```quiz
 [
   {

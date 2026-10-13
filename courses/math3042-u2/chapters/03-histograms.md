@@ -128,6 +128,21 @@ hist-builder
 { "preset": "Old Faithful eruptions (n = 272)", "width": 2, "title": "Width 2.000: too few classes" }
 ```
 
+## Choose classes for 150 fish lengths
+
+A sample of $n = 150$ fish lengths, measured in cm to one decimal, runs from a minimum of 12.4 to a maximum of 47.9.
+
+```quiz
+[
+  {"q": "Initial number of classes $\\sqrt{n}$? (1 decimal)", "type": "numeric", "answer": 12.2, "tolerance": 0.06, "explain": "$\\sqrt{150} = 12.247 \\approx 12.2$."},
+  {"q": "Ideal class width $R/\\sqrt{n}$? (2 decimals)", "type": "numeric", "answer": 2.91, "tolerance": 0.015, "explain": "$R = 47.9 - 12.4 = 35.5$, and $35.5/12.2 = 2.91$ (with the unrounded $\\sqrt{n}$, 2.90)."},
+  {"q": "Which actual class width fits the recipe?", "options": ["3.0", "2.90", "2.898", "35.5"], "answer": 0, "explain": "The width must have the data's precision (one decimal) and be a nice number: 2.90 rounds to the nice 3.0."},
+  {"q": "Start the first class at 12.0 (the minimum rounded down) with width 3.0. What is its upper class limit?", "type": "numeric", "answer": 14.9, "tolerance": 0.0001, "explain": "The next lower limit is 15.0; the upper limit is one unit of precision (0.1) below it: 14.9."},
+  {"q": "With `breaks=seq(12, 48, by=3)` and `right=FALSE`, a length of exactly 24.0 is counted in which class?", "options": ["24.0 to 26.9", "21.0 to 23.9", "both", "neither"], "answer": 0, "explain": "right=FALSE makes each class [lower, next lower): 21 ≤ X < 24 excludes 24.0, which starts the class 24.0 to 26.9."},
+  {"type": "fill", "q": "Fill the last break so the classes run past the maximum 47.9.", "code": "hist(lengths, breaks=seq(12, ___, by=3), right=FALSE,\n     xlab=\"Length (cm)\", ylab=\"Frequency\",\n     main=paste0(\"Fish lengths (n = \", length(lengths), \")\"))", "answer": ["48"], "explain": "Boundaries 12, 15, …, 45, 48: the class [45, 48) holds the maximum 47.9, so the sequence must reach 48. That makes $(48 - 12)/3 = 12$ classes, close to $\\sqrt{n} = 12.2$."}
+]
+```
+
 ```quiz
 [
   {"q": "For the Age data ($n = 302$, min 18, max 42), what is the initial number of classes from the $\\sqrt{n}$ rule? (1 decimal)", "type": "numeric", "answer": 17.4, "tolerance": 0.05, "explain": "$\\sqrt{302} = 17.4$."},

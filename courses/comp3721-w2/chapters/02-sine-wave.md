@@ -97,6 +97,55 @@ freq-period
 { "f": 60, "unit": "Hz" }
 ```
 
+## Convert five more periods and frequencies
+
+Use the row shortcut (ms with kHz, μs with MHz, ns with GHz, ps with THz) or write the powers of ten out.
+
+```quiz
+[
+  {
+    "q": "A sine wave has a period of 25 ns. What is its frequency in MHz?",
+    "type": "numeric",
+    "answer": 40,
+    "tolerance": 0.05,
+    "unit": "MHz",
+    "explain": "$f = 1/T = 1/(25 \\times 10^{-9}\\ \\text{s}) = 0.04 \\times 10^{9}$ Hz $= 40 \\times 10^{6}$ Hz $= 40$ MHz. Shortcut: $T$ in ns gives $f$ in GHz, $1/25 = 0.04$ GHz $= 40$ MHz."
+  },
+  {
+    "q": "Mains power in Europe has a frequency of 50 Hz. What is its period in ms?",
+    "type": "numeric",
+    "answer": 20,
+    "tolerance": 0.05,
+    "unit": "ms",
+    "explain": "$T = 1/50 = 0.02$ s. Multiply by $10^{3}$ for milliseconds: $0.02 \\times 1000 = 20$ ms."
+  },
+  {
+    "q": "A sine wave has a frequency of 8 kHz. What is its period in μs?",
+    "type": "numeric",
+    "answer": 125,
+    "tolerance": 0.5,
+    "unit": "μs",
+    "explain": "$T = 1/(8 \\times 10^{3}) = 0.125 \\times 10^{-3}$ s $= 0.125$ ms $= 125$ μs. Shortcut: $f$ in kHz gives $T$ in ms, $1/8 = 0.125$ ms."
+  },
+  {
+    "q": "A sine wave has a period of 0.5 ps. What is its frequency in THz?",
+    "type": "numeric",
+    "answer": 2,
+    "tolerance": 0.01,
+    "unit": "THz",
+    "explain": "Shortcut: $T$ in ps gives $f$ in THz, so $f = 1/0.5 = 2$ THz. Written out: $1/(0.5 \\times 10^{-12}) = 2 \\times 10^{12}$ Hz."
+  },
+  {
+    "q": "A sine wave completes 12 cycles in 0.5 s. What is its frequency in Hz?",
+    "type": "numeric",
+    "answer": 24,
+    "tolerance": 0.05,
+    "unit": "Hz",
+    "explain": "Frequency counts cycles in **1 second**. 12 cycles in 0.5 s is $12 / 0.5 = 24$ cycles in 1 s, so $f = 24$ Hz and $T = 1/24 = 0.0417$ s."
+  }
+]
+```
+
 ```quiz
 [
   {

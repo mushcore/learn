@@ -84,6 +84,55 @@ Add them to get $2 f_{h}$, or remember that **each end is half the bandwidth awa
 
 E02 exercises 1 to 3 apply this trick and the bandwidth rule; they are worked once, in [E02, worked](#/comp3721-w2/e02-worked).
 
+## Find the bandwidth and the ends of four more signals
+
+Bandwidth is highest minus lowest; each end sits half the bandwidth from the middle.
+
+```quiz
+[
+  {
+    "q": "A periodic signal decomposes into sine waves at 50, 150, 250 and 350 Hz. What is its bandwidth in Hz?",
+    "type": "numeric",
+    "answer": 300,
+    "tolerance": 0.5,
+    "unit": "Hz",
+    "explain": "$B = f_{h} - f_{l} = 350 - 50 = 300$ Hz. The 150 and 250 Hz components sit inside the band and do not change it."
+  },
+  {
+    "q": "A nonperiodic composite signal has a bandwidth of 80 kHz and a middle frequency of 130 kHz. What is the **lowest** frequency in kHz?",
+    "type": "numeric",
+    "answer": 90,
+    "tolerance": 0.5,
+    "unit": "kHz",
+    "explain": "$f_{h} + f_{l} = 2 \\times 130 = 260$ and $f_{h} - f_{l} = 80$. Subtract: $2 f_{l} = 180$, so $f_{l} = 90$ kHz. Shortcut: $130 - 80/2 = 90$ kHz."
+  },
+  {
+    "q": "Same signal (bandwidth 80 kHz, middle 130 kHz). What is the **highest** frequency in kHz?",
+    "type": "numeric",
+    "answer": 170,
+    "tolerance": 0.5,
+    "unit": "kHz",
+    "explain": "$f_{h} = \\text{middle} + B/2 = 130 + 40 = 170$ kHz. Check: $170 - 90 = 80$ kHz."
+  },
+  {
+    "q": "A composite signal's lowest frequency is 2 MHz and its middle frequency is 5 MHz. What is its bandwidth in MHz?",
+    "type": "numeric",
+    "answer": 6,
+    "tolerance": 0.01,
+    "unit": "MHz",
+    "explain": "$f_{h} = 2 \\times 5 - 2 = 8$ MHz (from $f_{h} + f_{l} = 2 \\times \\text{middle}$). $B = 8 - 2 = 6$ MHz."
+  },
+  {
+    "q": "A periodic signal has a fundamental frequency of 2 kHz and contains only its first, third and fifth harmonics. What is its bandwidth in kHz?",
+    "type": "numeric",
+    "answer": 8,
+    "tolerance": 0.01,
+    "unit": "kHz",
+    "explain": "The harmonics are $f = 2$ kHz, $3f = 6$ kHz and $5f = 10$ kHz. $B = 10 - 2 = 8$ kHz, which is $5f - f = 4f$."
+  }
+]
+```
+
 ```quiz
 [
   {

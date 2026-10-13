@@ -112,6 +112,57 @@ int main() {
 { "prompt": "Declare <code>vector&lt;double&gt; prices = {2.5, 4.0, 6.0};</code>, add the elements with a ranged for whose loop variable is a <b>const reference</b>, and print the total with exactly one decimal place.", "starter": "#include <iostream>\n#include <iomanip>\n#include <vector>\nusing namespace std;\n\nint main() {\n    vector<double> prices = {2.5, 4.0, 6.0};\n    double total = 0.0;\n    // your ranged for here\n\n    cout << fixed << setprecision(1) << total << endl;\n    return 0;\n}\n", "expected": "12.5", "hints": ["The loop header is <code>for (const double&amp; p : prices)</code>.", "<code>total += p;</code> inside the loop; <code>fixed</code> and <code>setprecision(1)</code> are already in the starter."], "solution": "#include <iostream>\n#include <iomanip>\n#include <vector>\nusing namespace std;\n\nint main() {\n    vector<double> prices = {2.5, 4.0, 6.0};\n    double total = 0.0;\n    for (const double& p : prices) {\n        total += p;\n    }\n    cout << fixed << setprecision(1) << total << endl;\n    return 0;\n}\n" }
 ```
 
+## Deduce four `auto` types and trace three ranged loops
+
+New initializers for `auto`, then loops whose variable is a copy, a reference or a const reference over strings and an array.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nint main() {\n    vector<string> names = {\"ann\", \"bo\", \"cy\"};\n    for (auto n : names) n += \"!\";\n    for (auto& n : names) n[0] = n[0] - 32;    // 'a' - 32 is 'A'\n    string all;\n    for (const auto& n : names) all += n + \" \";\n    cout << all << names.size() << endl;\n    return 0;\n}",
+    "options": [
+      "`Ann Bo Cy 3`",
+      "`Ann! Bo! Cy! 3`",
+      "`ann bo cy 3`",
+      "`ann! bo! cy! 3`"
+    ],
+    "answer": 0,
+    "explain": "`for (auto n : names)` makes n a copy (auto drops the reference), so the `!` is added to copies and thrown away. `for (auto& n : names)` is a reference: subtracting 32 from the first character turns 'a' (97) into 'A' (65) in the vector itself. The const-reference loop builds `Ann Bo Cy ` and the size is 3."
+  },
+  {
+    "q": "Type the line this prints.",
+    "type": "text",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    auto a = 7 / 2;\n    auto b = 7 / 2.0;\n    auto c = 'A' + 1;\n    auto d = a * b;\n    cout << a << \" \" << b << \" \" << c << \" \" << d << endl;\n    return 0;\n}",
+    "answer": [
+      "3 3.5 66 10.5"
+    ],
+    "explain": "`7 / 2` is int division: a is int 3. `7 / 2.0` has a double operand: b is double 3.5. `'A' + 1` promotes the char to int: c is int 66, printed as a number, not `B`. `a * b` is int times double: d is double 3 * 3.5 = 10.5."
+  },
+  {
+    "q": "Type the line this prints.",
+    "type": "text",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int a[] = {4, 1, 7};\n    int total = 0;\n    for (int& x : a) x *= 2;\n    for (int x : a) {\n        x += 1;\n        total += x;\n    }\n    cout << total << \" \" << a[0] << endl;\n    return 0;\n}",
+    "answer": [
+      "27 8"
+    ],
+    "explain": "The `int&` loop doubles the array in place: {8, 2, 14}. The second loop's x is a copy, so `x += 1` changes only the copy: total = 9 + 3 + 15 = 27, and a[0] is still 8."
+  },
+  {
+    "q": "Click the line the compiler rejects.",
+    "type": "spotbug",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    auto rate = 1.5;\n    auto count = 4;\n    auto total;\n    total = rate * count;\n    cout << total << endl;\n    return 0;\n}",
+    "answer": [
+      7
+    ],
+    "explain": "`auto total;` has nothing to deduce the type from: declaration of 'auto total' has no initializer. Write `auto total = rate * count;` (a double, 6) or name the type."
+  }
+]
+```
+
+```challenge
+{"prompt": "Add 5 to every score with a ranged for whose loop variable is a <b>reference</b>. Then print each score followed by a space, using a ranged for over a <b>const reference</b>, and keep the largest in <code>best</code>. Move <code>int best = 0;</code> above the second loop.", "starter": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    vector<int> scores = {70, 90, 60};\n    // 1. add 5 to every score with a ranged for over references\n\n    // 2. print the scores, one space after each, with a const-reference ranged for,\n    //    and track the largest\n\n    int best = 0;\n    cout << endl << \"max \" << best << endl;\n    return 0;\n}\n", "expected": "75 95 65 \nmax 95", "hints": ["<code>for (int&amp; s : scores) s += 5;</code>", "<code>for (const int&amp; s : scores) { cout &lt;&lt; s &lt;&lt; \" \"; if (s &gt; best) best = s; }</code>"], "solution": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    vector<int> scores = {70, 90, 60};\n    for (int& s : scores) {\n        s += 5;\n    }\n    int best = 0;\n    for (const int& s : scores) {\n        cout << s << \" \";\n        if (s > best) best = s;\n    }\n    cout << endl << \"max \" << best << endl;\n    return 0;\n}\n"}
+```
 ```quiz
 [
   {

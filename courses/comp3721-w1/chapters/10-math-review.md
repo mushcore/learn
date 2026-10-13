@@ -94,6 +94,63 @@ Set your calculator to the mode the question uses: $\sin(90)$ in radian mode giv
 
 The SI prefixes for period and frequency (ms ↔ kHz, μs ↔ MHz, ns ↔ GHz) and the scientific-notation steps are in [the sine-wave lesson](#/comp3721-w2/sine-wave).
 
+## Six more calculator items
+
+Change of base for $\log_{2}$, ceiling for bit counts, and the degree–radian factor.
+
+```quiz
+[
+  {
+    "q": "Compute $\\log_{2} 500$ (2 decimals).",
+    "type": "numeric",
+    "answer": 8.97,
+    "tolerance": 0.006,
+    "explain": "$\\log_{2} 500 = \\log 500 / \\log 2 = 2.6990 / 0.3010 = 8.97$. Check: $2^{8} = 256 < 500 < 512 = 2^{9}$."
+  },
+  {
+    "q": "What is ⌈$\\log_{2} 500$⌉?",
+    "type": "numeric",
+    "answer": 9,
+    "tolerance": 0,
+    "explain": "The ceiling rounds 8.97 up to 9. That is how many bits 500 levels need."
+  },
+  {
+    "q": "$\\log 0.001 = $ ? (no base written)",
+    "type": "numeric",
+    "answer": -3,
+    "tolerance": 0,
+    "explain": "No base means base 10. $0.001 = 10^{-3}$, so $\\log 0.001 = -3$. A number below 1 has a negative log."
+  },
+  {
+    "q": "Convert 150° to radians (3 decimals).",
+    "type": "numeric",
+    "answer": 2.618,
+    "tolerance": 0.002,
+    "unit": "rad",
+    "explain": "$150° \\times \\frac{2\\pi}{360°} = \\frac{5\\pi}{6} = 2.618$ rad."
+  },
+  {
+    "q": "Convert 2.5 rad to degrees (1 decimal).",
+    "type": "numeric",
+    "answer": 143.2,
+    "tolerance": 0.06,
+    "unit": "°",
+    "explain": "$2.5 \\times \\frac{360°}{2\\pi} = 2.5 \\times 57.296° = 143.2°$."
+  },
+  {
+    "q": "The graph of $y = f(x - 4)$ is the graph of $f(x)$ moved 4 units to the left or to the right?",
+    "type": "text",
+    "answer": [
+      "right",
+      "to the right",
+      "right 4",
+      "4 right"
+    ],
+    "explain": "$y = f(x + c)$ moves left if $c > 0$ and right if $c < 0$. Here $c = -4$, so the graph moves **4 units right**, as $\\sin(\\omega t - \\phi)$ shifts a wave right."
+  }
+]
+```
+
 ```quiz
 [
   {
@@ -154,7 +211,7 @@ The SI prefixes for period and frequency (ms ↔ kHz, μs ↔ MHz, ns ↔ GHz) a
     "answer": 0.698,
     "tolerance": 0.002,
     "unit": "rad",
-    "explain": "$40° \\times 2\\pi / 360° = 2\\pi / 9 = 0.698$ rad. This is Lecture 02's example of a wave offset by 1/9 of a cycle: $\frac{1}{9} \times 360° = 40°$."
+    "explain": "$40° \\times 2\\pi / 360° = 2\\pi / 9 = 0.698$ rad. This is Lecture 02's example of a wave offset by 1/9 of a cycle: $\\frac{1}{9} \\times 360° = 40°$."
   },
   {
     "q": "A phase of $\\pi/2$ radians is how many degrees?",

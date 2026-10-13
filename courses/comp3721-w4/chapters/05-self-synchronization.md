@@ -70,6 +70,53 @@ The 04a note (Peterson & Davie) explains where the receiver's timing comes from.
 
 The note counts this as the second problem caused by long strings of 1s or 0s. The first is [baseline wandering](#/comp3721-w4/baseline-dc).
 
+## Count the extra bits for five more clock errors
+
+The extra bits per second are the data rate times the clock error; a slower clock reads fewer bits than were sent.
+
+```quiz
+[
+  {
+    "q": "The receiver clock is 0.3 percent faster than the sender clock and the data rate is 5 Mbps. How many extra bits per second does the receiver receive?",
+    "type": "numeric",
+    "answer": 15000,
+    "tolerance": 1,
+    "unit": "bps",
+    "explain": "$5000000 \\times 0.3\\% = 5000000 \\times 0.003 = 15000$ extra bps."
+  },
+  {
+    "q": "The receiver clock is 0.05 percent faster than the sender clock and the data rate is 2 Mbps. How many bits does the receiver receive in 1 s?",
+    "type": "numeric",
+    "answer": 2001000,
+    "tolerance": 1,
+    "unit": "bits",
+    "explain": "$2000000 \\times (1 + 0.05\\%) = 2000000 \\times 1.0005 = 2001000$ bits, which is 1000 extra."
+  },
+  {
+    "q": "The receiver clock is 0.4 percent **slower** than the sender clock and the data rate is 50 kbps. How many bits does the receiver read in 1 s?",
+    "type": "numeric",
+    "answer": 49800,
+    "tolerance": 1,
+    "unit": "bits",
+    "explain": "$50000 \\times (1 - 0.4\\%) = 50000 \\times 0.996 = 49800$ bits: 200 of the 50000 bits sent are missed."
+  },
+  {
+    "q": "At a data rate of 1 Mbps a receiver reads 1 000 600 bits per second. By what percent is its clock faster than the sender clock?",
+    "type": "numeric",
+    "answer": 0.06,
+    "tolerance": 0.001,
+    "unit": "%",
+    "explain": "Extra bits $= 1000600 - 1000000 = 600$. Percent $= \\frac{600}{1000000} \\times 100 = 0.06\\%$."
+  },
+  {
+    "q": "The sender sends 011101 and the receiver's bit duration is exactly half the sender's. Which bits does the receiver read? (Type the bits with no spaces.)",
+    "type": "text",
+    "answer": ["001111110011", "00 11 11 11 00 11", "0 0 1 1 1 1 1 1 0 0 1 1"],
+    "explain": "Every sent bit lasts two receiver intervals, so each bit is read twice: 0 → 00, 1 → 11, giving 001111110011, 12 bits in the time of 6."
+  }
+]
+```
+
 ```quiz
 [
   {

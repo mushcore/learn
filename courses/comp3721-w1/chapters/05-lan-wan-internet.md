@@ -96,6 +96,74 @@ A **Request for Comment (RFC)** is:
 
 **IETF** is the organization responsible for the development and publication of RFCs. **RFC-1 was written in 1969**, the same year as the first ARPANET message.
 
+## Place six new networks
+
+Decide from who owns it, how far it spans, and what it connects.
+
+```quiz
+[
+  {
+    "q": "A college owns the network that connects every computer on its single campus. What type of network is it?",
+    "options": [
+      "LAN",
+      "Point-to-point WAN",
+      "Switched WAN",
+      "Core network"
+    ],
+    "answer": 0,
+    "explain": "Privately owned, one campus, connecting hosts: a **LAN** (a WLAN if it were wireless)."
+  },
+  {
+    "q": "A bank leases a line from a telecom company that connects exactly two of its routers, one in Vancouver and one in Toronto. What type of network is it?",
+    "options": [
+      "LAN",
+      "Point-to-point WAN",
+      "Switched WAN",
+      "Access network"
+    ],
+    "answer": 1,
+    "explain": "A WAN (wide span, run by a communication company, leased) that connects **two** communication devices: a **point-to-point WAN**."
+  },
+  {
+    "q": "A telecom company runs a network connecting dozens of routers across Canada. What type of WAN is it?",
+    "type": "text",
+    "answer": [
+      "switched",
+      "switched wan",
+      "a switched wan"
+    ],
+    "explain": "A WAN connecting **more than two** communication devices is a **switched WAN**, the kind used in the backbone of global communication."
+  },
+  {
+    "q": "A phone's cellular link from the phone to the carrier's first router is part of which network?",
+    "type": "text",
+    "answer": [
+      "access",
+      "access network",
+      "the access network"
+    ],
+    "explain": "The **access network** physically connects an end system to the first (edge) router. Everything past that router is the core."
+  },
+  {
+    "q": "A dental clinic connects the LANs of its two offices so that they can communicate. The result is an internet.",
+    "type": "tf",
+    "answer": true,
+    "explain": "Two or more networks that can communicate with each other form an **internet** (lower-case i), an internetwork. It is not the Internet unless it joins that network of networks."
+  },
+  {
+    "q": "A regional ISP that sells access to customer networks and connects to an international backbone sits in which tier?",
+    "options": [
+      "Customer networks",
+      "Provider networks",
+      "Backbones",
+      "Peering points"
+    ],
+    "answer": 1,
+    "explain": "National or regional ISPs run the **provider networks**, the middle tier; international ISPs run the backbones; they meet at peering points."
+  }
+]
+```
+
 ```quiz
 [
   {

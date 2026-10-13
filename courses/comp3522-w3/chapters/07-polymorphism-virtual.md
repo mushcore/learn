@@ -200,6 +200,71 @@ dispatch-viz
 "Remember: non-virtual members of the derived class cannot be accessed through a reference of the base class." If Derived adds `void extra()`, `dr.extra()` does not compile even though dr refers to a Derived: the compiler only knows dr as a Base. Same for `shape1->area()` in the first program.
 :::
 
+## Predict virtual and non-virtual calls on an `Owl`
+
+`sound()` is virtual and `kind()` is not; the call depends on that and on whether you go through a pointer, a reference or a copy.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nclass Animal\n{\npublic:\n    virtual string sound() { return \"...\"; }\n    string kind() { return \"animal\"; }\n    virtual ~Animal() { }\n};\n\nclass Owl : public Animal\n{\npublic:\n    string sound() override { return \"hoot\"; }\n    string kind() { return \"owl\"; }\n};\n\nint main()\n{\n    Owl owl;\n    Animal* a = &owl;\n    cout << a->sound() << ' ' << a->kind() << endl;\n    return 0;\n}",
+    "options": [
+      "`hoot animal`",
+      "`hoot owl`",
+      "`... animal`",
+      "`... owl`"
+    ],
+    "answer": 0,
+    "explain": "`sound()` is virtual, so the call through `Animal*` is bound at run time to the object's real type: `hoot`. `kind()` is not virtual, so the pointer's static type `Animal` decides: `animal`. Output: `hoot animal`."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nclass Animal\n{\npublic:\n    virtual string sound() { return \"...\"; }\n    string kind() { return \"animal\"; }\n    virtual ~Animal() { }\n};\n\nclass Owl : public Animal\n{\npublic:\n    string sound() override { return \"hoot\"; }\n    string kind() { return \"owl\"; }\n};\n\nint main()\n{\n    Owl owl;\n    Animal copy = owl;\n    Animal& ref = owl;\n    cout << copy.sound() << ' ' << ref.sound() << ' ' << ref.Animal::sound() << endl;\n    return 0;\n}",
+    "options": [
+      "`... hoot ...`",
+      "`hoot hoot hoot`",
+      "`hoot hoot ...`",
+      "`... ... ...`"
+    ],
+    "answer": 0,
+    "explain": "`Animal copy = owl;` copies only the `Animal` part (slicing), so `copy` is a plain Animal: `...`. A reference keeps the real object, so `ref.sound()` is `hoot`. The qualified name `Animal::sound` switches off dynamic binding: `...`. Output: `... hoot ...`."
+  },
+  {
+    "type": "spotbug",
+    "q": "Click the line where g++ reports `marked 'override', but does not override`.",
+    "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nclass Animal\n{\npublic:\n    virtual string sound() { return \"...\"; }\n    virtual ~Animal() { }\n};\n\nclass Cow : public Animal\n{\npublic:\n    string sound() const override { return \"moo\"; }\n};\n\nint main()\n{\n    Cow c;\n    cout << c.sound() << endl;\n    return 0;\n}",
+    "answer": 15,
+    "explain": "Line 15 adds `const`, so its signature differs from the base's non-const `sound()`. Without `override` it would silently be a new function and calls through `Animal*` would still print `...`; with `override`, g++ catches the mismatch."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nclass Polygon\n{\nprotected:\n    int width, height;\npublic:\n    Polygon(int w, int h) : width(w), height(h) { }\n    virtual int area() { return 0; }\n    virtual ~Polygon() { }\n};\n\nclass Rectangle : public Polygon\n{\npublic:\n    Rectangle(int w, int h) : Polygon(w, h) { }\n    int area() override { return width * height; }\n};\n\nclass Triangle : public Polygon\n{\npublic:\n    Triangle(int w, int h) : Polygon(w, h) { }\n    int area() override { return width * height / 2; }\n};\n\nint main()\n{\n    Rectangle r(3, 4);\n    Triangle t(6, 5);\n    Polygon p(9, 9);\n    vector<Polygon*> shapes;\n    shapes.push_back(&r);\n    shapes.push_back(&t);\n    shapes.push_back(&p);\n    int sum = 0;\n    for (Polygon* s : shapes)\n    {\n        cout << s->area() << ' ';\n        sum += s->area();\n    }\n    cout << \"sum \" << sum << endl;\n    return 0;\n}",
+    "options": [
+      "`12 15 0 sum 27`",
+      "`0 0 0 sum 0`",
+      "`12 15 81 sum 108`",
+      "`12 30 0 sum 42`"
+    ],
+    "answer": 0,
+    "explain": "Each `s->area()` dispatches on the real object: Rectangle 3 × 4 = 12, Triangle 6 × 5 / 2 = 30 / 2 = 15, and the plain Polygon returns 0. 12 + 15 + 0 = 27. Output: `12 15 0 sum 27`."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "Override the virtual <code>pay()</code> in two derived classes: <code>Salaried</code> returns its monthly amount, <code>Hourly</code> returns hours × rate. The loop in <code>main</code> calls <code>pay()</code> through <code>Employee*</code> and must print <code>4000</code> then <code>870</code>.",
+  "starter": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nclass Employee\n{\npublic:\n    virtual double pay() const { return 0; }\n    virtual ~Employee() { }\n};\n\nclass Salaried : public Employee\n{\n    double monthly;\npublic:\n    Salaried(double monthly) : monthly(monthly) { }\n    // override pay here\n};\n\nclass Hourly : public Employee\n{\n    double hours, rate;\npublic:\n    Hourly(double hours, double rate) : hours(hours), rate(rate) { }\n    // override pay here\n};\n\nint main()\n{\n    Salaried s(4000);\n    Hourly h(29, 30);\n    vector<Employee*> staff;\n    staff.push_back(&s);\n    staff.push_back(&h);\n    for (Employee* e : staff)\n    {\n        cout << e->pay() << endl;\n    }\n    return 0;\n}\n",
+  "expected": "4000\n870\n",
+  "hints": [
+    "The signature must match the base exactly, <code>const</code> included: <code>double pay() const override</code>",
+    "Hourly: <code>return hours * rate;</code> (29 × 30 = 870)."
+  ],
+  "solution": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nclass Employee\n{\npublic:\n    virtual double pay() const { return 0; }\n    virtual ~Employee() { }\n};\n\nclass Salaried : public Employee\n{\n    double monthly;\npublic:\n    Salaried(double monthly) : monthly(monthly) { }\n    double pay() const override { return monthly; }\n};\n\nclass Hourly : public Employee\n{\n    double hours, rate;\npublic:\n    Hourly(double hours, double rate) : hours(hours), rate(rate) { }\n    double pay() const override { return hours * rate; }\n};\n\nint main()\n{\n    Salaried s(4000);\n    Hourly h(29, 30);\n    vector<Employee*> staff;\n    staff.push_back(&s);\n    staff.push_back(&h);\n    for (Employee* e : staff)\n    {\n        cout << e->pay() << endl;\n    }\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

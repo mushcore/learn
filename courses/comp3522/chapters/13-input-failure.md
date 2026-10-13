@@ -174,6 +174,72 @@ cin-sim
 { "reads": ["int n", "int n", "int n", "string name"], "input": "5 6 x\\nhello quit", "presets": { "fails on x": "5 6 x\\nhello quit", "all valid": "5 6 7\\nhello quit" } }
 ```
 
+## Track failbit through four new inputs
+
+For each run, follow the stream state after every extraction; once failbit is set, later reads do nothing until `clear()`.
+
+```quiz
+[
+  {
+    "q": "The input is `12 x 5`. What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int a = -1, b = -1, c = -1;\n    cin >> a >> b >> c;\n    cout << a << ' ' << b << ' ' << c << ' ' << cin.fail() << endl;\n    return 0;\n}",
+    "options": [
+      "`12 0 -1 1`",
+      "`12 -1 -1 1`",
+      "`12 0 5 0`",
+      "`12 -1 5 1`"
+    ],
+    "answer": 0,
+    "explain": "a reads 12. b meets `x`: the read fails, g++ stores 0 in b and sets failbit. The read into c is skipped because the stream has already failed, so c keeps -1. `fail()` is true, printed as 1. Output: `12 0 -1 1`."
+  },
+  {
+    "type": "numeric",
+    "q": "The input is `abc` on the first line and `9` on the second. What does this print?",
+    "code": "#include <iostream>\n#include <limits>\nusing namespace std;\n\nint main()\n{\n    int n = -1;\n    cin >> n;\n    cin.clear();\n    cin.ignore(numeric_limits<streamsize>::max(), '\\n');\n    cin >> n;\n    cout << n << endl;\n    return 0;\n}",
+    "answer": 9,
+    "explain": "The first read fails on `abc` (n becomes 0, failbit set). `clear()` unsets failbit, but `abc` is still in the buffer; `ignore(..., '\\n')` throws it away up to and including the newline. The second read then finds `9`. Without the `ignore`, it would fail on `abc` again."
+  },
+  {
+    "q": "The input is `8` followed immediately by end of file (no Enter). What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int n = 0;\n    cin >> n;\n    cout << n << ' ' << cin.eof() << ' ' << cin.fail() << endl;\n    return 0;\n}",
+    "options": [
+      "`8 1 0`",
+      "`8 0 0`",
+      "`0 1 1`",
+      "`8 1 1`"
+    ],
+    "answer": 0,
+    "explain": "The read takes `8`, looks for another digit and hits end of file, so eofbit is set. A value was read, so failbit stays clear. Output: `8 1 0`, the slide's `123*` row with a new number."
+  },
+  {
+    "q": "The input is `4 5 6 done 7`. What does this print?",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int n, sum = 0, count = 0;\n    while (cin >> n)\n    {\n        sum += n;\n        ++count;\n    }\n    cout << sum << ' ' << count << endl;\n    return 0;\n}",
+    "options": [
+      "`15 3`",
+      "`22 4`",
+      "`15 4`",
+      "`0 0`"
+    ],
+    "answer": 0,
+    "explain": "`while (cin >> n)` runs while the stream is good. It reads 4, 5 and 6 (sum 15, count 3), then fails on `done`, which ends the loop. The 7 is never read. Output: `15 3`."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "Read integers until one fails, then print <code>count 3 sum 12</code>. Recover the stream, throw away the rest of that line, read one word and print <code>word quit</code>. The test input is <code>3 8 1 x</code> on one line and <code>quit</code> on the next.",
+  "starter": "#include <iostream>\n#include <limits>\n#include <string>\nusing namespace std;\n\nint main()\n{\n    int n, count = 0, sum = 0;\n    string word;\n    // your code here\n    return 0;\n}\n",
+  "stdin": "3 8 1 x\nquit\n",
+  "expected": "count 3 sum 12\nword quit\n",
+  "hints": [
+    "Loop with <code>while (cin >> n)</code>.",
+    "Recover with <code>cin.clear();</code> then <code>cin.ignore(numeric_limits<streamsize>::max(), '\\n');</code> before <code>cin >> word;</code>."
+  ],
+  "solution": "#include <iostream>\n#include <limits>\n#include <string>\nusing namespace std;\n\nint main()\n{\n    int n, count = 0, sum = 0;\n    string word;\n    while (cin >> n)\n    {\n        ++count;\n        sum += n;\n    }\n    cout << \"count \" << count << \" sum \" << sum << endl;\n    cin.clear();\n    cin.ignore(numeric_limits<streamsize>::max(), '\\n');\n    cin >> word;\n    cout << \"word \" << word << endl;\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

@@ -170,6 +170,60 @@ Guideline 5 ends the program on purpose: `exit(EXIT_FAILURE)` from `<cstdlib>` s
 }
 ```
 
+## Order handlers for the standard family and unwind a `Tag` stack
+
+Four throws against one ordered handler list, a three-frame unwind whose handler in the middle does not match, and a rethrow done both ways.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <stdexcept>\n#include <vector>\nusing namespace std;\n\nvoid trigger(int k) {\n    vector<int> v(3);\n    if (k == 0) v.at(10) = 1;\n    if (k == 1) throw length_error(\"too long\");\n    if (k == 2) throw overflow_error(\"too big\");\n    if (k == 3) throw 'x';\n}\n\nint main() {\n    for (int k = 0; k < 4; ++k) {\n        try { trigger(k); }\n        catch (out_of_range& e) { cout << \"range \"; }\n        catch (logic_error& e) { cout << \"logic \"; }\n        catch (exception& e) { cout << \"std \"; }\n        catch (...) { cout << \"other \"; }\n    }\n    cout << endl;\n    return 0;\n}",
+    "options": [
+      "`range logic std other`",
+      "`logic logic std other`",
+      "`range logic logic other`",
+      "`range logic std std`"
+    ],
+    "answer": 0,
+    "explain": "The first matching handler wins. `v.at(10)` throws out_of_range: the first handler, `range`. length_error is a logic_error but not an out_of_range: `logic`. overflow_error is a runtime_error, so neither of the first two match, but exception& does: `std`. A thrown char is not a std::exception at all, so only the ellipsis takes it: `other`."
+  },
+  {
+    "q": "Type the first line this prints (the program prints one more character after it, on its own line).",
+    "type": "text",
+    "code": "#include <iostream>\n#include <stdexcept>\nusing namespace std;\n\nstruct Tag {\n    char c;\n    Tag(char c) : c(c) { cout << c; }\n    ~Tag() { cout << char(c - 32); }   // the upper-case letter\n};\n\nvoid inner() {\n    Tag t('c');\n    throw runtime_error(\"x\");\n}\n\nvoid middle() {\n    Tag t('b');\n    try { inner(); }\n    catch (logic_error&) { cout << \"?\"; }\n    Tag u('z');\n}\n\nint main() {\n    Tag t('a');\n    try { middle(); }\n    catch (runtime_error&) { cout << \"!\"; }\n    cout << endl;\n    return 0;\n}",
+    "answer": [
+      "abcCB!"
+    ],
+    "explain": "Constructors print lower case, destructors upper case. a, b, c are built. inner throws a runtime_error. middle's handler takes logic_error only, so it does not match and the search continues to main. Unwinding destroys inner's c (`C`), then middle's b (`B`); middle's `Tag u('z')` was never reached, so z never prints. main's handler prints `!`, then endl. main's own a is destroyed when main returns: `A` on the second line."
+  },
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <exception>\nusing namespace std;\n\nstruct Base : public exception {\n    const char* what() const noexcept override { return \"base\"; }\n};\nstruct Derived : public Base {\n    const char* what() const noexcept override { return \"derived\"; }\n};\n\nvoid relay(bool copy) {\n    try { throw Derived(); }\n    catch (Base& e) {\n        if (copy) throw e;\n        throw;\n    }\n}\n\nint main() {\n    for (bool copy : {false, true}) {\n        try { relay(copy); }\n        catch (exception& e) { cout << e.what() << \" \"; }\n    }\n    cout << endl;\n    return 0;\n}",
+    "options": [
+      "`derived base`",
+      "`derived derived`",
+      "`base base`",
+      "`base derived`"
+    ],
+    "answer": 0,
+    "explain": "The Derived object is caught through a `Base&`. With copy false, the bare `throw;` rethrows the same object, still a Derived: main's handler prints `derived`. With copy true, `throw e;` throws a new object copied from the static type of e, which is Base: the Derived part is sliced off and main prints `base`."
+  },
+  {
+    "q": "Click the line g++ refuses to compile.",
+    "type": "spotbug",
+    "code": "#include <iostream>\n#include <stdexcept>\nusing namespace std;\n\nint main() {\n    try {\n        throw runtime_error(\"late\");\n    }\n    catch (logic_error& e) { cout << \"logic\" << endl; }\n    catch (...) { cout << \"something\" << endl; }\n    catch (runtime_error& e) { cout << e.what() << endl; }\n    return 0;\n}",
+    "answer": [
+      10
+    ],
+    "explain": "Guideline 4: `catch (...)` catches everything, so it must be the last handler. g++ makes it an error: '...' handler must be the last handler for its try block. Move it below `catch (runtime_error& e)`, which would then print `late`."
+  }
+]
+```
+
+```challenge
+{"prompt": "<code>missing_file</code> derives from <code>file_error</code>, which derives from <code>std::runtime_error</code>. Write the try block and four handlers in main, in an order where each throw reaches its most specific handler: <code>missing: </code>, <code>file: </code> and <code>std: </code> followed by <code>what()</code>, then <code>unknown</code> for anything else. Catch by reference.", "starter": "#include <iostream>\n#include <stdexcept>\n#include <string>\nusing namespace std;\n\nstruct file_error : public runtime_error {\n    file_error(const string& m) : runtime_error(m) {}\n};\nstruct missing_file : public file_error {\n    missing_file(const string& m) : file_error(m) {}\n};\n\nvoid load(int code) {\n    if (code == 0) throw missing_file(\"a.txt\");\n    if (code == 1) throw file_error(\"disk\");\n    if (code == 2) throw invalid_argument(\"bad code\");\n    throw 99;\n}\n\nint main() {\n    for (int code = 0; code < 4; ++code) {\n        // call load(code) in a try block with four handlers that print\n        // \"missing: <what>\", \"file: <what>\", \"std: <what>\" and \"unknown\"\n    }\n    return 0;\n}\n", "expected": "missing: a.txt\nfile: disk\nstd: bad code\nunknown", "hints": ["Child before parent: <code>missing_file&amp;</code>, then <code>file_error&amp;</code>, then <code>exception&amp;</code>.", "<code>catch (...)</code> goes last; a thrown int matches nothing else."], "solution": "#include <iostream>\n#include <stdexcept>\n#include <string>\nusing namespace std;\n\nstruct file_error : public runtime_error {\n    file_error(const string& m) : runtime_error(m) {}\n};\nstruct missing_file : public file_error {\n    missing_file(const string& m) : file_error(m) {}\n};\n\nvoid load(int code) {\n    if (code == 0) throw missing_file(\"a.txt\");\n    if (code == 1) throw file_error(\"disk\");\n    if (code == 2) throw invalid_argument(\"bad code\");\n    throw 99;\n}\n\nint main() {\n    for (int code = 0; code < 4; ++code) {\n        try {\n            load(code);\n        }\n        catch (missing_file& e) { cout << \"missing: \" << e.what() << endl; }\n        catch (file_error& e) { cout << \"file: \" << e.what() << endl; }\n        catch (exception& e) { cout << \"std: \" << e.what() << endl; }\n        catch (...) { cout << \"unknown\" << endl; }\n    }\n    return 0;\n}\n"}
+```
 ```quiz
 [
   {

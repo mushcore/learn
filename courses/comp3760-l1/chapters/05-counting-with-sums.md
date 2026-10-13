@@ -199,6 +199,66 @@ pairs-play
 { "array": [4, 9, 2, 7, 5], "title": "UniqueElements: one step per comparison A[i] = A[j]" }
 ```
 
+## Set up and close the sum for three new fragments
+
+Write each loop as a sum, simplify it to a closed form, and check the closed form at the given $n$.
+
+```quiz
+[
+  {
+    "type": "spotbug",
+    "lang": "pseudo",
+    "q": "Click the line that is the basic operation of `FarPairs`.",
+    "code": "Algorithm FarPairs(A[0..n-1])\n    c ← 0\n    for i ← 0 to n-1 do\n        for j ← i to n-1 do\n            if A[j] - A[i] > 10 then\n                c ← c + 1\n            endif\n        endfor\n    endfor\n    return c",
+    "answer": 5,
+    "explain": "Line 5 runs once for every (i, j) pair the loops visit; line 6 only for the pairs where the test is true; line 4 (the inner `for`) as often as line 5 but it only steps a counter. Line 5 is the key comparison, the innermost statement that runs every time: the basic operation."
+  },
+  {
+    "q": "`FarPairs` is run on n = 9 elements. How many times is the comparison on line 5 executed?",
+    "type": "numeric",
+    "answer": 45,
+    "tolerance": 0,
+    "explain": "On pass i the inner loop runs j = i to 8, that is 9 − i times: 9 + 8 + 7 + … + 1 = 45. The closed form $\\frac{n(n+1)}{2} = \\frac{9 \\cdot 10}{2} = 45$ agrees. (j starts at i, not i + 1, so each element is also paired with itself: 9 more than the 36 of UniqueElements-style pairs.)"
+  },
+  {
+    "type": "reorder",
+    "lang": "pseudo",
+    "q": "Put the derivation of C(n) for `FarPairs` in order.",
+    "lines": [
+      "C(n) = Σ(i=0..n-1) Σ(j=i..n-1) 1",
+      "= Σ(i=0..n-1) (n - 1 - i + 1)",
+      "= Σ(i=0..n-1) (n - i)",
+      "= Σ(i=0..n-1) n - Σ(i=0..n-1) i",
+      "= n·n - (n-1)n/2",
+      "= n(n+1)/2"
+    ],
+    "explain": "Outer sum from the i loop, inner sum from the j loop. A sum of ones counts its terms: u − l + 1 = (n − 1) − i + 1 = n − i. Split the sum: n added n times is n², and 0 + 1 + … + (n − 1) = (n − 1)n/2. Then n² − (n² − n)/2 = (n² + n)/2 = n(n + 1)/2. At n = 9: 45."
+  },
+  {
+    "q": "`Doubling(100)` runs. How many times is the basic operation, `i ← i * 2` on line 6, executed?",
+    "code": "1. Algorithm Doubling(n)\n2.    c ← 0\n3.    i ← 1\n4.    while i < n do\n5.        c ← c + 1\n6.        i ← i * 2\n7.    endwhile\n8.    return c",
+    "type": "numeric",
+    "answer": 7,
+    "tolerance": 0,
+    "explain": "Lines 5 and 6 tie on count; multiplication outranks addition, so line 6 is the basic operation. List the values of i at the test: 1, 2, 4, 8, 16, 32, 64 pass (each < 100), and 128 fails. Seven passes: ⌈log₂ 100⌉ = 7, since 2⁶ = 64 < 100 ≤ 128 = 2⁷. A control variable multiplied by a constant gives a logarithmic count, like Example3's halving."
+  },
+  {
+    "q": "`HalvingRows(16)` runs. How many times is line 6, `j ← j / 2`, executed?",
+    "code": "1. Algorithm HalvingRows(n)\n2.    s ← 0\n3.    for i ← 1 to n do\n4.        j ← n\n5.        while j > 1 do\n6.            j ← j / 2\n7.            s ← s + 1\n8.        endwhile\n9.    endfor\n10.   return s",
+    "type": "numeric",
+    "answer": 64,
+    "tolerance": 0,
+    "explain": "The inner loop does not depend on i: every pass starts at j = 16 and halves 16 → 8 → 4 → 2 → 1, four divisions (⌊log₂ 16⌋ = 4). The outer loop runs 16 times. $\\sum_{i=1}^{n} ⌊\\log_2 n⌋ = n⌊\\log_2 n⌋ = 16 \\cdot 4 = 64$."
+  },
+  {
+    "type": "text",
+    "q": "What is the efficiency class of `HalvingRows`? (name it or write it as a function of n)",
+    "answer": ["n log n", "nlogn", "n log2 n", "n log₂ n", "n-log-n", "n log(n)", "n*log n", "n*log(n)", "o(n log n)", "o(nlogn)", "θ(n log n)", "n lg n"],
+    "explain": "C(n) = n⌊log₂ n⌋: n passes of the outer loop, each doing the log₂ n halvings of a loop that cuts j in half. Drop the floor and the base: the class is n log n (\"n-log-n\"), between linear and quadratic."
+  }
+]
+```
+
 ```quiz
 [
   {

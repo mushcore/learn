@@ -105,6 +105,65 @@ C header files are part of the C++ standard library, renamed with a `c` prefix a
 }
 ```
 
+## Predict three new hello programs, then print a box
+
+Each program below is new; work out the exact output before you look at the options.
+
+```quiz
+[
+  {
+    "q": "What does this program print? (lines separated by /)",
+    "code": "#include <iostream>\n\nint main()\n{\n    std::cout << \"Lab\" << ' ' << 3 << std::endl;\n    std::cout << \"Due\" << \" Sunday\" << '\\n';\n}",
+    "options": [
+      "`Lab 3` / `Due Sunday`",
+      "`Lab3` / `DueSunday`",
+      "`Lab 3 Due Sunday`",
+      "`error: main has no return 0;`"
+    ],
+    "answer": 0,
+    "explain": "Each `<<` returns `std::cout`, so the pieces chain: `\"Lab\"`, the char `' '` and the int `3` give `Lab 3`, then `std::endl` ends the line. The second statement writes `Due`, then ` Sunday` (the space is inside the literal), then `'\\n'`. Output: `Lab 3` / `Due Sunday`. `main` may omit `return 0;`; it then returns 0."
+  },
+  {
+    "type": "text",
+    "q": "What does this program print? Type the output exactly.",
+    "code": "#include <iostream>\n\nint main()\n{\n    std::cout << 35 << 22 << std::endl;\n    return 0;\n}",
+    "answer": [
+      "3522"
+    ],
+    "explain": "`<<` inserts each value with nothing between them: `35` then `22` gives `3522`. To separate them you insert a space yourself, as in `<< ' ' <<`."
+  },
+  {
+    "type": "spotbug",
+    "q": "Click the line g++ rejects with `was not declared in this scope`.",
+    "code": "#include <iostream>\n\nint main()\n{\n    std::cout << \"COMP\";\n    std::cout << 3522 << endl;\n    return 0;\n}",
+    "answer": 6,
+    "explain": "Line 6 writes `endl` with no `std::` prefix and there is no `using` in scope, so the compiler only knows `std::endl`. Line 5 is fine: `std::cout` is fully qualified."
+  },
+  {
+    "type": "fill",
+    "q": "Fill in the object that writes to standard output.",
+    "code": "std::___ << \"Hello\" << std::endl;",
+    "answer": [
+      "cout"
+    ],
+    "explain": "`std::cout` is the predefined `ostream` object for standard output; `<<` is called on it."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "Print this three-line box exactly, using <code>std::</code> (no <code>using</code>). End the first two lines with <code>std::endl</code> and the last with <code>'\\n'</code>.<pre>+-------+\n| C++20 |\n+-------+</pre>",
+  "starter": "#include <iostream>\n\nint main()\n{\n    // your code here\n    return 0;\n}\n",
+  "expected": "+-------+\n| C++20 |\n+-------+\n",
+  "hints": [
+    "Three statements, one per line of the box.",
+    "<code>std::cout << \"| C++20 |\" << std::endl;</code>"
+  ],
+  "solution": "#include <iostream>\n\nint main()\n{\n    std::cout << \"+-------+\" << std::endl;\n    std::cout << \"| C++20 |\" << std::endl;\n    std::cout << \"+-------+\" << '\\n';\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

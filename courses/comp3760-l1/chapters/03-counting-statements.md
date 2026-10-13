@@ -115,6 +115,60 @@ $$f(n) = n - 1$$
 
 $3n - 1$ (every statement) and $n - 1$ (basic operation only) both grow linearly in $n$; the second is simpler to compute and does not depend on which statements happened to be inside the `if`. [Choosing the basic operation](#/comp3760-l1/basic-operation) makes that choice in harder pseudocode; [Setting up and simplifying the sums](#/comp3760-l1/counting-with-sums) counts it when loops nest.
 
+## Count every statement in two new fragments
+
+Count the way the slides count `find`: the header 0 times, a `for` line once per iteration, a line inside an `if` only when the test is true.
+
+```quiz
+[
+  {
+    "q": "`countNeg` is run on A = [3, −1, −4, 2, −5, 6, −7]. Counting every statement (header not counted), how many statements execute?",
+    "code": "1. Algo: countNeg( A[0…n-1] )\n2.    c ← 0\n3.    for i ← 0 to n-1 do\n4.       if A[i] < 0\n5.          c ← c + 1\n6.    return c",
+    "type": "numeric",
+    "answer": 20,
+    "tolerance": 0,
+    "explain": "n = 7 and the loop runs i = 0 to 6, 7 iterations. Line 2: 1. Line 3: 7. Line 4: 7. Line 5: only for the negatives −1, −4, −5, −7, so 4. Line 6: 1. Total 1 + 7 + 7 + 4 + 1 = 20."
+  },
+  {
+    "type": "spotbug",
+    "lang": "pseudo",
+    "q": "Click the line that is the basic operation of `countNeg`.",
+    "code": "Algo: countNeg( A[0…n-1] )\n   c ← 0\n   for i ← 0 to n-1 do\n      if A[i] < 0\n         c ← c + 1\n   return c",
+    "answer": 4,
+    "explain": "Lines 3 and 4 run n times for every input; line 5 runs at most n times (only for negative elements); lines 2 and 6 once. Lines 3, 4 and 5 are all one loop deep (an `if` adds no depth), so cost decides: line 4 compares array data, the work the algorithm exists to do. Basic operation: line 4, `if A[i] < 0`."
+  },
+  {
+    "q": "Counting only the basic operation, how many times does `countNeg` execute it for an array of n = 50 elements?",
+    "type": "numeric",
+    "answer": 50,
+    "tolerance": 0,
+    "explain": "The comparison `A[i] < 0` runs once per iteration, and i runs 0 to n − 1: n = 50 iterations. f(n) = n, whatever the signs of the elements are."
+  },
+  {
+    "q": "Counting every statement as the slides do, how many statements does `rangeSum` execute for n = 12?",
+    "code": "1. Algo: rangeSum( A[0…n-1] )\n2.    lo ← A[0]\n3.    hi ← A[0]\n4.    for i ← 1 to n-1 do\n5.       lo ← min(lo, A[i])\n6.       hi ← max(hi, A[i])\n7.    return hi - lo",
+    "type": "numeric",
+    "answer": 36,
+    "tolerance": 0,
+    "explain": "Lines 2 and 3 once each: 2. The loop runs i = 1 to 11, n − 1 = 11 iterations, and lines 4, 5, 6 run once per iteration: 3 × 11 = 33. Line 7 once: 1. f(12) = 2 + 33 + 1 = 36. In general f(n) = 2 + 3(n − 1) + 1 = 3n, and 3 × 12 = 36."
+  },
+  {
+    "type": "reorder",
+    "lang": "pseudo",
+    "q": "Put the derivation of f(n) for `rangeSum` (every statement counted) in order.",
+    "lines": [
+      "lines 2 and 3 run once each: 2",
+      "the loop runs i = 1 to n-1: n - 1 iterations",
+      "lines 4, 5 and 6 run once per iteration: 3(n - 1)",
+      "line 7 runs once: 1",
+      "f(n) = 2 + 3(n - 1) + 1",
+      "f(n) = 3n"
+    ],
+    "explain": "Top to bottom through the listing: the two statements before the loop (2), the number of iterations (n − 1), the three lines that run on every iteration (3(n − 1)), the return (1), the sum 2 + 3(n − 1) + 1, and the simplification 2 + 3n − 3 + 1 = 3n. Check at n = 12: 36."
+  }
+]
+```
+
 ```quiz
 [
   {

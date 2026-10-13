@@ -100,6 +100,63 @@ The mode does not change the basic operation: best and worst are different count
 A loop that touches every element unconditionally (a sum, a product, a matrix multiplication, finding the max) has one count. A loop with an early exit (`return` inside the loop, or a `while` whose condition reads the data) can stop early on a lucky input, and that is the signal that best and worst case differ.
 :::
 
+## Find the best and worst case of a bubble sort that stops early
+
+`EarlyBubble` sweeps the array swapping neighbours that are out of order, and returns as soon as a whole sweep makes no swap.
+
+```quiz
+[
+  {
+    "type": "spotbug",
+    "lang": "pseudo",
+    "q": "Click the line that is the basic operation of `EarlyBubble`.",
+    "code": "Algorithm EarlyBubble(A[0..n-1])\n    for i ← 0 to n-2 do\n        swapped ← false\n        for j ← 0 to n-2-i do\n            if A[j] > A[j+1] then\n                swap A[j] and A[j+1]\n                swapped ← true\n            endif\n        endfor\n        if not swapped then return\n    endfor",
+    "answer": 5,
+    "explain": "Line 5 runs once per pass of the inner loop for every input; lines 6 and 7 only when the pair is out of order. Lines 4 and 5 tie on count and depth, and line 5 is a **key comparison** of array data while line 4 only steps j. Basic operation: line 5, `A[j] > A[j+1]`. Its count depends on the order of the input, so best and worst must be investigated separately."
+  },
+  {
+    "q": "Best case: `EarlyBubble` gets 10 elements already in ascending order. How many key comparisons are made?",
+    "type": "numeric",
+    "answer": 9,
+    "tolerance": 0,
+    "explain": "Pass i = 0 compares j = 0 to n − 2 = 8: 9 comparisons, all false, so no swap. `swapped` is still false and the algorithm returns after one pass. C_best(n) = n − 1 = 9."
+  },
+  {
+    "q": "Worst case: `EarlyBubble` gets 10 elements in descending order. How many key comparisons are made?",
+    "type": "numeric",
+    "answer": 45,
+    "tolerance": 0,
+    "explain": "Descending order makes every pass swap, so the early return never fires and all n − 1 = 9 passes run. Pass i compares j = 0 to n − 2 − i: n − 1 − i comparisons. 9 + 8 + 7 + … + 1 = 45 = $\\frac{n(n-1)}{2} = \\frac{10 \\cdot 9}{2}$."
+  },
+  {
+    "q": "`EarlyBubble` runs on A = [3, 1, 2, 4, 5]. How many key comparisons are made?",
+    "type": "numeric",
+    "answer": 7,
+    "tolerance": 0,
+    "explain": "Pass 0 compares j = 0 to 3 (4 comparisons): 3 > 1 swap → [1, 3, 2, 4, 5]; 3 > 2 swap → [1, 2, 3, 4, 5]; 3 > 4 no; 4 > 5 no. A swap happened, so pass 1 runs: j = 0 to 2 (3 comparisons), all false, no swap, return. 4 + 3 = 7, between the best case 4 and the worst case 10 for n = 5."
+  },
+  {
+    "type": "reorder",
+    "lang": "pseudo",
+    "q": "Put the worst-case count of `EarlyBubble` in order.",
+    "lines": [
+      "worst case: descending input, every pass swaps, no early return",
+      "C_worst(n) = Σ(i=0..n-2) Σ(j=0..n-2-i) 1",
+      "= Σ(i=0..n-2) (n - 1 - i)",
+      "= (n-1) + (n-2) + ... + 1",
+      "= (n-1)n/2"
+    ],
+    "explain": "Name the input that makes the count largest first, then set up the sum from the loop bounds. The inner sum of ones has (n − 2 − i) − 0 + 1 = n − 1 − i terms; for i = 0, 1, …, n − 2 that is n − 1 down to 1, the first n − 1 integers, (n − 1)n/2. At n = 10: 45."
+  },
+  {
+    "type": "text",
+    "q": "What is the worst-case efficiency class of `EarlyBubble`? (name it or write it as a function of n)",
+    "answer": ["quadratic", "n^2", "n²", "o(n^2)", "o(n²)", "θ(n^2)", "θ(n²)", "n*n"],
+    "explain": "C_worst(n) = (n − 1)n/2 = n²/2 − n/2. Drop the lower-order term and the constant factor: quadratic, O(n²). The best case n − 1 is linear, but unless told otherwise the worst case is the one to report."
+  }
+]
+```
+
 ```quiz
 [
   {

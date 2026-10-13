@@ -78,6 +78,52 @@ line-code
 { "bits": "0110000111", "schemes": ["unipolar", "nrz-l", "nrz-i", "manchester", "diff-manchester", "ami"], "compare": true, "title": "One bit pattern, six line coding schemes" }
 ```
 
+## Draw AMI for 110100110 and read an AMI signal back
+
+Type `+`, `-` or `0` for each bit; the first 1 is positive, and the bits are sent at 1.5 Mbps.
+
+```quiz
+[
+  {
+    "q": "Write the AMI level for each bit.",
+    "type": "fill",
+    "code": "bit:    1   1   0   1   0   0   1   1   0\nlevel: ___ ___ ___ ___ ___ ___ ___ ___ ___",
+    "answer": ["+", "-", "0", "+", "0", "0", "-", "+", "0"],
+    "explain": "Each 0 is `0`. The 1s alternate, counting 1s only: first `+`, second `-`, third `+`, fourth `-`, fifth `+`. Result: `+ - 0 + 0 0 - + 0`."
+  },
+  {
+    "q": "An AMI signal reads `+ - 0 + 0 0 - +`. Which bits does it carry? (Type the bits with no spaces.)",
+    "type": "text",
+    "answer": ["11010011", "1 1 0 1 0 0 1 1"],
+    "explain": "Any nonzero level is a 1 and zero is a 0, whatever the polarity: 11010011. The polarities alternate + - + - +, so the signal is valid AMI."
+  },
+  {
+    "q": "How many signal elements does AMI use for the 9 bits?",
+    "type": "numeric",
+    "answer": 9,
+    "tolerance": 0.01,
+    "unit": "signal elements",
+    "explain": "One level per bit, so 9 signal elements and $r = 1$."
+  },
+  {
+    "q": "At 1.5 Mbps with $c = \\frac{1}{2}$, what is the average signal rate of the AMI signal, in kbaud?",
+    "type": "numeric",
+    "answer": 750,
+    "tolerance": 0.5,
+    "unit": "kbaud",
+    "explain": "$r = 1$. $S = \\frac{1}{2} \\times 1500000 \\times 1 = 750000$ baud $= 750$ kbaud."
+  },
+  {
+    "q": "In your AMI signal for 110100110, what is the longest stretch without a transition, in bits?",
+    "type": "numeric",
+    "answer": 2,
+    "tolerance": 0.01,
+    "unit": "bits",
+    "explain": "Levels `+ - 0 + 0 0 - + 0`. Every 1 differs from its neighbours, so only the 0s can hold: the pair of 0s (bits 5 and 6) stays at zero for 2 bits."
+  }
+]
+```
+
 ```quiz
 [
   {

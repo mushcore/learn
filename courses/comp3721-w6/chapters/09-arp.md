@@ -92,6 +92,47 @@ arp-exchange
 { "target": 2, "quiz": true }
 ```
 
+## Fill in the ARP packets for host P and router R
+
+On an Ethernet LAN running IPv4, host P (N5, L5) needs the link-layer address of router R (N9, L9); type values as the slide writes them, such as `0x0001` and `L5`.
+
+```quiz
+[
+  {
+    "q": "Fill in P's ARP request, field by field.",
+    "type": "fill",
+    "code": "Hardware type:                   ___\nProtocol type:                   ___\nHardware length:                 ___\nProtocol length:                 ___\nOperation:                       ___\nSource hardware address:         ___\nSource protocol address:         ___\nDestination protocol address:    ___",
+    "answer": ["0x0001", "0x0800", "0x06", "0x04", "0x0001", "L5", "N5", "N9"],
+    "explain": "Ethernet `0x0001`, IPv4 `0x0800`, a 6-byte MAC `0x06`, a 4-byte IP `0x04`, request `0x0001`. The source is P (L5, N5) and the target IP is R's, N9."
+  },
+  {
+    "q": "What does the destination hardware address field hold in P's request?",
+    "type": "text",
+    "answer": ["all 0s", "all zeros", "all 0", "0s", "zeros", "0", "empty", "00:00:00:00:00:00"],
+    "explain": "P does not know R's MAC yet, so the field is **empty in the request**: all 0s in the slide's example."
+  },
+  {
+    "q": "Fill in R's ARP reply (the first four fields are the same as in the request).",
+    "type": "fill",
+    "code": "Operation:                       ___\nSource hardware address:         ___\nSource protocol address:         ___\nDestination hardware address:    ___\nDestination protocol address:    ___",
+    "answer": ["0x0002", "L9", "N9", "L5", "N5"],
+    "explain": "Reply `0x0002`. R is now the source, so L9 and N9 move up; P's L5 and N5 move to the destination fields. P's answer is the reply's source hardware address, L9."
+  },
+  {
+    "q": "Which frame carries P's request?",
+    "options": ["[BA | P | Data]", "[P | BA | Data]", "[R | P | Data]", "[P | R | Data]"],
+    "answer": 0,
+    "explain": "The request is broadcast: destination BA (the broadcast address) first, then the source P, as in the slide's [BA | A | Data]."
+  },
+  {
+    "q": "Which frame carries R's reply?",
+    "options": ["[P | R | Data]", "[R | P | Data]", "[BA | R | Data]", "[BA | P | Data]"],
+    "answer": 0,
+    "explain": "The reply is unicast to P: destination P, source R, as in the slide's [A | B | Data]."
+  }
+]
+```
+
 ```quiz
 [
   {

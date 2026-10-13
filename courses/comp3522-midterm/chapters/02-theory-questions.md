@@ -571,6 +571,62 @@ int main() {
 ]
 ```
 
+## Answer Part A questions from five new snippets
+
+Each item is a short Part A question asked about code you have not seen: passing styles, destructor timing, initialization, const members and forward declarations.
+
+```quiz
+[
+  {
+    "q": "Q3 style (4). What does this print? Then, on paper, say which parameter could change the caller's variable without a `*`.",
+    "type": "text",
+    "code": "#include <iostream>\nusing namespace std;\n\nvoid bump(int* p, int& r, int v) {\n    *p += 1;\n    r += 10;\n    v += 100;\n    p = nullptr;\n}\n\nint main() {\n    int a = 1, b = 2, c = 3;\n    int* ptr = &a;\n    bump(ptr, b, c);\n    cout << a << \" \" << b << \" \" << c << \" \" << (ptr == &a) << endl;\n    return 0;\n}",
+    "answer": [
+      "2 12 3 1"
+    ],
+    "explain": "By pointer: `*p += 1` reaches a through its address, so a becomes 2; `p = nullptr` only changes bump's own copy of the pointer, so main's ptr still points at a (prints 1). By reference: r is b under another name, so b becomes 12, with no `*`. By value: v is a copy of c, so c stays 3."
+  },
+  {
+    "q": "Q8 style (3). What does this print?",
+    "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nstruct Tag {\n    string n;\n    Tag(string n) : n(n) { cout << \"+\" << n << \" \"; }\n    ~Tag() { cout << \"-\" << n << \" \"; }\n};\n\nTag make(string n) { return Tag(n); }\n\nint main() {\n    Tag a(\"a\");\n    make(\"t\");\n    Tag* h = new Tag(\"h\");\n    {\n        Tag b(\"b\");\n    }\n    delete h;\n    cout << \"| \";\n    return 0;\n}",
+    "options": [
+      "`+a +t -t +h +b -b -h | -a`",
+      "`+a +t +h +b -b -h | -t -a`",
+      "`+a +t -t +h +b -b | -h -a`",
+      "`+a +h +b -b -h | -a`"
+    ],
+    "answer": 0,
+    "explain": "a is built. `make(\"t\")` returns a temporary nobody keeps, so it is destroyed at the end of that statement: `+t -t`. h is on the heap: `+h`, and it dies only at `delete h`. b dies at its block's closing brace: `+b -b`. Then `delete h`: `-h`. `| ` prints, and a dies at the end of main: `-a`. Scope end, delete, end of a temporary's full expression: three of the automatic cases."
+  },
+  {
+    "q": "Q9 style (4). Click the initialization the compiler rejects.",
+    "type": "spotbug",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int guests = 7;\n    int slices(8.5);\n    int crusts = 2.9;\n    int toppings{3.5};\n    cout << guests << slices << crusts << toppings << endl;\n    return 0;\n}",
+    "answer": [
+      8
+    ],
+    "explain": "Brace initialization refuses narrowing: `int toppings{3.5};` is an error, narrowing conversion of '3.5' from 'double' to 'int'. Direct `int slices(8.5);` and copy `int crusts = 2.9;` compile and silently store 8 and 2 (g++ may warn). That refusal is why braces are preferred."
+  },
+  {
+    "q": "Q7 style (6). Click the line the compiler rejects.",
+    "type": "spotbug",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Counter {\n    int hits = 0;\npublic:\n    int get() const { return hits; }\n    void reset() const { hits = 0; }\n    void add() { ++hits; }\n};\n\nint main() {\n    Counter c;\n    c.add();\n    cout << c.get() << endl;\n    return 0;\n}",
+    "answer": [
+      8
+    ],
+    "explain": "`const` after the parameter list promises the member function changes no data member; inside it `this` points to const. `reset() const` assigns to `hits`, so g++ refuses: assignment of member 'Counter::hits' in read-only object. `get() const` only reads, which is what a const member function is for; `add()` is not const and may change hits."
+  },
+  {
+    "q": "Q12 style (3). Click the line the compiler rejects.",
+    "type": "spotbug",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass Engine;\n\nclass Car {\n    Engine* spare;\n    Engine motor;\npublic:\n    Car() : spare(nullptr) {}\n};\n\nclass Engine { };\n\nint main() {\n    Car c;\n    return 0;\n}",
+    "answer": [
+      8
+    ],
+    "explain": "`class Engine;` is a forward declaration: the name exists, the size does not yet. A pointer to it is fine (`Engine* spare;`), but an object member needs the full definition: field 'motor' has incomplete type 'Engine'. Move Engine's definition above Car, or hold it by pointer."
+  }
+]
+```
 ```quiz
 [
   {

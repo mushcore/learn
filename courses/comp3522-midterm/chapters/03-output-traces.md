@@ -221,6 +221,63 @@ diamond-viz
 
 One side virtual and the other not, as in Q28: the widget shows the shared person built by the most-derived class plus a second, ordinary person inside the non-virtual side. Two copies of the middle base remain, exactly like the two Bs.
 
+## Write the output of a copying `B` and two new four-class hierarchies
+
+Part B hands you the program and a line count. These three are new: a function that returns a local, one that takes by value, one that returns a reference parameter, then a hierarchy with a member object, with and without `virtual`.
+
+```quiz
+[
+  {
+    "q": "What is printed to standard output? HINT: this prints 8 lines.",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass B\n{\npublic:\n    B() { cout << \"B()\" << endl; }\n    B(const B&) { cout << \"B(copy)\" << endl; }\n    ~B() { cout << \"~B\" << endl; }\n};\n\nB make()\n{\n    B local;\n    return local;\n}\n\nvoid take(B)\n{\n    cout << \"take\" << endl;\n}\n\nB pass(const B& b)\n{\n    return b;\n}\n\nint main()\n{\n    B x = make();\n    take(x);\n    B y = pass(x);\n    cout << \"end\" << endl;\n}",
+    "options": [
+      "`B()`\n`B(copy)`\n`take`\n`~B`\n`B(copy)`\n`end`\n`~B`\n`~B`",
+      "`B()`\n`B(copy)`\n`~B`\n`B(copy)`\n`take`\n`~B`\n`B(copy)`\n`end`\n`~B`\n`~B`",
+      "`B()`\n`take`\n`end`\n`~B`\n`~B`",
+      "`B()`\n`B(copy)`\n`take`\n`~B`\n`end`\n`~B`"
+    ],
+    "answer": 0,
+    "explain": "`B x = make();`: make returns its local, and g++ builds that local directly in x (named return value optimization): only `B()`. `take(x);`: the by-value parameter is copy constructed (`B(copy)`), the body prints `take`, and the parameter dies at the end of the statement (`~B`). `B y = pass(x);`: no copy on the way in (a const reference), but `return b;` must copy the referenced object into y: `B(copy)`. `end`, then y and x die in reverse order: `~B`, `~B`. 1 + 2 copies + take + end + 3 destructors = 8."
+  },
+  {
+    "q": "In the same program, how many times does `B(copy)` print?",
+    "type": "numeric",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass B\n{\npublic:\n    B() { cout << \"B()\" << endl; }\n    B(const B&) { cout << \"B(copy)\" << endl; }\n    ~B() { cout << \"~B\" << endl; }\n};\n\nB make()\n{\n    B local;\n    return local;\n}\n\nvoid take(B)\n{\n    cout << \"take\" << endl;\n}\n\nB pass(const B& b)\n{\n    return b;\n}\n\nint main()\n{\n    B x = make();\n    take(x);\n    B y = pass(x);\n    cout << \"end\" << endl;\n}",
+    "answer": 2,
+    "tolerance": 0,
+    "explain": "Two copies: take's by-value parameter, and pass's return of the referenced object. make's `return local;` is elided, and `pass(const B& b)` takes no copy. Check the balance: 3 constructions (1 default, 2 copies), 3 destructions."
+  },
+  {
+    "q": "What is printed? HINT: this prints 12 lines. Give them in order.",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass P { public: P() { cout << \"P\" << endl; } ~P() { cout << \"~P\" << endl; } };\nclass Q : public P { public: Q() { cout << \"Q\" << endl; } ~Q() { cout << \"~Q\" << endl; } };\nclass R : public P { public: R() { cout << \"R\" << endl; } ~R() { cout << \"~R\" << endl; } };\nclass M { public: M() { cout << \"M\" << endl; } ~M() { cout << \"~M\" << endl; } };\n\nclass S : public R, public Q\n{\n    M m;\npublic:\n    S() { cout << \"S\" << endl; }\n    ~S() { cout << \"~S\" << endl; }\n};\n\nint main()\n{\n    S s;\n}",
+    "options": [
+      "`P R P Q M S ~S ~M ~Q ~P ~R ~P` (one per line)",
+      "`P Q P R M S ~S ~M ~R ~P ~Q ~P` (one per line)",
+      "`M P R P Q S ~S ~Q ~P ~R ~P ~M` (one per line)",
+      "`P R P Q S M ~M ~S ~Q ~P ~R ~P` (one per line)"
+    ],
+    "answer": 0,
+    "explain": "No inheritance is virtual, so S holds two Ps. Order of construction: the bases in the order listed after the colon, `public R, public Q`, each base-first (P then R, then P then Q); then the members (`M m;`); then S's body. Destruction is the exact reverse: ~S, ~M, then the Q chain (~Q ~P), then the R chain (~R ~P)."
+  },
+  {
+    "q": "The same program with `class Q : virtual public P` and `class R : virtual public P`. How many lines print?",
+    "type": "numeric",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass P { public: P() { cout << \"P\" << endl; } ~P() { cout << \"~P\" << endl; } };\nclass Q : virtual public P { public: Q() { cout << \"Q\" << endl; } ~Q() { cout << \"~Q\" << endl; } };\nclass R : virtual public P { public: R() { cout << \"R\" << endl; } ~R() { cout << \"~R\" << endl; } };\nclass M { public: M() { cout << \"M\" << endl; } ~M() { cout << \"~M\" << endl; } };\n\nclass S : public R, public Q\n{\n    M m;\npublic:\n    S() { cout << \"S\" << endl; }\n    ~S() { cout << \"~S\" << endl; }\n};\n\nint main()\n{\n    S s;\n}",
+    "answer": 10,
+    "tolerance": 0,
+    "explain": "Both middle classes share one virtual P, built first by the most derived class S: P, R, Q, M, S, then ~S, ~M, ~Q, ~R, ~P. One P constructed and destroyed instead of two: 12 - 2 = 10 lines."
+  },
+  {
+    "q": "In the virtual version, type line 3 of the output.",
+    "type": "text",
+    "code": "#include <iostream>\nusing namespace std;\n\nclass P { public: P() { cout << \"P\" << endl; } ~P() { cout << \"~P\" << endl; } };\nclass Q : virtual public P { public: Q() { cout << \"Q\" << endl; } ~Q() { cout << \"~Q\" << endl; } };\nclass R : virtual public P { public: R() { cout << \"R\" << endl; } ~R() { cout << \"~R\" << endl; } };\nclass M { public: M() { cout << \"M\" << endl; } ~M() { cout << \"~M\" << endl; } };\n\nclass S : public R, public Q\n{\n    M m;\npublic:\n    S() { cout << \"S\" << endl; }\n    ~S() { cout << \"~S\" << endl; }\n};\n\nint main()\n{\n    S s;\n}",
+    "answer": [
+      "Q"
+    ],
+    "explain": "Line 1 is the shared virtual P (virtual bases first), line 2 is R (listed first after the colon), line 3 is Q. R no longer builds its own P, because the most derived class already did."
+  }
+]
+```
 ```quiz
 [
   {

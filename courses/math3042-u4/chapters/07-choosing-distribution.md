@@ -109,6 +109,21 @@ dist-picker
 
 Practice Problem 23 (the first miss on the 15th shot) is geometric with success = miss, $p = 0.05$: $0.95^{14}(0.05) = 0.0244$. Practice Problem 25 (ten 4-choice questions guessed, none right) is binomial with $n = 10$, $p = 0.25$, $x = 0$: $0.75^{10} = 0.0563$, which is `dbinom(0, 10, 0.25)`.
 
+## Name the distribution for four new stories
+
+Each item below is a new story; ask the four questions before computing anything.
+
+```quiz
+[
+  {"q": "A technician takes 4 resistors, without putting any back, from a box of 25 in which 5 are out of tolerance. X = the number out of tolerance. Name the distribution (one word).", "type": "text", "answer": ["hypergeometric", "hypergeometric distribution"], "explain": "A fixed sample drawn without replacement from a finite population: hypergeometric with N = 25, K = 5, n = 4. The sample is 4/25 = 16 % of the box, above 5 %, so the binomial is not a stand-in."},
+  {"q": "Same resistors (N = 25, K = 5, n = 4). P(X = 1) = ? (4 decimals)", "type": "numeric", "answer": 0.4506, "tolerance": 6e-05, "explain": "C(5, 1) · C(20, 3)/C(25, 4) = 5 × 1140/12 650 = 5700/12 650 = 0.4506. In R, dhyper(1, 5, 20, 4)."},
+  {"q": "An intersection averages 0.8 accidents per month, at random. X = the number of accidents in a year. Name the distribution (one word).", "type": "text", "answer": ["poisson", "poisson distribution"], "explain": "A count of random, independent events over an interval with a known mean rate: Poisson."},
+  {"q": "Same intersection: λ for one year = ?", "type": "numeric", "answer": 9.600000000000001, "tolerance": 0.001, "explain": "Rescale to the interval: 0.8 per month × 12 months = 9.6 accidents per year. P(X = 10) would be dpois(10, 9.6)."},
+  {"q": "A gamer opens loot boxes until the first rare item; each box holds one with probability 0.1. X = the number of boxes opened. P(X ≤ 3) = ? (4 decimals)", "type": "numeric", "answer": 0.271, "tolerance": 6e-05, "explain": "Geometric with p = 0.1 (no fixed n; X counts trials to the first success). X ≤ 3 is the complement of three misses: 1 − 0.9³ = 1 − 0.729 = 0.2710. In R, pgeom(2, 0.1), with R's failures counted (3 − 1 = 2)."},
+  {"type": "fill", "q": "A student guesses all 15 questions of a true/false quiz. Complete the R call for P(at most 10 right).", "code": "pbinom(___, 15, 0.5)", "answer": ["10"], "explain": "Binomial with n = 15, p = 0.5 (fixed n, right or wrong, same p, independent guesses). pbinom(x, n, p) is the cumulative P(X ≤ x), so x = 10: 0.9407654."}
+]
+```
+
 ```quiz
 [
   {

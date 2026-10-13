@@ -73,6 +73,21 @@ All of these are presets in the calculator above. Decide P, C or $n^r$ for each 
 
 On the calculator: $C(52, 4)$ is `52  2nd F  nCr  4`; `nPr` gives permutations and `n!` factorials. In R: `factorial(4)`, `choose(52, 4) * factorial(4)` for $P(52, 4)$, `choose(52, 4)` for $C(52, 4)$.
 
+## Count plates, officers, teams and hands
+
+Decide for each count whether repeats are allowed and whether order matters.
+
+```quiz
+[
+  {"q": "A licence plate is 3 letters followed by 3 digits, repeats allowed. How many plates are possible?", "type": "numeric", "answer": 17576000, "tolerance": 0, "explain": "Counting rule: $26 \\times 26 \\times 26 \\times 10 \\times 10 \\times 10 = 17576000$, i.e. 17 576 000 plates."},
+  {"q": "A club of 12 elects a president, a vice-president and a treasurer (three different people). How many outcomes?", "type": "numeric", "answer": 1320, "tolerance": 0, "explain": "The offices are distinct positions, so order matters: $P(12, 3) = 12 \\times 11 \\times 10 = 1320$."},
+  {"q": "A 4-person project team is chosen from 15 students. How many teams?", "type": "numeric", "answer": 1365, "tolerance": 0, "explain": "A team has no order: $C(15, 4) = (15 \\times 14 \\times 13 \\times 12)/(4 \\times 3 \\times 2 \\times 1) = 32760/24 = 1365$."},
+  {"q": "Four cards are dealt. $P(\\text{all four are face cards})$? (6 decimals)", "type": "numeric", "answer": 0.001828, "tolerance": 3e-06, "explain": "Hands over hands: $C(12, 4)/C(52, 4) = 495/270725 = 0.001828$ (12 face cards: J, Q, K in each suit)."},
+  {"q": "How many ways can 6 guests sit in a row of 6 chairs?", "options": ["$6! = 720$", "$C(6, 6) = 1$", "$6^6 = 46656$", "$P(6, 1) = 6$"], "answer": 0, "explain": "All 6 people in order, nobody twice: $6! = 6 \\times 5 \\times 4 \\times 3 \\times 2 \\times 1 = 720$."},
+  {"type": "fill", "q": "Fill the blank so R prints the face-card probability.", "code": "choose(12, 4) / choose(52, ___)\n## [1] 0.001828424", "answer": ["4"], "explain": "Both counts are hands of 4: $C(12, 4)$ favourable over $C(52, 4)$ total, the same kind of count above and below the line."}
+]
+```
+
 ```quiz
 [
   {

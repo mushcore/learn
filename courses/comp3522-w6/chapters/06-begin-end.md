@@ -60,6 +60,53 @@ int main()
 
 The order of the output follows the C++17 rule for `E1 << E2`: the left operand is evaluated first. So `cout << "passes: "` has already printed before `walk` runs and prints the elements, and the returned count comes after them on the same chain. Before C++17 the order was unspecified.
 
+## Walk part of a range and count the loop tests
+
+A loop that starts one past `begin()` and stops one before `end()`, a counter on the loop test itself, and a `<=` that reaches too far.
+
+```quiz
+[
+  {
+    "q": "Type the line this prints.",
+    "type": "text",
+    "code": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    vector<int> v = {4, 8, 15, 16, 23};\n    int passes = 0;\n    for (auto it = v.begin() + 1; it != v.end() - 1; ++it) {\n        cout << *it << \" \";\n        ++passes;\n    }\n    cout << \"passes \" << passes << endl;\n    return 0;\n}",
+    "answer": [
+      "8 15 16 passes 3"
+    ],
+    "explain": "`v.begin() + 1` is the 8. `v.end() - 1` is the last element, 23, so the range [8, 23) stops before it: 8, 15, 16. Three passes."
+  },
+  {
+    "q": "What number does this print?",
+    "type": "numeric",
+    "code": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    vector<int> v = {1, 2, 3, 4, 5, 6};\n    int tests = 0;\n    for (auto it = v.begin(); (++tests, it != v.end()); ++it) { }\n    cout << tests << endl;\n    return 0;\n}",
+    "answer": 7,
+    "tolerance": 0,
+    "explain": "The comma expression counts every evaluation of the test. Six elements give six tests that are true and run the (empty) body, plus one final test where it == end() that ends the loop: 6 + 1 = 7. A range of n elements always takes n + 1 tests."
+  },
+  {
+    "q": "Type the line this prints.",
+    "type": "text",
+    "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s = \"loop\";\n    cout << s.end() - s.begin() << \" \" << *(s.end() - 1) << \" \" << *s.begin() << endl;\n    return 0;\n}",
+    "answer": [
+      "4 p l"
+    ],
+    "explain": "A string has random access iterators. end() - begin() is the number of positions, 4. end() points one past the 'p', so `*(s.end() - 1)` is the last character, `p`, and `*s.begin()` is `l`."
+  },
+  {
+    "q": "This compiles but reads past the vector. Click the line with the mistake.",
+    "type": "spotbug",
+    "code": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    vector<int> v = {7, 14, 21};\n    for (auto it = v.begin(); it <= v.end(); ++it)\n        cout << *it << \" \";\n    cout << endl;\n    return 0;\n}",
+    "answer": [
+      7
+    ],
+    "explain": "With `<=` the loop also runs when `it == v.end()`, so `*it` dereferences end(), which points to no element: undefined behaviour after 7 14 21. The test is always `it != v.end()`."
+  }
+]
+```
+
+```challenge
+{"prompt": "Finish <code>count_above</code> with an explicit iterator loop from <code>v.begin()</code> to <code>v.end()</code> (no index, no ranged for). It must return 0 for an empty vector without any special case.", "starter": "#include <iostream>\n#include <vector>\nusing namespace std;\n\n// count the elements greater than limit with an explicit iterator loop:\n// no index and no ranged for\nint count_above(const vector<int>& v, int limit) {\n    int n = 0;\n    return n;\n}\n\nint main() {\n    cout << count_above({3, 9, 12, 5, 20}, 6) << endl;\n    cout << count_above({}, 6) << endl;\n    return 0;\n}\n", "expected": "3\n0", "hints": ["v is a const reference, so use <code>vector&lt;int&gt;::const_iterator</code> (or <code>auto</code>).", "For an empty vector begin() == end(), so the body never runs."], "solution": "#include <iostream>\n#include <vector>\nusing namespace std;\n\n// count the elements greater than limit with an explicit iterator loop:\n// no index and no ranged for\nint count_above(const vector<int>& v, int limit) {\n    int n = 0;\n    for (vector<int>::const_iterator it = v.begin(); it != v.end(); ++it) {\n        if (*it > limit) ++n;\n    }\n    return n;\n}\n\nint main() {\n    cout << count_above({3, 9, 12, 5, 20}, 6) << endl;\n    cout << count_above({}, 6) << endl;\n    return 0;\n}\n"}
+```
 ```quiz
 [
   {

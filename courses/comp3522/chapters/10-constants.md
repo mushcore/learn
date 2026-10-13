@@ -137,6 +137,64 @@ char firstName[firstNameLength];
 
 An array's size has to be known when the compiler lays out memory for it, so `constexpr` is the idiomatic choice here — not `const`, and definitely not `#define`. This is the same `firstNameLength` used later with `cin >> setw(5) >> firstName;` to stop `cin` from overflowing the 5-byte buffer.
 
+## Sort four new constants into compiles and errors
+
+A macro, a `const` and a `constexpr` in new programs; decide what each line means to the compiler.
+
+```quiz
+[
+  {
+    "type": "numeric",
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#define TOTAL 4 + 6\n\nint main()\n{\n    std::cout << TOTAL * 2 << std::endl;\n    return 0;\n}",
+    "answer": 16,
+    "explain": "`#define` pastes text, not a value. `TOTAL * 2` becomes `4 + 6 * 2`, and `*` binds first: 4 + 12 = 16, not 20. Parentheses in the macro, `(4 + 6)`, or a `constexpr int` avoid this."
+  },
+  {
+    "type": "spotbug",
+    "q": "Click the line that fails to compile.",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    const double rate{0.05};\n    double balance = 200 * (1 + rate);\n    rate = 0.07;\n    cout << balance << endl;\n    return 0;\n}",
+    "answer": 8,
+    "explain": "Line 6 initializes the constant, which is mandatory and legal. Line 8 tries to change it after initialization: `assignment of read-only variable 'rate'`."
+  },
+  {
+    "type": "spotbug",
+    "q": "Click the line that fails to compile.",
+    "code": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int seats;\n    cin >> seats;\n    const int booked = seats;\n    constexpr int capacity = seats;\n    cout << booked << capacity << endl;\n    return 0;\n}",
+    "answer": 9,
+    "explain": "Line 8 is fine: a `const` may get its value at run time, it just never changes afterwards. Line 9 needs `seats` at compile time, but it is only known after `cin` runs: `the value of 'seats' is not usable in a constant expression`."
+  },
+  {
+    "q": "Which of these lines compile, each on its own inside `main`? (select all)",
+    "options": [
+      "`const int a = 4;`",
+      "`const int a = 4; constexpr int b = a * 2;`",
+      "`const int c;`",
+      "`constexpr double d{1.5};`"
+    ],
+    "answer": [
+      0,
+      1,
+      3
+    ],
+    "explain": "A `const int` initialized with a literal is itself known at compile time, so `constexpr int b = a * 2` is legal (8). `const int c;` has no initializer: a const must be set in its declaration. `constexpr double d{1.5}` uses a literal, which the compiler knows."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "Declare <code>constexpr int MAX_SCORE{50};</code> at file scope and write <code>double percent(const int score)</code> returning the score as a percentage of <code>MAX_SCORE</code>. <code>main</code> prints <code>84 100</code>.",
+  "starter": "#include <iostream>\nusing namespace std;\n\n// MAX_SCORE and percent here\n\nint main()\n{\n    cout << percent(42) << ' ' << percent(50) << endl;\n    return 0;\n}\n",
+  "expected": "84 100\n",
+  "hints": [
+    "Make the arithmetic floating point: <code>score * 100.0 / MAX_SCORE</code>.",
+    "<code>score * 100 / MAX_SCORE</code> would also give 84 here, but only because 4200 divides evenly by 50."
+  ],
+  "solution": "#include <iostream>\nusing namespace std;\n\nconstexpr int MAX_SCORE{50};\n\ndouble percent(const int score)\n{\n    return score * 100.0 / MAX_SCORE;\n}\n\nint main()\n{\n    cout << percent(42) << ' ' << percent(50) << endl;\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {

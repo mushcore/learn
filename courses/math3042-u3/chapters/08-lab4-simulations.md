@@ -248,6 +248,21 @@ Z <- (5 - Chad.params$mean)/Chad.params$sig; Z   ## -1.816618
 Either $|Z| > 2$ (Alice: $Z = -2.72$, unusual; Chad: $Z = -1.82$, not unusual) or a tail probability below 0.025 (Alice: $P(X \le 3) = 0.0081 < 0.0250$). State the number and the cut-off with the verdict.
 :::
 
+## Simulate an 8-game match
+
+Bob wins each game of a match with probability 0.7 and a match is 8 games; $X$ is the number of games Bob wins.
+
+```quiz
+[
+  {"type": "fill", "q": "Fill the two blanks so one call plays the 8 games.", "code": "games <- sample(c(\"B\",\"O\"), 8, replace=___, prob=c(___, 0.3))\nX <- sum(games == \"B\")", "answer": ["TRUE", "0.7"], "explain": "Games repeat outcomes, so `replace=TRUE`; `prob=` lists Bob's 0.7 first, in the order of the outcomes."},
+  {"type": "fill", "q": "Fill the upper break so every value 0 to 8 gets its own bar.", "code": "X.vals <- replicate(10^5, sum(sample(c(\"B\",\"O\"), 8, replace=TRUE, prob=c(0.7, 0.3)) == \"B\"))\nhist(X.vals, breaks=seq(-0.5, ___, by=1), freq=FALSE)", "answer": ["8.5"], "explain": "Half-integer breaks from −0.5 to $n + 0.5 = 8.5$ centre a bar on each integer; `freq=FALSE` makes the heights relative frequencies."},
+  {"q": "A simulation gives mean 5.60 and sd 1.30 for $X$. Compute $Z$ for a match where Bob wins only 2 games. (2 decimals)", "type": "numeric", "answer": -2.77, "tolerance": 0.006, "explain": "$Z = (2 - 5.60)/1.30 = -3.60/1.30 = -2.7692$."},
+  {"q": "Is $X = 2$ unusual for Bob?", "type": "text", "answer": ["unusual", "yes", "yes, unusual", "it is unusual"], "explain": "$|Z| = 2.77 > 2$, so yes, unusual. The other accepted test is a tail probability below 0.025."},
+  {"q": "`Prob.E` is changed to count `X == 9` for the sum of two dice. What exact probability does it estimate? (4 decimals)", "type": "numeric", "answer": 0.1111, "tolerance": 6e-05, "explain": "(3, 6), (4, 5), (5, 4), (6, 3): 4 of 36 outcomes, $4/36 = 0.1111$."},
+  {"q": "The sd of 100 estimates is 0.05 at $m = 100$ trials. About what is it at $m = 10^4$?", "type": "numeric", "answer": 0.005, "tolerance": 0.0005, "explain": "Each tenfold increase in $m$ divides the spread by about $\\sqrt{10}$; two tenfold steps divide by $\\sqrt{100} = 10$: $0.05/10 = 0.005$."}
+]
+```
+
 ```quiz
 [
   {

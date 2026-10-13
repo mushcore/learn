@@ -317,6 +317,74 @@ int main()
 `cin.ignore(numeric_limits<streamsize>::max(), '\n');` (from `<limits>`) throws away everything up to and including the leftover newline, so the next `getline` reads the real line.
 :::
 
+## Feed new lines to `string` and `getline`
+
+New strings and new input; `getline` stops at the delimiter and throws it away, `>>` stops at whitespace and leaves it.
+
+```quiz
+[
+  {
+    "q": "What does this print?",
+    "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main()\n{\n    string a = \"Zebra\", b = \"apple\";\n    cout << boolalpha << (a < b) << ' ' << a.size() + b.length() << ' ' << a[0] << b.at(4) << endl;\n    return 0;\n}",
+    "options": [
+      "`true 10 Ze`",
+      "`false 10 Ze`",
+      "`true 10 Za`",
+      "`false 10 Za`"
+    ],
+    "answer": 0,
+    "explain": "Comparison is character by character on character codes: `'Z'` is 90 and `'a'` is 97, so `\"Zebra\" < \"apple\"` is true even though z comes after a in the alphabet. Both sizes are 5. `a[0]` is `Z` and `b.at(4)` is `e`. Output: `true 10 Ze`."
+  },
+  {
+    "type": "text",
+    "q": "The input is `red,green,blue`. What does this print?",
+    "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main()\n{\n    string x, y, z;\n    getline(cin, x, ',');\n    getline(cin, y, ',');\n    getline(cin, z);\n    cout << y << \"|\" << z << endl;\n    return 0;\n}",
+    "answer": [
+      "green|blue"
+    ],
+    "explain": "With `','` as the delimiter, the first call reads `red` and tosses the comma, the second reads `green`. The third uses the default delimiter `'\\n'` and reads `blue`. Output: `green|blue`."
+  },
+  {
+    "q": "The input is `3`, Enter, `Ada Lovelace`, Enter. What does this print?",
+    "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main()\n{\n    int n;\n    string name;\n    cin >> n;\n    getline(cin, name);\n    cout << n << \" [\" << name << \"]\" << endl;\n    return 0;\n}",
+    "options": [
+      "`3 []`",
+      "`3 [Ada Lovelace]`",
+      "`3 [Ada]`",
+      "`0 [3]`"
+    ],
+    "answer": 0,
+    "explain": "`cin >> n` reads 3 and leaves the Enter in the buffer. `getline` reads up to that newline at once, so `name` is empty and `Ada Lovelace` is never read. Output: `3 []`. The fix is `cin.ignore(numeric_limits<streamsize>::max(), '\\n');` before the `getline`."
+  },
+  {
+    "q": "The input is three lines: `a b`, an empty line, and `c`. What does this print?",
+    "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main()\n{\n    string line;\n    int lines = 0, chars = 0;\n    while (getline(cin, line))\n    {\n        ++lines;\n        chars += line.size();\n    }\n    cout << lines << ' ' << chars << endl;\n    return 0;\n}",
+    "options": [
+      "`3 4`",
+      "`2 4`",
+      "`3 7`",
+      "`3 3`"
+    ],
+    "answer": 0,
+    "explain": "The empty line still counts as a line: `getline` succeeds with an empty string. Sizes are 3 (`a b`, the space counts), 0 and 1, and the newlines are tossed: 3 lines, 4 characters. Output: `3 4`."
+  }
+]
+```
+
+```challenge
+{
+  "prompt": "Read lines until input runs out. Print each line's length on its own line, then <code>longest: </code> followed by the longest line. For the test input the output is:<pre>5\n16\n3\nlongest: much longer line</pre>",
+  "starter": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main()\n{\n    string line, longest;\n    // your code here\n    return 0;\n}\n",
+  "stdin": "short\nmuch longer line\nmid\n",
+  "expected": "5\n16\n3\nlongest: much longer line\n",
+  "hints": [
+    "<code>while (getline(cin, line))</code>",
+    "Keep the longest so far: <code>if (line.size() > longest.size()) longest = line;</code>"
+  ],
+  "solution": "#include <iostream>\n#include <string>\nusing namespace std;\n\nint main()\n{\n    string line, longest;\n    while (getline(cin, line))\n    {\n        cout << line.size() << endl;\n        if (line.size() > longest.size())\n        {\n            longest = line;\n        }\n    }\n    cout << \"longest: \" << longest << endl;\n    return 0;\n}\n"
+}
+```
+
 ```quiz
 [
   {
