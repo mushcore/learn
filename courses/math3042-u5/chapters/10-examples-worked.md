@@ -3,11 +3,7 @@ title: Every lecture example, worked
 minutes: 35
 ---
 
-The Unit 5 notes were posted with every answer line blank. Each example part is here in the order it appears, pp. 75 to 85: answer it first in the box, then compare with the arithmetic that belongs on the answer line and the R check. The closing quiz is the same problems with the numbers changed.
-
-:::info Computed answers
-Every value is computed from the formulas and checked in R, with a left-tail $P(Z \le z)$ table assumed for the normal parts. The in-class numbers replace these if they differ.
-:::
+The Unit 5 notes were posted with every answer line blank. Each example part is here in the order it appears, pp. 75 to 85: a box for the answer, then the arithmetic that belongs on the answer line and the R check. The closing quiz is the same problems with the numbers changed.
 
 ## 5.1 The bus comes every twenty minutes (p. 75)
 
@@ -156,7 +152,7 @@ A sent 0 is misread when the noise pushes 2 V past 2.5 V, that is when $N > 0.5$
 
 ```quiz
 [
-  { "q": "The wait between http requests is exponential with mean 2.5 s. The pdf for $X$ is...", "options": ["$f(x) = 2.5\\,e^{-2.5x}$", "$f(x) = 0.4\\,e^{-0.4x}$, $x \\ge 0$", "$f(x) = 1 - e^{-x/2.5}$", "$f(x) = 0.4\\,e^{-2.5x}$"], "answer": 1, "explain": "$\\beta = 2.5$: $\\frac{1}{2.5} e^{-x/2.5} = 0.4\\,e^{-0.4x}$. Option 2 is $F(x)$." }
+  { "q": "The wait between http requests is exponential with mean 2.5 s. The pdf for $X$ is...", "options": ["$f(x) = 2.5\\,e^{-2.5x}$", "$f(x) = 0.4\\,e^{-0.4x}$, $x \\ge 0$", "$f(x) = 1 - e^{-x/2.5}$", "$f(x) = 0.4\\,e^{-2.5x}$"], "answer": 1, "explain": "$\\beta = 2.5$: $\\frac{1}{2.5} e^{-x/2.5} = 0.4\\,e^{-0.4x}$. $1 - e^{-x/2.5}$ is the cdf $F(x)$, not the density." }
 ]
 ```
 
@@ -168,7 +164,7 @@ A sent 0 is misread when the noise pushes 2 V past 2.5 V, that is when $N > 0.5$
 ]
 ```
 
-**(b)** $P(X \le 4) = ∫_0^{4} 0.4\,e^{-0.4x}\,dx = 1 - e^{-1.6} = 1 - 0.2019 = 0.7981$.
+**(b)** $P(X \le 4) = \int_0^{4} 0.4\,e^{-0.4x}\,dx = 1 - e^{-1.6} = 1 - 0.2019 = 0.7981$.
 
 ```quiz
 [
@@ -242,8 +238,8 @@ pexp(2.5, rate) - pexp(1.5, rate);  (pexp(3.5, rate) - pexp(2.5, rate)) / (1 - p
 [1] 2.772589
 ```
 
-:::quiz What the answer line must show
-The formula in symbols, the numbers substituted, the intermediate values (the $Z$, the table value, the $e^{-x/\beta}$) and the final answer with its units. A bare 0.1859 earns less than $e^{-0.75} - e^{-1.25} = 0.4724 - 0.2865 = 0.1859$.
+:::info A complete answer line
+The formula in symbols, the numbers substituted, the intermediate values (the $Z$, the table value, the $e^{-x/\beta}$) and the final answer with its units: $e^{-0.75} - e^{-1.25} = 0.4724 - 0.2865 = 0.1859$, not a bare 0.1859.
 :::
 
 ```quiz
@@ -285,9 +281,9 @@ The formula in symbols, the numbers substituted, the intermediate values (the $Z
   {
     "q": "$P(-1.28 \\le Z \\le 1.28)$? (4 decimals)",
     "type": "numeric",
-    "answer": 0.7995,
-    "tolerance": 0.0003,
-    "explain": "$0.8997 - 0.1003 = 0.7994$ from the table (R: 0.7995): the middle 80 %."
+    "answer": 0.7994,
+    "tolerance": 0.0002,
+    "explain": "$0.8997 - 0.1003 = 0.7994$ from the table: the middle 80 %. R's `pnorm(1.28) - pnorm(-1.28)` gives 0.7995 because it does not round the two entries first; both are accepted."
   },
   {
     "q": "IQ is $N(100, 15^2)$. P(an IQ above 130)? (4 decimals)",

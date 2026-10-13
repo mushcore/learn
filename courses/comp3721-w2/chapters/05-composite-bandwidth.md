@@ -3,7 +3,7 @@ title: Composite signals & bandwidth
 minutes: 14
 ---
 
-A single sine wave can carry energy or ring an alarm, but it cannot carry a conversation. Real data signals are *composite*: many sine waves added together, and the one number that describes the set is the **bandwidth**.
+A single sine wave can carry energy or ring an alarm, but it cannot carry a conversation. Real data signals are composite: many sine waves added together, and the one number that describes the set is the **bandwidth**.
 
 ## Two ways to draw the same signal
 
@@ -60,6 +60,15 @@ $$B = f_{h} - f_{l}$$
 
 Not the sum, not the highest frequency by itself: the **difference**. For the slide figure the bandwidth is $9f - f = 8f$.
 
+### Each harmonic added widens the bandwidth
+
+Each step adds the next component to the sum. The bandwidth is set only by the lowest and highest frequencies present, so it grows only when a new highest frequency arrives. A single sine wave has zero bandwidth.
+
+```widget
+harmonic-build-play
+{}
+```
+
 ## The middle-frequency trick
 
 E02 gives a bandwidth and a *middle frequency* and asks for the two ends. The middle frequency is the average of the ends:
@@ -73,32 +82,7 @@ Two equations:
 
 Add them to get $2 f_{h}$, or remember that **each end is half the bandwidth away from the middle**: $f_{h} = \text{middle} + \frac{B}{2}$ and $f_{l} = \text{middle} - \frac{B}{2}$.
 
-## E02 Exercise 1, worked
-
-*A nonperiodic composite signal has a bandwidth of 200 kHz, with a middle frequency of 140 kHz and peak amplitude of 20 V (at the middle frequency). The two extreme frequencies have an amplitude of 0. Find the lowest and the highest frequencies and draw the frequency-domain plot.*
-
-- $B = f_{h} - f_{l} = 200$ kHz
-- middle: $\frac{f_{h} + f_{l}}{2} = 140$ kHz, so $f_{h} + f_{l} = 280$ kHz
-
-Adding the two equations: $2 f_{h} = 480$, so $f_{h} = 240$ kHz. Then $f_{l} = 280 - 240 = 40$ kHz. Check: $240 - 40 = 200$ kHz.
-
-The plot is a **triangle**: 0 V at 40 kHz, 20 V at 140 kHz, 0 V at 240 kHz, a filled shape rather than spikes because the signal is nonperiodic.
-
-## E02 Exercise 2, worked
-
-*The highest frequency in a nonperiodic composite signal is 400 MHz. If the middle frequency is 300 MHz, find the lowest frequency and the bandwidth.*
-
-- $f_{h} = 400$ MHz
-- middle: $\frac{f_{h} + f_{l}}{2} = 300$ MHz, so $f_{h} + f_{l} = 600$ MHz and $f_{l} = 600 - 400 = 200$ MHz
-- $B = f_{h} - f_{l} = 400 - 200 = 200$ MHz
-
-## E02 Exercise 3, worked
-
-*If a periodic signal is decomposed into five sine waves with frequencies of 100, 400, 500, 750, and 900 Hz, what is its bandwidth?*
-
-$$B = f_{h} - f_{l} = 900\ \text{Hz} - 100\ \text{Hz} = 800\ \text{Hz}$$
-
-Only the lowest and highest frequencies matter.
+E02 exercises 1 to 3 apply this trick and the bandwidth rule; they are worked once, in [E02, worked](#/comp3721-w2/e02-worked).
 
 ```quiz
 [
@@ -124,15 +108,7 @@ Only the lowest and highest frequencies matter.
     "answer": 800,
     "tolerance": 1,
     "unit": "Hz",
-    "explain": "$B = f_{h} - f_{l} = 1000 - 200 = 800$ Hz. The middle frequencies do not change the answer (same idea as E02 exercise 3: $900 - 100 = 800$ Hz)."
-  },
-  {
-    "q": "The lowest frequency of a composite signal is 20 kHz and its bandwidth is 180 kHz. What is the highest frequency in kHz?",
-    "type": "numeric",
-    "answer": 200,
-    "tolerance": 0.5,
-    "unit": "kHz",
-    "explain": "$f_{h} = f_{l} + B = 20 + 180 = 200$ kHz."
+    "explain": "$B = f_{h} - f_{l} = 1000 - 200 = 800$ Hz. The frequencies in between do not change the answer."
   },
   {
     "q": "The highest frequency of a nonperiodic composite signal is 1 MHz and its middle frequency is 700 kHz. What is the lowest frequency in kHz?",
@@ -140,15 +116,7 @@ Only the lowest and highest frequencies matter.
     "answer": 400,
     "tolerance": 0.5,
     "unit": "kHz",
-    "explain": "$f_{h} + f_{l} = 2 \\times 700 = 1400$ kHz, so $f_{l} = 1400 - 1000 = 400$ kHz. Same pattern as E02 exercise 2 ($600 - 400 = 200$ MHz)."
-  },
-  {
-    "q": "Same signal (highest 1 MHz, middle 700 kHz). What is its bandwidth in kHz?",
-    "type": "numeric",
-    "answer": 600,
-    "tolerance": 0.5,
-    "unit": "kHz",
-    "explain": "$B = f_{h} - f_{l} = 1000 - 400 = 600$ kHz. Or: the middle is 300 kHz below the top, so $B = 2 \\times 300 = 600$ kHz."
+    "explain": "$f_{h} + f_{l} = 2 \\times 700 = 1400$ kHz, so $f_{l} = 1400 - 1000 = 400$ kHz. The bandwidth is then $1000 - 400 = 600$ kHz."
   },
   {
     "q": "A complete sine wave in the time domain is represented by one single spike in the frequency domain.",
@@ -182,15 +150,9 @@ Only the lowest and highest frequencies matter.
   },
   {
     "q": "Which quantities can you read directly from a frequency-domain plot? Select all that apply.",
-    "options": ["Frequency of each sine wave", "Peak amplitude of each sine wave", "Phase of each sine wave", "Bandwidth (from the lowest and highest spikes)"],
-    "answer": [0, 1, 3],
+    "options": ["Phase of each sine wave", "Frequency of each sine wave", "Peak amplitude of each sine wave", "Bandwidth (from the lowest and highest spikes)"],
+    "answer": [1, 2, 3],
     "explain": "A frequency-domain plot shows peak amplitude against frequency; phase is not shown (and the time-domain plot does not show it explicitly either). Bandwidth is the distance between the lowest and highest frequencies present."
-  },
-  {
-    "q": "A single-frequency sine wave is useful for carrying data in data communications.",
-    "type": "tf",
-    "answer": false,
-    "explain": "Slide wording: a single-frequency sine wave is **not** useful in data communications; a conversation sent as one sine wave would be just a buzz. We need composite signals to communicate data."
   }
 ]
 ```

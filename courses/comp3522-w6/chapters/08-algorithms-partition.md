@@ -3,7 +3,7 @@ title: STL algorithms and std::partition
 minutes: 25
 ---
 
-An STL algorithm is a free function that works on any range you hand it as two iterators. `std::partition` is the deck's worked example: what it does, what it returns, and how the "possible implementation" moves `first` and `i` across `{1,2,3,4,5}`.
+An STL algorithm is a free function that works on any range you hand it as two iterators, so one piece of code serves every container. `std::partition` is the deck's worked example.
 
 ## An algorithm works on [first, last) and never resizes
 
@@ -74,14 +74,9 @@ int main () {
 }
 ```
 
-`bool IsOdd (int i)` is the predicate: one parameter of the element type, returns bool. `iterBound = partition (myvector.begin(), myvector.end(), IsOdd);` is the three-parameter call, and its return value is the boundary. Before: `{1,2,3,4,5,6,7,8,9,10}`. After: `{1,9,3,7,5,6,4,8,2,10}`, with `iterBound` pointing at 6, the first even number. The two print loops use that boundary as the end of the first range, `it!=iterBound`, and the start of the second, `for (auto it=iterBound; it!=myvector.end(); ++it)`.
+`IsOdd` is the predicate: one parameter of the element type, returns bool. The returned `iterBound` is the boundary: the first print loop stops at it and the second starts at it.
 
 ## A possible implementation, traced on {1,2,3,4,5}
-
-```widget
-partition-stepper
-{ "values": [1, 2, 3, 4, 5], "pred": "odd" }
-```
 
 The slide shows cppreference's possible implementation:
 
@@ -102,15 +97,18 @@ ForwardIt partition(ForwardIt first, ForwardIt last, UnaryPredicate p)
 }
 ```
 
-`first` always marks the first false element found so far; `i` scans ahead looking for true elements to swap back into that slot. On `{1,2,3,4,5}` with `p` = `IsOdd`:
+`first` always marks the first false element found so far; `i` scans ahead looking for true elements to swap back into that slot.
 
-1. `find_if_not` moves `first` to 2, the first even number. `i` starts at `std::next(first)`, which is 3.
-2. `p(*i)`: `IsOdd(3)` is TRUE, so `iter_swap(i, first)` gives `{1,3,2,4,5}` and `++first` moves `first` to the 2, now in position 3.
-3. `++i` reaches 4: `IsOdd(4)` is FALSE, nothing happens.
-4. `++i` reaches 5: `IsOdd(5)` is TRUE, `iter_swap(i, first)` swaps 5 and 2, giving `{1,3,5,4,2}`, and `++first` moves `first` to the 4.
-5. `++i` equals `last`, so the loop ends and `first` is returned, pointing at 4: the first element of the false group.
+### first and i moving across {1,2,3,4,5}
 
-The swap in step 4 is what breaks relative order: 2 was first among the evens and is now last. The function needs only a `ForwardIt`, so the same code partitions a `list`, whose iterators cannot do `+ n`; `std::next` and `++` are enough.
+```widget
+partition-stepper
+{ "values": [1, 2, 3, 4, 5], "pred": "odd", "predict": true }
+```
+
+Each step is one value of `i`: a true element is swapped into `first`'s slot and `first` moves on; a false one is skipped. Watch what happens to the 2, which starts first among the evens.
+
+The swap is what breaks relative order. The function needs only a `ForwardIt`, so the same code partitions a `list`, whose iterators cannot do `+ n`; `std::next` and `++` are enough.
 
 ```cpp run pin partitionTrace.cpp
 // predict: Write the three lines before "std::partition 1..10", then the answers to the two == questions.
@@ -161,11 +159,7 @@ int main() {
 }
 ```
 
-`my_partition` is the slide's code with one print after each `iter_swap(i, first);`, so the two `after swap:` lines are steps 2 and 4 of the trace and `result:` is step 5. `std::partition(w.begin(), w.end(), IsOdd)` on 1 to 10 reproduces the slide's `1 9 3 7 5 6 4 8 2 10` with the bound at 6, and `is_partitioned` confirms the property. The two edge cases are the return-value rule: with `{2, 4, 6}` every element is false, so the bound is `begin()`; with `{1, 3, 5}` there is no false group, so the bound is `end()`. `stable_partition` is the family member that keeps relative order: `1 3 5 7 9 2 4 6 8 10`.
-
-:::quiz Three things the quiz asks about partition
-The returned iterator is the first element of the **false** group (or `end()` when nothing is false). Relative order is **not** maintained; `stable_partition` maintains it. The container's size never changes, because an algorithm only sees iterators.
-:::
+`my_partition` is the slide's code with one print after each `iter_swap(i, first);`. The last four lines run the library versions: `std::partition`, the two edge cases of the return value, and `stable_partition`.
 
 ```challenge
 { "prompt": "Partition <code>v = {3, 8, 1, 9, 5, 6, 2, 7}</code> so the values greater than 5 come first, using a named predicate function <code>GreaterThanFive</code>. Print the true group after <code>greater than 5:</code> and the false group after <code>the rest:</code>, one space before each value, then <code>size still 8</code>. The expected order is what g++'s <code>std::partition</code> produces.", "starter": "#include <iostream>\n#include <algorithm>\n#include <vector>\nusing namespace std;\n\n// TODO: the unary predicate\n\nint main() {\n    vector<int> v = {3, 8, 1, 9, 5, 6, 2, 7};\n    // TODO: partition and keep the returned bound\n\n    cout << \"greater than 5:\";\n    // TODO: print [begin, bound)\n    cout << '\\n';\n\n    cout << \"the rest:\";\n    // TODO: print [bound, end)\n    cout << '\\n';\n\n    cout << \"size still \" << v.size() << '\\n';\n    return 0;\n}\n", "expected": "greater than 5: 7 8 6 9\nthe rest: 5 1 2 3\nsize still 8", "hints": ["The predicate takes one <code>int</code> and returns <code>i &gt; 5</code>.", "<code>vector&lt;int&gt;::iterator bound = partition(v.begin(), v.end(), GreaterThanFive);</code>", "First loop: <code>for (auto it = v.begin(); it != bound; ++it)</code>; second loop starts at <code>bound</code> and stops at <code>v.end()</code>."], "solution": "#include <iostream>\n#include <algorithm>\n#include <vector>\nusing namespace std;\n\nbool GreaterThanFive(int i)\n{\n    return i > 5;\n}\n\nint main() {\n    vector<int> v = {3, 8, 1, 9, 5, 6, 2, 7};\n    vector<int>::iterator bound = partition(v.begin(), v.end(), GreaterThanFive);\n\n    cout << \"greater than 5:\";\n    for (auto it = v.begin(); it != bound; ++it)\n        cout << ' ' << *it;\n    cout << '\\n';\n\n    cout << \"the rest:\";\n    for (auto it = bound; it != v.end(); ++it)\n        cout << ' ' << *it;\n    cout << '\\n';\n\n    cout << \"size still \" << v.size() << '\\n';\n    return 0;\n}\n" }

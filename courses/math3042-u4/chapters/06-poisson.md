@@ -5,10 +5,6 @@ minutes: 18
 
 Requests at a web server, jobs at a CPU, bit errors on a line: there is no fixed number of trials and no probability per trial, only a rate. The Poisson distribution gives the probability of $x$ events in an interval from one number, the mean $\lambda$.
 
-:::info The notes are blank from here on
-Pages 71 to 73 were posted without the answers filled in. Every number below is computed and checked against the demo notebook (`demo_notebook_Unit_04.Rmd`).
-:::
-
 ## Events that occur randomly throughout a time interval
 
 Slide wording: the Poisson Distribution is *named after the French mathematician Siméon Poisson (1781–1840). This distribution is one of the most important probability distributions in engineering and computer science. It arises whenever we are modelling events that occur randomly throughout a given time interval.* The notes' two examples are both from this program: $X$ = *the number of jobs arriving for service at a CPU per second*, and $X$ = *the number of bits arriving in error at a network node per minute*.
@@ -36,20 +32,24 @@ $$\mu = \lambda, \qquad \sigma^2 = \lambda$$
 
 so $\sigma = \sqrt{\lambda}$. One number sets the centre and the spread together.
 
-## λ from a rate and an interval
-
-```widget
-poisson-calc
-{ "rate": 1, "per": 2, "unit": "s", "interval": 60, "x": 20, "op": "eq", "preset": "web server", "title": "The web server: 1 request per 2 s over a 60 s interval gives lambda = 30; P(X = 20) with the formula substituted" }
-```
-
-Change the interval to 10 s and watch $\lambda$ fall to 5 and the bars shift left; the presets "CPU jobs (4 per second)" and "bit errors (3 per minute)" are the notes' two examples with a rate attached.
-
 ## The web server: rescale λ first
 
 *Suppose a web server gets on average one request every 2 seconds. Assuming requests arrive randomly and independently over time, what is the probability that 20 requests will arrive during a one-minute interval?*
 
-The rate is given per 2 seconds; the question is about one minute. One request every 2 seconds is 60/2 = 30 requests per minute, so $\lambda = 30$ for a one-minute interval (the demo writes it as `lambda <- 1/2 * 60`). Then
+The rate is given per 2 seconds; the question is about one minute. One request every 2 seconds is 60/2 = 30 requests per minute, so $\lambda = 30$ for a one-minute interval (the demo writes it as `lambda <- 1/2 * 60`).
+
+```quiz
+[
+  {
+    "q": "One request every 2 seconds on average. P(exactly 20 requests in one minute) = ? (4 decimals)",
+    "type": "numeric",
+    "answer": 0.0134,
+    "tolerance": 0.0002,
+    "explain": "λ = 60/2 = 30 for a minute; 30^20/20! × e^(−30) = 1.433 × 10¹¹ × 9.358 × 10⁻¹⁴ = 0.0134."
+  }
+]
+```
+
 
 $$P(X = 20) = \frac{30^{20}}{20!}\,e^{-30} = \frac{3.487 \times 10^{29}}{2.433 \times 10^{18}} \times 9.358 \times 10^{-14} = 1.433 \times 10^{11} \times 9.358 \times 10^{-14} = 0.0134$$
 
@@ -97,6 +97,24 @@ Z
 [1] -1.825742
 ```
 
+## λ from a rate and an interval
+
+```widget
+poisson-calc
+{ "rate": 1, "per": 2, "unit": "s", "interval": 60, "x": 20, "op": "eq", "preset": "web server", "title": "The web server: 1 request per 2 s over a 60 s interval gives lambda = 30; P(X = 20) with the formula substituted" }
+```
+
+Over a 10 s interval $\lambda$ falls to 5 and the bars shift left. The presets "CPU jobs (4 per second)" and "bit errors (3 per minute)" are the notes' two examples with a rate attached.
+
+### Requests arriving over one minute
+
+The requests land at random times, about one every 2 s, so the count climbs near $t/2$ without matching it exactly. Each finished minute adds its count to the histogram, which builds toward the $\lambda = 30$ bars.
+
+```widget
+arrivals-play
+{}
+```
+
 ## The histogram of X: bell-shaped around 30
 
 *Generate the probability histogram for $X$ = the number of web requests in a given minute.*
@@ -115,7 +133,7 @@ round(p.vals[c(20, 25, 30, 35, 40) + 1], 4)
 The `+ 1` is because `p.vals[1]` is $P(0)$. The bars rise to a peak at 29 and 30 (equal, because $P(30)/P(29) = 30/30 = 1$), then fall a little more slowly than they rose: bell-shaped and slightly right-skewed, with nothing visible past 50. For a large $\lambda$ the Poisson looks like the binomial histograms of the earlier lessons, centred on $\lambda$ with spread $\sqrt{\lambda}$.
 
 :::quiz λ must match the interval in the question
-The commonest error on a Poisson question is using the rate as given (1 per 2 s, or 3 per hour) when the question asks about a different interval. Convert first: 3 per hour over 20 minutes is $\lambda = 1$, not 3. The second trap is $\sigma$: it is $\sqrt{\lambda}$, not $\lambda$.
+Convert the rate before using it: 3 per hour over 20 minutes is $\lambda = 1$, not 3. And $\sigma$ is $\sqrt{\lambda}$, not $\lambda$.
 :::
 
 ```quiz
@@ -133,6 +151,18 @@ The commonest error on a Poisson question is using the rate as given (1 per 2 s,
     "answer": 0.1839,
     "tolerance": 0.0003,
     "explain": "1^2/2! × e^(−1) = 0.5 × 0.3679 = 0.1839."
+  },
+  {
+    "q": "Write P(X = 20) for the web server (λ = 30 per minute) as the Poisson formula with the numbers substituted. Use ^ for powers, ! for factorial, e^(-30) for the exponential, no spaces.",
+    "type": "text",
+    "answer": ["30^20/20!*e^(-30)", "30^20*e^(-30)/20!", "(30^20/20!)*e^(-30)", "e^(-30)*30^20/20!", "30^20/20!*e^-30", "30^20*e^-30/20!", "(30^20*e^(-30))/20!", "e^-30*30^20/20!"],
+    "explain": "λ^x/x! · e^(−λ) with λ = 30, x = 20: 30²⁰/20! · e^(−30) = 0.0134."
+  },
+  {
+    "q": "A café counts customers per hour, but most arrive in the ten minutes before noon. Which Poisson assumption fails?",
+    "options": ["occurrences happen with uniform probability over the time interval", "X counts occurrences over an interval", "the mean number of occurrences is known", "a fixed number of trials n"],
+    "answer": 0,
+    "explain": "A rush at one moment means the chance of an arrival is not spread evenly over the hour. A fixed n is not a Poisson assumption at all."
   },
   {
     "q": "For a Poisson variable the mean and the variance are equal.",

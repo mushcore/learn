@@ -63,8 +63,8 @@ constexpr double another_value{1.3};
 
 The key distinction the slides draw between the two:
 
-- A **`constexpr`** *must* be assigned a value by compile time.
-- A **`const`** *can* be assigned a value after compile time (i.e., while the program is running).
+- A **`constexpr`** must be assigned a value by compile time.
+- A **`const`** can be assigned a value after compile time (i.e., while the program is running).
 
 That difference is exactly what `const_vs_constexpr.cpp` demonstrates.
 
@@ -109,7 +109,7 @@ int main()
 ]
 ```
 
-With `7` typed: `numeric_limits<int>::max()` prints `2147483647`, the largest `int` on this platform; `cout << a << endl;` prints `1`; `a <<= 3;` shifts `1` (`001`) to `8` (`1000`); `cout << (a |= b) << endl;` makes `a = 8 | 2 = 10` (`1010`) and, because `|=` is an expression, prints the updated value `10`. Then `cin >> input;` reads the `7`, `const int constantinput = input;` compiles because a `const` only needs its value known when the program *runs*, and `cout << constantinput << endl;` prints `7`.
+The first half is the bit operators from the previous lesson: `a <<= 3;` shifts left three places, and because `|=` is an expression, `cout << (a |= b) << endl;` prints the value it just stored. The second half is the point of the sample: `const int constantinput = input;` compiles because a `const` only needs its value when the program runs.
 
 ## Why the `constexpr` line is commented out
 
@@ -128,7 +128,7 @@ note: 'input' was not declared 'constexpr'
 
 ## `constexpr` as an array size
 
-The `readName.cpp` sample uses `constexpr` for exactly the kind of value that *is* known at compile time — a fixed array size:
+The `readName.cpp` sample uses `constexpr` for exactly the kind of value that is known at compile time — a fixed array size:
 
 ```cpp
 constexpr int firstNameLength = 5;
@@ -174,7 +174,7 @@ An array's size has to be known when the compiler lays out memory for it, so `co
     "code": "int a = 1;\nint b = 2;\ncout << a << endl;\na <<= 3;\ncout << a << endl;\ncout << (a |= b) << endl;",
     "options": ["8", "1", "2", "10"],
     "answer": 1,
-    "explain": "a starts at 1 and that first cout << a << endl; runs before a <<= 3 changes it."
+    "explain": "a starts at 1 and that first cout << a << endl; runs before a <<= 3 changes it. The full output with input 7 is 2147483647, 1, 8, 10, 7."
   },
   {
     "q": "In the same run, what does `cout << (a |= b) << endl;` print, given a is 8 and b is 2 at that point?",

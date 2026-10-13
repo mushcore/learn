@@ -3,7 +3,7 @@ title: QAM and constellation diagrams
 minutes: 22
 ---
 
-ASK and PSK each change one property of the carrier. QAM changes both at once, and once a signal element has an amplitude and a phase, a dot on a plane shows it better than a waveform does.
+QAM changes the amplitude and the phase of the carrier at once; a constellation diagram draws each signal element as a dot.
 
 ## QAM combines ASK and PSK
 
@@ -11,36 +11,33 @@ Slide wording: *Combines ASK and PSK. The dominant method of digital-to-analog m
 
 ## The 8-QAM waveform: 24 bps at 8 baud
 
-The slide's *Typical Modulated 8-QAM Waveform* sends eight signal elements in 1 s, *Bit rate: 24, Baud rate: 8*, 3 bits each: 101, 100, 001, 000, 010, 011, 110, 111. Each element is two cycles of the carrier at one of two amplitudes, with phase jumps at some boundaries: $r = 3$, so $S = N / r = 24 / 3 = 8$ baud. In the drawing the elements ending in 1 have the large amplitude and those ending in 0 the small one (read from the figure, not stated).
+The slide's *Typical Modulated 8-QAM Waveform* sends eight 3-bit signal elements in 1 s, 101, 100, 001, 000, 010, 011, 110, 111, labelled *Bit rate: 24, Baud rate: 8*. Each element is two carrier cycles; those ending in 1 have the large amplitude (read from the figure). The widget's phases for the first two bits are one possible assignment; the slide does not label them.
+
+```widget
+shift-keying-play
+{ "scheme": "qam", "schemes": ["qam"], "cycles": 2, "title": "The slide's 8-QAM waveform, one signal element at a time" }
+```
 
 ## A constellation diagram: one dot per signal element type
 
 *A representation of a signal modulated by a digital modulation scheme. Assists us in defining the amplitude and phase of a signal element, particularly when we are using two carriers (one in-phase, one quadrature). Useful when dealing with multilevel ASK, PSK and QAM. A signal element type is represented as a dot (a bit or combination of bits it can carry is often written next to it).*
 
-The slide-24 figure: the X axis is the *in-phase carrier* and the Y axis the *quadrature carrier*. A dashed line from the origin to the dot has *Length: amplitude* and *Angle: phase*. The dot's projection on X is the *amplitude of the I component*, its projection on Y the *amplitude of the Q component*.
-
-Reading a point from its components (ours; it is the Pythagoras of E05 exercise 4):
-
-$$\text{amplitude} = \sqrt{I^2 + Q^2}, \qquad \text{phase} = \text{the angle from the positive I axis}$$
+In the slide-24 figure X is the *in-phase carrier* and Y the *quadrature carrier*; the line from the origin to the dot has *Length: amplitude* and *Angle: phase*. From the components (ours): $\text{amplitude} = \sqrt{I^2 + Q^2}$.
 
 Boxed rule: *A modulation with n constellation points transmits log₂ n bits per signal element.*
 
 ## Examples 1 to 4: every point on the I axis
 
-Binary ASK and BPSK use *only an in-phase carrier*, so every $Q$ is 0 and every point sits on the X axis.
+Binary ASK and BPSK use *only an in-phase carrier*, so every $Q$ is 0.
 
-| Example | Scheme | Point | I | Q | Amplitude | Phase |
-|---|---|---|---|---|---|---|
-| 1 | ASK (OOK) | bit 0 | 0 | 0 | 0 V: *Binary 0 has an amplitude of 0 V* | none, the dot is the origin |
-| 1 | ASK (OOK) | bit 1 | $A$ | 0 | $A$: *an amplitude more than zero* | 0° |
-| 2 | ASK, 1 V and 3 V | 1 V | 1 | 0 | 1 V | 0° |
-| 2 | ASK, 1 V and 3 V | 3 V | 3 | 0 | 3 V | 0° |
-| 3 | BPSK | bit 0 | $-1$ | 0 | 1 V, *180° out of phase* | 180° |
-| 3 | BPSK | bit 1 | $1$ | 0 | 1 V, *in phase* | 0° |
-| 4 | BPSK, 2 V | left dot | $-2$ | 0 | 2 V | 180° |
-| 4 | BPSK, 2 V | right dot | $2$ | 0 | 2 V | 0° |
+| Example | Scheme | Dots at (I, Q) |
+|---|---|---|
+| 1 | ASK (OOK) | 0 at $(0, 0)$, *Binary 0 has an amplitude of 0 V*; 1 at $(A, 0)$, *an amplitude more than zero* |
+| 2 | ASK, 1 V and 3 V | $(1, 0)$ and $(3, 0)$, labelled 1 V and 3 V |
+| 3 | BPSK | 0 at $(-1, 0)$, *180° out of phase*; 1 at $(1, 0)$, *in phase* |
+| 4 | BPSK, 2 V | $(-2, 0)$ and $(2, 0)$, both labelled 2 V |
 
-Examples 2 and 4 are the slide's own questions, *Draw the constellation diagram for binary ASK, with peak amplitude values of 1 V and 3 V* and *for BPSK, with a peak amplitude value of 2 V*; their answers label the dots with voltages, not bits. Both BPSK dots carry the label 2 V because amplitude is the distance from the origin, and a dot at $-2$ is 2 V away. OOK's 0 is the origin; BPSK's 0 has the full amplitude at 180°.
+Both Example 4 dots are labelled 2 V because amplitude is the distance from the origin.
 
 ### Examples 1 and 2: ASK on the I axis
 
@@ -58,18 +55,9 @@ constellation
 
 ## Example 5: 8-QAM with 1 V, 3 V and four phases
 
-Question: *Draw the constellation diagram for 8-QAM with two different peak amplitude values, 1 V and 3 V, and four different phases.* The answer puts eight dots on the two diagonals, an inner dot at 1 V and an outer dot at 3 V on each of the four diagonal directions, labelled 1 V and 3 V. The phases are 45°, 135°, 225° and 315° (read from the drawing); $I = A \cos\varphi$ and $Q = A \sin\varphi$ (computed):
+Question: *Draw the constellation diagram for 8-QAM with two different peak amplitude values, 1 V and 3 V, and four different phases.* The answer puts an inner dot at 1 V and an outer dot at 3 V on each diagonal, phases 45°, 135°, 225° and 315° (read from the drawing), with no bit labels. With $I = A \cos\varphi$ and $Q = A \sin\varphi$ (computed) the 45° dots are at $(0.71, 0.71)$ and $(2.12, 2.12)$; the other diagonals change only the signs.
 
-| Phase | 1 V dot: I, Q | 3 V dot: I, Q |
-|---|---|---|
-| 45° | $0.71, 0.71$ | $2.12, 2.12$ |
-| 135° | $-0.71, 0.71$ | $-2.12, 2.12$ |
-| 225° | $-0.71, -0.71$ | $-2.12, -2.12$ |
-| 315° | $0.71, -0.71$ | $2.12, -2.12$ |
-
-Eight points, so $\log_2 8 = 3$ bits per signal element, the 8-QAM waveform above. Two amplitudes times four phases is ASK times PSK; the slide writes no bit labels on these dots.
-
-### Draw Example 5 yourself
+### Example 5: eight dots on the two diagonals
 
 ```widget
 constellation
@@ -78,18 +66,16 @@ constellation
 
 ## Four QAM layouts (slide 36)
 
-| Figure | Dots | Where |
-|---|---|---|
-| a. 4-QAM | 4 | corners of a square in the first quadrant with one corner at the origin: each carrier is 0 or $A$ |
-| b. 4-QAM | 4 | corners of a square centred on the origin, one dot per quadrant |
-| c. 4-QAM | 4 | a small square entirely inside the first quadrant |
-| d. 16-QAM | 16 | a 2 × 2 cluster in each quadrant |
-
-Each 4-QAM carries $\log_2 4 = 2$ bits per element; the layout sets the amplitudes and phases used.
+| Figure | Where the dots are |
+|---|---|
+| a. 4-QAM | a square in the first quadrant with one corner at the origin: each carrier 0 or $A$ |
+| b. 4-QAM | a square centred on the origin, one dot per quadrant |
+| c. 4-QAM | a small square entirely inside the first quadrant |
+| d. 16-QAM | a 2 × 2 cluster in each quadrant |
 
 ## Example 6: 16-QAM
 
-*The distance A from the point to the origin (0,0) represents the amplitude after modulation. The angle φ of the point represents the phase after modulation.* The figure is a 4 × 4 grid with $I, Q \in \{-3A, -A, A, 3A\}$ and a 4-bit label on every dot:
+*The distance A from the point to the origin (0,0) represents the amplitude after modulation. The angle φ of the point represents the phase after modulation.* The figure's 4 × 4 grid of 4-bit labels:
 
 | Q \ I | $-3A$ | $-A$ | $A$ | $3A$ |
 |---|---|---|---|---|
@@ -98,7 +84,7 @@ Each 4-QAM carries $\log_2 4 = 2$ bits per element; the layout sets the amplitud
 | $-A$ | 1110 | 1111 | 1101 | 1100 |
 | $-3A$ | 1010 | 1011 | 1001 | 1000 |
 
-The red arc marked *Included angle φ* runs to the line from the origin to the 1010 dot: $I = -3A$, $Q = -3A$, so $\varphi = 225°$ and the amplitude is $\sqrt{9A^2 + 9A^2} = 3\sqrt{2}\,A \approx 4.24A$ (computed). The grid uses three amplitudes: $\sqrt{2}\,A$ for the four inner dots, $\sqrt{10}\,A$ for the eight middle ones, $3\sqrt{2}\,A$ for the corners (computed). In the labels the first two bits name the row and the last two the column.
+The red arc marked *Included angle φ* runs to the 1010 dot at $I = Q = -3A$. The first two bits of a label name the row, the last two the column.
 
 ### Example 6: click a dot for its amplitude, phase and bits
 
@@ -109,7 +95,7 @@ constellation
 
 ## Different n-QAM
 
-The slide nests 4-QAM (2 × 2 at $\pm 1$), 16-QAM (4 × 4 at $\pm 1, \pm 3$), 32-QAM (a cross) and 64-QAM (8 × 8 at $\pm 1$ to $\pm 7$) on one grid, with the table:
+The slide nests 4-, 16-, 32- and 64-QAM on one grid:
 
 | Bits per symbol | Number of symbols | QAM modulation |
 |---|---|---|
@@ -119,20 +105,7 @@ The slide nests 4-QAM (2 × 2 at $\pm 1$), 16-QAM (4 × 4 at $\pm 1, \pm 3$), 32
 | 10 | $2^{10} = 1024$ | 1024-QAM |
 | 12 | $2^{12} = 4096$ | 4K-QAM |
 
-The number in the name is the number of dots; the bits per symbol are its $\log_2$.
-
-## E05 exercise 4: the amplitude of the quadrature carrier
-
-> If we have a constellation diagram with 16 constellation points, what is the number of bits per constellation point (i.e., per signal element)? Assume the amplitude for a constellation point is 5 volts while the amplitude of the in-phase carrier is 3 volts. What is the amplitude of the quadrature carrier?
-
-Official answer: *Number of bits = log₂ 16 = 4.* Then Pythagoras on the point: $5^2 = 3^2 + q^2$, $q^2 = 25 - 9 = 16$, $q = 4$ V.
-
-### The E05 4 triangle
-
-```widget
-constellation
-{ "solve": { "amplitude": 5, "i": 3 }, "title": "E05 exercise 4: amplitude 5 V, I = 3 V, find Q" }
-```
+E05 exercise 4 uses $\log_2 n$ and the amplitude formula; it is worked in [E05 worked](#/comp3721-w5/e05-worked).
 
 ```quiz
 [

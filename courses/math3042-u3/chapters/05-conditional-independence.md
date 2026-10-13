@@ -36,7 +36,7 @@ The two conditionals share a numerator and differ only in which total is the new
 two-way
 ```
 
-Click "Right" to see every conditional in that row, "iPhone" for the column, and the cell 52 for both at once with the independence test below.
+A row header gives every conditional in that row, a column header the column's, and the cell 52 both at once with the independence test below.
 
 ## Independence
 

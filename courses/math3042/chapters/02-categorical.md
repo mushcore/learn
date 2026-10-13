@@ -116,7 +116,7 @@ The set of possible values a non-numerical variable can take (here, `"F"` and `"
     "q": "Why is a mean of eye colour meaningless?",
     "options": ["Because eye colour has too many categories", "Because eye colour is a categorical variable and has no numerical values to average", "Because the sample size is too small", "It isn't meaningless — you can average category codes"],
     "answer": 1,
-    "explain": "Mean requires numerical values to sum and divide. Categorical values like 'Brown' or 'Blue' cannot be added, so mean, and instead you use proportion and mode."
+    "explain": "Mean requires numerical values to sum and divide. Categorical values like 'Brown' or 'Blue' cannot be added, so there is no mean; describe categorical data with proportions and the mode instead."
   },
   {
     "q": "In R, `TenMileRace$sex` has levels `F` and `M` with counts 4325 and 4311. What R function produced those counts from the raw column?",

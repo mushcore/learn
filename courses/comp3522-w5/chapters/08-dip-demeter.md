@@ -3,24 +3,24 @@ title: Dependency Inversion and the Law of Demeter
 minutes: 22
 ---
 
-The DataSource diagram from the coupling lesson was built from Open/Closed and Liskov Substitution; the D of SOLID names what the two achieve together. After it comes a principle outside SOLID that limits how far one class may reach through another.
+Replacing a file reader should not mean editing the UI that uses it. Dependency Inversion fixes that direction of dependency; the Law of Demeter then limits how far one class may reach through another.
 
 ## High-level modules and low-level modules
 
 The Dependency Inversion Principle *can be thought as a combined effect of the previous principles. Specifically, the Open Closed Principle and Liskov Substitution Principle.*
 
-Slide 83 returns to `UI` pointing at `TextFile`. *High Level Modules are the ones that contain complex logic made up of small "chunks" of simpler code*, for example the UI class. *A Low Level Module on the other hand, is a class that encapsulates some simple atomic behaviour*, such as reading a file or displaying an image. We generally compose high-level modules with low-level modules, so the high level is coupled to and dependent on the low level. *We want to be able to change or replace the lower level modules without tampering with the complex code in the higher level modules.*
+Slide 83 returns to `UI` pointing at `TextFile`. *High Level Modules are the ones that contain complex logic made up of small "chunks" of simpler code*, such as the UI class; a low-level module *encapsulates some simple atomic behaviour*, such as reading a file. Composing them makes the high level depend on the low level, yet *we want to be able to change or replace the lower level modules without tampering with the complex code in the higher level modules.*
 
 ## The two rules
 
-Slide 87 draws the red cross on `UI` pointing straight at `Text File` and the green check on `UI` pointing at `DataSource` with `TextFile` extending it on a dashed line:
+Slide 87 crosses out `UI` pointing straight at `Text File` and ticks `UI` pointing at `DataSource`, with `TextFile` extending it:
 
 1. **High-level modules should not depend on low-level modules. High-level modules and low-level modules should depend on abstractions.**
 2. **Abstractions should not depend on details. Details should depend on abstractions.**
 
-*We introduced an abstract layer, that does not depend on anything. We made both our high level (UI) and low level (TextFile) modules depend on the abstract instead. Now we can switch out either side.* Slide 86 hangs `SQLiteDB`, `TextFile` and `JSONFile` under the same `DataSource` and names its building blocks: Liskov Substitution and Open/Closed.
+The abstract layer depends on nothing, and both UI and TextFile depend on it, so either side can be switched out. Slide 86 hangs `SQLiteDB`, `TextFile` and `JSONFile` under the same `DataSource`.
 
-`DataSource` is the abstract class or interface; `UI` and `TextFile` are concrete classes. Interfaces and abstract classes declare an interface and can NOT be instantiated; concrete classes implement the details of the interface, are fully implemented, and CAN be instantiated.
+`DataSource` is the abstract class or interface and can NOT be instantiated; `UI` and `TextFile` are concrete classes, fully implemented, and CAN be instantiated.
 
 ```widget
 uml-relations
@@ -83,19 +83,19 @@ int main() {
 }
 ```
 
-`DataSource& dataSource;` is the only thing UI knows about storage; the word `TextFile` appears nowhere in UI. `class TextFile : public DataSource {` is the dashed Extends arrow: the detail depends on the abstraction. `UI screen2(json);` is rule 1 paying off: the same UI code runs over a JSON file, and a SQLite class would slot in with UI untouched.
+`DataSource&` is the only thing UI knows about storage; the word `TextFile` appears nowhere in UI. The same UI code runs over a JSON file, and a SQLite class would slot in with UI untouched.
 
 ## The character-creation exercise
 
-Slide 90: a game with a Character Creation UI; when the player clicks create, the character is saved to a save file locally or online. The design to fix is a chain, `Game` to `CharacterCreationUI` to `SaveFileWriter`: *apply everything you've learnt so far to "fix" this terrible design.*
+Slide 90: a game with a Character Creation UI saves the character to a file locally or online through the chain `Game` to `CharacterCreationUI` to `SaveFileWriter`: *apply everything you've learnt so far to "fix" this terrible design.*
 
 "My Solution" on slide 91: `Game` points at `CharacterCreationUI` and at a new `CharacterCreator`; `CharacterCreator` points at an abstract `SaveWriter`, which `SaveFileWriter` and `CloudSaveWriter` extend. Three dashed boxes label the moves: Single Responsibility around Game and CharacterCreationUI (the UI only collects input), Single Responsibility around Game and CharacterCreator (Game no longer saves), and Dependency Inversion around CharacterCreator, SaveWriter and the two writers. The practice lesson builds this as code.
 
 ## Law of Demeter: only talk to your friends
 
-Slide 94 is a real-life wallet. `Cashier` (`+takeMoney(amount)`) points at `Customer` (`-wallet : Wallet`, `+getWallet() : Wallet`), which points at `Wallet` (`-money : int`, `+getMoney(amount) : int`). The goal: Cashier wants to get int money from the Wallet, but should not reach into Customer, then into their Wallet, to get it. In Cashier `takeMoney()`: `money = customer.getWallet().getMoney(amount)` #BAD. *Classes should NOT have knowledge of public members several classes away.*
+Slide 94 is a real-life wallet. `Cashier` (`+takeMoney(amount)`) points at `Customer` (`-wallet : Wallet`, `+getWallet() : Wallet`), which points at `Wallet` (`-money : int`, `+getMoney(amount) : int`). In Cashier `takeMoney()`: `money = customer.getWallet().getMoney(amount)` #BAD. *Classes should NOT have knowledge of public members several classes away.*
 
-Slide 95 strikes out `getWallet()`, gives Customer `+getMoney(amount) : int` and Cashier `+requestMoney(amount)`. Cashier can access Customer, but should not access Wallet through Customer: in Cashier `requestMoney()`, `money = customer.getMoney(amount)` #OK!; in Customer `getMoney()`, `return wallet.getMoney(amount)`. *Classes should have knowledge of public members of neighboring classes.*
+Slide 95 strikes out `getWallet()` and gives Customer `+getMoney(amount) : int` and Cashier `+requestMoney(amount)`: in Cashier, `money = customer.getMoney(amount)` #OK!; in Customer, `return wallet.getMoney(amount)`. *Classes should have knowledge of public members of neighboring classes.*
 
 Slide wording: **Each unit should have only limited knowledge about other units: only units "closely" related to the current unit. Each unit should only talk to its friends; don't talk to strangers.** Don't have train wrecks like `obj.getX().getY().getZ().doSomething();` or `MyCharacterUI.GetCharacterData().CreateCharacter().Save()`. Poor Demeter is often forgotten; some call it the "Suggestion of Demeter" since it is difficult to avoid.
 
@@ -153,7 +153,7 @@ int main() {
 }
 ```
 
-Both calls hand the cashier 20; the difference is what Cashier must know. `int money = customer.getWallet().getMoney(amount);   // #BAD` compiles only because Cashier knows that a Customer has a Wallet and that a Wallet has `getMoney`: two classes away, so a change to Wallet ripples into Cashier. `int money = customer.getMoney(amount);               // #OK!` knows only its neighbour, and `int getMoney(int amount) { return wallet.getMoney(amount); }` is the forwarding method that lets Customer talk to its own wallet. Calling several members of `customer` is still fine; the rule counts classes reached through return values, not calls.
+Both versions get the money; the difference is what Cashier must know. The #BAD line compiles only because Cashier knows that a Customer has a Wallet and that a Wallet has `getMoney`: two classes away, so a change to Wallet ripples into Cashier. The #OK! line knows only its neighbour, and Customer's forwarding `getMoney` talks to its own wallet. Calling several members of `customer` is still fine; the rule counts classes reached through return values, not calls.
 
 ```challenge
 {
@@ -177,7 +177,7 @@ class Game {
         data = characterUI.getCharacterCreator().save(characterUI.getCharacterCreator().createCharacter());
 ```
 
-This code tries to create a character and save it; *this is obviously bad and hard to read code.* The UML has `Game` pointing at `CharacterCreationUI`, which owns `CharacterCreator`, which points at `SaveWriter`. *Any change in the save function, which is all the way in SaveWriter, could have a ripple effect of changes all the way to our Game class.*
+*This is obviously bad and hard to read code.* `Game` points at `CharacterCreationUI`, which owns `CharacterCreator`, which points at `SaveWriter`: *any change in the save function, which is all the way in SaveWriter, could have a ripple effect of changes all the way to our Game class.*
 
 ```widget
 demeter-chain
@@ -206,7 +206,7 @@ class CharacterCreator {
 };
 ```
 
-Game owns both a `characterUI` and a `characterCreator` and asks each for one thing; only CharacterCreator talks to the SaveWriter. The `void getData()` that returns a value and the `my_char` / `myChar` spelling are the slide's own slips; the practice lesson writes the compiling version.
+Game owns both a `characterUI` and a `characterCreator` and asks each for one thing; only CharacterCreator talks to the SaveWriter. `void getData()` returning a value and the `my_char` / `myChar` spelling are the slide's own slips; the practice lesson compiles a fixed version.
 
 ```widget
 solid-spotter

@@ -14,7 +14,7 @@ Slide 22, looking back at the small internet: *How does each node acquire the MA
 Slide wording (slide 23), **Address Resolution Protocol (ARP)**:
 
 - *Useful when moving a frame through a link.*
-- *One of the auxiliary protocols defined in the network layer.* It serves the data-link layer, but the course places it in the network layer; answer that way.
+- *One of the auxiliary protocols defined in the network layer.* It serves the data-link layer, but the course places it in the network layer.
 - *It maps an IP address to a logical-link address.* The slide says "logical-link address"; it means the link-layer (MAC) address.
 - *A host or a router need to run the ARP program all of the time in the background. A host does not know when another host sends an ARP request; it needs to be ready all of the time to respond to an ARP request.*
 
@@ -27,7 +27,7 @@ The ARP operation figure is one LAN with a switch and four systems: **System A**
 | a | *ARP request is broadcast* | every system on the LAN | *Request: Looking for link-layer address of a node with IP address N₂* |
 | b | *ARP reply is unicast* | only System A | *Reply: I am the node and my link-layer address is L₂* |
 
-The request has to go to everyone because A does not know which machine owns $N_2$; that is the whole problem. The systems with $N_3$ and $N_4$ read the request, see it is not their IP address and drop it. B recognises its own address and replies, and since the request carried A's addresses, B can answer A directly.
+The request goes to everyone because A does not know which machine owns $N_2$. The systems with $N_3$ and $N_4$ see it is not their IP address and drop it. B recognises its own address and replies, and since the request carried A's addresses, B can answer A directly.
 
 ### A resolves N₂ on the LAN
 
@@ -52,8 +52,6 @@ The ARP packet format slide draws 32-bit rows. *Hardware: LAN or WAN protocol. P
 | Destination hardware address | 48 | target's MAC, *empty in request* (shaded on the slide) |
 | Destination protocol address | 32 | target's IP |
 
-The shaded field is the point of the protocol: the request leaves it empty because that value is what the sender is asking for.
-
 ## The slide's example: the request and the reply in hex
 
 System A ($N_1$, $L_1$) resolves System B ($N_2$, *L₂ not known by A*). The slide's two packets side by side:
@@ -70,7 +68,7 @@ System A ($N_1$, $L_1$) resolves System B ($N_2$, *L₂ not known by A*). The sl
 | Destination hardware address | **All 0s** | L1 | unknown in the request |
 | Destination protocol address | N2 | N1 | |
 
-In the reply the roles swap: B is now the source, so L2 and N2 move to the top and A's L1 and N1 move to the bottom. The field that was all 0s is now filled with L2 in the source slot, which is the answer A wanted.
+In the reply the roles swap: B is now the source, so L2 and N2 move to the top and A's L1 and N1 to the bottom. A's unknown is answered by the reply's source hardware field, L2; the destination hardware field now holds L1.
 
 :::quiz 0x0001 means two different things
 In the hardware type field `0x0001` is Ethernet. In the operation field `0x0001` is a request and `0x0002` a reply. `0x0800` is IPv4 in the protocol type field. Read the field name before the value.
@@ -85,9 +83,9 @@ Each ARP packet is the data of a frame. The slide labels the frames with letters
 | 1, from A to B | [BA \| A \| Data] | **BA**, *broadcast address* | A | "Multicast frame" |
 | 2, from B to A | [A \| B \| Data] | A | B | *Unicast frame* |
 
-The request's frame destination is the broadcast address, so every station's data-link layer accepts it; that is how the request reaches all four systems. The slide's figure labels that frame "Multicast frame", but slide 24 says *ARP request is broadcast* and the destination is BA, the broadcast address; teach and answer **broadcast**. The reply's frame goes to A alone, unicast.
+The request's frame destination is the broadcast address, so every station's data-link layer accepts it. The slide's figure labels that frame "Multicast frame", but slide 24 says *ARP request is broadcast* and the destination is BA, the broadcast address: the request is a **broadcast**. The reply's frame goes to A alone, unicast.
 
-### Fill the request and reply yourself
+### The request and reply with six fields blanked
 
 ```widget
 arp-exchange

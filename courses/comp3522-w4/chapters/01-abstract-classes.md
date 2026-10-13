@@ -56,7 +56,7 @@ Java spells the same idea `public abstract class AbstractClass {}` with `extends
 abstract-check
 ```
 
-Toggle B's override of `f()` off and watch B and C both turn abstract; make `A::f()` plain (not virtual) and the `override` keyword becomes an error, because there is nothing virtual to override.
+Without B's override of `f()`, B and C are both abstract. With `A::f()` plain (not virtual), the `override` keyword becomes an error, because there is nothing virtual to override.
 
 ## An abstract class may carry data and ordinary functions
 

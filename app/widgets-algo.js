@@ -219,9 +219,9 @@ const PRESETS = [
   mk("Halving with countdown", {
     lines: ["j = 0", "i = n", "while i > 0 do", "   j = j+1", "   if j > 0 then", "      x = i", "      while x > 0", "         x = x - j", "      end-while", "   end-if", "   i = i/2", "end-while"],
     basic: 8, nMax: 1000000, nMin: 1,
-    formula: "outer loop: ⌊log₂ n⌋ + 1 passes; line 8 runs ⌈i/j⌉ times per pass, far more than any other line",
+    formula: "outer loop: ⌊log₂ n⌋ + 1 passes; lines 7 and 8 each run ⌈i/j⌉ times per pass (15 each at n = 10), more than any outer-loop line",
     what: "The quiz's nested-while fragment: i halves each pass (integer division), and each pass counts x down from i in steps of j.",
-    why: "Line 8, **x = x − j**, is the deepest statement and runs the most: on the first pass alone it runs n times (j = 1). The outer loop's lines (3, 4, 5, 6, 11) run only about log₂ n times because i halves each pass. Deepest inside the loop, and most frequent: line 8.",
+    why: "Lines 7 and 8 tie as the most frequent: counting the inner `while` test once per pass of its loop, as the slides count find's `for` line, both run ⌈i/j⌉ times per outer pass, 10 + 3 + 1 + 1 = 15 at n = 10 (line 7 reaches 19 if each failing exit test is counted too). The outer loop's lines (3, 4, 5, 6, 11) run only ⌊log₂ n⌋ + 1 times because i halves each pass. Lines 7 and 8 are at the same loop depth, so the tie-breaker list decides: line 8, **x = x − j**, is an assignment (tie-breaker 4) with a subtraction, while `x > 0` compares a counter with 0, not data, so it is only an expression evaluation (tie-breaker 5). Line 8.",
     run(n) {
       const c = [1, 1, 0, 0, 0, 0, 0, 0, NONE, NONE, 0, NONE];
       let j = 0, i = n;
@@ -255,10 +255,36 @@ function opCounter(box, cfg) {
   const what = el("p", "widget-note");
   const revealBtn = el("button", "reset-btn", "Reveal the basic operation");
   const why = el("div", "oc-why");
-  box.append(what, modeRow, nRow, sl.row, quick, table, stats, revealBtn, why);
+  // Predict mode: the counts stay hidden at each (preset, mode, n) until the student has typed
+  // every line's count at the chosen n and checked it (or asked to see them).
+  let predict = !!cfg.predict, checks = 0, firstRight = 0;
+  const solved = new Set(), typed = new Map(), wrongAt = new Map();
+  const pc = predictCheck("Predict every count at the chosen n before it is shown", predict);
+  const pRow = el("div", "viz-btn-row");
+  const checkBtn = el("button", "viz-btn", "Check my counts"), showBtn = el("button", "viz-btn", "Show the counts");
+  checkBtn.type = showBtn.type = "button";
+  const pFeed = el("p", "widget-note");
+  pRow.append(checkBtn, showBtn);
+  box.append(what, modeRow, nRow, sl.row, quick, pc.label, table, pRow, pFeed, stats, revealBtn, why);
+  const keyNow = () => `${preset.name}|${mode}|${n}`;
+  const hidden = () => predict && !solved.has(keyNow());
 
   sel.addEventListener("change", () => { preset = PRESET_BY_NAME[sel.value]; mode = null; revealed = false; setup(); });
   revealBtn.addEventListener("click", () => { revealed = true; draw(); });
+  pc.input.addEventListener("change", () => { predict = pc.input.checked; pFeed.textContent = ""; draw(); });
+  showBtn.addEventListener("click", () => { solved.add(keyNow()); pFeed.textContent = `The counts at n = ${n.toLocaleString("en-US")} are shown.`; draw(); });
+  checkBtn.addEventListener("click", () => {
+    const cur = preset.run(n, mode), mine = typed.get(keyNow()) || {}, bad = [];
+    cur.forEach((v, i) => { if (v != null && Number(String(mine[i] ?? "").replace(/[,\s]/g, "")) !== v) bad.push(i); });
+    const blank = bad.filter((i) => String(mine[i] ?? "").trim() === "").length;
+    const first = !wrongAt.has(keyNow());
+    wrongAt.set(keyNow(), new Set(bad));
+    if (blank === bad.length && blank > 0) { pFeed.textContent = `Type a count for every line that runs (${blank} still empty).`; draw(); return; }
+    if (first) { checks++; if (!bad.length) firstRight++; }
+    if (!bad.length) { solved.add(keyNow()); pFeed.textContent = `All right at n = ${n.toLocaleString("en-US")}. ${firstRight} of ${checks} first checks fully right.`; }
+    else pFeed.textContent = `Line${bad.length > 1 ? "s" : ""} ${bad.map((i) => i + 1).join(", ")} ${bad.length > 1 ? "are" : "is"} off. A line inside a loop runs once per pass of every loop around it; a line before or after the loops runs once.`;
+    draw();
+  });
 
   function setup() {
     modeRow.innerHTML = "";
@@ -289,6 +315,9 @@ function opCounter(box, cfg) {
     const counts = cols.map((q) => preset.run(q, mode));
     const cur = counts[cols.indexOf(n)];
     const maxCount = Math.max(...cur.filter((v) => v != null));
+    const hide = hidden(), mine = typed.get(keyNow()) || {}, bad = wrongAt.get(keyNow());
+    if (!typed.has(keyNow())) typed.set(keyNow(), mine);
+    pRow.style.display = hide ? "" : "none";
     table.innerHTML = "";
     const head = el("div", "oc-row oc-head");
     head.append(el("span", "oc-ln", "line"), el("span", "oc-code", "statement"));
@@ -296,16 +325,24 @@ function opCounter(box, cfg) {
     table.append(head);
     preset.lines.forEach((text, i) => {
       const row = el("div", "oc-row");
-      const isMax = cur[i] != null && cur[i] === maxCount && !preset.constant;
+      const isMax = !hide && cur[i] != null && cur[i] === maxCount && !preset.constant;
       if (isMax) row.classList.add("max");
-      if (revealed && i + 1 === preset.basic) row.classList.add("basic");
+      if (revealed && !hide && i + 1 === preset.basic) row.classList.add("basic");
       row.append(el("span", "oc-ln", String(i + 1)));
       const code = el("span", "oc-code");
       code.innerHTML = highlight("pseudo", text) || " ";
       row.append(code);
       counts.forEach((c, k) => {
-        const v = c[i];
-        const s = el("span", "oc-cnt" + (cols[k] === n ? " cur" : ""), v == null ? "–" : fmtInt(v));
+        const v = c[i], here = cols[k] === n;
+        const s = el("span", "oc-cnt" + (here ? " cur" : ""), v == null ? "–" : hide && !here ? "?" : hide ? "" : fmtInt(v));
+        if (hide && here && v != null) {
+          const inp = document.createElement("input");
+          inp.type = "text"; inp.inputMode = "numeric"; inp.value = mine[i] ?? ""; inp.style.width = "64px";
+          inp.setAttribute("aria-label", `line ${i + 1} count at n = ${n}`);
+          if (bad && bad.has(i)) inp.style.borderColor = "var(--red)";
+          inp.addEventListener("input", () => { mine[i] = inp.value; });
+          s.append(inp);
+        }
         row.append(s);
       });
       table.append(row);
@@ -313,14 +350,14 @@ function opCounter(box, cfg) {
     const basicCount = cur[preset.basic - 1];
     const f = typeof preset.formula === "string" ? preset.formula : preset.formula[mode] || Object.values(preset.formula)[0];
     const rows = [
-      ["Most frequent count at this n", fmtInt(maxCount), preset.constant ? "does not change with n" : "the highlighted row(s)"],
-      ["Basic operation count C(n)", revealed ? fmtInt(basicCount) : "?", revealed ? f : "reveal to see the formula"],
+      ["Most frequent count at this n", hide ? "?" : fmtInt(maxCount), hide ? "check your counts first" : preset.constant ? "does not change with n" : "the highlighted row(s)"],
+      ["Basic operation count C(n)", revealed && !hide ? fmtInt(basicCount) : "?", revealed && !hide ? f : hide ? "check your counts first" : "reveal to see the formula"],
     ];
-    if (preset.total) rows.push(["All statements f(n)", fmtInt(cur.filter((v) => v != null).reduce((a, b) => a + b, 0)), preset.total]);
+    if (preset.total) rows.push(["All statements f(n)", hide ? "?" : fmtInt(cur.filter((v) => v != null).reduce((a, b) => a + b, 0)), preset.total]);
     grid(stats, rows);
     why.innerHTML = "";
-    revealBtn.style.display = revealed ? "none" : "";
-    if (revealed) {
+    revealBtn.style.display = revealed || hide ? "none" : "";
+    if (revealed && !hide) {
       why.append(mathP("oc-why-p", `**Basic operation: line ${preset.basic}.** ${preset.why}`));
     }
   }
@@ -360,50 +397,70 @@ function loopGrid(box, cfg) {
   const keys = Object.keys(GRIDS);
   let key = keys.includes(cfg.preset) ? cfg.preset : "square";
   let n = clamp(Math.round(cfg.n ?? 6), 2, 12);
+  let P = [], pb = null;
   box.append(el("h4", null, cfg.title || "Every (i, j) the double loop visits"));
-  const btns = btnRow(keys.map((k) => k), (i) => { key = keys[i]; draw(); }, keys.indexOf(key));
-  const s = slider("n", 2, 12, 1, n, (v) => { n = v; draw(); }, (v) => String(v));
+  const btns = btnRow(keys.map((k) => k), (i) => { key = keys[i]; restart(); }, keys.indexOf(key));
+  const s = slider("n", 2, 12, 1, n, (v) => { n = v; restart(); }, (v) => String(v));
   const code = el("pre", "lg-code");
   const svg = svgEl("svg", { viewBox: "0 0 640 330", class: "curve-svg lg-svg" });
+  const caption = playCaption();
   const out = el("div", "stat-grid");
   const sumP = el("p", "lg-sum");
-  box.append(btns, s.row, code, svg, sumP, out);
-  function draw() {
-    const g = GRIDS[key];
-    code.innerHTML = highlight("pseudo", g.code);
+  box.append(btns, s.row, code, svg);
+  /** The (i, j) pairs in the order the loops visit them: row by row, j ascending. */
+  function pairs() {
+    const g = GRIDS[key], [i0, i1] = g.i(n), list = [];
+    for (let i = i0; i <= i1; i++) { const [j0, j1] = g.j(n, i); for (let j = j0; j <= j1; j++) list.push([i, j]); }
+    return list;
+  }
+  function frame(pos) {
+    const g = GRIDS[key], total = P.length, shown = Math.ceil(pos - 1e-9), done = Math.floor(pos + 1e-9), f = pos - done, moving = f > 1e-9;
     svg.innerHTML = "";
     const [i0, i1] = g.i(n);
     let jmin = Infinity, jmax = -Infinity;
     for (let i = i0; i <= i1; i++) { const [a, b] = g.j(n, i); if (b >= a) { jmin = Math.min(jmin, a); jmax = Math.max(jmax, b); } }
-    const lo = Math.min(i0, jmin), hi = Math.max(i1, jmax);
-    const cells = hi - lo + 1;
+    const lo = Math.min(i0, jmin), hi = Math.max(i1, jmax), cells = hi - lo + 1;
     const pad = 44, size = Math.min((640 - 2 * pad) / cells, (330 - 2 * pad) / cells);
-    const ox = pad + 30, oy = pad;
-    const X = (j) => ox + (j - lo) * size + size / 2;
-    const Y = (i) => oy + (i - lo) * size + size / 2;
-    let count = 0;
-    const perRow = [];
-    for (let i = i0; i <= i1; i++) {
-      const [j0, j1] = g.j(n, i);
-      let c = 0;
-      for (let j = j0; j <= j1; j++) { svg.append(svgEl("circle", { cx: X(j), cy: Y(i), r: Math.max(3, size * 0.28), fill: "var(--hl)" })); c++; count++; }
-      perRow.push(c);
-      const t = svgEl("text", { x: ox + cells * size + 8, y: Y(i) + 4, "font-size": 11, fill: "var(--ink-dim)" }, `${c}`);
-      svg.append(t);
-    }
+    const ox = pad + 30, oy = pad, R = Math.max(3, size * 0.28);
+    const X = (j) => ox + (j - lo) * size + size / 2, Y = (i) => oy + (i - lo) * size + size / 2;
+    const rowSoFar = new Map(), rowTotal = new Map();
+    P.forEach(([i, j], k) => {
+      rowTotal.set(i, (rowTotal.get(i) || 0) + 1);
+      const cur = k === shown - 1, vis = k < shown;
+      if (vis) rowSoFar.set(i, (rowSoFar.get(i) || 0) + 1);
+      const r = vis ? (cur && moving ? R * (0.4 + 0.6 * ease(f)) : R) : R * 0.55;
+      svg.append(svgEl("circle", { cx: X(j), cy: Y(i), r, fill: vis ? "var(--hl)" : "none", stroke: vis ? "none" : "var(--rule-strong)", "stroke-width": 1 }));
+      if (cur && shown < total) svg.append(svgEl("circle", { cx: X(j), cy: Y(i), r: R + 4, fill: "none", stroke: "var(--ink)", "stroke-width": 1.5 }));
+    });
+    for (let i = i0; i <= i1; i++) svg.append(svgEl("text", { x: ox + cells * size + 8, y: Y(i) + 4, "font-size": 11, fill: "var(--ink-dim)" }, `${rowSoFar.get(i) || 0}`));
     for (let v = lo; v <= hi; v++) {
       svg.append(svgEl("text", { x: ox - 10, y: Y(v) + 4, "text-anchor": "end", "font-size": 11, fill: "var(--ink-2)" }, `i = ${v}`));
       svg.append(svgEl("text", { x: X(v), y: oy - 8, "text-anchor": "middle", "font-size": 11, fill: "var(--ink-2)" }, `j=${v}`));
     }
     svg.append(svgEl("text", { x: ox + cells * size + 8, y: oy - 8, "font-size": 11, fill: "var(--ink-dim)" }, "per i"));
-    sumP.innerHTML = inline(`$${g.sum}$`);
+    const perRow = []; for (let i = i0; i <= i1; i++) perRow.push(rowTotal.get(i) || 0);
+    let text;
+    if (shown === 0) text = `Nothing has run yet. Each step is one execution of the inner statement, one (i, j) pair, in the order the loops visit them: row i = ${i0} first, j left to right.`;
+    else if (pos >= total - 1e-9) text = `Done: ${total} dots, ${perRow.join(" + ")} = ${g.closedText} = ${g.closed(n)} for n = ${n}.`;
+    else { const [i, j] = P[shown - 1]; text = `i = ${i}, j = ${j}: dot ${shown} of ${total}. Row i = ${i} has ${rowSoFar.get(i)} of its ${rowTotal.get(i)} dots so far.`; }
+    if (caption.textContent !== text) caption.textContent = text;
     grid(out, [
-      ["Dots (basic operations)", String(count), perRow.length ? perRow.join(" + ") : ""],
+      ["Dots (basic operations)", `${shown} of ${total}`, perRow.join(" + ")],
       ["Closed form", `${g.closedText} = ${g.closed(n)}`, `n = ${n}`],
       ["Where it appears", g.example, ""],
     ]);
   }
-  draw();
+  function restart() {
+    const g = GRIDS[key];
+    code.innerHTML = highlight("pseudo", g.code);
+    sumP.innerHTML = inline(`$${g.sum}$`);
+    P = pairs();
+    pb.reset(P.length);
+    pb.set(P.length); // the finished grid is the resting picture; Play builds it dot by dot
+  }
+  pb = createPlayback({ count: 1, unit: "dot", onFrame: (p) => { if (P.length) frame(p); }, stepMs: () => cfg.stepMs || 450 });
+  box.append(pb.el, caption, sumP, out);
+  restart();
 }
 
 // =====================================================================
@@ -575,7 +632,7 @@ const BIGO_PRESETS = [
   { label: "10000n+2ⁿ vs 2ⁿ", f: "10000n + 2^n", g: "2^n", c: 2, n0: 20 },
   { label: "log(n)(1+n) vs n log n", f: "log(n)(1+n)", g: "n log n", c: 2, n0: 2 },
   { label: "n(n−1)/2 vs n²", f: "n(n-1)/2", g: "n^2", c: 1, n0: 1 },
-  { label: "3log₂n+n vs n", f: "3 log n + n", g: "n", c: 2, n0: 8 },
+  { label: "3log₂n+n vs n", f: "3 log n + n", g: "n", c: 2, n0: 10 },
   { label: "n² vs n (fails)", f: "n^2", g: "n", c: 10, n0: 1 },
 ];
 function bigOCheck(box, cfg) {
@@ -999,6 +1056,8 @@ function fpTrace(algo, A, K) {
   return { steps, endLine: i < n ? 5 : 6, ret: i < n ? i : -1 };
 }
 function findPlay(box, cfg) {
+  if (cfg.algo === "insertion") return insertionPlay(box, cfg);
+  if (cfg.algo === "unique") return pairsPlay(box, cfg);
   const algo = cfg.algo === "find" ? "find" : "search", D = FP[algo], search = algo === "search";
   const okNum = (v) => Number.isInteger(v) && v >= -99 && v <= 999;
   const okArr = (a) => Array.isArray(a) && a.length >= D.min && a.length <= 10 && a.every(okNum);
@@ -1192,6 +1251,484 @@ function findPlay(box, cfg) {
   });
 }
 
+// ---------- shared pieces for insertion-play, pairs-play, halving-play ----------
+/**
+ * Predict-mode bookkeeping: before step `answered` the playback holds until the right option is
+ * picked. opts: options(k) → [{ v, label }], right(k) → v, why(k, wrong) → text, redraw(), advance().
+ */
+function stepPredict(ask, opts) {
+  const s = { on: false, answered: 0, asked: 0, firstTry: 0, missed: false, wrong: null, key: null, refocus: false };
+  s.reset = (from) => { s.answered = from || 0; s.asked = 0; s.firstTry = 0; s.missed = false; s.wrong = null; s.key = null; };
+  s.asking = (pos, total) => s.on && s.answered < total && Math.abs(pos - s.answered) < 1e-6;
+  s.tally = () => (s.asked > 0 ? ` ${s.firstTry} of ${s.asked} right on the first try.` : "");
+  function pick(v, e) {
+    s.asked += s.wrong == null && !s.missed ? 1 : 0;
+    s.refocus = e.detail === 0;
+    if (v !== opts.right(s.answered)) { s.missed = true; s.wrong = v; opts.redraw(); return; }
+    if (!s.missed) s.firstTry++;
+    s.missed = false; s.wrong = null; s.answered++;
+    opts.advance();
+  }
+  s.render = (pos, total, salt) => {
+    const key = s.asking(pos, total) ? `${salt}|${s.answered}|${s.wrong}` : "";
+    if (key === s.key) return;
+    s.key = key; ask.innerHTML = ""; ask.hidden = !s.on;
+    if (!key) return;
+    const btns = opts.options(s.answered).map(({ v, label }) => {
+      const b = el("button", "viz-btn" + (v === s.wrong ? " playback-wrong" : ""), label);
+      b.type = "button";
+      b.addEventListener("click", (e) => pick(v, e));
+      ask.append(b);
+      return b;
+    });
+    if (s.wrong != null) ask.append(el("span", "playback-feedback", opts.why(s.answered, s.wrong)));
+    if (s.refocus) { s.refocus = false; (btns.find((b) => !b.classList.contains("playback-wrong")) || btns[0]).focus(); }
+  };
+  return s;
+}
+/** Pseudocode with a live per-line "runs" column; `skip` lists the 1-based lines that show "–". */
+function runsTable(lines, basic, skip) {
+  const table = el("div", "oc-table"), head = el("div", "oc-row oc-head");
+  head.append(el("span", "oc-ln", "line"), el("span", "oc-code", "statement"), el("span", "oc-cnt", "runs"));
+  table.append(head);
+  const rows = lines.map((text, i) => {
+    const r = el("div", "oc-row" + (i + 1 === basic ? " basic" : "")), code = el("span", "oc-code"), cnt = el("span", "oc-cnt cur", "");
+    code.innerHTML = highlight("pseudo", text) || " ";
+    code.style.minWidth = "0"; cnt.style.width = "58px";
+    r.append(el("span", "oc-ln", String(i + 1)), code, cnt);
+    table.append(r);
+    return { r, cnt };
+  });
+  return {
+    table,
+    paint(runs, curLine) {
+      rows.forEach(({ r, cnt }, i) => {
+        const on = i + 1 === curLine, t = skip.includes(i + 1) ? "–" : String(runs[i]);
+        r.style.background = on ? "var(--hl-soft)" : ""; r.style.borderLeftColor = on ? "var(--hl)" : "";
+        if (cnt.textContent !== t) cnt.textContent = t;
+      });
+    },
+  };
+}
+/** Spreads phase weights over the step: each phase gets a..b inside [0, 1]. */
+function spread(ph) {
+  const W = ph.reduce((a, p) => a + p.w, 0);
+  let t = 0;
+  for (const p of ph) { p.a = t / W; t += p.w; p.b = t / W; }
+  return ph;
+}
+/** Run counts per line at position pos: every phase of earlier steps, and the started phases of the current one. */
+function runsAt(steps, nLines, pos) {
+  const runs = new Array(nLines).fill(0), s = Math.ceil(pos - 1e-9) - 1, f = pos - s;
+  for (let k = 0; k <= s && k < steps.length; k++) for (const p of steps[k].ph) if (k < s || p.a < f - 1e-9) runs[p.line - 1]++;
+  return runs;
+}
+/** A text box of whole numbers in a unit-row; returns the input. */
+function numsInput(row, label, value, width) {
+  const l = el("label", null, label), input = document.createElement("input");
+  l.style.width = "auto"; input.type = "text"; input.value = value; input.style.width = width; input.setAttribute("aria-label", label);
+  row.append(l, input);
+  return input;
+}
+const mn = (v) => (v < 0 ? `−${-v}` : String(v));
+const okVal = (v) => Number.isInteger(v) && v >= -99 && v <= 999;
+const parseNums = (txt) => txt.trim().split(/[\s,]+/).filter(Boolean).map(Number);
+
+// ---------- widget: insertion-play (find-play with algo: "insertion") ----------
+// Loops (insertion sort, slide 35) on an array. One step is one key comparison A[j] > v on line 5;
+// on true the shift A[j+1] ← A[j] and j ← j-1 happen in the same step, and the comparison that
+// ends a pass also drops v into the gap (line 8).
+const INS_LINES = ["Loops(A[0..n-1])", "  for i ← 1 to n-1 do", "    v ← A[i]", "    j ← i-1", "    while j≥0 and A[j]>v do", "       A[j+1] ← A[j]", "       j ← j-1", "    A[j+1] ← v"];
+function insTrace(A0) {
+  const A = A0.slice(), n = A.length, steps = [];
+  for (let i = 1; i < n; i++) {
+    const v = A[i];
+    let j = i - 1, first = true;
+    while (j >= 0) {
+      const res = A[j] > v, cells = A.slice();
+      cells[j + 1] = null; // the gap v left (or the cell whose value was just copied right)
+      const st = { i, v, j, res, first, cells, a: A[j] };
+      if (res) { A[j + 1] = A[j]; j--; }
+      st.last = !res || j < 0; st.dropAt = j + 1;
+      const ph = [];
+      if (first) ph.push({ w: 0.45, line: 2, kind: "lift" }, { w: 0.35, line: 3, kind: "lift" }, { w: 0.3, line: 4, kind: "lift" });
+      ph.push({ w: 1.1, line: 5, kind: "cmp" });
+      if (res) ph.push({ w: 0.9, line: 6, kind: "shift" }, { w: 0.35, line: 7, kind: "dec" });
+      if (st.last) ph.push({ w: 0.8, line: 8, kind: "drop" });
+      st.ph = spread(ph);
+      st.rev = (ph.find((p) => p.kind === "cmp").a + ph.find((p) => p.kind === "cmp").b) / 2;
+      if (st.last) A[st.dropAt] = v;
+      st.after = A.slice();
+      if (!st.last) st.after[j + 1] = null;
+      steps.push(st);
+      first = false;
+      if (!res) break;
+    }
+  }
+  return { steps, sorted: A };
+}
+function insertionPlay(box, cfg) {
+  const okArr = (a) => Array.isArray(a) && a.length >= 2 && a.length <= 8 && a.every(okVal);
+  const SLIDE = [5, 2, 4, 6, 1, 3];
+  let A = okArr(cfg.array) ? cfg.array.slice() : SLIDE.slice(), T = insTrace(A), pb = null;
+  box.append(el("h4", null, cfg.title || "Watch Loops (insertion sort) run, one key comparison at a time"));
+  const row = el("div", "unit-row");
+  const aIn = numsInput(row, "A", A.join(" "), "170px");
+  const presets = el("div", "viz-btn-row");
+  const setA = (a) => { A = a; aIn.value = A.join(" "); restart(); };
+  for (const [t, fn] of [["5 2 4 6 1 3 (slide 36)", () => SLIDE.slice()], ["ascending: best case", () => A.slice().sort((x, y) => x - y)], ["descending: worst case", () => A.slice().sort((x, y) => y - x)]]) {
+    const b = el("button", "viz-btn", t); b.type = "button"; b.addEventListener("click", () => setA(fn())); presets.append(b);
+  }
+  const pc = predictCheck("Predict each comparison before it is shown", !!cfg.predict);
+  const svg = svgEl("svg", { viewBox: "0 0 640 166", class: "curve-svg net-svg" });
+  const tbl = runsTable(INS_LINES, 5, [1]);
+  const caption = playCaption();
+  const ask = el("div", "viz-btn-row playback-ask");
+  const note = el("p", "widget-note", "★ marks the basic operation, the key comparison A[j] > v on line 5. A pass ends at the first false comparison, or when j runs past 0; then line 8 drops v into the gap.");
+  box.append(row, presets, pc.label, svg, tbl.table, caption, ask);
+  const total = () => T.steps.length, n = () => A.length;
+  const P = stepPredict(ask, {
+    options: () => [{ v: true, label: "true: A[j] shifts right" }, { v: false, label: "false: v drops in at A[j+1]" }],
+    right: (k) => T.steps[k].res,
+    why: (k) => { const st = T.steps[k]; return `${st.a} is ${st.res ? "" : "not "}greater than ${st.v}, so A[j] > v is ${st.res}: ${st.res ? "A[j] shifts right" : "the loop stops and v drops into A[j+1]"}.`; },
+    redraw: () => frame(pb.pos()),
+    advance: () => pb.next(),
+  });
+  P.on = !!cfg.predict;
+
+  function stepText(st, s) {
+    const head = `${st.first ? `Pass i = ${st.i} picks up v = A[${st.i}] = ${st.v}. ` : ""}Comparison ${s + 1}: A[${st.j}] = ${st.a} > ${st.v}`;
+    if (!st.res) return `${head} is false, so the while loop stops and line 8 drops v = ${st.v} into A[${st.j + 1}].`;
+    return `${head} is true, so ${st.a} shifts right to A[${st.j + 1}] and j becomes ${mn(st.j - 1)}.` + (st.last ? ` Now j ≥ 0 fails, so the loop stops without another comparison and line 8 puts v = ${st.v} into A[0].` : "");
+  }
+  function endText() {
+    const N = n(), C = total(), worst = (N * (N - 1)) / 2;
+    const which = C === N - 1 ? "This input is the best case." : C === worst ? "This input is the worst case." : "This input sits between the two.";
+    return ` Sorted: ${T.sorted.join(" ")}. ${C} key comparisons for n = ${N}; the best case (ascending) is n − 1 = ${N - 1} and the worst case (descending) is n(n − 1)/2 = ${worst}. ${which}`;
+  }
+  function frame(pos) {
+    const N = n(), C = total(), q = P.asking(pos, C), s = Math.ceil(pos - 1e-9) - 1, st = s >= 0 ? T.steps[s] : null, f = pos - s, end = pos >= C - 1e-9;
+    const ph = st ? st.ph.find((p) => f <= p.b + 1e-9) : null;
+    const pf = (kind) => { const p = st.ph.filter((x) => x.kind === kind); if (!p.length) return null; return clamp((f - p[0].a) / (p[p.length - 1].b - p[0].a), 0, 1); };
+    tbl.paint(runsAt(T.steps, INS_LINES.length, pos), st ? ph.line : 0);
+    svg.innerHTML = "";
+    const slots = N + 1, cw = Math.min(76, 600 / slots), x0 = (640 - cw * slots) / 2, cx = (k) => x0 + (k + 1.5) * cw;
+    const yRow = 92, yFloat = 38, h = 42;
+    // What sits in each cell, where v floats, what is sliding, where j points.
+    let cells = st ? st.cells.slice() : A.slice(), vAt = null, vY = yFloat, slide = null, jAt = st ? st.j : null;
+    if (st) {
+      const lift = pf("lift"), shift = pf("shift"), dec = pf("dec"), drop = pf("drop");
+      vAt = st.j + 1;
+      if (lift != null) vY = yRow + (yFloat - yRow) * ease(lift);
+      if (shift != null && shift > 0) {
+        slide = { val: st.a, x: st.j + ease(shift) };
+        cells[st.j] = null; vAt = st.j + 1 - ease(shift);
+        if (shift >= 1) { slide = null; cells[st.j + 1] = st.a; }
+      }
+      if (dec != null) jAt = st.j - ease(dec);
+      if (drop != null && drop > 0) { vAt = st.dropAt; vY = yFloat + (yRow - yFloat) * ease(drop); if (drop >= 1) { cells = st.after.slice(); vAt = null; jAt = null; } }
+    }
+    for (let k = 0; k < N; k++) {
+      const gap = cells[k] == null, inPass = st && k <= st.i && !end;
+      svg.append(svgEl("rect", { x: cx(k) - cw / 2 + 2, y: yRow, width: cw - 4, height: h, rx: 6, fill: end ? "var(--green-soft)" : inPass && !gap ? "var(--paper-2)" : "var(--paper)", stroke: gap ? "var(--hl)" : end ? "var(--green)" : "var(--rule-strong)", "stroke-width": gap ? 1.6 : 1.2, "stroke-dasharray": gap ? "4 3" : "" }));
+      if (!gap) svg.append(svgEl("text", { x: cx(k), y: yRow + 28, "text-anchor": "middle", "font-size": 20, fill: "var(--ink)" }, String(cells[k])));
+      const here = jAt != null && Math.abs(jAt - k) < 0.5;
+      svg.append(svgEl("text", { x: cx(k), y: yRow + h + 22, "text-anchor": "middle", "font-size": 14, "font-weight": here ? 700 : 400, fill: here ? "var(--hl)" : "var(--ink-dim)" }, here ? `j = ${k}` : String(k)));
+    }
+    if (jAt != null && jAt < -0.5 + 1e-9) svg.append(svgEl("text", { x: cx(-1), y: yRow + h + 22, "text-anchor": "middle", "font-size": 14, "font-weight": 700, fill: "var(--hl)" }, "j = −1"));
+    if (slide) {
+      svg.append(svgEl("rect", { x: cx(slide.x) - cw / 2 + 2, y: yRow, width: cw - 4, height: h, rx: 6, fill: "var(--paper)", stroke: "var(--hl)", "stroke-width": 2 }));
+      svg.append(svgEl("text", { x: cx(slide.x), y: yRow + 28, "text-anchor": "middle", "font-size": 20, fill: "var(--ink)" }, String(slide.val)));
+    }
+    if (st && vAt != null) {
+      svg.append(svgEl("rect", { x: cx(vAt) - cw / 2 + 4, y: vY, width: cw - 8, height: h - 4, rx: 7, fill: "var(--hl-soft)", stroke: "var(--hl)", "stroke-width": 2 }));
+      svg.append(svgEl("text", { x: cx(vAt), y: vY + 26, "text-anchor": "middle", "font-size": 17, "font-weight": 700, fill: "var(--ink)" }, `v=${st.v}`));
+    }
+    if (st && !end && (ph.kind !== "lift")) {
+      const chip = `A[${st.j}] > v: ${st.a} > ${st.v} ${f >= st.rev - 1e-9 ? st.res : "?"}`, w = chip.length * 8.6 + 20, bx = clamp(cx(st.j), w / 2 + 2, 638 - w / 2);
+      svg.append(svgEl("rect", { x: bx - w / 2, y: 4, width: w, height: 26, rx: 7, fill: "var(--paper)", stroke: "var(--hl)", "stroke-width": 1.5 }));
+      svg.append(svgEl("text", { x: bx, y: 22, "text-anchor": "middle", "font-size": 14, fill: "var(--ink)" }, chip));
+    }
+    let text;
+    if (q) { const nx = T.steps[P.answered]; text = `Comparison ${P.answered + 1}${nx.first ? ` (pass i = ${nx.i}, v = A[${nx.i}] = ${nx.v})` : ""}: j = ${nx.j}, A[j] = ${nx.a} and v = ${nx.v}. Is A[j] > v true or false?`; }
+    else if (!st) text = `Loops on ${A.join(" ")}: pass i = 1 will pick up v = A[1] = ${A[1]}. Each step is one key comparison A[j] > v on line 5; on true, A[j] shifts one place right.`;
+    else { text = stepText(st, s); if (end) text += endText() + P.tally(); }
+    if (caption.textContent !== text) caption.textContent = text;
+    P.render(pos, C, A.join(","));
+  }
+  function restart() { T = insTrace(A); P.reset(0); note.textContent = note.dataset.base; pb.reset(total()); }
+  note.dataset.base = note.textContent;
+  pb = createPlayback({ count: total(), unit: "comparison", onFrame: frame, stepMs: () => cfg.stepMs || 1600, limit: () => (P.on ? P.answered : total()), onBlocked: nudge(ask) });
+  box.append(pb.el, note);
+  aIn.addEventListener("input", () => {
+    const a = parseNums(aIn.value);
+    if (!okArr(a)) { note.textContent = "Type 2 to 8 whole numbers for A, separated by spaces."; return; }
+    A = a; restart();
+  });
+  pc.input.addEventListener("change", () => { P.on = pc.input.checked; pb.pause(); P.reset(Math.ceil(pb.pos() - 1e-9)); pb.set(pb.pos()); });
+}
+
+// ---------- widget: pairs-play (find-play with algo: "unique") ----------
+// UniqueElements (slide 84): i and j sweep every pair i < j; one step is one comparison A[i] = A[j].
+// The triangle beside the array is loop-grid's "upper" picture, lit as it is visited.
+const UQ_LINES = ["UniqueElements(A[0..n-1])", "  for i ← 0 to n-2 do", "    for j ← i+1 to n-1 do", "      if A[i] = A[j] return false", "  return true"];
+function uqTrace(A) {
+  const n = A.length, steps = [];
+  let hit = null;
+  outer: for (let i = 0; i <= n - 2; i++) for (let j = i + 1; j <= n - 1; j++) {
+    const eq = A[i] === A[j], ph = [];
+    if (j === i + 1) ph.push({ w: 0.4, line: 2 });
+    ph.push({ w: 0.4, line: 3 }, { w: 1.1, line: 4, cmp: true });
+    steps.push({ i, j, eq, ph: spread(ph), newI: j === i + 1 });
+    if (eq) { hit = { i, j }; break outer; }
+  }
+  for (const st of steps) { const c = st.ph.find((p) => p.cmp); st.rev = (c.a + c.b) / 2; }
+  return { steps, hit };
+}
+function pairsPlay(box, cfg) {
+  const okArr = (a) => Array.isArray(a) && a.length >= 2 && a.length <= 8 && a.every(okVal);
+  const BASE = [4, 9, 2, 7, 5];
+  let A = okArr(cfg.array) ? cfg.array.slice() : BASE.slice(), T = uqTrace(A), pb = null;
+  box.append(el("h4", null, cfg.title || "Watch UniqueElements compare every pair"));
+  const row = el("div", "unit-row");
+  const aIn = numsInput(row, "A", A.join(" "), "170px");
+  const presets = el("div", "viz-btn-row");
+  const setA = (a) => { A = a; aIn.value = A.join(" "); restart(); };
+  for (const [t, a] of [["all distinct: worst case", [4, 9, 2, 7, 5]], ["A[0] = A[1]: best case", [4, 4, 2, 7, 5]], ["duplicate in the middle", [4, 9, 2, 9, 5]], ["duplicate in the last pair", [4, 9, 2, 7, 7]]]) {
+    const b = el("button", "viz-btn", t); b.type = "button"; b.addEventListener("click", () => setA(a.slice())); presets.append(b);
+  }
+  const pc = predictCheck("Predict each comparison before it is shown", !!cfg.predict);
+  const svg = svgEl("svg", { viewBox: "0 0 640 200", class: "curve-svg net-svg" });
+  const tbl = runsTable(UQ_LINES, 4, [1]);
+  const caption = playCaption();
+  const ask = el("div", "viz-btn-row playback-ask");
+  const note = el("p", "widget-note", "★ marks the basic operation, the comparison A[i] = A[j] in the innermost loop. Each dot of the triangle is one pair i < j; a duplicate stops the run at its dot.");
+  note.dataset.base = note.textContent;
+  box.append(row, presets, pc.label, svg, tbl.table, caption, ask);
+  const total = () => T.steps.length, n = () => A.length;
+  const P = stepPredict(ask, {
+    options: () => [{ v: true, label: "equal: return false" }, { v: false, label: "not equal: next j" }],
+    right: (k) => T.steps[k].eq,
+    why: (k) => { const st = T.steps[k]; return `${A[st.i]} and ${A[st.j]} are ${st.eq ? "equal" : "different"}, so A[i] = A[j] is ${st.eq}: ${st.eq ? "line 4 returns false" : "the loops go on to the next pair"}.`; },
+    redraw: () => frame(pb.pos()),
+    advance: () => pb.next(),
+  });
+  P.on = !!cfg.predict;
+
+  function endText() {
+    const N = n(), C = total(), W = (N * (N - 1)) / 2;
+    if (T.hit) {
+      const { i, j } = T.hit, base = ` Line 4 found A[${i}] = A[${j}] = ${A[i]} and returned false after ${plural(C, "comparison")}.`;
+      if (C === 1) return base + " This is the best case, C_best(n) = 1.";
+      if (C === W) return base + ` The duplicate was the last pair, so every pair was compared: n(n − 1)/2 = ${W}, the same count as the worst case.`;
+      return base + ` The early exit skipped ${W - C} of the n(n − 1)/2 = ${W} comparisons of the worst case.`;
+    }
+    return ` No two elements are equal, so all n(n − 1)/2 = ${W} pairs were compared and line 5 returns true: the worst case, C_worst(n) = ${W}.`;
+  }
+  function frame(pos) {
+    const N = n(), C = total(), q = P.asking(pos, C), s = Math.ceil(pos - 1e-9) - 1, st = s >= 0 ? T.steps[s] : null, f = pos - s, end = pos >= C - 1e-9;
+    const ph = st ? st.ph.find((p) => f <= p.b + 1e-9) : null;
+    const runs = runsAt(T.steps, UQ_LINES.length, pos);
+    if (end && !T.hit) runs[4]++;
+    tbl.paint(runs, !st ? 0 : end && !T.hit ? 5 : ph.line);
+    svg.innerHTML = "";
+    const cw = Math.min(56, 360 / N), x0 = 18, cx = (k) => x0 + (k + 0.5) * cw, yRow = 70, h = 44;
+    const prev = s > 0 ? T.steps[s - 1] : null;
+    const iAt = st ? (prev && st.newI && ph.line === 2 ? prev.i + ease(clamp((f - ph.a) / (ph.b - ph.a), 0, 1)) : st.i) : null;
+    const jFrom = prev && !st.newI ? prev.j : st ? st.j : null;
+    const jPh = st ? st.ph.find((p) => p.line === 3) : null;
+    const jAt = st ? jFrom + (st.j - jFrom) * ease(clamp((f - jPh.a) / (jPh.b - jPh.a), 0, 1)) : null;
+    const shown = (k) => k < s || (k === s && f >= T.steps[k].rev - 1e-9);
+    for (let k = 0; k < N; k++) {
+      const isI = iAt != null && Math.abs(iAt - k) < 0.5, isJ = jAt != null && Math.abs(jAt - k) < 0.5, dup = T.hit && shown(C - 1) && (k === T.hit.i || k === T.hit.j);
+      svg.append(svgEl("rect", { x: cx(k) - cw / 2 + 2, y: yRow, width: cw - 4, height: h, rx: 6, fill: dup ? "var(--red-soft)" : isI || isJ ? "var(--paper-2)" : "var(--paper)", stroke: dup ? "var(--red)" : isJ ? "var(--hl)" : isI ? "var(--blue)" : "var(--rule-strong)", "stroke-width": isI || isJ || dup ? 2 : 1.2 }));
+      svg.append(svgEl("text", { x: cx(k), y: yRow + 29, "text-anchor": "middle", "font-size": 19, fill: "var(--ink)" }, String(A[k])));
+      svg.append(svgEl("text", { x: cx(k), y: yRow + h + 18, "text-anchor": "middle", "font-size": 12, fill: "var(--ink-dim)" }, String(k)));
+    }
+    if (iAt != null) svg.append(svgEl("text", { x: cx(iAt), y: yRow - 8, "text-anchor": "middle", "font-size": 14, "font-weight": 700, fill: "var(--blue)" }, `i = ${Math.round(iAt)}`));
+    if (jAt != null) svg.append(svgEl("text", { x: cx(jAt), y: yRow + h + 38, "text-anchor": "middle", "font-size": 14, "font-weight": 700, fill: "var(--hl)" }, `j = ${Math.round(jAt)}`));
+    if (st && ph.cmp || (st && end)) {
+      const chip = `A[${st.i}] = A[${st.j}]: ${A[st.i]} = ${A[st.j]} ${shown(s) ? st.eq : "?"}`, w = chip.length * 8.4 + 20, bx = clamp((cx(st.i) + cx(st.j)) / 2, w / 2 + 2, 400 - w / 2);
+      svg.append(svgEl("rect", { x: bx - w / 2, y: 6, width: w, height: 26, rx: 7, fill: "var(--paper)", stroke: "var(--hl)", "stroke-width": 1.5 }));
+      svg.append(svgEl("text", { x: bx, y: 24, "text-anchor": "middle", "font-size": 14, fill: "var(--ink)" }, chip));
+    }
+    // The upper triangle: row i, column j, one dot per pair i < j.
+    const gx = 440, gy = 30, gs = Math.min(24, 150 / Math.max(1, N - 1));
+    for (let j = 1; j < N; j++) svg.append(svgEl("text", { x: gx + (j - 0.5) * gs, y: gy - 6, "text-anchor": "middle", "font-size": 10, fill: "var(--ink-dim)" }, `${j}`));
+    svg.append(svgEl("text", { x: gx - 4, y: gy - 6, "text-anchor": "end", "font-size": 10, fill: "var(--ink-dim)" }, "i \\ j"));
+    for (let i = 0; i < N - 1; i++) {
+      svg.append(svgEl("text", { x: gx - 4, y: gy + (i + 0.5) * gs + 4, "text-anchor": "end", "font-size": 10, fill: "var(--ink-dim)" }, `${i}`));
+      for (let j = i + 1; j < N; j++) {
+        const k = T.steps.findIndex((t) => t.i === i && t.j === j), vis = k >= 0 && k <= s, cur = k === s && !end, red = vis && T.steps[k].eq && shown(k);
+        svg.append(svgEl("circle", { cx: gx + (j - 0.5) * gs, cy: gy + (i + 0.5) * gs, r: vis ? gs * 0.3 : gs * 0.16, fill: red ? "var(--red)" : vis ? "var(--hl)" : "none", stroke: vis ? "none" : "var(--rule-strong)" }));
+        if (cur) svg.append(svgEl("circle", { cx: gx + (j - 0.5) * gs, cy: gy + (i + 0.5) * gs, r: gs * 0.42, fill: "none", stroke: "var(--ink)", "stroke-width": 1.4 }));
+      }
+    }
+    svg.append(svgEl("text", { x: gx, y: gy + (N - 1) * gs + 18, "font-size": 11, fill: "var(--ink-dim)" }, `${Math.max(0, s + 1)} of n(n − 1)/2 = ${(N * (N - 1)) / 2} pairs`));
+    let text;
+    if (q) { const nx = T.steps[P.answered]; text = `Comparison ${P.answered + 1}: i = ${nx.i}, j = ${nx.j}, A[i] = ${A[nx.i]} and A[j] = ${A[nx.j]}. Is A[i] = A[j]?`; }
+    else if (!st) text = `UniqueElements on ${A.join(" ")}: i = 0 and j sweeps 1 to n − 1 = ${N - 1}, then i = 1 and j sweeps 2 to ${N - 1}, and so on. Each step is one comparison A[i] = A[j].`;
+    else {
+      text = `${st.newI && st.i > 0 ? `The inner loop for i = ${st.i - 1} is done, so i = ${st.i} and j starts at ${st.i + 1}. ` : ""}Comparison ${s + 1}: A[${st.i}] = ${A[st.i]} and A[${st.j}] = ${A[st.j]} ${st.eq ? "are equal, so line 4 returns false." : "differ, so j moves on."}`;
+      if (end) text += endText() + P.tally();
+    }
+    if (caption.textContent !== text) caption.textContent = text;
+    P.render(pos, C, A.join(","));
+  }
+  function restart() { T = uqTrace(A); P.reset(0); note.textContent = note.dataset.base; pb.reset(total()); }
+  pb = createPlayback({ count: total(), unit: "comparison", onFrame: frame, stepMs: () => cfg.stepMs || 1300, limit: () => (P.on ? P.answered : total()), onBlocked: nudge(ask) });
+  box.append(pb.el, note);
+  aIn.addEventListener("input", () => {
+    const a = parseNums(aIn.value);
+    if (!okArr(a)) { note.textContent = "Type 2 to 8 whole numbers for A, separated by spaces."; return; }
+    A = a; restart();
+  });
+  pc.input.addEventListener("change", () => { P.on = pc.input.checked; pb.pause(); P.reset(Math.ceil(pb.pos() - 1e-9)); pb.set(pb.pos()); });
+}
+
+// ---------- widget: halving-play ----------
+// Example3 (slide 51) or the quiz's halving loop with a countdown: one step is one pass of the
+// outer loop. A bar of length i halves (integer division); in the countdown, x steps down by j.
+const HV = {
+  example3: {
+    lines: ["Example3(n)", "   sum ← 0", "   i ← n", "   while i ≥ 1", "      sum ← sum + 1", "      i ← i/2", "   return sum"],
+    basic: 6, skip: [1], n: 8, nMax: 100000, quick: [8, 16, 100],
+    title: "Watch Example3 halve i, one pass at a time",
+    note: "★ marks the basic operation, the division and assignment on line 6. Each pass halves i with integer division, so the loop runs ⌊log₂ n⌋ + 1 times.",
+  },
+  countdown: {
+    lines: ["j = 0", "i = n", "while i > 0 do", "   j = j+1", "   if j > 0 then", "      x = i", "      while x > 0", "         x = x - j", "      end-while", "   end-if", "   i = i/2", "end-while"],
+    basic: 8, skip: [9, 10, 12], n: 10, nMax: 64, quick: [10, 16, 20],
+    title: "Watch the halving loop with a countdown, one outer pass at a time",
+    note: "★ marks the basic operation, x = x − j on line 8. The outer loop halves i; inside each pass x counts down from i in steps of j, so line 8 runs ⌈i/j⌉ times per pass.",
+  },
+};
+function hvTrace(mode, n) {
+  const steps = [];
+  if (mode === "example3") {
+    let i = n, k = 0;
+    while (i >= 1) {
+      const ph = [];
+      if (k === 0) ph.push({ w: 0.35, line: 2 }, { w: 0.35, line: 3 });
+      ph.push({ w: 0.5, line: 4 }, { w: 0.5, line: 5 }, { w: 1.4, line: 6, halve: true });
+      steps.push({ i, next: Math.floor(i / 2), sum: k + 1, ph: spread(ph) });
+      i = Math.floor(i / 2); k++;
+    }
+    return { steps, endLine: 7 };
+  }
+  let i = n, j = 0;
+  while (i > 0) {
+    j++;
+    const xs = []; for (let x = i; x > 0; x -= j) xs.push(x);
+    const ph = [];
+    if (j === 1) ph.push({ w: 0.3, line: 1 }, { w: 0.3, line: 2 });
+    ph.push({ w: 0.35, line: 3 }, { w: 0.3, line: 4 }, { w: 0.3, line: 5 }, { w: 0.3, line: 6 });
+    xs.forEach((x, t) => ph.push({ w: 0.2, line: 7 }, { w: 0.45, line: 8, sub: t }));
+    ph.push({ w: 0.8, line: 11, halve: true });
+    steps.push({ i, j, xs, after: xs[xs.length - 1] - j, c: xs.length, next: Math.floor(i / 2), ph: spread(ph) });
+    i = Math.floor(i / 2);
+  }
+  return { steps, endLine: 0 };
+}
+function halvingPlay(box, cfg) {
+  const mode = cfg.mode === "countdown" ? "countdown" : "example3", D = HV[mode], cd = mode === "countdown";
+  const okN = (v) => Number.isInteger(v) && v >= 1 && v <= D.nMax;
+  let n = okN(cfg.n) ? cfg.n : D.n, T = hvTrace(mode, n), pb = null;
+  box.append(el("h4", null, cfg.title || D.title));
+  const row = el("div", "unit-row");
+  const nIn = numsInput(row, "n", String(n), "80px");
+  const presets = el("div", "viz-btn-row");
+  for (const q of D.quick) { const b = el("button", "viz-btn", `n = ${q}`); b.type = "button"; b.addEventListener("click", () => { n = q; nIn.value = String(q); restart(); }); presets.append(b); }
+  const pc = predictCheck(cd ? "Predict how many times line 8 runs in each pass" : "Predict the next value of i before each pass", !!cfg.predict);
+  const svg = svgEl("svg", { viewBox: "0 0 640 150", class: "curve-svg net-svg" });
+  const tbl = runsTable(D.lines, D.basic, D.skip);
+  const caption = playCaption();
+  const ask = el("div", "viz-btn-row playback-ask");
+  const note = el("p", "widget-note", D.note);
+  note.dataset.base = D.note;
+  box.append(row, presets, pc.label, svg, tbl.table, caption, ask);
+  const total = () => T.steps.length;
+  const choices = (vals) => [...new Set(vals.filter((v) => v >= 0))].sort((a, b) => a - b);
+  const P = stepPredict(ask, {
+    options: (k) => {
+      const st = T.steps[k];
+      if (cd) return choices([st.c, st.c - 1, Math.floor(st.i / st.j), st.i, st.c + 1].filter((v) => v >= 1)).map((v) => ({ v, label: `${v} ${v === 1 ? "time" : "times"}` }));
+      return choices([st.next, st.next + 1, st.i - 1, st.i - 2]).map((v) => ({ v, label: `i = ${v}` }));
+    },
+    right: (k) => (cd ? T.steps[k].c : T.steps[k].next),
+    why: (k) => {
+      const st = T.steps[k];
+      return cd ? `x starts at ${st.i} and drops by j = ${st.j} until it is ≤ 0 (${st.xs.join(", ")}, ${mn(st.after)}), so line 8 runs ⌈${st.i}/${st.j}⌉ = ${st.c} times.`
+        : `Line 6 is i ← i/2 with integer division: ⌊${st.i}/2⌋ = ${st.next}.`;
+    },
+    redraw: () => frame(pb.pos()),
+    advance: () => pb.next(),
+  });
+  P.on = !!cfg.predict;
+
+  function frame(pos) {
+    const C = total(), q = P.asking(pos, C), s = Math.ceil(pos - 1e-9) - 1, st = s >= 0 ? T.steps[s] : null, f = pos - s, end = pos >= C - 1e-9;
+    const ph = st ? st.ph.find((p) => f <= p.b + 1e-9) : null;
+    const runs = runsAt(T.steps, D.lines.length, pos);
+    if (end && T.endLine) runs[T.endLine - 1]++;
+    tbl.paint(runs, !st ? 0 : end && T.endLine ? T.endLine : ph.line);
+    svg.innerHTML = "";
+    const W = 560, x0 = 40, X = (v) => x0 + (Math.max(0, v) / n) * W, yBar = 64, h = 30;
+    // The i values so far, as a chain.
+    const seen = [n]; for (let k = 0; k <= s; k++) if (k < s || (st.ph.find((p) => p.halve).b <= f + 1e-9)) seen.push(T.steps[k].next);
+    svg.append(svgEl("text", { x: x0, y: 22, "font-size": 14, fill: "var(--ink-2)" }, `i: ${seen.join(" → ")}`));
+    svg.append(svgEl("line", { x1: x0, x2: x0 + W, y1: yBar + h + 6, y2: yBar + h + 6, stroke: "var(--rule-strong)" }));
+    svg.append(svgEl("text", { x: x0, y: yBar + h + 22, "font-size": 11, "text-anchor": "middle", fill: "var(--ink-dim)" }, "0"));
+    svg.append(svgEl("text", { x: x0 + W, y: yBar + h + 22, "font-size": 11, "text-anchor": "middle", fill: "var(--ink-dim)" }, `n = ${n}`));
+    let iNow = st ? st.i : n, fade = null;
+    if (st) {
+      const hp = st.ph.find((p) => p.halve), t = clamp((f - hp.a) / (hp.b - hp.a), 0, 1);
+      if (t > 0) { fade = { from: st.next, to: st.i, op: 1 - ease(t) }; iNow = st.next + (st.i - st.next) * (1 - ease(t)); if (t >= 1) { iNow = st.next; fade = null; } }
+    }
+    if (fade) svg.append(svgEl("rect", { x: X(fade.from), y: yBar, width: Math.max(0, X(fade.to) - X(fade.from)), height: h, rx: 4, fill: "var(--red-soft)", stroke: "var(--red)", opacity: fade.op }));
+    const iSolid = fade ? st.next : iNow;
+    if (iSolid > 0) svg.append(svgEl("rect", { x: x0, y: yBar, width: X(iSolid) - x0, height: h, rx: 4, fill: "var(--hl-soft)", stroke: "var(--hl)", "stroke-width": 1.5 }));
+    svg.append(svgEl("text", { x: Math.min(x0 + W - 4, X(Math.max(iNow, 0)) + 6), y: yBar + 20, "font-size": 14, "font-weight": 700, fill: "var(--ink)" }, `i = ${Math.round(iNow)}`));
+    if (cd && st) {
+      // x stepping down from i by j: one tick per value x takes, the marker on the current one.
+      const subs = st.ph.filter((p) => p.sub != null), started = subs.filter((p) => p.a < f - 1e-9).length;
+      const xNow = started === 0 ? st.i : st.xs[started - 1] - st.j;
+      st.xs.slice(0, started).forEach((x) => svg.append(svgEl("line", { x1: X(x), x2: X(x), y1: yBar - 8, y2: yBar + h + 4, stroke: "var(--blue)", "stroke-width": 1.2, opacity: 0.6 })));
+      if (subs.length && f >= subs[0].a - 0.08 && !(st.ph.find((p) => p.halve).a < f)) {
+        svg.append(svgEl("path", { d: `M${X(xNow) - 6} ${yBar - 18} L${X(xNow) + 6} ${yBar - 18} L${X(xNow)} ${yBar - 8} Z`, fill: "var(--blue)" }));
+        svg.append(svgEl("text", { x: clamp(X(xNow), x0 + 20, x0 + W - 20), y: yBar - 24, "text-anchor": "middle", "font-size": 13, "font-weight": 700, fill: "var(--blue)" }, `x = ${mn(xNow)}`));
+      }
+      svg.append(svgEl("text", { x: x0 + W, y: 22, "text-anchor": "end", "font-size": 13, fill: "var(--ink-2)" }, `j = ${st.j}, line 8 this pass: ${started}`));
+    }
+    let text;
+    if (q) {
+      const nx = T.steps[P.answered];
+      text = cd ? `Pass ${P.answered + 1}: i = ${nx.i} and j becomes ${nx.j}. How many times will line 8 run in this pass?` : `Pass ${P.answered + 1}: i = ${nx.i} ≥ 1. What will line 6 make i?`;
+    } else if (!st) text = cd ? `n = ${n}: i starts at ${n} and j at 0. Each step is one pass of the outer while loop.` : `n = ${n}: sum starts at 0 and i at ${n}. Each step is one pass of the while loop.`;
+    else if (cd) {
+      text = `Pass ${s + 1}: i = ${st.i}, j = ${st.j}. x takes the values ${st.xs.join(", ")}, ${mn(st.after)}, so line 8 runs ${plural(st.c, "time")}; then line 11 makes i = ⌊${st.i}/2⌋ = ${st.next}.`;
+      if (end) {
+        const parts = T.steps.map((t) => t.c), tot = parts.reduce((a, b) => a + b, 0);
+        text += ` i = 0 ends the outer loop after ${C} passes, so lines 3, 4, 5, 6 and 11 ran ${C} times each. Line 8 ran ${parts.join(" + ")} = ${tot} times, tied with the test on line 7 (counted once per pass); line 8 wins the tie on cost.` + P.tally();
+      }
+    } else {
+      text = `Pass ${s + 1}: i = ${st.i} ≥ 1, so sum becomes ${st.sum} and line 6 halves i to ⌊${st.i}/2⌋ = ${st.next}.`;
+      if (end) text += ` i = 0 < 1, so the loop stops after ${C} passes: ⌊log₂ ${n}⌋ + 1 = ${C}, and line 6 ran ${C} times. Doubling n to ${2 * n} would add one pass.` + P.tally();
+    }
+    if (caption.textContent !== text) caption.textContent = text;
+    P.render(pos, C, String(n));
+  }
+  function restart() { T = hvTrace(mode, n); P.reset(0); note.textContent = note.dataset.base; pb.reset(total()); }
+  pb = createPlayback({ count: total(), unit: "pass", onFrame: frame, stepMs: () => cfg.stepMs || (cd ? 2600 : 1500), limit: () => (P.on ? P.answered : total()), onBlocked: nudge(ask) });
+  box.append(pb.el, note);
+  nIn.addEventListener("input", () => {
+    const v = Number(nIn.value.trim());
+    if (!okN(v)) { note.textContent = `Type a whole number n from 1 to ${D.nMax.toLocaleString("en-US")}.`; return; }
+    n = v; restart();
+  });
+  pc.input.addEventListener("change", () => { P.on = pc.input.checked; pb.pause(); P.reset(Math.ceil(pb.pos() - 1e-9)); pb.set(pb.pos()); });
+}
+
 export const WIDGETS = {
   "op-counter": opCounter,
   "loop-grid": loopGrid,
@@ -1200,4 +1737,7 @@ export const WIDGETS = {
   "fib-race": fibRace,
   "fib-tree-play": fibTreePlay,
   "find-play": findPlay,
+  "insertion-play": insertionPlay,
+  "pairs-play": pairsPlay,
+  "halving-play": halvingPlay,
 };

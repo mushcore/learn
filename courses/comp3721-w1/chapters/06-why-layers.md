@@ -3,7 +3,7 @@ title: Protocols & why we layer
 minutes: 10
 ---
 
-A network is made of hosts, routers, links of various media, applications, protocols, hardware and software. **Protocol layering** is how that structure is organized, and Quiz 2 tests its vocabulary almost word for word.
+A network is made of hosts, routers, links of various media, applications, protocols, hardware and software. **Protocol layering** is how that structure is organized.
 
 ## Analogy: organization of air travel
 
@@ -107,19 +107,13 @@ A **protocol suite (stack)** is *a set of protocols organized in different layer
   {
     "q": "Select all of the advantages of protocol layering listed on the slides.",
     "options": [
-      "Separating the services from the implementation",
       "Simpler and less expensive intermediate systems",
-      "Modularity: independent layers that act as a black box",
-      "Faster transmission speed on every link"
+      "Faster transmission speed on every link",
+      "Separating the services from the implementation",
+      "Modularity: independent layers that act as a black box"
     ],
-    "answer": [0, 1, 2],
+    "answer": [0, 2, 3],
     "explain": "The three listed advantages are separation of service from implementation, simpler/cheaper intermediate systems, and modularity. Speed is not one of them."
-  },
-  {
-    "q": "Because of modularity, a change in one layer's service implementation is transparent to the rest of the system.",
-    "type": "tf",
-    "answer": true,
-    "explain": "That is the stated consequence of modularity (independent layers, black box): ease of maintenance and updating, because a change inside one layer is invisible to the others."
   },
   {
     "q": "A set of protocols organized in different layers and designed to work together is called a protocol _______ (or stack).",

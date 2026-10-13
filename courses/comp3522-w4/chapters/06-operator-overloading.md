@@ -77,6 +77,39 @@ friend bool operator>=(const X& lhs, const X& rhs) { return !operator< (lhs, rhs
 
 Read the last two the way the slide does: "less than or equal" is "not greater than"; "greater than or equal" is "not less than".
 
+```cpp run pin CharacterCompare.cpp
+// predict: Write the six true/false lines. Only == and < compare chars; the other four call them.
+#include <iostream>
+using namespace std;
+
+class Character {
+    char c;
+public:
+    Character(char c = ' ') : c(c) {}
+    friend bool operator==(const Character& lhs, const Character& rhs) { return lhs.c == rhs.c; }
+    friend bool operator!=(const Character& lhs, const Character& rhs) { return !operator==(lhs, rhs); }
+    friend bool operator< (const Character& lhs, const Character& rhs) { return lhs.c < rhs.c; }
+    friend bool operator> (const Character& lhs, const Character& rhs) { return  operator< (rhs, lhs); }
+    friend bool operator<=(const Character& lhs, const Character& rhs) { return !operator> (lhs, rhs); }
+    friend bool operator>=(const Character& lhs, const Character& rhs) { return !operator< (lhs, rhs); }
+};
+
+int main() {
+    Character char1('A');
+    Character char2('B');
+    cout << boolalpha;
+    cout << "char1 less than char2?: " << (char1 < char2) << endl;
+    cout << "char1 > char2: " << (char1 > char2) << endl;
+    cout << "char1 <= char2: " << (char1 <= char2) << endl;
+    cout << "char1 >= char2: " << (char1 >= char2) << endl;
+    cout << "char1 >= char1: " << (char1 >= char1) << endl;
+    cout << "char1 != char2: " << (char1 != char2) << endl;
+    return 0;
+}
+```
+
+This is the shipped operators project's `Character` with only the comparisons kept, and `char1('A')`, `char2('B')` are the project's own objects.
+
 ## Increment: prefix, postfix and the dummy int
 
 ```cpp run pin Counter.cpp
@@ -151,10 +184,6 @@ int main() {
 ```
 
 `Character& operator+=(const Character& rhs)` is the member that changes the left operand and returns it by reference. `Character operator+(Character lhs, const Character& rhs)` is the friendly non-member that takes its **left parameter by copy**, adds with `lhs += rhs;`, and returns that copy: `a + b` is expected to be a new value, so `operator+` returns a new value, and `a` is untouched by the line `Character b = a + one;`. The shipped operators project does the same on a `Character` holding `'A'` and `'B'`; this version adds small numbers so every result stays a printable letter.
-
-:::quiz Member or non-member: the three-line rule
-1. Unary (`++`, `--`, `()`): member. 2. Binary that treats both operands equally and changes neither (`+`, `-`, `<`, `>`): non-member. 3. Binary that does not treat them equally (`+=`, `-=`): member of the left operand's type.
-:::
 
 ```quiz
 [

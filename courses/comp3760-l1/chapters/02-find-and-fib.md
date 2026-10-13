@@ -5,7 +5,7 @@ minutes: 11
 
 `find` is the algorithm the module counts by hand. `fib` is the motivation: two correct algorithms for one problem, one of which becomes unusable within seconds.
 
-## find: read it first
+## find returns the largest element
 
 ```pseudo
 1. Algo: find( A[0…n-1] )
@@ -62,15 +62,6 @@ Algo: fib( n )
       return fib( n-1 ) + fib( n-2 )
 ```
 
-```java
-public static int fib(int n)  {
-   if (n<=1)
-      return n;
-   else
-      return ( fib(n-1) + fib(n-2) );
-}
-```
-
 **Second algorithm**, building up from the bottom in an array:
 
 ```pseudo
@@ -81,18 +72,7 @@ Algo: fib2( n )
    return F[n]
 ```
 
-```java
-public static int fib2(int n) {
-   int[] f = new int[n+1];
-   f[0] = 0;
-   f[1] = 1;
-   for (int i=2; i<=n; i++)
-       f[i] = f[i-1] + f[i-2];
-   return f[n];
-}
-```
-
-Both are correct. The instructor timed them:
+The slides pair each with a Java implementation that is the same code line for line (`fib2` allocates `int[] f = new int[n+1]`). Both are correct. The instructor timed them:
 
 | N | Fib1 (ms) | Fib2 (ms) |
 |---|---|---|
@@ -121,18 +101,18 @@ fib-race
 { "n": 5, "title": "fib vs fib2: how much work each one does" }
 ```
 
-The call count for `fib` multiplies by about 1.6 every time `n` goes up by one (the timing column does the same: 9, 11, 22, …, 1627 ms); `fib2` adds one loop iteration.
+The call count for `fib` multiplies by about 1.6 every time `n` goes up by one; the measured times jump around step to step (9 → 11 is ×1.2, 22 → 83 is ×3.8), but over the ten steps from 9 ms to 1627 ms they average ×1.68. `fib2` adds one loop iteration.
 
 ### The calls in the order they happen
 
-The tree above is the finished picture. This one grows it call by call: `fib(n-1)` first, all the way down, and `fib(n-2)` only after that answer is back. Watch for the red nodes, each one an argument that was already computed elsewhere in the tree. Tick the predict box to choose the next call or return yourself.
+The tree above is the finished picture. This one grows it call by call: `fib(n-1)` first, all the way down, and `fib(n-2)` only after that answer is back. Each red node is an argument that was already computed elsewhere in the tree.
 
 ```widget
 fib-tree-play
 { "n": 5, "title": "fib(5): 15 calls, in the order they are made" }
 ```
 
-## So?
+## Fib is why efficiency matters
 
 > **Fib is a basic example of why we care about algorithm efficiency.** A well thought out algorithm can run **much faster**. There can be **big variation** in efficiency.
 
@@ -145,7 +125,7 @@ fib-tree-play
     "code": "Algo: find( A[0…n-1] )\n   m ← A[0]\n   for i ← 1 to n-1 do\n       if A[i] > m\n          m ← A[i]\n   return m",
     "options": ["It sorts the array", "It finds the largest element of the array", "It finds the position of the largest element", "It finds the smallest element of the array"],
     "answer": 1,
-    "explain": "m starts as A[0] and is replaced whenever a bigger element is found, so the return value is the largest element. (It returns the value m, not the index i, so option 3 is wrong.)"
+    "explain": "m starts as A[0] and is replaced whenever a bigger element is found, so the return value is the largest element. (It returns the value m, not the index i, so it does not find the position.)"
   },
   {
     "q": "For an array of n = 8 elements, how many times does `find` evaluate the comparison `A[i] > m`?",

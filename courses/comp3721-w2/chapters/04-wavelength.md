@@ -3,7 +3,7 @@ title: Wavelength & propagation speed
 minutes: 9
 ---
 
-Period measures a sine wave in time. Wavelength measures the same cycle in *distance*: how far the signal travels while completing it, which depends on the speed of the medium.
+Period measures a sine wave in time. Wavelength measures the same cycle in distance: how far the signal travels while completing it, which depends on the speed of the medium.
 
 ## Wavelength ($\lambda$)
 
@@ -58,9 +58,9 @@ Only the red-light row is on the slides.
 
 The two 1 GHz rows: same frequency, slower medium, shorter wavelength.
 
-### Watch one period become one wavelength
+### In one period the front moves one wavelength
 
-Each step of the playback is one period $T$. Watch the front of the signal: in every period it moves exactly one wavelength along the medium, so distance and time grow together. Switch between the two 1 GHz presets to see the slower medium shorten the wavelength, or tick the predict box to work out each distance before it is shown.
+Each step is one period $T$, and in every period the front of the signal moves exactly one wavelength along the medium, so distance and time grow together. The two 1 GHz presets show the slower medium shortening the wavelength.
 
 ```widget
 wave-travel
@@ -112,12 +112,6 @@ wave-travel
     "type": "text",
     "answer": ["micrometres", "micrometers", "micrometre", "micrometer", "μm", "um", "microns", "micron"],
     "explain": "Slide wording: usually measured in micrometres (μm), because it is usually used to describe light in an optical fibre, and the red-light example comes out to 0.75 μm."
-  },
-  {
-    "q": "According to the slides, wavelength is usually used to describe...",
-    "options": ["the transmission of light in an optical fibre", "the voltage of a battery", "the bit rate of a digital signal", "the phase of a sine wave"],
-    "answer": 0,
-    "explain": "Wavelength is usually used to describe the transmission of light in an optical fibre, which is why it is quoted in micrometres."
   },
   {
     "q": "Electromagnetic signals propagate faster in a cable than in a vacuum.",

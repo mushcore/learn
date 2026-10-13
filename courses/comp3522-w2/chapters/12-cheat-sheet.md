@@ -97,7 +97,7 @@ double zero_to_one = rand() / (double) RAND_MAX;   // 0.0 .. 1.0
 
 | | Pointer `int* p` | Reference `int& r` |
 |---|---|---|
-| Holds | an **address** (or `nullptr`) | nothing new: it *is* another name for a box |
+| Holds | an **address** (or `nullptr`) | nothing new: it is another name for a box |
 | Must be initialized? | no (assign `nullptr` if empty) | **yes**, at creation |
 | Can change target? | yes: `p = &y;` | **never** re-seated |
 | Assignment `p = q` / `r = m` | p points where q points | writes m's value into the referent (`ref = m` means `n = m`) |
@@ -141,7 +141,7 @@ getline stops at: EOF (sets eofbit) · delimiter or newline (extracted and tosse
 | `\nWorld\n` | EMPTY | — |
 | `Hello*` | Hello | eofbit |
 | `Hello\n*` | Hello | — |
-| `*` | no change | eofbit **and** failbit |
+| `*` | slide: no change; g++: EMPTY | eofbit **and** failbit |
 
 - Idiom: `while (getline(cin, line)) { /* process */ }`
 - `cin >> n;` then `getline` gives an **empty** line: the newline after n is still in the buffer (fix: `cin.ignore(...)`).

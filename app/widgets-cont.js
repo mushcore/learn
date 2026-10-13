@@ -5,7 +5,7 @@
 // (bus 0.15 / 0.40, Z 0.0250 / 0.0099 / 0.1555, IQ 0.9082 vs 0.9088, radiation 0.4032 / 0.0968 /
 // 5.17, noise 0.0116, web server 0.7981 / 7.49, teller 0.1859 / 0.1859 / 2.77). Two playback widgets
 // (app/playback.js) animate the standardizing steps and the memoryless property (teller 0.6065 /
-// 0.2231 / 0.3679).
+// 0.2231 / 0.3679). A third (cdf-sweep-play) draws F(x) as the area accumulated so far (bus F(11) = 0.55).
 import { el, slider, btnRow } from "./dom.js";
 import { createPlayback } from "./playback.js";
 
@@ -997,7 +997,7 @@ function zCell(z) {
  * Predict mode for a playback widget. questions() returns [{ at, options: [{ label, ok, why }] }] in
  * playback order: the animation is held at position `at` until the option with ok is picked.
  */
-function predictGates(ask, count, questions, getPb) {
+export function predictGates(ask, count, questions, getPb) {
   const g = { on: false, answered: 0, asked: 0, firstTry: 0, missed: false, wrong: -1, key: null, refocus: false };
   const cur = () => (g.on ? questions()[g.answered] || null : null);
   g.limit = () => { const q = cur(); return q ? q.at : count; };
@@ -1034,7 +1034,7 @@ function predictGates(ask, count, questions, getPb) {
   };
   return g;
 }
-function predictCheck(text, on) {
+export function predictCheck(text, on) {
   const label = el("label", "playback-check");
   const input = document.createElement("input");
   input.type = "checkbox"; input.checked = on;
@@ -1060,9 +1060,11 @@ function standardizePlay(box, cfg) {
   if (lo0 == null && hi0 == null) hi0 = src.mu === undefined && src.sigma === undefined ? 120 : st.mu + st.sigma;
   if (lo0 != null && hi0 != null && lo0 > hi0) [lo0, hi0] = [hi0, lo0];
   const uid = ++spSeq;
+  // cfg.table false stops after the divide-by-σ step: three steps, no Z-table read.
+  const TABLE = cfg.table !== false, COUNT = TABLE ? 4 : 3;
   let m = null, pb = null, recKey = null;
 
-  box.append(el("h4", null, cfg.title || "Standardizing, played step by step: subtract μ, divide by σ, read the table"));
+  box.append(el("h4", null, cfg.title || (TABLE ? "Standardizing, played step by step: subtract μ, divide by σ, read the table" : "Standardizing, played step by step: subtract μ, divide by σ")));
   const samePreset = () => names.findIndex((n) => {
     const q = SP_PRESETS[n], lo = loF.get(), hi = hiF.get();
     return q.mu === st.mu && q.sigma === st.sigma && (q.lo == null ? !Number.isFinite(lo) : q.lo === lo) && (q.hi == null ? !Number.isFinite(hi) : q.hi === hi);
@@ -1085,14 +1087,14 @@ function standardizePlay(box, cfg) {
     if (Number.isFinite(lo) && Number.isFinite(hi) && lo > hi) other.setFinite(moved === "lo" ? lo : hi);
     custom(); restart(true);
   }
-  const pc = predictCheck("Predict each Z value and table operation before it is shown", !!cfg.predict);
+  const pc = predictCheck(TABLE ? "Predict each Z value and table operation before it is shown" : "Predict each Z value before it is shown", !!cfg.predict);
   const W = 640, H = 234, base = 176, CX = 320, P1 = 48, H1 = 100, R = 3.6;
   const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, class: "curve-svg net-svg", role: "img", "aria-label": "a normal curve being standardized into the standard normal curve" });
   const caption = el("p", "playback-caption");
   caption.setAttribute("aria-live", "polite");
   const ask = el("div", "viz-btn-row playback-ask");
   const steps = el("div", "stat-steps");
-  const note = el("p", "widget-note", "Z = (X − μ)/σ: subtracting μ moves the centre to 0 and dividing by σ makes the spread 1; neither changes the shaded area. The table gives the area to the left of z; a right tail is 1 − the cell and an area between two values is the difference of two cells.");
+  const note = el("p", "widget-note", "Z = (X − μ)/σ: subtracting μ moves the centre to 0 and dividing by σ makes the spread 1; neither changes the shaded area." + (TABLE ? " The table gives the area to the left of z; a right tail is 1 − the cell and an area between two values is the difference of two cells." : ""));
   if (presetRow) box.append(presetRow);
   box.append(muF.row, sigF.row, loF.row, hiF.row, pc.label, svg, caption, ask);
 
@@ -1131,12 +1133,11 @@ function standardizePlay(box, cfg) {
     opts.sort((a, b) => a.val - b.val);
     const rule = "The table gives the area to the left of z. A right tail is 1 − the cell; an area between two values is the difference of two cells.";
     const ops = [["the table value", "left"], ["1 − the table value", "right"], ["the difference of two table values", "between"]];
-    return [
-      { at: 2, options: opts },
-      { at: 3, options: ops.map(([label, k]) => ({ label, ok: k === m.kind, why: rule })) },
-    ];
+    const qs = [{ at: 2, options: opts }];
+    if (TABLE) qs.push({ at: 3, options: ops.map(([label, k]) => ({ label, ok: k === m.kind, why: rule })) });
+    return qs;
   }
-  const gate = predictGates(ask, 4, questions, () => pb);
+  const gate = predictGates(ask, COUNT, questions, () => pb);
 
   function frame(pos) {
     const { mu, sigma, v } = st, u = st.unit;
@@ -1208,7 +1209,7 @@ function standardizePlay(box, cfg) {
       const [x] = m.bounds[m.bounds.length - 1];
       cap = `The curve is centred at 0 and σ = ${num(sigma)}. Dividing by σ turns ${num(x - mu)} into which Z (2 decimals)?`;
     } else if (q) cap = `The table gives P(Z ≤ z), the area to the left of z. Which operation on the table gives the shaded area ${m.wantZ}?`;
-    else if (step === 0) cap = `Press Play. The Z table covers one curve, with μ = 0 and σ = 1. Here μ = ${num(mu)} and σ = ${num(sigma)}, so the question has to be converted first.`;
+    else if (step === 0) cap = TABLE ? `Press Play. The Z table covers one curve, with μ = 0 and σ = 1. Here μ = ${num(mu)} and σ = ${num(sigma)}, so the question has to be converted first.` : `The standard normal curve has μ = 0 and σ = 1. Here μ = ${num(mu)} and σ = ${num(sigma)}: subtracting μ and dividing by σ turns this curve into that one.`;
     else if (step === 1) cap = `The question is an area under the N(${num(mu)}, ${num(sigma)}²) curve: ${m.want}, the area ${m.kind === "between" ? `between ${num(m.lo)} and ${num(m.hi)}` : m.kind === "left" ? `to the left of ${num(m.hi)}` : `to the right of ${num(m.lo)}`}.`;
     else if (step === 2) cap = mu === 0
       ? `Subtract μ = 0: the curve is already centred at 0, so nothing moves and ${bList(([x]) => `${num(x)} stays ${num(x)}`)}. The shaded area is unchanged.`
@@ -1218,6 +1219,7 @@ function standardizePlay(box, cfg) {
       cap = sigma === 1
         ? `Divide by σ = 1: the curve is already the standard normal, and ${each}. The shaded area is unchanged.`
         : `Divide every value by σ = ${num(sigma)}: the curve ${sigma > 1 ? "squeezes" : "stretches"} into the standard normal, and ${each}. The area to the left of x under the X curve equals the area to the left of z under the Z curve.`;
+      if (!TABLE && pos >= 3) cap += ` So ${m.want} = ${m.wantZ}.${gate.tally()}`;
     } else {
       const rd = (s) => `P(Z ≤ ${f2(s.zr)}) = ${f4(s.t)} (${zCell(s.zr)})`;
       cap = m.kind === "left" ? `Read the table: ${rd(m.sHi)}. The table gives the area to the left of z, which is the area wanted: ${m.want} = ${f4(m.pt)}.`
@@ -1233,6 +1235,7 @@ function standardizePlay(box, cfg) {
       if (step >= 1) rec.push(`${v} ~ N(${num(mu)}, ${num(sigma)}²); wanted: ${m.want}`);
       if (step >= 2) rec.push(`subtract μ: ${m.bounds.map(([x]) => `${num(x)} − ${paren(mu)} = ${num(x - mu)}`).join("; ")}`);
       if (step >= 3) rec.push(`divide by σ: ${m.bounds.map(([, s]) => s.line).join("; ")}`);
+      if (step >= 3 && !TABLE) rec.push(`${m.want} = ${m.wantZ}`);
       if (step >= 4) {
         const differs = Math.abs(m.exact - m.pt) >= 5e-5;
         rec.push(m.bounds.map(([, s]) => s.read).reverse().join("; "), m.answer,
@@ -1246,10 +1249,10 @@ function standardizePlay(box, cfg) {
     m = model(); recKey = null;
     if (presetRow) setActive(presetRow, samePreset());
     gate.restart(0);
-    pb.reset(4);
+    pb.reset(COUNT);
   }
   m = model();
-  pb = createPlayback({ count: 4, unit: "step", stepMs: () => cfg.stepMs || 2200, onFrame: frame, limit: () => gate.limit(), onBlocked: () => gate.nudge() });
+  pb = createPlayback({ count: COUNT, unit: "step", stepMs: () => cfg.stepMs || 2200, onFrame: frame, limit: () => gate.limit(), onBlocked: () => gate.nudge() });
   box.append(pb.el, steps, note);
   gate.on = pc.input.checked;
   pc.input.addEventListener("change", () => { gate.on = pc.input.checked; pb.pause(); gate.restart(pb.pos()); pb.set(pb.pos()); });
@@ -1390,6 +1393,153 @@ function memorylessPlay(box, cfg) {
   restart();
 }
 
+// =====================================================================
+// widget: cdf-sweep-play — F(x) as the area accumulated so far: the bound moves right one step at a time
+// =====================================================================
+const CS_PRESETS = {
+  "bus wait: uniform on [0, 20]": { dist: "uniform", a: 0, b: 20, step: 1, unit: "min", v: "T", ask: [3, 10, 15] },
+  "web server: exponential, β = 2.5 s": { dist: "exponential", beta: 2.5, step: 1, max: 15, unit: "s", v: "X", ask: [1, 3, 7] },
+};
+function cdfSweepPlay(box, cfg) {
+  const names = Object.keys(CS_PRESETS);
+  const st = {};
+  function load(src, over = {}) {
+    const dist = over.dist === "exponential" || over.dist === "uniform" ? over.dist : src.dist;
+    const base = dist === src.dist ? src : CS_PRESETS[names[dist === "exponential" ? 1 : 0]];
+    const custom = ["a", "b", "beta", "step", "max"].some((k) => Number.isFinite(over[k]));
+    Object.assign(st, {
+      dist,
+      a: Number.isFinite(over.a) ? over.a : base.a ?? 0,
+      b: Number.isFinite(over.b) ? over.b : base.b ?? 20,
+      beta: over.beta > 0 ? over.beta : base.beta ?? 2.5,
+      step: over.step > 0 ? over.step : base.step ?? 1,
+      max: over.max > 0 ? over.max : base.max ?? null,
+      unit: typeof over.unit === "string" ? over.unit : base.unit ?? "",
+      v: typeof over.var === "string" ? over.var : base.v ?? "X",
+      ask: custom ? null : base.ask,
+    });
+    if (st.dist === "uniform" && !(st.b > st.a)) st.b = st.a + 20;
+  }
+  load(CS_PRESETS[cfg.preset] || CS_PRESETS[names[0]], CS_PRESETS[cfg.preset] ? {} : cfg);
+  let pb = null, M = null;
+  box.append(el("h4", null, cfg.title || "F(x) is the area so far: the bound moves right and F is drawn point by point"));
+  const presetRow = cfg.presets !== false ? btnRow(names, (i) => { load(CS_PRESETS[names[i]]); restart(); }, names.findIndex((n) => CS_PRESETS[n] === CS_PRESETS[cfg.preset]) >= 0 ? names.indexOf(cfg.preset) : -1) : null;
+  const pc = predictCheck("Predict F at the next stop before the bound moves", !!cfg.predict);
+  const W = 640, H = 240, base = 190, top = 46, LX0 = 34, LX1 = 304, RX0 = 360, RX1 = 620;
+  const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, class: "curve-svg net-svg", role: "img", "aria-label": "a density with the area left of a moving bound shaded, beside its cumulative curve F(x) being drawn" });
+  const caption = el("p", "playback-caption");
+  caption.setAttribute("aria-live", "polite");
+  const ask = el("div", "viz-btn-row playback-ask");
+  const note = el("p", "widget-note");
+  if (presetRow) box.append(presetRow);
+  box.append(pc.label, svg, caption, ask);
+
+  function model() {
+    const U = st.dist === "uniform";
+    const x0 = U ? st.a : 0, x1 = U ? st.b : st.max || 6 * st.beta;
+    const count = Math.max(2, Math.min(60, Math.round((x1 - x0) / st.step)));
+    const step = (x1 - x0) / count;
+    const f = U ? (x) => (x >= st.a && x <= st.b ? 1 / (st.b - st.a) : 0) : (x) => (x < 0 ? 0 : Math.exp(-x / st.beta) / st.beta);
+    const F = U ? (x) => clamp((x - st.a) / (st.b - st.a), 0, 1) : (x) => (x <= 0 ? 0 : 1 - Math.exp(-x / st.beta));
+    const pad = U ? 0.1 * (st.b - st.a) : 0;
+    const d0 = x0 - pad, d1 = x1 + pad;
+    const fmax = U ? 1 / (st.b - st.a) : 1 / st.beta;
+    const ask = (st.ask || [Math.round(count * 0.15), Math.round(count * 0.5), Math.round(count * 0.75)]).filter((k, i, a) => k >= 0 && k < count && a.indexOf(k) === i);
+    return { U, x0, x1, count, step, f, F, d0, d1, fmax, ask };
+  }
+  const xAt = (k) => M.x0 + k * M.step;
+  const xs = (x) => num(x, 4);
+  /** F(x) in the notes' form: (x − a)/(b − a) for the uniform, 1 − e^(−x/β) for the exponential. */
+  function Fline(x) {
+    if (M.U) return `(${xs(x)} − ${xs(st.a)})/(${xs(st.b)} − ${xs(st.a)}) = ${xs(x - st.a)}/${xs(st.b - st.a)} = ${f4(M.F(x))}`;
+    return `1 − e^(−${xs(x)}/${xs(st.beta)}) = ${f4(M.F(x))}`;
+  }
+  function questions() {
+    return M.ask.map((k) => {
+      const xn = xAt(k + 1), xc = xAt(k);
+      const cands = [
+        { val: M.F(xn), ok: true },
+        { val: M.f(xn), why: `That is the height f(${xs(xn)}), not the area to the left of ${xs(xn)}.` },
+        { val: M.F(xc), why: `That is F(${xs(xc)}), the area so far. Moving the bound to ${xs(xn)} adds the strip between them.` },
+        { val: 1 - M.F(xn), why: `That is the area to the right of ${xs(xn)}, 1 − F(${xs(xn)}).` },
+      ];
+      const opts = [];
+      for (const c of cands) if (!opts.some((o) => o.label === f4(c.val))) opts.push({ label: f4(c.val), ok: !!c.ok, why: c.why, val: c.val });
+      opts.sort((p, q) => p.val - q.val);
+      return { at: k, options: opts };
+    });
+  }
+  const gate = predictGates(ask, 60, questions, () => pb);
+
+  function frame(pos) {
+    pos = Math.max(0, pos); // a rAF timestamp older than the play press can step pos just below 0
+    const { U, d0, d1, f, F, fmax, count } = M, u = st.unit ? " " + st.unit : "";
+    const xc = M.x0 + clamp(pos, 0, count) * M.step, k = Math.floor(pos + 1e-9), q = gate.asking(pos);
+    const XL = (x) => LX0 + ((x - d0) / (d1 - d0)) * (LX1 - LX0), XR = (x) => RX0 + ((x - d0) / (d1 - d0)) * (RX1 - RX0);
+    const YL = (v) => base - (v / (fmax * 1.25)) * (base - top), YR = (v) => base - v * (base - top);
+    svg.innerHTML = "";
+    const g = svgEl("g"); svg.append(g);
+    // left: the density, the area to the left of the bound shaded
+    const leftEnd = U ? st.a : 0;
+    if (xc > leftEnd) g.append(svgEl("path", { d: areaPath(f, leftEnd, xc, XL, YL, base, U ? 2 : 120), fill: "var(--hl-soft)", stroke: "var(--hl)", "stroke-width": 1 }));
+    const dens = U
+      ? `M${XL(d0).toFixed(1)},${base}L${XL(st.a).toFixed(1)},${base}L${XL(st.a).toFixed(1)},${YL(fmax).toFixed(1)}L${XL(st.b).toFixed(1)},${YL(fmax).toFixed(1)}L${XL(st.b).toFixed(1)},${base}L${XL(d1).toFixed(1)},${base}`
+      : `M${XL(0).toFixed(1)},${base}L${XL(0).toFixed(1)},${YL(fmax).toFixed(1)}` + curvePath(f, 0, d1, XL, YL).replace(/^M/, "L");
+    g.append(svgEl("path", { d: dens, fill: "none", stroke: "var(--blue)", "stroke-width": 2 }));
+    const ticks = niceTicks(d0, d1, 6);
+    axis(g, XL, base, d0, d1, ticks, (v) => num(v, 2), "");
+    axis(g, XR, base, d0, d1, ticks, (v) => num(v, 2), "");
+    text(g, LX0, 14, `f(${st.v.toLowerCase()}) = ${U ? `1/${xs(st.b - st.a)} = ${num(fmax, 4)}` : `(1/${xs(st.beta)})e^(−${st.v.toLowerCase()}/${xs(st.beta)})`}`, { "text-anchor": "start", fill: "var(--blue)" });
+    text(g, LX1, base + 32, `${st.v.toLowerCase()}${u ? ` (${st.unit})` : ""}`, { "text-anchor": "end", fill: "var(--ink-dim)" });
+    // the moving bound
+    g.append(svgEl("line", { x1: XL(xc), x2: XL(xc), y1: top - 6, y2: base, stroke: "var(--hl)", "stroke-width": 1.6 }));
+    text(g, clamp(XL(xc), LX0 + 30, LX1 - 30), top - 10, `x = ${num(xc, 2)}`, { fill: "var(--hl)", "font-weight": 600 });
+    // right: F(x), drawn only as far as the bound has gone
+    g.append(svgEl("line", { x1: RX0, x2: RX0, y1: top, y2: base, stroke: "var(--rule-strong)" }));
+    for (const v of [0.25, 0.5, 0.75, 1]) {
+      g.append(svgEl("line", { x1: RX0, x2: RX1, y1: YR(v), y2: YR(v), stroke: "var(--rule)", "stroke-dasharray": "2 4" }));
+      text(g, RX0 - 4, YR(v) + 4, String(v), { "text-anchor": "end", fill: "var(--ink-dim)", "font-size": 10 });
+    }
+    text(g, RX0 + 4, 14, "F(x) = P(X ≤ x), the area so far", { "text-anchor": "start", fill: "var(--ink-2)" });
+    g.append(svgEl("path", { d: curvePath(F, d0, xc, XR, YR, 160), fill: "none", stroke: "var(--hl)", "stroke-width": 2.2 }));
+    for (let i = 0; i <= Math.min(k, count); i++) g.append(svgEl("circle", { cx: XR(xAt(i)), cy: YR(F(xAt(i))), r: i === k ? 4 : 2.6, fill: i === k ? "var(--hl)" : "var(--ink-2)" }));
+    const Fc = F(xc);
+    text(g, clamp(XR(xc) + 6, RX0 + 40, RX1 - 70), clamp(YR(Fc) - 8, top + 4, base - 6), `F(${num(xc, 2)}) = ${f4(Fc)}`, { "text-anchor": "start", fill: "var(--hl)", "font-weight": 600 });
+    // caption
+    const x = xAt(Math.min(k, count));
+    let cap;
+    if (q) cap = `The bound is at x = ${xs(x)} and F(${xs(x)}) = ${f4(F(x))}. What is F(${xs(xAt(q.at + 1))}) at the next stop?`;
+    else if (pos <= 0) cap = `F(x) is the area under f to the left of x. At x = ${xs(M.x0)} no area has accumulated yet: F(${xs(M.x0)}) = 0.`;
+    else if (pos < count) {
+      const xd = xAt(k);
+      cap = `x = ${xs(xd)}: the area so far is ${U ? `${xs(xd - st.a)}/${xs(st.b - st.a)}` : `1 − e^(−${xs(xd)}/${xs(st.beta)})`} = ${f4(F(xd))}, so F(${xs(xd)}) = ${f4(F(xd))}.`;
+      if (!U && k > 0) cap += ` The last ${xs(M.step)}${u} added ${f4(F(xd) - F(xd - M.step))}.`;
+    } else {
+      cap = U
+        ? `x = ${xs(st.b)}: the whole rectangle is to the left, so F(${xs(st.b)}) = 1. The density is flat, so every ${xs(M.step)}${u} added the same ${num(M.step / (st.b - st.a), 4)}: F is a straight line from ${xs(st.a)} to ${xs(st.b)}.`
+        : `x = ${xs(M.x1)}: F(${xs(M.x1)}) = ${f4(F(M.x1))}, close to 1. F rose fast where the density is tall, ${f4(F(M.step))} in the first ${xs(M.step)}${u}, and flattens where it thins out: the last ${xs(M.step)}${u} added ${f4(F(M.x1) - F(M.x1 - M.step))}.`;
+      cap += gate.tally();
+    }
+    setText(caption, cap);
+    gate.render(pos);
+  }
+  function restart() {
+    M = model();
+    note.textContent = M.U
+      ? `Uniform on [${xs(st.a)}, ${xs(st.b)}]: F(x) = (x − a)/(b − a) for a ≤ x ≤ b, 0 below a and 1 above b; in R, punif(x, ${xs(st.a)}, ${xs(st.b)}). An interval is a difference of two F values: P(c ≤ X ≤ d) = F(d) − F(c).`
+      : `Exponential with β = ${xs(st.beta)}: F(x) = 1 − e^(−x/β) for x ≥ 0; in R, pexp(x, rate = 1/${xs(st.beta)}). An interval is a difference of two F values: P(c ≤ X ≤ d) = F(d) − F(c).`;
+    if (presetRow) setActive(presetRow, names.findIndex((n) => { const p = CS_PRESETS[n]; return p.dist === st.dist && (p.dist === "uniform" ? p.a === st.a && p.b === st.b : p.beta === st.beta); }));
+    gate.restart(0);
+    pb.reset(M.count);
+  }
+  M = model();
+  pb = createPlayback({ count: M.count, unit: "stop", stepMs: () => cfg.stepMs || 900, onFrame: frame, limit: () => gate.limit(), onBlocked: () => gate.nudge() });
+  box.append(pb.el, note);
+  gate.on = pc.input.checked;
+  pc.input.addEventListener("change", () => { gate.on = pc.input.checked; pb.pause(); gate.restart(pb.pos()); pb.set(pb.pos()); });
+  restart();
+}
+
 export const WIDGETS = {
   "pdf-area": pdfArea,
   "z-table": zTable,
@@ -1398,4 +1548,5 @@ export const WIDGETS = {
   "bit-error": bitError,
   "standardize-play": standardizePlay,
   "memoryless-play": memorylessPlay,
+  "cdf-sweep-play": cdfSweepPlay,
 };

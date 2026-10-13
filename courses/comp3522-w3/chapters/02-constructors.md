@@ -3,7 +3,7 @@ title: Constructors, member initialization, default arguments
 minutes: 25
 ---
 
-A constructor runs when an object is created, so the object never exists in a half-built state. The Circle from lesson 1 had none, which means its `radius` held garbage until `set_radius` was called. This lesson adds constructors and shows the two traps the quiz likes: the most vexing parse and the order of member initialization.
+A constructor runs when an object is created, so the object never exists in a half-built state. The Circle from lesson 1 had none, which means its `radius` held garbage until `set_radius` was called. This lesson adds constructors and two traps: the most vexing parse and the order of member initialization.
 
 ## A constructor, then a missing default constructor
 
@@ -48,7 +48,7 @@ int main()
 A constructor has the class's name and **no return type**, not even `void`: `Circle();            // No return type`. Declaring `Circle(int)` alone would have removed the compiler-generated default constructor, so `Circle my_circle;` would no longer compile ("no matching function for call to Circle::Circle()"); the slide overloads with a second constructor `Circle::Circle()` to get it back. `Circle::Circle(int r) : radius(r)` uses the member initialization list, explained below; the first constructor assigns in the body instead, which works for a `double` but is the style the slides tell you to drop.
 
 :::quiz The most vexing parse
-`Circle my_circle;` calls the default constructor. `Circle my_circle();` does **not** create an object: it declares a function named `my_circle` that takes nothing and returns a Circle. `Circle my_circle{};` calls the default constructor and cannot be misread. Type each into the picker below.
+`Circle my_circle;` calls the default constructor. `Circle my_circle();` does **not** create an object: it declares a function named `my_circle` that takes nothing and returns a Circle. `Circle my_circle{};` calls the default constructor and cannot be misread.
 :::
 
 ```widget
@@ -71,7 +71,7 @@ Complex(double rnew, double inew)
 The compiler wants every member initialized before the body runs, so it silently generates a call to each member's default constructor first: `Complex(double rnew, double inew) : r(), i() { r = rnew; i = inew; }`. For fundamental types that costs nothing and changes nothing (a `double` not in the list simply stays uninitialized). For a **class-type member** it means the member is default-constructed and then assigned: two operations, and an error if the member's class has no default constructor. The rule from the slides: always use the special syntax called the **member initialization list**.
 
 ```cpp run pin complexInit.cpp
-// predict: Write the three lines printed, in order.
+// predict: Write the four lines printed, in order.
 #include <iostream>
 using namespace std;
 

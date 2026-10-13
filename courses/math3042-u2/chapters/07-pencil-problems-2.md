@@ -237,11 +237,11 @@ The curve is at about **80%** above score 50: roughly 0.80 of the 2287 students,
 
 ### (b) Between 30 and 40
 
-Height at 40 about 39%, at 30 about 13%: $39\% - 13\% \approx \mathbf{25\%}$. (The answer key reads $40\% - 15\% = 25\%$; the heights depend on your eye, the difference is what matters.)
+Height at 40 about 39%, at 30 about 13%: $39\% - 13\% = \mathbf{26\%}$. The answer key reads the heights as 40% and 15%, giving $40\% - 15\% = 25\%$; the readings depend on your eye, the subtraction is what matters.
 
 ### (c) The top 25%
 
-The top 25% is everyone **above** $P_{75}$. Across from 75%, the curve crosses between 45 (60%) and 50 (80%), about three quarters of the way, at roughly **48**. The top quarter scored from about **48 up to 60**, the maximum on the axis.
+The top 25% is everyone **above** $P_{75}$. Across from 75%, the curve crosses between 45 (60%) and 50 (80%), three quarters of the way: $P_{75} \approx 45 + 0.75 \times 5 = 48.75$. The top quarter scored from about **48.75 up to 60**, the maximum on the axis.
 
 :::quiz Units
 Percent for (a) and (b), scores for (c). Answering a percentile question with a percentage is the classic mistake.
@@ -323,13 +323,13 @@ Percent for (a) and (b), scores for (c). Answering a percentile question with a 
     "answer": 26,
     "tolerance": 3,
     "unit": "%",
-    "explain": "Between two scores is the difference of the two cumulative heights: $39\\% - 13\\% \\approx 25\\%$ to $26\\%$ (the key reads it as $40 - 15 = 25$)."
+    "explain": "Between two scores is the difference of the two cumulative heights: $39\\% - 13\\% = 26\\%$ (the key reads the heights as 40% and 15%: $40 - 15 = 25$)."
   },
   {
-    "q": "On the same ogive, the curve crosses 75% at a score of about 48. Which scores make up the top 25% of the class?",
-    "options": ["0 to 48", "48 to 60", "45 to 50", "exactly 48"],
+    "q": "On the same ogive, the curve crosses 75% at a score of about 48.75. Which scores make up the top 25% of the class?",
+    "options": ["0 to 48.75", "48.75 to 60", "45 to 50", "exactly 48.75"],
     "answer": 1,
-    "explain": "The top 25% are the students above $P_{75}$: from about 48 up to the maximum score on the axis, 60. A percentile question is answered with a score range, not a percentage."
+    "explain": "The top 25% are the students above $P_{75}$: from about 48.75 up to the maximum score on the axis, 60. A percentile question is answered with a score range, not a percentage."
   }
 ]
 ```

@@ -24,6 +24,7 @@ The third rule is why chaining `cin >> m >> n` works: each `>>` picks up where t
 
 ```cpp run
 // stdin: 8
+// predict: Input is 8. Write the line printed.
 #include <iostream>
 using namespace std;
 
@@ -39,6 +40,7 @@ int main() {
 
 ```cpp run
 // stdin: 72.5
+// predict: Input is 72.5. Write the line printed.
 #include <iostream>
 using namespace std;
 
@@ -54,6 +56,7 @@ int main() {
 
 ```cpp run
 // stdin: Jeffrey
+// predict: Input is Jeffrey. Write the line printed.
 #include <iostream>
 using namespace std;
 
@@ -82,15 +85,15 @@ char first_name[first_name_length];
 cin >> first_name; // NOOOOOO DON'T DO THIS
 ```
 
-`char[]` decays to `char*`, so `cin` sees a raw pointer, not the array's length. It cannot know `first_name` holds only 5 characters and keeps writing past the end of the array for any input longer than 4 characters: memory you don't own.
+The slide's reason: `char[]` decays to `char*`, so `cin` sees a raw pointer, not the array's length, and keeps writing past the end for any word longer than 4 characters. That was true up to C++17. Since C++20 the overload for a real array, `cin >> first_name`, knows the size and stops at 4 characters by itself; the overflow is still real through a plain `char*`, which is why the slides' `setw` fix is still the habit to learn.
 
-:::danger char arrays with cin are unsafe by default
-`cin >> someCharArray;` never checks how big `someCharArray` is; any word longer than the array overflows it. "Is `cin >> first_name;` on a `char[5]` safe as long as you never type more than 5 characters?" **False**: the null terminator needs a slot too (4 characters + `'\0'`).
+:::danger The null terminator needs a slot
+"Is a `char[5]` big enough for any word of up to 5 characters?" **False**: the null terminator needs a slot too, so 4 characters + `'\0'`.
 :::
 
 ## The fix: `setw` on input
 
-`<iomanip>`'s `setw` isn't just for output. Streamed into `cin`, it caps how many characters `>>` will pull for the *next* extraction into a `char[]`:
+`<iomanip>`'s `setw` isn't just for output. Streamed into `cin`, it caps how many characters `>>` will pull for the next extraction into a `char[]`:
 
 ```cpp
 #include <iomanip>
@@ -125,7 +128,7 @@ int main() {
 ]
 ```
 
-The instructor's sample, with input `Jonathan`. `constexpr int firstNameLength = 5;` declares the capacity as a compile-time constant, and `char firstName[firstNameLength];` allocates a 5-byte array: room for 4 real characters plus the null terminator. `cin >> setw(5) >> firstName;` reads at most 4 characters from `"Jonathan"` (`J`, `o`, `n`, `a`), writes `'\0'` after them, and stops. The rest of the word (`than`) is left in the input buffer, ready for the *next* extraction. `cout << firstName;` prints the null-terminated C-string it holds: `Jona`.
+The instructor's sample, with input `Jonathan`. `constexpr int firstNameLength = 5;` declares the capacity as a compile-time constant, and `char firstName[firstNameLength];` allocates 5 bytes: room for 4 real characters plus the null terminator. `cin >> setw(5) >> firstName;` reads at most that many, writes `'\0'` after them, and leaves the rest of the word in the input buffer for the next extraction.
 
 ```widget
 cin-sim
@@ -157,7 +160,7 @@ cin-sim
     "q": "Why is `cin >> first_name;` on `char first_name[5];` dangerous?",
     "options": ["cin cannot read char arrays at all", "char[] decays to char*, so cin has no way to know the array's real length", "cin always reads exactly 5 characters", "It only works with std::string, not char[]"],
     "answer": 1,
-    "explain": "The array decays to a pointer, so cin cannot see its bound and will write past the end for any input word of 5+ characters."
+    "explain": "The slide's reason: the array decays to a pointer, so cin cannot see its bound and writes past the end for any word of 5+ characters. C++20 added a bounds-aware overload for real arrays, but through a char* the overflow remains."
   },
   {
     "q": "What does `cin >> setw(5) >> first_name;` actually limit the read to?",

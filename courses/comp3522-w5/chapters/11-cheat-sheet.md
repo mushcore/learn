@@ -77,7 +77,7 @@ Uncaught exception: **`terminate`** → termination handler → **`abort`** (CRA
 |---|---|---|
 | exception.cpp | `throw myexception();` caught as `exception&` | `My exception happened` |
 | exception2.cpp | `throw "message error";` handlers myexception&, exception&, A&, const char* | `message error` (`A{}` → `random class error`; `myexception()` → `myexception caught` / `C++ Exception`) |
-| exception3.cpp | `std::string("abc").substr(10)` (slide: length_error) caught as `const exception&` | `basic_string::substr: __pos (which is 10) > this->size() (which is 3)` |
+| exception3.cpp | `std::string("abc").substr(10)` (slide: length_error; g++ throws out_of_range) caught as `const exception&` | `basic_string::substr: __pos (which is 10) > this->size() (which is 3)` |
 | exception4.cpp | `Name{a}` with empty `a` throws `invalid_argument("No first name!")` | `No first name!` |
 | exception5.cpp | `C(int x) try : A(), my_b(x) {...} catch (...) { ...; throw; }`, `B(int)` throws | `Making a B`, `B() created`, `Making a C`, `A() created`, `B() being created`, `A() destroyed`, `C not constructed!`, then terminate: no `B() destroyed`, no `Code not called...` |
 

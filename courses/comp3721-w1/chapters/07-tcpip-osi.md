@@ -3,7 +3,7 @@ title: TCP/IP's five layers & the OSI model
 minutes: 15
 ---
 
-Every layer has a **job**, a **PDU name** and a list of **example protocols**, and each of those is fill-in-the-blank material.
+Every layer has a **job**, a **PDU name** and a list of **example protocols**; the table gives all three, and the notes under it add only what the table cannot hold.
 
 ## The TCP/IP protocol suite
 
@@ -17,57 +17,17 @@ Every layer has a **job**, a **PDU name** and a list of **example protocols**, a
 | 2 | **Data link** | data transfer between **neighbouring** network elements/devices (without errors) | **frame** | Ethernet, 802.11 (WiFi) | NIC |
 | 1 | **Physical** | carries individual **bits** across the link (from one node to the next) | bits | link dependent | NIC |
 
-The "implemented in" column combines two slides: transport and application are software in the end systems, and the "Good to know" slide puts the physical and data-link layers in a **NIC (Network Interface Card)**.
+The "implemented in" column combines two slides: transport and application are software in the end systems, and the "Good to know" slide puts the physical and data-link layers in a **NIC (Network Interface Card)**, which handles communication over a **specific link**. **Hosts (end systems) implement all 5 layers**; a switch implements two and a router three (next lessons). The network layer is also called the **IP layer**.
 
 ## PDU
 
 A **PDU (Protocol Data Unit)** is *a unit of data that is passed between different layers of a protocol stack*. Each layer has its own name for its PDU. The slide's example PDU is an Ethernet **frame**, the data-link PDU; its fields are in the next lesson.
 
-## Layer 1: physical
+## What the table leaves out
 
-- **Carries individual bits across the link** (from one node to the next).
-- Actually, the bits received in a **frame from the data-link layer** are transformed to **signals** and sent through the transmission medium.
-- Physical layer protocols are **link dependent**: they rely on the actual transmission medium of the link.
-
-The sample quiz's "Data-link layer transforms bits to electromagnetic signals" is **false**: turning bits into signals is the **physical** layer's job.
-
-## Layer 2: data link
-
-- **Data transfer between neighbouring network elements/devices (without errors).**
-- PDU name: **frame**.
-- Protocols: **Ethernet**, **802.11 (WiFi)**.
-
-"Neighbouring" is the key word. The data-link layer moves a frame across **one link**, from a node to the next node, and does not know the final destination.
-
-## Layer 3: network
-
-- **Routing of datagrams from source to destination**, that is, **host-to-host communication**.
-- PDU name: **datagram / packet**.
-- Also called the **IP layer**.
-- Protocols: **IP (Internet Protocol)**, ICMP, DHCP, ARP, routing protocols.
-
-The sample quiz's fill-in "_______ layer of TCP/IP protocol suite provides host-to-host communication" is **network**.
-
-## Layer 4: transport
-
-- **Logical communication between application processes running on different hosts**: **process-to-process delivery of the entire message**.
-- PDU name: **segment / user datagram** (segment for TCP, user datagram for UDP).
-- Protocols: **TCP, UDP, SCTP**.
-- Transport layer protocols are **almost always implemented in software in the end systems**.
-
-Host-to-host (network) reaches the right computer; process-to-process (transport) reaches the right program on it.
-
-## Layer 5: application
-
-- Communication for a network application takes place **between end systems** at the application layer.
-- PDU name: **message**.
-- Protocols: **IMAP, SMTP, HTTP, FTP, Telnet, DNS**, and more.
-- Application layer protocols are **implemented in software in the end systems**.
-
-## Which hardware implements which layers
-
-- The **physical layer and data-link layer** are typically implemented in a **NIC (Network Interface Card)**, and they handle communication over a **specific link**.
-- **Hosts (end systems) implement all 5 layers** of the TCP/IP protocol stack. A switch implements two and a router three (next lessons).
+- **Physical.** *Actually, the bits received in a frame from the data-link layer are transformed to signals and sent through the transmission medium.* Physical layer protocols are **link dependent**: they rely on the actual transmission medium of the link. Turning bits into signals is the physical layer's job, not the data link's.
+- **Data link.** "Neighbouring" is the key word: the data-link layer moves a frame across **one link**, from a node to the next node, and does not know the final destination.
+- **Network and transport.** Host-to-host (network) reaches the right computer; process-to-process (transport) reaches the right program on it. Transport's PDU is a segment for TCP and a user datagram for UDP.
 
 ## The OSI model
 
@@ -107,12 +67,6 @@ The **Application, Presentation, and Session** layers of OSI are **combined into
     "explain": "That is the physical layer. The data-link layer delivers a frame to the next node; the physical layer turns the frame's bits into signals on the medium."
   },
   {
-    "q": "The PDU of the data-link layer is called a _______.",
-    "type": "text",
-    "answer": ["frame"],
-    "explain": "Frame is the data-link PDU. Message (application), segment/user datagram (transport), datagram/packet (network), bits (physical)."
-  },
-  {
     "q": "Match each TCP/IP layer to the name of its PDU.",
     "type": "match",
     "pairs": [
@@ -142,12 +96,6 @@ The **Application, Presentation, and Session** layers of OSI are **combined into
     "explain": "Transport = process-to-process delivery of the entire message. Network = host-to-host. Data link = node-to-node (neighbouring devices)."
   },
   {
-    "q": "The network layer is also called the IP layer.",
-    "type": "tf",
-    "answer": true,
-    "explain": "The slide says the network layer is also called the IP layer, because IP (Internet Protocol) is its main protocol."
-  },
-  {
     "q": "The physical layer and data-link layer are typically implemented in a _______ (three-letter abbreviation).",
     "type": "text",
     "answer": ["NIC", "network interface card"],
@@ -161,8 +109,8 @@ The **Application, Presentation, and Session** layers of OSI are **combined into
   },
   {
     "q": "Which OSI layers are combined into the application layer of the TCP/IP suite? Select all that apply.",
-    "options": ["Application", "Presentation", "Session", "Transport"],
-    "answer": [0, 1, 2],
+    "options": ["Session", "Transport", "Application", "Presentation"],
+    "answer": [0, 2, 3],
     "explain": "OSI's Application, Presentation, and Session layers all live inside TCP/IP's single application layer. Transport stays a separate layer in both models."
   },
   {

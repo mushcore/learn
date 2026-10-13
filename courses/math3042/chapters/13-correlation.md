@@ -37,7 +37,21 @@ The electric-circuit data: $n = 12$ components, $x$ = resistance, $y$ = time to 
 | 37 | 30 | 1110 | 1369 | 900 |
 | **Σ = 459** | **Σ = 401** | **Σ = 15907** | **Σ = 18075** | **Σ = 14301** |
 
-Plug the column totals straight into the formula:
+Compute $r$ from the column totals before reading the working.
+
+```quiz
+[
+  {
+    "q": "In the circuit data, Σx = 459, Σy = 401, Σxy = 15907, Σx² = 18075, Σy² = 14301, n = 12. Compute r (4 decimals).",
+    "type": "numeric",
+    "answer": 0.8324,
+    "tolerance": 0.005,
+    "explain": "Numerator = 12(15907)-(459)(401) = 190884-184059 = 6825. Denominator = √(12(18075)-459²)·√(12(14301)-401²) = √6219·√10811 ≈ 78.86×103.98 ≈ 8199.6. r = 6825/8199.6 ≈ 0.8324."
+  }
+]
+```
+
+The column totals go straight into the formula:
 
 $r = \dfrac{12(15907) - (459)(401)}{\sqrt{12(18075) - 459^2} \cdot \sqrt{12(14301) - 401^2}}$
 
@@ -72,7 +86,7 @@ The **"Curved (r≈0 but related!)"** preset traces a perfect parabola ($y = x^2
 
 ## Correlation does not imply causation
 
-Even a strong $r$ never tells you that one variable *causes* the other. Ice cream consumption and boating accidents are positively correlated across the months of the year, but eating ice cream does not cause boating accidents: both rise and fall with a hidden third factor (warm weather, more people out on boats and buying ice cream). Always ask whether a third variable could explain a correlation before claiming causation.
+Even a strong $r$ never tells you that one variable causes the other. Ice cream consumption and boating accidents are positively correlated across the months of the year, but eating ice cream does not cause boating accidents: both rise and fall with a hidden third factor (warm weather, more people out on boats and buying ice cream). Always ask whether a third variable could explain a correlation before claiming causation.
 
 ```quiz
 [
@@ -82,13 +96,6 @@ Even a strong $r$ never tells you that one variable *causes* the other. Ice crea
     "answer": 0.7746,
     "tolerance": 0.005,
     "explain": "n=5, Σx=15, Σy=20, Σxy=66, Σx²=55, Σy²=86. Numerator = 5(66)-15(20) = 330-300 = 30. Denominator = √(5(55)-15²)·√(5(86)-20²) = √(275-225)·√(430-400) = √50·√30 ≈ 7.0711×5.4772 ≈ 38.730. r = 30/38.730 ≈ 0.7746."
-  },
-  {
-    "q": "In the circuit data, Σx = 459, Σy = 401, Σxy = 15907, Σx² = 18075, Σy² = 14301, n = 12. Compute r (4 decimals).",
-    "type": "numeric",
-    "answer": 0.8324,
-    "tolerance": 0.005,
-    "explain": "Numerator = 12(15907)-(459)(401) = 190884-184059 = 6825. Denominator = √(12(18075)-459²)·√(12(14301)-401²) = √6219·√10811 ≈ 78.86×103.98 ≈ 8199.6. r = 6825/8199.6 ≈ 0.8324."
   },
   {
     "q": "The circuit example (r = 0.8324) shows:",

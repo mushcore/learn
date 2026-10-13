@@ -23,7 +23,7 @@ The instructor writes every calculation as a chain of unit fractions (bits × se
     "answer": 40,
     "tolerance": 0.5,
     "unit": "kHz",
-    "explain": "$f_h - f_l = 200$ and $f_h + f_l = 2 \\times 140 = 280$. Subtracting: $2 f_l = 80$, so $f_l = 40$ kHz."
+    "explain": "Instructor's answer: two facts, two equations. $B = f_h - f_l = 200$ kHz, and $\\frac{f_h + f_l}{2} = 140$ kHz gives $f_h + f_l = 280$ kHz. Subtract them: $2 f_l = 80$, so $f_l = 40$ kHz."
   },
   {
     "q": "What is the highest frequency $f_h$?",
@@ -31,20 +31,10 @@ The instructor writes every calculation as a chain of unit fractions (bits × se
     "answer": 240,
     "tolerance": 0.5,
     "unit": "kHz",
-    "explain": "Adding the two equations: $2 f_h = 480$, so $f_h = 240$ kHz. Check: $240 - 40 = 200$ kHz."
+    "explain": "Add the two equations: $2 f_h = 480$, so $f_h = 240$ kHz. Check: $240 - 40 = 200$ kHz. The frequency-domain plot is a **triangle**: amplitude 0 at 40 kHz, rising in a straight line to the peak of 20 V at 140 kHz, then falling back to 0 at 240 kHz. The signal is nonperiodic, so the plot is a continuous shape, not separate spikes."
   }
 ]
 ```
-
-**Instructor's answer.** Two facts, two equations:
-
-$$B = f_h - f_l = 200\ \text{kHz}$$
-
-$$\frac{f_h + f_l}{2} = 140\ \text{kHz} \quad \to \quad f_h + f_l = 280\ \text{kHz}$$
-
-Add them: $2 f_h = 480$, so $f_h = 240$ kHz. Subtract them: $2 f_l = 80$, so $f_l = 40$ kHz.
-
-The frequency-domain plot is a **triangle**: amplitude 0 at 40 kHz, rising in a straight line to the peak of 20 V at 140 kHz, then falling back to 0 at 240 kHz. The signal is nonperiodic, so the plot is a continuous shape, not separate spikes.
 
 ### Exercise 2
 
@@ -58,7 +48,7 @@ The frequency-domain plot is a **triangle**: amplitude 0 at 40 kHz, rising in a 
     "answer": 200,
     "tolerance": 0.5,
     "unit": "MHz",
-    "explain": "$f_h + f_l = 2 \\times 300 = 600$ MHz, so $f_l = 600 - 400 = 200$ MHz."
+    "explain": "Instructor's answer: $\\frac{f_h + f_l}{2} = 300$ MHz, so $f_h + f_l = 600$ MHz and $f_l = 600 - 400 = 200$ MHz."
   },
   {
     "q": "What is the bandwidth $B$?",
@@ -70,12 +60,6 @@ The frequency-domain plot is a **triangle**: amplitude 0 at 40 kHz, rising in a 
   }
 ]
 ```
-
-**Instructor's answer.** $f_h = 400$ MHz and the middle frequency is 300 MHz:
-
-$$\frac{f_h + f_l}{2} = 300\ \text{MHz} \quad \to \quad f_h + f_l = 600\ \text{MHz} \quad \to \quad f_l = 200\ \text{MHz}$$
-
-$$B = f_h - f_l = 400 - 200 = 200\ \text{MHz}$$
 
 ### Exercise 3
 
@@ -89,16 +73,10 @@ $$B = f_h - f_l = 400 - 200 = 200\ \text{MHz}$$
     "answer": 800,
     "tolerance": 1,
     "unit": "Hz",
-    "explain": "Bandwidth is highest minus lowest frequency: $900 - 100 = 800$ Hz. The frequencies in between do not matter."
+    "explain": "Instructor's answer: $B = f_h - f_l = 900\\ \\text{Hz} - 100\\ \\text{Hz} = 800$ Hz. Only the extremes count; the three middle frequencies are irrelevant."
   }
 ]
 ```
-
-**Instructor's answer.**
-
-$$B = f_h - f_l = 900\ \text{Hz} - 100\ \text{Hz} = 800\ \text{Hz}$$
-
-Only the extremes count; the three middle frequencies are irrelevant.
 
 ### Exercise 4
 
@@ -112,18 +90,10 @@ Only the extremes count; the three middle frequencies are irrelevant.
     "answer": 3.072,
     "tolerance": 0.005,
     "unit": "Mbps",
-    "explain": "One page $= 24 \\times 80 \\times 8 = 15360$ bits. $200$ pages/s $\\times 15360$ bits/page $= 3072000$ bps $= 3.072$ Mbps."
+    "explain": "Instructor's answer: first the size of one page, $24\\ \\frac{\\text{lines}}{\\text{page}} \\times 80\\ \\frac{\\text{characters}}{\\text{line}} \\times 8\\ \\frac{\\text{bits}}{\\text{character}} = 15360$ bits. Then the rate: $200\\ \\frac{\\text{pages}}{\\text{s}} \\times 15360\\ \\frac{\\text{bits}}{\\text{page}} = 3072000$ bps $= 3.072$ Mbps. This is the slide example (100 pages per second gave 1.536 Mbps) with the page rate doubled."
   }
 ]
 ```
-
-**Instructor's answer.** First the size of one page, then the rate:
-
-$$\text{size of a page} = 24\ \frac{\text{lines}}{\text{page}} \times 80\ \frac{\text{characters}}{\text{line}} \times 8\ \frac{\text{bits}}{\text{character}} = 15360\ \text{bits}$$
-
-$$\text{bit rate} = 200\ \frac{\text{pages}}{\text{s}} \times 15360\ \frac{\text{bits}}{\text{page}} = 3072000\ \text{bps} = 3.072\ \text{Mbps}$$
-
-This is the slide example (100 pages per second gave 1.536 Mbps) with the page rate doubled.
 
 ### Exercise 5
 
@@ -137,7 +107,7 @@ This is the slide example (100 pages per second gave 1.536 Mbps) with the page r
     "answer": 0.01,
     "tolerance": 0.0005,
     "unit": "s",
-    "explain": "$10\\ \\text{b} \\times \\frac{1\\ \\text{s}}{1000\\ \\text{b}} = 0.01$ s, which is 10 ms."
+    "explain": "Instructor's answer: convert 10 bits into seconds by multiplying by seconds per bit, $10\\ \\text{b} \\times \\frac{1\\ \\text{s}}{1000\\ \\text{b}} = 0.01$ s, which is 10 ms."
   },
   {
     "q": "(b) How long does it take to send the 100,000-character file?",
@@ -145,18 +115,10 @@ This is the slide example (100 pages per second gave 1.536 Mbps) with the page r
     "answer": 800,
     "tolerance": 1,
     "unit": "s",
-    "explain": "$100000 \\times 8 = 800000$ bits; $800000\\ \\text{b} \\times \\frac{1\\ \\text{s}}{1000\\ \\text{b}} = 800$ s."
+    "explain": "Instructor's answer, one unit fraction at a time: $1\\ \\text{file} \\times \\frac{100000\\ \\text{ch}}{\\text{file}} \\times \\frac{8\\ \\text{b}}{\\text{ch}} \\times \\frac{1\\ \\text{s}}{1000\\ \\text{b}} = 800$ s. Forgetting to turn characters into bits first gives 100 s."
   }
 ]
 ```
-
-**Instructor's answer.** Convert "10 bits" into "seconds" by multiplying by seconds per bit:
-
-$$10\ \text{b} \times \frac{1\ \text{s}}{1000\ \text{b}} = 0.01\ \text{s}$$
-
-Convert "a file" into "seconds" the same way, one unit fraction at a time:
-
-$$1\ \text{file} \times \frac{100000\ \text{ch}}{\text{file}} \times \frac{8\ \text{b}}{\text{ch}} \times \frac{1\ \text{s}}{1000\ \text{b}} = 800\ \text{s}$$
 
 :::warn Bit rate is not a period
 $1000$ bps means $1/1000$ s **per bit**. Multiply bits by seconds per bit; an answer of 100 s for (a) means the fraction was inverted.

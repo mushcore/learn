@@ -375,17 +375,31 @@ const TDM_PLAY_PRESETS = {
   "1 Mbps × 4 (slide 35)": TDM_PRESETS["1 Mbps × 4 (slide 35)"],
   "Empty slots and framing bits (slide 45)": { n: 3, rate: 0, unit: "kbps", slot: 1, streams: ["A1 A2 A3", "_ B2 B3", "C1 _ C3"], framing: true },
 };
+// The three data-rate fixes of slides 40-44 as frame sequences. Units are labels; the rates are per slot.
+const TDM_RATE_PRESETS = {
+  "Multilevel multiplexing (slide 40)": { n: 4, rate: 40, unit: "kbps", slot: 1, streams: ["A1 B1 A2 B2", "C1 C2 C3 C4", "D1 D2 D3 D4", "E1 E2 E3 E4"], framing: false,
+    note: "Multilevel multiplexing: lines A and B (20 kbps each) first go through a small MUX, so line 1 is their 40 kbps output, A1 B1 A2 B2. The main MUX then sees four 40 kbps lines: 4 × 40 = 160 kbps." },
+  "Multiple-slot allocation (slide 42)": { n: 5, rate: 25, unit: "kbps", slot: 1, streams: ["A1 A3 A5", "A2 A4 A6", "B1 B2 B3", "C1 C2 C3", "D1 D2 D3"], framing: false,
+    note: "Multiple-slot allocation: the 50 kbps line A goes through a DEMUX into two 25 kbps lines (lines 1 and 2), so line A has two slots in each frame: 5 slots × 25 kbps = 125 kbps." },
+  "Pulse stuffing (slide 44)": { n: 3, rate: 50, unit: "kbps", slot: 1, streams: ["A1 A2 A3", "B1 B2 B3", "C1 dummy C2"], framing: false,
+    note: "Pulse stuffing: line 3 carries 46 kbps of data, padded with dummy bits up to the dominant rate of 50 kbps; the dummy unit fills its slot like data. 3 × 50 = 150 kbps." },
+};
 const isGap = (u) => /^[-_–—]+$/.test(u);
 const lerp = (a, b, t) => a + (b - a) * t;
 const easeIO = (t) => { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); };
 function tdmPlay(box, cfg) {
-  const presets = presetsOf(cfg, TDM_PLAY_PRESETS), names = Object.keys(presets);
+  // `presets` may be an object of presets, or a list of built-in names (the three above plus the rate fixes).
+  const known = { ...TDM_PLAY_PRESETS, ...TDM_RATE_PRESETS };
+  const picked = Array.isArray(cfg.presets) ? Object.fromEntries(cfg.presets.filter((k) => known[k]).map((k) => [k, known[k]])) : null;
+  const presets = picked && Object.keys(picked).length ? picked : { ...presetsOf(cfg, TDM_PLAY_PRESETS) };
+  if (typeof cfg.preset === "string" && !presets[cfg.preset] && known[cfg.preset] && !Array.isArray(cfg.streams)) presets[cfg.preset] = known[cfg.preset];
+  const names = Object.keys(presets);
   const QL = 24, QR = 160, X0 = 222, X1 = 418, OL = 480, PA = 0.5, PB = 0.72; // a step: mux round to PA, travel to PB, demux to 1
-  let n = 3, slot = 1, rate = 0, units = [], silent = [], framing = false, bits = false, chars = 1, K = 1, uw = 26;
+  let n = 3, slot = 1, rate = 0, units = [], silent = [], framing = false, bits = false, chars = 1, K = 1, uw = 26, pnote = "";
   // Predict mode: `answered` frames may be played; the next one waits for the student's answer.
   let predict = !!cfg.predict, answered = 0, asked = 0, firstTry = 0, missed = false, wrong = null, askKey = null, refocus = false, pb = null;
 
-  box.append(el("h4", null, cfg.title || "Watch the multiplexer build each frame"));
+  box.append(el("h4", null, cfg.title || "The multiplexer building each frame"));
   const fromCfg = Array.isArray(cfg.streams);
   const startName = !fromCfg && names.includes(cfg.preset) ? cfg.preset : names[0];
   if (names.length > 1) box.append(btnRow(names, (i) => { load(presets[names[i]]); restart(); }, fromCfg ? -1 : names.indexOf(startName)));
@@ -414,6 +428,7 @@ function tdmPlay(box, cfg) {
     rate = +p.rate > 0 ? +p.rate * u[1] : 0;
     silent = streams.map((_, k) => !!(Array.isArray(p.silent) && p.silent[k]));
     framing = !!p.framing; fr.input.checked = framing;
+    pnote = typeof p.note === "string" ? p.note : "";
     bits = streams.every(isBits);
     units = streams.map((s) => unitsOf(s, slot));
     chars = Math.max(1, ...units.flat().map((x) => x.length));
@@ -600,6 +615,7 @@ function tdmPlay(box, cfg) {
     note.textContent = "If the duration of the input unit is T, the duration of each slot is T/n and the duration of each frame is T. The data rate of the output link must be n times the data rate of a connection to guarantee the flow of data."
       + (anyEmpty() ? " If a source does not have data to send, the corresponding slot in the output frame is empty (dashed box)." : "")
       + (framing ? " Framing bits are added to the beginning of each frame and follow the pattern 1 0 1 … frame to frame; the timing shown counts the data slots only." : "");
+    if (pnote) note.textContent = pnote + " " + note.textContent;
     pb.reset(K);
   }
   load(fromCfg ? { ...cfg } : { ...presets[startName], ...cfg });
@@ -1157,28 +1173,34 @@ const WDM_HUES = [30, 55, 170, 210, 275, 320];
 function muxLink(box, cfg) {
   let n = clamp(Math.round(+cfg.n || 4), 2, 6);
   let mode = MUX_MODES.includes(cfg.mode) ? cfg.mode : "fdm";
-  let phase = 0;
+  let pb = null;
+  const clipId = `net5-mux-clip-${++uid}`;
   box.append(el("h4", null, cfg.title || "One link, n channels: FDM, TDM and WDM"));
-  box.append(btnRow(["FDM", "TDM", "WDM"], (i) => { mode = MUX_MODES[i]; draw(); }, MUX_MODES.indexOf(mode)));
-  const sN = slider("Input lines n", 2, 6, 1, n, (v) => { n = v; draw(); }, (v) => String(v));
+  box.append(btnRow(["FDM", "TDM", "WDM"], (i) => { mode = MUX_MODES[i]; pb.reset(2 * n); }, MUX_MODES.indexOf(mode)));
+  const sN = slider("Input lines n", 2, 6, 1, n, (v) => { n = v; pb.reset(2 * n); }, (v) => String(v));
   const svg = svgEl("svg", { viewBox: "0 0 640 190", class: "curve-svg net-svg" });
-  const ctl = el("div", "viz-btn-row");
-  const stepBtn = el("button", "viz-btn", "next slot");
-  ctl.append(stepBtn);
+  const caption = el("p", "playback-caption");
+  caption.setAttribute("aria-live", "polite");
   const defs = el("div", "net5-box");
   defs.innerHTML = "<b>Link</b> refers to the physical path. <b>Channel</b> refers to the portion of a link.";
   const out = el("div", "stat-grid");
   const note = el("p", "widget-note");
-  box.append(sN.row, svg, ctl, defs, out, note);
-  function draw() {
+  box.append(sN.row, svg, caption);
+  // TDM mode: one playback step = one slot entering the link; two frames per pass.
+  function draw(pos) {
     svg.innerHTML = "";
-    ctl.style.display = mode === "tdm" ? "" : "none";
+    const tdm = mode === "tdm";
+    if (pb) pb.el.style.display = tdm ? "" : "none";
+    caption.style.display = tdm ? "" : "none";
     const yIn = (k) => 40 + (k * 110) / (n - 1);
+    const step = Math.min(2 * n, Math.floor(pos + 1e-9)), frac = tdm ? clamp(pos - step, 0, 1) : 0;
+    const turn = tdm && pos > 1e-9 ? (Math.ceil(pos - 1e-9) - 1) % n : -1; // the line whose slot is entering
     for (let k = 0; k < n; k++) {
-      const y = yIn(k);
-      svg.append(svgEl("line", { x1: 30, y1: y, x2: 120, y2: y, stroke: mode === "wdm" ? `hsl(${WDM_HUES[k]} 80% 60%)` : LINE_FILL[k], "stroke-width": 2 }));
-      svg.append(svgEl("line", { x1: 520, y1: y, x2: 610, y2: y, stroke: mode === "wdm" ? `hsl(${WDM_HUES[k]} 80% 60%)` : LINE_FILL[k], "stroke-width": 2 }));
-      svg.append(svgEl("text", { x: 26, y: y + 4, "text-anchor": "end", "font-size": 10.5, fill: "var(--ink-dim)" }, mode === "wdm" ? `λ${subText(String(k + 1))}` : String(k + 1)));
+      const y = yIn(k), hot = k === turn;
+      const color = mode === "wdm" ? `hsl(${WDM_HUES[k]} 80% 60%)` : LINE_FILL[k];
+      svg.append(svgEl("line", { x1: 30, y1: y, x2: 120, y2: y, stroke: hot ? "var(--hl)" : color, "stroke-width": hot ? 3.5 : 2 }));
+      svg.append(svgEl("line", { x1: 520, y1: y, x2: 610, y2: y, stroke: color, "stroke-width": 2 }));
+      svg.append(svgEl("text", { x: 26, y: y + 4, "text-anchor": "end", "font-size": 10.5, fill: hot ? "var(--hl)" : "var(--ink-dim)", "font-weight": hot ? "700" : "400" }, mode === "wdm" ? `λ${subText(String(k + 1))}` : String(k + 1)));
       svg.append(svgEl("text", { x: 614, y: y + 4, "font-size": 10.5, fill: "var(--ink-dim)" }, mode === "wdm" ? `λ${subText(String(k + 1))}` : String(k + 1)));
     }
     svg.append(svgEl("text", { x: 60, y: 184, "text-anchor": "middle", "font-size": 10.5, fill: "var(--ink-dim)" }, `n = ${n} input lines`));
@@ -1197,17 +1219,35 @@ function muxLink(box, cfg) {
         svg.append(svgEl("text", { x: 320, y: y + bh / 2 + 4, "text-anchor": "middle", "font-size": bh > 18 ? 11 : 9, fill: "var(--ink)" }, `channel ${k + 1}: a band of frequencies for line ${k + 1}`));
       }
       svg.append(svgEl("text", { x: LX0 - 4, y: LY0 - 4, "text-anchor": "end", "font-size": 9.5, fill: "var(--ink-dim)" }, "frequency ↑"));
-    } else if (mode === "tdm") {
-      const slots = 2 * n, sw = (LX1 - LX0) / slots;
-      for (let i = 0; i < slots; i++) {
-        const k = (i + phase) % n, x = LX0 + i * sw;
-        svg.append(svgEl("rect", { x: x + 1, y: LY0 + 18, width: sw - 2, height: 54, fill: LINE_FILL[k], opacity: 0.5 }));
-        svg.append(svgEl("text", { x: x + sw / 2, y: LY0 + 49, "text-anchor": "middle", "font-size": 11, fill: "var(--ink)" }, String(k + 1)));
+    } else if (tdm) {
+      // The slot train moves toward the DEMUX: the rightmost slot was sent first. Slot j (0-based, in sending
+      // order) belongs to line j mod n. After `pos` steps, slot j sits (pos − 1 − j) slot widths from the MUX.
+      const sw = (LX1 - LX0) / (2 * n), defsEl = svgEl("defs"), clip = svgEl("clipPath", { id: clipId });
+      clip.append(svgEl("rect", { x: LX0, y: LY0, width: LX1 - LX0, height: LY1 - LY0 }));
+      defsEl.append(clip); svg.append(defsEl);
+      const g = svgEl("g", { "clip-path": `url(#${clipId})` });
+      const sentSlots = Math.ceil(pos - 1e-9), head = pos; // slots that have entered; how far the newest has come in
+      for (let j = 0; j < sentSlots; j++) {
+        const k = j % n, x = LX0 + (head - 1 - j) * sw, hot = j === sentSlots - 1 && frac > 0;
+        g.append(svgEl("rect", { x: x + 1, y: LY0 + 18, width: sw - 2, height: 54, fill: LINE_FILL[k], opacity: hot ? 0.85 : 0.5, stroke: hot ? "var(--hl)" : "none", "stroke-width": 2 }));
+        g.append(svgEl("text", { x: x + sw / 2, y: LY0 + 49, "text-anchor": "middle", "font-size": 11, fill: "var(--ink)" }, String(k + 1)));
       }
-      const fi = (n - phase % n) % n, fx = LX0 + fi * sw;
-      svg.append(svgEl("line", { x1: fx, y1: LY1 - 10, x2: fx + n * sw, y2: LY1 - 10, stroke: "var(--hl)", "stroke-width": 2 }));
-      svg.append(svgEl("text", { x: fx + (n * sw) / 2, y: LY1 - 1, "text-anchor": "middle", "font-size": 9.5, fill: "var(--hl)" }, `one frame: ${n} time slots`));
+      // bracket the newest complete frame: slots f·n … f·n + n − 1
+      const full = Math.floor((step) / n);
+      if (full > 0) {
+        const j0 = (full - 1) * n, xa = LX0 + (head - 1 - (j0 + n - 1)) * sw, xb = LX0 + (head - j0) * sw;
+        g.append(svgEl("line", { x1: xa, y1: LY1 - 10, x2: xb, y2: LY1 - 10, stroke: "var(--hl)", "stroke-width": 2 }));
+        g.append(svgEl("text", { x: (xa + xb) / 2, y: LY1 - 1, "text-anchor": "middle", "font-size": 9.5, fill: "var(--hl)" }, `frame ${full}: ${n} time slots`));
+      }
+      svg.append(g);
       svg.append(svgEl("text", { x: LX0 + 4, y: LY0 + 12, "font-size": 9.5, fill: "var(--ink-dim)" }, "time →  each channel is a time slot that comes round every frame"));
+      let text;
+      if (pos <= 1e-9) text = `${n} lines share the link in time: each step sends one slot, and ${n} slots make a frame.`;
+      else {
+        const j = Math.ceil(pos - 1e-9) - 1, k = j % n, fr = Math.floor(j / n) + 1;
+        text = `Slot ${j + 1}: line ${k + 1}'s turn, slot ${k + 1} of frame ${fr}.` + (k === n - 1 && pos >= j + 1 - 1e-9 ? ` Frame ${fr} is complete: one slot for each of the ${n} lines, then line 1 again.` : "");
+      }
+      if (caption.textContent !== text) caption.textContent = text;
     } else {
       svg.append(svgEl("rect", { x: LX0, y: LY0, width: LX1 - LX0, height: LY1 - LY0, fill: "var(--paper-3)" }));
       const gap = (LY1 - LY0 - 20) / (n - 1);
@@ -1229,8 +1269,193 @@ function muxLink(box, cfg) {
       wdm: "Wavelength-division multiplexing: FDM for light. Analog optical signals of different wavelengths (colours) share one fibre; a prism combines them at the sender and splits them at the receiver.",
     }[mode];
   }
-  stepBtn.addEventListener("click", () => { phase = (phase + 1) % n; draw(); });
-  draw();
+  pb = createPlayback({ count: 2 * n, unit: "slot", onFrame: draw, stepMs: () => cfg.stepMs || 900 });
+  box.append(pb.el, defs, out, note);
+  pb.set(0);
+}
+
+// ---------- widget: fdm-play ----------
+// The slide-18 process played channel by channel: "Shift and combine" (each 0-B baseband hump is shifted up by its
+// carrier and stacked into the composite), then "Filter and shift" (a bandpass filter picks each band out and it is
+// shifted back to 0-B). Steps 1 … n are the sending side, n + 1 … 2n the receiving side.
+function fdmPlay(box, cfg) {
+  const presets = presetsOf(cfg, FDM_PRESETS), names = Object.keys(presets);
+  let n = 3, B = 4, G = 0, S0 = 20, uName = "kHz", pb = null;
+  let predict = !!cfg.predict, answered = 0, asked = 0, firstTry = 0, missed = false, wrong = null, askKey = null, refocus = false;
+  box.append(el("h4", null, cfg.title || "FDM: shift and combine, then filter and shift"));
+  const given = ["n", "bandwidth", "guard", "start"].some((k) => cfg[k] != null);
+  const startName = names.find((k) => { const p = presets[k]; return given && +p.n === +cfg.n && +p.bandwidth === +cfg.bandwidth && +(p.guard ?? 0) === +(cfg.guard ?? 0) && +(p.start ?? 0) === +(cfg.start ?? 0); });
+  if (names.length > 1) box.append(btnRow(names, (i) => { load(presets[names[i]]); restart(); }, given ? names.indexOf(startName) : 0));
+  const predictLabel = el("label", "playback-check");
+  const predictBox = document.createElement("input");
+  predictBox.type = "checkbox"; predictBox.checked = predict;
+  predictLabel.append(predictBox, " Predict each channel's band before it moves");
+  const svg = svgEl("svg", { viewBox: "0 0 640 220", class: "curve-svg net-svg", role: "img", "aria-label": "baseband channels shifted up onto the link and filtered back down" });
+  const caption = el("p", "playback-caption");
+  caption.setAttribute("aria-live", "polite");
+  const ask = el("div", "viz-btn-row playback-ask");
+  const note = el("p", "widget-note");
+  box.append(predictLabel, svg, caption, ask);
+
+  function load(p) {
+    p = p || {};
+    n = clamp(Math.round(+p.n || 3), 2, 8);
+    B = +p.bandwidth > 0 ? +p.bandwidth : 4;
+    G = +p.guard > 0 ? +p.guard : 0;
+    S0 = +p.start > 0 ? +p.start : 0;
+    uName = FREQ_UNITS.some(([u]) => u === p.unit) ? p.unit : "kHz";
+  }
+  const steps = () => 2 * n;
+  const band = (k) => { const lo = S0 + k * (B + G); return [lo, lo + B]; };
+  const total = () => n * B + (n - 1) * G;
+  const f3 = (v) => num(v, 3);
+  const bandText = ([lo, hi]) => `${f3(lo)}–${f3(hi)} ${uName}`;
+  /** Choices for "which band does channel k use": the right one and the usual slips. */
+  function choices(k) {
+    const right = bandText(band(k)), seen = new Set([right]), out = [{ label: right, ok: true }];
+    const why = `Channel k starts at ${f3(S0)} + (k − 1)(B + G) = ${f3(S0)} + ${k} × ${f3(B + G)} ${uName}: the channels before it and the guard bands between them.`;
+    const add = (lo) => { const t = bandText([lo, lo + B]); if (lo >= 0 && !seen.has(t) && out.length < 4) { seen.add(t); out.push({ label: t, why }); } };
+    if (G > 0) add(S0 + k * B);
+    add(band(k)[0] + B + G);
+    if (k > 0) add(band(k)[0] - B - G);
+    add(0);
+    add(band(k)[0] + G);
+    const r = (k * 3 + 1) % out.length;
+    return out.slice(r).concat(out.slice(0, r));
+  }
+  const asking = (pos) => predict && answered < steps() && Math.abs(pos - answered) < 1e-6;
+  function answer(o, e) {
+    asked += wrong == null && !missed ? 1 : 0;
+    refocus = e.detail === 0;
+    if (!o.ok) { missed = true; wrong = o; frame(pb.pos()); return; }
+    if (!missed) firstTry++;
+    missed = false; wrong = null; answered++;
+    pb.next();
+  }
+  function renderAsk(pos) {
+    const key = asking(pos) ? `${n}|${B}|${G}|${S0}|${answered}|${wrong ? wrong.label : ""}` : "";
+    if (key === askKey) return;
+    askKey = key; ask.innerHTML = ""; ask.hidden = !predict;
+    if (!key) return;
+    const btns = choices(answered % n).map((o) => {
+      const b = el("button", "viz-btn" + (wrong && o.label === wrong.label ? " playback-wrong" : ""), o.label);
+      b.type = "button";
+      b.addEventListener("click", (e) => answer(o, e));
+      ask.append(b);
+      return b;
+    });
+    if (wrong) ask.append(el("span", "playback-feedback", `Not ${wrong.label}. ${wrong.why}`));
+    if (refocus) { refocus = false; (btns.find((b) => !b.classList.contains("playback-wrong")) || btns[0]).focus(); }
+  }
+  function frame(pos) {
+    const q = asking(pos), K = steps(), cur = q ? answered : Math.min(K - 1, Math.floor(pos - 1e-9));
+    const f = q ? 0 : cur < 0 ? 0 : pos - cur, e = easeIO(f);
+    const rowH = Math.min(30, Math.max(19, Math.floor(150 / n))), top = 40, H = top + n * rowH + 44;
+    const LX0 = 34, LX1 = 128, CX0 = 178, CX1 = 462, RX0 = 512, RX1 = 606, BASE = top + (n * rowH) / 2 + 26, HH = Math.min(46, rowH * 1.6);
+    const rowY = (k) => top + k * rowH + rowH - 3;
+    const bx = (x0, x1, v) => x0 + ((x1 - x0) * v) / B;            // a baseband box: 0 … B
+    const cx = (v) => CX0 + ((CX1 - CX0) * (v - S0)) / total();     // the link: S0 … S0 + total
+    const hh = rowH - 7;
+    svg.innerHTML = "";
+    svg.setAttribute("viewBox", `0 0 640 ${H}`);
+    const dim = { "font-size": 10.5, fill: "var(--ink-dim)" };
+    svg.append(svgEl("text", { x: (LX0 + LX1) / 2, y: 16, "text-anchor": "middle", ...dim }, `${n} inputs, 0–${f3(B)} ${uName} each`));
+    svg.append(svgEl("text", { x: (CX0 + CX1) / 2, y: 16, "text-anchor": "middle", "font-size": 10.5, fill: "var(--ink)", "font-weight": "600" }, `higher-bandwidth link: ${bandText([S0, S0 + total()])}`));
+    svg.append(svgEl("text", { x: (RX0 + RX1) / 2, y: 16, "text-anchor": "middle", ...dim }, "outputs, back to baseband"));
+    svg.append(svgEl("text", { x: (CX0 + CX1) / 2, y: 30, "text-anchor": "middle", "font-size": 10, fill: cur >= 0 && cur < n ? "var(--hl)" : "var(--ink-dim)" }, cur >= n ? "Filter and shift" : "Shift and combine"));
+    // trapezoid hump between frequencies a and b, baseline y, height h
+    const humpAt = (xa, xb, yb, h, k, o = {}) => {
+      const w = xb - xa;
+      svg.append(svgEl("polygon", { points: `${xa.toFixed(1)},${yb} ${(xa + w * 0.22).toFixed(1)},${yb - h} ${(xb - w * 0.22).toFixed(1)},${yb - h} ${xb.toFixed(1)},${yb}`, fill: LINE_FILL[k % LINE_FILL.length], opacity: o.faint ? 0.25 : 0.6, stroke: o.hot ? "var(--hl)" : LINE_FILL[k % LINE_FILL.length], "stroke-width": o.hot ? 2 : 1 }));
+    };
+    // link axis and guard bands
+    svg.append(svgEl("line", { x1: CX0 - 6, y1: BASE, x2: CX1 + 8, y2: BASE, stroke: "var(--rule-strong)" }));
+    const sent = cur < 0 ? 0 : cur < n ? cur + (f >= 0.999 ? 1 : 0) : n; // channels already on the link
+    for (let k = 0; k < n; k++) {
+      const y = rowY(k);
+      svg.append(svgEl("text", { x: LX0 - 8, y: y - 2, "text-anchor": "end", ...dim }, String(k + 1)));
+      svg.append(svgEl("text", { x: RX1 + 8, y: y - 2, ...dim }, String(k + 1)));
+      for (const [x0, x1] of [[LX0, LX1], [RX0, RX1]]) svg.append(svgEl("line", { x1: x0, y1: y, x2: x1, y2: y, stroke: "var(--rule-strong)" }));
+    }
+    svg.append(svgEl("text", { x: LX0, y: rowY(n - 1) + 12, ...dim }, "0"));
+    svg.append(svgEl("text", { x: LX1, y: rowY(n - 1) + 12, "text-anchor": "end", ...dim }, f3(B)));
+    svg.append(svgEl("text", { x: RX0, y: rowY(n - 1) + 12, ...dim }, "0"));
+    svg.append(svgEl("text", { x: RX1, y: rowY(n - 1) + 12, "text-anchor": "end", ...dim }, f3(B)));
+    // boundary labels on the link, for the channels placed so far
+    const marks = new Set();
+    for (let k = 0; k < Math.max(sent, cur >= 0 && cur < n ? cur + 1 : 0); k++) { const [lo, hi] = band(k); marks.add(lo); marks.add(hi); }
+    let last = -1e9;
+    for (const v of [...marks].sort((a, b) => a - b)) {
+      const x = cx(v);
+      svg.append(svgEl("line", { x1: x, y1: BASE - 3, x2: x, y2: BASE + 3, stroke: "var(--ink-dim)" }));
+      if (x - last >= 26) { svg.append(svgEl("text", { x, y: BASE + 15, "text-anchor": "middle", ...dim }, f3(v))); last = x; }
+    }
+    for (let k = 0; k < n - 1 && G > 0; k++) if (k + 1 < sent || (k + 1 === cur && cur < n && f > 0.6)) {
+      const ga = cx(band(k)[1]), gb = cx(band(k + 1)[0]);
+      svg.append(svgEl("rect", { x: ga, y: BASE - HH * 0.6, width: gb - ga, height: HH * 0.6, fill: "var(--hl)", opacity: 0.3 }));
+    }
+    for (let k = 0; k < n; k++) {
+      const y = rowY(k), [lo, hi] = band(k);
+      // left: baseband input until it leaves
+      if (cur < 0 || k > cur || (k === cur && q)) humpAt(bx(LX0, LX1, 0), bx(LX0, LX1, B), y, hh, k, { hot: k === cur && q });
+      else humpAt(bx(LX0, LX1, 0), bx(LX0, LX1, B), y, hh, k, { faint: true });
+      // the link: a channel is on it from its send step on
+      const onLink = k < sent;
+      const filtering = cur >= n && cur - n === k && !q;
+      const delivered = cur >= n && (k < cur - n || (k === cur - n && f >= 0.999));
+      if (onLink) humpAt(cx(lo), cx(hi), BASE, HH, k, { hot: filtering || (cur === k && f >= 0.999) });
+      if (filtering && f < 0.999) {
+        // the bandpass filter window, then the band sliding back to baseband
+        svg.append(svgEl("rect", { x: cx(lo) - 2, y: BASE - HH - 8, width: cx(hi) - cx(lo) + 4, height: HH + 12, fill: "none", stroke: "var(--hl)", "stroke-width": 2, "stroke-dasharray": "5 3", opacity: clamp(f * 4, 0, 1) }));
+        if (f > 0.35) {
+          const t = easeIO((f - 0.35) / 0.65);
+          humpAt(lerp(cx(lo), bx(RX0, RX1, 0), t), lerp(cx(hi), bx(RX0, RX1, B), t), lerp(BASE, y, t), lerp(HH, hh, t), k, { hot: true });
+        }
+      }
+      if (delivered) humpAt(bx(RX0, RX1, 0), bx(RX0, RX1, B), y, hh, k, {});
+      // the send step: the hump travels from its input row to its band on the link
+      if (cur === k && cur < n && !q && f < 0.999) {
+        humpAt(lerp(bx(LX0, LX1, 0), cx(lo), e), lerp(bx(LX0, LX1, B), cx(hi), e), lerp(y, BASE, e), lerp(hh, HH, e), k, { hot: true });
+      }
+    }
+    let text;
+    const tel = (k) => `Telephone ${k + 1}`;
+    if (q) {
+      const k = answered % n;
+      text = answered < n ? `${tel(k)} is next: its modulator shifts 0–${f3(B)} ${uName} up onto the link. Which band does it land in?` : `Receiving side: which band does the bandpass filter for ${tel(k).toLowerCase()} pass?`;
+    } else if (cur < 0) text = `${n} channels of ${f3(B)} ${uName}${G > 0 ? ` with ${f3(G)} ${uName} guard bands` : ", no guard bands"}, on a link from ${f3(S0)} ${uName}. Steps 1 to ${n} shift and combine; steps ${n + 1} to ${2 * n} filter and shift.`;
+    else if (cur < n) {
+      const k = cur, [lo, hi] = band(k);
+      text = `${tel(k)}: the modulator shifts 0–${f3(B)} ${uName} up by ${f3(lo)} ${uName} to ${f3(lo)}–${f3(hi)} ${uName}`
+        + (k === 0 ? "." : G > 0 ? `; a ${f3(G)} ${uName} guard band separates it from channel ${k}.` : `; no guard band, so it touches channel ${k}.`);
+      if (k === n - 1 && f >= 0.999) text += ` Combined: B_link = ${n} × ${f3(B)} + ${n - 1} × ${f3(G)} = ${f3(total())} ${uName}, from ${f3(S0)} to ${f3(S0 + total())} ${uName}.`;
+    } else {
+      const k = cur - n, [lo, hi] = band(k);
+      text = `Filter and shift: the bandpass filter for ${f3(lo)}–${f3(hi)} ${uName} keeps only channel ${k + 1}, and it is shifted back down by ${f3(lo)} ${uName} to 0–${f3(B)} ${uName} for ${tel(k).toLowerCase()}.`;
+      if (pos >= K && asked > 0) text += ` ${firstTry} of ${asked} right on the first try.`;
+    }
+    if (caption.textContent !== text) caption.textContent = text;
+    renderAsk(pos);
+  }
+  function restart() {
+    answered = 0; asked = 0; firstTry = 0; missed = false; wrong = null; askKey = null;
+    note.textContent = `Each source modulates its own carrier, so its 0–${f3(B)} ${uName} band is shifted onto its channel; the receiver's bandpass filter picks that band out and shifts it back. n channels need n − 1 guard bands: B_link = n × B + (n − 1) × G.`;
+    pb.reset(steps());
+  }
+  load(given ? { ...cfg } : presets[names[0]]);
+  pb = createPlayback({
+    count: steps(), unit: "step", onFrame: frame,
+    stepMs: () => cfg.stepMs || 1800,
+    limit: () => (predict ? answered : steps()),
+    onBlocked: () => { ask.classList.remove("playback-nudge"); void ask.offsetWidth; ask.classList.add("playback-nudge"); },
+  });
+  box.append(pb.el, note);
+  predictBox.addEventListener("change", () => {
+    predict = predictBox.checked; pb.pause();
+    answered = Math.ceil(pb.pos() - 1e-9); asked = 0; firstTry = 0; missed = false; wrong = null; askKey = null;
+    pb.set(pb.pos());
+  });
+  restart();
 }
 
 export const WIDGETS = {
@@ -1241,4 +1466,5 @@ export const WIDGETS = {
   "hop-walk": hopWalk,
   "arp-exchange": arpExchange,
   "mux-link": muxLink,
+  "fdm-play": fdmPlay,
 };

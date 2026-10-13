@@ -10,6 +10,7 @@ The slide for this section is one line: `float x = 2.25; int y = (int)x; //trunc
 `(int)x` is a **C-style cast**: put the target type in parentheses in front of the value. It works in C++ exactly like it did in C.
 
 ```cpp run
+// predict: Write the line printed.
 #include <iostream>
 
 int main()
@@ -28,19 +29,20 @@ The fractional `.25` is not rounded away; it is **dropped**.
 This is the trap. "Truncate" does not mean "floor" — it means "cut off the fractional part," which behaves differently once the number is negative.
 
 ```cpp run
+// predict: Write the two numbers printed.
 #include <iostream>
 
 int main()
 {
     float a = 2.75f;
     float b = -2.75f;
-    std::cout << (int)a << std::endl;   // predict, then run
-    std::cout << (int)b << std::endl;   // predict, then run
+    std::cout << (int)a << std::endl;
+    std::cout << (int)b << std::endl;
     return 0;
 }
 ```
 
-`(int)2.75` is `2`. `(int)-2.75` is `-2`, **not `-3`**. A `floor()` would give you `-3`; a C-style cast to `int` truncates toward zero, chopping off `.75` and leaving `-2`. This is the same rule you already saw for integer division (`-7 / 2 == -3`, not `-4`) — casting to `int` and integer division both truncate toward zero.
+A `floor()` rounds down, toward negative infinity. A C-style cast to `int` truncates toward zero: it chops off the `.75` whichever sign the number has. Integer division follows the same rule (`-7 / 2 == -3`, not `-4`).
 
 ## Using a cast to fix integer division
 
@@ -55,16 +57,16 @@ int main()
     int a = 7;
     int b = 2;
 
-    std::cout << (double)a / b << std::endl;     // predict, then run
-    std::cout << (double)(a / b) << std::endl;    // predict, then run
+    std::cout << (double)a / b << std::endl;  
+    std::cout << (double)(a / b) << std::endl; 
     return 0;
 }
 ```
 
-- `std::cout << (double)a / b << std::endl;` casts `a` to `double` **first**. Now one operand of `/` is a `double`, so the whole division is done in floating point: `3.5`.
-- `std::cout << (double)(a / b) << std::endl;` computes `a / b` **first** — still `int / int`, which truncates to `3` — and only then casts the already-truncated `3` to `double`, giving `3.0`. The cast arrived too late to save the fractional part.
+- `std::cout << (double)a / b << std::endl;` casts `a` to `double` **first**, so one operand of `/` is a `double` and the whole division is done in floating point.
+- `std::cout << (double)(a / b) << std::endl;` computes `a / b` **first**, still `int / int`, and only then converts the already-truncated result to `double`. The cast arrives too late to save the fraction.
 
-Same cast, different placement, different answer: parentheses control *when* the conversion happens.
+Parentheses control when the conversion happens.
 
 ```widget
 int-division
@@ -75,17 +77,18 @@ int-division
 A C-style cast also converts between the small integral types. `char` is just a 1-byte integer under the hood, so casting it to `int` gives you its numeric (ASCII) code, and casting an `int` back to `char` gives you the character at that code.
 
 ```cpp run
+// predict: Write the three lines printed.
 #include <iostream>
 
 int main()
 {
     char c = 'A';
     int code = (int)c;
-    std::cout << "code = " << code << std::endl;   // predict, then run
+    std::cout << "code = " << code << std::endl;
 
     int n = 66;
     char letter = (char)n;
-    std::cout << "letter = " << letter << std::endl;   // predict, then run
+    std::cout << "letter = " << letter << std::endl;
 
     bool flag = true;
     int flagAsInt = (int)flag;
@@ -94,18 +97,18 @@ int main()
 }
 ```
 
-`'A'` is `65`. `(int)c` gives you `65`. `(char)66` is `'B'`. `bool` follows the same rule as everywhere else in C++: `true` casts to `1`, `false` to `0`.
+`(int)c` gives the character's ASCII code and `(char)n` goes the other way. `bool` follows the usual C++ rule: `true` casts to `1`, `false` to `0`.
 
 The `assortedOps.cpp` sample uses this same casting operator on a different pair of types:
 
 ```cpp
 int anInt = 0;
-float aFloat = (float)anInt;   // aFloat = 0.0
+float aFloat = (float)anInt;
 ```
 
 ## C++ has its own casting operators too
 
-C-style casting is compact but blunt: the compiler cannot tell what *kind* of conversion you meant. Later this term you'll meet four named C++ casting operators that make the intent explicit: `static_cast`, `dynamic_cast`, `const_cast`, and `reinterpret_cast`. For now, recognize the names.
+C-style casting is compact but blunt: the compiler cannot tell what kind of conversion you meant. Later this term you'll meet four named C++ casting operators that make the intent explicit: `static_cast`, `dynamic_cast`, `const_cast`, and `reinterpret_cast`. For now, recognize the names.
 
 ```quiz
 [
@@ -136,10 +139,10 @@ C-style casting is compact but blunt: the compiler cannot tell what *kind* of co
     "explain": "Casting a to double before the division makes the whole expression floating-point: 7.0 / 2 = 3.5."
   },
   {
-    "q": "Given `int a = 7, b = 2;`, what does `(double)(a / b)` evaluate to?",
-    "options": ["3.5", "3", "3.0", "7.0"],
-    "answer": 2,
-    "explain": "a / b is computed first as int/int, truncating to 3. Casting that 3 to double afterward just gives 3.0 — the fractional part is already gone."
+    "q": "Given `int a = 7, b = 2;`, what does `std::cout << (double)(a / b);` print?",
+    "options": ["3.5", "3", "3.0", "7"],
+    "answer": 1,
+    "explain": "a / b is computed first as int/int, truncating to 3. The cast makes it the double 3.0, but cout's default format drops a zero fraction, so it prints 3. The fractional part was already gone before the cast."
   },
   {
     "q": "`(double)a / b` and `(double)(a / b)` always produce the same result.",

@@ -3,11 +3,11 @@ title: The three activities, worked
 minutes: 30
 ---
 
-The deck ends with three activities: read partition.cpp, finish the Date class's `operator<`, and write two small programs that each show one algorithm on one container. All three are worked here with runnable code.
+The deck ends with three activities: read partition.cpp, finish the Date class's `operator<`, and write two small programs that each show one algorithm on one container.
 
 ## Activity 1: partition.cpp, cities by distance
 
-The slide: *examine partition.cpp; this program generates cities in 2D space and partitions them based on distance; examine how it uses different algorithms to achieve its output: partition algorithm, for_each algorithm.* The shipped program seeds `std::default_random_engine` with `time(0)` and draws coordinates from a `uniform_real_distribution` between 0 and 100, so every run differs. The copy below replaces the random draw with ten fixed coordinates and changes nothing else.
+The slide: *examine partition.cpp; this program generates cities in 2D space and partitions them based on distance; examine how it uses different algorithms to achieve its output: partition algorithm, for_each algorithm.* The shipped program draws random coordinates between 0 and 100 (seeded with `time(0)`); this copy uses ten fixed ones and changes nothing else.
 
 ```cpp run pin partitionCities.cpp
 // predict: Write the "First false city" line and the first two cities printed after it.
@@ -89,13 +89,11 @@ int main()
 }
 ```
 
-The pieces, in the order the program uses them. `static int counter;` is one counter shared by every city, and `number{++counter}` in both constructors numbers the cities 1 to 10 in creation order. `std::pair<double, double> coordinates;` holds x and y as `first` and `second`, which the `operator<<` prints in parentheses. `std::list<city> cities;` is a list, not a vector: its iterators are bidirectional, and `partition` only needs a `ForwardIt`, so it still works. `for_each(cities.begin(), cities.end(), print);` applies `print` to every element of the range, the non-modifying algorithm family, and `print` shows the city and its distance from the origin. `close_to_origin` is the unary predicate: `DISTANCE > distance(candidate)` is true for a city strictly inside 50 units. The partition call keeps its return value, and `firstFalseCityItr->number` reads the number of the first city in the false group.
-
-With the fixed coordinates two cities are close: 5 at (3, 4), distance 5, and 3 at (12, 5), distance 13. Cities 1 and 7 sit at exactly 50 and are not `< 50`, so they are false. After partition the two true cities come first (5 before 3: order is not maintained), the first false city is number 2, and the ten lines are printed again by the same `for_each`.
+`static int counter;` is one counter shared by every city, so `number{++counter}` numbers the cities 1 to 10 in creation order. `std::list<city>` hands out bidirectional iterators, and `partition` needs only a `ForwardIt`, so it still works. `for_each` applies `print` to every element, the non-modifying family. `close_to_origin` is the unary predicate `DISTANCE > distance(candidate)`, true only strictly inside 50 units: a city at exactly 50 is false.
 
 ## Activity 2: the Date class and a strict weak ordering
 
-The slide: *I made a simple Date class. Examine Date.hpp, Date.cpp, DateTester.cpp. Implement operator< in Date so that it has a strict weak ordering. What is happening in the main method? Comment the code.* The project is three files, so the header and the parts of Date.cpp that matter are listed read-only.
+The slide: *I made a simple Date class. Examine Date.hpp, Date.cpp, DateTester.cpp. Implement operator< in Date so that it has a strict weak ordering. What is happening in the main method? Comment the code.*
 
 ```cpp pin Date.hpp and the relevant parts of Date.cpp
 // ---- Date.hpp ----
@@ -197,7 +195,7 @@ bool operator>=(const Date& lhs, const Date& rhs) { return !operator<(lhs, rhs);
 bool operator<=(const Date& lhs, const Date& rhs) { return !operator>(lhs, rhs); }
 ```
 
-The tour. `Date(int year = 2018, int month = 1, int day = 1);` gives every parameter a default, so `Date d;` is 2018/01/01, and the constructor body throws `std::invalid_argument` when `is_valid_date` rejects the triple, which is what `Date d(-1, -1, -1)` in the tester exercises. The three comparisons are friends, not members, because comparison is symmetric. The canon from Week 4 is already in place: `operator!=` is `!operator==(lhs, rhs)`, `operator>` is `operator<(rhs, lhs)`, `>=` is `!operator<(lhs, rhs)` and `<=` is `!operator>(lhs, rhs)`. Everything hangs off `operator<`, and it is the stub `// INSERT YOUR CODE HERE` returning `false`. The days tables start with a `0` so `days[month]` indexes by month number, and the prefix `operator++` rolls day into month into year with `if (++day > days[month])`.
+`Date(int year = 2018, int month = 1, int day = 1);` defaults every parameter, and the constructor throws `std::invalid_argument` when `is_valid_date` rejects the triple, which `Date d(-1, -1, -1)` in the tester exercises. The comparisons are friends because comparison is symmetric, and Week 4's canon is in place: `!=`, `>`, `>=` and `<=` are all written in terms of `==` and `<`. So everything hangs off `operator<`, which is the stub `// INSERT YOUR CODE HERE` returning `false`. The days tables start with `0` so `days[month]` indexes by month number.
 
 ```widget
 op-dispatch
@@ -205,12 +203,12 @@ op-dispatch
 ```
 
 :::warn The leap-year bug is a trap, not a model
-`is_leap_year` returns true for any year divisible by 100. The Gregorian rule is divisible by 400, or divisible by 4 but not by 100: 1900 and 2100 are not leap years, 2000 is. The second `if` should return false. The activity does not ask you to fix it, but a quiz may ask what the function returns for 1900.
+`is_leap_year` returns true for any year divisible by 100. The Gregorian rule is divisible by 400, or divisible by 4 but not by 100: 1900 and 2100 are not leap years, 2000 is. The second `if` should return false.
 :::
 
 ### The model operator<
 
-A strict weak ordering must be irreflexive, antisymmetric and transitive. Comparing year, then month, then day (lexicographic order on the three members) is all three, because each member is an `int` compared with the built-in `<`:
+A strict weak ordering must be irreflexive, antisymmetric and transitive. Comparing year, then month, then day is all three, because each member is an `int` compared with the built-in `<`:
 
 ```cpp
 bool operator<(const Date& lhs, const Date& rhs)
@@ -221,11 +219,11 @@ bool operator<(const Date& lhs, const Date& rhs)
 }
 ```
 
-`lhs < lhs` reaches the last line and returns `day < day`, false, so it is irreflexive. If `a < b` then the first differing member is smaller on `a`'s side, so `b < a` sees the same member larger: antisymmetric. Transitivity follows from `int`'s own ordering member by member. A tempting wrong answer is `lhs.year < rhs.year || lhs.month < rhs.month || lhs.day < rhs.day`, which makes 2017/12/01 less than 2018/01/01 and 2018/01/01 less than 2017/12/01 at the same time.
+`lhs < lhs` reaches the last line and returns `day < day`, false, so it is irreflexive. Antisymmetry and transitivity follow from `int`'s own ordering, member by member. A tempting wrong answer is `lhs.year < rhs.year || lhs.month < rhs.month || lhs.day < rhs.day`, which makes 2017/12/01 less than 2018/01/01 and 2018/01/01 less than 2017/12/01 at the same time.
 
 ### What main does, and the three comparator styles
 
-DateTester's `main` first constructs `Date d(-1, -1, -1)` inside a try and prints the exception's `what()`. It then prints `Date::today()`, and builds three priority queues that order Dates in the three ways slide 36 lists for defining an ordering:
+DateTester's `main` catches the exception from `Date d(-1, -1, -1)`, prints `Date::today()`, then builds three priority queues that order Dates in the three ways slide 36 lists for defining an ordering:
 
 | Style | DateTester code | Where `<` comes from |
 |---|---|---|
@@ -233,9 +231,9 @@ DateTester's `main` first constructs `Date d(-1, -1, -1)` inside a try and print
 | 2. a binary predicate function | `std::priority_queue<Date, std::vector<Date>, std::function<bool(Date, Date)>> dates2{compare};` | `bool compare(const Date& lhs, const Date& rhs) { return lhs < rhs; }`, passed at construction |
 | 3. a functor | `std::priority_queue<Date, std::vector<Date>, cmp> dates3;` | `struct cmp { bool operator()(const Date& lhs, const Date& rhs) { return lhs < rhs; } };`, a type |
 
-Each queue gets `a{2018, 1, 1}`, `b{2017, 1, 1}` and `c{2016, 6, 30}` pushed in that order and is drained by `print_queue`, which prints `top()` and pops until empty. A `priority_queue` pops the largest element first, and "largest" is defined by the comparator, so a correct `operator<` prints the latest date first.
+Each queue gets `a{2018, 1, 1}`, `b{2017, 1, 1}` and `c{2016, 6, 30}` pushed in that order and drained by `print_queue` (print `top()`, pop, repeat). A `priority_queue` pops the largest element first, and "largest" is defined by the comparator, so a correct `operator<` prints the latest date first.
 
-The shipped test cannot tell the stub from a correct answer: the dates are pushed newest-first, and with a comparator that never says "less" the heap simply leaves them in insertion order, which happens to be the right order. Push them in a different order and the difference appears.
+The shipped test cannot tell the stub from a correct answer. With a comparator that is always false the heap does not sort at all; for these three dates, pushed newest-first, it happens to pop them in push order, which is also the right order. That is luck, not a rule: an always-false `priority_queue<int>` fed 1 to 5 pops `1 3 5 2 4`.
 
 ```cpp run pin dateFixed.cpp
 // predict: Write the four lines printed.
@@ -285,11 +283,11 @@ int main() {
 }
 ```
 
-This is DateTester folded into one file with a three-member `Date`, the model `operator<`, and the push order changed to `{c, a, b}` (oldest first). `priority_queue<Date> dates1;` uses the free `operator<`; `dates2{compare}` passes the binary predicate through `std::function<bool(Date, Date)>`; `priority_queue<Date, vector<Date>, cmp> dates3;` names the functor type, so no object is passed. All three print the dates latest-first. The fourth queue uses `always_false`, the shipped stub: no element is ever "less", so the heap never reorders and the dates come out in push order, `2016/06/30 2018/01/01 2017/01/01`.
+This is DateTester folded into one file with a three-member `Date`, the model `operator<`, and the push order changed to `{c, a, b}` (oldest first). The fourth queue uses `always_false`, the shipped stub.
 
 ## Activity 3: two containers, two algorithms
 
-The slide: *select TWO data structures from the STL; open the algorithm reference; select TWO algorithms; write TWO little programs, each using ONE data structure to demonstrate how ONE of the algorithms works.* Two model answers follow; swapping in any other container and algorithm from the reference page is the exercise.
+The slide: *select TWO data structures from the STL; open the algorithm reference; select TWO algorithms; write TWO little programs, each using ONE data structure to demonstrate how ONE of the algorithms works.* Two model answers follow.
 
 ```cpp run pin dequeReverse.cpp
 // predict: Write the five lines printed.
@@ -328,7 +326,7 @@ int main()
 }
 ```
 
-The four pushes are deque.cpp's, so the deque starts as `15 20 10 30`. `reverse(d.begin(), d.end());` is a sequential, modifying algorithm on the whole range. `reverse(d.begin(), d.begin() + 2);` shows the half-open range at work: `begin() + 2` is one past the second element, so only two elements swap, and `+ 2` is legal because a deque's iterator is random access. `sort(d.begin(), d.end());` needs that same random access iterator, which is why `std::sort` cannot be called on a `list` (a list has its own `sort` member). The printer takes a `const_iterator` because it only reads.
+The four pushes are deque.cpp's. `reverse(d.begin(), d.begin() + 2);` shows the half-open range: `begin() + 2` is one past the second element, and `+ 2` is legal because a deque's iterator is random access. `std::sort` needs that same random access iterator, which is why it cannot be called on a `list` (a list has its own `sort` member).
 
 ```cpp run pin setCountIf.cpp
 // predict: Write the six lines printed. How many values does the set hold?
@@ -364,7 +362,7 @@ int main()
 }
 ```
 
-A set sorts on insert and drops the duplicate 10, so `set<int> s = {40, 10, 33, 10, 21, 50};` holds five values in order. `count_if(s.begin(), s.end(), IsOdd)` is a non-modifying algorithm with the same unary predicate shape as `partition`; the second call passes a lambda, `[](int x) { return x > 25; }`, which is a predicate written in place. `find(s.begin(), s.end(), 33)` returns an iterator to the match, or `end()` when there is none, so `it != s.end()` is the test before dereferencing. The free `std::find` walks every element; the member `s.find(33)` uses the set's tree and is logarithmic, which is the reason associative containers have their own `find`.
+`count_if` is non-modifying with the same unary predicate shape as `partition`; the second call passes a lambda, a predicate written in place. `find` returns an iterator to the match or `end()`, so `it != s.end()` is the test before dereferencing. The free `std::find` walks every element; the member `s.find(33)` uses the set's tree and is logarithmic, which is why associative containers have their own `find`.
 
 ```challenge
 { "prompt": "Give <code>struct Version { int major, minor; }</code> a friendly non-member <code>operator&lt;</code> that orders by major, then minor (a strict weak ordering), then sort the vector with <code>std::sort</code> and print one version per line as <code>major.minor</code>.", "starter": "#include <algorithm>\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nstruct Version {\n    int major, minor;\n};\n\n// TODO: bool operator<(const Version& lhs, const Version& rhs)\n\nint main()\n{\n    vector<Version> v = {{2, 0}, {1, 10}, {1, 2}, {3, 1}, {1, 2}};\n    // TODO: sort v\n    for (const Version& x : v)\n        cout << x.major << '.' << x.minor << '\\n';\n    return 0;\n}\n", "expected": "1.2\n1.2\n1.10\n2.0\n3.1", "hints": ["Compare <code>major</code> first; only when the majors are equal compare <code>minor</code>.", "<code>if (lhs.major != rhs.major) return lhs.major &lt; rhs.major; return lhs.minor &lt; rhs.minor;</code>", "<code>sort(v.begin(), v.end());</code> picks up your operator&lt; automatically."], "solution": "#include <algorithm>\n#include <iostream>\n#include <vector>\nusing namespace std;\n\nstruct Version {\n    int major, minor;\n};\n\nbool operator<(const Version& lhs, const Version& rhs)\n{\n    if (lhs.major != rhs.major) return lhs.major < rhs.major;\n    return lhs.minor < rhs.minor;\n}\n\nint main()\n{\n    vector<Version> v = {{2, 0}, {1, 10}, {1, 2}, {3, 1}, {1, 2}};\n    sort(v.begin(), v.end());\n    for (const Version& x : v)\n        cout << x.major << '.' << x.minor << '\\n';\n    return 0;\n}\n" }
@@ -394,7 +392,7 @@ A set sorts on insert and drops the duplicate 10, so `set<int> s = {40, 10, 33, 
     "q": "`std::priority_queue<Date> dates1;` with only the stub `operator<` (always false). Pushing a=2018/01/01, b=2017/01/01, c=2016/06/30 in that order and draining prints...",
     "options": ["2018/01/01 2017/01/01 2016/06/30", "2016/06/30 2017/01/01 2018/01/01", "2017/01/01 2018/01/01 2016/06/30", "nothing: it does not compile"],
     "answer": 0,
-    "explain": "A comparator that never says less never reorders the heap, so the dates come out in push order, which here is already newest-first. That is why the shipped test cannot reveal the stub; pushing c, a, b shows 2016/06/30 first."
+    "explain": "An always-false comparator means the heap never sorts. For these three dates pushed newest-first it pops them in push order, which is already newest-first, so the shipped test cannot reveal the stub; pushing c, a, b shows 2016/06/30 first. It is not a general rule: always-false fed 1 to 5 pops 1 3 5 2 4."
   },
   {
     "type": "match",

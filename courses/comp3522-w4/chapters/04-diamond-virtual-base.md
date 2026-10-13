@@ -156,7 +156,7 @@ int main ()
 diamond-viz
 ```
 
-Flip the two `virtual` toggles and the initializer list and compare the output with the programs above; the widget also lists what becomes ambiguous in each configuration.
+Each combination of the two `virtual` keywords and the initializer list gives the output of one of the programs above, and the widget lists what becomes ambiguous in each.
 
 ## Construction and destruction order in the diamond
 
@@ -195,6 +195,18 @@ int main()
 {
 	D d;
 }
+```
+
+```quiz
+[
+  {
+    "q": "diamond.cpp as shipped (both bases virtual): how many times does `A allocated` print?",
+    "type": "numeric",
+    "answer": 1,
+    "tolerance": 0,
+    "explain": "Once: the virtual base A is shared, so `D d;` holds a single A, built first. Without `virtual` it would print twice."
+  }
+]
 ```
 
 `class B : virtual public A` and `class C : public virtual A` are the same declaration in either word order. With one shared A, `D d;` prints `A allocated`, `B allocated`, `C allocated`, `D allocated`, then the destructors in exact reverse: D, C, B, A. Without `virtual` there are two A subobjects and the output becomes A, B, A, C, D allocated and D, C, A, B, A deallocated. Bases are constructed in the order they are listed after the colon (B before C), virtual bases first of all.
@@ -244,7 +256,7 @@ One more shipped file, diamondmethods.cpp: grandparent has `virtual void foo()`,
     "q": "What does diamond.cpp print for `D d;` with `B : virtual public A` and `C : public virtual A`?",
     "options": ["A B C D allocated, then D C B A deallocated", "A B A C D allocated, then D C A B A deallocated", "B C A D allocated", "D C B A allocated"],
     "answer": 0,
-    "explain": "One shared A is constructed first, then B and C in the order listed, then D; destruction is the exact reverse. Without virtual there are two A's (option B)."
+    "explain": "One shared A is constructed first, then B and C in the order listed, then D; destruction is the exact reverse. Without virtual there are two A's: A B A C D allocated."
   },
   {
     "q": "Virtual base classes exist to...",

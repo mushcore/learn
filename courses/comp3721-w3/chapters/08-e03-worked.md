@@ -5,8 +5,8 @@ minutes: 12
 
 The Week 3 exercise sheet (E03) has two calculation questions: the power left at the end of a cable whose loss is given in dB/km, and the SNR of a signal that has passed through several noisy devices.
 
-:::info E03 was posted without an answer sheet
-E01 and E02 came with the instructor's answers. E03 has none so far, so the answers here are worked from the Lecture 03 formulas.
+:::info Instructor's answers
+The E03 answer sheet gives 1.42 mW for exercise 1 and SNR = 10000, or 40 dB, for exercise 2. The workings below follow it step by step.
 :::
 
 ## E03: Week 3 exercises
@@ -102,7 +102,7 @@ E01 and E02 came with the instructor's answers. E03 has none so far, so the answ
 ]
 ```
 
-## Exercise 1, worked: 1.42 mW is left
+## Exercise 1, instructor's answer: 1.42 mW is left
 
 The loss adds up along the cable:
 
@@ -123,7 +123,7 @@ decibel
 { "p1": 2, "p1Unit": "mW", "perKm": -0.3, "km": 5, "title": "Exercise 1: a cable of −0.3 dB/km", "presets": { "5 km (exercise 1)": { "p1": 2, "p1Unit": "mW", "perKm": -0.3, "km": 5 }, "10 km of the same cable": { "p1": 2, "p1Unit": "mW", "perKm": -0.3, "km": 10 }, "1 km of the same cable": { "p1": 2, "p1Unit": "mW", "perKm": -0.3, "km": 1 } } }
 ```
 
-## Exercise 2, worked: 10000, or 40 dB
+## Exercise 2, instructor's answer: 10000, or 40 dB
 
 Each device adds its own noise, so the noise powers add:
 
@@ -132,6 +132,8 @@ $$\text{total noise} = 10 \times 2\ \text{μW} = 20\ \text{μW}$$
 Convert the signal to the same prefix, $200\ \text{mW} = 200000\ \text{μW}$:
 
 $$\text{SNR} = \frac{200000\ \text{μW}}{20\ \text{μW}} = 10000$$
+
+The answer sheet writes the same division as $\frac{200\ \text{mW}}{20\ \text{μW}} = 10 \times 1000$.
 
 $$\text{SNR}_{dB} = 10 \log_{10} 10^{4} = 40\ \text{dB}$$
 

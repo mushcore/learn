@@ -64,10 +64,6 @@ $$\text{bit rate} = \frac{\text{pages}}{\text{s}} \times \frac{\text{lines}}{\te
 | $f_h = 400$ MHz, middle 300 MHz | $f_l = 200$ MHz, $B = 200$ MHz |
 | 100, 400, 500, 750, 900 Hz | $B = 800$ Hz |
 
-## From memory
-
-Close the page and answer these; anything you miss goes on the sheet in larger writing.
-
 ```quiz
 [
   {

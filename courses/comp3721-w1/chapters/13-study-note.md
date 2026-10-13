@@ -3,7 +3,7 @@ title: Your one-page study note (Week 1)
 minutes: 15
 ---
 
-The instructor allows **one A4 or letter page, single-sided, preferably hand-written**, plus a calculator, in every quiz (the back may be used for rough work). This page is the Week 1 draft of that sheet: no explanations, only the facts, tables and formulas in the slides' own words. **Quiz 1 needs only the 01a block.** The 01b/01c block goes on the Quiz 2 sheet together with the Week 2 note.
+The instructor allows **one A4 or letter page, single-sided, preferably hand-written**, plus a calculator, in every quiz. This page is the Week 1 draft of that sheet: no explanations, only the facts, tables and formulas in the slides' own words. **Quiz 1 needs only the 01a block.** The 01b/01c block goes on the Quiz 2 sheet together with the Week 2 note.
 
 ## 01a: Data communications
 
@@ -78,9 +78,7 @@ The instructor allows **one A4 or letter page, single-sided, preferably hand-wri
 
 - Worked numbers: 12 devices need **66** mesh links ($12 \times 11 / 2$) or **12 drop lines + 1 backbone** on a bus (E01). New LAN technology changes only data link + physical.
 
-## From memory
-
-Close the page and answer these; anything you miss goes on the sheet in larger writing.
+Anything missed below goes on the sheet in larger writing.
 
 ```quiz
 [
@@ -100,8 +98,8 @@ Close the page and answer these; anything you miss goes on the sheet in larger w
   },
   {
     "q": "Select the two disadvantages of a star topology given in the lecture.",
-    "options": ["The dependency of the whole topology on one single point", "Expensive hardware", "More cabling is required compared with bus and ring", "Unidirectional traffic"],
-    "answer": [0, 2],
+    "options": ["Expensive hardware", "The dependency of the whole topology on one single point", "Unidirectional traffic", "More cabling is required compared with bus and ring"],
+    "answer": [1, 3],
     "explain": "Dependency on the single central point (the hub) and more cabling than bus and ring. Expensive hardware is a mesh disadvantage; unidirectional traffic is a ring disadvantage."
   },
   {
@@ -132,7 +130,7 @@ Close the page and answer these; anything you miss goes on the sheet in larger w
     "q": "The quiz study note may be written on both sides of the page.",
     "type": "tf",
     "answer": false,
-    "explain": "Single-sided only, preferably hand-written; the back of the page is for rough work during the quiz. Bring a calculator, and keep the note afterwards for revision."
+    "explain": "The announcement says one A4 or letter page, single-sided, preferably hand-written, plus a calculator."
   }
 ]
 ```

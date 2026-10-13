@@ -23,7 +23,7 @@ The figure: two 20 kbps lines enter a small MUX whose output is 40 kbps. That 40
 
 $$20 + 20 = 40 \qquad 4 \times 40 = \mathbf{160\ kbps}$$
 
-The first level turns two slow lines into one line at the common rate, so the second level sees four equal 40 kbps inputs. Multiplexing all five lines in one MUX would not work, because a synchronous frame gives every input the same slot size and the 20 kbps lines could not fill theirs.
+The first level turns two slow lines into one line at the common rate, so the second level sees four equal 40 kbps inputs.
 
 ## Multiple-slot allocation: demultiplex the fast line
 
@@ -43,7 +43,7 @@ The figure: 50 kbps, 50 kbps and 46 kbps. 46 is not a multiple of 50, so a *Puls
 
 $$46 \to 50 \qquad 3 \times 50 = \mathbf{150\ kbps}$$
 
-The dummy bits carry nothing; they are removed at the far end. The dominant rate is always the highest input rate, so the slower lines are raised and the fastest line is never slowed.
+The dummy bits carry no data. The highest input rate is the dominant rate, so the slower lines are raised and the fastest line is never slowed.
 
 ## Which strategy, from the input rates
 
@@ -60,6 +60,15 @@ rate-manager
 
 The output rate is the number of slots in the frame times the rate per slot, after the fix.
 
+### The three fixes as frame sequences
+
+In multilevel multiplexing line 1 carries A and B in turn; in multiple-slot allocation line A fills two slots of every frame; in pulse stuffing a dummy unit fills line 3's slot like data.
+
+```widget
+tdm-play
+{ "preset": "Multilevel multiplexing (slide 40)", "presets": ["Multilevel multiplexing (slide 40)", "Multiple-slot allocation (slide 42)", "Pulse stuffing (slide 44)"], "title": "Multilevel, multiple-slot and pulse-stuffed frames" }
+```
+
 ## Framing bits keep the MUX and DEMUX in step
 
 Slide wording: *Synchronization between the multiplexer and demultiplexer is a major issue (to maintain the integrity of the frames exchange between source and destination).* If the DEMUX is one slot off, every unit goes to the wrong output.
@@ -68,9 +77,9 @@ Slide wording: *Synchronization between the multiplexer and demultiplexer is a m
 
 The figure adds one framing bit in front of the A, B, C frames: Frame 1 = 1 | C1 _ A1, Frame 2 = 0 | _ B2 A2, Frame 3 = 1 | C3 B3 A3. The framing bits read 1 0 1 across the frames, and the blank slots are empty slots from a silent input, the inefficiency from the top of this lesson drawn in.
 
-### Watch the slide's three frames being built
+### The slide-45 frames with framing bits and empty slots
 
-Each frame starts with its framing bit, and a line with no data leaves its slot empty. The slot still crosses the link. Tick the predict box to name each frame before it is built.
+Each frame starts with its framing bit, and a line with no data leaves its slot empty; the empty slot still crosses the link.
 
 ```widget
 tdm-play

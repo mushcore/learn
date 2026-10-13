@@ -34,6 +34,15 @@ normal-curve
 { "mu": 164.7, "sigma": 7.1, "x": 178.9, "title": "Women's height — Z = 2.0" }
 ```
 
+### Standardizing 178.9 cm into Z = 2.0
+
+Subtracting $\mu = 164.7$ slides the whole curve left until its centre sits at 0; dividing by $\sigma = 7.1$ then squeezes it into the standard normal, where 178.9 cm lands at $Z = 2.0$. The shaded area never changes, only the axis.
+
+```widget
+standardize-play
+{ "mu": 164.7, "sigma": 7.1, "lo": null, "hi": 178.9, "unit": "cm", "var": "X", "presets": false, "table": false, "title": "Women's height: X = 178.9 cm becomes Z = 2.0" }
+```
+
 ## Going backwards: Z to X
 
 Rearrange the formula to find the raw value that corresponds to a given Z-score:
@@ -79,13 +88,6 @@ normal-curve
 { "mu": 178.4, "sigma": 7.6, "x": 203, "title": "Men's height — LeBron at Z = 3.24" }
 ```
 
-## Z and the percentage below on the curve
-
-```widget
-normal-curve
-{ "mu": 100, "sigma": 15, "x": 130 }
-```
-
 ## Pencil problem: body temperature
 
 $\mu = 98.20$, $\sigma = 0.62$. The "usual" range is $\mu \pm 2\sigma = 98.20 \pm 1.24$, i.e. **96.96 to 99.44**.
@@ -97,19 +99,19 @@ $\mu = 98.20$, $\sigma = 0.62$. The "usual" range is $\mu \pm 2\sigma = 98.20 \p
 ```quiz
 [
   {
-    "q": "Women's heights have $\\mu = 164.7$, $\\sigma = 7.1$. What is the Z-score for $X = 175$? (2 decimals)",
+    "q": "Women's heights have $\\mu = 164.7$, $\\sigma = 7.1$. What is the Z-score for $X = 180$? (2 decimals)",
     "type": "numeric",
-    "answer": 1.45,
+    "answer": 2.15,
     "tolerance": 0.02,
-    "explain": "$Z = (175 - 164.7)/7.1 = 10.3/7.1 = 1.45$."
+    "explain": "$Z = (180 - 164.7)/7.1 = 15.3/7.1 = 2.15$: 2.15 standard deviations above the mean."
   },
   {
-    "q": "Same population. What percentage of women are shorter than 178.9 cm?",
+    "q": "Same population. What percentage of women are shorter than 150.5 cm?",
     "type": "numeric",
-    "answer": 97.5,
+    "answer": 2.5,
     "tolerance": 0.5,
     "unit": "%",
-    "explain": "$Z = 2.0$ exactly, so below is $95\\% + 2.5\\%$ (half the middle band plus the lower tail) $= 97.5\\%$."
+    "explain": "$Z = (150.5 - 164.7)/7.1 = -14.2/7.1 = -2.0$ exactly. 95% sits inside $\\mu \\pm 2\\sigma$, so the two tails share 5% and the lower tail alone is $5\\% / 2 = 2.5\\%$. Above 178.9 cm ($Z = +2$) is the matching 2.5%; below it is the whole 95% band plus the lower tail, 97.5%."
   },
   {
     "q": "IQ is $\\mu = 100$, $\\sigma = 15$. What IQ score corresponds to $Z = 3.2$?",

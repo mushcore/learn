@@ -3,7 +3,7 @@ title: What the midterm looks like and how to study
 minutes: 12
 ---
 
-The midterm is a 105-mark paper exam in five question shapes, and the practice paper shows every one of them. This lesson fixes the facts and the way to answer each shape before you open the questions.
+The midterm is a paper exam in five question shapes, and the 105-mark practice paper shows every one of them; the real paper's total is not given.
 
 ## When, where, what you may bring
 

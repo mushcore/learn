@@ -45,7 +45,7 @@
     {
       "title": "4. Quiz prep",
       "lessons": [
-        { "id": "e05-worked", "title": "E05 worked, and the seven conversions compared", "file": "chapters/10-e05-worked.md" },
+        { "id": "e05-worked", "title": "E05 worked, and the conversions compared", "file": "chapters/10-e05-worked.md" },
         { "id": "mock-quiz-5", "title": "Mock Quiz 5 (Week 5)", "file": "chapters/11-mock-quiz-5.md" },
         { "id": "study-note", "title": "Your one-page study note (Week 5)", "file": "chapters/12-study-note.md" }
       ]

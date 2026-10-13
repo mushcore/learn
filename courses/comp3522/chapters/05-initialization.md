@@ -32,9 +32,10 @@ int sum{x + y + z};    // ERROR! This won't work. We're happy!
 
 Given `double x, y, z;`, `int sum = x + y + z;` and `int sum(x + y + z);` compile and truncate; `int sum{x + y + z};` does not compile. The slide's comment on that line, "We're happy!", is the point: the error catches silent data loss at compile time.
 
-### See the truncation happen
+### `=` and `()` truncate
 
 ```cpp run
+// predict: Write the two lines printed.
 #include <iostream>
 using namespace std;
 
@@ -42,10 +43,10 @@ int main()
 {
     double x = 1.5, y = 1.5, z = 1.5;
 
-    int sum = x + y + z;    // = form: truncates 4.5 down to 4
+    int sum = x + y + z;    // = form
     cout << "sum with =  : " << sum << endl;
 
-    int sum2(x + y + z);    // () form: same truncation
+    int sum2(x + y + z);    // () form
     cout << "sum with () : " << sum2 << endl;
 
     return 0;
@@ -54,7 +55,7 @@ int main()
 
 `x + y + z` is `4.5`, a `double`; `=` and `()` drop the `.5` with no warning.
 
-### Now watch `{}` refuse to compile
+### `{}` with literals: a compile error
 
 Uniform initialization treats that same truncation as an error when the compiler can see, at compile time, that the value doesn't fit:
 
@@ -81,7 +82,7 @@ main.cpp:6:23: error: narrowing conversion of '4.5e+0' from 'double' to 'int' [-
 ```
 
 :::warn When the value comes from a variable instead of a literal
-Swap the literals for the `double x, y, z` variables (`int sum{x + y + z};`) and g++ only prints a `-Wnarrowing` **warning**: it compiles and truncates to `4`, like `=` and `()`. Both cases are ill-formed by the standard, but g++ escalates to an error only when it can evaluate the narrowed value at compile time. For the quiz, follow the slides: `{}` narrowing "won't compile."
+Swap the literals for the `double x, y, z` variables (`int sum{x + y + z};`) and g++ only prints a `-Wnarrowing` **warning**: it compiles and truncates to `4`, like `=` and `()`. Both cases are ill-formed by the standard, but g++ escalates to an error only when it can evaluate the narrowed value at compile time. The slides' answer is the standard's: `{}` narrowing "won't work."
 :::
 
 :::quiz C++11
@@ -119,7 +120,7 @@ Uniform initialization (`{}`) is a **C++11** feature. The `=` and `()` forms are
     "q": "`int sum{x + y + z};`, where `x`, `y`, `z` are `double`s, compiles and truncates just like the `=` and `()` forms.",
     "type": "tf",
     "answer": false,
-    "explain": "This is exactly the case uniform initialization is designed to catch: it is a compile error (narrowing conversion), not a silent truncation."
+    "explain": "Answer as the slides do: `{}` prohibits the narrowing, so the line \"won't work\". Real g++ is softer when the doubles are variables: it prints a -Wnarrowing warning and truncates to 4 (see the warning box above). With literals, `int sum{1.5 + 1.5 + 1.5};`, g++ makes it an error."
   },
   {
     "q": "Select every valid way to initialize `int x` with the value `0`.",

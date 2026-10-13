@@ -1,7 +1,11 @@
 // Interactive widgets for MATH 3042 Unit 4 (discrete probability distributions): an editable
 // probability table with its mean and standard deviation, the binomial, hypergeometric, geometric
 // and Poisson calculators with every lecture example as a preset, and a which-distribution picker.
+// Two playback widgets (app/playback.js): arrivals-play (Poisson counts per minute, or the
+// exponential gaps between the same arrivals) and deal-play (cards dealt without replacement).
 import { el, btnRow, fmtNum } from "./dom.js";
+import { createPlayback } from "./playback.js";
+import { predictGates, predictCheck } from "./widgets-cont.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 function svgEl(tag, attrs = {}, text) {
@@ -204,7 +208,25 @@ function pmfTable(box, cfg) {
   const addBtn = el("button", "viz-btn", "add a row"), simTitle = el("div", "stat-label");
   addBtn.addEventListener("click", () => { const last = rows[rows.length - 1]; rows.push({ x: String((parseFloat(last?.x) || 0) + 1), p: "0" }); presetName = null; build(); });
   ctl.append(addBtn);
-  box.append(about, wrap, ctl, valid, svg, out, steps);
+  // cfg.grid: for the two-dice preset, the 36-pair sample space with the cells of one minimum highlighted
+  const gridBox = el("div");
+  let gridX = 1;
+  box.append(about, gridBox, wrap, ctl, valid, svg, out, steps);
+  function drawGrid() {
+    gridBox.innerHTML = "";
+    if (!cfg.grid || presetName !== "minimum of two dice") return;
+    const gEl = el("div", "prob-grid");
+    gEl.style.gridTemplateColumns = "repeat(6, 1fr)";
+    for (let a = 1; a <= 6; a++) for (let b = 1; b <= 6; b++) {
+      const mn = Math.min(a, b), c = el("div", "prob-cell" + (mn === gridX ? " in" : ""), `${a},${b}`);
+      c.title = `minimum ${mn}`;
+      c.addEventListener("click", () => { gridX = mn; drawGrid(); });
+      gEl.append(c);
+    }
+    const cnt = 13 - 2 * gridX;
+    gridBox.append(note("The 36 equally likely pairs (first die, second die). Click a cell to highlight every pair with the same minimum."), gEl,
+      mathLine(`X = ${gridX}: ${cnt} of the 36 pairs have minimum ${gridX}${gridX < 6 ? ` (row ${gridX} and column ${gridX}, both dice at least ${gridX})` : ""}, so P(${gridX}) = ${cnt}/36 = ${p4(cnt / 36)}.`));
+  }
   const simRow = btnRow(["+100", "+1 000", "+10 000", "reset"], (i) => { if (i === 3) return resetSim(); simulate([100, 1000, 10000][i]); }, -1);
   const simOut = el("div", "stat-grid"), code = rcode("");
   if (cfg.simulate !== false) { simTitle.textContent = "Simulate: draw values of X and watch the sample mean settle on μ"; box.append(simTitle, simRow, simOut, code); }
@@ -239,6 +261,7 @@ function pmfTable(box, cfg) {
     });
     const foot = el("tr", "prob2-foot"); foot.innerHTML = `<th>Σ</th><td class="prob2-sum"></td><td class="prob2-mu"></td><td class="prob2-var"></td><td></td>`;
     tb.append(foot); t.append(tb); wrap.append(t);
+    drawGrid();
     update();
   }
   function update() {
@@ -695,6 +718,404 @@ function distPicker(box, cfg) {
   clear.addEventListener("click", () => { for (const it of items) { it.sel.value = ""; it.card.classList.remove("ok", "bad"); it.why.textContent = ""; } score.textContent = ""; });
 }
 
+// =====================================================================
+// playback widgets (app/playback.js): every frame is a pure function of the playback position
+// =====================================================================
+const ease = (f) => f * f * (3 - 2 * f);
+const clampN = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+const setText = (node, s) => { if (node.textContent !== s) node.textContent = s; };
+function svgText(g, x, y, s, attrs = {}) { g.append(svgEl("text", { x, y, "font-size": 11, "text-anchor": "middle", fill: "var(--ink-2)", ...attrs }, s)); }
+/** Seeded uniform generator (mulberry32): a played stream is the same on every replay and scrub. */
+function rng(seed) {
+  let a = seed >>> 0;
+  return () => { a = (a + 0x6d2b79f5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+}
+const expDraw = (u, mean) => -mean * Math.log(1 - u);
+const plural = (k, w) => `${k} ${w}${k === 1 ? "" : "s"}`;
+function predictToggle(pc, gate, getPb) {
+  gate.on = pc.input.checked;
+  pc.input.addEventListener("change", () => { const pb = getPb(); gate.on = pc.input.checked; pb.pause(); gate.restart(pb.pos()); pb.set(pb.pos()); });
+}
+
+// ---------- widget: arrivals-play ----------
+// count mode: one step = one second of a minute; then the minute's count joins a histogram of 10, 100, 1 000 minutes.
+// gaps mode: one step = one gap between consecutive requests; then 100 and 1 000 gaps fill the histogram.
+const AR_DEFAULT = { count: { every: 2, seconds: 60, x: 20, seed: 3 }, gaps: { every: 2.5, gaps: 30, x: 4, seed: 6 } };
+function arrivalsPlay(box, cfg) {
+  const mode = cfg.mode === "gaps" ? "gaps" : "count", D = AR_DEFAULT[mode], GAPS = mode === "gaps";
+  const S = GAPS ? 0 : clampInt(cfg.seconds, 10, 120, D.seconds), G = GAPS ? clampInt(cfg.gaps, 5, 60, D.gaps) : 0;
+  const TOT = GAPS ? [G, 100, 1000] : [1, 10, 100, 1000];
+  const COUNT = GAPS ? G + 2 : S + 3, FIRST = GAPS ? G : S;
+  const seed0 = Number.isInteger(cfg.seed) ? cfg.seed : D.seed;
+  const st = { every: cfg.every > 0 ? cfg.every : D.every, seed: seed0 };
+  const minEvery = GAPS ? 0.05 : S / 300;
+  let m = null, pb = null;
+  box.append(el("h4", null, cfg.title || (GAPS ? "Requests arriving at random: the gaps between them are exponential" : "Requests arriving at random: one minute's count, then a thousand minutes")));
+  const fEvery = numField("one request every (s, on average)", st.every, (v) => { if (v >= minEvery && v <= 60) { st.every = v; restart(); } }, "any");
+  const tools = el("div", "viz-btn-row");
+  const mk = (label, fn) => { const b = el("button", "viz-btn", label); b.type = "button"; b.addEventListener("click", fn); tools.append(b); return b; };
+  mk(GAPS ? `slide: 1 per ${D.every} s` : `slide: 1 per ${D.every} s, one minute`, () => { st.every = D.every; st.seed = seed0; fEvery.set(D.every); restart(); });
+  mk("another random stream", () => { st.seed++; restart(); });
+  const pc = predictCheck(GAPS ? "Predict β and the share of short gaps before they are shown" : "Predict the expected count and the Z verdict before they are shown", !!cfg.predict);
+  const W = 640, H = 300;
+  const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, class: "curve-svg net-svg", role: "img", "aria-label": GAPS ? "requests on a timeline with the gap lengths filling a histogram under the exponential density" : "requests on a one-minute timeline with the count per minute filling a histogram under the Poisson bars" });
+  const caption = el("p", "playback-caption");
+  caption.setAttribute("aria-live", "polite");
+  const ask = el("div", "viz-btn-row playback-ask");
+  const readout = el("div", "stat-steps"), noteP = el("p", "widget-note");
+  box.append(fEvery.row, tools, pc.label, svg, caption, ask);
+
+  function model() {
+    const r = rng(st.seed * 7919 + (GAPS ? 23 : 11)), every = st.every;
+    if (!GAPS) {
+      const L = S / every, times = [];
+      for (let t = expDraw(r(), every); t <= S; t += expDraw(r(), every)) times.push(t);
+      const counts = [times.length];
+      for (let i = 1; i < 1000; i++) { let k = 0; for (let t = expDraw(r(), every); t <= S; t += expDraw(r(), every)) k++; counts.push(k); }
+      const ux = Number.isInteger(cfg.x) ? cfg.x : Math.round((2 * L) / 3);
+      return { L, sig: Math.sqrt(L), times, counts, ux };
+    }
+    const gaps = [], T = [0];
+    for (let i = 0; i < 1000; i++) { gaps.push(expDraw(r(), every)); T.push(T[i] + gaps[i]); }
+    const ux = cfg.x > 0 ? cfg.x : D.x * (every / D.every);
+    return { beta: every, gaps, T, ux };
+  }
+  /** How many minutes (count mode) or gaps (gaps mode) are in the histogram at pos. */
+  function shown(pos) {
+    if (!GAPS && pos < S - 1e-9) return 0;
+    if (GAPS && pos <= G) return Math.floor(pos + 1e-9);
+    const j = pos - FIRST, i = Math.floor(j + 1e-9);
+    if (i >= TOT.length - 1) return TOT[TOT.length - 1];
+    return TOT[i] + Math.floor((TOT[i + 1] - TOT[i]) * ease(j - i));
+  }
+  const numE = (v) => num(v, 4);
+  function questions() {
+    if (!GAPS) {
+      const tA = Math.round((2 * S) / 3), e = st.every, right = tA / e;
+      const cands = [
+        [right, true, ""],
+        [tA, false, `That is one request per second. The rate is 1 per ${numE(e)} s, so λ for ${tA} s is ${tA}/${numE(e)} = ${num(right, 2)}.`],
+        [m.L, false, `That is λ for the whole ${S} s. Rescale to the ${tA} s asked about: ${tA}/${numE(e)} = ${num(right, 2)}.`],
+        [tA * e, false, `That multiplies by ${numE(e)}. One request every ${numE(e)} s means dividing the time by ${numE(e)}.`],
+      ];
+      const opts = [];
+      for (const [v, ok, why] of cands) if (!opts.some((o) => o.label === num(v, 2))) opts.push({ label: num(v, 2), ok, why, v });
+      opts.sort((a, b) => a.v - b.v);
+      const z = (m.ux - m.L) / m.sig, unusual = Math.abs(z) > 2;
+      const pEq = dpois(m.ux, m.L), pT = m.ux <= m.L ? sumTo(Array.from({ length: m.ux + 1 }, (_, k) => dpois(k, m.L)), 0, m.ux) : 1 - sumTo(Array.from({ length: m.ux }, (_, k) => dpois(k, m.L)), 0, m.ux - 1);
+      const zS = `Z = (${m.ux} − ${num(m.L, 2)})/${num(m.sig, 2)} = ${num(z, 2)}`;
+      const zOpts = [
+        { label: `${unusual ? "Yes" : "No"}: ${zS}, ${unusual ? "beyond" : "within"} ±2`, ok: true },
+        { label: `${unusual ? "No" : "Yes"}: ${m.ux} is ${num(Math.abs(m.ux - m.L), 2)} ${m.ux < m.L ? "below" : "above"} λ = ${num(m.L, 2)}`, ok: false, why: `Unusual means more than 2σ from μ, and σ = √λ = ${num(m.sig, 2)}: ${zS}.` },
+        { label: `${pEq < 0.025 ? "Yes" : "No"}: P(X = ${m.ux}) = ${p4(pEq)} is ${pEq < 0.025 ? "below" : "above"} 0.025`, ok: false, why: `The tail rule uses the whole tail, P(X ${m.ux <= m.L ? "≤" : "≥"} ${m.ux}) = ${p4(pT)}, not one bar; the Z rule gives ${zS}.` },
+      ];
+      return [{ at: Math.round(S / 2), tA, options: opts }, { at: S, options: zOpts }];
+    }
+    const b = m.beta, x = m.ux, F = 1 - Math.exp(-x / b);
+    const bOpts = [];
+    for (const [v, ok, why] of [[b, true, ""], [1 / b, false, `${num(1 / b, 4)} is the rate per second, 1/β. β is the mean gap.`], [60 / b, false, `${num(60 / b, 2)} is the expected count per minute, 60/β, a Poisson λ.`], [b / 2, false, `The mean gap is the time per request, β = ${numE(b)} s.`]])
+      if (!bOpts.some((o) => o.label === `${num(v, 4)} s`)) bOpts.push({ label: `${num(v, 4)} s`, ok, why, v });
+    bOpts.sort((p, q) => p.v - q.v);
+    const med = b * Math.LN2;
+    const fOpts = [
+      { label: p4(F), ok: true, v: F },
+      { label: p4(1 - F), ok: false, v: 1 - F, why: `That is P(gap > ${numE(x)}) = e^(−${numE(x)}/${numE(b)}), the gaps longer than ${numE(x)} s.` },
+      { label: "0.5000", ok: false, v: 0.5, why: `Half the gaps are under the median β ln 2 = ${num(med, 2)} s; ${numE(x)} s is further out, so more than half are under it: 1 − e^(−${numE(x)}/${numE(b)}).` },
+    ].filter((o, i, a) => a.findIndex((p) => p.label === o.label) === i).sort((p, q) => p.v - q.v);
+    return [{ at: 0, options: bOpts }, { at: G, options: fOpts }];
+  }
+  const gate = predictGates(ask, COUNT, questions, () => pb);
+
+  /** Histogram panel shared by the two modes: bars of observed shares over the model's bars or curve. */
+  function histogram(g, y0, y1, bins, expected, observed, opts) {
+    const X0 = 48, X1 = 624, n = bins.length, bw = (X1 - X0) / n;
+    const ymax = niceCeil(Math.max(...expected) * 1.3);
+    const Y = (v) => y1 - (Math.min(v, ymax) / ymax) * (y1 - y0);
+    for (const t of [0.5, 1]) {
+      g.append(svgEl("line", { x1: X0, x2: X1, y1: Y(t * ymax), y2: Y(t * ymax), stroke: "var(--rule)", "stroke-dasharray": "2 4" }));
+      svgText(g, X0 - 5, Y(t * ymax) + 4, fmtNum(t * ymax, 3), { "text-anchor": "end", fill: "var(--ink-dim)", "font-size": 10 });
+    }
+    if (opts.mark != null) {
+      const mx = X0 + opts.mark * bw;
+      g.append(svgEl("line", { x1: mx, x2: mx, y1: y0, y2: y1, stroke: "var(--hl)", "stroke-dasharray": "4 3" }));
+      svgText(g, mx + 4, y0 + 10, opts.markLabel, { fill: "var(--hl)", "text-anchor": "start", "font-weight": 600 });
+    }
+    if (observed) observed.forEach((v, i) => {
+      if (!(v > 0)) return;
+      g.append(svgEl("rect", { x: X0 + i * bw + 0.5, y: Y(v), width: Math.max(1, bw - 1), height: y1 - Y(v), fill: opts.hit === i ? "var(--hl)" : "var(--hl-soft)", stroke: "var(--hl)", "stroke-width": 0.8 }));
+      if (v > ymax) svgText(g, X0 + (i + 0.5) * bw, y0 + 10, "▲", { fill: "var(--hl)", "font-size": 9 });
+    });
+    if (opts.curve) g.append(svgEl("path", { d: opts.curve(X0, X1, Y), fill: "none", stroke: "var(--blue)", "stroke-width": 2 }));
+    else expected.forEach((v, i) => g.append(svgEl("rect", { x: X0 + i * bw + 1, y: Y(v), width: Math.max(1, bw - 2), height: y1 - Y(v), fill: "none", stroke: "var(--blue)", "stroke-width": 1.4 })));
+    g.append(svgEl("line", { x1: X0, x2: X1, y1, y2: y1, stroke: "var(--ink-dim)" }));
+    const every = Math.max(1, Math.ceil(n / 16));
+    bins.forEach((b, i) => { if (opts.labelAt(i, every)) svgText(g, X0 + (opts.edges ? i : i + 0.5) * bw, y1 + 13, b, { fill: "var(--ink-dim)", "font-size": 10 }); });
+    svgText(g, X1, y1 + 27, opts.xlab, { "text-anchor": "end", fill: "var(--ink-dim)" });
+    opts.legend.forEach(([t, kind], i) => {
+      const lx = 60 + i * 320;
+      g.append(svgEl("rect", { x: lx, y: y0 - 22, width: 13, height: 9, fill: kind === "obs" ? "var(--hl-soft)" : "none", stroke: kind === "obs" ? "var(--hl)" : "var(--blue)", "stroke-width": 1.4 }));
+      svgText(g, lx + 18, y0 - 14, t, { "text-anchor": "start", fill: "var(--ink-2)" });
+    });
+  }
+
+  function frameCount(pos) {
+    pos = Math.max(0, pos);
+    const { L, sig, times, counts, ux } = m, e = st.every;
+    const t = clampN(pos, 0, S), tc = Math.floor(t + 1e-9), k = times.filter((x) => x <= t).length, mins = shown(pos), q = gate.asking(pos);
+    svg.innerHTML = "";
+    const g = svgEl("g"); svg.append(g);
+    // the minute as a timeline: a tick per request, the cursor at t
+    const TX0 = 48, TX1 = 624, TY = 62, TX = (s) => TX0 + (s / S) * (TX1 - TX0);
+    g.append(svgEl("line", { x1: TX0, x2: TX1, y1: TY, y2: TY, stroke: "var(--rule-strong)" }));
+    for (let s = 0; s <= S; s += S >= 60 ? 10 : 5) { g.append(svgEl("line", { x1: TX(s), x2: TX(s), y1: TY, y2: TY + 4, stroke: "var(--ink-dim)" })); svgText(g, TX(s), TY + 16, `${s} s`, { fill: "var(--ink-dim)", "font-size": 10 }); }
+    for (const x of times) {
+      if (x > t) break;
+      const fresh = pos <= S && t - x < 1;
+      g.append(svgEl("line", { x1: TX(x), x2: TX(x), y1: TY - (fresh ? 26 : 18), y2: TY, stroke: fresh ? "var(--hl)" : "var(--blue)", "stroke-width": fresh ? 2.4 : 1.5 }));
+    }
+    if (pos > 0 && pos <= S) g.append(svgEl("line", { x1: TX(t), x2: TX(t), y1: TY - 34, y2: TY + 4, stroke: "var(--hl)", "stroke-dasharray": "3 3" }));
+    svgText(g, TX0, 16, `t = ${tc} s`, { "text-anchor": "start", "font-weight": 600, fill: "var(--ink)" });
+    svgText(g, TX1, 16, `requests so far: ${k}    expected by now: ${tc}/${numE(e)} = ${num(tc / e, 2)}`, { "text-anchor": "end", fill: "var(--ink-2)" });
+    // the histogram of counts per minute
+    const lo = Math.max(0, Math.floor(L - 4 * sig)), hi = Math.ceil(L + 4 * sig);
+    const bins = [], expected = [];
+    for (let x = lo; x <= hi; x++) { bins.push(String(x)); expected.push(dpois(x, L)); }
+    let observed = null;
+    if (mins > 0) { observed = bins.map(() => 0); for (let i = 0; i < mins; i++) { const c = counts[i]; if (c >= lo && c <= hi) observed[c - lo] += 1 / mins; } }
+    histogram(g, 128, 262, bins, expected, observed, {
+      hit: mins === 1 ? counts[0] - lo : null, mark: ux >= lo && ux <= hi ? ux - lo + 0.5 : null, markLabel: `${ux}`,
+      labelAt: (i) => (lo + i) % 5 === 0, xlab: `X = requests in ${S} s`,
+      legend: [[`Poisson bars dpois(x, ${num(L, 2)})`, "exp"], [mins > 0 ? `share of ${plural(mins, "minute")}` : "share of minutes (none yet)", "obs"]],
+    });
+    // caption and readout
+    let cap;
+    const xbar = mins > 0 ? counts.slice(0, mins).reduce((a, b) => a + b, 0) / mins : NaN;
+    if (q && q.at === Math.round(S / 2)) cap = `t = ${tc} s: ${k} requests so far. At 1 request per ${numE(e)} s, how many do you expect by t = ${q.tA} s?`;
+    else if (q) cap = `This minute had ${counts[0]} requests. λ = ${num(L, 2)} per ${S} s, σ = √λ = ${num(sig, 2)}. Is a minute with ${ux} requests unusual?`;
+    else if (pos <= 0) cap = `A web server receives one request every ${numE(e)} s on average, at random times. Over ${S} s the expected count is λ = ${S}/${numE(e)} = ${num(L, 2)}.`;
+    else if (pos < S) cap = `t = ${tc} s: ${plural(k, "request")} so far; expected by now ${tc}/${numE(e)} = ${num(tc / e, 2)}.`;
+    else if (mins === 1) cap = `t = ${S} s: this minute had ${counts[0]} requests, against λ = ${num(L, 2)}. One minute is one value of X; the Poisson bars describe many minutes.`;
+    else {
+      cap = `${big(mins)} minutes counted: the share of minutes with each count is settling on the Poisson bars. Mean count ${num(xbar, 2)}; λ = ${num(L, 2)}.`;
+      if (mins >= 1000) {
+        const c = counts.filter((x) => x <= ux).length;
+        cap += ` Minutes with ${ux} or fewer: ${c} of 1000; ppois(${ux}, ${num(L, 2)}) = ${p4(sumTo(Array.from({ length: ux + 1 }, (_, j) => dpois(j, L)), 0, ux))}.${gate.tally()}`;
+      }
+    }
+    setText(caption, cap);
+    const rows = [`λ = ${S} s ÷ ${numE(e)} s per request = ${num(L, 2)} per ${S} s; μ = λ, σ = √λ = ${num(sig, 2)}`];
+    if (mins > 0) { const xs = counts.slice(0, mins), sd = mins > 1 ? Math.sqrt(xs.reduce((a, b) => a + (b - xbar) ** 2, 0) / (mins - 1)) : NaN; rows.push(`${plural(mins, "minute")}: mean count ${num(xbar, 2)}${mins > 1 ? `, sd ${num(sd, 2)}` : ""}`); }
+    const key = rows.join("|");
+    if (readout.dataset.key !== key) { readout.dataset.key = key; readout.innerHTML = ""; for (const r of rows) readout.append(mathLine(r)); }
+    gate.render(pos);
+  }
+
+  function frameGaps(pos) {
+    pos = Math.max(0, pos);
+    const { beta, gaps, T, ux } = m, n = shown(pos), q = gate.asking(pos);
+    const i = Math.min(G, Math.floor(pos + 1e-9)), f = pos < G ? pos - i : 0;
+    const tNow = T[i] + (i < G ? f * gaps[i] : 0);
+    svg.innerHTML = "";
+    const g = svgEl("g"); svg.append(g);
+    // a timeline window that follows the stream
+    const span = 12 * beta, end = Math.max(span, tNow + beta), start = end - span;
+    const TX0 = 48, TX1 = 624, TY = 62, TX = (s) => TX0 + ((s - start) / span) * (TX1 - TX0);
+    g.append(svgEl("line", { x1: TX0, x2: TX1, y1: TY, y2: TY, stroke: "var(--rule-strong)" }));
+    const tick = niceStepP(span / 6);
+    for (let s = Math.ceil(start / tick) * tick; s <= end + 1e-9; s += tick) { g.append(svgEl("line", { x1: TX(s), x2: TX(s), y1: TY, y2: TY + 4, stroke: "var(--ink-dim)" })); svgText(g, TX(s), TY + 16, `${num(s, 1)} s`, { fill: "var(--ink-dim)", "font-size": 10 }); }
+    for (let j = 0; j <= i; j++) if (T[j] >= start - 1e-9) g.append(svgEl("line", { x1: TX(T[j]), x2: TX(T[j]), y1: TY - 20, y2: TY, stroke: j === i && i > 0 ? "var(--hl)" : "var(--blue)", "stroke-width": j === i && i > 0 ? 2.4 : 1.5 }));
+    const bracket = (a, b, label, hot) => {
+      const xa = TX(Math.max(a, start)), xb = TX(b);
+      g.append(svgEl("path", { d: `M${xa.toFixed(1)},${TY - 26}L${xa.toFixed(1)},${TY - 30}L${xb.toFixed(1)},${TY - 30}L${xb.toFixed(1)},${TY - 26}`, fill: "none", stroke: hot ? "var(--hl)" : "var(--ink-dim)", "stroke-width": 1.4 }));
+      if (label) svgText(g, clampN((xa + xb) / 2, TX0 + 40, TX1 - 40), TY - 36, label, { fill: hot ? "var(--hl)" : "var(--ink-2)", "font-weight": hot ? 600 : 400 });
+    };
+    if (i > 0 && pos <= G) bracket(T[i - 1], T[i], f > 0 ? "" : `gap ${i} = ${num(gaps[i - 1], 2)} s`, f === 0);
+    if (f > 0) bracket(T[i], tNow, "", true);
+    svgText(g, TX0, 16, pos <= G ? `request ${i} at t = ${num(T[i], 2)} s` : `${big(n)} gaps`, { "text-anchor": "start", "font-weight": 600, fill: "var(--ink)" });
+    // the histogram of gap lengths against the density
+    const w = beta * 0.4, nb = 15, bins = [], expected = [];
+    for (let j = 0; j <= nb; j++) bins.push(num(j * w, 2));
+    for (let j = 0; j < nb; j++) expected.push(Math.exp((-j * w) / beta) - Math.exp((-(j + 1) * w) / beta));
+    let observed = null;
+    if (n > 0) { observed = expected.map(() => 0); for (let j = 0; j < n; j++) { const b = Math.floor(gaps[j] / w); if (b < nb) observed[b] += 1 / n; } }
+    const under = gaps.slice(0, n).filter((x) => x <= ux).length;
+    histogram(g, 128, 262, bins.slice(0, nb), expected, observed, {
+      hit: pos <= G && i > 0 && f === 0 ? Math.floor(gaps[i - 1] / w) : null, mark: ux / w, markLabel: `${numE(ux)} s`, edges: true,
+      labelAt: (j) => j % 2 === 0, xlab: "gap length (s)",
+      curve: (X0, X1, Y) => { let d = ""; for (let s = 0; s <= 120; s++) { const x = (s / 120) * nb * w; d += (s ? "L" : "M") + (X0 + (x / (nb * w)) * (X1 - X0)).toFixed(1) + "," + Y((w / beta) * Math.exp(-x / beta)).toFixed(1); } return d; },
+      legend: [[`f(x) = (1/${numE(beta)})e^(−x/${numE(beta)}), per ${num(w, 2)} s bin`, "exp"], [n > 0 ? `share of ${plural(n, "gap")}` : "share of gaps (none yet)", "obs"]],
+    });
+    const F = 1 - Math.exp(-ux / beta), mean = n > 0 ? gaps.slice(0, n).reduce((a, b) => a + b, 0) / n : NaN;
+    let cap;
+    if (q && q.at === 0) cap = `Requests arrive at random, one every ${numE(beta)} s on average. What is the mean gap β between consecutive requests?`;
+    else if (q) cap = `${under} of the first ${G} gaps were ${numE(ux)} s or shorter. Over many gaps, what share should be ${numE(ux)} s or shorter?`;
+    else if (pos <= 0) cap = `Requests arrive at random, one every ${numE(beta)} s on average: λ = ${num(60 / beta, 2)} per minute for the count, and each gap between requests is exponential with β = ${numE(beta)} s.`;
+    else if (pos < G || (pos === G && f === 0 && n <= G)) cap = f > 0 ? `Waiting for request ${i + 1}…` : `Gap ${i}: ${num(gaps[i - 1], 2)} s (request ${i} at t = ${num(T[i], 2)} s). ${under} of ${plural(n, "gap")} so far are ${numE(ux)} s or shorter.`;
+    else {
+      cap = `${big(n)} gaps: the histogram is settling on the exponential density. Share ${numE(ux)} s or shorter: ${p4(under / n)}; 1 − e^(−${numE(ux)}/${numE(beta)}) = ${p4(F)}. Mean gap ${num(mean, 2)} s; β = ${numE(beta)} s.`;
+      if (n >= 1000) cap += gate.tally();
+    }
+    setText(caption, cap);
+    const rows = [`rate 1/β = ${num(1 / beta, 4)} per s = ${num(60 / beta, 2)} per minute; β = μ = σ = ${numE(beta)} s; P(gap ≤ ${numE(ux)}) = ${p4(F)}`];
+    if (n > 0) rows.push(`${plural(n, "gap")}: mean ${num(mean, 2)} s; ${under} at or under ${numE(ux)} s (${p4(under / n)})`);
+    const key = rows.join("|");
+    if (readout.dataset.key !== key) { readout.dataset.key = key; readout.innerHTML = ""; for (const r of rows) readout.append(mathLine(r)); }
+    gate.render(pos);
+  }
+  function restart() {
+    m = model();
+    readout.dataset.key = "";
+    noteP.textContent = GAPS
+      ? `Exponential gaps: when requests arrive at random at a constant average rate, the waiting time between consecutive requests is exponential with β = the mean gap. One per ${numE(st.every)} s is β = ${numE(st.every)} s and, counted per minute, a Poisson λ = ${num(60 / st.every, 2)}. P(gap ≤ x) = 1 − e^(−x/β); in R, pexp(x, rate = 1/${numE(st.every)}).`
+      : `Poisson: X counts events that occur randomly throughout an interval at a constant average rate. λ is the mean count for the interval in the question, so rescale the rate first: 1 per ${numE(st.every)} s is ${num(S / st.every, 2)} per ${S} s. μ = λ and σ = √λ; in R, dpois(x, ${num(S / st.every, 2)}).`;
+    gate.restart(0);
+    pb.reset(COUNT);
+  }
+  m = model();
+  pb = createPlayback({ count: COUNT, unit: "step", stepMs: () => cfg.stepMs || (pb && pb.pos() >= FIRST - 1e-9 ? 1800 : GAPS ? 750 : 260), onFrame: (pos) => (GAPS ? frameGaps(pos) : frameCount(pos)), limit: () => gate.limit(), onBlocked: () => gate.nudge() });
+  box.append(pb.el, readout, noteP);
+  predictToggle(pc, gate, () => pb);
+  restart();
+}
+function niceStepP(v) {
+  const e = 10 ** Math.floor(Math.log10(v));
+  for (const k of [1, 2, 5, 10]) if (k * e >= v) return k * e;
+  return 10 * e;
+}
+
+// ---------- widget: deal-play ----------
+const DEAL_PRESETS = {
+  "one deck (N = 52)": { N: 52, K: 4, n: 5 },
+  "superdeck (N = 520)": { N: 520, K: 40, n: 5 },
+};
+const OTHER_FACES = ["7♥", "Q♣", "3♦", "K♠", "9♣", "5♥", "A♦", "10♠", "2♣", "8♥"];
+const JACK_FACES = ["J♠", "J♥", "J♦", "J♣"];
+function dealPlay(box, cfg) {
+  const names = Object.keys(DEAL_PRESETS);
+  let preset = DEAL_PRESETS[cfg.preset] ? cfg.preset : names[0];
+  const DEAL0 = "JNNJN";
+  const st = { ...DEAL_PRESETS[preset], deal: /^[JN]{5}$/.test(cfg.deal || "") ? cfg.deal : DEAL0, seed: 1 };
+  let pb = null, M = null;
+  box.append(el("h4", null, cfg.title || "Dealing without replacement: P(jack next) changes card by card"));
+  const presetRow = btnRow(names, (i) => { preset = names[i]; Object.assign(st, DEAL_PRESETS[preset]); restart(); }, names.indexOf(preset));
+  const tools = el("div", "viz-btn-row");
+  const mk = (label, fn) => { const b = el("button", "viz-btn", label); b.type = "button"; b.addEventListener("click", fn); tools.append(b); };
+  mk("the deal with two jacks", () => { st.deal = DEAL0; restart(); });
+  mk("deal again at random", () => {
+    const r = rng(++st.seed * 104729);
+    let Nl = st.N, Kl = st.K, s = "";
+    for (let i = 0; i < st.n; i++) { const j = r() < Kl / Nl; s += j ? "J" : "N"; if (j) Kl--; Nl--; }
+    st.deal = s; restart();
+  });
+  const pc = predictCheck("Predict P(jack) for each next card before it is dealt", !!cfg.predict);
+  const W = 640, H = 250;
+  const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, class: "curve-svg net-svg", role: "img", "aria-label": "cards dealt one at a time with the probability that the next card is a jack, without and with replacement" });
+  const caption = el("p", "playback-caption");
+  caption.setAttribute("aria-live", "polite");
+  const ask = el("div", "viz-btn-row playback-ask");
+  const noteP = el("p", "widget-note");
+  box.append(presetRow, tools, pc.label, svg, caption, ask);
+
+  function model() {
+    const { N, K, n, deal } = st;
+    const left = [{ N, K }];
+    for (let i = 0; i < n; i++) { const prev = left[i]; left.push({ N: prev.N - 1, K: prev.K - (deal[i] === "J" ? 1 : 0) }); }
+    const pNext = left.slice(0, n).map((s) => s.K / s.N);
+    const x = [...deal].filter((c) => c === "J").length;
+    let jf = 0, of = 0;
+    const faces = [...deal].map((c) => (c === "J" ? JACK_FACES[jf++ % 4] : OTHER_FACES[of++ % OTHER_FACES.length]));
+    return { left, pNext, x, faces, hyp: dhyper(x, K, N, n), bin: dbinom(x, n, K / N) };
+  }
+  const fr = (k, nn) => `${k}/${nn}`;
+  function questions() {
+    const out = [];
+    for (let i = 1; i < st.n; i++) {
+      const { N: Nl, K: Kl } = M.left[i];
+      const cands = [
+        [Kl, Nl, true, ""],
+        [st.K, st.N, false, `That is the with-replacement value. The dealt cards are not put back: ${Nl} cards and ${plural(Kl, "jack")} remain.`],
+        [Kl, st.N, false, `The jacks left are right, but the deck shrank too: ${Nl} cards remain.`],
+        [st.K, Nl, false, `The deck shrank to ${Nl}, but ${plural(st.K - Kl, "jack")} left with the dealt cards: ${Kl} remain.`],
+      ];
+      const opts = [];
+      for (const [k, nn, ok, why] of cands) { const label = `${fr(k, nn)} = ${p4(k / nn)}`; if (!opts.some((o) => o.label === label)) opts.push({ label, ok, why, v: k / nn }); }
+      opts.sort((a, b) => a.v - b.v);
+      out.push({ at: i, options: opts });
+    }
+    return out;
+  }
+  const gate = predictGates(ask, 5, questions, () => pb);
+
+  function frame(pos) {
+    pos = Math.max(0, pos); // a rAF timestamp older than the play press can step pos just below 0
+    const { N, K, n, deal } = st, q = gate.asking(pos);
+    const done = Math.min(n, Math.floor(pos + 1e-9)), f = pos < n ? pos - done : 0, e = ease(f);
+    svg.innerHTML = "";
+    const g = svgEl("g"); svg.append(g);
+    // the deck, with what is left in it
+    const shownLeft = M.left[done];
+    g.append(svgEl("rect", { x: 22, y: 18, width: 74, height: 96, rx: 7, fill: "var(--paper-2)", stroke: "var(--ink-dim)", "stroke-width": 1.4 }));
+    g.append(svgEl("rect", { x: 18, y: 14, width: 74, height: 96, rx: 7, fill: "var(--paper-2)", stroke: "var(--ink-dim)", "stroke-width": 1.4 }));
+    svgText(g, 55, 52, `${shownLeft.N} cards`, { "font-weight": 600, fill: "var(--ink)" });
+    svgText(g, 55, 70, `${plural(shownLeft.K, "jack")}`, { fill: "var(--hl)", "font-weight": 600 });
+    svgText(g, 55, 128, "deck", { fill: "var(--ink-dim)" });
+    // the dealt cards: the one in progress slides out of the deck
+    const CX = (i) => 140 + i * 96;
+    for (let i = 0; i < n; i++) {
+      const placed = i < done, moving = i === done && f > 0;
+      const x = moving ? 18 + (CX(i) - 18) * e : CX(i);
+      if (!placed && !moving) { g.append(svgEl("rect", { x: CX(i), y: 14, width: 74, height: 96, rx: 7, fill: "none", stroke: "var(--rule)", "stroke-dasharray": "4 4" })); svgText(g, CX(i) + 37, 128, `card ${i + 1}`, { fill: "var(--ink-dim)" }); continue; }
+      const jack = deal[i] === "J", face = moving && e < 0.5 ? "" : M.faces[i];
+      g.append(svgEl("rect", { x, y: 14, width: 74, height: 96, rx: 7, fill: jack && face ? "var(--hl-soft)" : "var(--paper-2)", stroke: jack && face ? "var(--hl)" : "var(--ink-dim)", "stroke-width": jack ? 2 : 1.4 }));
+      if (face) svgText(g, x + 37, 70, face, { "font-size": 22, "font-weight": 600, fill: /[♥♦]/.test(face) ? "var(--red)" : "var(--ink)" });
+      svgText(g, CX(i) + 37, 128, `card ${i + 1}`, { fill: i === done - 1 ? "var(--ink)" : "var(--ink-dim)", "font-weight": i === done - 1 ? 600 : 400 });
+    }
+    // P(jack on draw i): without replacement (dots) against with replacement (the flat line)
+    const PX0 = 140, PX1 = 140 + (n - 1) * 96 + 74, PY0 = 152, PY1 = 226;
+    const pmax = niceCeil(Math.max(...M.pNext, K / N) * 1.2);
+    const PX = (i) => CX(i) + 37, PY = (v) => PY1 - (v / pmax) * (PY1 - PY0);
+    g.append(svgEl("line", { x1: PX0, x2: PX1, y1: PY1, y2: PY1, stroke: "var(--rule-strong)" }));
+    g.append(svgEl("line", { x1: PX0, x2: PX1, y1: PY(K / N), y2: PY(K / N), stroke: "var(--green)", "stroke-width": 1.6, "stroke-dasharray": "6 4" }));
+    svgText(g, 18, PY(K / N) + 4, `with: ${fr(K, N)}`, { "text-anchor": "start", fill: "var(--green)", "font-size": 10.5 });
+    svgText(g, 18, PY0 - 4, "P(jack on this card)", { "text-anchor": "start", fill: "var(--ink-dim)", "font-size": 10.5 });
+    const upto = Math.min(n - 1, done);
+    for (let i = 0; i <= upto; i++) {
+      const v = M.pNext[i], hot = i === done;
+      if (i > 0) g.append(svgEl("line", { x1: PX(i - 1), x2: PX(i), y1: PY(M.pNext[i - 1]), y2: PY(v), stroke: "var(--blue)", "stroke-width": 1.4 }));
+      if (hot && q) continue;
+      g.append(svgEl("circle", { cx: PX(i), cy: PY(v), r: hot ? 5 : 3.6, fill: hot ? "var(--hl)" : "var(--blue)" }));
+      svgText(g, PX(i), v < K / N - 1e-12 ? PY(v) + 16 : PY(v) - 9, fr(M.left[i].K, M.left[i].N), { fill: hot ? "var(--hl)" : "var(--ink-2)", "font-size": 10.5, "font-weight": hot ? 600 : 400 });
+    }
+    // caption
+    const p0 = `${fr(K, N)} = ${p4(K / N)}`;
+    let cap;
+    if (q) cap = `Card ${q.at} was ${deal[q.at - 1] === "J" ? "a jack" : "not a jack"}. What is the probability that card ${q.at + 1} is a jack?`;
+    else if (pos <= 0) cap = `A deck of ${N} cards with ${K} jacks; ${n} cards are dealt without replacement. Card 1 is a jack with ${p0}, the same as with replacement.`;
+    else if (done < n) {
+      if (f > 0) cap = `Dealing card ${done + 1}…`;
+      else { const { N: Nl, K: Kl } = M.left[done], p = Kl / Nl; cap = `Card ${done} was ${deal[done - 1] === "J" ? "a jack" : "not a jack"}: ${plural(Kl, "jack")} remain in ${Nl}, so the next card is a jack with ${fr(Kl, Nl)} = ${p4(p)}, not ${p0}.`; }
+    } else {
+      cap = `${n} cards dealt, X = ${M.x} ${M.x === 1 ? "jack" : "jacks"}. Without replacement P(jack) moved ${M.pNext.map((v, i) => fr(M.left[i].K, M.left[i].N)).join(", ")} as the deck shrank; with replacement it stays ${fr(K, N)}. Over all deals P(X = ${M.x}) = C(${K}, ${M.x}) C(${N - K}, ${n - M.x}) / C(${N}, ${n}) = ${p4(M.hyp)}; the binomial gives ${p4(M.bin)}.${gate.tally()}`;
+    }
+    setText(caption, cap);
+    gate.render(pos);
+  }
+  function restart() {
+    M = model();
+    setActive2(presetRow, names.indexOf(preset));
+    const r = st.n / st.N;
+    noteP.textContent = `Hypergeometric: the probability of success changes for subsequent trials, because each dealt card leaves the deck. Binomial: each card is put back, so p = K/N = ${fr(st.K, st.N)} on every draw. Here n/N = ${st.n}/${st.N} = ${num(100 * r, 2)} %, ${r <= 0.05 ? "at most 5 %, so p barely moves and the binomial is a close stand-in" : "more than 5 %, so p moves enough that the binomial is not a good stand-in"}.`;
+    gate.restart(0);
+    pb.reset(st.n);
+  }
+  M = model();
+  pb = createPlayback({ count: st.n, unit: "card", stepMs: () => cfg.stepMs || 1500, onFrame: frame, limit: () => gate.limit(), onBlocked: () => gate.nudge() });
+  box.append(pb.el, noteP);
+  predictToggle(pc, gate, () => pb);
+  restart();
+}
+function setActive2(row, i) { [...row.children].forEach((b, k) => b.classList.toggle("active", k === i)); }
+
 export const WIDGETS = {
   "pmf-table": pmfTable,
   "binomial-calc": binomialCalc,
@@ -702,4 +1123,6 @@ export const WIDGETS = {
   "geometric-calc": geometricCalc,
   "poisson-calc": poissonCalc,
   "dist-picker": distPicker,
+  "arrivals-play": arrivalsPlay,
+  "deal-play": dealPlay,
 };

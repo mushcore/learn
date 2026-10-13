@@ -91,7 +91,7 @@ The STL does exactly this (the slide marks it pseudocode):
 | Map | BiDirectionalIterator | `typedef BiDirectionalIterator iterator` | `map<string, int>::iterator myIter;` gets a BiDirectionalIterator |
 | Set | BiDirectionalIterator | `typedef BiDirectionalIterator iterator` | `set<int>::iterator` gets a BiDirectionalIterator |
 
-"Can I get an iterator?" works on every container; what comes back differs (lesson 07). Switch the grid from `vector` to `map` and `it + 3` stops compiling, because a BiDirectionalIterator has no `+`:
+"Can I get an iterator?" works on every container; what comes back differs (lesson 07). With `map` in the grid, `it + 3` stops compiling, because a BiDirectionalIterator has no `+`:
 
 ```widget
 iterator-ops

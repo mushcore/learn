@@ -3,6 +3,7 @@
 // data rate limits, the bandwidth-delay product, parallel and serial transmission.
 import { el, slider, btnRow, fmtNum } from "./dom.js";
 import { createPlayback } from "./playback.js";
+import { createPredict } from "./widgets-net.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 function svgEl(tag, attrs = {}, text) {
@@ -12,6 +13,12 @@ function svgEl(tag, attrs = {}, text) {
   return e;
 }
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+/** The playback bar wired to a predictor (see createPredict in widgets-net.js). */
+function playbackWith(P, opts) {
+  const pb = createPlayback({ ...opts, limit: () => P.limit(), onBlocked: () => P.blocked() });
+  P.bind(pb);
+  return pb;
+}
 function cell(label, value, note) {
   const c = el("div", "stat-cell");
   c.append(el("div", "stat-label", label), el("div", "stat-value", value));
@@ -537,63 +544,62 @@ function dataRate(box, cfg) {
 
 // ---------- widget: bandwidth-delay ----------
 // The slide's "After 1 s ... After n s" rows, filled in by the playback bar: one step is one second.
+// With `burst` (the default) the rows go on to 2 × delay: the first bits' acknowledgement crosses the
+// return direction while the sender keeps sending, so it sends 2 × bandwidth × delay bits before it hears back.
 function bandwidthDelay(box, cfg) {
   let bw = clamp(Math.round(cfg.bandwidth ?? 5), 1, 8), delay = clamp(Math.round(cfg.delay ?? 5), 1, 8);
-  // Predict mode: `answered` seconds may be shown; the next one waits for the student's count.
-  let predict = !!cfg.predict, answered = 0, asked = 0, firstTry = 0, missed = false, wrong = null, askKey = null, refocus = false, gridKey = null;
-  let pb = null;
+  const burst = cfg.burst !== false;
+  const steps = () => (burst ? 2 * delay : delay);
+  let pb = null, gridKey = null;
+  const nBits = (n) => `${n} bit${n === 1 ? "" : "s"}`;
   box.append(el("h4", null, cfg.title || "Bandwidth-delay product: the bits that fill the link"));
+  const presets = cfg.presets && typeof cfg.presets === "object" ? cfg.presets : null;
+  if (presets && Object.keys(presets).length) {
+    const labels = Object.keys(presets);
+    box.append(btnRow(labels, (i) => {
+      const [b, d] = presets[labels[i]] || [];
+      bw = clamp(Math.round(b ?? bw), 1, 8); delay = clamp(Math.round(d ?? delay), 1, 8); sB.set(bw); sD.set(delay); restart();
+    }, labels.findIndex((l) => { const [b, d] = presets[l] || []; return b === bw && d === delay; })));
+  }
   const sB = slider("Bandwidth", 1, 8, 1, bw, (v) => { bw = v; restart(); }, (v) => `${v} bps`);
   const sD = slider("Delay", 1, 8, 1, delay, (v) => { delay = v; restart(); }, (v) => `${v} s`);
-  const predictLabel = el("label", "playback-check");
-  const predictBox = document.createElement("input");
-  predictBox.type = "checkbox"; predictBox.checked = predict;
-  predictLabel.append(predictBox, " Predict the bits on the link before each second is shown");
+  /** Four counts to choose from, the right one (bw × t) among them. */
+  function choices(t) {
+    const right = bw * t, set = [right];
+    for (const c of [bw * (t - 1), bw * (t + 1), bw * delay, bw + t, t, right + 1, right + 2, right + 3]) if (c > 0 && !set.includes(c) && set.length < 4) set.push(c);
+    return set.sort((a, b) => a - b);
+  }
+  const P = createPredict({
+    on: cfg.predict, label: "Predict the bits before each second is shown", count: steps, redraw: () => frame(pb.pos()),
+    question: (k) => {
+      const t = k + 1, now = bw * k;
+      if (t <= delay) return {
+        text: `${k === 0 ? "The link is empty" : `After ${k} s there ${now === 1 ? "is 1 bit" : `are ${now} bits`} on the link`}. The bandwidth is ${bw} bps. How many bits will be on the link after ${t} s?`,
+        choices: choices(t).map((v) => [nBits(v), v]), right: bw * t,
+        why: () => `${now === 0 ? "The link is empty now" : `${nBits(now)} ${now === 1 ? "is" : "are"} on the link now and none has reached the receiver yet`}. Each second ${bw === 1 ? "1 more bit enters" : `${bw} more bits enter`} the link (bandwidth ${bw} bps).`,
+      };
+      return {
+        text: `After ${k} s the sender has sent ${nBits(now)} and is still waiting for the acknowledgement. How many bits will it have sent after ${t} s?`,
+        choices: choices(t).map((v) => [nBits(v), v]), right: bw * t,
+        why: () => `The sender does not stop while it waits: ${bw} bits per second for ${t} s. The link itself holds only ${nBits(bw * delay)}; the rest have reached the receiver.`,
+      };
+    },
+  });
   const svg = svgEl("svg", { viewBox: "0 0 640 260", class: "curve-svg net-svg" });
   const caption = el("p", "playback-caption");
   caption.setAttribute("aria-live", "polite");
-  const ask = el("div", "viz-btn-row playback-ask");
   const out = el("div", "stat-grid");
   const note = el("p", "widget-note");
-  box.append(sB.row, sD.row, predictLabel, svg, caption, ask);
+  box.append(sB.row, sD.row, P.check, svg, caption, P.ask);
 
-  const nBits = (n) => `${n} bit${n === 1 ? "" : "s"}`;
-  const asking = (pos) => predict && answered < delay && Math.abs(pos - answered) < 1e-6;
-  /** Four counts to choose from for "bits on the link after t s", the right one (bw × t) among them. */
-  function choices(t) {
-    const right = bw * t, set = [right];
-    for (const c of [bw * (t - 1), bw * (t + 1), bw + t, t, right + 1, right + 2, right + 3]) if (c > 0 && !set.includes(c) && set.length < 4) set.push(c);
-    return set.sort((a, b) => a - b);
-  }
-  function answer(v, e) {
-    asked += wrong == null && !missed ? 1 : 0;
-    if (v !== bw * (answered + 1)) { missed = true; wrong = v; refocus = e.detail === 0; frame(pb.pos()); return; }
-    if (!missed) firstTry++;
-    missed = false; wrong = null; refocus = e.detail === 0; answered++;
-    pb.next();
-  }
-  function renderAsk(pos) {
-    const key = asking(pos) ? `${bw}|${delay}|${answered}|${wrong}` : "";
-    if (key === askKey) return;
-    askKey = key; ask.innerHTML = ""; ask.hidden = !predict;
-    if (!key) return;
-    const btns = choices(answered + 1).map((v) => {
-      const b = el("button", "viz-btn" + (v === wrong ? " playback-wrong" : ""), nBits(v));
-      b.type = "button";
-      b.addEventListener("click", (e) => answer(v, e));
-      ask.append(b);
-      return b;
-    });
-    if (wrong != null) {
-      const now = bw * answered;
-      ask.append(el("span", "playback-feedback", `Not ${nBits(wrong)}. ${now === 0 ? "The link is empty now" : `${nBits(now)} ${now === 1 ? "is" : "are"} on the link now and none has reached the receiver yet`}. Each second ${bw === 1 ? "1 more bit enters" : `${bw} more bits enter`} the link (bandwidth ${bw} bps).`));
-    }
-    if (refocus) { refocus = false; (btns.find((b) => !b.classList.contains("playback-wrong")) || btns[0]).focus(); }
-  }
   /** What second t does to the link, in the lesson's words. */
   function stepText(t) {
     const first = bw === 1 ? "first bit" : `first ${bw} bits`;
     const full = `the link is full: it holds bandwidth × delay = ${bw} × ${delay} = ${nBits(bw * delay)}`;
+    if (t > delay) {
+      if (t < 2 * delay) return `Second ${t}: the receiver's acknowledgement of the ${first} is ${t - delay} s along the return direction. The sender keeps sending: ${bw} × ${t} = ${nBits(bw * t)} sent so far, ${bw * delay} of them still on the link.`;
+      return `After ${t} s the acknowledgement reaches the sender. While it waited, the sender sent 2 × bandwidth × delay = 2 × ${bw} × ${delay} = ${nBits(2 * bw * delay)}: the burst size that fills the full-duplex channel, both directions.`;
+    }
     if (t === 1) {
       const put = `Second 1: the sender puts ${nBits(bw)} on the link (bandwidth ${bw} bps).`;
       return delay === 1 ? `${put} After 1 s the ${first} reach${bw === 1 ? "es" : ""} the receiver and ${full}.` : `${put} After 1 s the ${first} ${bw === 1 ? "is" : "are"} on the link.`;
@@ -602,80 +608,82 @@ function bandwidthDelay(box, cfg) {
     return t === delay ? `${move} After ${t} s the ${first} reach${bw === 1 ? "es" : ""} the receiver and ${full}.` : `${move} After ${t} s the link holds ${bw} × ${t} = ${nBits(bw * t)}.`;
   }
   function frame(pos) {
-    const X0 = 96, X1 = 610, TOP = 44, ROW = 36, H = 20;
-    const segW = (X1 - X0) / delay, bitW = segW / bw;
-    const q = asking(pos), t = Math.ceil(pos - 1e-9), hot = q ? answered + 1 : t;
+    const n = steps(), X0 = 96, X1 = 610, TOP = 44, H = 20;
+    const rowH = (r) => (r > delay ? 50 : 36), rowY = (r) => { let y = TOP; for (let i = 1; i < r; i++) y += rowH(i); return y; };
+    const segW = (X1 - X0) / delay, bitW = segW / bw, linkW = X1 - X0;
+    const q = P.asking(pos), t = Math.ceil(pos - 1e-9), hot = q ? Math.round(pos) + 1 : t;
+    const bottom = rowY(n + 1);
     svg.innerHTML = "";
-    svg.setAttribute("viewBox", `0 0 640 ${TOP + delay * ROW + 34}`);
-    if (hot >= 1) svg.append(svgEl("rect", { x: 2, y: TOP + (hot - 1) * ROW - 14, width: 636, height: ROW, rx: 3, fill: "var(--hl-soft)" }));
+    svg.setAttribute("viewBox", `0 0 640 ${bottom + 34}`);
+    if (hot >= 1 && hot <= n) svg.append(svgEl("rect", { x: 2, y: rowY(hot) - 14, width: 636, height: rowH(hot), rx: 3, fill: "var(--hl-soft)" }));
     svg.append(svgEl("text", { x: X0, y: 14, "text-anchor": "middle", "font-size": 11, fill: "var(--ink-2)" }, "Sender"));
     svg.append(svgEl("text", { x: X1, y: 14, "text-anchor": "middle", "font-size": 11, fill: "var(--ink-2)" }, "Receiver"));
-    svg.append(svgEl("line", { x1: X0, y1: 20, x2: X0, y2: TOP + delay * ROW, stroke: "var(--rule-strong)" }));
-    svg.append(svgEl("line", { x1: X1, y1: 20, x2: X1, y2: TOP + delay * ROW, stroke: "var(--rule-strong)" }));
-    for (let r = 1; r <= delay; r++) {
-      const y = TOP + (r - 1) * ROW;
+    svg.append(svgEl("line", { x1: X0, y1: 20, x2: X0, y2: bottom, stroke: "var(--rule-strong)" }));
+    svg.append(svgEl("line", { x1: X1, y1: 20, x2: X1, y2: bottom, stroke: "var(--rule-strong)" }));
+    if (burst) svg.append(svgEl("line", { x1: 4, y1: rowY(delay + 1) - 16, x2: 636, y2: rowY(delay + 1) - 16, stroke: "var(--rule)", "stroke-dasharray": "4 4" }));
+    for (let r = 1; r <= n; r++) {
+      const y = rowY(r);
       // Row r is the link during second r; once that second is over it stays as the slide's "After r s" row.
       const shown = pos > r - 1 + 1e-9;
       svg.append(svgEl("text", { x: X0 - 10, y: y + 14, "text-anchor": "end", "font-size": 11, fill: r === hot ? "var(--ink)" : "var(--ink-dim)", opacity: shown || r === hot ? 1 : 0.55 }, `After ${r} s`));
       if (!shown) continue;
       const head = Math.min(pos, r) * segW; // how far the first bit sent has travelled
       for (let k = 0; head - k * bitW > 1e-6; k++) {
-        const right = head - k * bitW, left = Math.max(0, right - bitW), g = Math.floor(k / bw);
+        const right = Math.min(linkW, head - k * bitW), left = Math.max(0, head - (k + 1) * bitW), g = Math.floor(k / bw);
+        if (left >= linkW - 1e-6) continue; // already delivered
         // The first bits sent are always at the head of the line; later seconds alternate two greys.
         svg.append(svgEl("rect", { x: X0 + left, y, width: right - left, height: H, fill: g === 0 ? "var(--blue)" : g % 2 ? "var(--rule-strong)" : "var(--ink-dim)", stroke: "var(--paper)", "stroke-width": 1, opacity: g === 0 ? 0.9 : 0.75 }));
       }
-      svg.append(svgEl("text", { x: Math.max(X0 + head - segW / 2, X0 + 30), y: y - 4, "text-anchor": "middle", "font-size": 9, fill: "var(--blue)" }, `first ${bw} bit${bw === 1 ? "" : "s"}`));
+      if (r <= delay) svg.append(svgEl("text", { x: Math.max(X0 + head - segW / 2, X0 + 30), y: y - 4, "text-anchor": "middle", "font-size": 9, fill: "var(--blue)" }, `first ${bw} bit${bw === 1 ? "" : "s"}`));
+      else {
+        // the return direction: the acknowledgement of the first bits travels back to the sender
+        const yr = y + H + 12, back = Math.min(pos, r) - delay, xa = X1 - back * segW;
+        svg.append(svgEl("line", { x1: X0, y1: yr, x2: X1, y2: yr, stroke: "var(--rule-strong)", "stroke-dasharray": "2 3" }));
+        svg.append(svgEl("line", { x1: xa, y1: yr, x2: X1, y2: yr, stroke: "var(--green)", "stroke-width": 3 }));
+        svg.append(svgEl("polygon", { points: `${xa},${yr} ${xa + 8},${yr - 5} ${xa + 8},${yr + 5}`, fill: "var(--green)" }));
+        svg.append(svgEl("text", { x: Math.min(xa + 30, X1 - 20), y: yr - 4, "text-anchor": "middle", "font-size": 9, fill: "var(--green)" }, "ACK"));
+        const got = bw * Math.floor(Math.min(pos, r) - delay + 1e-9);
+        if (got > 0) svg.append(svgEl("text", { x: X1 - 4, y: y - 4, "text-anchor": "end", "font-size": 9, fill: "var(--ink-dim)" }, `${nBits(got)} at the receiver`));
+      }
     }
-    const yb = TOP + delay * ROW + 6;
+    const yb = bottom + 6;
     for (let s = 0; s <= delay; s++) svg.append(svgEl("line", { x1: X0 + s * segW, y1: yb - 4, x2: X0 + s * segW, y2: yb + 6, stroke: "var(--ink-dim)" }));
     svg.append(svgEl("line", { x1: X0, y1: yb + 1, x2: X1, y2: yb + 1, stroke: "var(--ink-dim)" }));
     for (let s = 0; s < delay; s++) svg.append(svgEl("text", { x: X0 + (s + 0.5) * segW, y: yb + 20, "text-anchor": "middle", "font-size": 10, fill: "var(--ink-dim)" }, "1 s"));
 
     let text;
-    if (q) {
-      const now = bw * answered;
-      text = `${answered === 0 ? "The link is empty" : `After ${answered} s there ${now === 1 ? "is 1 bit" : `are ${now} bits`} on the link`}. The bandwidth is ${bw} bps. How many bits will be on the link after ${answered + 1} s?`;
-    } else if (t <= 0) text = `Press Play to fill the link one second at a time. The sender puts ${nBits(bw)} on the link each second (bandwidth ${bw} bps) and a bit takes ${delay} s to reach the receiver.`;
+    if (q) text = P.question().text;
+    else if (t <= 0) text = `One step is one second. The sender puts ${nBits(bw)} on the link each second (bandwidth ${bw} bps) and a bit takes ${delay} s to reach the receiver.`;
     else {
       text = stepText(t);
-      if (pos >= delay && asked > 0) text += ` ${firstTry} of ${asked} right on the first try.`;
+      if (pos >= n) text += P.tally();
     }
     if (caption.textContent !== text) caption.textContent = text;
-    renderAsk(pos);
+    P.render(pos, `${bw}|${delay}`);
 
-    const onLink = Math.min(bw * delay, Math.floor(pos * bw + 1e-6));
-    const key = `${bw}|${delay}|${onLink}`;
+    const done = q ? Math.round(pos) : pos;
+    const sent = Math.floor(done * bw + 1e-6), onLink = Math.min(bw * delay, sent);
+    const key = `${bw}|${delay}|${sent}`;
     if (key !== gridKey) {
       gridKey = key;
       grid(out, [
         ["On the link now", nBits(onLink), onLink === bw * delay ? "the link is full" : `it fills at ${bw} bps, the link holds ${bw * delay}`],
-        ["Bandwidth", `${bw} bps`, "bits per second, the second meaning of bandwidth"],
-        ["Delay", `${delay} s`, "time for a bit to cross the link"],
+        ["Sent so far", nBits(sent), sent > bw * delay ? `${sent - bw * delay} already at the receiver` : "none at the receiver yet"],
         ["Bandwidth × delay", nBits(bw * delay), `${bw} × ${delay}: the number of bits that can fill the link`],
         ["2 × bandwidth × delay", nBits(2 * bw * delay), "burst size that fills the full-duplex channel, both directions"],
       ]);
     }
   }
   function restart() {
-    answered = 0; asked = 0; firstTry = 0; missed = false; wrong = null; askKey = null; gridKey = null;
-    note.textContent = bw === 5 && delay === 5
+    P.reset(); gridKey = null;
+    note.textContent = (bw === 5 && delay === 5
       ? "The slide figure: bandwidth 5 bps, delay 5 s, bandwidth × delay = 25 bits. Each second 5 more bits enter the link; after 5 s the first 5 bits reach the receiver and the link is full."
-      : `Each second ${bw === 1 ? "1 more bit enters" : `${bw} more bits enter`} the link and every bit already on it moves one second closer to the receiver. After ${delay} s the first bits arrive and the link holds ${nBits(bw * delay)}.`;
-    pb.reset(delay);
+      : `Each second ${bw === 1 ? "1 more bit enters" : `${bw} more bits enter`} the link and every bit already on it moves one second closer to the receiver. After ${delay} s the first bits arrive and the link holds ${nBits(bw * delay)}.`)
+      + (burst ? ` Below the dashed line the acknowledgement of the first bits comes back; the sender hears it after ${2 * delay} s, having sent ${nBits(2 * bw * delay)}.` : "");
+    pb.reset(steps());
   }
-  pb = createPlayback({
-    count: delay, unit: "second", onFrame: frame,
-    stepMs: () => cfg.stepMs || 1300,
-    limit: () => (predict ? answered : delay),
-    onBlocked: () => { ask.classList.remove("playback-nudge"); void ask.offsetWidth; ask.classList.add("playback-nudge"); },
-  });
+  pb = playbackWith(P, { count: steps(), unit: "second", stepMs: () => cfg.stepMs || 1300, onFrame: frame });
   box.append(pb.el, out, note);
-  predictBox.addEventListener("change", () => {
-    predict = predictBox.checked; pb.pause();
-    // Seconds already on screen count as answered; the questions start at the next one.
-    answered = Math.ceil(pb.pos() - 1e-9); asked = 0; firstTry = 0; missed = false; wrong = null; askKey = null;
-    pb.set(pb.pos());
-  });
   restart();
 }
 
@@ -686,13 +694,29 @@ function txModes(box, cfg) {
   const FULL = bits;
   let pb = null, gridKey = null;
   box.append(el("h4", null, cfg.title || "Parallel and serial transmission of the same bits"));
-  const sN = slider("Bits in the group, n", 2, FULL.length, 1, bits.length, (v) => { bits = FULL.slice(0, v); gridKey = null; pb.reset(bits.length); }, (v) => String(v));
+  const P = createPredict({
+    on: cfg.predict, label: "Predict the serial line before each tick", count: () => bits.length, redraw: () => frame(pb.pos()),
+    question: (k) => {
+      const n = bits.length, opts = (vals) => [...new Set(vals.filter((v) => v >= 0 && v <= 2 * n))].sort((a, b) => a - b);
+      if (k === 0) return {
+        text: `How many clock ticks until the serial receiver has all ${n} bits?`,
+        choices: opts([1, n % 2 ? n + 1 : n / 2, n, 2 * n]).map((v) => [`${v} tick${v === 1 ? "" : "s"}`, v]), right: n,
+        why: () => "One clock tick moves one bit along one line. Serial has one line, so it needs one tick per bit; parallel has n lines and needs 1.",
+      };
+      return {
+        text: `After tick ${k + 1}, how many of the ${n} bits has the serial receiver got?`,
+        choices: opts([k, k + 1, k + 2, n]).filter((v) => v <= n).map((v) => [`${v} of ${n}`, v]), right: k + 1,
+        why: () => `One bit per tick on the one serial line: ${k} bit${k === 1 ? "" : "s"} had arrived after tick ${k}.`,
+      };
+    },
+  });
+  const sN = slider("Bits in the group, n", 2, FULL.length, 1, bits.length, (v) => { bits = FULL.slice(0, v); gridKey = null; P.reset(); pb.reset(bits.length); }, (v) => String(v));
   const svg = svgEl("svg", { viewBox: "0 0 640 400", class: "curve-svg net-svg" });
   const caption = el("p", "playback-caption");
   caption.setAttribute("aria-live", "polite");
   const out = el("div", "stat-grid");
   const note = el("p", "widget-note", "One clock tick moves one bit along one line. Parallel uses n lines to move n bits on each tick; serial has one line, so the group is converted to a stream at the sender and back to a group at the receiver.");
-  box.append(sN.row, svg, caption);
+  box.append(sN.row, P.check, svg, caption, P.ask);
   const box3 = (x, y, w, h, label, stroke = "var(--blue)") => {
     svg.append(svgEl("rect", { x, y, width: w, height: h, rx: 4, fill: "var(--paper-3)", stroke, "stroke-width": 1.5 }));
     const words = label.split("\n");
@@ -748,8 +772,11 @@ function txModes(box, cfg) {
     }
     svg.append(svgEl("text", { x: 320, y: S0 + 80, "text-anchor": "middle", "font-size": 10, fill: "var(--ink-dim)" }, "bits on the left are still to be sent; highlighted bits have arrived"));
 
-    const text = cur <= 0 ? `Press Play to send the ${n} bits both ways. One clock tick moves one bit along one line.` : tickText(cur, n);
+    const q = P.asking(pos);
+    let text = q ? P.question().text : cur <= 0 ? `One step is one clock tick, which moves one bit along one line. The ${n} bits go both ways at once.` : tickText(cur, n);
+    if (!q && pos >= n) text += P.tally();
     if (caption.textContent !== text) caption.textContent = text;
+    P.render(pos, bits);
     const key = `${n}|${tick}`;
     if (key !== gridKey) {
       gridKey = key;
@@ -761,8 +788,90 @@ function txModes(box, cfg) {
       ]);
     }
   }
-  pb = createPlayback({ count: bits.length, unit: "tick", onFrame: frame, stepMs: () => cfg.stepMs || 1100 });
+  pb = playbackWith(P, { count: bits.length, unit: "tick", onFrame: frame, stepMs: () => cfg.stepMs || 1100 });
   box.append(pb.el, out, note);
+}
+
+// ---------- widget: distortion-play ----------
+// A composite of f, 3f and 5f travels through a medium in which each component has its own speed:
+// per unit of distance 3f falls 45° and 5f 90° behind f, so the received sum changes shape.
+const DP_COMPS = [{ m: 1, a: 1, lag: 0, name: "f", color: "var(--blue)" }, { m: 3, a: 1 / 3, lag: 45, name: "3f", color: "var(--green)" }, { m: 5, a: 1 / 5, lag: 90, name: "5f", color: "var(--purple)" }];
+function distortionPlay(box, cfg) {
+  const units = clamp(Math.round(cfg.units ?? 4), 2, 8);
+  let pb = null;
+  const deg = (v) => `${Math.round(v)}°`;
+  box.append(el("h4", null, cfg.title || "Distortion: the components drift out of phase on the way"));
+  const P = createPredict({
+    on: cfg.predict, label: "Predict the phase lag before each unit of distance", count: () => units, redraw: () => frame(pb.pos()),
+    question: (k) => {
+      const t = k + 1, vals = [...new Set([45 * t, 45 * k, 90 * t, 45 * (t + 1)])].filter((v) => v >= 0).sort((a, b) => a - b);
+      return {
+        text: k === 0 ? "The three components leave the sender in phase, and in this medium 3f falls 45° behind f in each unit of distance. After 1 unit, how far behind f is 3f?"
+          : `After ${k} unit${k === 1 ? "" : "s"}, 3f is ${45 * k}° behind f. How far behind will it be after ${t} units?`,
+        choices: vals.map((v) => [deg(v), v]), right: 45 * t,
+        why: () => "Each unit of distance adds the same delay: 3f falls another 45° behind f (and 5f another 90°), so the lag grows with the distance travelled.",
+      };
+    },
+  });
+  box.append(P.check);
+  const svg = svgEl("svg", { viewBox: "0 0 640 340", class: "curve-svg net-svg" });
+  const caption = el("p", "playback-caption");
+  caption.setAttribute("aria-live", "polite");
+  const out = el("div", "stat-grid");
+  box.append(svg, caption, P.ask);
+  const X0 = 60, X1 = 620, AMP = 38, S = 320;
+  const txt = (x, y, s, fill = "var(--ink-dim)", anchor = "middle", size = 10.5) => svg.append(svgEl("text", { x, y, "text-anchor": anchor, "font-size": size, fill, style: "font-family: var(--body)" }, s));
+  function plot(yc, lagScale, title, ghost) {
+    txt(X0, yc - AMP - 14, title, "var(--ink)", "start", 11.5);
+    svg.append(svgEl("line", { x1: X0, y1: yc, x2: X1, y2: yc, stroke: "var(--rule-strong)" }));
+    const sum = [], each = DP_COMPS.map(() => []);
+    for (let i = 0; i <= S; i++) {
+      const u = (2 * i) / S; // two periods of f
+      let v = 0;
+      DP_COMPS.forEach((c, j) => { const y = c.a * Math.sin(2 * Math.PI * c.m * u - (c.lag * lagScale * Math.PI) / 180); each[j].push(y); v += y; });
+      sum.push(v);
+    }
+    const px = (i) => X0 + ((X1 - X0) * i) / S, K = AMP / 1.1;
+    if (ghost) svg.append(svgEl("polyline", { points: ghost.map((v, i) => `${px(i).toFixed(1)},${(yc - v * K).toFixed(1)}`).join(" "), fill: "none", stroke: "var(--ink-dim)", "stroke-width": 1.2, "stroke-dasharray": "4 4" }));
+    DP_COMPS.forEach((c, j) => svg.append(polyline(each[j].map((v, i) => [px(i), yc - v * K]), c.color, 1, 0.6)));
+    svg.append(polyline(sum.map((v, i) => [px(i), yc - v * K]), "var(--ink)", 2.4));
+    return sum;
+  }
+  function frame(pos) {
+    const q = P.asking(pos), k = Math.ceil(pos - 1e-9), d = q ? Math.round(pos) : pos;
+    svg.innerHTML = "";
+    // the medium: the composite's position between sender and receiver
+    const MX0 = 120, MX1 = 560, mx = (v) => MX0 + ((MX1 - MX0) * v) / units;
+    txt(MX0 - 10, 30, "sender", "var(--ink-2)", "end");
+    txt(MX1 + 10, 30, "receiver", "var(--ink-2)", "start");
+    svg.append(svgEl("line", { x1: MX0, y1: 26, x2: MX1, y2: 26, stroke: "var(--rule-strong)", "stroke-width": 6, "stroke-linecap": "round" }));
+    const hot = q ? Math.round(pos) + 1 : k;
+    if (hot >= 1 && hot <= units) svg.append(svgEl("line", { x1: mx(hot - 1), y1: 26, x2: mx(hot), y2: 26, stroke: "var(--hl)", "stroke-width": 6, opacity: 0.45 }));
+    for (let i = 0; i <= units; i++) { svg.append(svgEl("line", { x1: mx(i), y1: 19, x2: mx(i), y2: 33, stroke: "var(--ink-dim)" })); txt(mx(i), 47, String(i), "var(--ink-dim)", "middle", 9.5); }
+    svg.append(svgEl("circle", { cx: mx(d), cy: 26, r: 6, fill: "var(--hl)" }));
+    const sent = plot(118, 0, "At the sender: f, 3f and 5f in phase", null);
+    plot(262, d, `After ${fmtNum(d, 2)} unit${Math.abs(d - 1) < 1e-9 ? "" : "s"} of distance (dashed: the shape that was sent)`, sent);
+    DP_COMPS.forEach((c, j) => { txt(X1 - 150 + j * 52, 334, `${c.name}`, c.color, "middle", 11); });
+    let text;
+    if (q) text = P.question().text;
+    else if (k <= 0) text = "One step is one unit of distance. At the sender the three components start in phase; their sum is the bold curve.";
+    else {
+      const l3 = 45 * k, l5 = 90 * k;
+      text = `After ${k} unit${k === 1 ? "" : "s"}: 3f is ${deg(l3)} behind f and 5f is ${deg(l5)} behind. Each component has its own propagation speed, so at the receiver the components have phases different from what they had at the sender, and their sum has a different shape.`;
+      if (l5 % 360 === 0) text += ` 5f is a whole number of cycles behind, so it lines up with f again; 3f does not.`;
+      if (pos >= units) text += P.tally();
+    }
+    if (caption.textContent !== text) caption.textContent = text;
+    P.render(pos);
+    const shownLag = q ? Math.round(pos) : Math.floor(pos + 1e-9);
+    grid(out, [
+      ["Distance", `${shownLag} of ${units} units`, ""],
+      ["3f behind f", deg(45 * shownLag), "45° more per unit"],
+      ["5f behind f", deg(90 * shownLag), `90° more per unit${(90 * shownLag) % 360 === 0 && shownLag ? ": a whole cycle, in line again" : ""}`],
+    ]);
+  }
+  pb = playbackWith(P, { count: units, unit: "unit", stepMs: () => cfg.stepMs || 1600, onFrame: frame });
+  box.append(pb.el, out, el("p", "widget-note", "Attenuation is left out here: every component keeps its amplitude, only its phase changes. The shape changes anyway, which is what distortion means."));
 }
 
 export const WIDGETS = {
@@ -772,4 +881,5 @@ export const WIDGETS = {
   "data-rate": dataRate,
   "bandwidth-delay": bandwidthDelay,
   "tx-modes": txModes,
+  "distortion-play": distortionPlay,
 };

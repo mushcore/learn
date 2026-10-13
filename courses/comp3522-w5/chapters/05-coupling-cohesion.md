@@ -3,29 +3,29 @@ title: Coupling, cohesion and dependencies
 minutes: 18
 ---
 
-Exceptions deal with what goes wrong while a program runs. The second half of the week deals with what goes wrong over years of development: code that nobody dares to change. Two measures, coupling and cohesion, say how changeable a design is before a single feature is touched.
+Code that nobody dares to change is the failure that builds up over years of development. Coupling and cohesion measure how changeable a design is before a single feature is touched.
 
 ## Design principles are guidelines, not recipes
 
-Design patterns tell us how to design systems and come later in the term. *Design principles provide high level guidelines to help structure components and manage their interactions.* The three questions: how do we assemble classes; how should they interact, and how deeply should one reach into another; how do we implement relationships between classes? *Good software architecture begins with clean code. If the bricks aren't well made, the architecture of the building doesn't mean much.*
+*Design principles provide high level guidelines to help structure components and manage their interactions*: how classes are assembled, how deeply one reaches into another, and how relationships between them are implemented. Design patterns come later in the term.
 
-The criterion is code that behaves correctly and **tolerates change**. *When stakeholders change a feature, the difficulty in making a change should be proportional only to the scope of the change, not its shape.* No system is impossible to change, but some are practically impossible: the cost of a change exceeds its benefit.
+The criterion is code that behaves correctly and **tolerates change**: *the difficulty in making a change should be proportional only to the scope of the change, not its shape.* A system becomes practically impossible to change when the cost of a change exceeds its benefit.
 
 ## Coupling: the strength of the connection between modules
 
 Coupling refers to links between separate units of a program. If two classes depend closely on many details of each other they are **tightly coupled**; we aim for **loose coupling** between modules.
 
-Loose coupling makes it possible to understand one class without reading others, and to change one class with little or no effect on other classes; it increases maintainability. Tight coupling costs four things: changes to one class bring a cascade of changes to other classes; classes are harder to understand in isolation; the flow of control between objects of different classes is complex; classes are difficult to test in isolation.
+Loose coupling lets you understand and change one class with little or no effect on others. Tight coupling costs four things: changes to one class cascade to other classes; classes are harder to understand in isolation; the flow of control between objects of different classes is complex; classes are difficult to test in isolation.
 
 ## Cohesion: the glue that holds a module together
 
 Cohesion refers to the number and diversity of tasks that a single unit is responsible for. If each unit is responsible for one single logical task it has **high cohesion**, and we aim for high cohesion inside modules. "Unit" applies to functions, classes and modules.
 
-High cohesion makes it easier to understand what a class or function does, to use descriptive and accurate names, and to reuse classes and functions. At class level, a class should represent one single, well-defined entity; at function level, a function should be responsible for one and only one well-defined task. Functions that perform multiple tasks and classes with no clear identity are the two #BAD cases.
+High cohesion makes a class or function easier to understand, name and reuse. A class should represent one single, well-defined entity; a function should be responsible for one and only one well-defined task. Functions that perform multiple tasks and classes with no clear identity are the two #BAD cases.
 
 ## Four modules, sixteen features, two ways to sort them
 
-Slide 40 draws four modules holding four kinds of feature: circles are save/load, triangles character creation, rectangles screens, squares game state. On the left every module holds a mixture and lines criss-cross between them: *low cohesion and high coupling*. On the right each module holds one kind of feature and touches one neighbour: *high cohesion and low coupling*. Slide 42 asks which is better from a software design point of view and prints no answer; slides 37 and 40 supply it: the right one, because each module can be understood, changed and reused on its own. The in-class answer replaces this one.
+Slide 40 draws four modules holding four kinds of feature: circles are save/load, triangles character creation, rectangles screens, squares game state. On the left every module holds a mixture and lines criss-cross between them: *low cohesion and high coupling*. On the right each module holds one kind of feature and touches one neighbour: *high cohesion and low coupling*. Slide 42 asks which is better and prints no answer; slides 37 and 40 imply the right one, because each module can be understood, changed and reused on its own.
 
 ```widget
 coupling-graph
@@ -116,13 +116,13 @@ int main() {
 }
 ```
 
-`vector<Filling*> fillings;` is the whole decoupling: Sushi names only the abstraction, and `virtual string name() const = 0;` is the one promise every filling must keep. `Sushi veggie_roll({&cucumber, &avocado});` builds a roll with no fish, which the slide-47 design could not do, and a fourth filling is a new class, not an edit to Sushi. *Inheritance and Interfaces/Abstract classes are the most common and effective way of decoupling code.* The slide's note: *we still have a dependency!* Entities will always be dependent on each other, that is how OOP works; the aim is **weak dependencies** like this one.
+With `vector<Filling*> fillings;` Sushi names only the abstraction, so `Sushi veggie_roll({&cucumber, &avocado});` builds a roll with no fish and a fourth filling is a new class, not an edit to Sushi. *Inheritance and Interfaces/Abstract classes are the most common and effective way of decoupling code.* The slide's note: *we still have a dependency!* Entities will always depend on each other; the aim is **weak dependencies** like this one.
 
 ## UI that reads a text file, then UI that reads a DataSource
 
 Slide 49 is a `UI` with a `textFile` attribute pointing at `TextFile` (`read()`, `write()`, `search()`). After years of development the team switches to an encrypted JSON file or a SQLite database, and every module that dealt with the UI has to be edited.
 
-Slide 50 inserts an `<<Interface>>` `DataSource` with `read()`, `write()` and `search()`. `UI` holds a `dataSource` and points at the interface; `Text File`, `SQLite DB` (adds `connect()`) and `JSON File` (adds `serialize()` and `deserialize()`) hang under it on dashed lines with a hollow triangle. *Our UI would just depend on a common interface DataSource and not be concerned with how that data source is implemented.* Slide 52 says this diagram uses at least three SOLID principles; the next three lessons name them.
+Slide 50 inserts an `<<Interface>>` `DataSource` with `read()`, `write()` and `search()`. `UI` holds a `dataSource` and points at the interface; `Text File`, `SQLite DB` (adds `connect()`) and `JSON File` (adds `serialize()` and `deserialize()`) realize it. *Our UI would just depend on a common interface DataSource and not be concerned with how that data source is implemented.* Slide 52 says this diagram uses at least three SOLID principles, named in the next three lessons.
 
 ```widget
 uml-relations

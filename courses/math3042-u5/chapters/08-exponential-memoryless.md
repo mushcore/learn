@@ -5,10 +5,6 @@ minutes: 20
 
 Two questions remain for an exponential variable: which wait is longer than 95 % of waits (a percentile, read backwards from $F$), and what the time already spent tells you about the time still to come (nothing, which is what memoryless means).
 
-:::info Computed answers
-The notes leave every answer line blank. The numbers here are computed and checked in R; the in-class numbers replace them if they differ.
-:::
-
 ## A percentile is F(x) = p solved for x
 
 The $p$-th percentile $x_p$ is the value with $F(x_p) = p$. Solve once, in general:
@@ -41,7 +37,7 @@ qexp(0.95, rate = 1/2.5)    # 95th percentile
 
 ```widget
 exp-wait
-{ "beta": 2.5, "x": 7.49, "p": 0.95, "title": "Web server: the percentile slider; x_p = −β ln(1 − p), so p = 0.95 lands at 7.49 s" }
+{ "beta": 2.5, "x": 7.49, "p": 0.95, "mode": "percentile", "title": "Web server: the percentile slider; x_p = −β ln(1 − p), so p = 0.95 lands at 7.49 s" }
 ```
 
 ## Bank teller: 30 customers per hour
@@ -95,12 +91,12 @@ Having waited $s$ already, the chance of waiting at least $t$ more is the chance
 
 ```widget
 exp-wait
-{ "beta": 2, "x": 2.5, "lo": 1.5, "hi": 2.5, "p": 0.75, "elapsed": 1, "title": "Bank teller, β = 2 min: the memoryless toggle redraws the remaining-time density after 1 minute; it coincides with the original" }
+{ "beta": 2, "x": 2.5, "lo": 1.5, "hi": 2.5, "p": 0.75, "elapsed": 1, "mode": "memoryless", "title": "Bank teller, β = 2 min: the memoryless toggle redraws the remaining-time density after 1 minute; it coincides with the original" }
 ```
 
-### Watch the elapsed time cancel
+### The elapsed time cancelling
 
-The tail beyond $s = 1$ is cut off, rescaled so its area is 1, and slid back by $s$: it lands on the original density, so the darker area is $P(X > 2) = 0.3679$. Tick the predict box to say what the conditional probability equals before the cut is made.
+The tail beyond $s = 1$ is cut off, rescaled so its area is 1, and slid back by $s$: it lands on the original density, so the darker area is $P(X > 2) = 0.3679$.
 
 ```widget
 memoryless-play
@@ -108,7 +104,7 @@ memoryless-play
 ```
 
 :::quiz Memoryless cuts both ways
-A customer who has already taken 5 minutes is no closer to finishing than one who just sat down. The intuition "they must be nearly done" is the gambler's fallacy in continuous time, and the quiz can test it with a true/false.
+A customer who has already taken 5 minutes is no closer to finishing than one who just sat down. The intuition "they must be nearly done" is the gambler's fallacy in continuous time.
 :::
 
 ```quiz
@@ -125,6 +121,12 @@ A customer who has already taken 5 minutes is no closer to finishing than one wh
     "answer": 4.61,
     "tolerance": 0.01,
     "explain": "$-2 \\ln(1 - 0.90) = -2 \\ln 0.10 = 2 \\times 2.3026 = 4.61$ min."
+  },
+  {
+    "q": "Teller, $\\beta = 2$ min. Write the 90th-percentile set-up $x_p = -\\beta \\ln(1 - p)$ with the numbers in, no spaces, using `ln(...)` and `*`.",
+    "type": "text",
+    "answer": ["-2*ln(1-0.90)", "-2*ln(1-0.9)", "-2*ln(0.10)", "-2*ln(0.1)", "−2*ln(1−0.90)", "−2*ln(1−0.9)", "−2*ln(0.10)", "−2*ln(0.1)", "-2ln(0.1)", "-2ln(1-0.9)"],
+    "explain": "$x_{0.90} = -2 \\ln(1 - 0.90) = -2 \\ln 0.10 = 4.61$ min. The log is of the upper tail $1 - p = 0.10$; $\\ln 0.90$ would give 0.21 min."
   },
   {
     "q": "A customer has been with the teller for 1 minute. The probability the service takes more than 3 minutes in total, $P(X > 3 \\mid X > 1)$ with $\\beta = 2$? (4 decimals)",

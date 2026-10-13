@@ -23,7 +23,7 @@ function escapeHtml(s) {
 // ^{} _{} \left \right, Greek letters and common symbols.
 const SYMBOLS = {
   sum: "Σ", Sigma: "Σ", mu: "μ", sigma: "σ", rho: "ρ", alpha: "α", beta: "β", pi: "π", lambda: "λ", theta: "θ", chi: "χ",
-  Delta: "Δ", delta: "δ", epsilon: "ε", gamma: "γ", nu: "ν", tau: "τ", omega: "ω", Omega: "Ω", phi: "φ",
+  Delta: "Δ", delta: "δ", epsilon: "ε", gamma: "γ", nu: "ν", tau: "τ", omega: "ω", Omega: "Ω", phi: "φ", varphi: "φ", Phi: "Φ",
   pm: "±", times: "×", cdot: "·", div: "÷", le: "≤", leq: "≤", ge: "≥", geq: "≥", ne: "≠", neq: "≠", approx: "≈", infty: "∞", in: "∈",
   ldots: "…", cdots: "⋯", dots: "…", rightarrow: "→", Rightarrow: "⇒", leftarrow: "←", to: "→", quad: "\u2003", qquad: "\u2003\u2003", ",": "\u2009", ";": "\u2005", " ": "\u00a0", "!": "",
   left: "", right: "", displaystyle: "", mid: "|", lt: "<", gt: ">", "%": "%", "$": "$", "{": "{", "}": "}", "_": "_", "&": "&amp;", "#": "#",
@@ -185,7 +185,8 @@ function renderTextBlock(md) {
     if (isTable(line)) {
       const rows = [];
       while (i < lines.length && isTable(lines[i])) rows.push(lines[i++]);
-      const cells = (r) => r.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map((c) => c.trim());
+      // `\|` inside a cell is a literal pipe (hidden behind a placeholder while the row is split).
+      const cells = (r) => r.trim().replace(/\\\|/g, "\u0001").replace(/^\|/, "").replace(/\|$/, "").split("|").map((c) => c.trim().replace(/\u0001/g, "|"));
       const header = cells(rows[0]);
       const body = rows.slice(/^\s*\|[\s:|-]+\|\s*$/.test(rows[1] || "") ? 2 : 1);
       // Wrapped so a wide table scrolls sideways on a phone instead of stretching the page.
@@ -248,7 +249,11 @@ export function renderLesson(source, container, ctx) {
     if (pin) pin.nodes.push(node);
     else container.append(node);
   };
-  for (const block of splitBlocks(source)) {
+  // Number the quiz blocks so the review queue can index questions across the whole lesson.
+  const blocks = splitBlocks(source);
+  const quizBlocks = blocks.filter((b) => b.type !== "text" && b.info === "quiz");
+  let quizIndex = 0, quizBase = 0;
+  for (const block of blocks) {
     if (block.type === "text") {
       const div = document.createElement("div");
       div.innerHTML = renderTextBlock(block.body);
@@ -287,7 +292,12 @@ export function renderLesson(source, container, ctx) {
         continue;
       }
       if (info === "cpp" && r === "run") mountRunner(tmp, body, ctx);
-      else if (info === "quiz") { flushPin(); mountQuiz(tmp, JSON.parse(body), ctx); }
+      else if (info === "quiz") {
+        flushPin();
+        const qs = JSON.parse(body);
+        mountQuiz(tmp, qs, { ...ctx, quizBlock: quizIndex, quizBase, quizBlocks: quizBlocks.length });
+        quizIndex++; quizBase += qs.length;
+      }
       else if (info === "challenge") { flushPin(); mountChallenge(tmp, JSON.parse(body), ctx); }
       else if (info === "widget") {
         const [name, ...cfgLines] = body.split("\n");

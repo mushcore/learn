@@ -59,29 +59,19 @@ The *effectiveness of a data communications system* has **four** characteristics
 
 The slide does not print the name next to the definition; "multipoint", also called multidrop, comes from the textbook (Forouzan §1.2, assigned reading).
 
-:::quiz Sample quiz question (fill in the blank)
-*"Assume we have a dedicated link between two devices. This type of connection is called ___."* **Point-to-point.** *Dedicated* and *two devices* trigger it; *more than two devices share a single link* means **multipoint**.
-:::
-
 ```quiz
 [
   {
     "q": "Assume we have a dedicated link between two devices. This type of connection is called ___.",
     "type": "text",
     "answer": ["point-to-point", "point to point", "point-to-point connection"],
-    "explain": "A **point-to-point** connection is a dedicated link between two devices, with the capacity of the link reserved for those two. This is the instructor's sample quiz question."
+    "explain": "A **point-to-point** connection is a dedicated link between two devices, with the capacity of the link reserved for those two. This is the instructor's sample quiz question: *dedicated* and *two devices* trigger point-to-point; *more than two devices share a single link* means **multipoint**."
   },
   {
     "q": "A connection in which more than two devices share a single link is called ___.",
     "type": "text",
     "answer": ["multipoint", "multi-point", "multidrop", "multi-drop", "multipoint connection"],
     "explain": "**Multipoint** (also multidrop): more than two devices share a single link, and the channel's capacity is shared, either spatially or by taking turns."
-  },
-  {
-    "q": "In a point-to-point connection, the entire capacity of the link is reserved for transmission between the two devices.",
-    "type": "tf",
-    "answer": true,
-    "explain": "That is the slide's second bullet for point-to-point: the capacity of the link is reserved. Contrast multipoint, where capacity is shared."
   },
   {
     "q": "On a multipoint link, several devices can use the link simultaneously. The slide calls this...",
@@ -91,14 +81,14 @@ The slide does not print the name next to the definition; "multipoint", also cal
   },
   {
     "q": "Which of these are hosts (end systems) according to the slide? Select all that apply.",
-    "options": ["Desktop", "Laptop", "Workstation", "Cellular phone", "Router", "Switch", "Modem"],
-    "answer": [0, 1, 2, 3],
+    "options": ["Router", "Desktop", "Laptop", "Switch", "Workstation", "Modem", "Cellular phone"],
+    "answer": [1, 2, 4, 6],
     "explain": "Hosts (end systems) are large computers, desktops, laptops, workstations, cellular phones. Routers, switches and modems are connecting (networking, communication) devices."
   },
   {
     "q": "Which of these are connecting / networking / communication devices? Select all that apply.",
-    "options": ["Router", "Switch", "Modem", "Laptop", "Cellular phone"],
-    "answer": [0, 1, 2],
+    "options": ["Laptop", "Router", "Switch", "Cellular phone", "Modem"],
+    "answer": [1, 2, 4],
     "explain": "Router, switch and modem are the slide's examples of connecting devices. A laptop and a cellular phone are hosts (end systems)."
   },
   {
@@ -109,8 +99,8 @@ The slide does not print the name next to the definition; "multipoint", also cal
   },
   {
     "q": "Which of these does the slide list as measures of network reliability? Select all that apply.",
-    "options": ["Accuracy of delivery", "Failure rate", "Recovery time from failure", "Network's robustness", "Throughput", "Delay"],
-    "answer": [0, 1, 2, 3],
+    "options": ["Throughput", "Accuracy of delivery", "Failure rate", "Delay", "Recovery time from failure", "Network's robustness"],
+    "answer": [1, 2, 4, 5],
     "explain": "Reliability is measured by accuracy of delivery, failure rate, recovery time from failure, and the network's robustness. Throughput and delay measure performance."
   },
   {
@@ -130,12 +120,6 @@ The slide does not print the name next to the definition; "multipoint", also cal
     "type": "tf",
     "answer": true,
     "explain": "The remote and the TV have a dedicated link between just the two of them, which is the point-to-point idea. The slide lists it alongside wire, microwave and satellite links."
-  },
-  {
-    "q": "The interconnection of a set of devices capable of communication is the slide's definition of a ___.",
-    "type": "text",
-    "answer": ["network", "computer network"],
-    "explain": "A (computer) **network** is the interconnection of a set of devices capable of communication; the devices are the nodes and the wired or wireless media are the edges."
   }
 ]
 ```

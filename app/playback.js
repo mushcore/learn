@@ -44,7 +44,8 @@ export function createPlayback(opts) {
   function tick(now) {
     raf = 0;
     if (!bar.isConnected) { stop(); return; }
-    const dt = Math.min(100, now - last); last = now;
+    // The first rAF timestamp can precede the performance.now() taken in run(), so never let dt go negative.
+    const dt = Math.max(0, Math.min(100, now - last)); last = now;
     const end = target != null ? Math.min(target, limit()) : limit();
     if (reducedMotion()) {
       // No tweening: hold each finished step on screen for its duration, then jump to the next.

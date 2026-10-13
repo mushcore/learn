@@ -3,72 +3,47 @@ title: Every lecture example, worked
 minutes: 30
 ---
 
-Every example in the Unit 3 notes is worked here in the order it appears, with the arithmetic the instructor wrote on the answer line in the filled notes (posted 2026-10-12) and a check where the demo notebook simulated it. Cover the solution, write yours, then compare; the quiz at the end is the same problems with the numbers changed.
+Every example in the Unit 3 notes, in the order it appears, with the answer line from the filled notes (posted 2026-10-12). Each lesson linked in the last column works the example in full; the quiz below is the same problems with the numbers changed.
 
-## 3.1 Probability
-
-**Three coins, $X$ = number of heads: is $X = 1$ or $X = 2$ more likely?** $S$ = {HHH, HHT, HTH, HTT, THH, THT, TTH, TTT}, 8 outcomes. $P(X = 1) = 3/8$ (HTT, THT, TTH); $P(X = 2) = 3/8$ (HHT, HTH, THH). Equally likely.
-
-**Five coins, all the same.** $|S| = 2^5 = 32$; $A$ = {HHHHH, TTTTT}; $P = 2/32 = 1/16 = 0.0625$.
-
-**Five coins, at least two heads.** Fewer than two heads: 0 heads (1 way) + 1 head (5 ways) = 6. $P = 1 - 6/32 = 26/32 = 0.8125$.
-
-**Boxcars.** 36 equally likely pairs, one is (6, 6): $P(B) = |B|/|S| = 1/36 = 0.0278$. The notes' simulation of $10^5$ trials: $P(B) \approx x/n = 0.0281$; `1/(6^2)` in the notebook prints 0.02777778.
-
-## 3.2 Counting
-
-**A die rolled five times.** $|S| = 6 \times 6 \times 6 \times 6 \times 6 = 7776$ outcomes.
-
-**Five cards with replacement, first three red and last two Kings.** $P(A) = \dfrac{|A|}{|S|} = \dfrac{26 \times 26 \times 26 \times 4 \times 4}{52 \times 52 \times 52 \times 52 \times 52} = \dfrac{281\,216}{380\,204\,032} = 0.00074$ (equivalently $(1/2)^3 (1/13)^2 = 1/1352$).
-
-**Five cards without replacement, all red.** $\dfrac{26 \times 25 \times 24 \times 23 \times 22}{52 \times 51 \times 50 \times 49 \times 48} = 0.0253$ (equivalently $C(26, 5)/C(52, 5) = 65\,780 / 2\,598\,960$). **With replacement**, the line the instructor added beside it: $\dfrac{26^5}{52^5} = 0.03125$.
-
-**Arrange the four Aces.** $4 \times 3 \times 2 \times 1 = 24$; as a permutation $P(4, 4) = \dfrac{4!}{0!} = \dfrac{24}{1} = 24$. Notebook: `factorial(4)` is 24.
-
-**Select four cards and arrange them.** $n = 52$, $r = 4$: $P(52, 4) = \dfrac{52!}{48!} = 52 \cdot 51 \cdot 50 \cdot 49 = 6\,497\,400$. Notebook: `choose(52, 4) * factorial(4)`.
-
-**A hand of four cards.** $C(52, 4) = \dfrac{52 \cdot 51 \cdot 50 \cdot 49}{4 \cdot 3 \cdot 2 \cdot 1} = 270\,725$ (sequences over sequences with the same four cards). Notebook: `choose(52, 4)`. Calculator: `52 2ndF nCr 4`.
-
-**90 students, 9 front-row seats.** The 9 seats define a sequence of students: $P(90, 9) = 2.56 \times 10^{17}$ on the calculator ($= 256\,284\,917\,589\,254\,400$).
-
-**Three cards in sequence, all diamonds.** $P(13, 3) = 13 \cdot 12 \cdot 11 = 1716$ sequences; as a probability, $P(\text{all diamonds}) = \dfrac{P(13, 3)}{P(52, 3)} = \dfrac{1716}{132\,600} = 0.0129$ (boxed in the notes).
-
-**A five-person committee from 20.** A combination (a set) of instructors: $C(20, 5) = \dfrac{20!}{15!\,5!} = \dfrac{20 \cdot 19 \cdot 18 \cdot 17 \cdot 16}{5 \cdot 4 \cdot 3 \cdot 2 \cdot 1} = 15\,504$.
-
-**Spade flush.** $\dfrac{C(13, 5)}{C(52, 5)} = \dfrac{1287}{2\,598\,960} = 0.0005$ (0.000495 to six decimals); the notes also write it $\dfrac{P(13, 5)}{P(52, 5)} = 0.0005$.
+| Example | Rule | Answer line | Lesson |
+|---|---|---|---|
+| three coins: $X = 1$ or $X = 2$ more likely? | classical | $3/8 = 3/8$, equally likely | 1 |
+| five coins, all the same | classical | $2/32 = 0.0625$ | 1 |
+| five coins, at least two heads | NOT | $1 - 6/32 = 0.8125$ | 1 |
+| boxcars | classical / simulation | $1/36 = 0.0278$; simulated 0.0281 | 2 |
+| a die rolled five times | counting rule | $6^5 = 7776$ | 3 |
+| five cards with replacement, three red then two Kings | counting rule | $281\,216 / 380\,204\,032 = 0.00074$ | 3 |
+| five cards without replacement, all red | counting rule | $7\,893\,600 / 311\,875\,200 = 0.0253$; with replacement $26^5/52^5 = 0.03125$ | 3 |
+| arrange the four Aces | $n!$ | $4! = P(4, 4) = 24/0! = 24$ | 3 |
+| four cards in sequence | $P$ | $P(52, 4) = 6\,497\,400$ | 3 |
+| a hand of four cards | $C$ | $C(52, 4) = 270\,725$ | 3 |
+| 90 students, 9 front-row seats | $P$ | $P(90, 9) = 2.56 \times 10^{17}$ | 3 |
+| three diamonds in sequence | $P$ | $1716 / 132\,600 = 0.0129$ | 3 |
+| five-person committee from 20 | $C$ | $C(20, 5) = 15\,504$ | 3 |
+| spade flush | $C$ | $1287 / 2\,598\,960 = 0.0005$ | 3 |
+| two dice, sum $< 12$ | NOT | $1 - 1/36 = 0.9722$ | 4 |
+| birthday, 23 people | NOT | $1 - P(365, 23)/365^{23} = 0.5073$ | 4 |
+| black card or heart | OR, mutually exclusive | $26/52 + 13/52 = 0.7500$ | 4 |
+| red card or Ace (in class) | OR | $26/52 + 4/52 - 2/52 = 0.5385$ | 4 |
+| 7 or Ace (printed) | OR, mutually exclusive | $8/52 = 0.1538$ | 4 |
+| two-way table, 71 students | conditional | $61/71 = 0.8592$; $52/61 = 0.8526$; $52/58 = 0.8966$ | 5 |
+| Right and iPhone independent? | independence | $0.8592 \times 0.8169 = 0.7019 \ne 52/71 = 0.7324$: not independent | 5 |
+| two Aces | AND | with replacement $(4/52)^2 = 0.0059$; without $(4/52)(3/51) = 0.0045$ | 5 |
+| sex and handedness | total probability, Bayes | $P(L) = 0.09$; $P(F \mid L) = 0.03/0.09 = 0.3333$ | 6 |
+| defective CPUs | total probability, Bayes | $P(D) = 0.0125$; $P(\text{Intel} \mid D) = 0.0085/0.0125 = 0.68$ | 6 |
 
 ```widget
 counting-calc
 { "preset": "committee C(20,5)" }
 ```
 
-## 3.3 Probability rules
-
-**Two dice, sum less than 12** (NOT rule). $P(\text{sum} < 12) = 1 - P(\text{sum} = 12) = 1 - 1/36 = 0.9722$.
-
-**Birthday problem, 23 people** (NOT rule). $P(\text{match}) = 1 - P(\text{no match}) = 1 - \dfrac{365 \times 364 \times 363 \times \cdots \times 343}{365 \times 365 \times 365 \times \cdots \times 365} = 1 - \dfrac{P(365, 23)}{365^{23}} = 0.5073$. Notebook simulation: about 0.507.
-
-**Top card is black or a heart** (OR rule, mutually exclusive). $P(A \cup B) = P(A) + P(B) = 26/52 + 13/52 = 0.7500$.
-
-**Top card is a red card or an Ace** (OR rule, not mutually exclusive; the instructor's in-class replacement for "7 or Ace"). $P(\text{Red} \cup \text{Ace}) = 26/52 + 4/52 - 2/52 = 0.5385$. The printed version, a 7 or an Ace, is mutually exclusive: $4/52 + 4/52 = 0.1538$.
-
-**Two-way table (71 students).** $P(\text{Right}) = 61/71 = 0.8592$; $P(\text{iPhone} \mid \text{Right}) = 52/61 = 0.8526$ (0.8525 by strict rounding); $P(\text{Right} \mid \text{iPhone}) = 52/58 = 0.8966$.
-
-**Are Right and iPhone independent?** $P(\text{Right} \cap \text{iPhone}) = 52/71 = 0.7324$; $P(\text{Right}) = 0.8592$; $P(\text{iPhone}) = 58/71 = 0.8169$. Check: $0.8592 \times 0.8169 = 0.7019 \ne 0.7324$, NOT INDEPENDENT. (Or: $P(\text{iPhone} \mid \text{Right}) = 0.8526 \ne P(\text{iPhone}) = 0.8169$.)
-
-**Two Aces** (AND rule). $A_1$ = 1st card is an Ace, $A_2$ = 2nd card is an Ace; $P(A_1 \cap A_2) = P(A_1) \times P(A_2 \mid A_1)$. (a) With replacement: $\dfrac{4}{52} \times \dfrac{4}{52} = 0.0059$. (b) Without: $\dfrac{4}{52} \times \dfrac{3}{51} = 0.0045$. These differ.
-
-**Sex and handedness.** (a) $P(\text{Left}) = P(F \cap L) + P(M \cap L) = P(F)\,P(L \mid F) + P(M)\,P(L \mid M) = 0.6 \times 0.05 + 0.4 \times 0.15 = 0.09$. (b) $P(\text{Female} \mid \text{Left}) = \dfrac{0.6 \times 0.05}{0.6 \times 0.05 + 0.4 \times 0.15} = 0.3333$: one third of left-handed students are female.
-
-**Defective CPUs.** Joint probabilities down the tree: $0.85 \times 0.01 = 0.0085$, $0.1 \times 0.03 = 0.0030$, $0.05 \times 0.02 = 0.0010$ (mutually exclusive). (a) $P(\text{Defective}) = 0.0085 + 0.0030 + 0.0010 = 0.0125$. (b) What fraction of defective CPUs are from Intel? $P(\text{Intel} \mid \text{Defective}) = \dfrac{0.85 \times 0.01}{0.85 \times 0.01 + 0.10 \times 0.03 + 0.05 \times 0.02} = \dfrac{0.0085}{0.0125} = 0.68$: 68% of defective units are from Intel.
-
 ```widget
 bayes-tree
 { "preset": "defective CPUs" }
 ```
 
-:::quiz The four things that get marked
-Show the sample-space size or the formula name ($P$ or $C$), the substituted numbers, the arithmetic, and the final answer with the right number of decimals. A bare 0.68 earns less than $0.0085/0.0125 = 0.68$.
+:::tip A complete answer
+Show the sample-space size or the formula name ($P$ or $C$), the substituted numbers, the arithmetic, and the final answer with the right number of decimals: $0.0085/0.0125 = 0.68$, not a bare 0.68.
 :::
 
 ```quiz

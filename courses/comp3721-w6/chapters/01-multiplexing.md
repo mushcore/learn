@@ -24,8 +24,6 @@ Two broad categories of technique exist, with different goals:
 
 Slide wording: *Multiplexing is the set of techniques that allow the simultaneous transmission of multiple signals across a single data link.* The slide's easy definition: *Combining several channels into one.*
 
-Both halves matter for a fill-in: multiple signals, one data link, at the same time.
-
 ## The highway analogy
 
 The slides compare a link to a multi-lane highway.

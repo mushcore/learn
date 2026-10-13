@@ -3,11 +3,11 @@ title: noexcept, std::exception and terminate
 minutes: 24
 ---
 
-How a function promises that nothing is thrown out of it, what the standard library's own exception classes look like, and what happens when no handler matches anywhere.
+A function can promise that nothing escapes it, the standard library throws its own exception classes, and an exception that no handler matches ends the program.
 
 ## noexcept: nothing is thrown out of this function
 
-C++03 allowed us to specify which types of exceptions can be thrown from a function (like Java); the feature *was very quickly deprecated (don't do this)*. C++11 added a qualification stating that **no exceptions must be thrown out of a function**: `double square_root(double x) noexcept { ... }`. Two benefits: 1. calling code never needs to check for thrown exceptions from `square_root`; 2. *if an exception is somehow thrown despite the qualification, the program ends* (which is what should happen).
+C++03 allowed us to specify which types of exceptions can be thrown from a function (like Java); the feature *was very quickly deprecated (don't do this)*. C++11 added a qualification stating that **no exceptions must be thrown out of a function**: `double square_root(double x) noexcept { ... }`. Calling code never needs to check for thrown exceptions, and if one is thrown anyway the program ends, which is what should happen.
 
 ```cpp run pin ex_noexcept.cpp
 // predict: Write the stdout line(s) printed before the program stops.
@@ -33,9 +33,13 @@ int main() {
 }
 ```
 
-`double square_root(double x) noexcept {` makes the promise, and `if (x < 0) throw invalid_argument("negative");` breaks it. After `calling square_root(-1)` the program terminates. The `catch (...) {` in main would match anything, but it never runs: the exception may not leave the function, so `std::terminate` is called at the function's boundary before any handler is searched, and `cout << "not reached" << endl;` never prints.
+The exception may not leave the function, so `std::terminate` is called at the function's boundary before any handler is searched: the `catch (...)` in main would match anything, yet it never runs.
 
-**Destructors are implicitly declared noexcept.** The slide's two consequences: 1. NEVER throw an exception from a destructor; 2. if you do, it will be treated as a run-time error and execution will end! This is the Week 3 rule explained: a destructor that throws during unwinding puts two exceptions in flight at once.
+**Destructors are implicitly declared noexcept.** NEVER throw an exception from a destructor; if you do, it is treated as a run-time error and execution ends. During unwinding that would put two exceptions in flight at once.
+
+### A noexcept frame on the call stack
+
+The search for a handler stops at the `noexcept` frame: terminate runs with no unwinding, so no `Guard` is destroyed and main's catch never runs.
 
 ```widget
 unwind-stepper
@@ -82,7 +86,7 @@ int main () {
 }
 ```
 
-`class myexception: public exception` inherits publicly, which is what lets a base-class handler accept it. `const char* what() const noexcept` matches the base's signature exactly: `const` because it does not change the object, `noexcept` because the base's `what()` is noexcept and an override may not promise less. The shipped file omits `override`; the slide includes it. `throw myexception();` is caught by `catch (exception& e)` through a reference to the base, and `cout << e.what() << '\n';` dispatches virtually to the override: `My exception happened`.
+Public inheritance lets a base-class handler accept `myexception`. `what()` matches the base's signature exactly: `const` because it does not change the object, `noexcept` because the base's `what()` is noexcept and an override may not promise less. The shipped file omits `override`; the slide includes it. The handler holds an `exception&`, so the call dispatches virtually to the override.
 
 ## The family tree
 
@@ -102,7 +106,7 @@ Slide 26 lists what the library derives from `std::exception`:
 | `logic_error` | thrown when a logic error occurs |
 | `bad_weak_ptr` | thrown by shared_ptr when passed a bad weak_ptr |
 
-So `new` does not return `nullptr` when memory runs out; it throws `bad_alloc`. Slide 27, *these exceptions are actually useful*: `<stdexcept>` defines two exception types that can be inherited by custom exceptions to report errors. **`logic_error`** has `invalid_argument`, `length_error` and `out_of_range`; **`runtime_error`** has `range_error` and `overflow_error`. A logic error could have been detected before running (an empty name, an index past the end); a runtime error only the running program can discover (an overflow in a calculation). Each takes a message string in its constructor and returns it from `what()`, and the hierarchy decides the handlers: `catch (logic_error&)` takes all three children, `catch (exception&)` everything standard. The library also has `domain_error` and `underflow_error`, which the slide omits.
+So `new` does not return `nullptr` when memory runs out; it throws `bad_alloc`. Slide 27, *these exceptions are actually useful*: `<stdexcept>` defines two exception types that can be inherited by custom exceptions to report errors. **`logic_error`** has `invalid_argument`, `length_error` and `out_of_range`; **`runtime_error`** has `range_error` and `overflow_error`. A logic error could have been detected before running (an empty name, an index past the end); a runtime error only the running program can discover (an overflow). Each takes a message string in its constructor and returns it from `what()`. `catch (logic_error&)` takes all three children, `catch (exception&)` everything standard. The library also has `domain_error` and `underflow_error`, which the slide omits.
 
 ```cpp run pin exception3.cpp
 // predict: Write the one line printed (the library's own message).
@@ -115,17 +119,17 @@ int main()
     try
     {
         //trying to start copying from index 10. Doesn't exist
-        std::string("abc").substr(10); // throws std::length_error
+        std::string("abc").substr(10); // throws std::out_of_range
     }
     catch(const std::exception& e)
     {
         std::cout << e.what() << '\n';
-        //throw;   // rethrows the exception object of type std::length_error
+        //throw;   // rethrows the exception object of type std::out_of_range
     }
 }
 ```
 
-`std::string("abc").substr(10); // throws std::length_error` asks for the substring starting at index 10 of a three-character string, and the library throws rather than read past the end. `catch(const std::exception& e)` accepts it through the base, and the library wrote the message: `basic_string::substr: __pos (which is 10) > this->size() (which is 3)`. Uncommenting `//throw;   // rethrows the exception object of type std::length_error` would rethrow it out of main, where no handler exists. The slide says `length_error`; libstdc++ actually throws `out_of_range` here, a sibling in the same `logic_error` family, so the handler and the message are the same.
+`substr(10)` on a three-character string throws rather than read past the end, and the library writes the message. Slide 27 files this program under `length_error` and the shipped comments say so; libstdc++ throws `out_of_range`, a sibling in the same `logic_error` family, so the same handler catches it.
 
 ## No handler anywhere: terminate, then abort
 
@@ -188,7 +192,11 @@ int main()
 }
 ```
 
-`B b;` uses the default constructor: `B() created`. `C c(1); //throws error that's not caught` is where it goes wrong. `C` derives from `A` and holds a `B` member, so its constructor builds `A`, then `my_b`, then its own body. `C(int x) try : A(), my_b(x) //can try/catch on the constructor` is a **function-try-block**: the `try` wraps the initializer list as well as the body, so it sees exceptions thrown by the initializers. `A()` completes (`A() created`); then `B(int) { cout << "B() being created\n"; throw "exception"; }` prints and throws a `const char*` before `my_b` exists. The completed base is destroyed before the handler runs (`A() destroyed`), then `catch ( ... )` prints `C not constructed!`. A constructor's function-try-block handler cannot rescue the object: it **always rethrows**; the explicit `throw;` only makes that visible. `C c(1);` in `main` is inside no try block, so no handler matches anywhere: `std::terminate`, then `abort`, and the program terminates. `cout << "Code not called because throw not caught" << endl;` never prints; `B() destroyed` never appears, because `my_b` never existed and terminate does not unwind the stack to destroy `b`; no `C` was ever created, so `C() destroyed` has nothing to print for.
+`C(int x) try : A(), my_b(x)` is a **function-try-block**: the `try` wraps the initializer list as well as the body, so it sees exceptions thrown by the initializers. `C` builds its base `A`, then the member `my_b`, then its body; `B(int)` throws a `const char*` before `my_b` exists. The completed base is destroyed before the handler runs. A constructor's function-try-block handler cannot rescue the object: it **always rethrows**, and the explicit `throw;` only makes that visible. `C c(1);` sits in no try block, so no handler matches: `std::terminate`, then `abort`. Terminate does not unwind the stack, so `b` is never destroyed.
+
+### No handler anywhere
+
+The same rule on the Guard program: with no matching catch up the stack, terminate runs straight after the throw and no destructor prints.
 
 ```widget
 unwind-stepper

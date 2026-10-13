@@ -47,6 +47,7 @@ Sizes are platform/compiler dependent — the C++ standard only guarantees minim
 The actual sizes on this compiler, plus the largest value an `int` can hold, the call `const_vs_constexpr.cpp` opens with:
 
 ```cpp run
+// predict: Write the size printed for each type, then the int max.
 #include <iostream>
 #include <limits>
 using namespace std;
@@ -73,22 +74,23 @@ int main()
 ## `char` is an integer type
 
 ```cpp run pin char-is-int.cpp
+// predict: Write the three lines printed.
 #include <iostream>
 using namespace std;
 
 int main()
 {
     char letter = 'A';
-    cout << letter << endl;          // printed as a character: A
-    cout << (int)letter << endl;     // printed as a number: 65
+    cout << letter << endl;          // as a character
+    cout << (int)letter << endl;     // as a number
 
     bool flag = true;
-    cout << flag << endl;            // bool prints as 1, not "true"
+    cout << flag << endl;
     return 0;
 }
 ```
 
-`char` is an **integer type** that `cout` prints as a character by default: `cout << letter << endl;` prints `A`, and `cout << (int)letter << endl;` prints its ASCII code, `65`. The same default applies to `bool`: `cout << flag << endl;` prints `1`, not the word `true`; the `boolalpha` manipulator in the output lesson changes that.
+`char` is an **integer type** that `cout` prints as a character by default; `cout << (int)letter << endl;` asks for its numeric code instead. `bool` has the same default: it prints as a number until the `boolalpha` manipulator from the output lesson is on.
 
 ```quiz
 [

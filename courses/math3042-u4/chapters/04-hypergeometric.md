@@ -3,7 +3,7 @@ title: Hypergeometric: sampling without replacement, and the 5% rule
 minutes: 24
 ---
 
-Deal five cards and count the jacks: each card dealt changes the deck, so $p$ is not constant and the binomial formula is wrong. The hypergeometric distribution is the exact formula for sampling without replacement, and the 5 % rule says when the binomial is close enough anyway.
+Sampling without replacement changes $p$ after every draw, so the binomial formula is wrong. The hypergeometric distribution is the exact formula, and the 5 % rule says when the binomial is close enough anyway.
 
 ## Binomial versus hypergeometric
 
@@ -15,7 +15,7 @@ Deal five cards and count the jacks: each card dealt changes the deck, so $p$ is
 | sampling *with replacement*, or sampling from an *infinite* population | sampling *without replacement* from a finite population |
 | same probability $p$ for each trial | probability of success changes for subsequent trials |
 
-*If the number of trials, $n$, is small compared to the population size, then the Binomial model and the Hypergeometric model give very similar probabilities.* Removing one card from a deck of 52 matters; removing one from 520 barely does.
+*If the number of trials, $n$, is small compared to the population size, then the Binomial model and the Hypergeometric model give very similar probabilities.*
 
 ## The formula: N objects, K successes, a sample of n
 
@@ -23,26 +23,47 @@ Deal five cards and count the jacks: each card dealt changes the deck, so $p$ is
 
 $$P(x) = \frac{C(K, x) \cdot C(N - K,\ n - x)}{C(N, n)}, \qquad x = 0, 1, 2, \ldots, n$$
 
-It is Unit 3's classical probability with combinations: $C(N, n)$ counts every possible sample, $C(K, x)$ the ways to pick the $x$ successes from the $K$ available, $C(N - K, n - x)$ the ways to pick the other $n - x$ sample members from the $N - K$ failures. Both the failure count and the failure slots appear in the second factor.
+$C(N, n)$ counts every possible sample, $C(K, x)$ the ways to pick the $x$ successes, $C(N - K, n - x)$ the ways to pick the $n - x$ failures.
 
 $$\mu = n \cdot \frac{K}{N}, \qquad \sigma^2 = n \cdot \frac{K}{N} \cdot \frac{N - K}{N} \cdot \frac{N - n}{N - 1}$$
 
 With $p = K/N$ these are the binomial's $np$ and $npq$ times a correction factor $\frac{N - n}{N - 1}$, which is below 1 whenever $n > 1$: sampling without replacement has the same mean and a smaller spread.
 
-## Two jacks in five cards: 0.0399 without replacement, 0.0465 with
+## Two jacks in five cards, without and with replacement
+
+```quiz
+[
+  {
+    "q": "5 cards from a deck of 52 (4 jacks), without replacement. P(exactly 2 jacks) = ? (4 decimals)",
+    "type": "numeric",
+    "answer": 0.0399,
+    "tolerance": 0.0002,
+    "explain": "C(4, 2) · C(48, 3) / C(52, 5) = 6 × 17 296 / 2 598 960 = 103 776 / 2 598 960 = 0.0399."
+  }
+]
+```
 
 *Suppose you sample 5 cards from a deck of 52 cards. Let $X$ = the number of Jacks you get in the sample (there are 4 Jacks in the deck). What is $P(X = 2)$?* $N = 52$, $K = 4$, $n = 5$, $x = 2$:
 
 $$P(X = 2) = \frac{C(4, 2) \cdot C(48, 3)}{C(52, 5)} = \frac{6 \times 17\,296}{2\,598\,960} = \frac{103\,776}{2\,598\,960} = 0.0399$$
 
-With replacement (last lesson's binomial, $p = 4/52$): $C(5, 2)(4/52)^2(48/52)^3 = 0.0465$. The binomial overstates it because after a jack is dealt the deck holds only 3 jacks in 51.
+With replacement (last lesson's binomial, $p = 4/52$): $C(5, 2)(4/52)^2(48/52)^3 = 0.0465$.
 
 ```widget
 hyper-vs-binom
-{ "N": 52, "K": 4, "n": 5, "x": 2, "decks": 1, "preset": "jacks in 5 cards", "title": "Jacks in 5 cards: hypergeometric beside binomial; slide decks to 10 for the superdeck" }
+{ "N": 52, "K": 4, "n": 5, "x": 2, "decks": 1, "preset": "jacks in 5 cards", "title": "Jacks in 5 cards: hypergeometric beside binomial, for one deck up to the 10-deck superdeck" }
 ```
 
-`dhyper(x, K, N - K, n)` takes the successes, the failures and the sample size, not $N$.
+### Dealing without replacement: p changes card by card
+
+The chance that the next card is a jack moves with every card dealt (4/52, then 3/51 after a jack or 4/51 after a non-jack) while the binomial keeps 4/52; in the superdeck it barely moves.
+
+```widget
+deal-play
+{}
+```
+
+`dhyper(x, K, N - K, n)` takes four arguments: the value $x$, the successes, the failures and the sample size, never $N$. `dhyper(4, 40, 90, 10)` describes a population of 130 and returns a wrong answer with no error message.
 
 ```r
 N <- 52
@@ -67,7 +88,7 @@ dbinom(2, 5, 4/52)
 
 $$P(X = 2) = \frac{C(40, 2) \cdot C(480, 3)}{C(520, 5)} = \frac{780 \times 18\,316\,960}{310\,784\,578\,104} = 0.0460$$
 
-The binomial uses $p = 40/520 = 4/52$, the same as before, so it still gives 0.0465. The two answers closed up because the sample is now a smaller fraction of the population: $n/N$ fell from $5/52 = 9.6\%$ to $5/520 = 0.96\%$.
+The binomial uses $p = 40/520 = 4/52$, so it still gives 0.0465. The answers closed up because $n/N$ fell from $5/52 = 9.6\%$ to $5/520 = 0.96\%$.
 
 ```r
 N <- 520
@@ -84,17 +105,29 @@ dbinom(2, 5, K/N)
 
 ## The 5 % rule
 
-*If the sample size $n$ is 5 % or less of the total population $N$, then probabilities calculated using Hypergeometric and Binomial distributions are practically the same.* Compute $n/N$ first: 0.96 % passes, 9.6 % does not.
+*If the sample size $n$ is 5 % or less of the total population $N$, then probabilities calculated using Hypergeometric and Binomial distributions are practically the same.*
 
 ## Mac users: N = 90, K = 40, n = 10
 
-*Suppose a class of 90 students has 40 Apple Mac users. To conduct a market research survey, you randomly select a sample of 10 students. Let $X$ = the number of Apple Mac users in the sample.* The sample is drawn without replacement, so *$X$ is a hypergeometric variable with parameters* $N = 90$, $K = 40$, $n = 10$. $n/N = 10/90 = 11\%$ fails the 5 % rule, so the binomial is not an acceptable stand-in here.
+*Suppose a class of 90 students has 40 Apple Mac users. To conduct a market research survey, you randomly select a sample of 10 students. Let $X$ = the number of Apple Mac users in the sample.* Without replacement, *$X$ is a hypergeometric variable with parameters* $N = 90$, $K = 40$, $n = 10$. $n/N = 10/90 = 11\%$ fails the 5 % rule, so the binomial will not do.
 
 **(a)** *What is the probability that 4 students in the sample are Apple Mac users?*
 
+```quiz
+[
+  {
+    "q": "Mac users: N = 90, K = 40, n = 10. P(X = 4) = ? (4 decimals)",
+    "type": "numeric",
+    "answer": 0.2539,
+    "tolerance": 0.0002,
+    "explain": "C(40, 4) · C(50, 6) / C(90, 10) = 91 390 × 15 890 700 / 5.7206 × 10¹² = 0.2539."
+  }
+]
+```
+
 $$P(4) = \frac{C(40, 4) \cdot C(50, 6)}{C(90, 10)} = \frac{91\,390 \times 15\,890\,700}{5.7206 \times 10^{12}} = \frac{1.4523 \times 10^{12}}{5.7206 \times 10^{12}} = 0.2539$$
 
-**(b)** *What is the probability that 4 or fewer of them are Apple Mac users?* $P(X \le 4)$ is the sum of five terms, each from the same formula:
+**(b)** *What is the probability that 4 or fewer of them are Apple Mac users?* Five terms of the same formula:
 
 $$P(X \le 4) = P(0) + P(1) + P(2) + P(3) + P(4) = 0.0018 + 0.0175 + 0.0732 + 0.1725 + 0.2539 = 0.5189$$
 
@@ -102,9 +135,9 @@ $$P(X \le 4) = P(0) + P(1) + P(2) + P(3) + P(4) = 0.0018 + 0.0175 + 0.0732 + 0.1
 
 $$\mu = 10 \cdot \frac{40}{90} = 4.44, \qquad \sigma^2 = 10 \cdot \frac{40}{90} \cdot \frac{50}{90} \cdot \frac{80}{89} = 2.2194, \qquad \sigma = \sqrt{2.2194} = 1.49$$
 
-The binomial would give $\sqrt{10(0.444)(0.556)} = 1.57$; the correction factor $80/89 = 0.899$ shrinks the variance.
+The binomial would give $\sqrt{10(0.444)(0.556)} = 1.57$; the correction factor is $80/89 = 0.899$.
 
-**(d)** *Generate a probability histogram of $X$.* The printed figure `Number of Mac Users in a Sample (n=10)` has pink bars at $x = 0, \ldots, 10$, peaking at 4 (0.2539) with 5 just behind (0.2437), and nothing visible past 8.
+**(d)** *Generate a probability histogram of $X$.* The printed histogram peaks at 4 (0.2539) with 5 just behind (0.2437).
 
 **(e)** *If you found $X = 8$ Mac users, would this be considered unusual?*
 
@@ -146,15 +179,7 @@ Z
 [1] 2.386629
 ```
 
-`phyper(4, K, N-K, n)` is the cumulative $P(X \le 4)$, the same five-term sum in one call.
-
-:::info Where the numbers come from
-Pages 65 to 67 of the posted notes are blank apart from the two printed R lines for the jacks; the superdeck and every Mac-users answer are computed here and checked against the demo notebook's `dhyper`, `phyper`, `c(mu, sig)` and `Z` outputs.
-:::
-
-:::quiz Three arguments, none of them N
-`dhyper(x, K, N-K, n)` wants successes, failures, draws. Writing `dhyper(4, 40, 90, 10)` describes a population of 130 and gives the wrong answer with no error message.
-:::
+`phyper(4, K, N-K, n)` is the cumulative $P(X \le 4)$ in one call.
 
 ```quiz
 [
@@ -210,6 +235,25 @@ Pages 65 to 67 of the posted notes are blank apart from the two printed R lines 
     "code": "dhyper(4, ___, ___, 10)",
     "answer": ["40", "50"],
     "explain": "dhyper(x, K, N − K, n): 40 successes, 50 failures, 10 draws. It returns 0.2538614."
+  },
+  {
+    "type": "fill",
+    "q": "Fill in the population counts for P(X = 4) Mac users (90 students, 40 Mac users, sample of 10).",
+    "code": "C(___, 4) · C(___, 6) / C(90, 10)",
+    "answer": ["40", "50"],
+    "explain": "C(K, x) picks the 4 Mac users from the 40 available; C(N − K, n − x) picks the other 6 from the 50 non-Mac users."
+  },
+  {
+    "q": "Write P(X = 4) for the Mac users (N = 90, K = 40, n = 10) as the hypergeometric formula with the numbers substituted. Use C(n,x), * and /, no spaces.",
+    "type": "text",
+    "answer": ["C(40,4)*C(50,6)/C(90,10)", "C(40,4)C(50,6)/C(90,10)", "(C(40,4)*C(50,6))/C(90,10)", "40C4*50C6/90C10", "(40C4*50C6)/90C10", "choose(40,4)*choose(50,6)/choose(90,10)"],
+    "explain": "C(K, x) · C(N − K, n − x) / C(N, n) = C(40,4)·C(50,6)/C(90,10) = 0.2539."
+  },
+  {
+    "q": "You survey 10 of the 90 students, but each student is put back in the pool after answering and may be picked again. Which hypergeometric condition fails?",
+    "options": ["sampling without replacement", "a fixed sample size n", "each object is a success or a failure", "a population of known size N"],
+    "answer": 0,
+    "explain": "Putting each student back keeps p = 40/90 on every draw and makes the draws independent: that is the binomial, not the hypergeometric."
   },
   {
     "q": "For the same N, K and n (with n > 1), the hypergeometric σ is always smaller than the binomial σ with p = K/N.",

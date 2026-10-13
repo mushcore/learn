@@ -35,21 +35,25 @@ Member functions on `cin` test the bits. The slides' exact "true iff" wording:
 
 The slides' table (`*` stands for EOF):
 
-| User input | `n` afterward | `failbit` | `eofbit` |
-|---|---|---|---|
-| `123 456` | `123` | Not set | Not set |
-| `123` then EOF | `123` | Not set | Set |
-| `hello` | No change | Set | Not set |
-| EOF alone | No change | Set | Set |
+| User input | `n` afterward (slide) | `n` with g++ | `failbit` | `eofbit` |
+|---|---|---|---|---|
+| `123 456` | `123` | `123` | Not set | Not set |
+| `123` then EOF | `123` | `123` | Not set | Set |
+| `hello` | No change | **0** | Set | Not set |
+| EOF alone | No change | no change | Set | Set |
 
 Two traps:
 
-- On a **failed** read, `n` is left **unchanged**: not zeroed, not garbage, just whatever it held before.
+- The slide says a failed read leaves `n` unchanged. Since C++11 that holds only when the read meets the end of the input before any character. When there are characters and they are not a number, as with `hello`, `n` is set to **0**. Start with `int n = 42;`, type `hello`, and g++ prints `0`.
 - The offending characters (`hello`) **stay in the buffer**. A failed extraction never consumes them, so every later read on the same stream also fails.
+
+### One extraction at a time
+
+Each step is one `cin >> n`: the cursor skips whitespace, reads what fits, and the bits light up when a read fails.
 
 ```widget
 cin-sim
-{ "reads": ["int n"], "input": "hello", "presets": { "valid": "123 456", "letters": "hello", "eof after number": "123" } }
+{ "reads": ["int n"], "input": "hello", "presets": { "valid": "123 456", "letters": "hello", "eof after number": "123", "EOF alone": "" } }
 ```
 
 :::quiz A failed read does not clear itself
@@ -94,12 +98,13 @@ void ignoreline(istream& is)
 
 ## `AddIntegers.cpp` vs `AddIntegersError.cpp`
 
-Both samples do the same thing on paper: read integers in a loop until the input stops being a number, then read words in a second loop until the user types `quit`. Only one of them works.
+Both samples read integers in a loop until the input stops being a number, then read words in a second loop until the user types `quit`. Only one of them works.
 
 ### `AddIntegers.cpp`
 
 ```cpp run pin AddIntegers.cpp
 // stdin: 5 6 x\nhello quit
+// predict: Input is 5 6 x, Enter, hello quit. Write every line printed.
 #include <iostream>
 #include <limits>
 using namespace std;
@@ -128,22 +133,13 @@ int main() {
 }
 ```
 
-`while(cin >> n)` reads `5`, then `6`, then fails on `x`: `n` is unchanged, `x` stays in the buffer, and `failbit` ends the loop. `cin.clear();` unsets `failbit`, and `cin.ignore(numeric_limits<streamsize>::max(),'\n');` discards the leftover `x` and the newline, leaving `hello quit` ready to read. `while(cin >> name)` reads `hello` and prints it, reads `quit`, and breaks. Full output:
-
-```text
-Enter a number: 
-Enter a number: 5
-Enter a number: 6
-Enter a string, type ''quit'' to leave: 
-Enter a string, type ''quit'' to leave: hello
-Ending program
-```
+`while(cin >> n)` ends when the read of `x` fails: `failbit` is set, `n` becomes 0 and `x` stays in the buffer. `cin.clear();` unsets `failbit`, and `cin.ignore(numeric_limits<streamsize>::max(),'\n');` discards the leftover `x` and the newline, so `while(cin >> name)` starts on a clean line and stops at `quit`.
 
 ### `AddIntegersError.cpp`
 
 ```cpp run pin AddIntegersError.cpp
 // stdin: 5 6 x\nhello quit
-// predict: Input is 5 6 x then hello quit. Which prompts print, and does the string loop run?
+// predict: Same input. Write every line printed.
 #include <iostream>
 #include <limits>
 using namespace std;
@@ -171,58 +167,11 @@ int main() {
 }
 ```
 
-```cpp diff AddIntegers.cpp (fixed)
-#include <iostream>
-#include <limits>
-using namespace std;
-int main() {
-    int n;
-    cout << "Enter a number: " << endl;
-    while(cin >> n)
-    {
-        cout << "Enter a number: " << n << endl;
-    }
-
-    string name = "";
-    cin.clear();
-    cin.ignore(numeric_limits<streamsize>::max(),'\n');
-    cout << "Enter a string, type ''quit'' to leave: " << endl;
-    while(cin >> name)
-    {
-        if(name == "quit") {
-            break;
-        }
-        cout << "Enter a string, type ''quit'' to leave: " << name << endl;
-    }
-
-    cout << "Ending program\n";
-    return 0;
-}
-```
-
-The **Before / After** toggle on the program shows the two added lines that are the whole fix.
-
-:::before Before
-With `failbit` still set from the `x`, `while(cin >> name)` is false on its first check. The string loop never runs; the output jumps straight to `Ending program`.
-:::
-
-:::after After
-`cin.clear();` resets the flags and `cin.ignore(numeric_limits<streamsize>::max(),'\n');` discards the rest of the bad line. Now `while(cin >> name)` reads `hello`, then `quit`, and exits normally.
-:::
-
-The first loop, `while(cin >> n)`, fails on `x` exactly as before, leaving `failbit` set. **There is no `cin.clear()` before the second loop.** `cout << "Enter a string..."` still prints, because `cout` does not depend on `cin`'s state, but `while(cin >> name)` checks the stream's state before reading anything, finds it failed, and is `false` on its very first check. `hello` and `quit` are never read. Full output:
-
-```text
-Enter a number: 
-Enter a number: 5
-Enter a number: 6
-Enter a string, type ''quit'' to leave: 
-Ending program
-```
+The only difference is the missing `cin.clear();` and `cin.ignore(...)` pair before `string name = "";`. `cout << "Enter a string..."` still prints, because `cout` does not depend on `cin`'s state. But `while(cin >> name)` checks the stream before reading anything, finds `failbit` still set from the `x`, and is false on its very first check.
 
 ```widget
 cin-sim
-{ "reads": ["int n"], "input": "5 6 x", "presets": { "fails on x": "5 6 x", "all valid": "5 6 7" } }
+{ "reads": ["int n", "int n", "int n", "string name"], "input": "5 6 x\\nhello quit", "presets": { "fails on x": "5 6 x\\nhello quit", "all valid": "5 6 7\\nhello quit" } }
 ```
 
 ```quiz
@@ -277,9 +226,9 @@ cin-sim
   },
   {
     "q": "For `int n; cin >> n;` with input `hello`, what happens to `n` and failbit?",
-    "options": ["n becomes 0, failbit set", "n is unchanged, failbit set", "n is unchanged, failbit not set", "n becomes garbage, failbit not set"],
-    "answer": 1,
-    "explain": "The slide's table shows: input 'hello' -> n: No change, failbit: set, eofbit: Not set."
+    "options": ["n becomes 0, failbit set", "n is unchanged, failbit set, eofbit set", "n is unchanged, failbit not set", "n becomes garbage, failbit not set"],
+    "answer": 0,
+    "explain": "g++ follows C++11: characters are present but are not a number, so n is set to 0 and failbit is set (eofbit is not). The slide's table says 'No change' for n; that was the C++98 rule and still holds when the read meets EOF before any character."
   },
   {
     "q": "After a failed `cin >> n`, what happens to the offending characters still in the buffer?",
@@ -347,10 +296,10 @@ cin-sim
     "pairs": [
       ["`123 456`", "n = 123, failbit not set, eofbit not set"],
       ["`123` then EOF", "n = 123, failbit not set, eofbit set"],
-      ["`hello`", "n unchanged, failbit set, eofbit not set"],
+      ["`hello`", "n = 0 (C++11), failbit set, eofbit not set"],
       ["EOF alone", "n unchanged, failbit set, eofbit set"]
     ],
-    "explain": "A successful numeric read never sets failbit even right before EOF. Any non-numeric input leaves n untouched and sets failbit; hitting EOF while trying to read sets eofbit too."
+    "explain": "A successful numeric read never sets failbit even right before EOF. Non-numeric characters set failbit and store 0 in n (the slide's 'No change' is the pre-C++11 rule); meeting EOF before any character sets both bits and leaves n alone."
   }
 ]
 ```

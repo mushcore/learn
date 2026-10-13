@@ -7,11 +7,11 @@ A bandpass channel does not pass Week 4's baseband line codes, so digital data h
 
 ## Where digital-to-analog conversion happens
 
-Slide example: a smartphone's DAC converts the digital music file into analog audio before it reaches wired headphones. Radio, the slide's other example, is analog-to-analog conversion (lesson 9).
+Slide example: a smartphone's DAC converts the digital music file into analog audio for wired headphones.
 
 ## Review: r, S and N in analog transmission
 
-The Week 4 vocabulary carries over: data element versus signal element, data rate (bit rate) versus signal rate (baud rate). Slide wording: *In analog transmission of digital data, r = log₂ L (L is the number of different signal elements/levels) and baud rate ≤ bit rate (S = N/r).* The slide writes it without Week 4's case factor $c$.
+Slide wording: *In analog transmission of digital data, r = log₂ L (L is the number of different signal elements/levels) and baud rate ≤ bit rate (S = N/r).*
 
 ## The carrier signal
 
@@ -21,20 +21,13 @@ The Week 4 vocabulary carries over: data element versus signal element, data rat
 
 *Converting digital data to a bandpass analog signal. Modifying any of the three characteristics (amplitude, frequency, and phase) of a sine wave (i.e., carrier signal) based on the information in the digital data. The process is called modulation or shift keying.*
 
-The slide's tree puts ASK, FSK and PSK under digital-to-analog conversion, with dashed arrows from ASK and PSK into a fourth, QAM (quadrature amplitude modulation), which combines the two (next lesson).
+The slide's tree puts ASK, FSK and PSK under digital-to-analog conversion, with dashed arrows from ASK and PSK into QAM, which combines the two (next lesson).
 
 ## ASK: the amplitude of the carrier is varied
 
 *The amplitude of the carrier signal is varied to create signal elements. Both frequency and phase remain constant.*
 
-**Binary ASK (BASK)** is *implemented using only two levels of signal elements* and is *also called OOK (On-Off Keying)*: the peak amplitude *for one signal level is 0, for the other one is equal to the peak amplitude of the carrier signal*. The slide figure sends 1 0 1 1 0 as the carrier sine during each 1 and a flat zero during each 0. The implementation is a **multiplier**: the digital signal times the carrier from an oscillator at $f_c$.
-
-### Bits 1 0 1 1 0 on a carrier: ASK
-
-```widget
-shift-keying
-{ "bits": "10110", "scheme": "ask", "schemes": ["ask", "fsk", "psk"], "cycles": 3, "title": "ASK: the carrier is on for a 1 and off for a 0" }
-```
+**Binary ASK (BASK)** is *implemented using only two levels of signal elements* and is *also called OOK (On-Off Keying)*: the peak amplitude *for one signal level is 0, for the other one is equal to the peak amplitude of the carrier signal*. The implementation is a **multiplier**: the digital signal times the carrier from an oscillator at $f_c$.
 
 ## Bandwidth for ASK: B = (1 + d)S
 
@@ -42,7 +35,7 @@ shift-keying
 
 $$r = 1, \qquad S = N, \qquad B = (1 + d)S$$
 
-The spectrum is one rounded hump of width $B$ centred on the carrier frequency $f_c$. The slide never defines $d$; the textbook's $d$ is a factor between 0 and 1 that depends on the modulation and filtering process (from memory, unverified). With $d = 0$ the bandwidth equals the baud rate.
+The spectrum is one rounded hump of width $B$ centred on the carrier frequency $f_c$. The slide never defines $d$; the textbook's $d$ is a factor between 0 and 1 (from memory, unverified). With $d = 0$ the bandwidth equals the baud rate.
 
 ## Multi-level ASK is not common
 
@@ -56,43 +49,37 @@ The spectrum is one rounded hump of width $B$ centred on the carrier frequency $
 
 $$r = 1, \qquad S = N, \qquad B = (1 + d)S + 2\Delta f$$
 
-The spectrum has two humps, one at $f_1$ and one at $f_2$, each of width $S(1 + d)$. *Both f₁ and f₂ are Δf apart from the midpoint between the two bands. The difference between the two frequencies is 2Δf.* BFSK therefore costs the ASK bandwidth plus the gap between its two carriers; the figure prints $\Delta f$ as Df.
+The spectrum has two humps, one at $f_1$ and one at $f_2$, each of width $S(1 + d)$. *Both f₁ and f₂ are Δf apart from the midpoint between the two bands. The difference between the two frequencies is 2Δf.*
 
 **Multilevel FSK (MFSK)** uses *more than two frequencies*: 4 frequencies send 2 bits at a time, 8 frequencies send 3 bits at a time.
-
-### The same bits in FSK: f₁ for 0, f₂ for 1
-
-```widget
-shift-keying
-{ "bits": "10110", "scheme": "fsk", "schemes": ["ask", "fsk", "psk"], "cycles": 3, "title": "FSK: two carrier frequencies, two humps in the spectrum" }
-```
 
 ## PSK: the phase of the carrier is changed
 
 *The phase of the carrier is changed to represent two or more different signal elements. Both peak amplitude and frequency remain constant as the phase changes.* PSK is *more common than ASK or FSK* and *less susceptible to noise than ASK*. The slide asks why and answers: *Because noise can change the amplitude easier than it can change the phase.* The cost: *PSK needs more sophisticated hardware to be able to distinguish between phases.*
 
-**Binary PSK (BPSK)**: *Two signal elements are used (one with a phase of 0°, and the other with a phase of 180°). Same bandwidth as BASK but less than BFSK.* The figure draws each 1 as the carrier (blue) and each 0 as the carrier turned upside down (black), so the sine reverses wherever the bit changes. The yellow box is ASK's, one hump at $f_c$ and no $2\Delta f$ term:
+**Binary PSK (BPSK)**: *Two signal elements are used (one with a phase of 0°, and the other with a phase of 180°). Same bandwidth as BASK but less than BFSK.* The figure draws each 1 as the carrier (blue) and each 0 as the carrier turned upside down (black). The yellow box is ASK's, one hump at $f_c$:
 
 $$r = 1, \qquad S = N, \qquad B = (1 + d)S$$
 
-The implementation slide reuses ASK's multiplier and oscillator with a different input: the digital signal is **polar NRZ**, 1 high and 0 low on opposite sides of the axis. Multiplying the carrier by a negative level turns the sine upside down, which is a 180° phase shift (ours).
+The implementation reuses ASK's multiplier and oscillator with a **polar NRZ** input; multiplying the carrier by the negative level turns the sine upside down, a 180° phase shift (ours).
 
-### The same bits in PSK: the sine flips where the bit changes
+## Bits 1 0 1 1 0 in ASK, FSK and PSK
+
+Under all three schemes the five bits are five signal elements in 1 s.
 
 ```widget
 shift-keying
-{ "bits": "10110", "scheme": "psk", "schemes": ["ask", "fsk", "psk"], "cycles": 3, "title": "PSK: 0° for a 1, 180° for a 0, as the slide figure draws it" }
+{ "bits": "10110", "scheme": "ask", "schemes": ["ask", "fsk", "psk"], "cycles": 3, "title": "The slide's five bits on a carrier: ASK, FSK and PSK" }
 ```
 
-## The three schemes side by side
+### One signal element at a time
 
-| Scheme | Varies | Constant | Binary form | Yellow box | Implementation |
-|---|---|---|---|---|---|
-| ASK | amplitude | frequency, phase | BASK = OOK: amplitude 0 or the carrier's peak | $r = 1$, $S = N$, $B = (1 + d)S$ | multiplier |
-| FSK | frequency | peak amplitude, phase | BFSK: $f_1$ for 0, $f_2$ for 1 | $r = 1$, $S = N$, $B = (1 + d)S + 2\Delta f$ | VCO |
-| PSK | phase | peak amplitude, frequency | BPSK: 0° and 180° | $r = 1$, $S = N$, $B = (1 + d)S$ | multiplier with a polar NRZ input |
+Each element changes one property of the carrier and leaves the other two alone.
 
-All three binary forms have $r = 1$ and all three bandwidths contain $(1 + d)S$; FSK alone adds $2\Delta f$.
+```widget
+shift-keying-play
+{ "bits": "10110", "scheme": "ask", "schemes": ["ask", "fsk", "psk"] }
+```
 
 ```quiz
 [

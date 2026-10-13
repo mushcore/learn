@@ -55,7 +55,7 @@ Notation: the notes write $nCx$ for $C(n, x)$ and $q = 1 - p$. R's `dbinom(x, n,
   $$P(x) = nCx \cdot p^x \cdot q^{n-x}, \qquad nCx = \frac{n!}{(n-x)!\,x!}$$
 
 ## p.61 — jacks with replacement (blank; computed)
-- 5 cards **with** replacement, $P(\text{2 jacks})$: $p = 4/52$, $n = 5$: $C(5,2)(4/52)^2(48/52)^3 = 10 \times 0.005917 \times 0.7866 = \mathbf{0.0465}$ (`dbinom(2, 5, 4/52)` → 0.04654006).
+- 5 cards **with** replacement, $P(\text{2 jacks})$: $p = 4/52$, $n = 5$: $C(5,2)(4/52)^2(48/52)^3 = 10 \times 0.005917 \times 0.7865 = \mathbf{0.0465}$ (`dbinom(2, 5, 4/52)` → 0.04654006).
 - At least 2 jacks: $1 - P(0) - P(1) = 1 - (48/52)^5 - 5(4/52)(48/52)^4 = 1 - 0.6702 - 0.2792 = \mathbf{0.0506}$ (`1 - pbinom(1, 5, 4/52)` → 0.05058).
 
 ## p.62 — mean and variance of a binomial
@@ -90,7 +90,7 @@ Notation: the notes write $nCx$ for $C(n, x)$ and $q = 1 - p$. R's `dbinom(x, n,
 ## p.66 — 5 % rule; Mac users
 - **5 % Rule**: if the sample size $n$ is 5 % or less of the total population $N$, then probabilities calculated using Hypergeometric and Binomial distributions are practically the same.
 - Example: a class of 90 students has 40 Apple Mac users; a random sample of 10; $X$ = the number of Mac users in the sample. Hypergeometric with (blank) $N = 90$, $K = 40$, $n = 10$ ($n/N = 11\% > 5\%$, so the binomial is not a good stand-in).
-  - (a) $P(X = 4) = \dfrac{C(40,4)\,C(50,6)}{C(90,10)} = \dfrac{91\,390 \times 15\,890\,700}{5.7208 \times 10^{12}} = \mathbf{0.2539}$ (`dhyper(4, 40, 50, 10)` → 0.2538614).
+  - (a) $P(X = 4) = \dfrac{C(40,4)\,C(50,6)}{C(90,10)} = \dfrac{91\,390 \times 15\,890\,700}{5.7206 \times 10^{12}} = \mathbf{0.2539}$ (`dhyper(4, 40, 50, 10)` → 0.2538614).
   - (b) $P(X \le 4) = P(0) + \cdots + P(4) = 0.0018 + 0.0175 + 0.0732 + 0.1725 + 0.2539 = \mathbf{0.5189}$ (`phyper(4, 40, 50, 10)` → 0.5188862).
 
 ## p.67 — Mac users (c)–(e)

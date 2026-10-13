@@ -60,7 +60,7 @@ registerQuestionType("reorder", (qEl, spec) => {
     list.innerHTML = "";
     order.forEach((idx, pos) => {
       const row = el("div", "reorder-row"); row.draggable = true; row.dataset.pos = pos;
-      const code = el("code"); code.innerHTML = highlight("cpp", lines[idx]) || "&nbsp;";
+      const code = el("code"); code.innerHTML = highlight(spec.lang || "cpp", lines[idx]) || "&nbsp;";
       const up = el("button", "reset-btn scrub-step", "↑"), dn = el("button", "reset-btn scrub-step", "↓");
       up.disabled = pos === 0; dn.disabled = pos === order.length - 1;
       up.addEventListener("click", () => move(pos, pos - 1)); dn.addEventListener("click", () => move(pos, pos + 1));

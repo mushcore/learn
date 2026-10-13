@@ -51,7 +51,7 @@ pie( freq.tab, new.labels, radius=1.0,
      col=c("grey","pink"))
 ```
 
-`sum(freq.tab)` is 236 (one student has no writing hand recorded), and `paste0` glues the pieces into "Writing Hand of Students (n = 236)". Do not hard-code the 236: the lab says so twice, and so does the quiz.
+`sum(freq.tab)` is 236 (one student has no writing hand recorded), and `paste0` glues the pieces into "Writing Hand of Students (n = 236)". Do not hard-code the 236: the lab says so twice.
 
 ```widget
 cat-charts
@@ -95,15 +95,28 @@ cbind(heights.freq)
 
 `cut()` assigns each height to a class labelled `[150,155)`, closed on the left and open on the right because of `right=FALSE`, exactly Unit 2's convention; `table()` counts. Task 5 repeats it for male and female heights with the same limits (`subset(survey, Sex == "Male")$Height`, NAs dropped, `breaks=seq(overall.min, overall.max+5, by=5)`) and concludes that female heights are noticeably smaller while the spread looks similar.
 
-`cumsum(heights.freq)` accumulates: 6, 19, 39, 84, 126, 153, 181, 198, 206, 208, so 126 students are under 175 cm. The ogive is `plot()` of the lower limits against the cumulative counts with a 0 inserted at the front (`cumul.freq <- c(0, cumul.freq)`), and Task 7 dresses it: `type="b"` for points and lines, `pch=19`, `lty = 2`, `lwd=2`, axis labels, and `main=paste("Ogive of", sum(heights.freq), "student heights")` for the 208.
+`cumsum(heights.freq)` accumulates: 6, 19, 39, 84, 126, 153, 181, 198, 206, 208, so 126 students are under 175 cm. The ogive is `plot(lower.limits, cumul.freq)` after a 0 is inserted at the front (`cumul.freq <- c(0, cumul.freq)`). `lower.limits` is `seq(150, 200, by=5)`, eleven values, and the padded counts are eleven too, so 0 sits at 150 and each class's count sits at that class's right boundary: 6 at 155, 19 at 160, 208 at 200. Task 7 dresses it: `type="b"` for points and lines, `pch=19`, `lty = 2`, `lwd=2`, axis labels, and `main=paste("Ogive of", sum(heights.freq), "student heights")` for the 208.
 
-:::warn Two ogive conventions
-Unit 2's notes plot cumulative **relative** frequency against the **upper** class limits. Lab 3 plots cumulative **counts** against the **lower** limits with a 0 at the first lower limit. Both are ogives; read the axes before answering a question about one.
+:::warn Lab 3's ogive and Unit 2's
+Both put each cumulative value at the right end of its class, with a 0 at the start. Two things differ. Lab 3's y-axis is cumulative **counts** (up to 208); Unit 2's is cumulative **relative** frequency (up to 1.000). Lab 3's x-values are the class **boundaries** 155, 160, … (the variable is called `lower.limits` because each is also the next class's lower limit); Unit 2's are the **upper limits** 154, 159, … of whole-number classes.
 :::
+
+## Lab 3 pencil problems
+
+They repeat Lab 2's. **Class width**: $n = 250$, min 51.3, max 135.4. $\sqrt{250} = 15.8$ classes, so the ideal width is $(135.4 - 51.3)/15.8 = 5.32$, rounded to 5.3 (16 classes) or 5 (17 classes). **Old Faithful waiting times**: the stem plot runs from 43 to 96 minutes, is bimodal, and most waits fall between 75 and 85. **Boxplots of heights by sex**: when the female box's upper quartile sits below the male box's lower quartile, *75% of female students are shorter than the shortest 25% of male students*; when the male median sits above the female maximum, *50% of the male students are taller than the tallest female student*.
+
+```quiz
+[
+  { "q": "A data set has $n = 250$, minimum 51.3 and maximum 135.4. What is the ideal class width $R/\\sqrt{n}$? (2 decimals)", "type": "numeric", "answer": 5.32, "tolerance": 0.01, "explain": "R = 135.4 − 51.3 = 84.1 and √250 = 15.81, so 84.1/15.81 = 5.32. Round to a convenient 5.3 (16 classes) or 5 (17 classes)." },
+  { "q": "With width 5.3, how many classes cover 51.3 to 135.4?", "type": "numeric", "answer": 16, "tolerance": 0, "explain": "84.1/5.3 = 15.9, rounded up to 16 classes. Width 5 needs 84.1/5 = 16.8, so 17." },
+  { "q": "The Old Faithful waiting-time stem plot runs from 43 to 96 minutes with most values between 75 and 85 and a second cluster in the 50s. Its shape is...", "options": ["bimodal", "symmetric and unimodal", "uniform", "skewed right with one peak"], "answer": 0, "explain": "Two clusters, two peaks: short waits after short eruptions and long waits after long ones." },
+  { "q": "In side-by-side boxplots, the female Q3 is below the male Q1. Which sentence follows?", "options": ["75% of female students are shorter than the shortest 25% of male students", "every female student is shorter than every male student", "the medians are equal", "50% of female students are taller than the tallest male"], "answer": 0, "explain": "75% of females lie below the female Q3; the shortest 25% of males lie below the male Q1, which is higher still. The boxplot says nothing about every individual." }
+]
+```
 
 ## Histograms and scatter plots
 
-`hist(numerical.heights)` picks width-5 bins and poor labels; Task 6 specifies everything: `hist(numerical.Heights, breaks=seq(150, 200, by=2.5), right=FALSE, col="pink", xlab="Heights (cm)", ylab="Frequency", main=paste0("Heights of Students (n = ", length(numerical.Heights), ")"))`, with `length()` supplying the 209 (here `survey[!is.na(survey$Height), "Height"]` keeps the 200 cm student).
+`hist(numerical.heights)` picks width-5 bins and poor labels; Task 6 specifies everything: `hist(numerical.heights, breaks=seq(150, 200, by=2.5), right=FALSE, col="pink", xlab="Heights (cm)", ylab="Frequency", main=paste0("Heights of Students (n = ", length(numerical.heights), ")"))`. The lab's solution spells the variable `numerical.Heights`; R names are case-sensitive, so use the spelling you defined. `length()` gives 209, every non-missing height. The table above summed to 208 because `cut(..., right=FALSE)` leaves the one 200 cm student outside `[195,200)`; `hist()` closes its last bin, so the histogram counts that student.
 
 Scatter plots use lattice's model formula, `xyplot(Wr.Hnd ~ Height, data=survey, col="black")`, a spread-out cloud with little correlation. Task 8 draws two: `xyplot(Pulse ~ Height, ...)` and `xyplot(Wr.Hnd ~ NW.Hnd, ...)`, each with `pch=19`, a hex colour and `main=paste0("... (n = ", nrow(survey), ")")`. Writing hand against non-writing hand is the far stronger linear relation (the two spans are nearly equal for everyone; $r \approx 0.95$), while pulse against height is a cloud ($r \approx -0.07$). `cor(x, y, use="complete.obs")` confirms it with the NAs skipped.
 

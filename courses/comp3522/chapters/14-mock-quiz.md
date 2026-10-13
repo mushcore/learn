@@ -3,7 +3,7 @@ title: Mock Quiz 1
 minutes: 45
 ---
 
-51 questions in the real format: multiple choice, true/false, select-all, and matching rendered as multiple choice. Answer everything, then check — each explanation says *why*, so a wrong answer is still a lesson.
+53 questions in the real format: multiple choice, true/false, select-all, and matching rendered as multiple choice. Answer everything, then check — each explanation says why, so a wrong answer is still a lesson.
 
 :::quiz Real quiz conditions
 Written at the start of lab on the Learning Hub. It covers the Week 1 slides **and the Week 1 sample code**. Aim for 90% here before you stop studying.
@@ -296,9 +296,9 @@ Written at the start of lab on the Learning Hub. It covers the Week 1 slides **a
   },
   {
     "q": "For `int n; cin >> n;` with the typed input `hello`, what happens?",
-    "options": ["n becomes 0, failbit set", "n is unchanged, failbit set, and 'hello' stays in the buffer", "n is unchanged, eofbit set", "the program crashes"],
-    "answer": 1,
-    "explain": "From the input-examples table: no change to n, failbit set. The offending characters remain in the buffer, so every later read also fails until you clear and ignore."
+    "options": ["n becomes 0, failbit set, and 'hello' stays in the buffer", "n is unchanged, failbit set, and 'hello' is discarded", "n is unchanged, eofbit set", "the program crashes"],
+    "answer": 0,
+    "explain": "g++ follows C++11: characters that are not a number set failbit and store 0 in n (the slide's table says 'No change', the pre-C++11 rule). The offending characters remain in the buffer, so every later read also fails until you clear and ignore."
   },
   {
     "q": "Why does `while (cin >> n)` work as a loop condition?",

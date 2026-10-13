@@ -4,6 +4,7 @@
 // virtual base classes, friendship, operator-overload dispatch, and the copy-and-swap assignment.
 import { el, esc, btnRow, slider } from "./dom.js";
 import { highlight } from "./highlight.js";
+import { createPlayback } from "./playback.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 function svgEl(tag, attrs = {}, text) {
@@ -58,6 +59,70 @@ function stepper(onStep) {
   next.addEventListener("click", () => go(k + 1));
   range.addEventListener("input", () => go(Number(range.value)));
   return { bar, reset: (count) => { n = Math.max(1, count); range.max = n - 1; go(0); }, go };
+}
+
+// ---------- predict mode for the playback widgets (same behaviour as line-code-play) ----------
+/**
+ * questions(): [{ at, text, options: [{ label, ok, why }] }], `at` = the rest position the question holds.
+ * The bar cannot pass `at` until the right option is picked; a wrong pick turns red and quotes the
+ * rule; tally() gives the first-try score for the last caption. Moving back re-opens the questions.
+ */
+function predictGates(ask, questions, getPb) {
+  const g = { on: false, answered: 0, asked: 0, firstTry: 0, missed: false, wrong: -1, key: null, refocus: false };
+  const cur = () => (g.on ? questions()[g.answered] || null : null);
+  g.limit = () => { const q = cur(); return q ? q.at : Infinity; };
+  g.asking = (pos) => { const q = cur(); return q && Math.abs(pos - q.at) < 1e-6 ? q : null; };
+  g.restart = (pos = 0) => {
+    g.answered = g.on ? questions().filter((q) => q.at < pos - 1e-9).length : 0;
+    g.asked = 0; g.firstTry = 0; g.missed = false; g.wrong = -1; g.key = null;
+  };
+  g.tally = () => (g.asked > 0 ? ` ${g.firstTry} of ${g.asked} right on the first try.` : "");
+  g.nudge = () => { ask.classList.remove("playback-nudge"); void ask.offsetWidth; ask.classList.add("playback-nudge"); };
+  g.render = (pos) => {
+    const q = g.asking(pos);
+    const key = q ? `${g.answered}|${g.wrong}|${q.text}|${q.options.map((o) => o.label).join("|")}` : "";
+    if (key === g.key) return;
+    g.key = key; ask.innerHTML = ""; ask.hidden = !g.on || !q;
+    if (!q) return;
+    const btns = q.options.map((o, i) => {
+      const b = el("button", "viz-btn" + (i === g.wrong ? " playback-wrong" : ""), o.label);
+      b.type = "button";
+      b.addEventListener("click", (e) => {
+        if (!g.missed) g.asked++;
+        g.refocus = e.detail === 0;
+        if (!o.ok) { g.missed = true; g.wrong = i; getPb().set(getPb().pos()); return; }
+        if (!g.missed) g.firstTry++;
+        g.missed = false; g.wrong = -1; g.answered++;
+        getPb().next();
+      });
+      ask.append(b);
+      return b;
+    });
+    if (g.wrong >= 0) ask.append(el("span", "playback-feedback", `Not that. ${q.options[g.wrong].why}`));
+    if (g.refocus) { g.refocus = false; (btns.find((b) => !b.classList.contains("playback-wrong")) || btns[0]).focus(); }
+  };
+  return g;
+}
+/** A predict checkbox, an ask row and a playback bar wired together. opts: checkText, predict, count(), unit, stepMs, questions(), onFrame(pos, playing, gate). */
+function playbackWithPredict(opts) {
+  const label = el("label", "playback-check");
+  const input = document.createElement("input");
+  input.type = "checkbox"; input.checked = !!opts.predict;
+  label.append(input, " " + opts.checkText);
+  const ask = el("div", "viz-btn-row playback-ask");
+  ask.hidden = true;
+  let pb = null, lastPos = 0;
+  const gate = predictGates(ask, opts.questions, () => pb);
+  gate.on = input.checked;
+  const onFrame = (pos, playing) => {
+    // Moving back (restart, back, scrub) re-opens the questions at or after the new position.
+    if (gate.on && !playing && pos < lastPos - 1e-9) { const qs = opts.questions(); while (gate.answered > 0 && qs[gate.answered - 1].at >= pos - 1e-9) gate.answered--; gate.missed = false; gate.wrong = -1; }
+    lastPos = pos;
+    opts.onFrame(pos, playing, gate); gate.render(pos);
+  };
+  pb = createPlayback({ count: opts.count(), unit: opts.unit, stepMs: opts.stepMs, onFrame, limit: () => gate.limit(), onBlocked: () => gate.nudge() });
+  input.addEventListener("change", () => { gate.on = input.checked; pb.pause(); gate.restart(pb.pos()); gate.key = null; pb.set(pb.pos()); });
+  return { pb, gate, check: label, ask, reset() { gate.restart(0); lastPos = 0; pb.reset(opts.count()); } };
 }
 
 // ---------- widget: access-matrix ----------
@@ -173,7 +238,8 @@ function ctorPicker(box, cfg) {
 
 // ---------- widget: lifetime-trace ----------
 // A tiny model of C++ object lifetime: classes with bases and members, main with blocks, copies,
-// by-value / by-reference calls, new / delete. Every step records the objects alive and the output.
+// by-value / by-reference calls, functions that return by value (a copy from a parameter, NRVO for a
+// local, copy elision into the declared object), new / delete. Every step records the objects alive and the output.
 const LT_PRESETS = {
   "Block scope": `class A { };
 class B { };
@@ -233,25 +299,91 @@ int main() {
     return 0;
 }`,
 };
+// Types that are not modelled as objects: members of these types are skipped.
+const LT_PRIMS = /^(?:int|double|float|char|bool|long|short|unsigned|size_t|string|std::string|auto)$/;
+/** A class block: one line (`class X : Base(...) { Member m; };`) or several, with optional printing special members. */
+function ltClass(text, line) {
+  const m = /^(?:class|struct)\s+(\w+)\s*(?::\s*([^{]+))?\{([\s\S]*)\}\s*;?$/.exec(text);
+  if (!m) throw new Error(`line ${line}: cannot read class '${text.slice(0, 40)}'`);
+  const name = m[1];
+  const bases = (m[2] || "").split(",").map((b) => b.trim()).filter(Boolean).map((b) => { const bm = /^(?:public\s+|protected\s+|private\s+)?(?:virtual\s+)?(\w+)\s*(\(\.\.\.\))?$/.exec(b); if (!bm) throw new Error(`line ${line}: cannot read base '${b}'`); return { name: bm[1], forward: !!bm[2] }; });
+  let body = m[3].replace(/\b(?:public|protected|private)\s*:/g, " ");
+  const said = (fn) => { const s = /cout\s*<<\s*"([^"]*)"/.exec(fn); return s ? s[1] : null; };
+  const msgs = {};
+  // Special members with a body: X() { … }, ~X() { … }, X(const X&) { … } (bodies have no nested braces).
+  body = body.replace(new RegExp(`~${name}\\s*\\(\\s*\\)\\s*\\{([^}]*)\\}`, "g"), (_, b) => { msgs.dtor = said(b); return ";"; });
+  body = body.replace(new RegExp(`\\b${name}\\s*\\(\\s*const\\s+${name}\\s*&\\s*\\w*\\s*\\)\\s*(?::[^{;]*)?\\{([^}]*)\\}`, "g"), (_, b) => { msgs.copy = said(b); return ";"; });
+  body = body.replace(new RegExp(`\\b${name}\\s*\\(\\s*\\)\\s*(?::[^{;]*)?\\{([^}]*)\\}`, "g"), (_, b) => { msgs.ctor = said(b); return ";"; });
+  // Any other member function definition or declaration is not modelled.
+  body = body.replace(/[^;{}]*\([^)]*\)[^;{}]*\{[^}]*\}/g, ";").replace(/[^;{}]*\([^)]*\)[^;{}]*;/g, ";");
+  const members = body.split(";").map((s) => s.trim()).filter(Boolean).map((s) => { const mm = /^((?:const\s+)?[\w:]+)(\s*[*&]\s*|\s+)(\w+)(?:\s*=.*|\s*\{.*\})?$/.exec(s); if (!mm) throw new Error(`line ${line}: cannot read member '${s}'`); return { type: mm[1], name: mm[3], ind: /[*&]/.test(mm[2]) }; }).filter((mm) => !mm.ind && !LT_PRIMS.test(mm.type) && !/^const\s/.test(mm.type)).map(({ type, name }) => ({ type, name }));
+  for (const k of Object.keys(msgs)) if (msgs[k] == null) delete msgs[k];
+  return { name, bases, members, msgs, line };
+}
+/** Statements of a function body: cout of string literals, local declarations, return name. */
+function ltFnBody(parts, classes) {
+  const out = [];
+  for (const { text, line } of parts) {
+    const t = text.trim();
+    let m;
+    if (!t) continue;
+    if (/^(?:std::)?cout\s*<</.test(t)) out.push({ kind: "print", line, text: [...t.matchAll(/"([^"]*)"/g)].map((x) => x[1]).join("") });
+    else if ((m = /^return\s+(\w+)$/.exec(t))) out.push({ kind: "return", line, name: m[1] });
+    else if (/^return$/.test(t)) out.push({ kind: "return", line, name: null });
+    else if ((m = /^(\w+)\s+(\w+)\s*(?:\((.*)\)|\{(.*)\})?$/.exec(t)) && classes[m[1]]) out.push({ kind: "decl", line, type: m[1], name: m[2], args: (m[3] ?? m[4] ?? "").trim() });
+    else throw new Error(`line ${line}: cannot read '${t}' in a function body`);
+  }
+  return out;
+}
 function ltParse(src) {
   const classes = {}, funcs = {};
   const lines = src.replace(/\r\n/g, "\n").split("\n");
-  let mainStart = -1;
-  lines.forEach((raw, i) => {
-    const t = raw.replace(/\/\/.*$/, "").trim();
+  const clean = (i) => lines[i].replace(/\/\/.*$/, "").trim();
+  let mainStart = -1, bodyFrom = -1;
+  /** Joins lines i.. until the braces opened on them close; returns { text, end, parts: [{text, line}] split on ';' inside the outer braces }. */
+  function block(i) {
+    let depth = 0, opened = false, text = "", j = i;
+    for (; j < lines.length; j++) {
+      const t = clean(j);
+      text += (text ? " " : "") + t;
+      for (const ch of t) { if (ch === "{") { depth++; opened = true; } else if (ch === "}") depth--; }
+      if (opened && depth <= 0) break;
+    }
+    // statements with their own line numbers, inside the outer braces
+    const parts = [];
+    let d = 0;
+    for (let k = i; k <= Math.min(j, lines.length - 1); k++) {
+      let cur = "";
+      for (const ch of clean(k)) {
+        if (ch === "{") { d++; if (d === 1) { cur = ""; continue; } }
+        if (ch === "}") { d--; if (d === 0) { if (cur.trim()) parts.push({ text: cur, line: k + 1 }); cur = ""; continue; } }
+        if (d >= 1 && ch === ";") { parts.push({ text: cur, line: k + 1 }); cur = ""; continue; }
+        if (d >= 1) cur += ch;
+      }
+      if (cur.trim() && d >= 1) { parts.push({ text: cur, line: k + 1 }); }
+    }
+    return { text, end: j, parts };
+  }
+  for (let i = 0; i < lines.length; i++) {
+    const t = clean(i);
     let m;
-    if ((m = /^class\s+(\w+)\s*(?::\s*([^{]+))?\{([^}]*)\}\s*;?$/.exec(t))) {
-      const bases = (m[2] || "").split(",").map((b) => b.trim()).filter(Boolean).map((b) => { const bm = /^(?:public\s+|protected\s+|private\s+)?(\w+)\s*(\(\.\.\.\))?$/.exec(b); if (!bm) throw new Error(`line ${i + 1}: cannot read base '${b}'`); return { name: bm[1], forward: !!bm[2] }; });
-      const members = m[3].split(";").map((s) => s.trim()).filter(Boolean).map((s) => { const mm = /^(\w+)\s+(\w+)$/.exec(s); if (!mm) throw new Error(`line ${i + 1}: cannot read member '${s}'`); return { type: mm[1], name: mm[2] }; });
-      classes[m[1]] = { name: m[1], bases, members, line: i + 1 };
-    } else if ((m = /^void\s+(\w+)\s*\(\s*(\w+)\s*(&)?\s*(\w+)\s*\)\s*\{\s*\}$/.exec(t))) {
-      funcs[m[1]] = { name: m[1], type: m[2], byRef: !!m[3], param: m[4], line: i + 1 };
-    } else if (/^int\s+main\s*\(/.test(t)) mainStart = i;
-  });
+    if (!t) continue;
+    if (/^(?:class|struct)\s+\w+/.test(t)) { const b = block(i); classes[ltClass(b.text, i + 1).name] = ltClass(b.text, i + 1); i = b.end; continue; }
+    if (/^int\s+main\s*\(/.test(t)) {
+      mainStart = i; bodyFrom = i + 1;
+      if (!t.includes("{")) { let k = i + 1; while (k < lines.length && !clean(k)) k++; if (clean(k) === "{") bodyFrom = k + 1; }
+      break;
+    }
+    if ((m = /^(void|\w+)\s+(\w+)\s*\(\s*(?:(\w+)\s*(&)?\s*(\w+))?\s*\)\s*(\{.*)?$/.exec(t)) && (m[1] === "void" || classes[m[1]])) {
+      const b = block(i);
+      funcs[m[2]] = { name: m[2], ret: m[1], type: m[3] || null, byRef: !!m[4], param: m[5] || null, line: i + 1, body: ltFnBody(b.parts, classes) };
+      i = b.end;
+    }
+  }
   if (mainStart < 0) throw new Error("no int main() found");
   const body = [];
-  for (let i = mainStart + 1; i < lines.length; i++) {
-    const t = lines[i].replace(/\/\/.*$/, "").trim();
+  for (let i = bodyFrom; i < lines.length; i++) {
+    const t = clean(i);
     if (!t) continue;
     if (t === "}") { body.push({ line: i + 1, kind: "close" }); continue; }
     if (t === "{") { body.push({ line: i + 1, kind: "open" }); continue; }
@@ -259,9 +391,11 @@ function ltParse(src) {
     if ((m = /^(\w+)\s*\*\s*(\w+)\s*=\s*new\s+(\w+)\s*(?:\((.*)\)|\{(.*)\})?;$/.exec(t))) body.push({ line: i + 1, kind: "new", type: m[1], name: m[2], args: (m[4] ?? m[5] ?? "").trim() });
     else if ((m = /^delete\s+(\w+);$/.exec(t))) body.push({ line: i + 1, kind: "delete", name: m[1] });
     else if ((m = /^return\b.*;$/.exec(t))) body.push({ line: i + 1, kind: "return" });
+    else if (/^(?:std::)?cout\s*<<.*;$/.test(t)) body.push({ line: i + 1, kind: "print", text: [...t.matchAll(/"([^"]*)"/g)].map((x) => x[1]).join("") });
+    else if ((m = /^(\w+)\s+(\w+)\s*=\s*(\w+)\s*\(\s*(\w*)\s*\);$/.exec(t)) && classes[m[1]] && funcs[m[3]]) body.push({ line: i + 1, kind: "call", fn: m[3], arg: m[4] || null, into: { type: m[1], name: m[2] } });
     else if ((m = /^(\w+)\s+(\w+)\s*(?:\((.*)\)|\{(.*)\}|=\s*(.+))?;$/.exec(t)) && classes[m[1]]) body.push({ line: i + 1, kind: "decl", type: m[1], name: m[2], args: (m[3] ?? m[4] ?? m[5] ?? "").trim() });
     else if ((m = /^(\w+)\s*=\s*(\w+);$/.exec(t))) body.push({ line: i + 1, kind: "assign", to: m[1], from: m[2] });
-    else if ((m = /^(\w+)\s*\(\s*(\w+)\s*\);$/.exec(t)) && funcs[m[1]]) body.push({ line: i + 1, kind: "call", fn: m[1], arg: m[2] });
+    else if ((m = /^(\w+)\s*\(\s*(\w*)\s*\);$/.exec(t)) && funcs[m[1]]) body.push({ line: i + 1, kind: "call", fn: m[1], arg: m[2] || null });
     else throw new Error(`line ${i + 1}: cannot read '${t}'`);
   }
   return { classes, funcs, body, mainLine: mainStart + 1 };
@@ -275,32 +409,101 @@ function ltRun(prog) {
   let seq = 0;
   const snap = (line, msg, kind = "step") => steps.push({ line, msg, kind, out: out.slice(), scopes: scopes.map((s) => ({ name: s.name, objs: s.objs.map((o) => ({ ...o })) })), heap: heap.map((o) => ({ ...o })) });
   const need = (type, line) => { if (!classes[type]) throw new Error(`line ${line}: unknown class '${type}'`); return classes[type]; };
-  // Construct `type` (with `args` text) and record output lines; returns nothing. mode: "ctor" | "copy".
+  const ctorMsg = (cls, args) => (!args && cls.msgs && cls.msgs.ctor != null ? cls.msgs.ctor : `${cls.name}(${args})`);
+  // Construct `type` (with `args` text) and record output lines. mode: "ctor" | "copy".
   function construct(type, args, mode, line, depth = 0) {
     const cls = need(type, line);
     for (const b of cls.bases) { construct(b.name, mode === "copy" ? "" : b.forward ? args : "", mode, line, depth + 1); }
     for (const mem of cls.members) construct(mem.type, "", mode, line, depth + 1);
-    out.push(mode === "copy" ? `${type}(const ${type}&)` : `${type}(${args})`);
+    out.push(mode === "copy" ? (cls.msgs && cls.msgs.copy != null ? cls.msgs.copy : `${type}(const ${type}&)`) : ctorMsg(cls, args));
   }
   function destroy(type, line) {
     const cls = need(type, line);
-    out.push(`~${type}()`);
+    out.push(cls.msgs && cls.msgs.dtor != null ? cls.msgs.dtor : `~${type}()`);
     for (const mem of [...cls.members].reverse()) destroy(mem.type, line);
     for (const b of [...cls.bases].reverse()) destroy(b.name, line);
   }
   const find = (name) => { for (let i = scopes.length - 1; i >= 0; i--) { const o = scopes[i].objs.find((x) => x.name === name); if (o) return o; } return null; };
   const popScope = (line, why) => {
     const s = scopes[scopes.length - 1];
-    const dying = s.objs.filter((o) => !o.ptr);
+    const dying = s.objs.filter((o) => !o.ptr && !o.ref);
     for (const o of [...dying].reverse()) destroy(o.type, line);
     scopes = scopes.slice(0, -1);
     snap(line, dying.length ? `${why}: the ${dying.length === 1 ? "object" : "objects"} declared in it ${dying.length === 1 ? "is" : "are"} destroyed in <b>reverse</b> order of construction (${dying.map((o) => o.name).reverse().join(", ")}).` : `${why}: nothing to destroy.`, "end");
   };
+  /** A call `f(arg);` or `T y = f(arg);`. A by-value return copies a parameter (never elided) or reuses a local (NRVO). */
+  function call(st) {
+    const fn = funcs[st.fn];
+    const arg = st.arg ? find(st.arg) : null;
+    if (fn.param && !arg) throw new Error(`line ${st.line}: unknown object '${st.arg}'`);
+    if (!fn.param && st.arg) throw new Error(`line ${st.line}: ${fn.name}() takes no argument`);
+    if (arg && fn.type !== arg.type) throw new Error(`line ${st.line}: '${st.arg}' is a ${arg.type}, not a ${fn.type}`);
+    const returns = fn.ret !== "void";
+    const head = `<code>${st.into ? `${st.into.type} ${st.into.name} = ` : ""}${fn.name}(${st.arg || ""})</code>`;
+    const frame = { name: `${fn.name}()`, objs: [] };
+    if (!fn.param) { scopes.push(frame); snap(fn.line, `${head} enters <code>${fn.name}</code>.`, "call"); }
+    else if (fn.byRef) {
+      frame.objs.push({ name: `${fn.param} (alias of ${arg.name})`, type: arg.type, ref: true, param: fn.param });
+      scopes.push(frame);
+      snap(fn.line, `${head} takes a <b>reference</b>: <code>${fn.param}</code> is another name for <code>${arg.name}</code>. No copy, no constructor, no destructor.`, "call");
+    } else {
+      construct(arg.type, "", "copy", st.line);
+      frame.objs.push({ name: fn.param, type: arg.type, param: fn.param });
+      scopes.push(frame);
+      snap(fn.line, `${head} passes <b>by value</b>: the parameter <code>${fn.param}</code> is a brand-new ${arg.type} built by the <b>copy constructor</b> from <code>${arg.name}</code>.`, "call");
+    }
+    let result = null; // { how: "copy" | "nrvo", from }
+    for (const s of fn.body) {
+      if (s.kind === "print") { out.push(s.text); snap(s.line, `The body of <code>${fn.name}</code> prints <code>${esc(s.text)}</code>.`); }
+      else if (s.kind === "decl") {
+        construct(s.type, s.args, "ctor", s.line);
+        frame.objs.push({ name: s.name, type: s.type });
+        snap(s.line, `<code>${s.type} ${s.name}</code> is a local of <code>${fn.name}</code>: constructed here, destroyed when the function returns.`);
+      } else if (s.kind === "return") {
+        if (!returns || !s.name) break;
+        const o = frame.objs.find((x) => x.name === s.name || x.param === s.name);
+        if (!o) throw new Error(`line ${s.line}: '${s.name}' is not a parameter or local of ${fn.name}`);
+        if (o.param) {
+          construct(fn.ret, "", "copy", s.line);
+          result = { how: "copy" };
+          snap(s.line, `<code>return ${s.name};</code> returns <b>by value</b>, so the <b>copy constructor</b> builds the return value from ${o.ref ? "the object the reference names" : "the parameter"}. A parameter is never elided into the return value, so this copy always happens${st.into ? `; the copy is built directly in <code>${st.into.name}</code> (copy elision of the returned temporary, guaranteed since C++17)` : ""}.`);
+        } else {
+          frame.objs = frame.objs.filter((x) => x !== o);
+          result = { how: "nrvo", from: o.name };
+          snap(s.line, `<code>return ${s.name};</code> returns a local by value. g++ applies the named return value optimisation: <code>${s.name}</code> was built in the caller's return slot, so <b>no copy</b> runs and it is not destroyed here.`);
+        }
+        break;
+      }
+    }
+    // Locals die when the function returns; by-value parameters die at the end of the caller's full expression.
+    const locals = frame.objs.filter((o) => !o.param);
+    for (const o of [...locals].reverse()) destroy(o.type, st.line);
+    frame.objs = frame.objs.filter((o) => o.param);
+    if (!returns) {
+      scopes = scopes.slice(0, -1);
+      const dying = frame.objs.filter((o) => !o.ref);
+      for (const o of dying) destroy(o.type, st.line);
+      snap(st.line, dying.length || locals.length ? `<code>${fn.name}()</code> returns: ${[...locals, ...dying].map((o) => `<code>${o.name}</code>`).reverse().join(", ")} ${locals.length + dying.length === 1 ? "is" : "are"} destroyed.` : `<code>${fn.name}()</code> returns. Nothing is destroyed because nothing was created.`, dying.length || locals.length ? "end" : "return");
+      return;
+    }
+    const target = st.into ? st.into : { name: `(temporary returned by ${fn.name})`, type: fn.ret, temp: true };
+    scopes[scopes.length - 2].objs.push({ name: target.name, type: fn.ret, temp: !!target.temp });
+    frame.name = `${fn.name}() returned`;
+    snap(st.line, `<code>${fn.name}</code> returns${locals.length ? `; its local${locals.length > 1 ? "s" : ""} ${locals.map((o) => `<code>${o.name}</code>`).reverse().join(", ")} ${locals.length > 1 ? "are" : "is"} destroyed` : ""}. The return value ${st.into ? `<b>is</b> <code>${st.into.name}</code>: no further copy` : "is a temporary in main's full expression, unused"}.`, "return");
+    // End of the full expression (the semicolon): the temporary first (constructed last), then the parameter.
+    const main = scopes[scopes.length - 2];
+    const dying = [];
+    if (target.temp) { main.objs = main.objs.filter((o) => o.name !== target.name); destroy(fn.ret, st.line); dying.push(`the unused temporary`); }
+    for (const o of frame.objs.filter((x) => !x.ref)) { destroy(o.type, st.line); dying.push(`the parameter <code>${o.name}</code>`); }
+    scopes = scopes.filter((s) => s !== frame);
+    if (dying.length) snap(st.line, `The statement ends at the semicolon: ${dying.join(", then ")} ${dying.length > 1 ? "are" : "is"} destroyed (reverse order of construction).`, "end");
+  }
   snap(prog.mainLine, "main() starts. Objects are constructed in the order the statements run and destroyed in reverse when their scope ends.", "start");
   try {
     for (const st of body) {
       if (st.kind === "open") { scopes.push({ name: `block ${++seq}`, objs: [] }); snap(st.line, "A new block opens: a nested scope. Objects declared inside it live only until the matching <code>}</code>.", "call"); }
-      else if (st.kind === "close") popScope(st.line, "The block ends");
+      else if (st.kind === "close") popScope(st.line, scopes.length === 1 ? "main() ends" : "The block ends");
+      else if (st.kind === "print") { out.push(st.text); snap(st.line, `main prints <code>${esc(st.text)}</code>.`); }
       else if (st.kind === "decl") {
         const src = st.args && /^[A-Za-z_]\w*$/.test(st.args) ? find(st.args) : null;
         const cls = classes[st.type];
@@ -323,19 +526,23 @@ function ltRun(prog) {
         out.push(`${to.type}::operator=`);
         snap(st.line, `<code>${st.to} = ${st.from}</code>: both objects already exist, so <b>no constructor runs</b>; the copy assignment operator replaces ${st.to}'s state.`);
       } else if (st.kind === "call") {
-        const fn = funcs[st.fn], arg = find(st.arg);
-        if (!arg) throw new Error(`line ${st.line}: unknown object '${st.arg}'`);
-        if (fn.byRef) {
-          scopes.push({ name: `${fn.name}()`, objs: [{ name: `${fn.param} (alias of ${arg.name})`, type: arg.type, ref: true }] });
-          snap(st.line, `<code>${fn.name}(${st.arg})</code> takes a <b>reference</b>: <code>${fn.param}</code> is another name for <code>${arg.name}</code>. No copy, no constructor, no destructor.`, "call");
-          scopes = scopes.slice(0, -1);
-          snap(st.line, `${fn.name}() returns. Nothing is destroyed because nothing was created.`, "return");
-        } else {
-          construct(arg.type, "", "copy", st.line);
-          scopes.push({ name: `${fn.name}()`, objs: [{ name: fn.param, type: arg.type }] });
-          snap(st.line, `<code>${fn.name}(${st.arg})</code> passes <b>by value</b>: the parameter <code>${fn.param}</code> is a brand-new ${arg.type} built by the <b>copy constructor</b>.`, "call");
-          popScope(st.line, `${fn.name}() returns`);
-        }
+        const fn = funcs[st.fn];
+        // The original one-line void f(X x) { } keeps its own wording.
+        if (fn.ret === "void" && !fn.body.length && fn.param) {
+          const arg = find(st.arg);
+          if (!arg) throw new Error(`line ${st.line}: unknown object '${st.arg}'`);
+          if (fn.byRef) {
+            scopes.push({ name: `${fn.name}()`, objs: [{ name: `${fn.param} (alias of ${arg.name})`, type: arg.type, ref: true }] });
+            snap(st.line, `<code>${fn.name}(${st.arg})</code> takes a <b>reference</b>: <code>${fn.param}</code> is another name for <code>${arg.name}</code>. No copy, no constructor, no destructor.`, "call");
+            scopes = scopes.slice(0, -1);
+            snap(st.line, `${fn.name}() returns. Nothing is destroyed because nothing was created.`, "return");
+          } else {
+            construct(arg.type, "", "copy", st.line);
+            scopes.push({ name: `${fn.name}()`, objs: [{ name: fn.param, type: arg.type }] });
+            snap(st.line, `<code>${fn.name}(${st.arg})</code> passes <b>by value</b>: the parameter <code>${fn.param}</code> is a brand-new ${arg.type} built by the <b>copy constructor</b>.`, "call");
+            popScope(st.line, `${fn.name}() returns`);
+          }
+        } else call(st);
       } else if (st.kind === "new") {
         construct(st.type, st.args, "ctor", st.line);
         const id = ++seq;
@@ -378,7 +585,7 @@ function lifetimeTrace(box, cfg) {
   const ta = document.createElement("textarea"); ta.rows = 12; ta.className = "comp-input"; ta.value = src; ta.spellcheck = false;
   const apply = el("button", "reset-btn", "Run this program");
   apply.addEventListener("click", () => { src = ta.value; rebuild(); });
-  edit.append(el("summary", null, "Edit the program (classes: `class X : Base(...) { Member m; };`, functions: `void f(X x)` or `void f(X& x)`)"), ta, apply);
+  edit.append(el("summary", null, "Edit the program (classes: `class X : Base(...) { Member m; };` or a full class whose X(), ~X() and X(const X&) print with cout; functions: `void f(X x)`, `void f(X& x)` or `X f(X x) { cout << ...; return x; }`)"), ta, apply);
   box.append(st.bar, main, msg, edit);
   let steps = [], rows = [];
   function rebuild() {
@@ -765,16 +972,17 @@ function opDispatch(box, cfg) {
 }
 
 // ---------- widget: copy-swap ----------
-// B = A with the copy-and-swap assignment operator, step by step; or with the compiler's default.
+// B = A with the copy-and-swap assignment operator, played event by event on the playback bar; or with
+// the compiler's default (leak, then double free). Predict mode asks before each event.
 function copySwap(box, cfg) {
   box.append(el("h4", null, cfg.title || "B = A: the copy-and-swap assignment, step by step"));
   let mode = cfg.mode === "default" ? "default" : "swap";
-  box.append(btnRow(["Copy-and-swap operator=", "Compiler-generated operator= (member-wise copy)"], (i) => { mode = i ? "default" : "swap"; build(); }, mode === "swap" ? 0 : 1));
-  const codeWrap = el("div"), svg = svgEl("svg", { viewBox: "0 0 640 250", class: "curve-svg net-svg" }), msg = el("div", "pv-msg");
-  const st = stepper(paint);
-  box.append(codeWrap, st.bar, svg, msg);
-  let steps = [];
+  box.append(btnRow(["Copy-and-swap operator=", "Compiler-generated operator= (member-wise copy)"], (i) => { mode = i ? "default" : "swap"; build(); play.reset(); }, mode === "swap" ? 0 : 1));
+  const codeWrap = el("div"), svg = svgEl("svg", { viewBox: "0 0 640 250", class: "curve-svg net-svg" }), caption = el("p", "playback-caption");
+  caption.setAttribute("aria-live", "polite");
+  let steps = [], qs = [], capKey = null;
   const A = [1, 2, 3], B = [7, 8];
+  const Q = (at, text, options, why) => ({ at, text, options: options.map(([label, ok]) => ({ label, ok, why })).sort((a, b) => a.label.localeCompare(b.label)) });
   function build() {
     const code = mode === "swap"
       ? ["class Example {", "    size_t list_size;", "    int* my_list;", "public:", "    Example(const Example& other);   // deep copy", "    ~Example() { delete[] my_list; }", "    void mySwap(Example& first, Example& second) {", "        using std::swap;", "        swap(first.list_size, second.list_size);", "        swap(first.my_list, second.my_list);", "    }", "    Example& operator=(Example other) {   // BY VALUE", "        mySwap(*this, other);", "        return *this;", "    }", "};", "Example A(3), B(2);", "B = A;"]
@@ -784,20 +992,30 @@ function copySwap(box, cfg) {
       ? [
         { line: 18, A: { arr: "A" }, B: { arr: "B" }, other: null, msg: "Before the assignment: A owns {1, 2, 3}, B owns {7, 8}. Two objects, two heap arrays." },
         { line: 12, A: { arr: "A" }, B: { arr: "B" }, other: { arr: "A2" }, msg: "<code>operator=(Example other)</code> takes its parameter <b>by value</b>, so the <b>copy constructor</b> builds <code>other</code>: a deep copy of A with its own array {1, 2, 3}." },
-        { line: 13, A: { arr: "A" }, B: { arr: "A2" }, other: { arr: "B" }, msg: "<code>mySwap(*this, other)</code> exchanges the sizes and the <b>pointers</b> (no element is copied). B now owns the fresh copy of A's data; <code>other</code> holds B's old array." },
+        { line: 13, A: { arr: "A" }, B: { arr: "A2" }, other: { arr: "B" }, msg: "<code>mySwap(*this, other)</code> exchanges the sizes and the <b>pointers</b> (no element is copied). B now owns the fresh copy of A's data; <code>other</code> holds B's old array {7, 8}." },
         { line: 14, A: { arr: "A" }, B: { arr: "A2" }, other: { arr: "B" }, msg: "<code>return *this;</code> hands back B by reference, so <code>C = B = A</code> would chain." },
-        { line: 14, A: { arr: "A" }, B: { arr: "A2" }, other: { arr: "B", dead: true }, msg: "Leaving the function destroys <code>other</code>: its destructor runs <code>delete[]</code> on B's <b>old</b> array. The old data is freed exactly once, by the temporary. Copy constructor + destructor + swap did all the work with no duplicated code.", kind: "end" },
+        { line: 14, A: { arr: "A" }, B: { arr: "A2" }, other: { arr: "B", dead: true }, msg: "Leaving the function destroys <code>other</code>: its destructor runs <code>delete[]</code> on B's <b>old</b> array {7, 8}. The old data is freed exactly once, by the temporary. Copy constructor + destructor + swap did all the work with no duplicated code.", kind: "end" },
       ]
       : [
         { line: 10, A: { arr: "A" }, B: { arr: "B" }, other: null, msg: "Before the assignment: A owns {1, 2, 3}, B owns {7, 8}." },
         { line: 10, A: { arr: "A" }, B: { arr: "A", shared: true }, other: null, leaked: "B", msg: "The compiler's operator= copies <code>list_size</code> and copies the <b>pointer</b>. B's old array {7, 8} now has no pointer to it: <b>leaked</b>. Both objects point at the same array." },
         { line: 11, A: { arr: "A", freed: true }, B: { arr: "A", shared: true, dead: true }, other: null, leaked: "B", msg: "At the end of the scope <code>~B()</code> frees the shared array, then <code>~A()</code> frees it <b>again</b>: double free, undefined behaviour. A class that owns a pointer needs its own operator= (and copy constructor and destructor).", kind: "error" },
       ];
-    st.reset(steps.length);
+    qs = mode === "swap"
+      ? [
+        Q(0, "B = A calls operator=(Example other). What builds other?", [["the copy constructor: a deep copy of A", true], ["the default constructor", false], ["nothing: other is another name for A", false]], "other is a by-value parameter, so the copy constructor builds it from A, with its own array."),
+        Q(1, "mySwap(*this, other) runs. What does it exchange between B and other?", [["the sizes and the pointers", true], ["every element, one at a time", false], ["only list_size", false]], "swap(first.my_list, second.my_list) swaps two pointers; no element is copied."),
+        Q(3, "operator= returns and other is destroyed. Who owns B's old array {7, 8} at that moment?", [["other: its destructor frees it", true], ["B: it still points there", false], ["nobody: it leaks", false]], "After the swap, other holds B's old pointer, so ~Example() in other frees the old data exactly once."),
+      ]
+      : [
+        Q(0, "The compiler's operator= copies member by member. What happens to B's old array {7, 8}?", [["it leaks: nothing points at it", true], ["the compiler frees it first", false], ["A takes it over", false]], "The default operator= copies the pointer value and never calls delete[], so the old array is unreachable."),
+        Q(1, "End of scope: ~B() runs, then ~A(). What happens to the array both point at?", [["freed twice: double free", true], ["each destructor frees its own array", false], ["freed once, by ~B()", false]], "Both my_list pointers hold the same address, so both destructors call delete[] on it: undefined behaviour."),
+      ];
   }
   const ARR = { A: A, A2: A, B: B };
-  function paint(k) {
-    const s = steps[k];
+  function frame(pos, playing, gate) {
+    const k = Math.max(0, Math.min(steps.length - 1, Math.ceil(pos - 1e-9))), s = steps[k];
+    const q = gate.asking(pos);
     svg.innerHTML = "";
     const objs = [["A", s.A, 20, 20], ["B", s.B, 20, 160]];
     if (s.other) objs.push(["other (temporary)", s.other, 20, 90]);
@@ -818,10 +1036,12 @@ function copySwap(box, cfg) {
     }
     if (s.leaked) { B.forEach((v, i) => { svg.append(svgEl("rect", { x: 360 + i * 44, y: 170, width: 40, height: 34, fill: "var(--red-soft)", stroke: "var(--red)", "stroke-dasharray": "4 3" })); svg.append(svgEl("text", { x: 380 + i * 44, y: 192, "text-anchor": "middle", "font-size": 14, fill: "var(--red)" }, String(v))); }); svg.append(svgEl("text", { x: 360, y: 222, "font-size": 11, fill: "var(--red)" }, "B's old array: nothing points here (leak)")); }
     codeWrap.querySelectorAll(".pl").forEach((r) => r.classList.toggle("cur", Number(r.dataset.line) === s.line));
-    msg.className = "pv-msg " + (s.kind || "");
-    msg.innerHTML = s.msg;
+    const html = q ? esc(q.text) : s.msg + (k === steps.length - 1 ? esc(gate.tally()) : "");
+    if (capKey !== html) { capKey = html; caption.innerHTML = html; }
   }
   build();
+  const play = playbackWithPredict({ checkText: "Predict each event before it runs", predict: cfg.predict, count: () => steps.length - 1, unit: "event", stepMs: () => cfg.stepMs || 2000, questions: () => qs, onFrame: frame });
+  box.append(play.check, codeWrap, svg, caption, play.ask, play.pb.el);
 }
 
 // ---------- widget: uml-relations ----------

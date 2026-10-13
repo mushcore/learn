@@ -1,9 +1,9 @@
 ---
-title: R from Lab 1 (what the quiz may ask)
+title: R from Lab 1
 minutes: 18
 ---
 
-The R mechanics from **Lab 1** (`Lab_01_Notebook.Solutions.pdf`, `demo_notebook_Unit_01.Rmd`) that the quiz can test directly.
+The R mechanics from **Lab 1** (`Lab_01_Notebook.Solutions.pdf`, `demo_notebook_Unit_01.Rmd`) and what each one returns.
 
 ## R Notebooks
 
@@ -333,7 +333,7 @@ library(mosaicData)
     "explain": "Passing a vector of row indices returns all those rows' time values, in order: 6060 4515 5026 4229 5293."
   },
   {
-    "q": "In `TenMileRace$sex`, `.` is used like the member-access operator in `object.field` from C++/Java/Python.",
+    "q": "In the variable name `mu.female`, the `.` is a member-access operator like `object.field` in C++/Java/Python.",
     "type": "tf",
     "answer": false,
     "explain": "R's `.` inside a variable name is just an ordinary character; `mu.female` is one identifier. `$` is R's operator for pulling a column out of a data frame."
@@ -346,10 +346,10 @@ library(mosaicData)
     "explain": "US state codes are exactly 2 characters, so any `state` value longer than 2 characters is a non-US entrant. There are 32 such rows."
   },
   {
-    "q": "`table(my.subset$state)` (for `my.subset <- subset(TenMileRace, state %in% c(\"VA\",\"MD\",\"DC\"))`) still lists all 62 original state levels, most with count 0, because R drops unused factor levels automatically.",
+    "q": "`table(my.subset$state)` (for `my.subset <- subset(TenMileRace, state %in% c(\"VA\",\"MD\",\"DC\"))`) lists only VA, MD and DC, because `subset()` drops the unused factor levels.",
     "type": "tf",
     "answer": false,
-    "explain": "It's the opposite: factors keep every original level unless you explicitly remove the unused ones with `droplevels()`. That's why the zero counts show up."
+    "explain": "`subset()` keeps every original level of the factor, so the table still lists all 62 states, most with count 0. Remove the unused levels with `droplevels()`."
   },
   {
     "q": "`rank(c(50,200,50,400,200,700), ties.method=\"min\")` returns which vector?",

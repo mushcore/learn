@@ -77,7 +77,7 @@ Going backwards: $X = \mu + Z\sigma \qquad X = \bar{X} + Zs$
 |---|---|---|---|---|---|---|---|
 | % of data **below** | 0.15% | 2.5% | 16% | 50% | 84% | 97.5% | 99.85% |
 
-Read this table directly: e.g. "% below $Z=+2$" $= 97.5\%$ because it is everything up to $-2\sigma$ (2.5%) plus the whole lower half (50%) plus half of the middle band ($95\%/2 = 47.5\%$): $2.5+50+47.5$... more simply, it's $50\% + 95\%/2 = 97.5\%$, or just read the table.
+Read this table directly: "% below $Z=+2$" $= 50\% + 95\%/2 = 97.5\%$, the whole lower half plus half of the middle 95% band.
 
 ## Chebyshev's rule (works for ANY distribution shape)
 

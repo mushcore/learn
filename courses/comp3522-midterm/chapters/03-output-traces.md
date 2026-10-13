@@ -3,7 +3,7 @@ title: Part B: write the output (Q20, Q27, Q28)
 minutes: 30
 ---
 
-Three of the Part B questions hand you a program and ask for its exact output, with the line count as a hint. Every line is a constructor or destructor message, so the whole skill is knowing which special member runs for each statement and in what order. Write your fourteen, fourteen and twelve lines on paper before you press Run.
+Three of the Part B questions hand you a program and ask for its exact output, with the line count as a hint. Every line is a constructor or destructor message, so the whole skill is knowing which special member runs for each statement and in what order. Write your fourteen, fourteen and twelve lines on paper first.
 
 ## Q20 (7). What is printed to standard output by this code? HINT: this prints 14 lines.
 
@@ -36,7 +36,28 @@ int main()
 }
 ```
 
-Statement by statement:
+```quiz
+[
+  {
+    "q": "Q20: how many times does `Copy constructor!` print?",
+    "type": "numeric",
+    "answer": 5,
+    "tolerance": 0,
+    "explain": "Five copies: the by-value parameter `input` twice (one per call), the return value of the first call (a temporary, since a parameter can never be elided into the return value), the return value of the second call (which is `yetAnotherA` itself), and `A anotherA = littleA;`. The trace below lists all fourteen lines."
+  }
+]
+```
+
+### Q20 stepped: each copy and each destructor
+
+Watch `return input;`: it copies the parameter, and in the first call the copy is a temporary that dies at the semicolon, while in the second it is `yetAnotherA`.
+
+```widget
+lifetime-trace
+{"program": "#include <iostream>\n\nusing namespace std;\n\nclass A\n{\npublic:\n    A() { cout << \"Default constructor!\" << endl; }\n    ~A() { cout << \"Destructor!\" << endl; }\n    A(const A&) { cout << \"Copy constructor!\" << endl;}\n};\n\nA foo(A input)\n{\n    cout << \"Look ma, I'm fooing!\" << endl;\n    return input;\n}\n\nint main()\n{\n    A littleA;\n    foo(littleA);\n    A anotherA = littleA;\n    A yetAnotherA = foo(littleA);\n}", "presets": false}
+```
+
+### The fourteen lines, statement by statement
 
 1. `A littleA;` runs the default constructor: `Default constructor!`.
 2. `foo(littleA);` copies the argument into the by-value parameter `A foo(A input)`: `Copy constructor!`. The body prints `Look ma, I'm fooing!`. `return input;` copies the parameter into the returned temporary: `Copy constructor!` (a parameter can never be elided into the return value). The statement ends, so the unused temporary and then `input` are destroyed: `Destructor!` twice.
@@ -45,15 +66,6 @@ Statement by statement:
 5. The closing brace of main destroys `yetAnotherA`, `anotherA`, `littleA` in reverse order of construction: `Destructor!` three times.
 
 Tally: 1 default, 5 copies, 2 fooing lines, 6 destructors = 14. Every constructor message must be matched by a destructor message eventually: 1 + 5 constructions, 6 destructions.
-
-### The first three statements, stepped
-
-```widget
-lifetime-trace
-{ "program": "class A { };\nvoid foo(A input) { }\n\nint main() {\n    A littleA;\n    foo(littleA);\n    A anotherA = littleA;\n    return 0;\n}", "presets": false }
-```
-
-The widget models by-value parameters but not a by-value `return`, so its `foo` is void: it shows the parameter copy and its destruction at the end of the call, and the copy for `anotherA`. The two extra lines per call in the real program (the return copy and its destruction) come from `return input;`.
 
 ## Q27 (4). What is printed to standard output by this code? HINT: this prints 14 lines.
 
@@ -94,6 +106,18 @@ int main()
 {
     E e;
 }
+```
+
+```quiz
+[
+  {
+    "q": "Q27: how many times does `A allocated` print?",
+    "type": "numeric",
+    "answer": 2,
+    "tolerance": 0,
+    "explain": "Twice. No inheritance is virtual, so E holds one A-B chain inside C and another inside D. The table below gives all fourteen lines."
+  }
+]
 ```
 
 No inheritance here is virtual, so `class E : public C, public D` contains two complete A-B chains: one inside its C part and one inside its D part. Bases are constructed in the order they are listed, each one base-first:
@@ -155,6 +179,22 @@ int main()
 }
 ```
 
+```quiz
+[
+  {
+    "q": "Q28: which two lines of Q27's output disappear?",
+    "options": [
+      "one `A allocated` and one `A deallocated`",
+      "one `B allocated` and one `B deallocated`",
+      "`C allocated` and `C deallocated`",
+      "both `A allocated` lines"
+    ],
+    "answer": 0,
+    "explain": "`class B : virtual public A` makes A a virtual base: one shared A, built once by the most-derived class E. D's B is not virtual, so B still appears twice. The table below gives all twelve lines."
+  }
+]
+```
+
 Two bases are now virtual. `class B : virtual public A` makes A a virtual base, so there is only one A in the whole object, and the most-derived class E constructs it first. `class C : virtual public B` makes C's B virtual too, so E constructs that B next, before any non-virtual base. `class D : public B` is unchanged: D still carries its own ordinary B, constructed inside D.
 
 | Phase | Lines |
@@ -166,7 +206,7 @@ Two bases are now virtual. `class B : virtual public A` makes A a virtual base, 
 
 Six constructions, six destructions, twelve lines: the second A and its destruction are the two lines that vanish. D's B is not virtual, so B still appears twice; only A was shared.
 
-:::tip The one-sentence answer
+:::tip Why Q28 prints two fewer lines than Q27
 The output differs because `A` is a virtual base, so the single shared `A` is constructed once by the most-derived class `E` instead of once per `B`, removing one `A allocated` and one `A deallocated` (14 lines become 12).
 :::
 

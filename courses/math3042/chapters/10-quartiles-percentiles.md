@@ -27,6 +27,13 @@ Exclude the 22, split what's left: lower half $19, 19, 20$ → $Q_1 = 19$ (its m
 **Even $n = 6$:** $19, 20, (23, 27), 29, 30$ → median $Q_2 = \frac{23+27}{2} = 25$.
 No value to exclude — split evenly: lower half $19, 20, 23$ → $Q_1 = 20$. Upper half $27, 29, 30$ → $Q_3 = 29$.
 
+The boxplot below puts the hand quartiles for the odd example beside R's: R's `quantile()` interpolates and gives $Q_1 = 19.5$, $Q_3 = 24$, so the two methods differ on small data sets.
+
+```widget
+boxplot
+{ "data": "19 19 20 22 23 25 50", "note": "The odd n = 7 median example: hand method vs R" }
+```
+
 ## A large example: faithful eruptions
 
 The `faithful$eruptions` data set has $n = 272$ values. $25\%$ of $272 = 68$, so $Q_1$ separates the lowest 68 values from the upper 204. By hand, that lands between the 68th and 69th sorted values:

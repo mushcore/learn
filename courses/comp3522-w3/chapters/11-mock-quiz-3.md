@@ -3,7 +3,7 @@ title: Mock Quiz 3
 minutes: 45
 ---
 
-55 questions in the real format: multiple choice, true/false, select-all, what-does-this-print, fill-in-the-code, matching and bug hunts. Answer everything before you check. Every explanation says *why*, so a miss is still a lesson, and the ones you miss come back in the review queue until you get them right twice.
+58 questions in the real format: multiple choice, true/false, select-all, what-does-this-print, fill-in-the-code, matching and bug hunts. Answer everything before you check. Every explanation says why, so a miss is still a lesson, and the ones you miss come back in the review queue until you get them right twice.
 
 :::quiz Real quiz conditions
 Written at the start of lab on the Learning Hub. It covers both Week 3 decks, the Week 3 sample projects, and the Testing and UML review decks. The programs in the questions are the instructor's own (Circle, Complex, Spy, whichconstructor, virtual2), so if a line looks familiar, trust what you ran. Aim for 90% here before you stop studying.

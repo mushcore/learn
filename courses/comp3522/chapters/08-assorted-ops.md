@@ -3,7 +3,7 @@ title: Ternary, comma, sizeof, bitwise
 minutes: 18
 ---
 
-The slide calls these "some more assorted operators": ternary, comma, casting and `sizeof`. The sample code is `assortedOps.cpp`, plus the bitwise operators from `bits.cpp` and `const_vs_constexpr.cpp`.
+The slide calls these "some more assorted operators": ternary, comma, casting and `sizeof`. The sample code is `assortedOps.cpp`, plus the bitwise operators from `bits.cpp`.
 
 ## Ternary operator `?:`
 
@@ -24,7 +24,7 @@ lessThanNum = x < 5 ? true : false;
 
 ```widget
 expr-stepper
-{ "expr": "x < 5 ? 1 : 0", "env": { "x": 3, "n": 1 }, "presets": ["x < 5 ? 1 : 0", "x < 5 ? 1 : 0"] }
+{ "expr": "x < 5 ? 1 : 0", "env": { "x": 3, "n": 1 }, "presets": ["x < 5 ? 1 : 0", "x >= 5 ? 1 : 0", "x < 5 ? x : -x"] }
 ```
 
 ## The comma operator
@@ -40,7 +40,7 @@ The full `assortedOps.cpp` sample, with the ternary rewrite applied, on input `3
 
 ```cpp run pin assortedOps.cpp
 // stdin: 3
-// predict: Input is 3. Write the four lines this prints, in order.
+// predict: Input is 3. Write the five lines this prints, in order.
 #include <iostream>
 
 int main() {
@@ -66,14 +66,7 @@ int main() {
 }
 ```
 
-The `m` line, traced:
-
-1. `n` starts at `1`.
-2. `++n` — first item in the comma list — makes `n = 2`.
-3. `std::cout << "n = " << n << '\n'` — second item — **prints `n = 2`**. Its value (the stream) is discarded.
-4. `++n` — third item — makes `n = 3`.
-5. `2*n` — last item — evaluates to `6`. That becomes the value of the whole comma expression, so `m = 6`.
-6. On the next line, `(++m, m)` increments `m` to `7` and then evaluates to `m` (7) — so it **prints `m = 7`**.
+In `int m = (++n, std::cout << "n = " << n << '\n', ++n, 2*n);` every item runs left to right, including the print in the middle, and only the last item, `2*n`, becomes the value of `m`. `(++m, m)` on the next line works the same way.
 
 :::quiz The comma operator is not a tuple and not a function-call separator
 `int m = (a, b);` does **not** create a pair — it evaluates `a`, throws the result away, evaluates `b`, and `m` becomes `b`. The comma **operator** (needs parentheses, evaluates to the last expression) is not the comma that separates function arguments or declarations like `int x, y;`.
@@ -88,6 +81,7 @@ C-style casting with parentheses works in C++: `(float)anInt` explicitly convert
 `sizeof` returns the number of bytes a type or variable occupies **on the current platform** — it's not a fixed universal constant.
 
 ```cpp run
+// predict: Write the four lines printed (int is 4 bytes and double 8 on this machine).
 #include <iostream>
 
 int main()
@@ -132,50 +126,22 @@ int main() {
 }
 ```
 
-`bits.cpp` runs every compound bitwise operator on `2`, which is `010` in binary:
+`bits.cpp` runs every compound bitwise operator on `2`, which is `010` in binary. Each line works one bit pattern:
 
-| Expression | Binary | Decimal |
+| Expression | Same as | In binary |
 |---|---|---|
-| `a >>= 1` (`010 >> 1`) | `001` | `1` |
-| `b <<= 1` (`010 << 1`) | `100` | `4` |
-| `c &= 1` (`010 & 001`) | `000` | `0` |
-| `d \|= 1` (`010 \| 001`) | `011` | `3` |
-| `e ^= 1` (`010 ^ 001`) | `011` | `3` |
+| `a >>= 1` | `a = a >> 1` | `010 >> 1` |
+| `b <<= 1` | `b = b << 1` | `010 << 1` |
+| `c &= 1` | `c = c & 1` | `010 & 001` |
+| `d \|= 1` | `d = d \| 1` | `010 \| 001` |
+| `e ^= 1` | `e = e ^ 1` | `010 ^ 001` |
 
 ```widget
 bitwise
 { "a": 2, "b": 1 }
 ```
 
-`const_vs_constexpr.cpp` chains two of these on one variable, then reads a runtime value into a `const int`. Input is `7`:
-
-```cpp run
-// stdin: 7
-#include <iostream>
-#include <limits>
-using namespace std;
-
-int main()
-{
-    cout << numeric_limits<int>::max() << endl;
-    int a = 1;
-    int b = 2;
-    cout << a << endl;
-    a <<= 3;
-    cout << a << endl;
-    cout << (a |= b) << endl;
-
-    int input;
-    cin >> input;
-    const int constantinput = input;   // this compiles - a const can take a runtime value
-    cout << constantinput << endl;
-    return 0;
-}
-```
-
-`a` starts at `1` (`001`). `a <<= 3` shifts left three places to `1000` = `8`. `a |= b` with `b = 2` (`010`) gives `1010` = `10`, and because `|=` is an expression, `cout << (a |= b)` prints the new value `10` on the same line that updates it. Output so far: `2147483647`, `1`, `8`, `10`.
-
-The last two lines are the sample's point: `const int constantinput = input;` compiles even though `input` is only known at runtime, because a `const` only promises the value won't change *after* initialization; it prints `7`. A `constexpr` in the same spot would **not** compile, because `constexpr` requires a value known at compile time.
+`const_vs_constexpr.cpp` chains two of these, `a <<= 3` and `a |= b`, on one variable; it is worked in the [constants lesson](#/comp3522/constants).
 
 ```quiz
 [

@@ -3,31 +3,19 @@ title: Cumulative frequencies & ogives
 minutes: 17
 ---
 
-A frequency distribution answers "how many values are **in** this class?" A percentile question asks "how many values are **below** this point?" Running totals down the table answer it, and plotting those totals gives the **ogive** (the instructor's pronunciation note: **"oh-jive"**).
+A frequency table counts the values **in** each class; a percentile asks how many lie **below** a point. Running totals answer it, and plotting them gives the **ogive** (**"oh-jive"**).
 
 ## Two definitions
 
 - The **cumulative frequency** of a class is *"the number of individuals that fall into any class up to and including that class."*
 - The **cumulative relative frequency** distribution is *"the fraction of individuals that fall into any class up to and including that class."*
 
-Cumulative frequency is a running count; cumulative relative frequency is that count divided by $n$.
-
 ## Building the table (Old Faithful, $n = 272$)
 
-Start from the histogram lesson's frequency distribution (width 0.200, first class 1.6 to 1.799). The instructor filled the first rows by hand:
+Start from the histogram lesson's frequency distribution (width 0.200, first class 1.6 to 1.799). The instructor's two rules beside the table:
 
-| Lower | Upper | Frequency | Cumul Freq | Cumul Rel Freq |
-|---|---|---|---|---|
-| 1.6 | 1.799 | 12 | 12 | $12/272 = 0.044$ |
-| 1.8 | 1.999 | 39 | $12 + 39 = 51$ | $51/272 = 0.1875$ |
-| 2.0 | 2.199 | 20 | $51 + 20 = 71$ | $71/272 = 0.2610$ |
-| ... and so on ... | | | | |
-| 5.0 | 5.199 | 4 | 272 | $272/272 = 1.000$ |
-
-His two rules beside the table:
-
-- Each cumulative frequency is the **previous cumulative frequency plus this class's frequency**: 12, then 12 + 39 = 51, then 51 + 20 = 71.
-- **"Last cumulative frequency = $n$."** The running total must end at 272 and the last cumulative relative frequency at 1.000: the arithmetic check.
+- Each cumulative frequency is the **previous cumulative frequency plus this class's frequency**: 12, then $12 + 39 = 51$, then $51 + 20 = 71$. Dividing by $n$ gives $12/272 = 0.044$, $51/272 = 0.1875$, $71/272 = 0.2610$.
+- **"Last cumulative frequency = $n$."** The running total must end at 272 and the last cumulative relative frequency at $272/272 = 1.000$: the arithmetic check.
 
 The complete table, with the extra row on top that the ogive needs:
 
@@ -52,7 +40,6 @@ The complete table, with the extra row on top that the ogive needs:
 | 4.6 | 4.799 | 28 | 257 | 0.945 |
 | 4.8 | 4.999 | 11 | 268 | 0.985 |
 | 5.0 | 5.199 | 4 | 272 | 1.000 |
-| | | Total = 272 | 272 | |
 
 The instructor labelled the **Upper Class Limit** column **"X-axis"** and the **Cumul Rel Freq** column **"Y-axis"**: those two columns are the ogive. The top row (upper limit 1.599, cumulative 0) is *"one additional point at the beginning of the curve to indicate the 0.0 point"*.
 
@@ -60,11 +47,11 @@ The instructor labelled the **Upper Class Limit** column **"X-axis"** and the **
 
 **"How many eruptions had a duration of less than 4.0 minutes?"** **134**, the cumulative frequency of the class ending at 3.999 ("total # up to 3.999").
 
-**"Estimate the median eruption time using the cumulative relative frequencies."** The median has 50% below it. In the last column 0.493 at 3.999 is under 0.5 and 0.607 at 4.199 is over it, so **"$Q_2$ is somewhere between 4.0 and 4.199."** (R's exact median is 4.000, at the bottom of that class.) Any percentile $P_p$ is located the same way: the first row whose cumulative relative frequency reaches $p$.
+**"Estimate the median eruption time using the cumulative relative frequencies."** The median has 50% below it. In the last column 0.493 at 3.999 is under 0.5 and 0.607 at 4.199 is over it, so **"$Q_2$ is somewhere between 4.0 and 4.199."** (R's exact median is 4.000, at the bottom of that class.) Any percentile $P_p$ is located the same way.
 
 ### In R
 
-The demo notebook builds the table with `cut()` (assign each value to a class), `table()` (count), `cumsum()` (running total) and division by $n$:
+The demo notebook builds the table with `cut()`, `table()`, `cumsum()` and division by $n$:
 
 ```r
 freq.distribution <- table(cut(faithful$eruptions,
@@ -78,13 +65,13 @@ cumul.rel.freq.dist <- round( cumul.freq.dist / n.total , 3)
 cbind(cumul.rel.freq.dist)
 ```
 
-`cumsum()` turns 12, 39, 20, ... into 12, 51, 71, ...; `cbind()` prints the result as a vertical column.
+`cut()` assigns each value to a class, `table()` counts, `cumsum()` turns 12, 39, 20, ... into 12, 51, 71, ..., and `cbind()` prints a column.
 
 ## The ogive
 
 > An ogive ("oh-jive") shows the cumulative relative frequencies plotted against the upper class limits.
 
-The points are $(1.599, 0.000)$, $(1.799, 0.044)$, $(1.999, 0.188)$, $(2.199, 0.261)$, ..., $(5.199, 1.000)$, joined by straight segments. The curve only rises or stays flat, because a cumulative total never decreases, and it ends at 1.0. The instructor's caption: **"Shows all percentiles at once."**
+The points are $(1.599, 0.000)$, $(1.799, 0.044)$, $(1.999, 0.188)$, ..., $(5.199, 1.000)$, joined by straight segments. A cumulative total never decreases, so the curve only rises or stays flat, ending at 1.0. The horizontal axis is the **upper** class limits, because a class's whole count lies below its upper limit. The instructor's caption: **"Shows all percentiles at once."**
 
 ```r
 upper.class.limits <- seq(1.599, 5.199, 0.2)
@@ -105,28 +92,33 @@ abline(h = 0.55, lty=3)
 abline(h = 0.357, lty=3)
 ```
 
-`type="b"` draws **b**oth points and lines. `c(0, cumul.rel.freq.dist)` prepends the 0 for the 1.599 point, which is why `upper.class.limits` starts at 1.599. `abline(v=...)` and `abline(h=...)` draw the dotted guide lines used below.
+`type="b"` draws **b**oth points and lines. `c(0, cumul.rel.freq.dist)` prepends the 0 for the 1.599 point; `abline()` draws the dotted guide lines used below.
 
 ### Reading the ogive, the two directions
 
 **Given $X$, find the percentage below it**: up from $X$ to the curve, then across to the vertical axis.
 
 - *What percentage of eruptions have a duration below 3.0 minutes?* **Approximately 35%**, so $P_{35} = 3.0$. (The table has 0.357 at 2.999.)
-- *What percentage have a duration below 4.1 minutes?* 4.1 lies between the points at 3.999 (0.493) and 4.199 (0.607); reading the segment gives **approximately 55%**, so $P_{55} = 4.1$.
+- *What percentage have a duration below 4.1 minutes?* Between 3.999 (0.493) and 4.199 (0.607): **approximately 55%**, so $P_{55} = 4.1$.
 
 **Given a percentage, find $X$**: across from $p$ on the vertical axis to the curve, then down.
 
 - *What value of eruption duration has 30% of eruptions below and 70% above?* **About 2.35.** In his words: "About 30% of eruptions had $X < 2.35$, 70% of eruptions had $X \ge 2.35$. $P_{30} = 2.35$."
 
-The ogive is the graph of the percentile function from Unit 1 ([Quartiles & percentiles](#/math3042/quartiles-percentiles)), read in either direction.
+The ogive is the graph of the percentile function from Unit 1 ([Quartiles & percentiles](#/math3042/quartiles-percentiles)), read in either direction. The fraction **between** $a$ and $b$ is the height at $b$ minus the height at $a$.
 
 ```widget
 ogive
 ```
 
-:::quiz Two ogive traps
-The fraction **between** $a$ and $b$ is the height at $b$ minus the height at $a$; on the Lab 2 test-score ogive, "between 30 and 40" is $40\% - 15\% = 25\%$. And the horizontal axis is the **upper** class limits, never lower limits or midpoints, because a class's whole count lies below its upper limit.
-:::
+### The running total drawn class by class
+
+Each step adds one class's frequency to the running total (12, 51, 71, ...) and plots the new point at that class's upper limit. A class adds zero or more values, so no segment can point down.
+
+```widget
+ogive-play
+{}
+```
 
 ```quiz
 [

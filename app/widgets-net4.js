@@ -1102,6 +1102,340 @@ function analogMod(box, cfg) {
   else draw();
 }
 
+// ---------- shared: predict mode for the playback widgets below ----------
+/** Predict-mode state for a playback: the next step waits until its right answer is picked. `redraw` repaints the frame. */
+function predictKit(ask, label, getPb, redraw) {
+  const s = { on: false, answered: 0, asked: 0, firstTry: 0, missed: false, wrong: null, key: null, refocus: false };
+  const row = el("label", "playback-check");
+  const cb = document.createElement("input");
+  cb.type = "checkbox";
+  row.append(cb, " " + label);
+  s.row = row;
+  s.set = (v) => { s.on = !!v; cb.checked = s.on; };
+  s.reset = () => { s.answered = 0; s.asked = 0; s.firstTry = 0; s.missed = false; s.wrong = null; s.key = null; };
+  s.asking = (pos, n) => s.on && s.answered < n && Math.abs(pos - s.answered) < 1e-6;
+  s.limit = (n) => (s.on ? s.answered : n);
+  s.nudge = () => { ask.classList.remove("playback-nudge"); void ask.offsetWidth; ask.classList.add("playback-nudge"); };
+  s.tally = () => (s.asked > 0 ? ` ${s.firstTry} of ${s.asked} right on the first try.` : "");
+  function pick(o, e) {
+    s.asked += s.wrong == null && !s.missed ? 1 : 0;
+    s.refocus = e.detail === 0;
+    if (!o.ok) { s.missed = true; s.wrong = o.label; redraw(); return; }
+    if (!s.missed) s.firstTry++;
+    s.missed = false; s.wrong = null; s.answered++;
+    getPb().next();
+  }
+  /** Shows the answer buttons while `show` is true. opts: [{ label, ok, why }]; `why` is quoted after a wrong pick. */
+  s.render = (show, keyBase, opts) => {
+    const key = show ? `${keyBase}|${s.answered}|${s.wrong}` : "";
+    if (key === s.key) return;
+    s.key = key; ask.innerHTML = ""; ask.hidden = !s.on;
+    if (!key) return;
+    const btns = opts.map((o) => {
+      const b = el("button", "viz-btn" + (o.label === s.wrong ? " playback-wrong" : ""), o.label);
+      b.type = "button";
+      b.addEventListener("click", (e) => pick(o, e));
+      ask.append(b);
+      return b;
+    });
+    const w = opts.find((o) => o.label === s.wrong);
+    if (w) ask.append(el("span", "playback-feedback", `Not ${w.label}. ${w.why}`));
+    if (s.refocus) { s.refocus = false; (btns.find((b) => !b.classList.contains("playback-wrong")) || btns[0]).focus(); }
+  };
+  cb.addEventListener("change", () => {
+    const pb = getPb();
+    s.on = cb.checked; pb.pause(); s.reset();
+    // Steps already on screen count as answered; the questions start at the next one.
+    s.answered = Math.ceil(pb.pos() - 1e-9);
+    pb.set(pb.pos());
+  });
+  return s;
+}
+
+// ---------- widget: shift-keying-play ----------
+// The shift-keying figure drawn one signal element at a time: the element's bits appear on the digital row,
+// then its slice of the modulated signal is drawn (carrier on or off, f1 or f2, 0° or 180°, or one 8-QAM point).
+const QAM_PHASES = [45, 135, 225, 315];
+/** What one signal element becomes: { kind, label (the predict answer), say (the caption clause) }. */
+function skElement(scheme, sym, prev) {
+  if (scheme === "ask") return sym === "1"
+    ? { label: "carrier on", say: "ASK sends the carrier at its peak amplitude for this element (carrier on)" }
+    : { label: "carrier off", say: "the peak amplitude for this signal level is 0, so the carrier is off" };
+  if (scheme === "fsk") {
+    const f = sym === "1" ? "f₂" : "f₁", same = prev === sym;
+    return { label: f, say: prev == null ? `FSK uses ${f} for this element` : same ? `the data element did not change, so FSK stays at ${f}` : `FSK switches to ${f} for this element` };
+  }
+  if (scheme === "psk") {
+    const lab = sym === "1" ? "in phase (0°)" : "inverted (180°)", flip = prev != null && prev !== sym;
+    return { label: lab, say: `PSK sends the carrier ${sym === "1" ? "in phase, 0°" : "inverted, 180°"}${flip ? ", so the sine flips at the boundary" : prev != null ? ", the same phase as the element before" : ""}` };
+  }
+  const amp = sym[2] === "1" ? "3 V" : "1 V", ph = QAM_PHASES[parseInt(sym.slice(0, 2), 2)];
+  return { label: `${amp}, ${ph}°`, say: `the last bit, ${sym[2]}, picks the ${amp} amplitude and the first two bits, ${sym.slice(0, 2)}, pick the ${ph}° phase` };
+}
+const SK_RULES = {
+  ask: "Binary ASK (OOK): the peak amplitude for one signal level is 0, for the other one is equal to the peak amplitude of the carrier. A 1 is the carrier, a 0 is flat.",
+  fsk: "If the data element is 0, f₁ is used. If the data element is 1, f₂ is used.",
+  psk: "Two signal elements, one with a phase of 0° and the other with a phase of 180°: the slide figure draws each 1 as the carrier and each 0 inverted.",
+  qam: "Here the last bit picks the amplitude (1 for 3 V, 0 for 1 V) and the first two bits pick one of four phases (00 45°, 01 135°, 10 225°, 11 315°).",
+};
+const SK_CONSTANT = { ask: "frequency and phase stay constant", fsk: "peak amplitude and phase stay constant", psk: "peak amplitude and frequency stay constant", qam: "the frequency stays constant" };
+function shiftKeyingPlay(box, cfg) {
+  const schemes = (Array.isArray(cfg.schemes) ? cfg.schemes : ["ask", "fsk", "psk"]).filter((s) => SK[s]);
+  if (!schemes.length) schemes.push("ask", "fsk", "psk");
+  let scheme = schemes.includes(cfg.scheme) ? cfg.scheme : schemes[0];
+  const valid = (s, sc) => (sc === "qam" ? /^[01]{3,24}$/.test(s) && s.length % 3 === 0 : /^[01]{2,10}$/.test(s));
+  let bits = valid(cfg.bits || "", scheme) ? cfg.bits : SK[scheme].slide;
+  const cyclesFor = (sc) => clamp(Math.round(cfg.cycles ?? (sc === "qam" ? 2 : 3)), 1, 8);
+  let pb = null;
+
+  box.append(el("h4", null, cfg.title || (scheme === "qam" && schemes.length === 1 ? "The 8-QAM waveform, one signal element at a time" : "Shift keying, one signal element at a time")));
+  if (schemes.length > 1) box.append(btnRow(schemes.map((s) => SK[s].name), (i) => { scheme = schemes[i]; if (!valid(bits, scheme)) { bits = SK[scheme].slide; input.value = bits; } restart(); }, schemes.indexOf(scheme)));
+  const row = el("div", "unit-row");
+  const input = document.createElement("input");
+  input.type = "text"; input.value = bits; input.maxLength = 24; input.inputMode = "numeric"; input.spellcheck = false;
+  input.setAttribute("aria-label", "bits to modulate");
+  input.style.width = "240px"; input.style.maxWidth = "100%";
+  const slideBtn = el("button", "viz-btn", "slide figure");
+  slideBtn.type = "button";
+  slideBtn.addEventListener("click", () => { bits = SK[scheme].slide; input.value = bits; restart(); });
+  row.append(el("label", null, "bits"), input, slideBtn);
+  const svg = svgEl("svg", { viewBox: "0 0 640 262", class: "curve-svg net-svg", role: "img", "aria-label": "digital signal, carrier and modulated signal, drawn one signal element at a time" });
+  const caption = el("p", "playback-caption");
+  caption.setAttribute("aria-live", "polite");
+  const ask = el("div", "viz-btn-row playback-ask");
+  const note = el("p", "widget-note");
+  const P = predictKit(ask, "Predict each signal element before it is drawn", () => pb, () => frame(pb.pos()));
+  P.set(cfg.predict);
+  box.append(row, P.row, svg, caption, ask);
+
+  const per = () => SK[scheme].r, nE = () => bits.length / per();
+  const symOf = (i) => bits.slice(i * per(), (i + 1) * per());
+  const elemOf = (i) => skElement(scheme, symOf(i), i > 0 ? symOf(i - 1) : null);
+  function options(i) {
+    if (scheme === "qam") {
+      const out = [];
+      for (const a of ["1 V", "3 V"]) for (const p of QAM_PHASES) out.push(`${a}, ${p}°`);
+      return out;
+    }
+    return { ask: ["carrier on", "carrier off"], fsk: ["f₁", "f₂"], psk: ["in phase (0°)", "inverted (180°)"] }[scheme];
+  }
+  /** Modulated value at time t (in element units) inside element i. */
+  function modAt(i, t, cycles) {
+    const sym = symOf(i), one = sym === "1", ph = 2 * Math.PI * cycles * t;
+    if (scheme === "ask") return one ? Math.sin(ph) : 0;
+    if (scheme === "fsk") return Math.sin(2 * Math.PI * (one ? 2 * cycles : cycles) * t);
+    if (scheme === "psk") return one ? Math.sin(ph) : -Math.sin(ph);
+    const amp = sym[2] === "1" ? 1 : 1 / 3, phase = (QAM_PHASES[parseInt(sym.slice(0, 2), 2)] * Math.PI) / 180;
+    return amp * Math.sin(ph + phase);
+  }
+  function frame(pos) {
+    const S = SK[scheme], N = nE(), r = per(), cycles = cyclesFor(scheme);
+    const X0 = 40, X1 = 626, bw = (X1 - X0) / N;
+    const q = P.asking(pos, N), cur = q ? P.answered : Math.min(N - 1, Math.floor(pos - 1e-9));
+    const f = q ? 0 : cur < 0 ? 0 : pos - cur;
+    const digTo = cur < 0 ? 0 : q ? P.answered : cur + smooth(f / 0.3);           // digital row, in elements
+    const modTo = cur < 0 ? 0 : q ? P.answered : cur + clamp((f - 0.3) / 0.7, 0, 1); // modulated row
+    const rows = [["Digital signal", 46, 16], ["Carrier signal", 122, 26], ["Modulated signal", 212, 36]];
+    svg.innerHTML = "";
+    if (cur >= 0) svg.append(svgEl("rect", { x: X0 + cur * bw, y: 14, width: bw, height: 240, fill: "var(--hl-soft)" }));
+    for (let i = 0; i <= N; i++) svg.append(svgEl("line", { x1: X0 + i * bw, y1: 14, x2: X0 + i * bw, y2: 254, stroke: "var(--rule-strong)", "stroke-dasharray": "3 4" }));
+    for (let i = 0; i < N; i++) text(svg, X0 + (i + 0.5) * bw, 11, symOf(i), { fill: "var(--hl)", "font-size": 13, "font-weight": i === cur ? "700" : "600", opacity: i <= cur || i < P.answered ? 1 : 0.45 });
+    for (const [label, yc, amp] of rows) {
+      arrowAxis(svg, X0 - 8, yc, X1 + 12, yc);
+      svg.append(svgEl("text", { x: X0 + 4, y: yc - amp - 3, "font-size": 11.5, fill: "var(--ink)", stroke: "var(--paper-2)", "stroke-width": 4, "paint-order": "stroke" }, label));
+    }
+    // digital row, element by element up to digTo
+    const [, dy, da] = rows[0], dpts = [];
+    for (let i = 0; i < N && digTo > i; i++) {
+      const sym = symOf(i);
+      const lvl = S.digital === "polar" ? (sym === "1" ? 1 : -1) : S.digital === "symbols" ? (parseInt(sym, 2) / 7) * 2 - 1 : sym === "1" ? 1 : 0;
+      dpts.push([X0 + i * bw, dy - lvl * da], [X0 + Math.min(i + 1, digTo) * bw, dy - lvl * da]);
+    }
+    if (dpts.length) svg.append(polyline(dpts, "var(--ink-2)", 2.2));
+    if (S.digital === "polar") { text(svg, X0 - 10, dy - da + 4, "+V", { "text-anchor": "end" }); text(svg, X0 - 10, dy + da + 4, "−V", { "text-anchor": "end" }); }
+    else if (S.digital === "unipolar") { text(svg, X0 - 10, dy - da + 4, "1", { "text-anchor": "end" }); text(svg, X0 - 10, dy + 4, "0", { "text-anchor": "end" }); }
+    else text(svg, X0 - 10, dy + 4, "0…7", { "text-anchor": "end", "font-size": 9.5 });
+    // carrier, always the whole second
+    const [, cy, ca] = rows[1], cpts = [], STEPS = Math.max(600, N * cycles * 40);
+    for (let k = 0; k <= STEPS; k++) { const t = (N * k) / STEPS; cpts.push([X0 + t * bw, cy - ca * Math.sin(2 * Math.PI * cycles * t)]); }
+    svg.append(polyline(cpts, "var(--ink-2)", 1.6, 0.8));
+    text(svg, X1 + 6, cy - ca - 4, "f_c", { "text-anchor": "end" });
+    // modulated row up to modTo, with a pen dot on the element being drawn
+    const [, my, ma] = rows[2];
+    for (let i = 0; i < N && modTo > i; i++) {
+      const pts = [], m = Math.max(80, cycles * 50), end = Math.min(1, modTo - i);
+      for (let k = 0; k <= m * end; k++) { const t = k / m; pts.push([X0 + (i + t) * bw, my - ma * modAt(i, t, cycles)]); }
+      if (end < 1) pts.push([X0 + (i + end) * bw, my - ma * modAt(i, end, cycles)]);
+      svg.append(polyline(pts, scheme === "psk" && symOf(i) !== "1" ? "var(--ink-dim)" : "var(--blue)", 2.2));
+      if (end < 1 && end > 0) svg.append(svgEl("circle", { cx: X0 + (i + end) * bw, cy: my - ma * modAt(i, end, cycles), r: 4.5, fill: "var(--hl)" }));
+    }
+    if (scheme === "fsk") { text(svg, X0 - 10, my - 10, "f₂: 1", { "text-anchor": "end", "font-size": 10 }); text(svg, X0 - 10, my + 14, "f₁: 0", { "text-anchor": "end", "font-size": 10 }); }
+    const sent = cur < 0 ? 0 : q ? P.answered : cur + (f > 0.999 ? 1 : 0);
+    text(svg, (X0 + X1) / 2, 260, `S = N/r: signal elements so far ${sent} of ${N} · bit rate ${bits.length} bps · baud rate ${N} baud`, { "font-size": 11, fill: "var(--ink)" });
+    let msg;
+    const who = (i) => (r === 1 ? `Bit ${i + 1} is ${symOf(i)}` : `Element ${i + 1} is ${symOf(i)}`);
+    if (q) msg = `${who(P.answered)}. What does the modulated signal do for this element?`;
+    else if (cur < 0) msg = `${bits.length} bits in 1 s, ${r === 1 ? "one bit" : `${r} bits`} per signal element: ${N} signal elements, so the baud rate is ${N}. Each step draws one element.`;
+    else {
+      msg = `${who(cur)}: ${elemOf(cur).say}; ${SK_CONSTANT[scheme]}.`;
+      if (pos >= N) msg += ` All ${N} elements are sent in 1 s: bit rate ${bits.length}, baud rate ${N} (r = ${r}, S = ${r === 1 ? "N" : `N/${r}`}).${P.tally()}`;
+    }
+    if (caption.textContent !== msg) caption.textContent = msg;
+    const right = q ? elemOf(P.answered).label : "";
+    P.render(q, `${scheme}|${bits}`, q ? options(P.answered).map((label) => ({ label, ok: label === right, why: SK_RULES[scheme] })) : []);
+  }
+  function restart() {
+    P.reset();
+    note.textContent = SK[scheme].note;
+    pb.reset(nE());
+  }
+  pb = createPlayback({ count: nE(), unit: "element", onFrame: frame, stepMs: () => cfg.stepMs || (scheme === "qam" ? 1400 : 1600), limit: () => P.limit(nE()), onBlocked: P.nudge });
+  box.append(pb.el, note);
+  input.addEventListener("input", () => {
+    const v = input.value.replace(/[^01]/g, "");
+    if (valid(v, scheme)) { bits = v; restart(); } else note.textContent = scheme === "qam" ? "Type 3 to 24 bits, a multiple of 3, 0s and 1s only." : "Type 2 to 10 bits, 0s and 1s only.";
+  });
+  restart();
+}
+
+// ---------- widget: sampling-play ----------
+// The sampler figure built one sample instant at a time: the T_s clock tick sweeps to the next instant, the sample
+// is taken (stem, natural pulse or flat-top hold), and the dashed reconstruction extends to the new dot.
+const SAMPLE_PLAY_CASES = [["a. Nyquist rate: f_s = 2f", 2], ["b. Oversampling: f_s = 4f", 4], ["c. Undersampling: f_s = f", 1], ["c. as the slide draws it: f_s = 0.8f", 0.8]];
+function samplePoint(v) {
+  if (Math.abs(v - 1) < 1e-6) return "a peak";
+  if (Math.abs(v + 1) < 1e-6) return "a trough";
+  if (Math.abs(v) < 1e-6) return "a zero crossing";
+  return "between";
+}
+function samplingPlay(box, cfg) {
+  const unit = FREQ_UNITS.find(([u]) => u === cfg.unit) || FREQ_UNITS[0];
+  const f = cfg.f > 0 ? +cfg.f : 1;
+  const methods = (Array.isArray(cfg.methods) ? cfg.methods : ["ideal"]).filter((m) => SAMPLE_METHODS[m]);
+  if (!methods.length) methods.push("ideal");
+  let method = methods.includes(cfg.method) ? cfg.method : methods[0];
+  let ratio = clamp(Math.round((cfg.fs > 0 ? cfg.fs / f : 2) * 10) / 10, 0.5, 8);
+  let pb = null;
+  const CYC = 3;
+
+  box.append(el("h4", null, cfg.title || "Sampling a sine wave, one sample at a time"));
+  box.append(btnRow(SAMPLE_PLAY_CASES.map((c) => c[0]), (i) => { ratio = SAMPLE_PLAY_CASES[i][1]; restart(); }, SAMPLE_PLAY_CASES.findIndex((c) => Math.abs(c[1] - ratio) < 1e-9)));
+  if (methods.length > 1) box.append(btnRow(methods.map((m) => SAMPLE_METHODS[m].name), (i) => { method = methods[i]; restart(); }, methods.indexOf(method)));
+  const svg = svgEl("svg", { viewBox: "0 0 640 240", class: "curve-svg net-svg", role: "img", "aria-label": "analog signal sampled one instant at a time, and the samples joined by dashed lines" });
+  const caption = el("p", "playback-caption");
+  caption.setAttribute("aria-live", "polite");
+  const ask = el("div", "viz-btn-row playback-ask");
+  const note = el("p", "widget-note");
+  const P = predictKit(ask, "Predict where each sample lands", () => pb, () => frame(pb.pos()));
+  P.set(cfg.predict);
+  box.append(P.row, svg, caption, ask);
+
+  const sig = (t) => Math.sin(2 * Math.PI * t);
+  // Samples start at the first peak, as in the slide figure; t is in periods of the signal.
+  const times = () => { const out = []; for (let k = 0; ; k++) { const t = 0.25 + k / ratio; if (t > CYC + 1e-9) break; out.push(t); } return out; };
+  const where = (t) => samplePoint(Number(sig(t).toFixed(9)));
+  const regime = () => (ratio < 2 - 1e-9 ? "under" : Math.abs(ratio - 2) < 1e-9 ? "nyq" : "over");
+  function rule(k) {
+    if (k === 0) return "Samples start at the first peak, as in the slide figure.";
+    return `The samples are T_s = 1/f_s = ${num(1 / ratio, 3)} of the signal's period apart, so each lands ${num(((1 / ratio) % 1 + 1) % 1, 3)} of a cycle later in its cycle than the one before.`;
+  }
+  function frame(pos) {
+    const T = times(), N = T.length, CY = 104, AMP = 56, L0 = 26, L1 = 304, R0 = 346, R1 = 624;
+    const xl = (t) => L0 + ((L1 - L0) * t) / CYC, xr = (t) => R0 + ((R1 - R0) * t) / CYC, y = (v) => CY - v * AMP;
+    const q = P.asking(pos, N), cur = q ? P.answered : Math.min(N - 1, Math.floor(pos - 1e-9));
+    const g = q ? 0 : cur < 0 ? 0 : pos - cur, sweep = smooth(g / 0.5), grow = smooth((g - 0.5) / 0.4);
+    const taken = q ? P.answered : cur < 0 ? 0 : cur + (g >= 0.5 ? 1 : 0); // samples with a value on screen
+    svg.innerHTML = "";
+    for (const [x0, x1] of [[L0, L1], [R0, R1]]) { arrowAxis(svg, x0 - 6, CY, x1 + 12, CY); arrowAxis(svg, x0, CY + AMP + 12, x0, CY - AMP - 18); }
+    text(svg, L1 + 12, CY + 24, "Time", { "text-anchor": "end" });
+    text(svg, R1 + 12, CY + 24, "Time", { "text-anchor": "end" });
+    text(svg, L0 + 4, CY - AMP - 8, "Amplitude", { "text-anchor": "start" });
+    const curve = [];
+    for (let i = 0; i <= 240; i++) { const t = (CYC * i) / 240; curve.push([xl(t), y(sig(t))]); }
+    const dashedCurve = polyline(curve, "var(--ink-2)", 1.7);
+    dashedCurve.setAttribute("stroke-dasharray", "6 4");
+    svg.append(dashedCurve);
+    // the T_s clock: a tick under every sample instant, solid once reached
+    T.forEach((t, k) => svg.append(svgEl("line", { x1: xl(t), y1: CY + AMP + 2, x2: xl(t), y2: CY + AMP + 10, stroke: k < taken ? "var(--hl)" : "var(--rule-strong)", "stroke-width": 1.6 })));
+    const w = Math.min(0.32 / ratio, 0.22);
+    const drawSample = (t, h) => {
+      const v = sig(t) * h;
+      if (method === "ideal") {
+        svg.append(svgEl("line", { x1: xl(t), y1: CY, x2: xl(t), y2: y(v), stroke: "var(--blue)", "stroke-width": 2.2 }));
+        svg.append(svgEl("circle", { cx: xl(t), cy: y(v), r: 4.2, fill: "var(--blue)" }));
+      } else if (method === "natural") {
+        const t1 = Math.min(t + w, CYC);
+        let d = `M ${xl(t).toFixed(1)} ${CY}`;
+        for (let i = 0; i <= 8; i++) { const tt = t + ((t1 - t) * i) / 8; d += ` L ${xl(tt).toFixed(1)} ${y(sig(tt) * h).toFixed(1)}`; }
+        d += ` L ${xl(t1).toFixed(1)} ${CY} Z`;
+        svg.append(svgEl("path", { d, fill: "var(--blue-soft)", stroke: "var(--blue)", "stroke-width": 1.8 }));
+      } else {
+        const t1 = Math.min(t + w, CYC), top = Math.min(CY, y(v));
+        svg.append(svgEl("rect", { x: xl(t), y: top, width: Math.max(1.5, xl(t1) - xl(t)), height: Math.abs(y(v) - CY), fill: "var(--blue-soft)", stroke: "var(--blue)", "stroke-width": 1.8 }));
+      }
+    };
+    for (let k = 0; k < Math.min(taken, N); k++) drawSample(T[k], k === cur && !q ? grow : 1);
+    if (taken > 1) {
+      const a = xl(T[0]), b = xl(T[1]), ty = CY + AMP + 16;
+      svg.append(svgEl("line", { x1: a, y1: ty, x2: b, y2: ty, stroke: "var(--hl)", "stroke-width": 1.2 }));
+      for (const x of [a, b]) svg.append(svgEl("line", { x1: x, y1: ty - 4, x2: x, y2: ty + 4, stroke: "var(--hl)", "stroke-width": 1.2 }));
+      text(svg, (a + b) / 2, ty + 12, "T_s", { fill: "var(--hl)" });
+    }
+    // the clock hand sweeping to this sample's instant
+    if (cur >= 0 && !q && g < 0.5) {
+      const t = (cur > 0 ? T[cur - 1] : 0) + (T[cur] - (cur > 0 ? T[cur - 1] : 0)) * sweep;
+      svg.append(svgEl("line", { x1: xl(t), y1: CY - AMP - 10, x2: xl(t), y2: CY + AMP + 10, stroke: "var(--hl)", "stroke-width": 1.4, "stroke-dasharray": "4 3" }));
+      svg.append(svgEl("circle", { cx: xl(t), cy: y(sig(t)), r: 4.5, fill: "var(--hl)" }));
+    }
+    if (q) svg.append(svgEl("line", { x1: xl(T[P.answered]), y1: CY - AMP - 10, x2: xl(T[P.answered]), y2: CY + AMP + 10, stroke: "var(--hl)", "stroke-width": 1.4, "stroke-dasharray": "4 3" }));
+    // the receiver's picture: the samples so far joined by dashed lines, the newest segment growing
+    const rec = [];
+    for (let k = 0; k < Math.min(taken, N); k++) rec.push([xr(T[k]), y(sig(T[k]))]);
+    if (!q && cur > 0 && g >= 0.5 && rec.length > 1) {
+      const [px, py] = rec[rec.length - 2], [cx, cyy] = rec[rec.length - 1];
+      rec[rec.length - 1] = [px + (cx - px) * grow, py + (cyy - py) * grow];
+    }
+    if (rec.length > 1) { const d = polyline(rec, "var(--blue)", 2); d.setAttribute("stroke-dasharray", "6 5"); svg.append(d); }
+    rec.forEach(([x, yy], k) => { if (k < rec.length - 1 || q || cur <= 0 || g >= 0.9) svg.append(svgEl("circle", { cx: x, cy: yy, r: 4, fill: "var(--ink)" })); });
+    text(svg, (L0 + L1) / 2, 198, "analog signal (dashed) and its samples");
+    text(svg, (R0 + R1) / 2, 198, "the samples joined: what the receiver rebuilds");
+    const done = pos >= N - 1e-9, rg = regime();
+    const verdict = rg === "under" ? ["Undersampling (f_s < 2f)", "a signal that does not look like the original one", "var(--red)"]
+      : rg === "nyq" ? ["Nyquist rate sampling (f_s = 2f)", "a good approximation of the original sine wave", "var(--green)"]
+        : ["Oversampling (f_s > 2f)", "same approximation but redundant and unnecessary", "var(--hl)"];
+    svg.append(svgEl("rect", { x: 10, y: 208, width: 620, height: 26, rx: 5, fill: "var(--paper)", stroke: done ? verdict[2] : "var(--rule-strong)", "stroke-width": 1.4 }));
+    text(svg, 320, 225, done ? `${verdict[0]}: ${verdict[1]}` : `f_s = ${num(ratio, 1)} f: ${num(ratio, 1)} samples per cycle of the signal · samples so far ${taken} of ${N}`,
+      { fill: done ? verdict[2] : "var(--ink)", "font-size": 12, "font-weight": done ? "600" : "400" });
+    let msg;
+    const at = (k) => (k === 0 ? "t = 0 (the first peak)" : `t = ${k === 1 ? "" : k}T_s, ${num(T[k] - T[0], 2)} period${Math.abs(T[k] - T[0] - 1) < 1e-9 ? "" : "s"} after the first`);
+    const pt = (k) => { const w2 = where(T[k]); return w2 === "between" ? `the curve at ${num(sig(T[k]), 2)} of its peak` : w2; };
+    if (q) msg = `Sample ${P.answered + 1} comes at ${at(P.answered)}. Where on the sine does it land?`;
+    else if (cur < 0) msg = `f_s = ${num(ratio, 1)} f, so T_s = 1/f_s = ${num(1 / ratio, 3)} of the signal's period. Each step is one tick of the sampling clock.`;
+    else {
+      msg = `Sample ${cur + 1} at ${at(cur)}: it lands on ${pt(cur)}.`;
+      if (cur > 0) {
+        if (rg === "under" && Math.abs(ratio - 1) < 1e-9) msg += " f_s = f, so T_s is one whole period: every sample lands on the same point of its cycle and the joined dots are a flat line.";
+        else if (rg === "under") msg += " Fewer than 2 samples per cycle: each lands at a different point of its cycle, and the joined dots trace a slower wave.";
+        else if (rg === "nyq") msg += " Two samples per cycle, a peak and a trough: the joined dots make a triangle wave at the signal's frequency.";
+        else msg += " The extra samples land where the joined line already passes.";
+      }
+      if (done) msg += ` All ${N} samples taken: ${verdict[0]}, ${verdict[1]}.${P.tally()}`;
+    }
+    if (caption.textContent !== msg) caption.textContent = msg;
+    const right = q ? where(T[P.answered]) : "";
+    P.render(q, `${ratio}|${method}`, ["a peak", "a zero crossing", "a trough", "between"].map((label) => ({ label, ok: label === right, why: rule(P.answered) })));
+  }
+  function restart() {
+    P.reset();
+    const fsVal = ratio * f;
+    note.textContent = `f = ${num(f)} ${unit[0]}, f_s = ${num(fsVal)} ${unit[0]} (samples/s), Nyquist rate f_N = 2f = ${num(2 * f)} ${unit[0]}. ${SAMPLE_METHODS[method].note}`;
+    pb.reset(times().length);
+  }
+  pb = createPlayback({ count: times().length, unit: "sample", onFrame: frame, stepMs: () => cfg.stepMs || 1300, limit: () => P.limit(times().length), onBlocked: P.nudge });
+  box.append(pb.el, note);
+  restart();
+}
+
 export const WIDGETS = {
   "sampler": sampler,
   "quantizer": quantizer,
@@ -1110,4 +1444,6 @@ export const WIDGETS = {
   "shift-keying": shiftKeying,
   "constellation": constellation,
   "analog-mod": analogMod,
+  "shift-keying-play": shiftKeyingPlay,
+  "sampling-play": samplingPlay,
 };

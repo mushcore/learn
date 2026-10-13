@@ -5,10 +5,42 @@ minutes: 25
 
 Polymorphism, from the Greek for many forms, means one call to a member function runs different functions depending on the type of the object. The slide promises it is easy, and the whole mechanism is one sentence: **a pointer to a derived class is type-compatible with a pointer to its base class.** In Java everything is a pointer, so you never noticed.
 
+## The deck's first example: speak()
+
+```cpp run
+// predict: Write the four lines printed.
+#include <iostream>
+using namespace std;
+
+class Animal {
+  public:
+    virtual void speak() { cout << "???" << endl; }
+};
+class Cat : public Animal { public: void speak() { cout << "meow" << endl; } };
+class Dog : public Animal { public: void speak() { cout << "woof" << endl; } };
+class Cow : public Animal { public: void speak() { cout << "moo" << endl; } };
+
+int main()
+{
+    Animal *a = nullptr;
+    Cat cat; Dog dog; Cow cow;
+    a = &cat;
+    (*a).speak();
+    a->speak();
+    a = &dog;
+    a->speak();
+    a = &cow;
+    a->speak();
+    return 0;
+}
+```
+
+One pointer of type `Animal *`, one call spelled the same way each time, and the object it points at decides which `speak` runs. `(*a).speak();` and `a->speak();` are the same call: `->` dereferences and selects the member in one step. The rest of this lesson explains why the word `virtual` is what makes this work.
+
 ## A base pointer to a derived object
 
 ```cpp run pin polymorphism.cpp
-// predict: Write the two lines printed. Then uncomment the counter line and read the error.
+// predict: Write the two lines printed.
 #include <iostream>
 using namespace std;
 
@@ -57,7 +89,7 @@ int main () {
 A **virtual** member function is a base class member that can be redefined (Java: overridden) in a derived class, and a call through a base pointer or reference then runs the derived version. Add `virtual` to the declaration in the base class:
 
 ```cpp run pin virtual.cpp
-// predict: Write the two lines printed. Then delete the word virtual, run again, and explain the new numbers.
+// predict: Write the three lines printed.
 #include <iostream>
 using namespace std;
 
@@ -102,7 +134,7 @@ int main () {
 }
 ```
 
-`virtual int area () { return 0; }` gives Polygon an `area` that the derived classes redefine, so `poly->area()` prints 20 while `poly` points at the rectangle and 10 after `poly = &trgl;`. The comment `//polymorphism only works with pointers or references` is the rule: `Polygon poly2 = rect;` copies only the Polygon part of `rect` into a new Polygon object (the derived part is **sliced** off), so `poly2.area()` runs Polygon's version and prints 0. Remove the word `virtual` and every call through `poly` prints 0 too, because a non-virtual call is bound to the pointer's type at compile time.
+`virtual int area () { return 0; }` gives Polygon an `area` that the derived classes redefine, so `poly->area()` runs Rectangle's version while `poly` points at the rectangle and Triangle's after `poly = &trgl;`. The comment `//polymorphism only works with pointers or references` is the rule: `Polygon poly2 = rect;` copies only the Polygon part of `rect` into a new Polygon object (the derived part is **sliced** off), so `poly2.area()` runs Polygon's version. Remove the word `virtual` and every call through `poly` runs Polygon's version too, because a non-virtual call is bound to the pointer's type at compile time.
 
 The slide calls the `return 0` body a bad example: a base `area` that returns a fake number should be a pure virtual function instead, which is Week 4.
 
@@ -197,8 +229,8 @@ dispatch-viz
   },
   {
     "q": "A class that declares or inherits a virtual function is called...",
-    "type": "text",
-    "answer": ["polymorphic", "a polymorphic class", "polymorphic class"],
+    "options": ["an abstract class", "a derived class", "a polymorphic class", "a friend class"],
+    "answer": 2,
     "explain": "The slide's term: a polymorphic class. Its objects can be used through base pointers and references with dynamic binding."
   },
   {

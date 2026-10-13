@@ -1,9 +1,10 @@
 // Interactive C++ widgets for COMP 3522 Week 5: which catch clause runs (first match, child before
 // parent, by reference versus by value, the ellipsis), stack unwinding frame by frame, the
 // std::exception family tree, the coupling/cohesion picture you can rearrange, a SOLID violation
-// spotter and a Law of Demeter train-wreck checker.
+// spotter and a Law of Demeter train-wreck checker. unwind-stepper runs on the shared playback bar.
 import { el, esc, btnRow } from "./dom.js";
 import { highlight } from "./highlight.js";
+import { createPlayback } from "./playback.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 function svgEl(tag, attrs = {}, text) {
@@ -47,6 +48,70 @@ function statCell(label, value, noteText) {
   c.append(el("div", "stat-value", value));
   if (noteText) c.append(el("div", "stat-note", noteText));
   return c;
+}
+
+// ---------- predict mode for the playback widgets (same behaviour as line-code-play) ----------
+/**
+ * questions(): [{ at, text, options: [{ label, ok, why }] }], `at` = the rest position the question holds.
+ * The bar cannot pass `at` until the right option is picked; a wrong pick turns red and quotes the
+ * rule; tally() gives the first-try score for the last caption. Moving back re-opens the questions.
+ */
+function predictGates(ask, questions, getPb) {
+  const g = { on: false, answered: 0, asked: 0, firstTry: 0, missed: false, wrong: -1, key: null, refocus: false };
+  const cur = () => (g.on ? questions()[g.answered] || null : null);
+  g.limit = () => { const q = cur(); return q ? q.at : Infinity; };
+  g.asking = (pos) => { const q = cur(); return q && Math.abs(pos - q.at) < 1e-6 ? q : null; };
+  g.restart = (pos = 0) => {
+    g.answered = g.on ? questions().filter((q) => q.at < pos - 1e-9).length : 0;
+    g.asked = 0; g.firstTry = 0; g.missed = false; g.wrong = -1; g.key = null;
+  };
+  g.tally = () => (g.asked > 0 ? ` ${g.firstTry} of ${g.asked} right on the first try.` : "");
+  g.nudge = () => { ask.classList.remove("playback-nudge"); void ask.offsetWidth; ask.classList.add("playback-nudge"); };
+  g.render = (pos) => {
+    const q = g.asking(pos);
+    const key = q ? `${g.answered}|${g.wrong}|${q.text}|${q.options.map((o) => o.label).join("|")}` : "";
+    if (key === g.key) return;
+    g.key = key; ask.innerHTML = ""; ask.hidden = !g.on || !q;
+    if (!q) return;
+    const btns = q.options.map((o, i) => {
+      const b = el("button", "viz-btn" + (i === g.wrong ? " playback-wrong" : ""), o.label);
+      b.type = "button";
+      b.addEventListener("click", (e) => {
+        if (!g.missed) g.asked++;
+        g.refocus = e.detail === 0;
+        if (!o.ok) { g.missed = true; g.wrong = i; getPb().set(getPb().pos()); return; }
+        if (!g.missed) g.firstTry++;
+        g.missed = false; g.wrong = -1; g.answered++;
+        getPb().next();
+      });
+      ask.append(b);
+      return b;
+    });
+    if (g.wrong >= 0) ask.append(el("span", "playback-feedback", `Not that. ${q.options[g.wrong].why}`));
+    if (g.refocus) { g.refocus = false; (btns.find((b) => !b.classList.contains("playback-wrong")) || btns[0]).focus(); }
+  };
+  return g;
+}
+/** A predict checkbox, an ask row and a playback bar wired together. opts: checkText, predict, count(), unit, stepMs, questions(), onFrame(pos, playing, gate). */
+function playbackWithPredict(opts) {
+  const label = el("label", "playback-check");
+  const input = document.createElement("input");
+  input.type = "checkbox"; input.checked = !!opts.predict;
+  label.append(input, " " + opts.checkText);
+  const ask = el("div", "viz-btn-row playback-ask");
+  ask.hidden = true;
+  let pb = null, lastPos = 0;
+  const gate = predictGates(ask, opts.questions, () => pb);
+  gate.on = input.checked;
+  const onFrame = (pos, playing) => {
+    // Moving back (restart, back, scrub) re-opens the questions at or after the new position.
+    if (gate.on && !playing && pos < lastPos - 1e-9) { const qs = opts.questions(); while (gate.answered > 0 && qs[gate.answered - 1].at >= pos - 1e-9) gate.answered--; gate.missed = false; gate.wrong = -1; }
+    lastPos = pos;
+    opts.onFrame(pos, playing, gate); gate.render(pos);
+  };
+  pb = createPlayback({ count: opts.count(), unit: opts.unit, stepMs: opts.stepMs, onFrame, limit: () => gate.limit(), onBlocked: () => gate.nudge() });
+  input.addEventListener("change", () => { gate.on = input.checked; pb.pause(); gate.restart(pb.pos()); gate.key = null; pb.set(pb.pos()); });
+  return { pb, gate, check: label, ask, reset() { gate.restart(0); lastPos = 0; pb.reset(opts.count()); } };
 }
 
 // ---------- small UML drawing kit (shared by solid-spotter and demeter-chain) ----------
@@ -340,20 +405,39 @@ function unwindStepper(box, cfg) {
   box.append(el("h4", null, cfg.title || "Stack unwinding: who is destroyed, where the exception is caught"));
   const names = Object.keys(UW_PRESETS);
   let preset = UW_PRESETS[cfg.preset] ? cfg.preset : names[0];
-  box.append(note("level3 throws a <code>runtime_error</code>. Step through the search for a handler and the unwinding that follows; the output pane is the program's real output."));
-  if (cfg.presets !== false) box.append(btnRow(names, (i) => { preset = names[i]; rebuild(); }, names.indexOf(preset)));
-  const bar = el("div", "pv-ctl");
-  const resetB = button("Reset", "reset-btn", () => go(0)), stepB = button("Step", "reset-btn", () => go(k + 1)), runB = button("Run", "reset-btn", () => go(steps.length - 1));
-  const range = document.createElement("input"); range.type = "range"; range.min = 0; range.value = 0; range.className = "scrub-slider"; range.setAttribute("aria-label", "step");
-  range.addEventListener("input", () => go(Number(range.value)));
-  const pos = el("span", "scrub-pos", "");
-  bar.append(resetB, stepB, runB, range, pos);
+  box.append(note("level3 throws a <code>runtime_error</code>. One step is one event: a frame is entered, the exception is thrown, a frame is left, a handler runs. The output pane is the program's real output."));
+  const presetRow = cfg.presets !== false ? btnRow(names, (i) => { preset = names[i]; rebuild(); play.reset(); }, names.indexOf(preset)) : null;
+  if (presetRow) box.append(presetRow);
   const main = el("div", "pv-main"), codeWrap = el("div"), side = el("div");
-  const stack = el("div", "lt-mem"), excBox = el("div", "pv-msg"), outBox = el("div", "pv-out cpp3-out"), msg = el("div", "pv-msg");
+  const stack = el("div", "lt-mem"), outBox = el("div", "pv-out cpp3-out"), caption = el("p", "playback-caption");
+  caption.setAttribute("aria-live", "polite");
   side.append(el("div", "pv-title", "call stack (top of stack first)"), stack, el("div", "pv-title", "output so far"), outBox);
   main.append(codeWrap, side);
-  box.append(bar, main, msg);
-  let steps = [], rows = [], k = 0;
+  let steps = [], rows = [], qs = [], capKey = null;
+  /** One question before every step that prints, from the throw on: which line prints next? */
+  function buildQuestions() {
+    const p = UW_PRESETS[preset];
+    const pool = [...new Set(steps[steps.length - 1].out.map((o) => o.t.trim()).concat(["g3 destroyed", "level2 caught: boom, rethrowing", "main caught: boom", "main continues"]))];
+    const rule = p.level1 === "noexcept" ? "An exception that reaches a noexcept function calls std::terminate at once: no handler is searched for beyond it and no destructor runs."
+      : p.main === "none" ? "With no matching catch anywhere up the stack, std::terminate runs before any unwinding: no destructor runs."
+      : "The search finds the handler first, then the stack unwinds: every frame between the throw and the handler is left and its local is destroyed, innermost first, and only then does the handler body print.";
+    const out = [];
+    const thrown = steps.findIndex((s) => s.exc);
+    for (let k = Math.max(1, thrown + 1); k < steps.length; k++) {
+      const prev = steps[k - 1].out, now = steps[k].out;
+      if (now.length <= prev.length) continue;
+      const printed = new Set(prev.map((o) => o.t.trim()));
+      const answer = now[prev.length].t.trim();
+      const others = pool.filter((t) => t !== answer && !printed.has(t));
+      // the closest plausible lines: those the program prints soonest after this one, then the rest
+      const later = steps[steps.length - 1].out.map((o) => o.t.trim()).filter((t) => others.includes(t));
+      const pick = [...new Set(later.concat(others))].slice(0, 2);
+      const labels = [answer, ...pick].sort();
+      if (labels.length < 2) continue;
+      out.push({ at: k - 1, text: `${steps[k - 1].out.length ? `Last line printed: "${steps[k - 1].out[steps[k - 1].out.length - 1].t.trim()}".` : ""} Which line prints next?`, options: labels.map((t) => ({ label: t, ok: t === answer, why: rule })) });
+    }
+    return out;
+  }
   function rebuild() {
     const p = UW_PRESETS[preset];
     const { lines, L } = uwProgram(p);
@@ -362,14 +446,11 @@ function unwindStepper(box, cfg) {
     codeWrap.append(cb);
     rows = [...cb.querySelectorAll(".pl")];
     steps = uwRun(p, L);
-    range.max = steps.length - 1;
-    go(0);
+    qs = buildQuestions();
   }
-  function go(v) {
-    k = Math.max(0, Math.min(steps.length - 1, v));
-    range.value = k; stepB.disabled = k === steps.length - 1; resetB.disabled = k === 0; runB.disabled = k === steps.length - 1;
-    pos.textContent = `step ${k + 1} / ${steps.length}`;
-    const s = steps[k];
+  function frame(pos, playing, gate) {
+    const k = Math.max(0, Math.min(steps.length - 1, Math.ceil(pos - 1e-9))), s = steps[k];
+    const q = gate.asking(pos);
     rows.forEach((r) => r.classList.toggle("cur", Number(r.dataset.line) === s.line));
     stack.innerHTML = "";
     [...s.frames].reverse().forEach((f) => {
@@ -381,10 +462,12 @@ function unwindStepper(box, cfg) {
     });
     if (s.exc) { const c = el("div", "pv-cell ptr"); c.innerHTML = `<div class="pv-names">exception in flight</div><div class="pv-type">${esc(s.exc)}</div>`; stack.prepend(c); }
     outBox.innerHTML = s.out.length ? s.out.map((o) => `<div class="${o.err ? "err" : ""}">${esc(o.t)}</div>`).join("") : "(nothing printed yet)";
-    msg.className = "pv-msg " + (s.kind || "");
-    msg.innerHTML = s.msg;
+    const html = q ? esc(q.text.trim()) : s.msg + (k === steps.length - 1 ? esc(gate.tally()) : "");
+    if (capKey !== html) { capKey = html; caption.innerHTML = html; }
   }
   rebuild();
+  const play = playbackWithPredict({ checkText: "Predict each printed line before it appears", predict: cfg.predict, count: () => steps.length - 1, unit: "event", stepMs: () => cfg.stepMs || 1800, questions: () => qs, onFrame: frame });
+  box.append(play.check, main, caption, play.ask, play.pb.el);
 }
 
 // =====================================================================================

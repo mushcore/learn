@@ -1,9 +1,9 @@
 ---
-title: E05 worked, and the seven conversions compared
+title: E05 worked, and the conversions compared
 minutes: 20
 ---
 
-The Week 5 exercise sheet (E05) has four questions, posted with the instructor's answers: a PCM bit rate, a PCM bandwidth, a reasoning question about quantization levels, and a constellation point. Answer each one here before reading the working, then set all seven conversions of Weeks 4 and 5 side by side.
+The Week 5 exercise sheet (E05) has four questions with the instructor's answers. They are the only place the four are worked; answer them cold first.
 
 ## E05: Week 5 exercises
 
@@ -106,7 +106,7 @@ The Week 5 exercise sheet (E05) has four questions, posted with the instructor's
 ]
 ```
 
-## Exercise 1, worked: 64 kbps
+## Exercise 1 worked: the voice bit rate
 
 The voice is a low-pass signal, so its bandwidth is its highest frequency: $f_{max} = 4$ kHz $= 4000$ Hz. Official answer:
 
@@ -116,14 +116,9 @@ $$\text{Bit rate} = \text{Sampling rate} \times \text{Number of bits per sample}
 
 8 bits per sample means $L = 2^8 = 256$ levels, the slide's *in audio digitizing, L = 256*.
 
-### Exercises 1 and 2 in the PCM calculator
+The PCM calculator in [Encoding and bit rate](#/comp3721-w5/encoding-bit-rate) has exercises 1 and 2 as presets.
 
-```widget
-pcm-calc
-{ "fmax": 4, "unit": "kHz", "levels": 256, "c": "1/2", "r": "1", "presets": { "E05 1 voice": { "fmax": 4, "unit": "kHz", "levels": 256, "c": "1/2", "r": "1" }, "E05 2": { "fmax": 300, "unit": "MHz", "levels": 64, "c": "1/2", "r": "1" }, "audio CD": { "fmax": 22.05, "unit": "kHz", "levels": 65536, "c": "1/2", "r": "1" } } }
-```
-
-## Exercise 2, worked: 6 bits and 1.8 GHz
+## Exercise 2 worked: bits per sample and the PCM bandwidth
 
 Official answer:
 
@@ -133,13 +128,13 @@ $$B_{min} = n_b \times B_{analog} = 6 \times 300\ \text{M} = 1800\ \text{MHz} = 
 
 The question says $r = 1$ and nothing about $c$; the answer uses slide 48's $B_{min} = n_b \times B_{analog}$, which already assumes $c = 1/2$. The general form is $B_{min} = c \times n_b \times 2 \times B_{analog} \times 1/r$, and with $c = 1/2$ and $r = 1$ the $2$ and the $1/2$ cancel.
 
-## Exercise 3, worked: both increase
+## Exercise 3 worked: more quantization levels
 
 Official answer: *Number of bits per sample = n_b = log₂ L (L is the number of quantization levels) → Therefore, the number of bits per sample increases. Also, Bit rate = Sampling rate × Number of bits per sample = f_s × n_b → Thus, bit rate also increases.*
 
 The sampling rate depends only on $f_{max}$, so raising $L$ changes nothing there; it raises $n_b$, and the bit rate rises with it. The gain is a smaller quantization error, since $\Delta = (V_{max} - V_{min}) / L$ shrinks.
 
-## Exercise 4, worked: 4 bits and 4 V
+## Exercise 4 worked: the quadrature carrier's amplitude
 
 Official answer: *Number of bits = log₂ 16 = 4.* For the quadrature amplitude, Pythagoras on the constellation point:
 
@@ -163,7 +158,7 @@ constellation
 
 The digital signals (first two rows) are baseband and need a low-pass channel; the analog signals (last two rows) are bandpass and ride on a carrier.
 
-## The seven conversions compared
+## Line coding, PCM and the seven conversions of Lecture 05b
 
 | Conversion | What varies | What stays constant | Bandwidth on the slides | Bits per element |
 |---|---|---|---|---|
@@ -177,7 +172,7 @@ The digital signals (first two rows) are baseband and need a low-pass channel; t
 | FM (A2A) | frequency | peak amplitude, phase | $B_{FM} = 2(1 + \beta)B$ | analog, no bits |
 | PM (A2A) | phase | peak amplitude, frequency | none on the slide | analog, no bits |
 
-The seven conversions of Lecture 05b (four D2A, three A2A) sit under the Week 4 line codes and 05a's PCM. Three regularities run through the table:
+The table has nine rows: the Week 4 line codes, 05a's PCM, and the seven conversions of Lecture 05b (four D2A, three A2A). Three regularities run through it:
 
 - A scheme is named after the one property it varies; the other two stay constant. ASK, FSK and PSK are the digital-data versions of AM, FM and PM.
 - Every bandwidth is proportional to the rate of the thing being sent: $N$ for line codes, $S$ for shift keying, $B$ for the analog methods. FSK alone adds a fixed $2\Delta f$, and FM alone multiplies by $(1 + \beta)$.

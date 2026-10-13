@@ -3,12 +3,10 @@ title: Mock Quiz 1 (Lecture 1)
 minutes: 25
 ---
 
-Quiz 1 covers **Lecture 1**: the definition of an algorithm, time and space efficiency, the basic operation and its tie-breakers, counting how many times it runs, best and worst case, orders of growth, and Big-O, Big-Ω and Big-Θ. The real quiz is **one take only, timed, closed-everything**, and it is **multiple choice over short pseudocode**. The first five questions here are in exactly the instructor's style: *is this a valid algorithm?*, *what is the basic operation?*, *how many times is it performed?* The rest cover the remaining slides in the same format.
-
-One sitting, no notes. Every explanation names the slide fact the question was built from.
+Quiz 1 covers **Lecture 1**: the definition of an algorithm, time and space efficiency, the basic operation and its tie-breakers, counting how many times it runs, best and worst case, orders of growth, and Big-O, Big-Ω and Big-Θ. The real quiz is **one take only, timed, closed-everything**, multiple choice over short pseudocode. The first five questions follow the sample quiz (a valid algorithm, the basic operation, how many times it is performed); the rest cover the remaining slides in the same format.
 
 :::tip How to read a "basic operation" question
-Three checks, in order. **Which line runs the most as n grows?** Constant loops (1 to 10, 1 to 5) do not grow, so their bodies are out no matter how big the constant is. **Ties?** Deepest inside the loop first, then the tie-breaker list: function calls, key comparisons, assignments, expression evaluations; multiplication and division before addition and subtraction. **One answer.** An algorithm has one basic operation; "this code has two basic operations" is always a distractor.
+Three checks, in order. **Which line runs the most as n grows?** Constant loops (1 to 10, 1 to 5) do not grow, so their bodies are out no matter how big the constant is. **Ties?** First the deeper line, counting loops only: a loop's own test sits at its loop's depth and an `if` adds no depth, so in `find` lines 3, 4 and 5 tie. Then the tie-breaker list: function calls, key comparisons, assignments, expression evaluations; multiplication and division before addition and subtraction. **One answer.** An algorithm has one basic operation; "this code has two basic operations" is never right.
 :::
 
 ```quiz
@@ -32,21 +30,21 @@ Three checks, in order. **Which line runs the most as n grows?** Constant loops 
     "code": "Algorithm UnusualAdd(A[n], B[n])\n    C = new array[n]\n    for i = 0 to n-1 do\n        if A[n]==B[n] then\n            C[i] = A[i]\n        else\n            C[i] = A[i] + B[i]\n        endif\n    endfor\nEND",
     "options": ["n", "n/2", "2n", "n^2"],
     "answer": 0,
-    "explain": "One loop, i from 0 to n − 1, is **n** passes. The basic operation is the comparison in the if (or, if you prefer, the assignment that follows it); either way it runs once per pass. Exactly one of the two branches runs each time, so the assignments also total n, never 2n. That the comparison is A[n]==B[n] (the same out-of-range pair every pass) is a distraction; it changes nothing about the count."
+    "explain": "One loop, i from 0 to n − 1, is **n** passes. The basic operation is the comparison in the if: it ties with the assignment in whichever branch runs, and a key comparison (tie-breaker 3) beats an assignment (4). It runs once per pass. Exactly one of the two branches runs each time, so the assignments also total n, never 2n. That the comparison is A[n]==B[n] (the same out-of-range pair every pass) changes nothing about the count."
   },
   {
     "q": "What is the basic operation in the pseudocode fragment shown here?",
     "code": " 1. j = 0\n 2. i = n\n 3. while i > 0 do\n 4.    j = j+1\n 5.    if j > 0 then\n 6.       x = i\n 7.       while x > 0\n 8.          x = x - j\n 9.       end-while\n10.    end-if\n11.    i = i/2\n12. end-while",
     "options": ["Line 3 - while loop/condition", "Line 4 – assignment statement j=j+1", "Line 5 – if statement/condition", "Line 8 – assignment statement x=x-j"],
     "answer": 3,
-    "explain": "Line 8 is the **deepest** statement, inside both while loops, and it runs the most. The outer loop halves i each pass, so lines 3, 4, 5, 6 and 11 run only about log₂ n times; but on the very first pass alone (j = 1) line 8 runs n times, counting x down from n. Deepest and most frequent: line 8."
+    "explain": "The outer loop halves i each pass, so lines 3, 4, 5, 6 and 11 run only ⌊log₂ n⌋ + 1 times; on the first pass alone (j = 1) line 8 runs n times, counting x down from n (15 times in all at n = 10). Line 7, the inner test x > 0, ties it (counting a loop test once per pass, as the slides count find's for line) and is equally deep, so cost decides: line 8 is an assignment with a subtraction, while x > 0 compares a counter with 0, not data. Line 8."
   },
   {
     "q": "What is the basic operation in the pseudocode fragment shown here?",
     "code": " 1.  Algorithm CountSomething(int N)\n 2.      A = new array[1..N]\n 3.      for i = 1 to N do\n 4.          sum1 = 0\n 5.          for j = 1 to i do\n 6.              sum1 = sum1 + j\n 7.          endfor\n 8.          A[i] = sum1\n 9.      endfor\n10.      sum2 = 0\n11.      for i = 1 to N do\n12.          sum2 = sum2 + A[i]\n13.      endfor\n14.      return sum2\n15.  END",
     "options": ["Line 3 - outer loop of double for loop", "Line 5 - inner loop of double for loop", "Line 6 - sum1 assignment statement", "Line 12 - sum2 assignment statement", "This code has two basic operations - Line 6 & Line 12"],
     "answer": 2,
-    "explain": "Line 6 sits inside the double loop and runs 1 + 2 + … + N = **N(N + 1) / 2** times. Line 12 runs only N times. The basic operation is **the statement that gets executed most frequently**, singular; an algorithm has one, so the last option is a distractor. Lines 3 and 5 are loop headers, and the assignment inside the inner loop beats them on the tie-breakers anyway."
+    "explain": "Line 6 sits inside the double loop and runs 1 + 2 + … + N = **N(N + 1) / 2** times. Line 12 runs only N times. The basic operation is **the statement that gets executed most frequently**, singular, so \"two basic operations\" is never right. Line 5, the inner loop's own header, ties line 6 at the same depth, and an assignment beats loop bookkeeping on the tie-breakers; line 3 runs only N times."
   },
   {
     "q": "An algorithm's step 3 reads: \"choose a good pivot from the array\". Which part of the definition of an algorithm does this violate?",
@@ -146,7 +144,7 @@ Three checks, in order. **Which line runs the most as n grows?** Constant loops 
       "f(n) and g(n) have the same value for large n"
     ],
     "answer": 0,
-    "explain": "Big-O is an **upper** bound: f(n) is bounded above by some constant multiple of g(n) from n₀ onward. The ≥ version is Big-Ω. No constant c and no n₀ is the trap in the third option: 2n + 6 ≤ n is never true, yet 2n + 6 ∈ O(n) with c = 4 and n₀ = 3."
+    "explain": "Big-O is an **upper** bound: f(n) is bounded above by some constant multiple of g(n) from n₀ onward. The ≥ version is Big-Ω. \"f(n) ≤ g(n) for every n\" drops both constants: 2n + 6 ≤ n is never true, yet 2n + 6 ∈ O(n) with c = 4 and n₀ = 3."
   },
   {
     "q": "n ∈ O(n²).",
@@ -196,7 +194,3 @@ Three checks, in order. **Which line runs the most as n grows?** Constant loops 
   }
 ]
 ```
-
-:::quiz Scoring yourself
-The real quiz drops your lowest score across the term but allows no re-takes, so treat a miss here as the cheapest mistake you will make all week. Anything under 90%: open the lesson the explanation points to, then come back and retake. The review queue on the home page will keep re-asking what you missed until you get it right twice.
-:::

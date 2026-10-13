@@ -191,10 +191,9 @@ The lab quizzes follow the lectures one week behind, so Quiz 6 is expected to co
     "explain": "Order of addresses: IP addresses source-destination, link-layer address destination-source. The frame on Link 1 of the small internet is [L2 | L1 | N1 | N8 | Data]: R1's L2 first, then Alice's L1, then Alice's N1 and Bob's N8."
   },
   {
-    "type": "fill",
-    "q": "In the small internet of the slides, Alice (N1, L1) sends to Bob (N8, L8) through R1 (L2 on Link 1, L4 on Link 2) and R2 (L5 on Link 2, L7 on Link 3). Fill in the two link-layer addresses of the frame on Link 2.",
-    "code": "[ ___ | ___ | N1 | N8 | Data ]",
-    "answer": ["L5", "L4"],
+    "type": "text",
+    "q": "In the small internet of the slides, Alice (N1, L1) sends to Bob (N8, L8) through R1 (L2 on Link 1, L4 on Link 2) and R2 (L5 on Link 2, L7 on Link 3). Fill in the two link-layer addresses of the frame on Link 2. The frame is [ ___ | ___ | N1 | N8 | Data ]: type the two link-layer addresses in frame order, separated by a space (for example L9 L8).",
+    "answer": ["L5 L4", "L5, L4", "L5,L4", "L5 | L4", "L5|L4", "l5 l4", "l5, l4", "l5,l4", "l5 | l4", "l5|l4", "L_5 L_4", "L_5, L_4", "L_5,L_4", "L_5 | L_4", "L_5|L_4", "l_5 l_4", "l_5, l_4", "l_5,l_4", "l_5 | l_4", "l_5|l_4", "L₅ L₄", "L₅, L₄", "L₅,L₄", "L₅ | L₄", "L₅|L₄"],
     "explain": "Destination first: L5 is R2's interface on Link 2, the source L4 is R1's interface on Link 2. The three frames are [L2 | L1 | N1 | N8], [L5 | L4 | N1 | N8] and [L8 | L7 | N1 | N8]; the IP pair N1 N8 never changes."
   },
   {
@@ -228,24 +227,21 @@ The lab quizzes follow the lectures one week behind, so Quiz 6 is expected to co
     "explain": "The destination hardware address is the unknown being asked for. The slide's request carries L1, N1, All 0s, N2; the reply from B carries L2, N2, L1, N1, with L2 now filled in as the source hardware address."
   },
   {
-    "type": "fill",
-    "q": "Alice (NA, LA) sends a datagram to Bob (NB, LB) through R1 and R2. R1's interface toward Alice is (N1, L1) and toward R2 is L2; R2's interface toward R1 is (N3, L3) and toward Bob is L4. Fill in the frame Alice's data-link layer sends.",
-    "code": "[ ___ | ___ | NA | NB | Data ]",
-    "answer": ["L1", "LA"],
+    "type": "text",
+    "q": "Alice (NA, LA) sends a datagram to Bob (NB, LB) through R1 and R2. R1's interface toward Alice is (N1, L1) and toward R2 is L2; R2's interface toward R1 is (N3, L3) and toward Bob is L4. Fill in the frame Alice's data-link layer sends. The frame is [ ___ | ___ | NA | NB | Data ]: type the two link-layer addresses in frame order, separated by a space (for example L9 L8).",
+    "answer": ["L1 LA", "L1, LA", "L1,LA", "L1 | LA", "L1|LA", "l1 la", "l1, la", "l1,la", "l1 | la", "l1|la", "L_1 L_A", "L_1, L_A", "L_1,L_A", "L_1 | L_A", "L_1|L_A", "l_1 l_a", "l_1, l_a", "l_1,l_a", "l_1 | l_a", "l_1|l_a", "L₁ LA", "L₁, LA", "L₁,LA", "L₁ | LA", "L₁|LA"],
     "explain": "Alice's network layer consults the forwarding table: NB → next hop N1. ARP (Alice) asks for N1 and ARP (R1) replies L1. The frame is [L1 | LA | NA | NB | Data]: next hop's link-layer address first, Alice's own second."
   },
   {
-    "type": "fill",
-    "q": "Same journey. Fill in the frame R1 sends toward R2.",
-    "code": "[ ___ | ___ | NA | NB | Data ]",
-    "answer": ["L3", "L2"],
+    "type": "text",
+    "q": "Same journey. Fill in the frame R1 sends toward R2. The frame is [ ___ | ___ | NA | NB | Data ]: type the two link-layer addresses in frame order, separated by a space (for example L9 L8).",
+    "answer": ["L3 L2", "L3, L2", "L3,L2", "L3 | L2", "L3|L2", "l3 l2", "l3, l2", "l3,l2", "l3 | l2", "l3|l2", "L_3 L_2", "L_3, L_2", "L_3,L_2", "L_3 | L_2", "L_3|L_2", "l_3 l_2", "l_3, l_2", "l_3,l_2", "l_3 | l_2", "l_3|l_2", "L₃ L₂", "L₃, L₂", "L₃,L₂", "L₃ | L₂", "L₃|L₂"],
     "explain": "R1 decapsulates Alice's frame, its forwarding table gives NB → N3, ARP (R1) asks for N3 and ARP (R2) replies L3. The source is L2, R1's own interface on the link to R2, not L1 and not LA: [L3 | L2 | NA | NB | Data]."
   },
   {
-    "type": "fill",
-    "q": "Same journey. Fill in the frame R2 sends to Bob.",
-    "code": "[ ___ | ___ | NA | NB | Data ]",
-    "answer": ["LB", "L4"],
+    "type": "text",
+    "q": "Same journey. Fill in the frame R2 sends to Bob. The frame is [ ___ | ___ | NA | NB | Data ]: type the two link-layer addresses in frame order, separated by a space (for example L9 L8).",
+    "answer": ["LB L4", "LB, L4", "LB,L4", "LB | L4", "LB|L4", "lb l4", "lb, l4", "lb,l4", "lb | l4", "lb|l4", "L_B L_4", "L_B, L_4", "L_B,L_4", "L_B | L_4", "L_B|L_4", "l_b l_4", "l_b, l_4", "l_b,l_4", "l_b | l_4", "l_b|l_4", "LB L₄", "LB, L₄", "LB,L₄", "LB | L₄", "LB|L₄"],
     "explain": "At R2 the forwarding table returns NB itself, because Bob is directly connected. ARP (R2) asks for NB and ARP (Bob) replies LB. The frame is [LB | L4 | NA | NB | Data]; Bob's data-link layer decapsulates it and passes the datagram [NA | NB | Data] up."
   },
   {

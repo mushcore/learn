@@ -3,11 +3,7 @@ title: Which distribution, and the R function for each
 minutes: 20
 ---
 
-A quiz question never says "this is hypergeometric". It describes cards, printers or a help line, and the first mark is for naming the right distribution. Four questions about the story settle it, and one R pattern then computes any of them.
-
-:::info Answers computed, not copied
-The Unit 4 notes were posted blank from page 58 on; every value in this lesson is computed and checked against the demo notebook (`demo_notebook_Unit_04.Rmd`).
-:::
+A problem never says "this is hypergeometric": it describes cards, printers or a help line. Four questions about the story name the distribution, and one R pattern then computes any of them.
 
 ## Four questions pick the distribution
 
@@ -22,7 +18,7 @@ Two refinements. If the draw is without replacement but $n/N \le 5\%$, the 5% ru
 
 ```widget
 dist-picker
-{ "scenarios": "lecture", "title": "Answer the four questions for each lecture scenario; Check names the distribution, its formula, mu, sigma and the R call" }
+{ "scenarios": "lecture", "title": "The lecture scenarios through the four questions: the distribution, its formula, mu, sigma and the R call" }
 ```
 
 ## One R pattern: d for P(X = x), p for P(X ≤ x)
@@ -36,7 +32,7 @@ Every distribution has a `d` function for a single probability and a `p` functio
 | Geometric | `dgeom(x-1, p)` | `pgeom(x-1, p)` | **failures** before the first success, so the lecture's $x$ becomes $x - 1$ |
 | Poisson | `dpois(x, lambda)` | `ppois(x, lambda)` | count, mean for the interval |
 
-`dhyper` never sees $N$: it wants the successes and the failures separately, so the Mac class is `dhyper(4, 40, 50, 10)`, not `dhyper(4, 40, 90, 10)`. "At least $x$" is `1 - p*(x-1, ...)`, the complement of "at most $x - 1$". For a by-hand check, `choose(n, x)` is $nCx$ and `factorial(x)` is $x!$.
+The Mac class is `dhyper(4, 40, 50, 10)`, with the 50 failures where $N$ might be expected. "At least $x$" is `1 - p*(x-1, ...)`, the complement of "at most $x - 1$". For a by-hand check, `choose(n, x)` is $nCx$ and `factorial(x)` is $x!$.
 
 ## Every lecture example as one line
 
@@ -69,7 +65,7 @@ ppois(20, 30)                    # web server: P(X <= 20)
 [1] 0.03528462
 ```
 
-Read down the outputs against the notes: 0.0123, the 3s table, 0.0465 and 0.0506, 0.0399 against 0.0465, 0.0460, 0.2539 and 0.5189, 0.1406 and 0.4219, 0.0134 and 0.0353. The `d`/`p` line is the check for any paper calculation; on the quiz the formula written out with the numbers substituted earns the marks, the R line only confirms them.
+The outputs are the notes' answers: 0.0123, the 3s table, 0.0465 and 0.0506, 0.0399 against 0.0465, 0.0460, 0.2539 and 0.5189, 0.1406 and 0.4219, 0.0134 and 0.0353. On paper the formula is written out with the numbers substituted; the `d`/`p` line checks it.
 
 ## The two recipes that go with any distribution
 
@@ -102,13 +98,13 @@ barplot(p.vals, names.arg=X.vals, col="pink", space=0,
         xlab="x", ylab="P(x)", main="Number of Mac Users in a Sample (n=10)")
 ```
 
-Swap the `d` line and the range of `X.vals` (`0:50` for the shoppers, `1:10` with `q^(X.vals - 1)*p` for the help line, `0:80` for the server) and the same four lines draw every histogram in the unit.
+With another `d` line and range of `X.vals` (`0:50` for the shoppers, `1:10` with `q^(X.vals - 1)*p` for the help line, `0:80` for the server), the same four lines draw every histogram in the unit.
 
 ## Practice scenarios
 
 ```widget
 dist-picker
-{ "scenarios": "practice", "title": "Eight scenario cards, including Practice Problems 23 and 25: classify each, then Check" }
+{ "scenarios": "practice", "title": "Eight scenario cards to classify, including Practice Problems 23 and 25" }
 ```
 
 Practice Problem 23 (the first miss on the 15th shot) is geometric with success = miss, $p = 0.05$: $0.95^{14}(0.05) = 0.0244$. Practice Problem 25 (ten 4-choice questions guessed, none right) is binomial with $n = 10$, $p = 0.25$, $x = 0$: $0.75^{10} = 0.0563$, which is `dbinom(0, 10, 0.25)`.

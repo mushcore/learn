@@ -11,11 +11,7 @@ For **any** data set — any shape at all — the fraction of values with a Z-sc
 
 $$1 - \frac{1}{k^2}$$
 
-The word "at least" is the whole point: Chebyshev gives a guaranteed lower bound that holds no matter how weird the distribution is. The empirical rule gives an exact estimate, but only when normality holds.
-
-:::quiz "At least" is not "approximately"
-Write "at least" for a Chebyshev answer and "approximately" for an empirical-rule answer; the Chebyshev guarantee is a floor, not an estimate.
-:::
+The word "at least" is the whole point: Chebyshev gives a guaranteed lower bound that holds no matter how weird the distribution is. The empirical rule gives an approximate percentage, and only when the data are bell-shaped: write "at least" for a Chebyshev answer and "approximately" for an empirical-rule answer.
 
 ## Comparing the two rules
 

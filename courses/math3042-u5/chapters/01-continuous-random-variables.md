@@ -5,10 +5,6 @@ minutes: 12
 
 Unit 4's random variables counted things: heads, defective chips, requests per minute. This unit's variables measure things, and a measured variable has so many possible values that no single one of them can carry any probability. Probability has to become area.
 
-:::info Answers in this unit are computed
-The Unit 5 notes were posted blank, ahead of the lecture. Every answer in this module was computed and checked in R; if the in-class numbers differ, the in-class numbers replace them.
-:::
-
 ## A continuous random variable takes values on an interval
 
 Slide wording: "If a random variable $X$ takes decimal values measured on an *interval* of real numbers, then $X$ is a *continuous* random variable and $X$ follows a *continuous probability distribution*."
@@ -38,10 +34,10 @@ The dart lands somewhere on the board, so some point does get hit, yet every spe
 
 ```widget
 pdf-area
-{ "dist": "normal", "mu": 175, "sigma": 7, "lo": 171, "hi": 179, "showCdf": false, "title": "Height, μ = 175 cm, σ = 7 cm: drag the two bounds together" }
+{ "dist": "normal", "mu": 175, "sigma": 7, "lo": 171, "hi": 179, "showCdf": false, "title": "Height, μ = 175 cm, σ = 7 cm: the area between two bounds" }
 ```
 
-Drag the two bounds toward each other: the shaded area falls toward 0 and reaches it when they coincide at a single height.
+The widget's "bring the bounds together" button slides the bounds toward each other: the shaded area falls toward 0 and reaches it when they coincide at a single height.
 
 ## ≤ and < are the same thing for a continuous variable
 

@@ -3,7 +3,7 @@ title: Mock Quiz 2
 minutes: 40
 ---
 
-One long quiz covering everything from Unit 2 (visualizing data) and Lab 2 (grouped statistics in R, the pencil problems). Do it in one sitting, no notes, with your calculator, like the real thing. Every explanation shows the arithmetic and says *why*; a miss points back to its chapter.
+One long quiz covering everything from Unit 2 (visualizing data) and Lab 2 (grouped statistics in R, the pencil problems). Every explanation shows the arithmetic and the reason.
 
 :::quiz What the real quiz looks like
 Definitions and symbols, small computations from the lecture's own numbers (the BCIT students, Old Faithful, the quine absences), reading a table or a curve, and "which R command does this". The Unit 1 tools (quartiles, fences, $Sk$, empirical rule, Chebyshev) are used *inside* Unit 2 questions, so they are here too.
@@ -69,8 +69,8 @@ Definitions and symbols, small computations from the lecture's own numbers (the 
   {"q": "Gold prices with R's `quantile()`: $Q_1 = 6204.31$, $Q_3 = 6376.88$. What is the upper fence? (nearest cent)", "type": "numeric", "answer": 6635.735, "tolerance": 0.05, "explain": "$IQR = 172.57$; $1.5 \\times 172.57 = 258.855$; $6376.88 + 258.855 = 6635.735$. Lower fence $6204.31 - 258.855 = 5945.455$."},
   {"q": "With fences 5945.455 and 6635.735, the highest gold price 6448.51 is an outlier.", "type": "tf", "answer": false, "explain": "6448.51 is inside the fences (below 6635.735), and 6023.88 is above the lower fence, so `sum(is.outlier)` is 0: there are no outliers."},
   {"q": "Ogive of 2287 Dutch students' test scores (score 50 → 80%, score 30 → 13%, score 40 → 39%). What proportion scored below 50?", "type": "numeric", "answer": 80, "tolerance": 3, "unit": "%", "explain": "Read up from 50 to the curve: about 0.80, so roughly 80% scored below 50."},
-  {"q": "Same ogive. What proportion scored between 30 and 40?", "type": "numeric", "answer": 25, "tolerance": 4, "unit": "%", "explain": "Percent below 40 minus percent below 30: about $39\\% - 13\\% \\approx 25\\%$ (the key rounds to $40\\% - 15\\% = 25\\%$). Between two values on an ogive is always a subtraction of two readings."},
-  {"q": "Same ogive. The top 25% of the class corresponds to which range of scores?", "options": ["About 48 to 60 (scores above $P_{75}$)", "About 0 to 48", "About 25 to 60", "About 55 to 60"], "answer": 0, "explain": "The top 25% starts at the 75th percentile: read across from 0.75 to the curve and down to about 48. Scores from about 48 up to the maximum 60 are the top quarter."},
+  {"q": "Same ogive. What proportion scored between 30 and 40?", "type": "numeric", "answer": 25, "tolerance": 4, "unit": "%", "explain": "Percent below 40 minus percent below 30: $39\\% - 13\\% = 26\\%$ (the key reads the heights as 40% and 15%: $40\\% - 15\\% = 25\\%$). Between two values on an ogive is always a subtraction of two readings."},
+  {"q": "Same ogive. The top 25% of the class corresponds to which range of scores?", "options": ["About 48.75 to 60 (scores above $P_{75}$)", "About 0 to 48.75", "About 25 to 60", "About 55 to 60"], "answer": 0, "explain": "The top 25% starts at the 75th percentile: read across from 0.75 to the curve and down to about 48.75 ($45 + 0.75 \\times 5$). Scores from there up to the maximum 60 are the top quarter."},
   {"type": "shade", "q": "IQ is normal with $\\mu = 100$, $\\sigma = 15$. Shade the region below 85 and read off the percentage: this is the percentile rank of 85.", "mu": 100, "sigma": 15, "answer": 16, "tolerance": 1.5, "region": "below", "hi": -1, "explain": "85 is $\\mu - 1\\sigma$. Below it lies the 2.5% tail plus the 13.5% band between $-2\\sigma$ and $-1\\sigma$: 16%. So 85 is $P_{16}$."},
   {
     "type": "match",
@@ -87,6 +87,34 @@ Definitions and symbols, small computations from the lecture's own numbers (the 
     ],
     "explain": "`table` counts, `pie`/`barplot`/`stem`/`hist` draw, `cut` assigns values to classes and `cumsum` accumulates, `favstats` is mosaic's grouped summary, `percent_rank` (dplyr) and `scale` (base R) each score every value relative to the rest."
   }
+]
+```
+
+## Quiz 2 format: SFU daily rainfall
+
+The real Quiz 2 Part 1 gave one `favstats` printout and asked four short questions, each answered with a symbolic label and a supporting calculation. $X$ = `Total.Rain.mm`, the rainfall in mm on each day at Simon Fraser University:
+
+```text
+> favstats( ~Total.Rain.mm, data=SFU_Weather)
+ min Q1 median  Q3   max     mean       sd     n missing
+   0  0      0 5.8 171.5 5.098667 10.28911 17707    3236
+```
+
+Its histogram has one tall bar over 0 to 5 mm (more than half the days are dry, since the median is 0) and a long, thin tail of short bars out past 70 mm. A scatterplot of $Y$ = rainfall against $X$ = temperature (°C) is a single hump: near-zero rain at both cold and hot temperatures, the wettest days between about 0 and 15 °C, and no upward or downward trend across the plot.
+
+```quiz
+[
+  {"q": "Record the symbolic label for the number `5.098667` in the printout.", "type": "text", "answer": ["X̄", "xbar", "x-bar", "x bar", "\\bar{X}", "Xbar", "X-bar", "sample mean"], "explain": "`mean` in a favstats printout is the sample mean $\\bar{X}$ = 5.098667 mm, about 5.1 mm."},
+  {"q": "Record the symbolic label for the number `10.28911`.", "type": "text", "answer": ["s", "S", "sample standard deviation"], "explain": "`sd` is the sample standard deviation $s$ = 10.28911 mm, about 10.3 mm. ($\\sigma$ is for a population.)"},
+  {"q": "Record the symbolic label for the number `5.8`.", "type": "text", "answer": ["Q3", "Q_3", "Q₃", "P75", "P_75"], "explain": "The column after `median` is the third quartile $Q_3$ = 5.8 mm. The `Q1` and `median` columns are both 0: at least half the days had no rain."},
+  {"q": "Support the next answer with a calculation: what is the Z-score of a day with $X = 25.0$ mm? (2 decimals)", "type": "numeric", "answer": 1.93, "tolerance": 0.01, "explain": "$Z = \\dfrac{X - \\bar{X}}{s} = \\dfrac{25.0 - 5.1}{10.3} = 1.93$."},
+  {"q": "Is $X = 25.0$ mm **unusual**?", "options": ["No: $|Z| = 1.93 < 2$", "Yes: $Z = 1.93$ is positive", "Yes: 25.0 is above the upper fence", "No: 25.0 is below the maximum 171.5"], "answer": 0, "explain": "Unusual means $|Z| > 2$ (outside $\\bar{X} \\pm 2s$, here $5.1 \\pm 20.6$, up to 25.7 mm). $Z = 1.93$ falls just inside, so 25.0 mm is not unusual. The fences answer a different question (outlier)."},
+  {"q": "Lower fence $Q_1 - 1.5 \\times IQR$ for this printout? (1 decimal, mm)", "type": "numeric", "answer": -8.7, "tolerance": 0.05, "unit": "mm", "explain": "$IQR = Q_3 - Q_1 = 5.8 - 0 = 5.8$; lower fence $= 0 - 1.5 \\times 5.8 = -8.7$ mm (unreachable, since rain cannot be negative)."},
+  {"q": "Upper fence $Q_3 + 1.5 \\times IQR$? (1 decimal, mm)", "type": "numeric", "answer": 14.5, "tolerance": 0.05, "unit": "mm", "explain": "$5.8 + 1.5 \\times 5.8 = 5.8 + 8.7 = 14.5$ mm."},
+  {"q": "With the fences $-8.7$ and $14.5$ mm, $X = 25.0$ mm is an outlier.", "type": "tf", "answer": true, "explain": "25.0 lies beyond the upper fence 14.5 mm, so it is an outlier, although its Z-score (1.93) says it is not unusual. The two definitions disagree here because the data are so skewed: $Q_1 = Q_2 = 0$ makes the box tiny."},
+  {"q": "Pearson's coefficient of skewness $Sk = \\dfrac{3(\\bar{X} - Q_2)}{s}$ for the rainfall? (2 decimals)", "type": "numeric", "answer": 1.49, "tolerance": 0.02, "explain": "$Sk = 3(5.1 - 0)/10.3 = 1.49$ (1.4866 unrounded; the solution writes 1.5). $Sk > 1$: highly skewed right."},
+  {"q": "The histogram (a tall bar at 0 to 5 mm, a long tail to the right) and $Sk \\approx 1.5$ together say the rainfall is...", "options": ["highly skewed right", "skewed left", "symmetric", "bimodal"], "answer": 0, "explain": "The long tail is on the high side and $\\bar{X} = 5.1$ is far above $Q_2 = 0$; any $Sk$ beyond +1 is called highly skewed right."},
+  {"q": "From the temperature-versus-rainfall scatterplot described above, estimate the linear correlation coefficient $r$.", "type": "numeric", "answer": 0, "tolerance": 0.15, "explain": "$r \\approx 0$: the cloud rises then falls, with no single upward or downward straight-line trend. $r$ measures only linear association, so a curved hump gives a value near 0."}
 ]
 ```
 

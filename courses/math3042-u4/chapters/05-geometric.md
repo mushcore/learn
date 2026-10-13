@@ -5,10 +5,6 @@ minutes: 18
 
 The binomial counts successes in a fixed number of trials. The geometric distribution turns the question around: keep running the same trials and count how many it takes to reach the first success.
 
-:::info The notes are blank from here on
-Pages 68 to 70 were posted without the answers filled in. Every number below is computed and checked against the demo notebook (`demo_notebook_Unit_04.Rmd`).
-:::
-
 ## X = the number of trials it takes to obtain the first "success"
 
 Slide wording: the Geometric Distribution is *based on the same assumptions as the binomial distribution: $n$ trials each with probability of success $p$*. What changes is the variable: $X$ = *the number of trials it takes to obtain the first "success"*. Its possible values are 1, 2, 3, … with no upper limit, because there is no fixed $n$: the trials stop when the first success arrives. A binomial $X$ runs from 0 to $n$; a geometric $X$ starts at 1 (the first trial can itself be the success) and is unbounded.
@@ -16,6 +12,18 @@ Slide wording: the Geometric Distribution is *based on the same assumptions as t
 ## The help line: P(3)
 
 *Suppose a tech-support telephone help line is occupied 75% of the time. Find the probability that you will have to call 3 times to gain access.*
+
+```quiz
+[
+  {
+    "q": "The help line is occupied 75 % of the time. P(you first get through on the 3rd call) = ? (4 decimals)",
+    "type": "numeric",
+    "answer": 0.1406,
+    "tolerance": 0.0002,
+    "explain": "Fail, fail, succeed: 0.75 × 0.75 × 0.25 = 0.1406."
+  }
+]
+```
 
 If you first gain access on the 3rd call, then you had to have: *failure on the first call*, probability $q = 0.75$; *failure on the second call*, probability $q = 0.75$; *success on the third call*, probability $p = 0.25$. The calls are independent, so the three probabilities multiply:
 
@@ -38,7 +46,7 @@ geometric-calc
 { "p": 0.25, "x": 3, "preset": "help line (p = 0.25)", "title": "The help line: q^(x-1) p with the chain of calls drawn, the bars for x = 1..15, and the R lines" }
 ```
 
-Slide $x$ up and every added box is another $q$: the bars fall by the factor $q = 0.75$ each step. Drop $p$ to 0.05 and the mean $1/p$ jumps to 20 while the tallest bar stays at $x = 1$.
+Every added box is another $q$, so the bars fall by the factor $q = 0.75$ each step. At $p = 0.05$ the mean $1/p$ is 20 while the tallest bar stays at $x = 1$.
 
 ## E[X] and σ for the help line
 
@@ -130,6 +138,18 @@ geometric-calc
     "options": ["$q^4 p$", "$q^5 p$", "$q^4 p^5$", "$p^4 q$"],
     "answer": 0,
     "explain": "Four failures, each with probability q, then the one success with probability p: q^(x−1) p with x = 5."
+  },
+  {
+    "q": "Write P(X = 3) for the help line (occupied 75 % of the time) as the geometric formula with the numbers substituted. Use ^ for powers, * between factors, no spaces.",
+    "type": "text",
+    "answer": ["0.75^2*0.25", "(0.75)^2*0.25", "(0.75)^2*(0.25)", "0.75^2*(0.25)", "0.25*0.75^2", "0.75*0.75*0.25", "(1-0.25)^2*0.25", "0.75^(3-1)*0.25"],
+    "explain": "q^(x−1) · p with q = 0.75, p = 0.25, x = 3: 0.75² · 0.25 = 0.1406. Two failures, so the exponent is 2."
+  },
+  {
+    "q": "You keep calling the help line until you get through, but each failed call makes the next one more likely to connect (callers ahead of you give up). Which geometric assumption fails?",
+    "options": ["the same probability p of success on every trial", "each trial is a success or a failure", "X counts the trials up to and including the first success", "X can take the value 1"],
+    "answer": 0,
+    "explain": "The geometric keeps the binomial's assumptions: the same p on every trial and independent trials. A p that rises call by call breaks equal p; the other three still hold."
   },
   {
     "q": "A geometric X with p = 0.2. E[X]? ",

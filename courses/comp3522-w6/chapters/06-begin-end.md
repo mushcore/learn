@@ -13,19 +13,18 @@ That sameness is why iterators matter. They let you *iterate through containers 
 
 ## end() is one past the last element
 
-```widget
-iter-walk
-{ "values": [9] }
-```
-
 The slide draws `vector<int> intVec = {9};` with both `itBegin` and `itEnd` pointing at the 9 and asks: "That doesn't look right..." It is not right. Slide wording: `end()` *returns an iterator pointing to a theoretical one element past the last element in the range of values*. `itEnd` *does not point to an element*, so *don't dereference end*.
 
-With that picture the loop `for(itBegin; itBegin != itEnd; itBegin++)` reads as two passes:
+With `{9, 10, 11}` the only change is that `end()` sits one past the 11, so there are three passes. With `{}` (empty) `begin()` and `end()` are the same position, `itBegin == itEnd` holds before the first test, and the body never runs. This is the half-open range `[begin, end)` from the STL overview: the first position is included, the one-past position is not. Dereferencing `end()` is undefined behaviour, not an exception: the program may print garbage or crash rather than tell you.
 
-1. 1st pass: `itBegin != itEnd`, do the loop code, output `9`, then `itBegin++` moves it one past the 9.
-2. 2nd pass: `itBegin == itEnd`, leave the loop.
+### The loop test, pass by pass
 
-With `{9, 10, 11}` the only change is that `end()` sits one past the 11, so there are three passes. With `{}` (empty) `begin()` and `end()` are the same position, `itBegin == itEnd` holds before the first test, and the body never runs. The same half-open range `[begin, end)` from the STL overview: the first position is included, the one-past position is not.
+```widget
+iter-walk
+{ "values": [9], "predict": true }
+```
+
+Each pass starts with the test `itBegin != itEnd`; the pass that finds them equal leaves without running the body, so a vector of n elements takes n + 1 tests.
 
 ## The three walks in one program
 
@@ -57,13 +56,9 @@ int main()
 }
 ```
 
-`vector<int>::iterator itBegin = intVec.begin();` and `vector<int>::iterator itEnd = intVec.end();` are the slide's two declarations; `iterator` is the typedef every container provides. The loop `for (itBegin; itBegin != itEnd; itBegin++)` is copied from the slide with its empty-looking first clause: `itBegin` on its own is a legal expression statement that does nothing (g++ warns "statement has no effect"), because the iterator was already initialized on the line above. The test is `!=`, never `<`: `<` only exists for random access iterators, `!=` exists for every kind. `cout << *itBegin << endl;` dereferences the iterator to get the element, and `++passes` counts the body.
+`iterator` is the typedef every container provides. The first clause of `for (itBegin; itBegin != itEnd; itBegin++)` is copied from the slide: `itBegin` on its own is a legal expression that does nothing (g++ warns "statement has no effect"), because the iterator was initialized on the line above. The test is `!=`, never `<`: `<` exists only for random access iterators, `!=` for every kind.
 
-The order of the output is the catch in the prediction: `walk({9})` runs, printing `9`, before `cout` prints `passes: 1`, because the function call is evaluated first. The empty vector prints nothing and returns 0.
-
-:::quiz end() in two sentences
-`end()` does not point to an element; dereferencing it is undefined behaviour, not an exception, so the program may print garbage or crash rather than tell you. An empty container has `begin() == end()`, so a `begin`/`end` loop runs zero times and is always safe.
-:::
+The order of the output follows the C++17 rule for `E1 << E2`: the left operand is evaluated first. So `cout << "passes: "` has already printed before `walk` runs and prints the elements, and the returned count comes after them on the same chain. Before C++17 the order was unspecified.
 
 ```quiz
 [

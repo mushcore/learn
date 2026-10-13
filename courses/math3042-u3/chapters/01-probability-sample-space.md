@@ -23,10 +23,10 @@ Eight outcomes, all equally likely. Exactly one head: HTT, THT, TTH, three outco
 
 ```widget
 sample-space
-{ "mode": "coins", "n": 3, "k": 2, "event": "exactly", "title": "Three coins: click outcomes, or use the presets, and read P(A) = |A| / |S|" }
+{ "mode": "coins", "n": 3, "k": 2, "event": "exactly", "title": "Three coins: the outcomes in A and P(A) = |A| / |S|" }
 ```
 
-Move the slider to five coins and press "all the same" and "at least k heads" with $k = 2$: those are the next two examples.
+Five coins with "all the same" and "at least k heads" ($k = 2$) are the next two examples; the widget's presets build both.
 
 ## Events and the classical definition
 

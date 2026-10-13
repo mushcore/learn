@@ -1,7 +1,17 @@
 // Interactive C++ widgets: build pipeline, type sizes, initialization/narrowing,
-// expression evaluation stepper, integer division, cin state machine,
+// expression evaluation stepper, integer division, cin state machine (on the playback bar),
+// the calculator build played stage by stage (build-play),
 // iostream manipulator playground, bitwise operators.
 import { el, esc, slider, btnRow } from "./dom.js";
+import { createPlayback } from "./playback.js";
+
+const SVG_NS = "http://www.w3.org/2000/svg";
+function svgEl(tag, attrs = {}, text) {
+  const e = document.createElementNS(SVG_NS, tag);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  if (text != null) e.textContent = text;
+  return e;
+}
 
 // ---------- compile-pipeline ----------
 function compilePipeline(box, cfg) {
@@ -429,48 +439,192 @@ function intDivision(box, cfg) {
   draw();
 }
 
-// ---------- cin state machine ----------
+// ---------- cin state machine (one extraction per playback step) ----------
+// Each `>>` skips whitespace, then reads the longest run that fits the type. A numeric read that
+// finds characters but no number stores 0 (C++11) and sets failbit; a read that finds only
+// whitespace before EOF sets failbit and eofbit and leaves the variable alone (the sentry fails
+// before anything is stored); once failbit is set every later read does nothing.
+const CIN_OUTCOMES = {
+  ok: "reads a value, no bits set",
+  okEof: "reads a value and sets eofbit",
+  fail0: "sets failbit and stores 0",
+  eof: "sets failbit and eofbit, the variable keeps its value",
+  dead: "does nothing: the stream has already failed",
+};
+function cinSpecs(text) {
+  return text.split(",").map((s) => s.trim()).filter(Boolean).map((s) => {
+    const parts = s.split(/\s+/), type = parts[0], name = (parts[1] || "x");
+    const arr = name.match(/^(\w+)\[(\d+)\]$/);
+    return { type, name: arr ? arr[1] : name, cap: arr ? Math.max(1, +arr[2]) : 0, label: s };
+  });
+}
+function cinTrace(specs, raw) {
+  let text = raw.replace(/\\n/g, "\n");
+  const star = text.indexOf("*");
+  if (star >= 0) text = text.slice(0, star);
+  const steps = [], vars = {};
+  let p = 0, fail = false, eof = false;
+  for (const sp of specs) {
+    const st = { spec: sp, from: p, wsEnd: p, to: p, before: { fail, eof } };
+    const numeric = ["int", "long", "short", "double", "float"].includes(sp.type);
+    if (fail) { st.kind = "dead"; }
+    else {
+      let q = p;
+      while (q < text.length && /\s/.test(text[q])) q++;
+      st.wsEnd = q;
+      const rest = text.slice(q);
+      if (!rest.length) { st.kind = "eof"; fail = eof = true; st.to = q; }
+      else {
+        let m = null;
+        if (sp.type === "double" || sp.type === "float") m = rest.match(/^[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?/);
+        else if (numeric) m = rest.match(/^[+-]?\d+/);
+        else if (sp.type === "char" && !sp.cap) m = rest.match(/^\S/);
+        else if (sp.type === "char") m = rest.match(new RegExp(`^\\S{1,${Math.max(1, sp.cap - 1)}}`));
+        else m = rest.match(/^\S+/);
+        if (!m) {
+          // A lone sign is consumed before the digits are found missing.
+          const sign = /^[+-]/.test(rest) ? 1 : 0;
+          st.to = q + sign; fail = true; st.kind = "fail0";
+          if (st.to >= text.length) eof = true;
+          vars[sp.name] = 0;
+        } else {
+          st.tok = m[0]; st.to = q + st.tok.length;
+          vars[sp.name] = numeric ? (sp.type === "double" || sp.type === "float" ? parseFloat(st.tok) : parseInt(st.tok, 10)) : st.tok;
+          // Numbers and words peek one past the token, so reaching the end sets eofbit; a single char does not.
+          if (st.to >= text.length && !(sp.type === "char" && !sp.cap)) eof = true;
+          st.kind = eof ? "okEof" : "ok";
+        }
+      }
+    }
+    st.after = { fail, eof }; st.vars = { ...vars }; st.numeric = numeric;
+    steps.push(st);
+    p = st.to;
+  }
+  return { text, steps };
+}
+function cinNote(st, text) {
+  const sp = st.spec, ws = st.wsEnd > st.from ? "skips the whitespace, " : "";
+  const q = (c) => `'${c === "\n" ? "\\n" : c}'`;
+  if (st.kind === "dead") return `cin >> ${sp.name} does nothing: failbit is still set, so ${sp.name} keeps its value. cin.clear() and cin.ignore(...) come first.`;
+  if (st.kind === "eof") return `cin >> ${sp.name} ${ws}finds the end of the input before any character: failbit and eofbit are set and ${sp.name} keeps its value.`;
+  const an = /^[aeiou]/.test(sp.type) ? "an" : "a";
+  if (st.kind === "fail0" && st.to > st.wsEnd) return `cin >> ${sp.name} ${ws}reads the sign ${q(text[st.wsEnd])} and finds no digit after it: failbit${st.after.eof ? " and eofbit are" : " is"} set and ${sp.name} = 0 (C++11).`;
+  if (st.kind === "fail0") return `cin >> ${sp.name} ${ws}finds ${q(text[st.wsEnd])}, which cannot start ${an} ${sp.type}: failbit is set and ${sp.name} = 0 (C++11; the slide table says "No change"). The bad characters stay in the buffer.`;
+  const stop = st.to < text.length ? ` and stops at ${q(text[st.to])}, which stays in the buffer` : "";
+  const capped = sp.cap && st.tok.length === sp.cap - 1 && st.to < text.length && !/\s/.test(text[st.to]) ? ` (at most ${sp.cap - 1} characters plus '\\0' fit in ${sp.name}[${sp.cap}])` : "";
+  return `cin >> ${sp.name} ${ws}reads "${st.tok}"${capped}${stop}: ${sp.name} = ${JSON.stringify(st.vars[sp.name])}${st.kind === "okEof" ? "; it reached the end, so eofbit is set but the read succeeded" : ""}.`;
+}
 function cinSim(box, cfg) {
-  box.append(el("h4", null, cfg.title || "What does cin >> actually do? Type input and step"));
-  const reads = cfg.reads || ["int n", "int m", "string word", "double d"];
-  const readInput = document.createElement("input"); readInput.className = "q-input wide"; readInput.value = reads.join(", ");
+  box.append(el("h4", null, cfg.title || "What does cin >> actually do? One extraction per step"));
+  const readInput = document.createElement("input"); readInput.className = "q-input wide"; readInput.value = (cfg.reads || ["int n", "int m", "string word", "double d"]).join(", ");
   const bufInput = document.createElement("input"); bufInput.className = "q-input wide"; bufInput.value = cfg.input ?? "123 456 hello 2.5";
   const presets = cfg.presets || { "123 456": "123 456", "12abc": "12abc", "hello": "hello", "3.7 → int": "3.7", "(EOF only)": "", "-42\\n7": "-42\\n7" };
-  const out = el("div", "cin-steps");
-  box.append(el("p", "widget-note", "Each `>>` first skips whitespace, then reads the longest run of characters that fits the type. If zero characters fit → failbit is set, the variable is left unchanged, and the bad characters STAY in the buffer (every later read fails too until cin.clear() + cin.ignore(...))."),
-    el("div", "viz-inline", "reads: "), readInput, el("div", "viz-inline", "typed input (use \\n for Enter, * = EOF): "), btnRow(Object.keys(presets), (i, l) => { bufInput.value = presets[l]; run(); }, -1), bufInput, out);
-  readInput.addEventListener("input", run); bufInput.addEventListener("input", run);
-  function run() {
-    out.innerHTML = "";
-    let buf = bufInput.value.replace(/\\n/g, "\n");
-    const specs = readInput.value.split(",").map((s) => s.trim()).filter(Boolean).map((s) => { const [type, name] = s.split(/\s+/); return { type, name }; });
-    const vars = {};
-    let fail = false, eof = false;
-    const show = (title, note) => {
-      const d = el("div", "cin-step");
-      d.innerHTML = `<div class="cin-title">${esc(title)}</div><div class="cin-buf">buffer: <code>${esc(buf.replace(/\n/g, "⏎")) || "(empty)"}</code>${eof ? " <span class='flag'>EOF</span>" : ""}</div><div class="cin-note">${note}</div><div class="cin-flags">failbit: <b class="${fail ? "on" : ""}">${fail ? "SET" : "clear"}</b> · eofbit: <b class="${eof ? "on" : ""}">${eof ? "SET" : "clear"}</b> · cin is ${fail ? "<b class='on'>false</b>" : "<b>true</b>"}${Object.keys(vars).length ? " · vars: " + Object.entries(vars).map(([k, v]) => `${k}=${JSON.stringify(v)}`).join(", ") : ""}</div>`;
-      out.append(d);
-    };
-    show("start", "");
-    for (const { type, name } of specs) {
-      if (fail) { show(`cin >> ${name}`, "stream is in fail state → does NOTHING. Need <code>cin.clear()</code> then <code>cin.ignore(numeric_limits&lt;streamsize&gt;::max(), '\\n')</code> to throw the bad line away."); continue; }
-      const ws = buf.match(/^\s*/)[0];
-      buf = buf.slice(ws.length);
-      let m;
-      if (type === "int" || type === "long") m = buf.match(/^[+-]?\d+/);
-      else if (type === "double" || type === "float") m = buf.match(/^[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?/);
-      else if (type === "char") m = buf.match(/^[^\s]/);
-      else m = buf.match(/^[^\s]+/); // string
-      if (buf.length === 0) { fail = true; eof = true; show(`cin >> ${name}`, `${ws ? "skipped whitespace, then " : ""}hit end of input before reading anything → <b>failbit AND eofbit</b> set, ${name} unchanged`); continue; }
-      if (!m) { fail = true; show(`cin >> ${name}`, `${ws ? "skipped whitespace; " : ""}next char '<code>${esc(buf[0])}</code>' cannot start a ${type} → <b>failbit set</b>, ${name} unchanged, nothing consumed`); continue; }
-      const tok = m[0];
-      buf = buf.slice(tok.length);
-      vars[name] = type === "int" || type === "long" ? parseInt(tok, 10) : type === "double" || type === "float" ? parseFloat(tok) : tok;
-      if (buf.length === 0) eof = true;
-      show(`cin >> ${name}`, `${ws ? "skipped whitespace, " : ""}read '<code>${esc(tok)}</code>' as ${type} → ${name} = ${JSON.stringify(vars[name])}${buf.length && /^[^\s]/.test(buf) ? ` — stopped at '<code>${esc(buf[0])}</code>' which stays in the buffer` : ""}${eof && !fail ? " (reached end → eofbit set, but read SUCCEEDED)" : ""}`);
-    }
+  const predictLabel = el("label", "playback-check"), predictBox = document.createElement("input");
+  predictBox.type = "checkbox"; predictBox.checked = !!cfg.predict;
+  predictLabel.append(predictBox, " Predict each extraction before it runs");
+  const svg = svgEl("svg", { viewBox: "0 0 640 150", class: "curve-svg net-svg" });
+  const caption = el("p", "playback-caption"); caption.setAttribute("aria-live", "polite");
+  const ask = el("div", "viz-btn-row playback-ask");
+  const log = el("div", "cin-steps");
+  box.append(el("p", "widget-note", "Each >> skips whitespace, then reads the longest run of characters that fits the type. A number read that finds a non-digit stores 0 and sets failbit (C++11; the slides say the variable is unchanged). A read that finds only the end of the input sets failbit and eofbit and leaves the variable alone. Once failbit is set, every later read does nothing until cin.clear(). Write \\n for Enter and * for EOF."),
+    el("div", "viz-inline", "reads: "), readInput, el("div", "viz-inline", "typed input: "), btnRow(Object.keys(presets), (i, l) => { bufInput.value = presets[l]; restart(); }, -1), bufInput, predictLabel, svg, caption, ask);
+  let trace = cinTrace(cinSpecs(readInput.value), bufInput.value), predict = predictBox.checked, answered = 0, asked = 0, firstTry = 0, missed = false, wrong = null, askKey = null, logKey = "";
+  const n = () => Math.max(1, trace.steps.length);
+  const asking = (pos) => predict && answered < trace.steps.length && Math.abs(pos - answered) < 1e-6;
+  function choices(st) {
+    const keys = st.numeric ? ["ok", "okEof", "fail0", "eof", "dead"] : ["ok", "okEof", "eof", "dead"];
+    return keys.map((k) => [k, CIN_OUTCOMES[k].replace("the variable", st.spec.name).replace("stores 0", `stores 0 in ${st.spec.name}`)]);
   }
-  run();
+  function answer(k) {
+    const st = trace.steps[answered];
+    if (wrong == null && !missed) asked++;
+    if (k !== st.kind) { missed = true; wrong = k; askKey = null; frame(pb.pos()); return; }
+    if (!missed) firstTry++;
+    missed = false; wrong = null; askKey = null; answered++;
+    pb.next();
+  }
+  function renderAsk(pos) {
+    const key = asking(pos) ? `${answered}|${wrong}` : "";
+    if (key === askKey) return;
+    askKey = key; ask.innerHTML = ""; ask.hidden = !key;
+    if (!key) return;
+    const st = trace.steps[answered];
+    for (const [k, label] of choices(st)) {
+      const b = el("button", "viz-btn" + (k === wrong ? " playback-wrong" : ""), label); b.type = "button";
+      b.addEventListener("click", () => answer(k));
+      ask.append(b);
+    }
+    if (wrong != null) ask.append(el("span", "playback-feedback", `Not that. >> skips whitespace first; no number where one is needed stores 0 and sets failbit; only the end of the input sets eofbit too; a failed stream ignores every read.`));
+  }
+  function frame(pos) {
+    pos = Math.max(0, pos); // the first rAF tick can land a hair before 0
+    const { text, steps } = trace;
+    const done = Math.min(steps.length, Math.floor(pos + 1e-9)), f = pos - done, cur = steps[done];
+    // Cursor position: after the last finished step, sliding through the current one.
+    let cursor = done > 0 ? steps[done - 1].to : 0;
+    if (cur && f > 0) cursor = cur.from + (cur.to - cur.from) * Math.min(1, f * 1.25);
+    const state = done > 0 ? steps[done - 1].after : { fail: false, eof: false };
+    const shown = f > 0.8 && cur ? cur.after : state;
+    const vars = done > 0 ? steps[done - 1].vars : {};
+    const shownVars = f > 0.8 && cur ? cur.vars : vars;
+    svg.innerHTML = "";
+    const N = text.length, cw = Math.min(30, 560 / Math.max(1, N + 1)), x0 = 58;
+    svg.append(svgEl("text", { x: 2, y: 25, "font-size": 10.5, fill: "var(--ink-dim)" }, "buffer"));
+    const hot = cur && f > 0 ? [cur.wsEnd, cur.to] : done > 0 ? [steps[done - 1].wsEnd, steps[done - 1].to] : [-1, -1];
+    for (let i = 0; i <= N; i++) {
+      const x = x0 + i * cw, used = i < Math.floor(cursor + 1e-9), inTok = i >= hot[0] && i < hot[1];
+      svg.append(svgEl("rect", { x, y: 8, width: cw - 2, height: 26, rx: 3, fill: inTok ? "var(--hl-soft)" : used ? "var(--paper)" : "var(--paper-2)", stroke: inTok ? "var(--hl)" : "var(--rule-strong)" }));
+      const ch = i < N ? (text[i] === "\n" ? "⏎" : text[i] === " " ? "␣" : text[i]) : "EOF";
+      svg.append(svgEl("text", { x: x + (cw - 2) / 2, y: 26, "text-anchor": "middle", "font-size": i < N ? 13 : 8.5, "font-family": "var(--mono)", fill: used && !inTok ? "var(--ink-dim)" : "var(--ink)" }, ch));
+    }
+    const cx = x0 + cursor * cw - 1;
+    svg.append(svgEl("line", { x1: cx, y1: 4, x2: cx, y2: 40, stroke: "var(--hl)", "stroke-width": 2.5 }));
+    svg.append(svgEl("text", { x: cx, y: 52, "text-anchor": "middle", "font-size": 10, fill: "var(--hl)" }, "next read"));
+    // Status bits and the stream's truth value.
+    [["failbit", shown.fail], ["eofbit", shown.eof]].forEach(([l, on], i) => {
+      svg.append(svgEl("circle", { cx: 62 + i * 180, cy: 78, r: 8, fill: on ? "var(--red)" : "var(--paper-2)", stroke: on ? "var(--red)" : "var(--rule-strong)" }));
+      svg.append(svgEl("text", { x: 76 + i * 180, y: 82, "font-size": 12, fill: on ? "var(--red)" : "var(--ink-dim)" }, `${l} ${on ? "set" : "clear"}`));
+    });
+    svg.append(svgEl("text", { x: 430, y: 82, "font-size": 12, fill: shown.fail ? "var(--red)" : "var(--green)" }, `cin is ${shown.fail ? "false" : "true"}`));
+    [...new Set(trace.steps.map((st) => st.spec.name))].slice(0, 4).forEach((name, i) => {
+      const has = Object.prototype.hasOwnProperty.call(shownVars, name), x = 40 + i * 150, y = 106;
+      svg.append(svgEl("rect", { x, y, width: 140, height: 28, rx: 4, fill: cur && cur.spec.name === name && f > 0 ? "var(--hl-soft)" : "var(--paper)", stroke: "var(--rule-strong)" }));
+      svg.append(svgEl("text", { x: x + 8, y: y + 18, "font-size": 12, "font-family": "var(--mono)", fill: "var(--ink)" }, `${name} = ${has ? JSON.stringify(shownVars[name]) : "?"}`));
+    });
+    let text2;
+    if (asking(pos)) text2 = `Next: cin >> ${steps[answered].spec.name} (a ${steps[answered].spec.type}). What happens?`;
+    else if (done === 0 && f === 0) text2 = steps.length ? `The buffer holds what was typed; the cursor is before the first character. ${steps.length} read${steps.length > 1 ? "s" : ""} to go.` : "Type at least one read, such as int n.";
+    else {
+      const st = cur && f > 0 ? cur : steps[done - 1];
+      text2 = cinNote(st, text);
+      if (done >= steps.length && asked > 0) text2 += ` All reads done: ${firstTry} of ${asked} right on the first try.`;
+    }
+    if (caption.textContent !== text2) caption.textContent = text2;
+    const lk = `${done}`;
+    if (lk !== logKey) {
+      logKey = lk; log.innerHTML = "";
+      steps.slice(0, done).forEach((st, i) => { const d = el("div", "cin-step"); d.append(el("div", "cin-title", `${i + 1}. cin >> ${st.spec.name}`), el("div", "cin-note", cinNote(st, text))); log.append(d); });
+    }
+    renderAsk(pos);
+  }
+  const pb = createPlayback({
+    count: n(), unit: "read", onFrame: frame, stepMs: () => cfg.stepMs || 1600,
+    limit: () => (predict ? answered : n()),
+    onBlocked: () => { ask.classList.remove("playback-nudge"); void ask.offsetWidth; ask.classList.add("playback-nudge"); },
+  });
+  box.append(pb.el, log);
+  function restart() {
+    trace = cinTrace(cinSpecs(readInput.value), bufInput.value);
+    answered = 0; asked = 0; firstTry = 0; missed = false; wrong = null; askKey = null; logKey = "";
+    pb.reset(n());
+  }
+  readInput.addEventListener("input", restart); bufInput.addEventListener("input", restart);
+  predictBox.addEventListener("change", () => {
+    predict = predictBox.checked; pb.pause();
+    answered = Math.ceil(pb.pos() - 1e-9); asked = 0; firstTry = 0; missed = false; wrong = null; askKey = null;
+    pb.set(pb.pos());
+  });
+  restart();
 }
 
 // ---------- manipulator playground ----------
@@ -613,7 +767,8 @@ function manipulators(box, cfg) {
 // ---------- bitwise ----------
 function bitwise(box, cfg) {
   box.append(el("h4", null, cfg.title || "Bitwise & shift operators on 8-bit values (click bits)"));
-  const st = { a: 2, b: 1 };
+  const byte = (v, d) => (Number.isInteger(v) ? v & 255 : d);
+  const st = { a: byte(cfg.a, 2), b: byte(cfg.b, 1) };
   const grid = el("div", "bit-grid");
   const out = el("div", "stat-grid");
   box.append(grid, out);
@@ -638,6 +793,136 @@ function bitwise(box, cfg) {
     }
   }
   draw();
+}
+
+// ---------- build-play: the calculator project built one stage at a time ----------
+const BUILD_SCENARIOS = {
+  "as shipped": { call: false, declared: false, defined: true },
+  "call subtract, header line commented": { call: true, declared: false, defined: true },
+  "call subtract, header line uncommented": { call: true, declared: true, defined: true },
+  "subtract declared but never defined": { call: true, declared: true, defined: false },
+};
+function buildSteps(sc) {
+  const steps = [
+    { id: "pre-main", ok: true, text: `Preprocessor: #include "calculator.hpp" pastes the header's text into main.cpp, so the translation unit sees int add(int first, int second);${sc.declared ? " and int subtract(int first, int second);" : " and nothing about subtract"}.` },
+    { id: "pre-calc", ok: true, text: `Preprocessor: calculator.cpp includes the same header, so its definitions sit next to the declarations they implement.` },
+    sc.call && !sc.declared
+      ? { id: "cc-main", ok: false, text: `Compiler: main.cpp calls subtract(10, 5), but its translation unit never declared subtract. g++ stops: "error: 'subtract' was not declared in this scope". calculator.cpp defining it does not help, because each .cpp is compiled on its own.`, err: "'subtract' was not declared in this scope" }
+      : { id: "cc-main", ok: true, text: `Compiler: main.cpp compiles to main.o. The call add(10,5)${sc.call ? " and the call subtract(10, 5) compile" : " compiles"} against the declaration alone; main.o records a call it cannot resolve yet.` },
+    { id: "cc-calc", ok: true, text: `Compiler: calculator.cpp compiles to calculator.o, which holds the body of add${sc.defined ? " and the body of subtract" : " only: subtract has no definition anywhere"}.` },
+    sc.call && !sc.defined
+      ? { id: "link", ok: false, text: `Linker: main.o calls subtract, and no object file defines it. "undefined reference to \`subtract(int, int)'": a linker error, not a compiler error, because main.cpp compiled fine against the declaration.`, err: "undefined reference to `subtract(int, int)'" }
+      : { id: "link", ok: true, text: `Linker: main.o, calculator.o and the standard library are joined into one executable; each call is matched with the one definition of that function.` },
+    { id: "run", ok: true, text: `Run: main starts and prints Hello, World! on the first line, then ${sc.call ? "155 (add(10,5) is 15 and subtract(10, 5) is 5, with nothing printed between them)" : "15 from add(10,5)"}.` },
+  ];
+  const fail = steps.findIndex((s) => !s.ok);
+  return fail >= 0 ? steps.slice(0, fail + 1) : steps;
+}
+function buildPlay(box, cfg) {
+  box.append(el("h4", null, cfg.title || "Building the calculator project, one stage at a time"));
+  const names = Object.keys(BUILD_SCENARIOS);
+  let name = names.includes(cfg.scenario) ? cfg.scenario : names[0], steps = buildSteps(BUILD_SCENARIOS[name]);
+  let predict = !!cfg.predict, answered = 0, asked = 0, firstTry = 0, missed = false, wrong = null, askKey = null;
+  const predictLabel = el("label", "playback-check"), predictBox = document.createElement("input");
+  predictBox.type = "checkbox"; predictBox.checked = predict;
+  predictLabel.append(predictBox, " Predict whether each stage succeeds");
+  const svg = svgEl("svg", { viewBox: "0 0 640 236", class: "curve-svg net-svg" });
+  const caption = el("p", "playback-caption"); caption.setAttribute("aria-live", "polite");
+  const ask = el("div", "viz-btn-row playback-ask");
+  box.append(btnRow(names, (i) => { name = names[i]; restart(); }, names.indexOf(name)), predictLabel, svg, caption, ask);
+  const asking = (pos) => predict && answered < steps.length && Math.abs(pos - answered) < 1e-6;
+  function box2(x, y, w, h, title, lines, state) {
+    const color = state === "fail" ? "var(--red)" : state === "hot" ? "var(--hl)" : state === "off" ? "var(--rule)" : "var(--rule-strong)";
+    const g = svgEl("g", { opacity: state === "off" ? 0.35 : 1 });
+    g.append(svgEl("rect", { x, y, width: w, height: h, rx: 5, fill: state === "hot" ? "var(--hl-soft)" : state === "fail" ? "rgba(255,107,107,0.12)" : "var(--paper)", stroke: color, "stroke-width": state === "hot" || state === "fail" ? 2 : 1 }));
+    g.append(svgEl("text", { x: x + 7, y: y + 15, "font-size": 11.5, "font-weight": 600, fill: "var(--ink)" }, title));
+    lines.forEach((l, i) => g.append(svgEl("text", { x: x + 7, y: y + 30 + i * 12, "font-size": 9, "font-family": "var(--mono)", fill: l.startsWith("//") ? "var(--ink-dim)" : "var(--ink-2)" }, l)));
+    svg.append(g);
+  }
+  function arrow(x1, y1, x2, y2, on) {
+    svg.append(svgEl("line", { x1, y1, x2, y2, stroke: on ? "var(--ink-dim)" : "var(--rule)", "stroke-width": 1.4, "stroke-dasharray": on ? "" : "3 3" }));
+    if (on) svg.append(svgEl("polygon", { points: `${x2},${y2} ${x2 - 6},${y2 - 3.5} ${x2 - 6},${y2 + 3.5}`, fill: "var(--ink-dim)" }));
+  }
+  function frame(pos) {
+    pos = Math.max(0, pos); // the first rAF tick can land a hair before 0
+    const sc = BUILD_SCENARIOS[name], done = Math.min(steps.length, Math.floor(pos + 1e-9)), f = pos - done;
+    const at = (id) => steps.findIndex((s) => s.id === id);
+    // State of the stage with this id: off (not reached), hot (running now), ok (finished), fail.
+    const stage = (id) => {
+      const i = at(id);
+      if (i < 0) return "off";
+      if (i < done) return steps[i].ok ? "ok" : "fail";
+      if (i === done && f > 0) return f > 0.6 && !steps[i].ok ? "fail" : "hot";
+      return "off";
+    };
+    svg.innerHTML = "";
+    const hdr = sc.declared ? "int subtract(int, int);" : "//int subtract(int, int);";
+    box2(6, 8, 172, 58, "calculator.hpp", ["#pragma once", "int add(int, int);", hdr], "ok");
+    box2(6, 84, 172, 58, "main.cpp", ['#include "calculator.hpp"', "cout << add(10,5);", sc.call ? "cout << subtract(10, 5);" : "//cout << subtract(10, 5);"], "ok");
+    box2(6, 160, 172, 58, "calculator.cpp", ['#include "calculator.hpp"', "int add(...) { ... }", sc.defined ? "int subtract(...) { ... }" : "// no subtract body"], "ok");
+    box2(200, 60, 124, 52, "translation unit 1", ["main.cpp with the", "header pasted in"], stage("pre-main"));
+    box2(200, 150, 124, 52, "translation unit 2", ["calculator.cpp with", "the header pasted in"], stage("pre-calc"));
+    box2(344, 60, 96, 52, "main.o", stage("cc-main") === "fail" ? ["compile error"] : ["calls add" + (sc.call ? ", subtract" : "")], stage("cc-main"));
+    box2(344, 150, 96, 52, "calculator.o", sc.defined ? ["defines add,", "subtract"] : ["defines add"], stage("cc-calc"));
+    box2(462, 104, 78, 52, "linker", stage("link") === "fail" ? ["undefined", "reference"] : ["+ std library"], stage("link"));
+    box2(560, 104, 74, 52, "program", ["HelloWorld", ".exe"], stage("run"));
+    arrow(178, 37, 200, 80, stage("pre-main") !== "off"); arrow(178, 113, 200, 90, stage("pre-main") !== "off");
+    arrow(178, 37, 200, 170, stage("pre-calc") !== "off"); arrow(178, 189, 200, 180, stage("pre-calc") !== "off");
+    arrow(324, 86, 344, 86, stage("cc-main") !== "off"); arrow(324, 176, 344, 176, stage("cc-calc") !== "off");
+    arrow(440, 86, 462, 122, stage("link") !== "off"); arrow(440, 176, 462, 140, stage("link") !== "off");
+    arrow(540, 130, 560, 130, stage("run") !== "off");
+    const run = stage("run");
+    if (run === "ok" || (run === "hot" && f > 0.5)) {
+      svg.append(svgEl("text", { x: 560, y: 176, "font-size": 10.5, "font-family": "var(--mono)", fill: "var(--green)" }, "Hello, World!"));
+      svg.append(svgEl("text", { x: 560, y: 190, "font-size": 10.5, "font-family": "var(--mono)", fill: "var(--green)" }, sc.call ? "155" : "15"));
+    }
+    const last = steps[steps.length - 1];
+    if (!last.ok && stage(last.id) === "fail") svg.append(svgEl("text", { x: 320, y: 228, "text-anchor": "middle", "font-size": 11, fill: "var(--red)" }, `error: ${last.err}`));
+    let text;
+    if (asking(pos)) text = `Stage ${answered + 1} of the build: ${["preprocess main.cpp", "preprocess calculator.cpp", "compile main.cpp to main.o", "compile calculator.cpp to calculator.o", "link the object files", "run the program"][["pre-main", "pre-calc", "cc-main", "cc-calc", "link", "run"].indexOf(steps[answered].id)]}. Does it succeed?`;
+    else if (done === 0 && f === 0) text = `Three files: calculator.hpp declares, calculator.cpp defines, main.cpp calls. Each .cpp is preprocessed and compiled on its own; only the linker sees them together.`;
+    else {
+      const st = f > 0 && done < steps.length ? steps[done] : steps[done - 1];
+      text = st.text;
+      if (done >= steps.length && asked > 0) text += ` ${firstTry} of ${asked} stages predicted right on the first try.`;
+    }
+    if (caption.textContent !== text) caption.textContent = text;
+    renderAsk(pos);
+  }
+  function renderAsk(pos) {
+    const key = asking(pos) ? `${name}|${answered}|${wrong}` : "";
+    if (key === askKey) return;
+    askKey = key; ask.innerHTML = ""; ask.hidden = !key;
+    if (!key) return;
+    for (const [v, label] of [[true, "succeeds"], [false, "fails here"]]) {
+      const b = el("button", "viz-btn" + (v === wrong ? " playback-wrong" : ""), label); b.type = "button";
+      b.addEventListener("click", () => {
+        if (wrong == null && !missed) asked++;
+        if (v !== steps[answered].ok) { missed = true; wrong = v; askKey = null; frame(pb.pos()); return; }
+        if (!missed) firstTry++;
+        missed = false; wrong = null; askKey = null; answered++; pb.next();
+      });
+      ask.append(b);
+    }
+    if (wrong != null) ask.append(el("span", "playback-feedback", "The compiler needs a declaration of every function a .cpp calls; the linker needs exactly one definition of every function that is called."));
+  }
+  const pb = createPlayback({
+    count: steps.length, unit: "stage", onFrame: frame, stepMs: () => cfg.stepMs || 1800,
+    limit: () => (predict ? answered : steps.length),
+    onBlocked: () => { ask.classList.remove("playback-nudge"); void ask.offsetWidth; ask.classList.add("playback-nudge"); },
+  });
+  box.append(pb.el);
+  function restart() {
+    steps = buildSteps(BUILD_SCENARIOS[name]);
+    answered = 0; asked = 0; firstTry = 0; missed = false; wrong = null; askKey = null;
+    pb.reset(steps.length);
+  }
+  predictBox.addEventListener("change", () => {
+    predict = predictBox.checked; pb.pause();
+    answered = Math.ceil(pb.pos() - 1e-9); asked = 0; firstTry = 0; missed = false; wrong = null; askKey = null;
+    pb.set(pb.pos());
+  });
+  restart();
 }
 
 // ---------- namespace / scope ----------
@@ -666,4 +951,5 @@ export const WIDGETS = {
   "manipulators": manipulators,
   "bitwise": bitwise,
   "namespaces": namespaceViz,
+  "build-play": buildPlay,
 };

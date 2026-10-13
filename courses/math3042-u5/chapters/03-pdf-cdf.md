@@ -5,19 +5,15 @@ minutes: 15
 
 Unit 4 described a discrete variable with a table of $P(x)$ values. A continuous variable has no such table, since every $P(x)$ is 0. Its description is a curve, the density $f(x)$, and every probability is an area under it. This lesson names the curve, names its running total $F(x)$, and states the three rules every density obeys.
 
-:::info Completions in this lesson are computed
-The notes leave the right-hand sides of $F(x)$ and property 3 blank; they are completed here from the definitions. The uniform's $F(x)$ and the bus answers below are computed; in-class versions replace them.
-:::
-
 ## Intervals, not points
 
-Slide wording: "If $X$ is a continuous random variable, then we don't specify $P(x)$ for *individual* values of $X$. Instead, we specify the probability that $X$ falls within any given *interval* of values." The notes' example is $P(0 \le X \le 182\text{ cm}) = 0.75$: three quarters of the heights lie at or below 182 cm.
+Slide wording: "If $X$ is a continuous random variable, then we don't specify $P(x)$ for *individual* values of $X$. Instead, we specify the probability that $X$ falls within any given *interval* of values." The notes' example is $P(0 \le X \le 182\text{ cm}) = 0.75$: three quarters of the heights lie at or below 182 cm. The 0.75 is an illustrative number, not an area of the $N(175, 7^2)$ height curve used elsewhere in this unit, which gives $P(X \le 182) = 0.8413$.
 
 ## The probability density function
 
 **Definition.** *A probability density function (pdf) for $X$ is a function $f(x)$ where, for any real number $b$,*
 
-$$P(X \le b) = ∫_{-\infty}^{b} f(x)\,dx$$
+$$P(X \le b) = \int_{-\infty}^{b} f(x)\,dx$$
 
 The integral sign means "the area under $f$ from the far left up to $b$". The notes' visualization is a curve with everything to the left of $b$ shaded. You will not evaluate this integral for the normal distribution, where a table or R does it, and for the uniform and exponential distributions the area has a closed form you can write down.
 
@@ -25,7 +21,7 @@ The integral sign means "the area under $f$ from the far left up to $b$". The no
 
 **Definition.** *If $f(x)$ is a pdf for $X$, the cumulative probability function $F(x)$ is*
 
-$$F(x) = P(X \le x) = ∫_{-\infty}^{x} f(t)\,dt$$
+$$F(x) = P(X \le x) = \int_{-\infty}^{x} f(t)\,dt$$
 
 $F(x)$ is the area accumulated so far, moving left to right. It starts at 0 on the far left, climbs, and reaches 1 on the far right. Unit 4's cumulative probabilities $P(X \le x)$ were the same idea as running sums of a table; the R functions with a `p` prefix, `punif`, `pnorm` and `pexp`, all return $F(x)$.
 
@@ -33,9 +29,9 @@ $F(x)$ is the area accumulated so far, moving left to right. It starts at 0 on t
 
 The notes list what any pdf must satisfy:
 
-1. **Total area beneath $f(x)$ is equal to 1:** $F(+\infty) = ∫_{-\infty}^{+\infty} f(x)\,dx = 1$.
+1. **Total area beneath $f(x)$ is equal to 1:** $F(+\infty) = \int_{-\infty}^{+\infty} f(x)\,dx = 1$.
 2. **Positivity:** $f(x) \ge 0$ for all $x$.
-3. **Probability of an interval:** $P(a \le X \le b) = ∫_{a}^{b} f(x)\,dx = F(b) - F(a)$.
+3. **Probability of an interval:** $P(a \le X \le b) = \int_{a}^{b} f(x)\,dx = F(b) - F(a)$.
 
 Property 3 is the working rule of the whole unit. The area between $a$ and $b$ is the area up to $b$ minus the area up to $a$; so one function $F$ answers every interval question, and a right tail is $P(X > a) = 1 - F(a)$ by property 1.
 
@@ -75,9 +71,18 @@ pdf-area
 
 The shaded rectangle under $f$ on the left is the same number as the rise of $F$ between the two bounds on the right: $F(11) - F(8)$.
 
+### F(t) accumulating as the bound moves right
+
+Each step moves the bound one minute to the right. The shaded area under $f$ and the height of $F$ on the right are the same number at every stop, so $F$ climbs in a straight line from 0 at $t = 0$ to 1 at $t = 20$; the exponential setting shows $F$ rising fast and then flattening.
+
+```widget
+cdf-sweep-play
+{}
+```
+
 ## Mean and variance as integrals
 
-$$\mu = ∫_{-\infty}^{+\infty} x \cdot f(x)\,dx, \qquad \sigma^2 = ∫_{-\infty}^{+\infty} (x - \mu)^2 f(x)\,dx$$
+$$\mu = \int_{-\infty}^{+\infty} x \cdot f(x)\,dx, \qquad \sigma^2 = \int_{-\infty}^{+\infty} (x - \mu)^2 f(x)\,dx$$
 
 These are Unit 4's $\mu = \sum x \cdot P(x)$ and $\sigma^2 = \sum (x - \mu)^2 P(x)$ with the sum replaced by an integral and $P(x)$ by $f(x)\,dx$. You will not evaluate them; each distribution's result is given to you: $\frac{a + b}{2}$ and $\frac{(b - a)^2}{12}$ for the uniform, the parameters $\mu$ and $\sigma^2$ themselves for the normal, and $\beta$ and $\beta^2$ for the exponential.
 
@@ -95,6 +100,12 @@ These are Unit 4's $\mu = \sum x \cdot P(x)$ and $\sigma^2 = \sum (x - \mu)^2 P(
     "answer": 0.4,
     "tolerance": 0.001,
     "explain": "Property 3: $F(14) - F(6) = 0.70 - 0.30 = 0.40$, the same as the interval length 8 over 20."
+  },
+  {
+    "q": "Write $P(8 \\le T \\le 11)$ in terms of the cumulative function $F$, with no spaces (for example `F(b)-F(a)` with the numbers in).",
+    "type": "text",
+    "answer": ["F(11)-F(8)", "F(11)−F(8)"],
+    "explain": "Property 3: the area between 8 and 11 is the area up to 11 minus the area up to 8, $F(11) - F(8) = 0.55 - 0.40 = 0.15$. Writing $F(8) - F(11)$ gives a negative number."
   },
   {
     "q": "A variable has cumulative function $F(x) = x^2/25$ for $0 \\le x \\le 5$. What is $P(2 \\le X \\le 4)$?",

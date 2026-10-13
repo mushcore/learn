@@ -46,9 +46,11 @@ Section 2.2 of the textbook pictures the link as a pipe: the cross section is th
 
 ## Bits on the link, second by second
 
+For the first 5 s the link fills row by row. In the second half the first bit's acknowledgement travels back, and by the time it reaches the sender the burst has grown to twice the bits that fill one direction.
+
 ```widget
 bandwidth-delay
-{ "bandwidth": 5, "delay": 5 }
+{ "bandwidth": 5, "delay": 5, "predict": true, "presets": { "Slide figure: 5 bps, 5 s": [5, 5], "2 bps, 8 s": [2, 8], "8 bps, 2 s": [8, 2] } }
 ```
 
 ## Prefixes in the product
@@ -60,12 +62,12 @@ $$1\ \text{Mbps} \times 2\ \text{ms} = 10^{6}\ \text{bps} \times 0.002\ \text{s}
 ```quiz
 [
   {
-    "q": "A link has a bandwidth of 5 bps and a delay of 5 s. How many bits can fill the link?",
+    "q": "A link has a bandwidth of 4 bps and a delay of 6 s. How many bits can fill the link?",
     "type": "numeric",
-    "answer": 25,
+    "answer": 24,
     "tolerance": 0.1,
     "unit": "bits",
-    "explain": "Bandwidth × delay $= 5 \\times 5 = 25$ bits, the slide figure."
+    "explain": "Bandwidth × delay $= 4 \\times 6 = 24$ bits. The slide figure does the same with $5 \\times 5 = 25$ bits."
   },
   {
     "q": "A link has a bandwidth of 1 bps and a delay of 5 s. How many bits can fill the link?",

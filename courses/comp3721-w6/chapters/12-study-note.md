@@ -25,7 +25,7 @@ The Week 6 block of the quiz sheet: Lectures 06a and 06b in the slide's words, t
 - **WDM**: an analog multiplexing technique to combine optical signals; a single line on fibre wastes the bandwidth. Same idea as FDM (combines signals of different frequencies); difference: optical signals on fibre, very high frequencies, prism. $\lambda_1 + \lambda_2 + \lambda_3$ on one fibre.
 - **TDM**: a digital multiplexing technique that allows several digital signals to share the high bandwidth of a link in time; combines several low-rate channels into a high-rate one. Analog input: sample, change to digital data, then multiplex.
 - **Unit** = 1 bit, one character, or one block of data. A round of units from each input = a **frame** of n **time slots**. Input unit duration $T$ → slot $T/n$, frame $T$. Link **n times faster**, unit **n times shorter**. The frame rate is always the same as any input rate. The data rate of the output link must be n times the data rate of a connection.
-- Slide figure: four inputs at 1 Mbps (bit duration 1 μs) → link 4 Mbps, bit duration 0.25 μs, 1 000 000 frames/s; Frame 1 = C1 B1 A1.
+- Slide figure: four inputs at 1 Mbps (bit duration 1 μs) → link 4 Mbps, bit duration 0.25 μs, 1 000 000 frames/s; the first frame is 0101 (each line's first bit, line 4 down to line 1). In the lines A, B, C figure, Frame 1 = C1 B1 A1.
 - Synchronous TDM is **not efficient**: a source with nothing to send leaves its slot **empty**. **Statistical TDM** improves efficiency by removing the empty slots.
 
 | Strategy | Trigger | Slide figure | Output |

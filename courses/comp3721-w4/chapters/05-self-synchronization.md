@@ -35,6 +35,15 @@ clock-drift
 { "bits": "10110001", "speed": 1.5, "rate": 1, "rateUnit": "kbps", "percent": 0.1 }
 ```
 
+### The receiver's clock, one tick at a time
+
+Each tick samples the sent signal at the middle of the receiver's shorter interval. Two ticks land inside the first bit, so the single 1 is read as 11.
+
+```widget
+clock-drift-play
+{ "bits": "10110001", "speed": 1.5 }
+```
+
 ## Slide example: a clock 0.1 percent faster
 
 *In a digital transmission, the receiver clock is 0.1 percent faster than the sender clock. How many extra bits per second does the receiver receive if the data rate is 1 kbps? How many if the data rate is 1 Mbps?*
@@ -46,7 +55,7 @@ clock-drift
 
 The extra bits are the data rate times the percentage: $0.001 \times 1000 = 1$ and $0.001 \times 1000000 = 1000$. The same clock error costs 1000 times as many bits at 1000 times the data rate.
 
-E04 asks the same question with a clock *0.2 percent faster* at 1 Mbps. The instructor's answer: $0.2\% \times 1000000 = 0.002 \times 1000000 = 2000$ extra bps, or as bits received, $1000000 + 1000000 \times 0.2\% = 1002000$. Twice the clock error, twice the extra bits.
+E04 exercise 1 asks the same question with a clock *0.2 percent faster* at 1 Mbps; it is worked in [Encoding practice](#/comp3721-w4/encoding-practice).
 
 A slower receiver clock works the other way. The slides do not show it, but the same arithmetic with $(1 - 0.1\%)$ gives 999 bits read for 1000 sent.
 

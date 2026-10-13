@@ -15,11 +15,11 @@ Comparing such functions is the question; [Big-O, Big-Ω, Big-Θ](#/comp3760-l1/
 
 ## There are LOTS of functions in the world
 
-The slide throws fifteen functions at you, in no particular order:
+Slide 45 lists fifteen, in no particular order:
 
 $50n^3+20n+4$, $4n^2+10$, $n(2n+1)$, $3\log_2 n+1$, $3\log_2 n+n$, $1+\log_2 6$, $5!+3^2$, $\log_2 n$, $3737n$, $n^2+3n^3$, $3^n$, $\log_2 n+9n!$, $2^n - 1$, $4n\log_2 n$, $8675309$.
 
-Any of them could be the basic-operation count of some algorithm. **Some functions are bigger than others.** But **what does "bigger" mean?** Bigger at $n = 5$? At $n = 5{,}000$? **We need a formalized way to talk about this.**
+Each could be the basic-operation count of some algorithm. Slide 47: **Some functions are bigger than others. What does "bigger" mean? We need a formalized way to talk about this.**
 
 ## Which one is the better algorithm?
 
@@ -30,11 +30,11 @@ The slide asks it with four running times:
 - $C(n) = \log n + 5$
 - $C(n) = n!$
 
-Multiply out the first: $\frac{n(n-1)}{2} = \frac{n^2}{2} - \frac{n}{2}$. For large $n$ the $-\frac{n}{2}$ hardly matters next to $\frac{n^2}{2}$, so the first two are the *same* running time written two ways. $\log n + 5$ grows far more slowly than either; $n!$ grows faster than anything else on the page.
+$\frac{n(n-1)}{2} = \frac{n^2}{2} - \frac{n}{2}$, and for large $n$ the $-\frac{n}{2}$ hardly matters, so the first two are the same running time written two ways. $\log n + 5$ grows far more slowly; $n!$ grows faster than anything else on the page.
 
 ## Order of growth
 
-Two algorithms, $f_A(n) = n$ and $f_B(n) = n^2$. On the slide's axis, for the smallest inputs the red $n^2$ curve sits *below* the line $n$ (at $n = 0.5$, $n^2 = 0.25$); it crosses at $n = 1$, pulls away, and never comes back. Which algorithm is faster on a tiny input is an accident of constants. **What we really care about: order of growth as $n \to \infty$.**
+Slide 57: $f_A(n) = n$ and $f_B(n) = n^2$. For the smallest inputs the $n^2$ curve sits below the line $n$ (at $n = 0.5$, $n^2 = 0.25$); it crosses at $n = 1$ and never comes back. Slide 58: **What we really care about: order of growth as $n \to \infty$.**
 
 ```widget
 growth-plot
@@ -58,17 +58,17 @@ The textbook's Table 2.1 is on the slide with the note **these represent possibl
 
 Three things to read off it:
 
-- **$\log_2 n$ barely moves.** Multiplying $n$ by ten adds about 3.3 to $\log_2 n$. A million items need only 20 halvings.
-- **$n \log_2 n$ is "almost linear".** At $n = 10^6$ it is $2.0 \cdot 10^7$, only 20 times $n$ itself, while $n^2$ is a million times $n$.
-- **$2^n$ and $n!$ run off the table.** The book does not print them past $n = 100$.
+- **$\log_2 n$ barely moves:** each factor of ten in $n$ adds about 3.3.
+- **$n \log_2 n$ is almost linear:** at $n = 10^6$ it is only 20 times $n$, while $n^2$ is a million times $n$.
+- **$2^n$ and $n!$ run off the table** past $n = 100$.
 
 :::warn 100! on the fastest supercomputer
-The slide circles $9.3 \cdot 10^{157}$ and adds: **$1.5 \times 10^{133}$ years on the world's fastest supercomputer.** An algorithm that tries every permutation of 100 items will not finish in the lifetime of the universe, which is why the efficiency *class* matters more than any constant factor.
+The slide circles $9.3 \cdot 10^{157}$ and adds: **$1.5 \times 10^{133}$ years on the world's fastest supercomputer.** An algorithm that tries every permutation of 100 items will never finish, which is why the efficiency class matters more than any constant factor.
 :::
 
 ## Common efficiency classes
 
-Every basic-operation count in this course lands in one of eight classes. The names and the textbook's comments (bold marks what the instructor highlighted on the slide):
+Slides 60-61, the textbook's eight classes (bold marks what the instructor highlighted):
 
 | Class | Name | Comments |
 |---|---|---|
@@ -81,17 +81,8 @@ Every basic-operation count in this course lands in one of eight classes. The na
 | $2^n$ | exponential | Typical for algorithms that generate **all subsets of an $n$-element set.** Often, the term "exponential" is used in a broader sense to include this and larger orders of growth as well. |
 | $n!$ | factorial | Typical for algorithms that generate **all permutations of an $n$-element set.** |
 
-The algorithms already counted, by class:
-
-- `Example3` halves $i$ every pass: **logarithmic**, cutting the problem's size by a constant factor on each iteration.
-- `find` and `SequentialSearch` scan a list of size $n$: **linear**.
-- `Loops` (insertion sort, an elementary sort) and `UniqueElements` have two embedded loops: **quadratic**.
-- `MatrixMultiply` has three embedded loops: **cubic**.
-
-:::quiz Two true/false traps hiding in the table
-**A logarithmic algorithm cannot look at all of its input.** True: touching every one of $n$ items is already $n$ steps, so anything in $O(\log n)$ must be *skipping* most of the input (binary search skips half of what is left on every step).
-
-**Two nested loops always mean $n^2$.** False as a rule, true as a "typically". If the inner loop runs a *constant* number of times (say 1 to 10), the count is $10n$, which is linear. Count the loop bounds, not the loops.
+:::quiz Two nested loops are not always n²
+The table says "typically". If the inner loop runs a constant number of times (say 1 to 10), the count is $10n$, which is linear. Count the loop bounds, not the loops.
 :::
 
 ```quiz

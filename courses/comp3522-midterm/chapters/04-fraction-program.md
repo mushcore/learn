@@ -203,7 +203,7 @@ The six answers in one file, in the order the paper asks for them. `fractions.pu
     "q": "Why is `while (in >> num >> den)` the right loop for Fractions.txt?",
     "options": ["it reads one line at a time regardless of content", "it throws when the file ends", "it skips the first line", "the extraction returns the stream, which tests false when a read fails at end of file, so the loop stops by itself with no eof check"],
     "answer": 3,
-    "explain": "operator>> returns the istream; in a condition it converts to false once failbit or eofbit is set. Whitespace separates the two integers whether on one line or several."
+    "explain": "operator>> returns the istream, and in a condition it is false only when failbit or badbit is set. eofbit alone leaves it true: a last read that reaches the end of the file without a trailing newline still succeeds and its row is used. The next read finds nothing, sets failbit, and the loop stops. Whitespace separates the two integers whether on one line or several."
   },
   {
     "q": "Q23: Fraction has only two `int` members. Which destructors earn full marks? (select all)",

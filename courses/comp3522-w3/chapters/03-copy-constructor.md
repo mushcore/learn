@@ -46,10 +46,9 @@ ctor-picker
 
 If you declare no copy constructor, the compiler generates one that calls the copy constructors of all members, in declaration order. The slide's advice is to use it whenever copying every member is what you want: less verbose, less error-prone, other developers know what it does without reading it, and the compiler may optimize it.
 
-The problem is what "copy every member" means when a member is a **pointer**: the pointer is copied, not the thing it points at. That is a **shallow copy**.
+The problem is what "copy every member" means when a member is a **pointer**: the pointer is copied, not the thing it points at. That is a **shallow copy**. Before running the program below, decide whether the three addresses printed for `vCopy` are the same as the three for `v`, and what `v.data[0]` holds after the write through the copy.
 
 ```cpp run pin myVec.cpp
-// predict: Are the three addresses printed for vCopy the same as the three for v, or different?
 #include <iostream>
 using namespace std;
 

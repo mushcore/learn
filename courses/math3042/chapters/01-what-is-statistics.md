@@ -9,7 +9,7 @@ Statistics began in **18th-century Europe**, when states (governments) started c
 
 Two names from the notes:
 
-- **Ronald Fisher (1890–1962)** developed the foundational concepts and methods of *statistical inference*, working with genetics and agricultural data. His book *Statistical Methods for Research Workers* (1925) shaped scientific research to the present day.
+- **Ronald Fisher (1890–1962)** developed the foundational concepts and methods of statistical inference, working with genetics and agricultural data. His book *Statistical Methods for Research Workers* (1925) shaped scientific research to the present day.
 - **Thomas Bayes (1701–1761)** gives his name to *Bayesian inference*, which in the last 50 years has become an important approach to data analysis in **machine learning**.
 
 ## The course definition
@@ -84,13 +84,13 @@ The same concept gets two symbols depending on whether it describes a sample or 
 ```quiz
 [
   {
-    "q": "\\(X = \\) Smoke (yes/no) for a student is what kind of data?",
+    "q": "$X =$ Smoke (yes/no) for a student is what kind of data?",
     "options": ["numerical (quantitative)", "non-numerical (categorical / qualitative)", "a parameter", "a statistic"],
     "answer": 1,
     "explain": "Smoke has non-numerical values (yes/no), so it is categorical, also called qualitative."
   },
   {
-    "q": "\\(X = \\) Age of a student is what kind of data?",
+    "q": "$X =$ Age of a student is what kind of data?",
     "options": ["categorical", "numerical (quantitative)", "a population", "a sample"],
     "answer": 1,
     "explain": "Age is a number, so it is numerical, also called quantitative."

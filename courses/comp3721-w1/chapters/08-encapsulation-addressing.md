@@ -3,11 +3,11 @@ title: Encapsulation & the four addresses
 minutes: 14
 ---
 
-Follow one message from host A to host B and watch what each device on the path does to it. Headers stack up on the way down and peel off on the way up (**encapsulation**), and each layer that has a header has its own kind of address (**four levels of addresses**).
+Each device on the path from host A to host B does something different to a message. Headers stack up on the way down and peel off on the way up (**encapsulation**), and each layer that has a header has its own kind of address (**four levels of addresses**).
 
 ## Communication through an internet
 
-The slide draws source **A** and destination **B** with a **switch**, a **router** and another **switch** between them. What matters is how many layers each device runs:
+The slide draws source **A** and destination **B** with a **switch**, a **router** and another **switch** between them. What matters is how many layers each device runs. The widget below draws one switch, between A and the router; the second switch, on the router's far side, would repeat what the first one does.
 
 | Device | Layers it runs | Why |
 |---|---|---|
@@ -33,25 +33,22 @@ The second encapsulation slide names the same steps generically: **Data** at L5,
 
 **Decapsulation** at the destination is the reverse: the data-link layer removes $H_L$, the network layer removes $H_N$, the transport layer removes $H_T$, and the application receives $M$. That is the first principle of layering, two opposite tasks.
 
+### One message through a switch and a router
+
+The PDU climbs only as high as each device's top layer. Compare the headers on the link into the router with the headers on the link out of it.
+
+```widget
+encapsulation
+{ "title": "Encapsulation and decapsulation from A to B", "predict": true }
+```
+
 ## What the switch does
 
 The frame $H_L\ H_N\ H_T\ M$ arrives at the switch's physical layer, goes up **one** layer to data link, and comes back down. The switch reads the link-layer header to pick an outgoing port; the frame leaves **unchanged**.
 
 ## What the router does
 
-The router goes up to the **network** layer:
-
-1. Physical layer receives bits, data-link layer receives the frame $H_L\ H_N\ H_T\ M$.
-2. Data link **strips** $H_L$ and hands the datagram $H_N\ H_T\ M$ up.
-3. Network layer reads $H_N$ (the destination IP address) and decides which link to forward on.
-4. Data link adds a **new** $H_L$ for the next link and sends $H_L\ H_N\ H_T\ M$ down to the physical layer.
-
-$H_N$, $H_T$ and $M$ cross the router untouched; $H_L$ is replaced on every link, because a link-layer header describes one hop only.
-
-```widget
-encapsulation
-{ "title": "Step through a message from A to B" }
-```
+The router goes up to the **network** layer: data link strips $H_L$, the network layer reads $H_N$ (the destination IP address) to choose the next link, and data link adds a **new** $H_L$ for that link. $H_N$, $H_T$ and $M$ cross the router untouched; $H_L$ is replaced on every link, because a link-layer header describes one hop only.
 
 ## An example frame
 
@@ -87,9 +84,7 @@ A logical (IP) address is global: it identifies a host on the whole Internet. A 
 
 *In an internet, we change the LAN technology to a new one. Which layers in the TCP/IP protocol suite need to be changed?*
 
-**Answer: only the data-link layer and the physical layer.**
-
-Changing the LAN technology usually means changing the transmission medium, say from coaxial cable to fibre-optic cable, or to a wireless technology such as WiFi. Physical layer protocols **depend on the transmission medium**, and the data-link layer handles communication between **neighbouring nodes** over that medium. The network, transport and application layers never see the medium.
+The answer, with the reason the upper layers are untouched, is worked in [E01 and the sample quiz](#/comp3721-w1/e01-sample-quiz).
 
 ```quiz
 [
@@ -149,12 +144,6 @@ Changing the LAN technology usually means changing the transmission medium, say 
     "explain": "The logical (IP) address is the network-layer address and is global to the Internet. A link-layer address only identifies a host or router inside one network."
   },
   {
-    "q": "Link-layer addresses define a specific host or router within a network (LAN or WAN).",
-    "type": "tf",
-    "answer": true,
-    "explain": "That is the slide's wording for link-layer (MAC) addresses. Because they are local to one network, a router rewrites them on each link."
-  },
-  {
     "q": "The physical layer uses its own kind of address, called a signal address.",
     "type": "tf",
     "answer": false,
@@ -165,12 +154,6 @@ Changing the LAN technology usually means changing the transmission medium, say 
     "options": ["Application", "Transport", "Network", "Data link", "Physical"],
     "answer": [3, 4],
     "explain": "E01 exercise 2: only the data-link and physical layers. Physical protocols depend on the medium, and the data-link layer handles neighbouring nodes over that medium. The upper layers never touch the medium."
-  },
-  {
-    "q": "The unit produced when the network layer adds its header to a segment is called a _______ (or packet).",
-    "type": "text",
-    "answer": ["datagram"],
-    "explain": "Network header + segment = datagram, also called a packet. The slide uses both names for the network-layer PDU."
   }
 ]
 ```

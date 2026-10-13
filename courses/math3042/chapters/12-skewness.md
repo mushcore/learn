@@ -33,7 +33,12 @@ Anything between $-1$ and $+1$ is only mildly skewed (or symmetric, near 0).
 
 ## Worked example: cat bodyweights
 
-The `cats$Bwt` data from R's `MASS` package (n = 144 domestic cats):
+The `cats$Bwt` data from R's `MASS` package (n = 144 domestic cats). Read $\bar{X}$, $Q_2$ and $s$ off the calculator and compute $Sk$ before checking it against the working below.
+
+```widget
+stat-calc
+{ "dataset": "cats", "title": "MASS::cats body weight (kg), n = 144" }
+```
 
 - Mean $\bar{X} = 2.724$
 - Median $Q_2 = 2.7$
@@ -53,18 +58,18 @@ $0.146$ is positive but well inside $(-1, 1)$, so cat bodyweight is **mildly ske
 R's `moments` library has a `skewness()` function that uses a **different formula** (the third standardized moment, not Pearson's mean/median formula). The course ignores it: compute Pearson's $Sk = 3(\bar{X}-Q_2)/s$ by hand or with the one-liner above.
 :::
 
-## Drag the data
+## Mean and median as the tail grows
 
 ```widget
 skewness
 { "title": "Skewness: mean chases the tail, median barely moves" }
 ```
 
-## Build a tail yourself
+## Sk as one point moves into a tail
 
 ```widget
 drag-data
-{ "data": "4 5 5 6 6 6 7 7 8", "title": "Drag a point out into a tail", "claims": [
+{ "data": "4 5 5 6 6 6 7 7 8", "title": "One point moving out into a tail", "claims": [
   { "when": "sk>1", "text": "Sk > 1: highly skewed right — the tail you built is on the right." },
   { "when": "sk<-1", "text": "Sk < -1: highly skewed left — the tail you built is on the left." },
   { "when": "sk>0 && sk<=1", "text": "0 < Sk ≤ 1: mildly skewed right." },

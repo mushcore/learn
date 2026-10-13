@@ -3,11 +3,7 @@ title: punif, pnorm, qnorm, pexp, qexp and curve()
 minutes: 20
 ---
 
-Every area and percentile in this unit is one line of base R, in the same `p`/`q`/`d`/`r` pattern the Unit 4 notebook used for `dbinom` and `pbinom`.
-
-:::info By analogy with notebook 4
-No Unit 5 demo notebook or lab is posted yet. The functions here are the base R functions the Unit 4 notebook's pattern implies, and the one R line printed in the notes, `pnorm(120, 100, 15)`, confirms the style. Outputs are computed and checked; the posted notebook replaces them if it differs.
-:::
+Every area and percentile in this unit is one line of base R, in the same `p`/`q`/`d`/`r` pattern the Unit 4 notebook used for `dbinom` and `pbinom`. No Unit 5 notebook is posted yet; the one R line in the notes, `pnorm(120, 100, 15)`, sets the style.
 
 ## The letter in front says what the function answers
 
@@ -147,7 +143,7 @@ Y <- rnorm(10000, 100, 15)
 mean(Y < 120)                      # near 0.9088
 ```
 
-Each run prints different numbers (the seed fixes one run), all within a few hundredths of the formula values; `mean(X <= 4)` is Lab 4's $k/m$ estimate written in one call.
+Without `set.seed` each run prints different numbers; with the seed every run repeats the same draws. Either way the results sit within a few hundredths of the formula values. `mean(X <= 4)` is Lab 4's $k/m$ estimate written in one call.
 
 ```quiz
 [
@@ -174,7 +170,7 @@ Each run prints different numbers (the seed fixes one run), all within a few hun
     "q": "Which line gives $P(Z > 2.33)$?",
     "options": ["`pnorm(2.33)`", "`qnorm(2.33)`", "`1 - pnorm(2.33)`", "`pnorm(-2.33, lower.tail = FALSE)`"],
     "answer": 2,
-    "explain": "pnorm gives the left tail 0.9901; subtract from 1 for 0.009903. By symmetry `pnorm(-2.33)` is also correct, but option 3 flips the wrong tail."
+    "explain": "pnorm gives the left tail 0.9901; subtract from 1 for 0.009903. By symmetry `pnorm(-2.33)` would also be correct, but `pnorm(-2.33, lower.tail = FALSE)` is $P(Z > -2.33) = 0.9901$, the wrong tail."
   },
   {
     "q": "`pnorm(120, 100, 15)` prints 0.9087888 but the table gives 0.9082. Why?",
@@ -186,7 +182,7 @@ Each run prints different numbers (the seed fixes one run), all within a few hun
     "q": "The bus comes every 20 minutes. Which line is $P(8 \\le T \\le 11)$?",
     "options": ["`punif(11, 0, 20) - punif(8, 0, 20)`", "`punif(11 - 8, 0, 20)`", "`dunif(11, 0, 20) - dunif(8, 0, 20)`", "`qunif(0.15, 0, 20)`"],
     "answer": 0,
-    "explain": "Area between two points is the difference of two cumulative values: 0.55 − 0.40 = 0.15. Option 1 gives the area from 0 to 3, also 0.15 here only because the density is flat; it is the wrong idea."
+    "explain": "Area between two points is the difference of two cumulative values: 0.55 − 0.40 = 0.15. `punif(11 - 8, 0, 20)` gives the area from 0 to 3, also 0.15 here only because the density is flat; it is the wrong idea."
   },
   {
     "q": "`mean(X <= 4)` where `X <- rexp(10000, rate = 0.4)` returns...",

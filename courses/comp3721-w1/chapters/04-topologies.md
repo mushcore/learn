@@ -14,7 +14,7 @@ topology
 { "type": "mesh", "n": 6, "title": "Mesh: every device linked to every other" }
 ```
 
-Each new device needs a link to *every* existing device.
+Each new device needs a link to every existing device.
 
 **Advantages**
 
@@ -61,14 +61,7 @@ Devices do not talk to each other directly; everything goes through the hub.
 
 **Links for $n$ devices:** $n$ (one per device, to the hub).
 
-:::quiz Sample quiz question (written response)
-**"List two disadvantages of star topology."** From the slide:
-
-1. The dependency of the whole topology on **one single point** (the hub): if the hub fails, the whole network is down.
-2. **More cabling** is required compared with bus and ring.
-
-"More cabling" is relative: star uses *less* cabling than mesh (an advantage) but *more* than bus and ring (a disadvantage).
-:::
+"More cabling" is relative: star needs less cabling than mesh (an advantage) but more than bus and ring (a disadvantage).
 
 ## Bus
 
@@ -76,6 +69,11 @@ Devices do not talk to each other directly; everything goes through the hub.
 
 - **Drop lines** and **taps** connect nodes to the cable.
 - There is a **limit on the number of taps** a bus can support and on the **distance between taps**.
+
+```widget
+topology
+{ "type": "bus", "n": 6, "title": "Bus: one backbone, a drop line and a tap per device" }
+```
 
 **Advantages**
 
@@ -94,6 +92,11 @@ Devices do not talk to each other directly; everything goes through the hub.
 > Each device has a **dedicated point-to-point connection with only the two devices on either side of it.**
 
 - A **repeater** for each device.
+
+```widget
+topology
+{ "type": "ring", "n": 6, "title": "Ring: each device linked to its two neighbours" }
+```
 
 **Advantages**
 
@@ -115,24 +118,19 @@ Devices do not talk to each other directly; everything goes through the hub.
 | Star | point-to-point to the hub | $n$ | more than bus and ring |
 | Mesh | point-to-point to every device | $\frac{n(n-1)}{2}$ | most |
 
-## Worked: E01 exercise 1
+## E01 exercise 1: 12 devices
 
 *Consider a network with 12 devices. If these devices are arranged in a mesh topology, how many cable links are needed? How about the number of links in a bus topology?*
 
-- Mesh: $\frac{12 \times (12 - 1)}{2} = \frac{12 \times 11}{2} = \mathbf{66}$ cable links.
-- Bus: **12 drop lines**, and also **one backbone** link is needed.
+```widget
+topology
+{ "type": "mesh", "n": 12, "title": "E01 exercise 1: 12 devices in a mesh, then on a bus" }
+```
 
-On a written response, write the formula before the number.
+The written answer gives the formula and both bus parts; it is worked in [E01 and the sample quiz](#/comp3721-w1/e01-sample-quiz).
 
 ```quiz
 [
-  {
-    "q": "A network with 12 devices is arranged in a mesh topology. How many cable links are needed?",
-    "type": "numeric",
-    "answer": 66,
-    "tolerance": 0,
-    "explain": "Mesh links $= \\frac{n(n-1)}{2} = \\frac{12 \\times 11}{2} = 66$. This is E01 exercise 1."
-  },
   {
     "q": "A network with 8 devices is arranged in a mesh topology. How many cable links are needed?",
     "type": "numeric",
@@ -148,11 +146,11 @@ On a written response, write the formula before the number.
     "explain": "In a star each device has exactly one dedicated link, to the hub, so $n = 10$ links."
   },
   {
-    "q": "In a bus topology with 12 devices, how many drop lines are needed (not counting the backbone)?",
+    "q": "In a bus topology with 9 devices, how many drop lines are needed (not counting the backbone)?",
     "type": "numeric",
-    "answer": 12,
+    "answer": 9,
     "tolerance": 0,
-    "explain": "One drop line per device, so 12 drop lines, plus **one backbone** line. E01's answer gives both parts."
+    "explain": "One drop line per device, so 9 drop lines, plus **one backbone** line. A written answer gives both parts, as E01's does."
   },
   {
     "q": "In a ___ topology, each device has a dedicated point-to-point link to every other device.",
@@ -169,13 +167,13 @@ On a written response, write the formula before the number.
   {
     "q": "Which of these are disadvantages of the star topology listed on the slide? Select all that apply.",
     "options": [
-      "The dependency of the whole topology on one single point",
-      "More cabling is required compared with bus and ring",
       "Expensive hardware",
+      "The dependency of the whole topology on one single point",
       "Difficult fault isolation",
+      "More cabling is required compared with bus and ring",
       "Unidirectional traffic"
     ],
-    "answer": [0, 1],
+    "answer": [1, 3],
     "explain": "Star's two disadvantages: dependency on one single point, and more cabling than bus and ring. Expensive hardware is a mesh disadvantage, difficult fault isolation is a bus disadvantage, unidirectional traffic is a ring disadvantage."
   },
   {
@@ -199,27 +197,15 @@ On a written response, write the formula before the number.
   {
     "q": "Which of these are advantages of the mesh topology on the slide? Select all that apply.",
     "options": [
-      "Each connection can carry its own data load (dedicated links)",
       "Robustness",
-      "Privacy and security",
-      "Ease of fault identification and fault isolation",
       "Ease of installation",
-      "Less cabling"
+      "Each connection can carry its own data load (dedicated links)",
+      "Privacy and security",
+      "Less cabling",
+      "Ease of fault identification and fault isolation"
     ],
-    "answer": [0, 1, 2, 3],
+    "answer": [0, 2, 3, 5],
     "explain": "Mesh advantages: dedicated links carry their own data load, robustness, privacy and security, ease of fault identification and isolation. Installation is *difficult* and wiring is a *disadvantage* for mesh."
-  },
-  {
-    "q": "Every device in a ring topology needs a repeater.",
-    "type": "tf",
-    "answer": true,
-    "explain": "The ring slide says 'a repeater for each device'. Each device regenerates the signal and passes it to the next neighbour."
-  },
-  {
-    "q": "Which topology is multipoint rather than built from point-to-point links?",
-    "options": ["Mesh", "Star", "Bus", "Ring"],
-    "answer": 2,
-    "explain": "**Bus** is described as multipoint: all devices share the one backbone cable. Mesh, star and ring are all made of dedicated point-to-point links."
   }
 ]
 ```

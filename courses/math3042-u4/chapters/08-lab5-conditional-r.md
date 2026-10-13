@@ -3,11 +3,7 @@ title: Lab 5: conditional probability from the SFU weather data
 minutes: 30
 ---
 
-Lab 5 asks four questions of 58 years of daily weather at SFU (1965–2022, from the Government of Canada "Daily Data Report"): is precipitation more likely on Mondays, which season is wettest, do cold or warm days change the chance of precipitation, and does the season change that dependence. The tools are *filtering*, *segmenting*, and conditional probabilities read off `table()`. Packages: `dplyr`, `mosaic`.
-
-:::info Outputs computed from the CSV
-No solutions were posted for Lab 5. Every output below was computed from `SFU.Weather.with.Precip.csv` with the Task 1 filter applied and checked against the answers the lab notebook states (0.488, 8.0 mm, winter).
-:::
+Lab 5 asks four questions of 58 years of daily SFU weather (1965–2022): are Mondays wetter, which season is wettest, do cold or warm days change the chance of precipitation, and does the season change that? Packages: `dplyr`, `mosaic`.
 
 ## Import: tell read.csv the column types
 
@@ -23,7 +19,7 @@ nrow(SFU.Weather)
 [1] 21184
 ```
 
-Plain `read.csv(..., header=TRUE, na="NA")` reads `Date` as a string; `colClasses` names each column's type in order, so `Date` becomes a real Date (needed for `weekdays()` later), followed by `Year`, `Month` (three-letter text), `Day`, `Temp.deg.C`, `Total.Rain.mm` and `Total.Precip.mm` (rain plus melted snow). `months` fixes the calendar order, which nothing in the data supplies: text sorts alphabetically.
+`colClasses` makes `Date` a real Date, which `weekdays()` needs later; `Total.Precip.mm` is rain plus melted snow. `months` fixes the calendar order, since text sorts alphabetically.
 
 ## Task 1: filter out the missing days
 
@@ -37,7 +33,7 @@ nrow(SFU.Weather)
 [1] 17582
 ```
 
-21 184 days become 17 582. Without this step `mean()` returns `NA` and every table below has a different total.
+21 184 days become 17 582. Without it `mean()` returns `NA`.
 
 ## Tasks 2 and 3: grouped mean and sd with mosaic's formula interface
 
@@ -53,7 +49,7 @@ round(Monthly.Mean.Temp, 2)
  8.41 17.39  2.89  4.16  2.90 17.10 14.54  5.82 11.82  5.36  9.70 14.52
 ```
 
-The result is a **named vector**, one value per month, in alphabetical order. Indexing by name fixes the order: `Monthly.Mean.Temp[months]` returns Jan to Dec, so Task 3's chart is
+The result is a **named vector** in alphabetical order; `Monthly.Mean.Temp[months]` returns Jan to Dec, so Task 3's chart is
 
 ```r
 barplot(Monthly.Mean.Temp[months], col="lightblue",
@@ -66,7 +62,7 @@ Warmest two months: **Aug (17.39) and Jul (17.10)**; coldest two: **Dec (2.89) a
 
 ## with(): work inside the data frame
 
-`with(df, expr)` evaluates `expr` with the data frame's columns in scope, so `df$` is not repeated:
+`with(df, expr)` evaluates `expr` with the columns in scope, without `df$`:
 
 ```r
 max(SFU.Weather$Temp.deg.C) - min(SFU.Weather$Temp.deg.C)
@@ -87,9 +83,9 @@ Z.Temp.anomaly <- with(SFU.Weather,
 SFU.Weather$Z.Temp.anomaly <- Z.Temp.anomaly
 ```
 
-`Monthly.Mean.Temp[Month]` is a vectorised lookup: `Month` is a column of 17 582 month names, and indexing the named vector by it returns the right monthly mean for every row at once. Assigning to `SFU.Weather$Z.Temp.anomaly` appends a new column. A 2.9 °C day scores 0 in January and about −4.3 in July.
+`Monthly.Mean.Temp[Month]` is a vectorised lookup: it returns the right monthly mean for all 17 582 rows at once.
 
-Task 4 draws it with mosaic's `histogram`, classes of width 0.25 and a fitted normal curve:
+Task 4 draws it with mosaic's `histogram` and a fitted normal curve:
 
 ```r
 histogram(~Z.Temp.anomaly, data=SFU.Weather, type="density", fit="normal",
@@ -108,11 +104,11 @@ SFU.Weather$Temp.Seg <- with(SFU.Weather,
             ifelse(Z.Temp.anomaly <= 0.4307, "Mid", "Warm")))
 ```
 
-*Cold* is $Z < -0.4307$, *Mid* is $-0.4307 \le Z \le 0.4307$, *Warm* is $Z > 0.4307$. The inner test only sees days that failed the first one, so `<= 0.4307` there already means "at least −0.4307". The cut points ±0.4307 are the normal distribution's tertiles, which is why the segments come out near one third each.
+The inner test only sees days that failed the first, so *Mid* is $-0.4307 \le Z \le 0.4307$ and *Warm* is $Z > 0.4307$. The cut points ±0.4307 are the normal distribution's tertiles, which is why the segments come out near one third each.
 
 ## Tasks 5 and 6: the segment proportions and their pie
 
-A probability from data is a count over the number of rows; `Temp.Seg == "Cold"` is a logical vector and `sum()` counts its `TRUE`s:
+`sum()` of a logical vector counts its `TRUE`s, so each proportion is a count over the rows:
 
 ```r
 p.Cold <- sum(SFU.Weather$Temp.Seg == "Cold")/nrow(SFU.Weather)
@@ -128,7 +124,7 @@ Cold  Mid Warm
 6046 5956 5580
 ```
 
-`prop.table(table(SFU.Weather$Temp.Seg))` gives the same three proportions in one call, and Task 6's pie is Lab 3's recipe on that table, `pie(table(SFU.Weather$Temp.Seg), main=paste0("Temperature segments, n = ", nrow(SFU.Weather)))`, title composed from the data.
+`prop.table(table(SFU.Weather$Temp.Seg))` gives the same proportions in one call. Task 6's pie is Lab 3's recipe with a computed title: `pie(table(SFU.Weather$Temp.Seg), main=paste0("Temperature segments, n = ", nrow(SFU.Weather)))`.
 
 ```widget
 cat-charts
@@ -137,7 +133,7 @@ cat-charts
 
 ## Task 7: seasons by %in%, then seasonal mean precipitation
 
-`Month %in% c("Jun","Jul","Aug")` is `TRUE` when the month is one of the three, so the same nested `ifelse` builds `Season`:
+`%in%` tests membership in a set, so the same nested `ifelse` builds `Season`:
 
 ```r
 SFU.Weather$Season <- with(SFU.Weather,
@@ -164,7 +160,7 @@ SFU.Weather$DoW <- weekdays(SFU.Weather$Date)
 SFU.Weather$has.Precip <- (SFU.Weather$Total.Precip.mm > 0)
 ```
 
-`weekdays()` needs the Date class from the import. `has.Precip` is a logical column, `TRUE` on any day with measurable precipitation.
+`has.Precip` is `TRUE` on any day with measurable precipitation.
 
 ## Are Mondays rainier? A two-way table and one conditional
 
@@ -190,7 +186,7 @@ DoW         FALSE TRUE
 [1] 0.4876297
 ```
 
-`table()` on two columns gives rows by the first and columns by the second, indexed like a matrix by name. The names are strings, including `"TRUE"`: the logical levels became text, so `tab1["Monday", TRUE]` would not work. `tab1[ ,"TRUE"]` is the whole wet column, so $P(\text{Precip})$ = 8577/17 582 = 0.4878; `tab1["Monday",]` is the Monday row, so the conditional is the cell over its **row** total, 1222/2506 = 0.4876. *The fact that these two probabilities are so close (~0.488) means that having precipitation is independent of a day being Monday*: $P(B \mid A) = P(B)$ is Unit 3's test. The other days sit between 0.483 and 0.493.
+`table()` on two columns gives rows by the first and columns by the second, indexed by name. The logical levels became the strings `"FALSE"` and `"TRUE"`, so `tab1["Monday", TRUE]` would not work. `tab1[ ,"TRUE"]` is the whole wet column, so $P(\text{Precip})$ = 8577/17 582 = 0.4878; `tab1["Monday",]` is the Monday row, so the conditional is the cell over its **row** total, 1222/2506 = 0.4876. *The fact that these two probabilities are so close (~0.488) means that having precipitation is independent of a day being Monday*: $P(B \mid A) = P(B)$ is Unit 3's test.
 
 ## Task 8: are cold days wetter?
 
@@ -211,11 +207,11 @@ Temp.Seg FALSE TRUE
 [1] 0.5714522 0.4879113 0.3971326
 ```
 
-$P(\text{Precip} > 0 \mid \text{Cold}) = 3455/6046 = 0.5715$, $P(\text{Precip} > 0 \mid \text{Mid}) = 2906/5956 = 0.4879$, $P(\text{Precip} > 0 \mid \text{Warm}) = 2216/5580 = 0.3971$. Each is a cell over the total of its condition, the row; 3455 over the grand total 17 582 would be the joint probability 0.1965 instead. The lab's answer: *yes, since the probability of precipitation given a Cold day is greater than the probability of precipitation on a Warm or Mid day.* Temperature and precipitation are dependent.
+$P(\text{Precip} > 0 \mid \text{Cold}) = 3455/6046 = 0.5715$; Mid 2906/5956 = 0.4879; Warm 2216/5580 = 0.3971. 3455 over the grand total 17 582 would be the joint probability 0.1965 instead. The lab's answer: *yes, since the probability of precipitation given a Cold day is greater than the probability of precipitation on a Warm or Mid day.* Temperature and precipitation are dependent.
 
 ```widget
 two-way
-{ "rows": ["Cold", "Mid", "Warm"], "cols": ["Precip = 0", "Precip > 0"], "data": [[2591, 3455], [3050, 2906], [3364, 2216]], "select": "row", "r": 0, "title": "tab2: click a row for P(Precip > 0 | segment), the Precip > 0 column for P(segment | Precip > 0)" }
+{ "rows": ["Cold", "Mid", "Warm"], "cols": ["Precip = 0", "Precip > 0"], "data": [[2591, 3455], [3050, 2906], [3364, 2216]], "select": "row", "r": 0, "title": "tab2: a row gives P(Precip > 0 | segment), the Precip > 0 column gives P(segment | Precip > 0)" }
 ```
 
 ## Task 9: Bayes from the Task 5 and Task 8 numbers
@@ -237,11 +233,13 @@ tab2["Warm","TRUE"]/sum(tab2[ ,"TRUE"])
 [1] 0.2583654
 ```
 
-The denominator is $P(\text{Precip})$ = 0.4878 again, by total probability. The second line is the self-check: the same conditional straight from the table, 2216/8577, the Warm cell over the wet **column** total. The two must agree; with four-decimal values on paper the ratio comes to 0.2583, a rounding difference only. To see the tree, pick the three-branch preset "defective CPUs" in the widget and type Warm's numbers into the first row (P = 0.3174, conditional 0.3971), Cold's into the second (0.3439, 0.5715) and Mid's into the third (0.3388, 0.4879); the labels stay Intel, AMD and Other, but the arithmetic is Task 9's (its note that the rounded priors add to 1.0001 can be ignored).
+The denominator is $P(\text{Precip})$ = 0.4878 again, by total probability. The second line checks it straight from the table: 2216/8577, the Warm cell over the wet **column** total. Four-decimal values on paper give 0.2583, a rounding difference only.
+
+### The same three branches on Unit 3's tree
 
 ```widget
 bayes-tree
-{ "preset": "defective CPUs", "title": "Task 9 on the tree: overwrite the three priors and three conditionals with the segment numbers" }
+{ "preset": "temperature segments (Lab 5)", "title": "Task 9 on a tree: the three segments, P(Precip > 0) on each branch" }
 ```
 
 ## Task 10: does the season change the dependence? A three-way table
@@ -269,11 +267,11 @@ has.Precip Cold  Mid Warm
 [1] 0.0870 0.4298 0.7213 0.3493
 ```
 
-Three variables give a three-dimensional table indexed `[has.Precip, Temp.Seg, Season]`; a blank index keeps every level of that dimension. `sum(tab2[ ,"Warm","Winter"])` is all warm winter days (400 + 1035 = 1435), and 1035/1435 = 0.7213 is $P(\text{Precip} > 0 \mid \text{Warm and Winter})$. *The season where SFU is most likely to have precipitation on a warm day is winter.* The season reverses the dependence: in winter a warm day is wetter than a cold one (0.72 against 612/1199 = 0.51), in summer a cold day is far wetter than a warm one (897/1701 = 0.53 against 0.09).
+A three-way table is indexed `[has.Precip, Temp.Seg, Season]`; a blank index keeps every level. `sum(tab2[ ,"Warm","Winter"])` is all 400 + 1035 = 1435 warm winter days, so $P(\text{Precip} > 0 \mid \text{Warm and Winter})$ = 1035/1435 = 0.7213. *The season where SFU is most likely to have precipitation on a warm day is winter.* The season reverses the dependence: in winter a warm day is wetter than a cold one (0.72 against 612/1199 = 0.51), in summer a cold day is far wetter (897/1701 = 0.53 against 0.09).
 
 ## Task 11: the month with the wettest warm days
 
-The same table by `Month`, the wet row over wet plus dry, indexed by `months` for order and scaled to percent:
+The same table by `Month`, as percentages in calendar order:
 
 ```r
 tab3 <- table(SFU.Weather[c("has.Precip","Temp.Seg","Month")])
@@ -288,7 +286,7 @@ barplot(pct, col="lightblue", ylim=c(0,100),
 74.9 62.0 51.8 31.8 20.2 15.2  5.7  5.8 12.4 40.2 75.0 78.2
 ```
 
-**December** has the greatest probability of precipitation given a warm day, 78.2% (390 of 499 warm December days), with Nov 75.0% and Jan 74.9% close behind; July's 5.7% is the lowest. The bars reproduce the lab's figure: high in winter, near zero in July and August.
+**December** has the greatest probability of precipitation given a warm day, 78.2% (390 of 499 warm December days); July's 5.7% is the lowest.
 
 ```quiz
 [

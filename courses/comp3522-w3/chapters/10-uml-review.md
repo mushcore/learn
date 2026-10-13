@@ -24,6 +24,8 @@ uml-relations
 | Composition | solid line, **filled** diamond at the whole | A is made up of B; the parts cannot exist without the whole | B members held by value (or owned and deleted by A) |
 | Aggregation | solid line, **hollow** diamond at the whole | A references B; B lives on if A is destroyed | pointers to B that A does not own |
 
+The classes deck's inheritance slide uses the same notation: `Bus`, `Car` and `Truck` generalize `Vehicle`, and `Truck` holds `+Car *carPtr` with `+attach(Car*)`, an association from Truck to Car through a pointer member.
+
 The deck's two multiplicity examples: an `order` (0..1) composed of `order_items` (1..*), so destroying the order destroys its items; a `pond` (0..1) aggregating `ducks` (0..*), so the ducks live on when the pond is destroyed. A `Car` is composed of exactly 1 `carburetor`, and a carburetor belongs to 0..1 cars. A `Professor` aggregates 1..* classes and each class has exactly 1 professor. `Person` (string name, int age) is generalized by `Student` (a list of grades) and `Professor` (a list of students).
 
 :::quiz Composition versus aggregation
@@ -51,6 +53,14 @@ A sequence diagram shows the same messages from a **time-based** perspective, in
 - **Messages**: a **call** message invokes an operation on the target lifeline (a method call); a **return** message passes information back to the caller (the return statement); a **self** message invokes an operation on the same lifeline; a **create** message instantiates the target lifeline.
 
 Structure versus time is the whole difference: a collaboration diagram numbers the messages on a graph of links; a sequence diagram orders them top to bottom on lifelines.
+
+### A checkout, one message at a time
+
+Each step draws one call, return, self or create message down the lifelines, and the activation bars open and close with it. The toggle redraws the same messages as a collaboration diagram, numbered 1, 1.1, 1.2.
+
+```widget
+sequence-play
+```
 
 ```quiz
 [

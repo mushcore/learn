@@ -3,7 +3,7 @@ title: Unit 3 practice problems (all 28, worked)
 minutes: 60
 ---
 
-Lab 4 said its pencil problems were "posted separately"; this is that sheet, 28 problems with an answer key, in the sheet's own wording. Each problem's answer box comes first and the worked solution follows it, with the rule named: the NOT rule (complement), the OR rule (addition), the AND rule (multiplication, independent or conditional), counting with $P$ and $C$, a conditional read off a table, or Bayes. Answers are the key's, to the key's decimals.
+Lab 4 said its pencil problems were "posted separately"; this is that sheet, 28 problems with an answer key, in the sheet's own wording. Each answer's explanation holds the worked solution with the rule named: NOT (complement), OR (addition), AND (multiplication), counting with $P$ and $C$, a conditional read off a table, or Bayes. Answers are the key's, to the key's decimals.
 
 ## 1. Two dice
 
@@ -18,11 +18,9 @@ You roll two six-sided fair dice. Determine the probability that the total is: (
 ]
 ```
 
-Classical probability on the 36-outcome grid, $P(A) = |A|/|S|$. (a) $1/36 = 0.0278$. (b) no outcome gives 1, so $0/36 = 0.0000$. (c) $|A| = 3 + 2 + 1 = 6$, $6/36 = 0.1667$. (d) 18 of the 36 totals are even, $18/36 = 0.5000$.
-
 ```widget
 sample-space
-{ "mode": "dice", "event": "boxcars", "title": "Problem 1: click the cells with total 10, 11 and 12 to count |A| = 6" }
+{ "mode": "dice", "event": "boxcars", "title": "Problem 1: the 36 outcomes with (a)'s (6, 6) selected; totals 10 to 12 are the six cells where both dice are high" }
 ```
 
 ## 2. Four cards
@@ -37,7 +35,6 @@ You randomly select four cards from a standard deck of cards (without replacemen
 ]
 ```
 
-Counting with combinations: a hand has no order, so $|S| = C(52, 4) = 270\,725$. (a) $|A| = C(26, 4) = 14\,950$, $P = 0.0552$. (b) $|A| = C(4, 4) = 1$, $P = 1/270\,725 = 3.69 \times 10^{-6}$. (c) $|A| = 4 \times C(13, 4) = 2860$, $P = 0.0106$. The AND rule gives the same numbers as shrinking fractions: (a) $\frac{26}{52} \cdot \frac{25}{51} \cdot \frac{24}{50} \cdot \frac{23}{49}$.
 
 ## 3. Ten coins
 
@@ -52,7 +49,6 @@ You flip a fair coin ten times. What is the probability that: (a) all ten flips 
 ]
 ```
 
-Counting rule: $|S| = 2^{10} = 1024$. (a) $1/1024 = 0.0010$. (b) $2^5/2^{10} = 0.0313$ (or, by the AND rule for independent flips, $(1/2)^5$). (c) $2 \times 2 / 1024 = 0.0039$. (d) $2/1024 = 0.0020$: once the first coin is fixed the alternating pattern is forced.
 
 ## 4. Grades
 
@@ -65,7 +61,6 @@ In an engineering statistics course, the instructor awarded 30 As, 40 Bs, 35 Cs,
 ]
 ```
 
-Relative frequency as probability, then the OR rule: the grades are mutually exclusive, so P(A or B or C) is the sum, $0.24 + 0.32 + 0.28 = 0.84$.
 
 ## 5. The reckless driver
 
@@ -73,11 +68,10 @@ The probability that a reckless driver will be fined, get his license revoked or
 
 ```quiz
 [
-  { "q": "P(fined or revoked)? (4 decimals)", "type": "numeric", "answer": 0.93, "tolerance": 0.0003, "explain": "OR rule: 0.88 + 0.60 − 0.55 = 0.9300. The 0.55 is P(both), the overlap counted twice." }
+  { "q": "P(fined or revoked)? (4 decimals)", "type": "numeric", "answer": 0.93, "tolerance": 0.0003, "explain": "OR rule: 0.88 + 0.60 − 0.55 = 0.9300. The 0.55 is P(both), the overlap counted twice. The sum 1.48 alone exceeds 1, the sign that an overlap must be subtracted." }
 ]
 ```
 
-OR rule, not mutually exclusive: $P(F \cup R) = P(F) + P(R) - P(F \cap R) = 0.88 + 0.60 - 0.55 = 0.9300$. The sum 1.48 alone exceeds 1, the sign that an overlap must be subtracted.
 
 ## 6. Light bulbs
 
@@ -91,7 +85,6 @@ A carton of 24 light bulbs includes 3 that are defective. If two of the bulbs ar
 ]
 ```
 
-Counting with combinations, $|S| = C(24, 2) = 276$. (a) $C(21, 2) = 210$, $P = 0.7609$. (b) $C(3, 1) \times C(21, 1) = 63$, $P = 0.2283$. (c) $C(3, 2) = 3$, $P = 0.0109$. Check: $0.7609 + 0.2283 + 0.0109 = 1.0001$.
 
 ## 7. Glass blocks
 
@@ -102,11 +95,10 @@ In the quality control of the production of glass blocks, we find the probabilit
   { "q": "(a) P(cracked and bubbles)? (6 decimals)", "type": "numeric", "answer": 0.000024, "tolerance": 0.0000005, "explain": "AND rule, independent: 0.004 × 0.006 = 0.000024." },
   { "q": "(b) P(cracked or bubbles)? (6 decimals)", "type": "numeric", "answer": 0.009976, "tolerance": 0.000005, "explain": "OR rule: 0.004 + 0.006 − 0.000024 = 0.009976." },
   { "q": "(c) P(cracked and bubbles and discoloured)? (as a decimal, e.g. 0.000000216)", "type": "numeric", "answer": 0.000000216, "tolerance": 0.000000002, "explain": "AND rule for three independent events: 0.004 × 0.006 × 0.009 = 2.16 × 10^-7." },
-  { "q": "(d) P(exactly one of the three defects)? (4 decimals)", "type": "numeric", "answer": 0.0188, "tolerance": 0.0002, "explain": "Exclusive or = exactly one: 0.004(0.994)(0.991) + 0.006(0.996)(0.991) + 0.009(0.996)(0.994) = 0.003940 + 0.005922 + 0.008910 = 0.0188." }
+  { "q": "(d) P(exactly one of the three defects)? (4 decimals)", "type": "numeric", "answer": 0.0188, "tolerance": 0.0002, "explain": "Exclusive or = exactly one: 0.004(0.994)(0.991) + 0.006(0.996)(0.991) + 0.009(0.996)(0.994) = 0.003940 + 0.005922 + 0.008910 = 0.0188. The inclusive or, 1 − (0.996)(0.994)(0.991) = 0.018886, rounds to 0.0189; the key's 0.0188 is the exclusive reading." }
 ]
 ```
 
-AND rule with independence for (a) and (c); OR rule for (b). (d) reads "exclusive or" as exactly one defect, three mutually exclusive cases each built by the AND rule with two NOTs: $0.018773 \approx 0.0188$. The inclusive or, $1 - (0.996)(0.994)(0.991) = 0.018886$, rounds to 0.0189; the key's 0.0188 is the exclusive reading.
 
 ## 8. The machine
 
@@ -119,7 +111,6 @@ A machine produces components for cellular phones. At any given time, the machin
 ]
 ```
 
-The three states are exhaustive and mutually exclusive. (a) NOT rule: $P(\text{not down}) = 1 - 0.015 = 0.985$. (b) OR rule with no overlap: $0.02 + 0.015 = 0.035$ (equivalently $1 - P(\text{operational}) = 1 - 0.965$).
 
 ## 9. Smoke detectors
 
@@ -127,11 +118,10 @@ A smoke detector system uses two devices, A and B. If smoke is present, the prob
 
 ```quiz
 [
-  { "q": "P(detected by A or B)? (4 decimals)", "type": "numeric", "answer": 0.99, "tolerance": 0.0003, "explain": "OR rule: 0.95 + 0.98 − 0.94 = 0.9900. P(both) is given, so no independence is assumed." }
+  { "q": "P(detected by A or B)? (4 decimals)", "type": "numeric", "answer": 0.99, "tolerance": 0.0003, "explain": "OR rule: 0.95 + 0.98 − 0.94 = 0.9900. P(both) is given, so no independence is assumed. Note 0.95 × 0.98 = 0.931 ≠ 0.94: the two devices are not independent." }
 ]
 ```
 
-OR rule: $0.95 + 0.98 - 0.94 = 0.9900$. Note that $0.95 \times 0.98 = 0.931 \ne 0.94$, so the two devices are not independent; the given overlap is what you subtract.
 
 ## 10. The electronic component
 
@@ -143,7 +133,6 @@ The probability that a certain electronic component fails when first used is 0.1
 ]
 ```
 
-The general AND rule, $P(A \cap B) = P(A)\,P(B \mid A)$, with $P(A) = 1 - 0.10 = 0.90$ by the NOT rule and $P(B \mid A) = 0.99$ given: $0.90 \times 0.99 = 0.8910$.
 
 ## 11. Fire detection
 
@@ -155,7 +144,6 @@ A fire detection device uses three temperature-sensitive cells acting independen
 ]
 ```
 
-"Any one or more" is "at least one": NOT rule, then the AND rule for the three independent failures: $1 - (0.2)(0.2)(0.2) = 0.9920$.
 
 ## 12. Castings
 
@@ -165,12 +153,11 @@ Assume that a certain batch of 200 castings contains 5 defectives. Calculate the
 [
   { "q": "(a) P(one casting defective)? (3 decimals)", "type": "numeric", "answer": 0.025, "tolerance": 0.0003, "explain": "5/200 = 0.025." },
   { "q": "(b) P(three selected, all defective)? (as a decimal, e.g. 0.00000761)", "type": "numeric", "answer": 0.00000761, "tolerance": 0.00000005, "explain": "AND rule without replacement: (5/200)(4/199)(3/198) = 60/7 880 400 = 7.61 × 10^-6." },
-  { "q": "(c) P(three selected, exactly one defective)? (4 decimals)", "type": "numeric", "answer": 0.072, "tolerance": 0.0003, "explain": "The defective can be the 1st, 2nd or 3rd pick: 3 × (5/200)(195/199)(194/198) = 7.20 × 10^-2." },
+  { "q": "(c) P(three selected, exactly one defective)? (4 decimals)", "type": "numeric", "answer": 0.072, "tolerance": 0.0003, "explain": "The defective can be the 1st, 2nd or 3rd pick: 3 × (5/200)(195/199)(194/198) = 7.20 × 10^-2. The same as C(5, 1) C(195, 2)/C(200, 3) = 0.0720." },
   { "q": "(d) P(two selected, at least one defective)? (4 decimals)", "type": "numeric", "answer": 0.0495, "tolerance": 0.0003, "explain": "NOT rule: 1 − P(neither) = 1 − (195/200)(194/199) = 1 − 0.9505 = 0.0495." }
 ]
 ```
 
-The AND rule with shrinking fractions (no replacement). (b) $\frac{5}{200} \cdot \frac{4}{199} \cdot \frac{3}{198} = 7.61 \times 10^{-6}$. (c) three orderings of one defective and two good, each $\frac{5}{200} \cdot \frac{195}{199} \cdot \frac{194}{198}$, total $0.0720$; the same as $C(5,1)\,C(195,2)/C(200,3)$. (d) "at least one" is the NOT rule: $1 - \frac{195}{200} \cdot \frac{194}{199} = 0.0495$.
 
 ## 13. Displaced workers
 
@@ -186,18 +173,16 @@ Suppose a worker is randomly selected from those surveyed. (a) What is the proba
 
 ```quiz
 [
-  { "q": "(a) P(union)? (2 decimals)", "type": "numeric", "answer": 0.58, "tolerance": 0.003, "explain": "Row total over grand total: 58/100 = 0.58." },
+  { "q": "(a) P(union)? (2 decimals)", "type": "numeric", "answer": 0.58, "tolerance": 0.003, "explain": "Row total over grand total: 58/100 = 0.58. The sheet's text layout drifts the last column; this table is the PDF's, and the key's answers only work with it." },
   { "q": "(b) P(union and same company)? (2 decimals)", "type": "numeric", "answer": 0.41, "tolerance": 0.003, "explain": "A joint probability is one cell over the grand total: 41/100 = 0.41. Non-union and same company is 16/100 = 0.16." },
   { "q": "(c) P(union | new company)? (4 decimals)", "type": "numeric", "answer": 0.5714, "tolerance": 0.0003, "explain": "Restrict to the New Company column (21 workers): 12/21 = 0.5714." },
   { "q": "(d) P(unemployed | non-union)? (4 decimals)", "type": "numeric", "answer": 0.1429, "tolerance": 0.0003, "explain": "Restrict to the Non-Union row (42 workers): 6/42 = 0.1429." }
 ]
 ```
 
-Conditional probability from a two-way table, exactly as the handedness table in the notes: a marginal is a total over 100, a joint is a cell over 100, and "if the worker ..." restricts the sample space to a row or a column. (a) $58/100$. (b) $41/100 = 0.41$ and $16/100 = 0.16$. (c) $12/21 = 0.5714$. (d) $6/42 = 0.1429$. The sheet's text layout drifts the last column; the table above is the PDF's (Union 41, 12, 4, 1; Non-Union 16, 9, 11, 6), and the key's answers only work with it.
-
 ```widget
 two-way
-{ "rows": ["Union", "Non-Union"], "cols": ["Same Company", "New Company", "New Field", "Unemployed"], "data": [[41, 12, 4, 1], [16, 9, 11, 6]], "select": "col", "r": 0, "c": 1, "title": "Problem 13: click the New Company column for (c), the Non-Union row for (d)" }
+{ "rows": ["Union", "Non-Union"], "cols": ["Same Company", "New Company", "New Field", "Unemployed"], "data": [[41, 12, 4, 1], [16, 9, 11, 6]], "select": "col", "r": 0, "c": 1, "title": "Problem 13: the New Company column, the sample space for (c)" }
 ```
 
 ## 14. Injection moulded parts
@@ -211,7 +196,6 @@ A storage bin contains 200 injection molded parts from 4 cavities. One of the 4 
 ]
 ```
 
-Four cavities, so $200/4 = 50$ defective parts. AND rule without replacement: (a) $\frac{50}{200} \cdot \frac{49}{199} = 0.06156$. (b) two orderings, $2 \times \frac{50}{200} \cdot \frac{150}{199} = 0.3769$.
 
 ## 15. Four machines
 
@@ -221,11 +205,10 @@ Four machines, a drill, a lathe, a grinder and a miller operate independently of
 [
   { "q": "(a) P(all four idle)? (6 decimals)", "type": "numeric", "answer": 0.009216, "tolerance": 0.000005, "explain": "NOT each utilization, then the AND rule: 0.48 × 0.40 × 0.32 × 0.15 = 0.009216." },
   { "q": "(b) P(drill or lathe utilized)? (3 decimals)", "type": "numeric", "answer": 0.808, "tolerance": 0.0005, "explain": "NOT rule on 'both idle': 1 − 0.48 × 0.40 = 0.808; or the OR rule 0.52 + 0.60 − 0.52 × 0.60 = 0.808." },
-  { "q": "(c) P(at least two utilized)? (6 decimals)", "type": "numeric", "answer": 0.895168, "tolerance": 0.000005, "explain": "1 − P(none) − P(exactly one) = 1 − 0.009216 − 0.095616 = 0.895168." }
+  { "q": "(c) P(at least two utilized)? (6 decimals)", "type": "numeric", "answer": 0.895168, "tolerance": 0.000005, "explain": "1 − P(none) − P(exactly one) = 1 − 0.009216 − 0.095616 = 0.895168. P(exactly one) = 0.52(0.40)(0.32)(0.15) + 0.48(0.60)(0.32)(0.15) + 0.48(0.40)(0.68)(0.15) + 0.48(0.40)(0.32)(0.85) = 0.009984 + 0.013824 + 0.019584 + 0.052224 = 0.095616." }
 ]
 ```
 
-Independent machines, so the AND rule multiplies. (a) idle probabilities $0.48, 0.40, 0.32, 0.15$, product $0.009216$. (b) NOT rule on the complement "both idle": $1 - 0.48 \times 0.40 = 0.808$. (c) NOT rule on "fewer than two": $P(\text{exactly one}) = 0.52(0.40)(0.32)(0.15) + 0.48(0.60)(0.32)(0.15) + 0.48(0.40)(0.68)(0.15) + 0.48(0.40)(0.32)(0.85) = 0.009984 + 0.013824 + 0.019584 + 0.052224 = 0.095616$, so $1 - 0.009216 - 0.095616 = 0.895168$.
 
 ## 16. Two radios
 
@@ -233,11 +216,10 @@ It is required that commercial aircraft have two independent radios. Assume that
 
 ```quiz
 [
-  { "q": "P(both radios fail)? (6 decimals)", "type": "numeric", "answer": 0.000004, "tolerance": 0.0000002, "explain": "AND rule, independent: 0.002 × 0.002 = 0.000004." }
+  { "q": "P(both radios fail)? (6 decimals)", "type": "numeric", "answer": 0.000004, "tolerance": 0.0000002, "explain": "AND rule, independent: 0.002 × 0.002 = 0.000004. That is why two radios are required." }
 ]
 ```
 
-AND rule for independent events: $0.002^2 = 0.000004$, which is why two radios are required.
 
 ## 17. Five wires
 
@@ -245,11 +227,10 @@ When testing for current in a cable with five colour-coded wires, an electrician
 
 ```quiz
 [
-  { "q": "Number of pairings?", "type": "numeric", "answer": 10, "tolerance": 0, "explain": "A pair has no order: C(5, 2) = 10." }
+  { "q": "Number of pairings?", "type": "numeric", "answer": 10, "tolerance": 0, "explain": "A pair has no order: C(5, 2) = 10. P(5, 2) = 20 would count red-blue and blue-red as two tests." }
 ]
 ```
 
-Counting: an unordered pair from five, $C(5, 2) = \dfrac{5 \times 4}{2 \times 1} = 10$. $P(5, 2) = 20$ would count red-blue and blue-red as two tests.
 
 ## 18. Defective articles
 
@@ -261,7 +242,6 @@ A lot consists of 10 articles. 6 of the articles have defects and the rest are g
 ]
 ```
 
-Combinations, $15/45$, or the AND rule without replacement, $\frac{6}{10} \cdot \frac{5}{9} = 0.3333$.
 
 ## 19. Surge protectors
 
@@ -270,11 +250,10 @@ Two surge protectors p and q are used to protect an expensive television. If the
 ```quiz
 [
   { "q": "(a) In series, P(television not damaged)? (4 decimals)", "type": "numeric", "answer": 0.9999, "tolerance": 0.00005, "explain": "The surge must get past both: damage needs both to fail, 0.01 × 0.01; NOT rule gives 1 − 0.0001 = 0.9999." },
-  { "q": "(b) In parallel, P(television not damaged)? (4 decimals)", "type": "numeric", "answer": 0.9801, "tolerance": 0.0003, "explain": "The key's reading: the surge travels both paths, so both protectors must work: 0.99 × 0.99 = 0.9801." }
+  { "q": "(b) In parallel, P(television not damaged)? (4 decimals)", "type": "numeric", "answer": 0.9801, "tolerance": 0.0003, "explain": "The key's reading: the surge travels both paths, so both protectors must work: 0.99 × 0.99 = 0.9801. Series is the better arrangement here." }
 ]
 ```
 
-(a) Series: the TV is safe unless both fail, $1 - 0.01^2 = 0.9999$ (NOT then AND). (b) Parallel, as the key reads the diagram: the surge reaches the TV if either path fails, so safety needs both to work, $0.99^2 = 0.9801$ (AND). Series is the better arrangement here.
 
 ## 20. Gas detectors
 
@@ -282,11 +261,10 @@ A manufacturer of mining safety equipment plans to ship 15 gas detectors to a cu
 
 ```quiz
 [
-  { "q": "P(3 checked, none defective)? (4 decimals)", "type": "numeric", "answer": 0.6286, "tolerance": 0.0003, "explain": "C(13, 3)/C(15, 3) = 286/455 = 0.6286, or (13/15)(12/14)(11/13)." }
+  { "q": "P(3 checked, none defective)? (4 decimals)", "type": "numeric", "answer": 0.6286, "tolerance": 0.0003, "explain": "C(13, 3)/C(15, 3) = 286/455 = 0.6286, or (13/15)(12/14)(11/13). A sample of 3 misses both defectives almost two times in three." }
 ]
 ```
 
-Combinations: all three from the 13 good ones, $C(13, 3)/C(15, 3) = 0.6286$. A sample of 3 misses two defectives almost two times in three.
 
 ## 21. Eight-letter passwords
 
@@ -294,11 +272,9 @@ An online service randomly generates 8-letter passwords. What is the probability
 
 ```quiz
 [
-  { "q": "P(8 different letters)? (4 decimals)", "type": "numeric", "answer": 0.3016, "tolerance": 0.0003, "explain": "Ordered, no repeats, over ordered with repeats: P(26, 8)/26^8 = 0.3016." }
+  { "q": "P(8 different letters)? (4 decimals)", "type": "numeric", "answer": 0.3016, "tolerance": 0.0003, "explain": "Ordered, no repeats, over ordered with repeats: P(26, 8)/26^8 = 0.3016. 62 990 928 000 / 208 827 064 576: the same shape as the birthday problem's P(365, 23)/365^23." }
 ]
 ```
-
-Counting: $|S| = 26^8$ (repeats allowed), $|A| = P(26, 8) = 26 \times 25 \times \cdots \times 19$; $P = 62\,990\,928\,000 / 208\,827\,064\,576 = 0.3016$. The same shape as the birthday problem's $P(365, 23)/365^{23}$.
 
 ```widget
 counting-calc
@@ -315,7 +291,6 @@ A quality control engineer inspects a random sample of 3 batteries from each lot
 ]
 ```
 
-Combinations: $C(18, 3)/C(24, 3) = 0.4032$.
 
 ## 23. The expert shot
 
@@ -323,11 +298,10 @@ An expert shot hits a target 95% of the time. What is the probability that the e
 
 ```quiz
 [
-  { "q": "P(first miss on the 15th shot)? (5 decimals)", "type": "numeric", "answer": 0.02438, "tolerance": 0.00005, "explain": "14 hits then a miss, independent shots: 0.95^14 × 0.05 = 0.02438." }
+  { "q": "P(first miss on the 15th shot)? (5 decimals)", "type": "numeric", "answer": 0.02438, "tolerance": 0.00005, "explain": "14 hits then a miss, independent shots: 0.95^14 × 0.05 = 0.02438. This is Unit 4's geometric distribution, q^(x−1) p with p = 0.05 and x = 15." }
 ]
 ```
 
-AND rule for independent shots: $0.95^{14} \times 0.05 = 0.02438$. This is Unit 4's **geometric** distribution, $P(X = x) = q^{x-1} p$ with $p = 0.05$ and $x = 15$: a preview.
 
 ## 24. Ten horses
 
@@ -339,7 +313,6 @@ Ten horses are in a race. If you randomly guess the first, second, and third pla
 ]
 ```
 
-Counting with permutations: $P(10, 3) = 10 \times 9 \times 8 = 720$ possible podiums, one right, $1/720 = 0.001389$.
 
 ## 25. Guessing a test
 
@@ -347,12 +320,11 @@ Suppose you have not attended classes or done any homework for a course in which
 
 ```quiz
 [
-  { "q": "(a) P(none correct)? (5 decimals)", "type": "numeric", "answer": 0.05631, "tolerance": 0.00005, "explain": "Ten independent wrong guesses: 0.75^10 = 0.05631." },
+  { "q": "(a) P(none correct)? (5 decimals)", "type": "numeric", "answer": 0.05631, "tolerance": 0.00005, "explain": "Ten independent wrong guesses: 0.75^10 = 0.05631. This and the next are the X = 0 and X = 10 terms of Unit 4's binomial distribution with n = 10, p = 0.25." },
   { "q": "(b) P(all correct)? (as a decimal, e.g. 0.0000009536)", "type": "numeric", "answer": 0.0000009536, "tolerance": 0.000000002, "explain": "0.25^10 = 9.536 × 10^-7, about one in a million." }
 ]
 ```
 
-AND rule for independent guesses: $0.75^{10} = 0.05631$ and $0.25^{10} = 9.536 \times 10^{-7}$. These are the $X = 0$ and $X = 10$ terms of Unit 4's **binomial** distribution with $n = 10$, $p = 0.25$: a preview.
 
 ## 26. Pooled HIV samples
 
@@ -364,7 +336,6 @@ When testing blood samples for HIV, the procedure can be made more efficient and
 ]
 ```
 
-NOT rule over the AND rule: $1 - 0.9^3 = 1 - 0.729 = 0.271$.
 
 ## 27. Binomial Bikes
 
@@ -372,11 +343,10 @@ In Mathtown, there are two brands of bicycles: Binomial Bikes and Calculus Cycle
 
 ```quiz
 [
-  { "q": "P(Binomial Bike | brought in for service)? (4 decimals)", "type": "numeric", "answer": 0.7143, "tolerance": 0.0003, "explain": "Bayes: 0.80 × 0.05 / (0.80 × 0.05 + 0.20 × 0.08) = 0.040/0.056 = 0.7143." }
+  { "q": "P(Binomial Bike | brought in for service)? (4 decimals)", "type": "numeric", "answer": 0.7143, "tolerance": 0.0003, "explain": "Bayes: 0.80 × 0.05 / (0.80 × 0.05 + 0.20 × 0.08) = 0.040/0.056 = 0.7143. 71% of the bikes in the shop are Binomial Bikes, below the brand's 80% share because its riders need service less often." }
 ]
 ```
 
-Bayes on a two-branch tree. Joint probabilities: $P(BB \cap S) = 0.80 \times 0.05 = 0.040$, $P(CC \cap S) = 0.20 \times 0.08 = 0.016$; total probability $P(S) = 0.056$; posterior $P(BB \mid S) = 0.040/0.056 = 0.7143$. In words: 71% of the bikes in the shop are Binomial Bikes, below the brand's 80% share because its riders need service less often.
 
 ## 28. COVID-19 serology
 
@@ -384,16 +354,14 @@ If a person has recently been sick with COVID-19, their blood contains antibodie
 
 ```quiz
 [
-  { "q": "(a) P(recently sick | tests positive)? (4 decimals)", "type": "numeric", "answer": 0.3719, "tolerance": 0.0003, "explain": "Bayes: 0.05 × 0.90 / (0.05 × 0.90 + 0.95 × 0.08) = 0.045/0.121 = 0.3719." },
-  { "q": "(b) P(not sick | tests negative)? (4 decimals)", "type": "numeric", "answer": 0.9943, "tolerance": 0.0003, "explain": "Bayes: 0.95 × 0.92 / (0.95 × 0.92 + 0.05 × 0.10) = 0.874/0.879 = 0.9943." }
+  { "q": "(a) P(recently sick | tests positive)? (4 decimals)", "type": "numeric", "answer": 0.3719, "tolerance": 0.0003, "explain": "Bayes: 0.05 × 0.90 / (0.05 × 0.90 + 0.95 × 0.08) = 0.045/0.121 = 0.3719. Sensitivity P(+ | sick) = 0.90; specificity P(− | not sick) = 0.92, so P(+ | not sick) = 0.08 by the NOT rule. Of 10 000 people, 450 true positives against 760 false ones: a positive is right only 37% of the time because the disease is rare." },
+  { "q": "(b) P(not sick | tests negative)? (4 decimals)", "type": "numeric", "answer": 0.9943, "tolerance": 0.0003, "explain": "Bayes: 0.95 × 0.92 / (0.95 × 0.92 + 0.05 × 0.10) = 0.874/0.879 = 0.9943. P(− | sick) = 1 − 0.90 = 0.10 by the NOT rule." }
 ]
 ```
 
-Define $A$ = antibodies present (recently sick), $P(A) = 0.05$; $+$ = tests positive. Sensitivity $P(+ \mid A) = 0.90$, specificity $P(- \mid \bar A) = 0.92$, so $P(+ \mid \bar A) = 0.08$ and $P(- \mid A) = 0.10$ by the NOT rule. (a) Bayes: $P(A \mid +) = \dfrac{0.05 \times 0.90}{0.05 \times 0.90 + 0.95 \times 0.08} = \dfrac{0.045}{0.045 + 0.076} = 0.3719$. (b) $P(\bar A \mid -) = \dfrac{0.95 \times 0.92}{0.95 \times 0.92 + 0.05 \times 0.10} = \dfrac{0.874}{0.874 + 0.005} = 0.9943$. A positive result is right only 37% of the time because the disease is rare: of 10 000 people, 450 true positives against 760 false ones. The same arithmetic as the defective CPUs, with "defective" replaced by "tests positive".
-
 ```widget
 bayes-tree
-{ "preset": "defective CPUs" }
+{ "preset": "COVID serology" }
 ```
 
 :::quiz Which rule

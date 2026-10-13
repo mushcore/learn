@@ -5,10 +5,6 @@ minutes: 15
 
 Unit 1 used the bell curve as a picture behind the empirical rule and Z-scores. This lesson makes it a distribution: a density with a formula, two parameters, and a shape you can read $\mu$ and $\sigma$ off by eye.
 
-:::info Figure values are computed
-The notes' p. 78 figure carries no numbers beyond its legend. The peak heights and the $\sigma$ values quoted for its four curves were computed from the pdf; the in-class discussion replaces them if it differs.
-:::
-
 ## The most important distribution
 
 Slide wording: "The most important continuous distribution in probability and statistics is the *Normal Distribution*." It fits heights, IQ scores, measurement errors and channel noise, and later in the course the averages of samples from any distribution.
@@ -40,7 +36,7 @@ The figure plots $x$ from $-5$ to $5$ with the legend giving $\mu$ and $\sigma^2
 | blue, flat and wide | 0 | 5.0 | 2.236 | 0.178 |
 | magenta, shifted left | $-2$ | 0.5 | 0.707 | 0.564 |
 
-Three curves share the centre 0 and differ only in spread; the magenta one has the same spread family but its peak at $-2$. Every one of them has total area 1, which is why the wide blue curve must be low.
+The red, green and blue curves share the centre 0 and differ only in spread. The magenta curve is centred at $-2$ and has its own spread, $\sigma^2 = 0.5$, between the red and green ones, so its peak 0.564 sits between theirs. Every one of them has total area 1, which is why the wide blue curve must be low.
 
 ## What μ and σ do
 
@@ -57,10 +53,10 @@ $\mu$ moves the curve without changing its shape; $\sigma$ changes the shape wit
 
 ```widget
 normal-curve
-{ "mu": 0, "sigma": 1, "x": 1, "title": "The p. 78 figure: pick a curve, then move μ and σ", "presets": { "σ² = 0.2": [0, 0.447, 0], "σ² = 1": [0, 1, 0], "σ² = 5": [0, 2.236, 0], "μ = −2, σ² = 0.5": [-2, 0.707, -2] } }
+{ "mu": 0, "sigma": 1, "x": 1, "title": "The p. 78 figure: the four curves, with μ and σ adjustable", "presets": { "σ² = 0.2": [0, 0.447, 0], "σ² = 1": [0, 1, 0], "σ² = 5": [0, 2.236, 0], "μ = −2, σ² = 0.5": [-2, 0.707, -2] } }
 ```
 
-Type a new $\mu$ to see the shift, a new $\sigma$ to see the curve flatten or sharpen, and "Shade ±1σ" to see the 68 % band of Unit 1 as an area.
+A new $\mu$ shifts the curve; a new $\sigma$ flattens or sharpens it. "Shade ±1σ" shows the 68 % band of Unit 1 as an area.
 
 ## Why areas come from a table
 

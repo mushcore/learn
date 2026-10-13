@@ -53,13 +53,24 @@ Slides 22 to 25 sample a sine wave of frequency $f$ and then join the dots with 
 
 The theorem's "at least" is the minimum, and the figure shows why more does not help: at $4f$ the extra samples land where the triangle already passes. Below $2f$ the samples cannot tell the sine from a slower one.
 
+The figure for case c spaces its samples 1.25 periods apart (about $0.8f$), which is why they fall at a peak, a zero crossing and a trough. At exactly $f_s = f$ every sample lands on the same point of its cycle and the joined dots are a flat line: still a signal that does not look like the original.
+
 ### The slide's three cases on the f_s slider
 
-Drag $f_s$ from below $f$ to $8f$ and watch the verdict band: the reconstruction changes shape only on the undersampling side.
+The reconstruction changes shape only on the undersampling side of $2f$.
 
 ```widget
 sampler
 { "f": 1, "fs": 2, "method": "ideal", "title": "Nyquist rate, oversampling and undersampling of one sine wave" }
+```
+
+### The samples arriving one clock tick at a time
+
+At $2f$ the samples alternate peak, trough. In case c each one lands at a new point of its cycle, and the slow wave appears only as the dots accumulate.
+
+```widget
+sampling-play
+{ "f": 1, "fs": 2, "method": "ideal" }
 ```
 
 ## Two Nyquist formulas in this course
@@ -71,9 +82,6 @@ sampler
 
 Both start with a 2, and both come from the same theorem, but they answer different questions. A question that gives a bandwidth and asks for samples per second wants this week's formula; a question that gives a bandwidth and $L$ and asks for bps wants Week 3's.
 
-:::quiz Three traps on one slide
-A bandpass signal's bandwidth does not give $f_{max}$, so its minimum sampling rate cannot be found from the bandwidth alone. Oversampling is not "better": the slide calls it redundant and unnecessary. The minimum sampling rate is a number of samples per second, not Hz of bandwidth.
-:::
 
 ```quiz
 [

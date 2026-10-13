@@ -67,49 +67,51 @@ manipulators
 ## Sign, base, and case manipulators
 
 ```cpp run pin signBaseCase.cpp
+// predict: n is 123. Write the nine lines printed.
 #include <iostream>
 using namespace std;
 
 int main() {
     int n = 123;
-    cout << showpos << n << '\n';   // +123
-    cout << noshowpos << n << '\n'; // 123
+    cout << showpos << n << '\n';
+    cout << noshowpos << n << '\n';
 
-    cout << dec << n << '\n'; // 123
-    cout << hex << n << '\n'; // 7b
-    cout << oct << n << '\n'; // 173
+    cout << dec << n << '\n';
+    cout << hex << n << '\n';
+    cout << oct << n << '\n';
 
-    cout << uppercase << hex << n << '\n';   // 7B
-    cout << nouppercase << hex << n << '\n'; // 7b
+    cout << uppercase << hex << n << '\n';
+    cout << nouppercase << hex << n << '\n';
 
-    cout << showbase << hex << n << '\n';   // 0x7b
-    cout << noshowbase << hex << n << '\n'; // 7b
+    cout << showbase << hex << n << '\n';
+    cout << noshowbase << hex << n << '\n';
     return 0;
 }
 ```
 
-With `n` at `123`: `showpos` forces the `+` on positive numbers; `dec`, `hex` and `oct` change the base a number prints in (hex digits are lowercase unless `uppercase` is on, which gives `7B`); `showbase` prepends the `0x` or `0` prefix a hex or octal literal would need.
+`showpos` forces the `+` on positive numbers; `dec`, `hex` and `oct` change the base a number prints in; hex digits are lowercase unless `uppercase` is on; `showbase` prepends the `0x` or `0` prefix a hex or octal literal would need. Each one stays in effect until its opposite (`noshowpos`, `nouppercase`, `noshowbase`) turns it off.
 
 ## Field width and alignment: `left`/`internal`/`right`
 
 With `n` at `-123` and a field width of `setw(6)`:
 
 ```cpp run
+// predict: Write the three lines printed, spaces included.
 #include <iostream>
 #include <iomanip>
 using namespace std;
 
 int main() {
     int n = -123;
-    cout << setw(6) << left << n << "|\n";     // -123  |
-    cout << setw(6) << internal << n << "|\n"; // -  123|
-    cout << setw(6) << right << n << "|\n";    // |  -123|
+    cout << setw(6) << left << n << "|\n";
+    cout << setw(6) << internal << n << "|\n";
+    cout << setw(6) << right << n << "|\n";
     return 0;
 }
 ```
 
 - `left` pads on the right: `-123  `
-- `internal` puts the sign at the left edge and pads *between* the sign and the digits: `-  123`
+- `internal` puts the sign at the left edge and pads between the sign and the digits: `-  123`
 - `right` (the default) pads on the left: `  -123`
 
 :::quiz `setw` only affects the very next thing printed
@@ -121,14 +123,15 @@ int main() {
 With `d1 = 100.0` and `d2 = 100.12`:
 
 ```cpp run
+// predict: Write the two lines printed.
 #include <iostream>
 using namespace std;
 
 int main() {
     double d1 = 100.0;
     double d2 = 100.12;
-    cout << noshowpoint << d1 << " " << d2 << '\n'; // 100 100.12
-    cout << showpoint << d1 << " " << d2 << '\n';   // 100.000 100.120
+    cout << noshowpoint << d1 << " " << d2 << '\n';
+    cout << showpoint << d1 << " " << d2 << '\n';
     return 0;
 }
 ```
@@ -138,13 +141,14 @@ int main() {
 Now `fixed` and `scientific`, with `number` at `123.456789`:
 
 ```cpp run pin fixedScientific.cpp
+// predict: Write the two lines printed.
 #include <iostream>
 using namespace std;
 
 int main() {
     double number = 123.456789;
-    cout << fixed << number << '\n';      // 123.456789
-    cout << scientific << number << '\n'; // 1.234568e+02
+    cout << fixed << number << '\n';
+    cout << scientific << number << '\n';
     return 0;
 }
 ```
@@ -155,6 +159,8 @@ int main() {
 ]
 ```
 
+`cout << fixed << number << '\n';` keeps the default precision of 6 but counts it after the decimal point; `cout << scientific << number << '\n';` writes the same value as a mantissa and an exponent.
+
 :::warn Correcting the slide
 The lecture slide prints the `scientific` example as `1.234568E+02` (capital E). g++ prints lowercase by default: `1.234568e+02`. The capital `E` needs `uppercase` turned on too.
 :::
@@ -164,13 +170,14 @@ The lecture slide prints the `scientific` example as `1.234568E+02` (capital E).
 With `fun` at `true`:
 
 ```cpp run
+// predict: Write the two lines printed.
 #include <iostream>
 using namespace std;
 
 int main() {
     bool fun = true;
-    cout << boolalpha << fun << '\n';   // true
-    cout << noboolalpha << fun << '\n'; // 1
+    cout << boolalpha << fun << '\n';
+    cout << noboolalpha << fun << '\n';
     return 0;
 }
 ```
@@ -192,14 +199,15 @@ cout << setprecision(prec); // restored
 ```
 
 ```cpp run pin setprecisionDemo.cpp
+// predict: Write the two lines printed.
 #include <iostream>
 #include <iomanip>
 using namespace std;
 
 int main() {
     double number = 123.4567845678;
-    cout << setprecision(7) << number << '\n'; // 123.4568
-    cout << setfill('*') << setw(5) << 123 << '\n'; // **123
+    cout << setprecision(7) << number << '\n';
+    cout << setfill('*') << setw(5) << 123 << '\n';
     return 0;
 }
 ```
@@ -210,7 +218,7 @@ int main() {
 ]
 ```
 
-`setprecision(7)` gives `123.4568`; `setfill('*')` changes the pad character, so `setw(5)` pads the three-digit value on the left with two asterisks.
+`setprecision(7)` counts significant digits, not decimal places, because neither `fixed` nor `scientific` is on; `setfill('*')` changes the pad character that `setw(5)` uses.
 
 ## Member functions vs. manipulators
 
@@ -261,14 +269,7 @@ int main()
 }
 ```
 
-The instructor's sample, unmodified, with input `3 4`. Line by line:
-
-1. `a` starts at `64` (`1000000`). `a <<= 2` shifts left twice: `256`. Prints `256`.
-2. `cout << setw(10) << pi << " " << cake << "\n";` — default precision is 6 significant digits, so `pi` rounds to `3.14593`. `setw(10)` applies to **that one field only**: `"3.14593"` is 7 characters, so it's right-padded with 3 spaces to fill the 10-wide field: `"   3.14593"`. Then a literal space, then `cake` at its natural width (precision 6 again): `8.31446`. Line: `   3.14593 8.31446`.
-3. `cout.precision()` returns the current precision without changing it — `6`. Prints `precision: 6`.
-4. `setprecision(3)` — both numbers now round to 3 significant digits: `3.15` and `8.31`. Prints `3.15 8.31`.
-5. `setprecision(precision)` restores the saved value (`6`), back to `3.14593 8.31446`.
-6. `cin >> m >> n;` with input `3 4` reads `m = 3`, `n = 4`. Prints `m: 3` then `n: 4`.
+The instructor's sample, unmodified, with input `3 4`. `setw(10)` pads only the one field after it, `pi`, and pads on the left because `right` is the default. `cout.precision()` reads the current precision without changing it, and `setprecision(precision)` puts the saved value back.
 
 ```quiz
 [
@@ -320,7 +321,7 @@ The instructor's sample, unmodified, with input `3 4`. Line by line:
     "code": "double pi = 3.1459268535;\ncout << setw(10) << pi << \" \" << cake << \"\\n\";\ncout << \"precision: \" << cout.precision() << endl;",
     "options": ["precision: 0", "precision: 3", "precision: 6", "precision: 10"],
     "answer": 2,
-    "explain": "cout.precision() just reads the current precision, which starts at the default of 6."
+    "explain": "cout.precision() just reads the current precision, which starts at the default of 6. The whole run with input 3 4 prints: 256, then '   3.14593 8.31446' (pi rounded to 6 significant digits is 7 characters, padded on the LEFT with 3 spaces to width 10; cake is not padded), 'precision: 6', '3.15 8.31', '3.14593 8.31446', 'Enter 2 numbers', 'm: 3', 'n: 4'."
   },
   {
     "q": "What does `cout.setf(ios_base::hex, ios_base::basefield);` require that `cout.setf(ios_base::boolalpha);` does not?",

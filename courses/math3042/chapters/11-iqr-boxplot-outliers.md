@@ -51,6 +51,11 @@ $\text{upper fence} = 42.775 + 1.5(13.4) = 62.875$
 
 Any city below 9.275 or above 62.875 inches is an outlier. In the real data that's Mobile (67.0, above the upper fence) and Phoenix (7.0), Reno (7.2), Albuquerque (7.8), and El Paso (7.8) — all below the lower fence.
 
+```widget
+boxplot
+{ "dataset": "precip", "note": "precip: average annual precipitation (inches), 70 US cities" }
+```
+
 :::warn Outlier ≠ Unusual
 **Unusual** (empirical rule / Z-scores) means more than 2 standard deviations from the mean. **Outlier** (boxplots) means beyond $1.5 \times IQR$ past a quartile. A value can be one without being the other.
 :::
@@ -64,18 +69,13 @@ boxplot
 { "data": "1.02 3.56 3.5 3.45 4.5 13.6 4.5 2.3 3.5 2.6 3.31 3.1", "note": "Site B drainage rate (litre / m^2 s), n = 12" }
 ```
 
-```widget
-stat-calc
-{ "data": "1.02 3.56 3.5 3.45 4.5 13.6 4.5 2.3 3.5 2.6 3.31 3.1", "title": "Site B drainage rate" }
-```
-
-## Push a value past the fence
+## The fences stay put while the maximum moves
 
 The upper fence is built from $Q_1$ and $Q_3$, which barely move when the largest point moves, so the point crosses a fence that stays put.
 
 ```widget
 drag-data
-{ "data": "2.3 2.6 3.1 3.31 3.45 3.5 3.5 3.56 4.5 4.5 5.2", "title": "Drag the rightmost point across the upper fence", "claims": [
+{ "data": "2.3 2.6 3.1 3.31 3.45 3.5 3.5 3.56 4.5 4.5 5.2", "title": "The rightmost point and the upper fence", "claims": [
   { "when": "max>uf", "text": "The maximum is beyond the upper fence: it's an outlier by the 1.5·IQR rule." },
   { "when": "max<=uf && max>=lf", "text": "Every value is within the fences: no outliers right now." },
   { "when": "min<lf", "text": "The minimum is beyond the lower fence: it's an outlier too." },

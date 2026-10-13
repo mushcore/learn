@@ -49,17 +49,17 @@ int main() {
 }
 ```
 
-`auto d = 5.0;` makes `d` a `double` because the literal is a double; `auto i = 1 + 2;` makes `i` an `int`; `auto s = add(5, 6);` makes `s` whatever `add` returns, an `int`. The `typeid` line confirms the first two deductions with `true true`. The slide's error case is `auto a;` with no initializer: **auto requires an initializer**, because there is nothing to deduce from.
+`auto d = 5.0;` makes `d` a `double` because the literal is a double; `auto i = 1 + 2;` makes `i` an `int`; `auto s = add(5, 6);` makes `s` whatever `add` returns, an `int`. The `typeid` line checks the first two deductions. The slide's error case is `auto a;` with no initializer: **auto requires an initializer**, because there is nothing to deduce from.
 
 ### auto on return types and parameters
 
 `auto add(int x, int y) { return x + y; }` is legal: the return type is deduced from the return statement. The instructor discourages it: using `auto` for variables is fine because the object is right there, but with `auto` on a function we have to dig into the function to find out what it is supposed to be returning.
 
-The slide rule for parameters: `auto` **can't be used with function parameters**. `void add_and_print(auto x, auto y)` "won't work because the compiler can't infer types for function parameters x and y at compile time." Answer with the slide. (Footnote: C++20 actually accepts this spelling as an abbreviated function template, so `g++ -std=c++20` compiles it; the quiz follows the slide.)
+The slide rule for parameters: `auto` **can't be used with function parameters**. `void add_and_print(auto x, auto y)` "won't work because the compiler can't infer types for function parameters x and y at compile time." C++20 does accept this spelling as an abbreviated function template, so `g++ -std=c++20` compiles it; the slide states the pre-C++20 rule.
 
 ### The trailing return type is syntax, not deduction
 
-Instead of `int add(int x, int y);` some people write `auto add(int x, int y) -> int;`. In this case *auto does not perform type inference*, it is just part of the syntax to use a trailing return type. `auto divide(double x, double y) -> double` in the program returns `double` because the arrow says so, and prints `3.5`. The reason people use it is alignment:
+Instead of `int add(int x, int y);` some people write `auto add(int x, int y) -> int;`. In this case *auto does not perform type inference*, it is just part of the syntax to use a trailing return type. `auto divide(double x, double y) -> double` in the program returns `double` because the arrow says so. The reason people use it is alignment:
 
 ```cpp
 auto add(int x, int y) -> int;
@@ -70,9 +70,9 @@ auto calculate_that(int x, double d) -> string;
 
 Every function name starts in the same column, "so easy to read".
 
-### The ranged for: four ways to name the loop variable
+### The ranged for and its loop variable
 
-The *ranged for*, also called the for-each loop, is identical to Java's: formally, it executes a for loop over a specified range. The six loops after the `typeid` line all print `0 1 2 3 4 5` and differ only in what `k` or `n` is:
+The *ranged for*, also called the for-each loop, is identical to Java's: formally, it executes a for loop over a specified range. The loops after the `typeid` line differ only in what `k` or `n` is:
 
 | Form | What the loop variable is |
 |---|---|
@@ -82,7 +82,7 @@ The *ranged for*, also called the for-each loop, is identical to Java's: formall
 | `for (auto k : v)` | by value, `k` is `int` |
 | `for (int& k : v) k *= 10;` | a **reference**: writes go into the vector |
 
-The initializer does not have to be a container. `for (int n : {0, 1, 2, 3, 4, 5})` loops over a braced-init-list and `for (int n : a)` over the array `a`. The loop variable does not have to be used: `for (int n : a) std::cout << something_unrelated << ' ';` is a legal way to run a statement six times. The ninth line proves the reference loop ran: `0 10 20 30 40 50`.
+The initializer does not have to be a container. `for (int n : {0, 1, 2, 3, 4, 5})` loops over a braced-init-list and `for (int n : a)` over the array `a`. The loop variable does not have to be used: `for (int n : a) std::cout << something_unrelated << ' ';` is a legal way to run a statement six times. The last line shows whether the reference loop changed the vector.
 
 ## By value or by reference decides whether the container changes
 

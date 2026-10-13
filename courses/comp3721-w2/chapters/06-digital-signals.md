@@ -26,6 +26,15 @@ $$\text{bit length} = \text{propagation speed} \times \text{bit duration}$$
 
 *This means a bit occupies 200 metres on this transmission medium.*
 
+### Each bit occupies 200 m of cable
+
+Each step is one bit duration, 1 μs. In that time every bit already on the cable moves one bit length further, so after $n$ bits the first one is $n \times 200$ m from the sender, and sending $n$ bits takes $n$ / bit rate seconds.
+
+```widget
+bit-stream-play
+{}
+```
+
 ## Levels
 
 Slide definition: *"level" refers to a specific state or value that a digital signal can have at a given point in time.* Levels are typically voltage or current levels in a circuit.
@@ -58,16 +67,16 @@ Slide: *to encode 4 levels, $\log_{2} 4 = 2$ bits are required.*
 - $\log_{2} 11 = 3.46$ bits
 - *However, this answer is not realistic.* The number of bits needed has to be an **integer** and usually a **power of 2**. **4 bits** should be used in this case.
 
-The general rule uses the ceiling function:
+With 4 bits there are $2^{4} = 16$ patterns for 11 levels, so 5 patterns go unused.
+
+```widget
+signal-levels
+{ "levels": 11, "title": "Eleven levels need 4 bits per element" }
+```
+
+The general rule rounds up with the ceiling function (defined in [the math review](#/comp3721-w1/math-review)):
 
 $$\text{bits} = ⌈\log_{2} L⌉$$
-
-- **Ceiling** ⌈ ⌉: rounds the number **up** to the nearest integer greater than or equal to it. Slide example: ⌈3.1416⌉ = 4.
-- **Floor** ⌊ ⌋: rounds the number **down** to the nearest integer less than or equal to it. Slide example: ⌊3.1416⌋ = 3.
-
-:::tip Calculator (beyond the slides)
-Most calculators have no log base 2 key. Use $\log_{2} L = \dfrac{\log L}{\log 2}$ with the base-10 log key: $\dfrac{\log 11}{\log 2} = \dfrac{1.0414}{0.3010} = 3.46$, then take the ceiling.
-:::
 
 Worked table:
 
@@ -91,30 +100,18 @@ $$100 \times 24 \times 80 \times 8 = 1\,536\,000\ \text{bps} = 1.536\ \text{Mbps
 
 Multiply the units through: pages/s × lines/page × characters/line × bits/character leaves bits/s.
 
-## E02 Exercise 4, worked
-
-*We need to download text documents at the rate of 200 pages per second. What is the required bit rate (in Mbps)? Assume a page has an average of 24 lines with 80 characters in each line and one character requires 8 bits.*
-
-- Size of a page $= 24\ \dfrac{\text{lines}}{\text{page}} \times 80\ \dfrac{\text{characters}}{\text{line}} \times 8\ \dfrac{\text{bits}}{\text{character}} = 15\,360$ bits
-- Bit rate $= 200\ \dfrac{\text{pages}}{\text{s}} \times 15\,360\ \dfrac{\text{bits}}{\text{page}} = 3\,072\,000$ bps $= 3.072$ Mbps
-
-## E02 Exercise 5, worked
-
-*A device is sending out data at the rate of 1000 bps. (a) How long does it take to send out 10 bits? (b) How long does it take to send a file of 100 000 characters? Assume each character is 8 bits.*
-
-The answer sheet does both by unit cancellation: convert the thing you have into seconds using $\dfrac{1\ \text{s}}{1000\ \text{b}}$.
-
-**(a)** $10\ \text{b} \times \dfrac{1\ \text{s}}{1000\ \text{b}} = 0.01$ s, which is 10 ms.
-
-**(b)** $1\ \text{file} \times 100\,000\ \dfrac{\text{ch}}{\text{file}} \times 8\ \dfrac{\text{b}}{\text{ch}} \times \dfrac{1\ \text{s}}{1000\ \text{b}} = 800$ s
-
-Both parts are time $= \dfrac{\text{number of bits}}{\text{bit rate}}$; the trap is forgetting to turn characters into bits first.
+E02 exercises 4 and 5 apply the same unit chain, and time = number of bits / bit rate; both are worked in [E02, worked](#/comp3721-w2/e02-worked).
 
 ## A digital signal is a composite analog signal
 
 Slide wording: *a periodic or nonperiodic digital signal is a composite analog signal with frequencies between zero and infinity (infinite bandwidth).* Fourier analysis can be used to decompose a digital signal, just like any composite signal.
 
 The slide's picture is a square wave jumping between $-1$ and $+1$ with its first harmonic drawn over it on $-\pi$ to $\pi$. Adding higher harmonics makes the sum squarer; exact vertical edges need infinitely many, hence infinite bandwidth.
+
+```widget
+harmonic-build-play
+{ "components": "1:1 3:0.33 5:0.2 7:0.14 9:0.11", "title": "Odd harmonics add up to a square wave" }
+```
 
 In the frequency domain:
 
@@ -134,20 +131,12 @@ In the frequency domain:
     "explain": "Bit duration $= 1/(10 \\times 10^{6}) = 10^{-7}$ s $= 0.1$ μs. Bit length $= 2 \\times 10^{8} \\times 10^{-7} = 20$ m. Ten times the slide's bit rate gives one tenth of its 200 m."
   },
   {
-    "q": "A signal has a bit rate of 100 kbps and travels at $2 \\times 10^{8}$ m/s. What is its bit length in metres?",
-    "type": "numeric",
-    "answer": 2000,
-    "tolerance": 10,
-    "unit": "m",
-    "explain": "Bit duration $= 1/(100 \\times 10^{3}) = 10^{-5}$ s $= 10$ μs. Bit length $= 2 \\times 10^{8} \\times 10^{-5} = 2000$ m. A slower bit rate means each bit is longer on the wire."
-  },
-  {
-    "q": "A digital signal has 8 levels. How many bits are needed per level?",
+    "q": "A digital signal has 6 levels. How many bits are needed per level?",
     "type": "numeric",
     "answer": 3,
     "tolerance": 0.01,
     "unit": "bits",
-    "explain": "$\\log_{2} 8 = 3$ exactly, so 3 bits (octal: eight levels)."
+    "explain": "$\\log_{2} 6 = 2.58$, not a whole number, so round up: 3 bits. Two bits name only 4 levels; 3 bits name 8, leaving 2 patterns unused."
   },
   {
     "q": "A digital signal has 20 levels. How many bits are needed per level?",
@@ -156,14 +145,6 @@ In the frequency domain:
     "tolerance": 0.01,
     "unit": "bits",
     "explain": "$\\log_{2} 20 = 4.32$ bits, not realistic; the number of bits has to be an integer, so round **up**: ⌈4.32⌉ = 5 bits. (With 4 bits you can only name 16 levels.)"
-  },
-  {
-    "q": "A digital signal has 64 levels. How many bits are needed per level?",
-    "type": "numeric",
-    "answer": 6,
-    "tolerance": 0.01,
-    "unit": "bits",
-    "explain": "$2^{6} = 64$, so $\\log_{2} 64 = 6$ bits exactly."
   },
   {
     "q": "Slide example, halved: text documents are downloaded at 50 pages per second, 24 lines per page, 80 characters per line, 8 bits per character. What bit rate is required, in bps?",
@@ -182,24 +163,10 @@ In the frequency domain:
     "explain": "$500 \\times 8 = 4000$ bits; $4000\\ \\text{b} \\times \\frac{1\\ \\text{s}}{2000\\ \\text{b}} = 2$ s."
   },
   {
-    "q": "E02 exercise 5(a): a device sends at 1000 bps. How long does it take to send 10 bits, in seconds?",
-    "type": "numeric",
-    "answer": 0.01,
-    "tolerance": 0.0001,
-    "unit": "s",
-    "explain": "$10\\ \\text{b} \\times \\frac{1\\ \\text{s}}{1000\\ \\text{b}} = 0.01$ s $= 10$ ms."
-  },
-  {
     "q": "Most digital signals are periodic, so their frequency and period are the natural way to describe them.",
     "type": "tf",
     "answer": false,
     "explain": "Most digital signals are **nonperiodic**, so frequency and period are not suitable characteristics. Bit rate (bits per second) is used instead."
-  },
-  {
-    "q": "Fill in the blank: bit duration = 1 / ______.",
-    "type": "text",
-    "answer": ["bit rate", "bitrate", "the bit rate", "bit rate (bps)"],
-    "explain": "Bit duration $= 1/(\\text{bit rate})$, e.g. $1/(1\\ \\text{Mbps}) = 1$ μs. Bit length = propagation speed × bit duration."
   },
   {
     "q": "A digital signal, periodic or nonperiodic, is a composite analog signal with infinite bandwidth.",
@@ -215,8 +182,8 @@ In the frequency domain:
   },
   {
     "q": "Which statements about the slide's two-level and four-level figures are correct? Select all that apply.",
-    "options": ["Both send 8 signal elements in 1 s", "The two-level signal sends 8 bits in 1 s (8 bps)", "The four-level signal sends 16 bits in 1 s (16 bps)", "The four-level signal needs 4 bits per level"],
-    "answer": [0, 1, 2],
+    "options": ["The four-level signal needs 4 bits per level", "Both send 8 signal elements in 1 s", "The two-level signal sends 8 bits in 1 s (8 bps)", "The four-level signal sends 16 bits in 1 s (16 bps)"],
+    "answer": [1, 2, 3],
     "explain": "Same 8 elements per second in both; with two levels each element is 1 bit (8 bps), with four levels each element is $\\log_{2} 4 = 2$ bits (16 bps), not 4."
   },
   {

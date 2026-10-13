@@ -3,7 +3,7 @@ title: E01 & the sample quiz, worked
 minutes: 18
 ---
 
-The Week 1 exercise sheet (E01) and the instructor's one page of sample quiz questions, in the three formats the real quizzes use: true or false, fill in the blanks, written response. Commit to an answer on paper before you open the worked answer.
+The Week 1 exercise sheet (E01) and the instructor's one page of sample quiz questions, in the three formats the real quizzes use: true or false, fill in the blanks, written response. Each instructor's answer is in the explanation, shown after you check.
 
 ## E01: Week 1 exercises
 
@@ -19,20 +19,18 @@ The Week 1 exercise sheet (E01) and the instructor's one page of sample quiz que
     "answer": 66,
     "tolerance": 0.5,
     "unit": "links",
-    "explain": "Every device has a dedicated link to every other device, so count the pairs: $\\frac{n(n-1)}{2} = \\frac{12 \\times 11}{2} = 66$."
+    "explain": "Instructor's answer: in a mesh topology every device has a dedicated point-to-point link to every other device, so the number of links is the number of pairs of devices: $\\frac{n(n-1)}{2} = \\frac{12 \\times 11}{2} = 66$."
+  },
+  {
+    "q": "Bus topology, 12 devices: how many drop lines are needed? (The written answer also names the other link.)",
+    "type": "numeric",
+    "answer": 12,
+    "tolerance": 0,
+    "unit": "drop lines",
+    "explain": "Instructor's answer: a bus has one long cable as a backbone and every device connects to it through its own drop line, so **12 drop lines, and one backbone** link is needed. The bus answer is *n drop lines plus one backbone*, not a single number."
   }
 ]
 ```
-
-**Instructor's answer.** In a mesh topology every device has a dedicated point-to-point link to every other device, so the number of links is the number of pairs of devices:
-
-$$\text{links} = \frac{n(n-1)}{2} = \frac{12 \times 11}{2} = 66$$
-
-For a bus topology there is one long cable as a backbone and every device connects to it through its own drop line: **12 drop lines**, and **one backbone** link is needed.
-
-:::quiz Watch the wording
-"How many cable links" for a bus is answered as *n drop lines plus one backbone*, not as a single number.
-:::
 
 ### Exercise 2
 
@@ -42,14 +40,12 @@ For a bus topology there is one long cable as a backbone and every device connec
 [
   {
     "q": "Select every TCP/IP layer that needs to change when the LAN technology is replaced.",
-    "options": ["Application", "Transport", "Network", "Data link", "Physical"],
-    "answer": [3, 4],
-    "explain": "Only the two lowest layers. Physical-layer protocols depend on the transmission medium, and the data-link layer handles communication between neighbouring nodes over that medium. The network, transport and application layers are end-to-end and do not care what the link is made of."
+    "options": ["Application", "Data link", "Transport", "Network", "Physical"],
+    "answer": [1, 4],
+    "explain": "Instructor's answer: the only two layers that need to be changed are the **data-link layer** and the **physical layer**. Changing the LAN technology usually means changing the transmission medium: from coaxial cable to fibre-optic cable, or to a wireless technology such as WiFi. Physical-layer protocols depend on the transmission medium, and the data-link layer is involved in communication between neighbouring nodes, so it is also affected. Network, transport and application are end-to-end and do not care what the link is made of."
   }
 ]
 ```
-
-**Instructor's answer.** The only two layers that need to be changed are the **data-link layer** and the **physical layer**. Changing the LAN technology usually means changing the transmission medium: from coaxial cable to fibre-optic cable, or to a wireless technology such as WiFi. Physical-layer protocols depend on the transmission medium, and the data-link layer is involved in communication between neighbouring nodes, so it is also affected. Network, transport and application are unchanged.
 
 ### Exercise 3
 
@@ -61,7 +57,7 @@ For a bus topology there is one long cable as a backbone and every device connec
     "q": "Fill in the first blank: a ________ connects a network to other networks.",
     "type": "text",
     "answer": ["router"],
-    "explain": "A router is an internetworking device: it operates at the network layer and connects independent networks to form an internet."
+    "explain": "Instructor's answer: **router, switch, modem**. A router is an internetworking device: it operates at the network layer and connects independent networks to form an internet."
   },
   {
     "q": "Fill in the second blank: a ________ connects devices (end systems) together.",
@@ -78,8 +74,6 @@ For a bus topology there is one long cable as a backbone and every device connec
 ]
 ```
 
-**Instructor's answer.** **Router, switch, modem** (modulator-demodulator).
-
 ### Exercise 4
 
 > A router is a ----- layer communication device and the addresses at this layer are called -----.
@@ -90,28 +84,20 @@ For a bus topology there is one long cable as a backbone and every device connec
     "q": "Fill in the first blank: a router is a ________ layer device.",
     "type": "text",
     "answer": ["network", "network layer", "network-layer"],
-    "explain": "A router routes datagrams from source host to destination host, which is the job of the network layer."
+    "explain": "Instructor's answer: **network**. Although a router is generally considered a network-layer device, it operates at the network, data-link and physical layers: the network layer depends on the services of the data-link layer, which relies on the physical layer, so any network-layer device must implement all three. \"At which layer does a router operate?\" is network; \"how many layers does it implement?\" is three (a switch implements two)."
   },
   {
     "q": "Fill in the second blank: the addresses at that layer are called ________.",
     "type": "text",
     "answer": ["IP addresses", "IP address", "logical addresses", "logical address", "IP"],
-    "explain": "Network-layer addresses are IP addresses, also called logical addresses. Link-layer (MAC) addresses belong one layer down."
+    "explain": "Instructor's answer: **IP addresses** (or logical addresses). Link-layer (MAC) addresses belong one layer down."
   }
 ]
 ```
 
-**Instructor's answer.** **Network**, **IP addresses** (or logical addresses).
-
-Although a router is generally considered a network-layer device, it operates at the **network, data-link and physical** layers. The network layer depends on the services of the data-link layer, which in turn relies on the physical layer, so any network-layer device must implement all three.
-
-:::quiz Two different questions
-"At which layer does a router operate?" has the one-word answer *network*. "How many layers does a router implement?" is *three*. A switch implements *two* (data link and physical).
-:::
-
 ## Sample quiz questions
 
-Six questions: two true or false, two fill in the blanks, two written response, reproduced verbatim.
+Six questions: two true or false, two fill in the blanks, two written response, reproduced verbatim. A written response is graded here by its key words; the full model answer is in the explanation.
 
 ### 1. True or false
 
@@ -123,14 +109,10 @@ Six questions: two true or false, two fill in the blanks, two written response, 
     "q": "In full-duplex mode of communication, signals going in one direction share the capacity of the link with signals going in the other direction.",
     "type": "tf",
     "answer": true,
-    "explain": "True. In full-duplex both directions transmit at the same time over one link, so the link's capacity is shared between the two directions (either two physical paths or one path with the capacity divided)."
+    "explain": "**True.** Full-duplex means two-directional communication *simultaneously*. Both directions use the same link at the same time, so its capacity is shared between them (two physical paths, or one path with the capacity divided). Half-duplex avoids the sharing by taking turns; simplex only ever has one direction."
   }
 ]
 ```
-
-:::quiz Model answer
-**True.** Full-duplex means two-directional communication *simultaneously*. Both directions use the same link at the same time, so its capacity is shared between them. Half-duplex avoids the sharing by taking turns; simplex only ever has one direction.
-:::
 
 ### 2. True or false
 
@@ -142,14 +124,10 @@ Six questions: two true or false, two fill in the blanks, two written response, 
     "q": "Data-link layer transforms bits to electromagnetic signals.",
     "type": "tf",
     "answer": false,
-    "explain": "False. Transforming the bits of a frame into signals on the transmission medium is the physical layer's job. The data-link layer moves frames between neighbouring nodes."
+    "explain": "**False.** That is the **physical layer**: the bits received in a frame from the data-link layer are transformed to signals and sent through the transmission medium. The data-link layer moves frames between neighbouring nodes; it never touches signals."
   }
 ]
 ```
-
-:::quiz Model answer
-**False.** That is the **physical layer**: the bits received in a frame from the data-link layer are transformed to signals and sent through the transmission medium. The data-link layer's PDU is the frame; it never touches signals.
-:::
 
 ### 3. Fill in the blanks
 
@@ -161,14 +139,10 @@ Six questions: two true or false, two fill in the blanks, two written response, 
     "q": "Assume we have a dedicated link between two devices. This type of connection is called _______.",
     "type": "text",
     "answer": ["point-to-point", "point to point", "point-to-point connection", "point to point connection"],
-    "explain": "A point-to-point connection is a dedicated link between two devices; the capacity of the link is reserved for transmission between those two. The alternative, multipoint, shares one link among more than two devices."
+    "explain": "**Point-to-point.** A dedicated link between two devices; the capacity of the link is reserved for transmission between those two (wire, microwave or satellite links; the TV remote example). The alternative, multipoint, shares one link among more than two devices."
   }
 ]
 ```
-
-:::quiz Model answer
-**Point-to-point.** Dedicated link, capacity reserved for the two devices (wire, microwave or satellite links; the TV remote example).
-:::
 
 ### 4. Fill in the blanks
 
@@ -180,14 +154,10 @@ Six questions: two true or false, two fill in the blanks, two written response, 
     "q": "_______ layer of TCP/IP protocol suite provides host-to-host communication.",
     "type": "text",
     "answer": ["network", "network layer", "the network"],
-    "explain": "The network layer routes datagrams from the source host to the destination host. Process-to-process delivery is the transport layer, one level up."
+    "explain": "**Network** layer: routing of datagrams from source to destination, host-to-host. Contrast: **transport** = process-to-process; **data link** = node-to-node between neighbours."
   }
 ]
 ```
-
-:::quiz Model answer
-**Network** layer (routing of datagrams from source to destination, host-to-host). Contrast: **transport** = process-to-process; **data link** = node-to-node between neighbours.
-:::
 
 ### 5. Written response
 
@@ -196,18 +166,25 @@ Six questions: two true or false, two fill in the blanks, two written response, 
 ```quiz
 [
   {
-    "q": "Select the two disadvantages of a star topology given in the lecture.",
-    "options": ["The dependency of the whole topology on one single point", "Expensive hardware", "More cabling is required compared with bus and ring", "Difficult fault isolation"],
-    "answer": [0, 2],
-    "explain": "The slide lists exactly two: dependency of the whole topology on one single point (the hub), and more cabling than bus and ring. Expensive hardware is a mesh disadvantage; difficult fault isolation is a bus disadvantage."
+    "q": "Written response, first disadvantage: the dependency of the whole topology on one single ________.",
+    "type": "text",
+    "answer": ["point", "single point", "point (the hub)", "hub", "the hub", "device", "central controller"],
+    "explain": "Model answer: (1) the **dependency of the whole topology on one single point** (the hub): if the hub fails, the whole network is down; (2) **more cabling is required** compared with bus and ring."
+  },
+  {
+    "q": "Written response, second disadvantage: more ________ is required compared with bus and ring.",
+    "type": "text",
+    "answer": ["cabling", "cable", "cables", "wiring"],
+    "explain": "More cabling than bus and ring. It is relative: star needs less cabling than mesh, which is one of its advantages."
+  },
+  {
+    "q": "Which of these is a disadvantage of the star topology rather than of another topology?",
+    "options": ["Expensive hardware", "Difficult fault isolation", "The dependency of the whole topology on one single point", "Unidirectional traffic"],
+    "answer": 2,
+    "explain": "Dependency on one single point is star's. Expensive hardware is a mesh disadvantage, difficult fault isolation is a bus disadvantage, and unidirectional traffic is the ring's."
   }
 ]
 ```
-
-:::quiz Model answer
-1. The **dependency of the whole topology on one single point** (the hub): if the hub fails, the whole network is down.
-2. **More cabling is required** compared with bus and ring.
-:::
 
 ### 6. Written response
 
@@ -216,14 +193,16 @@ Six questions: two true or false, two fill in the blanks, two written response, 
 ```quiz
 [
   {
-    "q": "What is the responsibility of the data-link layer in the TCP/IP protocol suite?",
-    "options": ["Data transfer between neighbouring network elements or devices (node to node), without errors", "Routing datagrams from the source host to the destination host", "Transforming bits into signals on the transmission medium", "Process-to-process delivery of the entire message"],
-    "answer": 0,
+    "q": "Written response, key word: the data-link layer is responsible for data transfer between ________ network elements or devices.",
+    "type": "text",
+    "answer": ["neighbouring", "neighboring", "neighbour", "neighbor", "adjacent"],
+    "explain": "Model answer: the data-link layer is responsible for **data transfer between neighbouring network elements or devices** (node-to-node delivery across a single link), **without errors**. Its PDU is the **frame**; example protocols are Ethernet and 802.11 (WiFi)."
+  },
+  {
+    "q": "Which of these is the responsibility of the data-link layer?",
+    "options": ["Routing datagrams from the source host to the destination host", "Transforming bits into signals on the transmission medium", "Data transfer between neighbouring network elements or devices (node to node), without errors", "Process-to-process delivery of the entire message"],
+    "answer": 2,
     "explain": "The data-link layer moves frames between neighbouring nodes over one link, without errors. Routing is the network layer, bits to signals is the physical layer, process-to-process is the transport layer."
   }
 ]
 ```
-
-:::quiz Model answer
-The data-link layer is responsible for **data transfer between neighbouring network elements or devices** (node-to-node delivery across a single link), **without errors**. Its PDU is the **frame**; example protocols are Ethernet and 802.11 (WiFi).
-:::

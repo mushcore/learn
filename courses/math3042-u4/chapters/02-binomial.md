@@ -20,7 +20,7 @@ The family-size and dice examples forced us to build the whole table before find
 3. **Equal $p$**: each visitor has the same probability of completing a sale.
 4. **Independence**: each visitor's outcome is unaffected by other visitors' outcomes.
 
-Check all four before using the formula. Drawing cards without replacement breaks 3 and 4 at once (the hypergeometric distribution handles that); "keep rolling until a 6" breaks 1 (the geometric).
+Drawing cards without replacement breaks 3 and 4 at once (the hypergeometric distribution handles that); "keep rolling until a 6" breaks 1 (the geometric).
 
 ## The shape of the shoppers' distribution
 
@@ -43,7 +43,7 @@ barplot(p.vals, names.arg=X.vals, col="pink", space=0,
 
 ```widget
 binomial-calc
-{ "n": 50, "p": 0.25, "x": 6, "op": "eq", "preset": "online shoppers", "conditions": true, "title": "Online shoppers: tick the four conditions, then read P(X = 6) with the formula substituted" }
+{ "n": 50, "p": 0.25, "x": 6, "op": "eq", "preset": "online shoppers", "conditions": true, "title": "Online shoppers: the four conditions and P(X = 6) with the formula substituted" }
 ```
 
 ## The binomial formula
@@ -54,7 +54,19 @@ $$P(x) = nCx \cdot p^x \cdot q^{n-x}, \qquad nCx = \frac{n!}{(n-x)!\,x!}, \qquad
 
 Read it as three factors: $nCx$ counts which $x$ of the $n$ trials are the successes; $p^x$ is the probability those $x$ trials succeed; $q^{n-x}$ is the probability the other $n - x$ trials fail. The exponent on $q$ is $n - x$, the number of failures. On the calculator $nCx$ is `n  2ndF  nCr  x`; in R it is `choose(n, x)`.
 
-## P(X = 6) for the shoppers: 0.0123
+## P(X = 6) for the shoppers
+
+```quiz
+[
+  {
+    "q": "n = 50 shoppers, p = 0.25. P(X = 6) = ? (4 decimals)",
+    "type": "numeric",
+    "answer": 0.0123,
+    "tolerance": 0.0002,
+    "explain": "C(50, 6) · 0.25⁶ · 0.75⁴⁴ = 15 890 700 × 2.441 × 10⁻⁴ × 3.182 × 10⁻⁶ = 0.0123 (R: 0.01234465)."
+  }
+]
+```
 
 $$P(X = 6) = C(50, 6) \cdot 0.25^6 \cdot 0.75^{44} = 15\,890\,700 \times 2.441 \times 10^{-4} \times 3.182 \times 10^{-6} = 0.0123$$
 
@@ -140,7 +152,7 @@ $$P(X \ge 2) = 1 - P(0) - P(1) = 1 - \left(\tfrac{48}{52}\right)^5 - 5 \left(\tf
 
 ```widget
 binomial-calc
-{ "preset": "2 jacks in 5 (with replacement)", "x": 2, "op": "ge", "title": "Jacks in 5 cards with replacement: switch between = 2 and ≥ 2 and watch the highlighted bars" }
+{ "preset": "2 jacks in 5 (with replacement)", "x": 2, "op": "ge", "title": "Jacks in 5 cards with replacement: the bars for = 2 and for ≥ 2" }
 ```
 
 `pbinom(x, n, p)` is the cumulative $P(X \le x)$, so $P(X \ge 2) = 1 - P(X \le 1)$ is `1 - pbinom(1, ...)`.
@@ -158,10 +170,6 @@ dbinom(1, 5, 4/52)
 [1] 0.2792404
 [1] 0.05058269
 ```
-
-:::info Where the numbers come from
-From p. 58 on, the posted notes are blank; P(X = 6), the rolling-3s table and the two jack probabilities are computed here and checked against the demo notebook's `choose()` and `dbinom()` lines.
-:::
 
 :::quiz Complements and exponents
 "At least 2" is $1 - P(0) - P(1)$, not $1 - P(2)$. The failure factor is $q^{n - x}$: for 2 jacks in 5 cards it is $(48/52)^3$, three failures, not $(48/52)^2$.
@@ -189,11 +197,17 @@ From p. 58 on, the posted notes are blank; P(X = 6), the rolling-3s table and th
     "explain": "C(8, 2) · 0.3² · 0.7⁶ = 28 × 0.09 × 0.117649 = 0.2965. In R: dbinom(2, 8, 0.3)."
   },
   {
-    "q": "n = 50 shoppers, p = 0.25. P(X = 6) = ? (4 decimals)",
-    "type": "numeric",
-    "answer": 0.0123,
-    "tolerance": 0.0002,
-    "explain": "C(50, 6) · 0.25⁶ · 0.75⁴⁴ = 15 890 700 × 2.441 × 10⁻⁴ × 3.182 × 10⁻⁶ = 0.0123 (R: 0.01234465)."
+    "q": "Write P(X = 6) for the 50 shoppers (p = 0.25) as the binomial formula with the numbers substituted. Use C(n,x), ^ for powers, * between factors, no spaces.",
+    "type": "text",
+    "answer": ["C(50,6)*0.25^6*0.75^44", "C(50,6)*(0.25)^6*(0.75)^44", "50C6*0.25^6*0.75^44", "50C6*(0.25)^6*(0.75)^44", "choose(50,6)*0.25^6*0.75^44", "C(50,6)*0.25^6*(1-0.25)^44"],
+    "explain": "nCx · p^x · q^(n−x) with n = 50, x = 6, p = 0.25, q = 0.75: C(50,6)·0.25⁶·0.75⁴⁴ = 0.0123. The q exponent is the number of failures, 50 − 6 = 44."
+  },
+  {
+    "type": "fill",
+    "q": "Fill in the count and the two exponents for P(X = 6) with n = 50, p = 0.25.",
+    "code": "C(50, ___) · 0.25^___ · 0.75^___",
+    "answer": ["6", "6", "44"],
+    "explain": "x = 6 successes, each with p = 0.25, and n − x = 44 failures, each with q = 0.75."
   },
   {
     "q": "A die is rolled 5 times. P(at least one 3) = ? (4 decimals)",

@@ -38,16 +38,21 @@ Both devices must agree on the rules, or a message can be delivered perfectly an
 | **Half-duplex** | two-directional communication, **one at a time** | "direction of data at time 1", then "direction of data at time 2" | walkie-talkie |
 | **Full-duplex** | two-directional communication, **simultaneously** | "direction of data all the time" | telephone |
 
-:::quiz Sample quiz question (true or false)
-**"In full-duplex mode of communication, signals going in one direction share the capacity of the link with signals going in the other direction."** **True.** Both directions use the one link at the same time, so its capacity is shared: either two physically separate paths inside the link, or the link's capacity divided between the two directions (Forouzan §1.1). Shared, not doubled.
-:::
+### Who may send in each time slot
+
+Simplex lets only the mainframe send; half-duplex hands the link from A to B and back; full-duplex lets both send in every slot. The full-duplex frames are drawn at half thickness because the two directions share the capacity of the one link.
+
+```widget
+duplex-play
+{}
+```
 
 ```quiz
 [
   {
     "q": "Which of these are the five components of a data communications system? Select all that apply.",
-    "options": ["Message", "Sender", "Receiver", "Transmission medium", "Protocol", "Modem", "Router"],
-    "answer": [0, 1, 2, 3, 4],
+    "options": ["Message", "Modem", "Sender", "Receiver", "Router", "Transmission medium", "Protocol"],
+    "answer": [0, 2, 3, 5, 6],
     "explain": "The five components are message, sender, receiver, transmission medium, and protocol. Modems and routers are *connecting devices*, which belong to the network lesson, not to this list."
   },
   {
@@ -75,17 +80,6 @@ Both devices must agree on the rules, or a message can be delivered perfectly an
     "explain": "The slide lists the telephone handset under **both** sender (computer, workstation, telephone handset, video camera) and receiver (computer, workstation, telephone handset, television)."
   },
   {
-    "q": "Which list matches the slide's examples of transmission media?",
-    "options": [
-      "Twisted-pair wire, coaxial cable, fibre-optic cable, and air",
-      "Copper wire only; air cannot be a medium",
-      "Fibre-optic cable and satellites only",
-      "Routers, switches, and modems"
-    ],
-    "answer": 0,
-    "explain": "The four media named on the slide are twisted-pair wire, coaxial cable, fibre-optic cable, and air. Air is a medium (it carries radio waves); routers and switches are devices, not media."
-  },
-  {
     "q": "Communication in one direction only, as from a mainframe to a monitor, is called ___ mode.",
     "type": "text",
     "answer": ["simplex"],
@@ -107,19 +101,13 @@ Both devices must agree on the rules, or a message can be delivered perfectly an
     "q": "In full-duplex mode of communication, signals going in one direction share the capacity of the link with signals going in the other direction.",
     "type": "tf",
     "answer": true,
-    "explain": "This is the instructor's sample quiz question, and it is true. Both directions use the link at the same time, so its capacity is shared between them (two separate paths inside the link, or a divided capacity)."
+    "explain": "True (the instructor's sample quiz question). Both directions use the one link at the same time, so its capacity is shared: either two physically separate paths inside the link, or the link's capacity divided between the two directions (Forouzan §1.1). Shared, not doubled."
   },
   {
     "q": "Which mode is described on the slide as 'two-directional communication, simultaneously'?",
     "options": ["Simplex", "Half-duplex", "Full-duplex", "Multipoint"],
     "answer": 2,
     "explain": "**Full-duplex** is two-directional and simultaneous ('direction of data all the time'); half-duplex is two-directional but one at a time; simplex is one direction only."
-  },
-  {
-    "q": "The message is the information (data) to be communicated, and popular forms include text, numbers, pictures, audio, and video.",
-    "type": "tf",
-    "answer": true,
-    "explain": "Slide wording for the message component. Those five forms match the examples of *data* in the previous lesson."
   }
 ]
 ```

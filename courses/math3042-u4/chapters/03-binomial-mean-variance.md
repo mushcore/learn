@@ -19,7 +19,19 @@ The mean is the number of trials times the success probability: 50 visitors at 2
 
 The rolling-3s table from the last lesson checks the shortcut against the definition: $\sum x P(x) = 0(0.4019) + 1(0.4019) + 2(0.1608) + 3(0.0322) + 4(0.0032) + 5(0.0001) = 0.8334$, and $np = 5 \cdot \frac16 = 0.8333$. Same number, one line instead of six.
 
-## Online shoppers: μ = 12.5, σ = 3.06
+## Online shoppers: μ and σ
+
+```quiz
+[
+  {
+    "q": "n = 50, p = 0.25. The standard deviation σ = ? (2 decimals)",
+    "type": "numeric",
+    "answer": 3.06,
+    "tolerance": 0.01,
+    "explain": "σ = √(npq) = √(50 × 0.25 × 0.75) = √9.375 = 3.06. The variance is 9.375; take its root."
+  }
+]
+```
 
 $n = 50$, $p = 0.25$, $q = 0.75$:
 
@@ -42,7 +54,7 @@ c(mu, sig)
 
 ```widget
 binomial-calc
-{ "n": 50, "p": 0.25, "x": 6, "op": "eq", "preset": "online shoppers", "title": "Online shoppers: μ = np and σ = √npq under the bars; move x to read its Z" }
+{ "n": 50, "p": 0.25, "x": 6, "op": "eq", "preset": "online shoppers", "title": "Online shoppers: μ = np and σ = √npq under the bars, and the Z of any x" }
 ```
 
 ## Unusual means more than 2 standard deviations from the mean
@@ -53,7 +65,7 @@ $$Z = \frac{x - \mu}{\sigma}$$
 
 $|Z| > 2$ is **unusual**; $Z < -2$ is *unusually low*, $Z > 2$ *unusually high*. A value between $-2$ and $2$ is within the range chance alone produces, even when it is on the low side of $\mu$. Quiz 4 Part 2 also accepted the tail probability as the test: the count is unusual when $P(X \le x)$ (or $P(X \ge x)$ on the high side) is below 0.025. Both tests are taught; they agree in every example of this unit.
 
-## Laser printers: μ = 20, σ = 4.24, Z = −1.41
+## Laser printers: is 14 repairs unusually low?
 
 *For a certain model of laser printer, the probability of a unit needing repairs in the first year is 10%. In an attempt to reduce this rate, modifications were made to the printer design and a year later a study of 200 randomly selected modified laser printers was conducted.*
 
@@ -63,11 +75,23 @@ $$\mu = 200(0.10) = 20, \qquad \sigma = \sqrt{200(0.10)(0.90)} = \sqrt{18} = 4.2
 
 **(b)** *Suppose that in the sample of 200 laser printers, 14 needed repair. Assuming the modifications had no effect, is this rate unusually low?*
 
+```quiz
+[
+  {
+    "q": "n = 200 printers, p = 0.10, and 14 needed repair. Z = ? (2 decimals)",
+    "type": "numeric",
+    "answer": -1.41,
+    "tolerance": 0.01,
+    "explain": "μ = 200(0.10) = 20, σ = √(200 × 0.10 × 0.90) = √18 = 4.24, Z = (14 − 20)/4.24 = −1.41."
+  }
+]
+```
+
 $$Z = \frac{14 - 20}{4.24} = -1.41$$
 
 $-1.41$ is not beyond $-2$: **not unusual**. The tail agrees: $P(X \le 14) = 0.0929$, above 0.025.
 
-**(c)** *Does this sample provide good evidence that the modifications improved the reliability of this model of laser printer?* No: 14 repairs is within what the old 10 % rate produces by chance alone, so the sample is consistent with no improvement (our wording; the in-class answer replaces it). Not unusual is not evidence of no effect either; it is insufficient evidence of an effect.
+**(c)** *Does this sample provide good evidence that the modifications improved the reliability of this model of laser printer?* No: 14 repairs is within what the old 10 % rate produces by chance alone, so the sample is consistent with no improvement. Not unusual is not evidence of no effect either; it is insufficient evidence of an effect.
 
 ```widget
 binomial-calc
@@ -98,14 +122,6 @@ pbinom(14, 200, 0.1)
 [1] 0.09294618
 ```
 
-:::info Where the numbers come from
-Pages 62 and 63 of the posted notes are blank; the shoppers' and printers' parameters and Z are computed here and checked against the demo notebook's `c(mu, sig)` and `Z` lines.
-:::
-
-:::quiz The sign of Z and the strength of a conclusion
-A count below the mean has a negative Z; "unusually low" needs $Z < -2$, not just $Z < 0$. A Z inside $\pm 2$ never proves "no effect": it only fails to show one.
-:::
-
 ```quiz
 [
   {
@@ -114,13 +130,6 @@ A count below the mean has a negative Z; "unusually low" needs $Z < -2$, not jus
     "answer": 12.5,
     "tolerance": 0.05,
     "explain": "μ = np = 50 × 0.25 = 12.5, the centre of the probability histogram."
-  },
-  {
-    "q": "n = 50, p = 0.25. The standard deviation σ = ? (2 decimals)",
-    "type": "numeric",
-    "answer": 3.06,
-    "tolerance": 0.01,
-    "explain": "σ = √(npq) = √(50 × 0.25 × 0.75) = √9.375 = 3.06. The variance is 9.375; take its root."
   },
   {
     "q": "For a binomial variable, σ = npq.",

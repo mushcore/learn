@@ -4,6 +4,7 @@
 import { el, btnRow, fmtNum, slider } from "./dom.js";
 import { sum, mean, median, sampleSd, quantileR } from "./widgets-stats.js";
 import { DATASETS, OGIVE_NL } from "./data-stats.js";
+import { playRig, numOptions } from "./widgets-prob.js";
 
 const NS = "http://www.w3.org/2000/svg";
 function svgEl(tag, attrs = {}, text) {
@@ -586,6 +587,195 @@ function groupStats(box, cfg) {
   render();
 }
 
+// =====================================================================
+// widget: stem-leaf-play — leaves dropped in data order, then each line sorted
+// =====================================================================
+function stemLeafPlay(box, cfg) {
+  box.append(el("h4", null, cfg.title || "Building the stem-and-leaf plot, one value at a time"));
+  const d = parseNums(cfg.data || HEIGHTS20.join(" ")).slice(0, 60);
+  const prec = precisionOf(d), u = 10 ** -prec;
+  const ks = d.map((x) => Math.round(x / u)), stemOf = (k) => Math.floor(k / 10), leafOf = (k) => k % 10;
+  const fmtV = (k) => (k * u).toFixed(prec);
+  const lo = Math.min(...ks.map(stemOf)), hi = Math.max(...ks.map(stemOf));
+  const stems = Array.from({ length: hi - lo + 1 }, (_, i) => lo + i), sw = String(hi).length;
+  const n = d.length;
+  const chips = el("div", "stem-chips"), pre = el("pre", "manip-code stem-pre");
+  chips.style.cssText = "display:flex;flex-wrap:wrap;gap:4px 8px;font-variant-numeric:tabular-nums;font-size:13px;margin:6px 0";
+  const chipEls = ks.map((k) => { const s = el("span", null, fmtV(k)); s.style.cssText = "padding:1px 5px;border-radius:4px"; chips.append(s); return s; });
+  const lineText = (s, upto, sorted) => { const ls = ks.slice(0, upto).filter((k) => stemOf(k) === s).map(leafOf); if (sorted) ls.sort((a, b) => a - b); return ls.join(""); };
+  const longest = stems.reduce((b, s) => (lineText(s, n) .length > lineText(b, n).length ? s : b), stems[0]);
+  const esc2 = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  function draw(pos, asking) {
+    const k = Math.min(n + 1, Math.floor(pos + 1e-9)), f = pos - k;
+    const placed = Math.min(n, k + (f > 0.5 && k < n ? 1 : 0)), sorted = k > n || (k === n && f > 0.5);
+    const newest = k <= n && placed > 0 ? placed - 1 : -1, ask = asking >= 0 && asking < n ? asking : -1;
+    chipEls.forEach((c, i) => {
+      const hot = i === ask || (ask < 0 && !sorted && i === (f > 0 && k < n ? k : newest));
+      c.style.background = hot ? "var(--hl-soft)" : "transparent";
+      c.style.outline = hot ? "1.5px solid var(--hl)" : "none";
+      c.style.opacity = i < placed && !hot ? 0.45 : 1;
+    });
+    const hotStem = newest >= 0 && !sorted ? stemOf(ks[newest]) : null;
+    const rows = stems.map((s) => {
+      const leaves = lineText(s, placed, sorted);
+      let shown = esc2(leaves);
+      if (s === hotStem && leaves.length) shown = esc2(leaves.slice(0, -1)) + `<b style="color:var(--hl)">${leaves.slice(-1)}</b>`;
+      if (sorted && s === longest) shown = `<b style="color:var(--hl)">${shown}</b>`;
+      return `${String(s).padStart(sw)} | ${shown}`;
+    });
+    pre.innerHTML = `${prec ? `The decimal point is ${prec} digit(s) to the left of the |` : "The decimal point is 1 digit(s) to the right of the |"}\n\n${rows.join("\n")}`;
+    if (pos < 1e-9) return `${n} values in data order. The stems ${lo} to ${hi} go down the left first, empty stems included.`;
+    if (k < n && f > 0) return `Next value: ${fmtV(ks[k])}…`;
+    if (k <= n && !sorted) { const v = ks[k - 1]; return `Value ${k}: ${fmtV(v)} → stem ${stemOf(v)}, leaf ${leafOf(v)}. The leaf goes at the end of line ${stemOf(v)}, in arrival order.`; }
+    const k0 = Math.min(...ks), lt = lineText(longest, n, true);
+    return `Sort the leaves on each line: ${longest} | ${lineText(longest, n)} becomes ${longest} | ${lt}, the longest line (${lt.length} leaves). Key: ${stemOf(k0)} | ${leafOf(k0)} represents ${fmtV(k0)}.`;
+  }
+  function ask(k) {
+    if (k < n) {
+      const v = ks[k], s = stemOf(v), l = leafOf(v);
+      const opts = [`${s} | ${l}`, `${s + 1} | ${l}`, `${s} | ${(l + 1) % 10}`, `${Math.floor(s / 10)} | ${v % 100}`];
+      const uniq = [...new Set(opts)].sort();
+      return { q: `Which stem and leaf does ${fmtV(v)} get?`, options: uniq, answer: uniq.indexOf(opts[0]), rule: `The leaf is the last digit and everything in front of it is the stem: ${fmtV(v)} → ${s} | ${l}.` };
+    }
+    if (k === n) {
+      const raw = lineText(longest, n), srt = lineText(longest, n, true), rev = srt.split("").reverse().join("");
+      const opts = [...new Set([`${longest} | ${srt}`, `${longest} | ${raw}`, `${longest} | ${rev}`])];
+      if (opts.length < 2) return null;
+      return { q: `After the sort, what does line ${longest} read?`, options: opts, answer: 0, rule: `Leaves on each line are sorted smallest to largest: ${longest} | ${srt}.` };
+    }
+    return null;
+  }
+  const rig = playRig({ count: n + 1, unit: "step", stepMs: () => cfg.stepMs || 850, predict: cfg.predict, label: "Predict each stem and leaf before it is placed", ask, draw });
+  box.append(rig.check, chips, pre, rig.caption, rig.ask, rig.bar);
+}
+
+// =====================================================================
+// widget: hist-tally-play — one class at a time counted into [lower, upper)
+// =====================================================================
+const TALLY_PRESETS = {
+  "Old Faithful eruptions (n = 272)": () => ({ data: DATASETS.faithful(), width: 0.2, start: 1.6, label: "Eruptions (min)" }),
+  "BCIT Age (n = 302)": () => ({ data: ages302(), width: 2, start: 18, label: "Age" }),
+  "quine Days absent (n = 146, Lab 2)": () => ({ data: quineDays(), width: 5, start: 0, label: "Days" }),
+};
+function histTallyPlay(box, cfg) {
+  box.append(el("h4", null, cfg.title || "Tallying the classes: each value lands in [lower, upper)"));
+  const names = Object.keys(TALLY_PRESETS);
+  let name = TALLY_PRESETS[cfg.preset] ? cfg.preset : names[0], st = null, t = null;
+  const load = () => { st = cfg.data && name === names[0] && !cfg.preset ? { data: parseNums(cfg.data), width: cfg.width ?? 1, start: cfg.start ?? Math.floor(Math.min(...parseNums(cfg.data))), label: cfg.label || "X" } : TALLY_PRESETS[name](); t = classTable(st.data, st.start, st.width); };
+  load();
+  if (cfg.presets !== false && !cfg.data) box.append(btnRow(names, (i) => { name = names[i]; load(); rig.restart(t.rows.length); }, names.indexOf(name)));
+  const svg = svgEl("svg", { viewBox: "0 0 640 320", class: "curve-svg" });
+  const near = (a, b) => Math.abs(a - b) < 1e-9;
+  /** Values printed exactly on this class's lower limit and where R really counted them. */
+  function boundary(i) {
+    const r = t.rows[i], nx = t.rows[i + 1], pl = (c) => `${c} value${c > 1 ? "s" : ""}`;
+    const lo = st.data.filter((x) => near(x, r.lo) && x >= r.loRaw).length, up = nx ? st.data.filter((x) => near(x, nx.lo) && x < nx.loRaw).length : 0;
+    const v = (c) => (c > 1 ? "count" : "counts");
+    let s = lo ? ` ${pl(lo)} exactly ${r.lo.toFixed(t.prec)} ${v(lo)} here: the lower limit is in.` : "";
+    if (up) s += ` ${pl(up)} exactly ${nx.lo.toFixed(t.prec)} also ${v(up)} here: R stores the next break as ${nx.loRaw}, just above ${nx.lo.toFixed(t.prec)}.`;
+    return s;
+  }
+  function draw(pos, asking) {
+    const W = 640, H = 320, padL = 50, padB = 70, padT = 24, rows = t.rows, prec = t.prec;
+    const k = Math.min(rows.length, Math.floor(pos + 1e-9)), f = pos - k;
+    const maxF = Math.max(1, ...rows.map((r) => r.f));
+    const x0 = t.breaks[0], x1 = t.breaks[t.breaks.length - 1];
+    const X = (v) => padL + ((v - x0) / (x1 - x0)) * (W - padL - 16), Y = (v) => H - padB - (v / maxF) * (H - padB - padT);
+    svg.innerHTML = "";
+    svg.append(svgEl("line", { x1: padL, x2: W - 16, y1: H - padB, y2: H - padB, stroke: "var(--ink-dim)" }));
+    svg.append(svgEl("line", { x1: padL, x2: padL, y1: padT, y2: H - padB, stroke: "var(--ink-dim)" }));
+    const yStep = maxF <= 10 ? 1 : maxF <= 50 ? 5 : maxF <= 120 ? 20 : 50;
+    for (let v = 0; v <= maxF; v += yStep) svg.append(svgEl("text", { x: padL - 7, y: Y(v) + 4, "text-anchor": "end", fill: "var(--ink-dim)", "font-size": 10 }, String(v)));
+    const every = Math.max(1, Math.ceil(t.breaks.length / 10));
+    t.breaks.forEach((b, i) => { if (!(i % every)) svg.append(svgEl("text", { x: X(b), y: H - padB + 14, "text-anchor": "middle", fill: "var(--ink-dim)", "font-size": 10 }, Number(b.toFixed(prec + 1)).toString())); });
+    svg.append(svgEl("text", { x: W / 2, y: H - 6, "text-anchor": "middle", fill: "var(--ink-dim)", "font-size": 11 }, st.label));
+    const cur = asking >= 0 ? asking : f > 0 ? k : k - 1;
+    rows.forEach((r, i) => {
+      const g = i < k ? 1 : i === k ? f : 0;
+      if (i === cur) svg.append(svgEl("rect", { x: X(r.loRaw), y: padT - 6, width: X(r.hiRaw) - X(r.loRaw), height: H - padB - padT + 6, fill: "var(--hl-soft)" }));
+      if (g > 0) svg.append(svgEl("rect", { x: X(r.loRaw), y: Y(r.f * g), width: Math.max(1, X(r.hiRaw) - X(r.loRaw)), height: H - padB - Y(r.f * g), fill: "pink", stroke: i === cur ? "var(--hl)" : "#333", "stroke-width": i === cur ? 2.5 : 1 }));
+      if (i < k && r.f) svg.append(svgEl("text", { x: (X(r.loRaw) + X(r.hiRaw)) / 2, y: Y(r.f) - 3, "text-anchor": "middle", "font-size": 9, fill: "var(--ink-2)" }, String(r.f)));
+    });
+    // Rug: every data value as a tick under the axis; the current class's values light up, boundary values ringed.
+    const cr = rows[cur];
+    for (const x of st.data) {
+      const inCur = cr && x >= cr.loRaw && x < cr.hiRaw, onB = cr && (near(x, cr.lo) || near(x, Number((cr.hiRaw).toFixed(prec))));
+      svg.append(svgEl("line", { x1: X(x), x2: X(x), y1: H - padB + 22, y2: H - padB + 34, stroke: inCur ? "var(--hl)" : "var(--rule-strong)", "stroke-width": inCur ? 1.6 : 0.8 }));
+      if (onB) svg.append(svgEl("circle", { cx: X(x), cy: H - padB + 40, r: 3, fill: "none", stroke: "var(--red)", "stroke-width": 1.4 }));
+    }
+    if (pos < 1e-9) return `${st.data.length} values, ${rows.length} classes of width ${st.width} from ${st.start}. Each class is [lower, upper), as in hist(..., right = FALSE).`;
+    if (f > 0) return `Counting ${rows[k].lo.toFixed(prec)} ≤ X < ${Number(rows[k].hiRaw.toFixed(prec))}…`;
+    const r = rows[k - 1];
+    return `Class ${r.lo.toFixed(prec)}–${r.hi.toFixed(prec)}: ${r.f} value${r.f === 1 ? "" : "s"}, running total ${r.cum} of ${st.data.length}.${boundary(k - 1)}`;
+  }
+  function ask(k) {
+    const r = t.rows[k];
+    if (!r) return null;
+    const nx = t.rows[k + 1], on = nx ? st.data.filter((x) => near(x, nx.lo)) : [];
+    if (!on.length) return null;
+    const here = on.every((x) => x >= nx.loRaw), lim = (q) => `${q.lo.toFixed(t.prec)}–${q.hi.toFixed(t.prec)}`;
+    return { q: `Next: class ${lim(r)}. ${on.length} value${on.length > 1 ? "s sit" : " sits"} exactly on ${nx.lo.toFixed(t.prec)}. Which class does hist(..., right = FALSE) count ${on.length > 1 ? "them" : "it"} in?`, options: [lim(r), lim(nx)], keepOrder: true, answer: here ? 1 : 0, rule: here ? "Classes are [lower, upper): a value on a lower limit belongs to the class it starts." : `R's break is ${nx.loRaw}, a hair above ${nx.lo.toFixed(t.prec)} from floating-point arithmetic, so the value is below the next class's real lower limit and is counted in ${lim(r)}.` };
+  }
+  const rig = playRig({ count: t.rows.length, unit: "class", stepMs: () => cfg.stepMs || 700, predict: cfg.predict, label: "Predict where values on a class limit are counted", ask, draw });
+  box.append(rig.check, svg, rig.caption, rig.ask, rig.bar);
+}
+
+// =====================================================================
+// widget: ogive-play — the running sum drawn class by class
+// =====================================================================
+const OGIVE_PLAY_PRESETS = {
+  "Old Faithful eruptions": () => ({ ...ogivePoints(DATASETS.faithful(), 1.6, 0.2), label: "Eruptions (min)" }),
+  "BCIT Age": () => ({ ...ogivePoints(ages302(), 18, 2), label: "Age" }),
+  "quine Days absent": () => ({ ...ogivePoints(quineDays(), 0, 5), label: "Days" }),
+};
+function ogivePlay(box, cfg) {
+  box.append(el("h4", null, cfg.title || "The ogive is a running sum, drawn one class at a time"));
+  const names = Object.keys(OGIVE_PLAY_PRESETS);
+  let name = OGIVE_PLAY_PRESETS[cfg.preset] ? cfg.preset : names[0], cur = OGIVE_PLAY_PRESETS[name]();
+  if (cfg.presets !== false) box.append(btnRow(names, (i) => { name = names[i]; cur = OGIVE_PLAY_PRESETS[name](); rig.restart(cur.table.rows.length); }, names.indexOf(name)));
+  const svg = svgEl("svg", { viewBox: "0 0 640 320", class: "curve-svg ogive-svg" });
+  function draw(pos, asking) {
+    const W = 640, H = 320, padL = 56, padR = 20, padT = 20, padB = 50, rows = cur.table.rows, pts = cur.pts, prec = cur.table.prec, n = rows[rows.length - 1].cum;
+    const k = Math.min(rows.length, Math.floor(pos + 1e-9)), f = pos - k;
+    const xmin = pts[0][0], xmax = pts[pts.length - 1][0];
+    const X = (v) => padL + ((v - xmin) / (xmax - xmin)) * (W - padL - padR), Y = (p) => H - padB - p * (H - padB - padT);
+    svg.innerHTML = "";
+    svg.append(svgEl("line", { x1: padL, x2: W - padR, y1: H - padB, y2: H - padB, stroke: "var(--ink-dim)" }));
+    svg.append(svgEl("line", { x1: padL, x2: padL, y1: padT, y2: H - padB, stroke: "var(--ink-dim)" }));
+    for (const p of [0, 0.25, 0.5, 0.75, 1]) { svg.append(svgEl("line", { x1: padL, x2: W - padR, y1: Y(p), y2: Y(p), stroke: "var(--rule)", "stroke-dasharray": "2 4" })); svg.append(svgEl("text", { x: padL - 6, y: Y(p) + 4, "text-anchor": "end", "font-size": 10, fill: "var(--ink-dim)" }, String(p))); }
+    const every = Math.max(1, Math.ceil(pts.length / 10));
+    pts.forEach(([x], i) => { if (!(i % every)) svg.append(svgEl("text", { x: X(x), y: H - padB + 14, "text-anchor": "middle", "font-size": 10, fill: "var(--ink-dim)" }, x.toFixed(prec))); });
+    svg.append(svgEl("text", { x: (W + padL) / 2, y: H - 14, "text-anchor": "middle", "font-size": 11, fill: "var(--ink-dim)" }, `${cur.label}: upper class limit`));
+    svg.append(svgEl("text", { x: 14, y: H / 2, transform: `rotate(-90 14 ${H / 2})`, "text-anchor": "middle", "font-size": 11, fill: "var(--ink-dim)" }, "Cumulative relative frequency"));
+    const line = [[X(pts[0][0]), Y(0)]];
+    for (let i = 1; i <= k; i++) line.push([X(pts[i][0]), Y(pts[i][1])]);
+    if (f > 0 && k < rows.length) { const a = pts[k], b = pts[k + 1]; line.push([X(a[0] + f * (b[0] - a[0])), Y(a[1] + f * (b[1] - a[1]))]); }
+    svg.append(svgEl("polyline", { points: line.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" "), fill: "none", stroke: "var(--blue)", "stroke-width": 2.2 }));
+    const hot = asking >= 0 ? asking + 1 : f > 0 ? k + 1 : k;
+    for (let i = 0; i <= k; i++) svg.append(svgEl("circle", { cx: X(pts[i][0]), cy: Y(pts[i][1]), r: i === hot ? 5.5 : 3.2, fill: i === hot ? "var(--hl)" : "var(--blue)" }));
+    if (hot >= 1 && hot <= rows.length) {
+      const r = rows[hot - 1];
+      svg.append(svgEl("rect", { x: X(r.lo - cur.table.u), y: padT, width: X(r.hi) - X(r.lo - cur.table.u), height: H - padB - padT, fill: "var(--hl-soft)", opacity: 0.6 }));
+      if (hot <= k) svg.append(svgEl("text", { x: Math.min(W - padR - 70, X(r.hi) + 6), y: Y(r.cumRel) + 14, "font-size": 11, fill: "var(--hl)" }, `${r.cum}/${n} = ${r.cumRel.toFixed(4)}`));
+    }
+    if (pos < 1e-9) return `Start at 0 one unit before the first class (${pts[0][0].toFixed(prec)}): nothing is below the first lower limit.`;
+    if (f > 0) return `Adding class ${rows[k].lo.toFixed(prec)}–${rows[k].hi.toFixed(prec)}…`;
+    const r = rows[k - 1], prev = k > 1 ? rows[k - 2].cum : 0;
+    let text = `Class ${r.lo.toFixed(prec)}–${r.hi.toFixed(prec)}: frequency ${r.f}, cumulative ${prev} + ${r.f} = ${r.cum}, ${r.cum}/${n} = ${r.cumRel.toFixed(4)}, plotted at the upper limit ${r.hi.toFixed(prec)}.`;
+    if (k === rows.length) text += ` Last cumulative frequency = n = ${n}: the curve ends at 1.`;
+    else if (r.f === 0) text += " A class with no values adds 0, so the curve runs flat; it can never fall.";
+    return text;
+  }
+  function ask(k) {
+    const rows = cur.table.rows, r = rows[k];
+    if (!r) return null;
+    const prev = k ? rows[k - 1].cum : 0;
+    return { q: `Class ${r.lo.toFixed(cur.table.prec)}–${r.hi.toFixed(cur.table.prec)} has frequency ${r.f}. What is its cumulative frequency?`, ...numOptions(r.cum, [...new Set([r.f, prev, r.cum + r.f, r.cum + 1].filter((x) => x !== r.cum))].slice(0, 3)), rule: `Cumulative frequency = previous cumulative frequency + this class's frequency: ${prev} + ${r.f} = ${r.cum}. A running total can never go down.` };
+  }
+  const rig = playRig({ count: cur.table.rows.length, unit: "class", stepMs: () => cfg.stepMs || 800, predict: cfg.predict, label: "Predict each cumulative frequency before it is plotted", ask, draw });
+  box.append(rig.check, svg, rig.caption, rig.ask, rig.bar);
+}
+
 export { classTable, ogivePoints };
 
 export const WIDGETS = {
@@ -593,5 +783,8 @@ export const WIDGETS = {
   "stem-leaf": stemLeaf,
   "hist-builder": histBuilder,
   "ogive": ogive,
+  "stem-leaf-play": stemLeafPlay,
+  "hist-tally-play": histTallyPlay,
+  "ogive-play": ogivePlay,
   "group-stats": groupStats,
 };

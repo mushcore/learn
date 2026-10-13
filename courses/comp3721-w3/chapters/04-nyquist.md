@@ -91,14 +91,6 @@ data-rate
     "explain": "$2 \\times 3000 \\times \\log_{2} 4 = 2 \\times 3000 \\times 2 = 12000$ bps. Going from 2 to 4 levels adds one bit per signal element. Going on to 8 levels adds one more and gives 18000 bps, not 24000."
   },
   {
-    "q": "A noiseless channel has a bandwidth of 20 kHz and the signal has 16 levels. What is the maximum bit rate, in kbps?",
-    "type": "numeric",
-    "answer": 160,
-    "tolerance": 0.5,
-    "unit": "kbps",
-    "explain": "$2 \\times 20000 \\times \\log_{2} 16 = 2 \\times 20000 \\times 4 = 160000$ bps $= 160$ kbps."
-  },
-  {
     "q": "We need to send 100 kbps over a noiseless channel with a bandwidth of 10 kHz. How many signal levels do we need?",
     "type": "numeric",
     "answer": 32,

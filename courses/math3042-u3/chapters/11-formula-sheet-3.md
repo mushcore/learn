@@ -59,7 +59,8 @@ Deck: 52 cards, 26 red (hearts, diamonds) and 26 black (spades, clubs), 4 suits 
 |---|---|
 | two dice, sum $< 12$ | $1 - 1/36 = 35/36 = 0.9722$ |
 | birthday, 23 people | $1 - P(365, 23)/365^{23} = 1 - 0.4927 = 0.5073$ |
-| 7 or Ace | $4/52 + 4/52 = 8/52 = 0.1538$ |
+| red card or Ace (in class) | $26/52 + 4/52 - 2/52 = 28/52 = 0.5385$ |
+| 7 or Ace (printed) | $4/52 + 4/52 = 8/52 = 0.1538$ |
 | table: $P(\text{Right})$, $P(\text{iPhone} \mid \text{Right})$, $P(\text{Right} \mid \text{iPhone})$ | $61/71 = 0.859$, $52/61 = 0.852$, $52/58 = 0.897$; dependent ($0.732 \ne 0.702$) |
 | two Aces with / without replacement | $1/169 = 0.00592$ / $1/221 = 0.00452$ |
 | left-handed: $P(L)$, $P(F \mid L)$ | $0.6(0.05) + 0.4(0.15) = 0.09$; $0.03/0.09 = 1/3$ |
@@ -77,7 +78,7 @@ Two-way table: a conditional is the cell over the **row** total (given the row) 
 | `stem(x)`, `stem(x, scale=2)` | stem plot; `scale` multiplies the number of stems |
 | `x[!is.na(x)]`, `range(x)` | drop missing values, then the range |
 | `cut(x, seq(lo, hi, by=w), right=FALSE)`, `table()`, `cumsum()` | classes $[\text{lower}, \text{upper})$, frequencies, cumulative frequencies |
-| `plot(lower.limits, c(0, cumul.freq), type="b", pch=19, lty=2, lwd=2)` | Lab 3's ogive |
+| `plot(lower.limits, c(0, cumul.freq), type="b", pch=19, lty=2, lwd=2)` | Lab 3's ogive: cumulative counts, each at its class's right boundary (0 at 150, 6 at 155, …, 208 at 200) |
 | `hist(x, breaks=seq(150, 200, by=2.5), right=FALSE, col, xlab, ylab, main)` | histogram with chosen classes |
 | `xyplot(y ~ x, data=survey, pch=19, col, main)`, `cor(x, y, use="complete.obs")` | scatter plot, correlation ignoring NAs |
 | `sample(x, n, replace=TRUE, prob=)`, `sample.int(6, n, replace=TRUE)` | simulate draws; `replace=TRUE` for dice and coins, `FALSE` for cards |

@@ -250,7 +250,7 @@ Written at the start of lab on the Learning Hub, covering the Week 5 deck and th
     "q": "exception3.cpp runs `std::string(\"abc\").substr(10);` inside `try` and catches `const std::exception&`. The slide's comment says the call throws...",
     "options": ["`std::length_error`", "`std::bad_alloc`", "`std::runtime_error`", "nothing: substr clamps the position"],
     "answer": 0,
-    "explain": "The slide and the file's comment say length_error (libstdc++ in fact throws out_of_range, also a logic_error). Either way the handler for std::exception prints basic_string::substr: __pos (which is 10) > this->size() (which is 3)."
+    "explain": "The slide and the shipped file's comment say length_error (libstdc++ in fact throws out_of_range, also a logic_error). Either way the handler for std::exception prints basic_string::substr: __pos (which is 10) > this->size() (which is 3)."
   },
   {
     "q": "An exception is thrown and no catch statement with a matching type exists anywhere up the stack. The sequence is...",

@@ -29,7 +29,7 @@ The slide marks two devices in red:
 - a **parallel/serial converter** between the sender and the line
 - a **serial/parallel converter** between the line and the receiver
 
-An earlier edition of the textbook gives the reason for the converters: communication within devices is parallel, and only the line is serial.
+The slide gives no reason for the converters. Unverified, written from memory of the textbook rather than from a file on disk: communication within devices is parallel, and only the line is serial.
 
 ## USB is serial transmission
 
@@ -49,7 +49,7 @@ Every version is serial, and the newest is more than 1600 times faster than the 
 
 ```widget
 tx-modes
-{ "bits": "01100010" }
+{ "bits": "01100010", "predict": true }
 ```
 
 ```quiz

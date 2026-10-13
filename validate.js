@@ -22,6 +22,13 @@ const WIDGETS = new Set([
   "catch-matcher", "unwind-stepper", "exception-tree", "coupling-graph", "solid-spotter", "demeter-chain",
   "wave-travel", "pcm-play", "tdm-play", "fib-tree-play", "find-play", "standardize-play", "memoryless-play",
   "container-picker", "iter-walk", "iterator-ops", "swo-checker", "map-insert", "partition-stepper",
+  // 2026-10-12 review build: playback animations and movers
+  "duplex-play", "bit-stream-play", "forward-play", "harmonic-build-play", "phase-circle-play", "distortion-play",
+  "clock-drift-play", "baseline-play", "shift-keying-play", "sampling-play", "fdm-play",
+  "sequence-play", "build-play", "vector-grow-play", "seek-play",
+  "stem-leaf-play", "ogive-play", "hist-tally-play", "birthday-play", "bayes-flow-play", "perm-fill-play",
+  "arrivals-play", "deal-play", "cdf-sweep-play",
+  "insertion-play", "pairs-play", "halving-play",
 ]);
 const SERVER = process.env.LEARN_URL || "http://localhost:4321";
 const args = process.argv.slice(2);

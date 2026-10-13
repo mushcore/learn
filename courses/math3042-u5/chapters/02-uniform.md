@@ -5,10 +5,6 @@ minutes: 15
 
 A bus comes every twenty minutes and you arrive at a random moment. Every wait from 0 to 20 minutes is equally likely, so the probability of any range of waits is just a fraction of the 20 minutes. That is the uniform distribution, and it is the one continuous distribution whose areas are rectangles.
 
-:::info Answers in this lesson are computed
-The notes' answer lines for the bus example are blank. The values below were computed and checked in R; if the in-class answers differ, use those. The formulas for $f(x)$, $\mu$ and $\sigma$ are standard results the notes do not print.
-:::
-
 ## A flat density on [a, b]
 
 Slide wording: "The first specific type of continuous probability distribution we will examine is the simplest: a *uniform distribution* on an interval $[a, b]$."
@@ -27,7 +23,7 @@ $$\mu = \frac{a + b}{2}, \qquad \sigma = \frac{b - a}{\sqrt{12}}$$
 
 ## The bus example
 
-Slide wording: "A bus arrives exactly once every twenty minutes. However, you don't know its schedule, so when you start waiting for the bus, the time $T$ you must wait is random and uniformly distributed." So $T$ is uniform on $[0, 20]$, with density height $\frac{1}{20} = 0.05$ per minute. Compute the first answer before reading on.
+Slide wording: "A bus arrives exactly once every twenty minutes. However, you don't know its schedule, so when you start waiting for the bus, the time $T$ you must wait is random and uniformly distributed." So $T$ is uniform on $[0, 20]$, with density height $\frac{1}{20} = 0.05$ per minute.
 
 ```quiz
 [
@@ -76,7 +72,7 @@ pdf-area
 { "dist": "uniform", "a": 0, "b": 20, "lo": 8, "hi": 11, "showCdf": false, "title": "Bus wait T, uniform on [0, 20]" }
 ```
 
-Drag the bounds to 12 and 20 for "more than 12 minutes", and together for "exactly 4".
+The same rectangle with bounds 12 and 20 is "more than 12 minutes"; with both bounds at 4 it has no width.
 
 ## Height is density, not probability
 
@@ -98,6 +94,12 @@ Units must match the interval. If the same bus question is posed in hours, the w
     "options": ["$20/30 = 0.6667$", "$10/30 = 0.3333$", "$1/30 = 0.0333$", "0"],
     "answer": 1,
     "explain": "'More than 20' runs from 20 to the end at 30, a length of 10: $10/30 = 0.3333$. The length is $b - 20$, not 20."
+  },
+  {
+    "q": "Same bus, uniform on $[0, 30]$. Write the set-up for $P(T > 20)$: the interval's length over the whole length, as two subtractions with no spaces, in the form `(d-c)/(b-a)`.",
+    "type": "text",
+    "answer": ["(30-20)/(30-0)", "(30-20)/30", "(30−20)/(30−0)", "(30−20)/30"],
+    "explain": "'More than 20' is the interval from 20 to $b = 30$: length $30 - 20$, over the whole length $30 - 0$. Written out, $P(T > 20) = (30 - 20)/(30 - 0) = 10/30 = 0.3333$. Writing $20/30$ measures the wrong side."
   },
   {
     "q": "For $T$ uniform on $[0, 30]$, what is the height of the density $f(t)$? (4 decimals)",

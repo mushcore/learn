@@ -88,9 +88,9 @@ Steps: dividing by $10^{-6}$ is multiplying by $10^{6}$, so $\frac{1}{200 \times
 
 Shortcut check: $T$ in μs gives $f$ in MHz, so $f = \frac{1}{200}$ MHz $= 0.005$ MHz $= 5$ kHz.
 
-## Convert both ways
+## The reciprocal with unit prefixes
 
-The panel shows the reciprocal with the prefix arithmetic written out.
+The panel converts either way and writes out the prefix arithmetic.
 
 ```widget
 freq-period
@@ -122,22 +122,6 @@ freq-period
     "tolerance": 0.05,
     "unit": "μs",
     "explain": "$T = 1/(100 \\times 10^{3}) = 10^{-5}$ s $= 10 \\times 10^{-6}$ s $= 10$ μs. Shortcut: $1/100$ kHz $= 0.01$ ms $= 10$ μs."
-  },
-  {
-    "q": "A period of 1 ns corresponds to what frequency in GHz?",
-    "type": "numeric",
-    "answer": 1,
-    "tolerance": 0.01,
-    "unit": "GHz",
-    "explain": "$f = 1/(1 \\times 10^{-9}) = 10^{9}$ Hz $= 1$ GHz. ns and GHz are reciprocal rows in the unit table."
-  },
-  {
-    "q": "Slide Example 1: the 60 Hz power in your home. What is its period in ms?",
-    "type": "numeric",
-    "answer": 16.7,
-    "tolerance": 0.1,
-    "unit": "ms",
-    "explain": "$T = 1/60 = 0.0167$ s $= 16.7$ ms."
   },
   {
     "q": "A sine wave fits 8 complete cycles into 1 second. What is its frequency in Hz?",

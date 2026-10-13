@@ -3,7 +3,7 @@ title: Single Responsibility and Open/Closed
 minutes: 20
 ---
 
-SOLID is *a set of guidelines to help us write maintainable, decoupled, flexible Object-Oriented Code*, created by Robert C. Martin, known as Uncle Bob among developers and the author of a shelf of books on clean code. One letter per principle; this lesson takes S and O, the two that fix a class that does too much and a function that grows forever.
+A class that does too much and a function that grows with every new case are the two faults that make code hard to change. SOLID is *a set of guidelines to help us write maintainable, decoupled, flexible Object-Oriented Code*, created by Robert C. Martin (Uncle Bob); S and O fix those two faults.
 
 ## A User class that does everything
 
@@ -95,12 +95,7 @@ int main() {
 }
 ```
 
-`MyDatabase* database;` moved out of User into PostWriter, and `this->database = database;` receives it from whoever constructs the writer instead of creating it. `Post post = Post(subject, message, user.username);` is the slide's line with one change: the username now comes from the `User&` parameter, because the writer is not a user. A change to how posts are stored touches PostWriter; a change to what a user is touches User; neither touches the other.
-
-```widget
-solid-spotter
-{ "cases": ["srp", "ocp"], "shuffle": false }
-```
+The database pointer moved out of User into PostWriter, which receives it from whoever constructs the writer instead of creating it. The `Post` line is the slide's with one change: the username comes from the `User&` parameter, because the writer is not a user. A change to how posts are stored touches PostWriter; a change to what a user is touches User; neither touches the other.
 
 ## A UIWidget with a string type and a growing if-chain
 
@@ -152,6 +147,7 @@ Slide 68 turns `UIWidget` into a class with a single pure virtual `draw()`, and 
 ```cpp run pin widget_virtual.cpp
 // predict: Write the four lines printed.
 #include <iostream>
+#include <vector>
 using namespace std;
 
 class UIWidget {
@@ -186,19 +182,27 @@ int main() {
     UIScrollBar scrollbar;
     UISlider slider;
     UITextBox textbox;
-    button.draw();
-    scrollbar.draw();
-    slider.draw();
-    textbox.draw();
+    vector<UIWidget*> screen = { &button, &scrollbar, &slider, &textbox };
+    for (UIWidget* w : screen)
+        w->draw();                    // the same loop as the if-chain, no type test
     return 0;
 }
 ```
 
-`virtual void draw() = 0;` is the whole base class: *we used abstraction to do this. The UIWidget class is now an interface, ensuring that each UI component that inherits from it has the same interface.* The slider that fell through the if-chain is now `class UISlider : public UIWidget {`, a new class added without opening UIWidget, and `//UIWidget w;   // error: abstract class` shows that the base exists only to be extended. *Now, any change to UIButton would not affect any other widget. Each widget class is modular and decoupled. It even follows the Single Responsibility Principle!*
+The loop is the if-chain's loop, now over base pointers: virtual dispatch picks each class's `draw()`, and no line tests a type. *We used abstraction to do this. The UIWidget class is now an interface, ensuring that each UI component that inherits from it has the same interface.* The slider is a new class added without opening UIWidget, and the commented-out `UIWidget w;` shows that the base exists only to be extended. *Now, any change to UIButton would not affect any other widget. Each widget class is modular and decoupled. It even follows the Single Responsibility Principle!*
 
 ```widget
 abstract-check
 { "f": "pure", "g": "plain", "bf": true, "bg": false, "cf": true, "cg": false, "title": "UIWidget as A: one pure virtual draw() makes it abstract; B and C that override it are concrete" }
+```
+
+## Spot S and O in the deck's two cases
+
+Each case is slide code with one fault; the slide's fix is drawn once the principle is named.
+
+```widget
+solid-spotter
+{ "cases": ["srp", "ocp"], "shuffle": false }
 ```
 
 ```challenge

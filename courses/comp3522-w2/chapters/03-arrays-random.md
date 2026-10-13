@@ -25,37 +25,23 @@ With `int scores[] = {1, 2, 3, 4};` the compiler counts the initializers and mak
 #include <iostream>
 using namespace std;
 
-void swap(int arr[], int i, int j)
-{
-    cout << "sizeof(arr) inside swap: " << sizeof(arr) << " bytes" << endl;
-    int temp = arr[i];
-    arr[i] = arr[j];
-    arr[j] = temp;
-}
-
 int main()
 {
     float values[3];                        // array of 3 floats (garbage until assigned)
     char * names[32];                       // array of 32 pointers to char
-    int scores[] = {1, 2, 3, 4};            // size deduced: 4
-    int some_scores[8] = {1, 2, 3, 4};      // equivalent to {1, 2, 3, 4, 0, 0, 0, 0}
+    int scores[] = {1, 2, 3, 4};            // size deduced from the list
+    int some_scores[8] = {1, 2, 3, 4};      // the rest of the slots?
 
     cout << "sizeof(values): " << sizeof(values) << endl;
     cout << "sizeof(names): " << sizeof(names) << endl;
     cout << "sizeof(scores): " << sizeof(scores) << " bytes = " << sizeof(scores) / sizeof(scores[0]) << " ints" << endl;
     for (int s : some_scores) cout << s << ' ';
     cout << endl;
-
-    swap(scores, 0, 3);
-    for (int s : scores) cout << s << ' ';
-    cout << endl;
     return 0;
 }
 ```
 
-- `sizeof(values)` is 3 floats × 4 bytes = **12**; `sizeof(names)` is 32 pointers × 8 bytes = **256**. `sizeof` on an array is the whole array, so `sizeof(scores) / sizeof(scores[0])` (16 / 4) counts its elements: **4**.
-- `for (int s : some_scores)` prints `1 2 3 4 0 0 0 0`.
-- Inside `swap`, `sizeof(arr)` prints **8**, not 16. An array **parameter** is not an array: `int arr[]` in a parameter list means `int* arr`, the array decays to a pointer to its first element, and a pointer is 8 bytes (g++ warns: `'sizeof' on array function parameter 'arr' will return size of 'int*'`). Because `arr` points at the original `scores`, the swap changes the caller's array: `4 2 3 1`. The value-parameter swap in the next lesson changes nothing.
+`sizeof` on an array is the whole array, element size times count, so `sizeof(scores) / sizeof(scores[0])` counts its elements. What an array becomes when it is passed to a function, and why `sizeof` then shrinks to a pointer's 8 bytes, is `arraySwap.cpp` in the [pointers lesson](#/comp3522-w2/pointers).
 
 ```challenge
 {
@@ -124,6 +110,7 @@ int random_num_3 = rand() % 25 + 2000;   // random range 2000 to 2024
 
 ```widget
 rand-range
+{ "m": 100, "offset": 0, "title": "The slide's three ranges: rand() % 100, % 100 + 1, % 25 + 2000" }
 ```
 
 ## Approach 2 and 3: the `<random>` header

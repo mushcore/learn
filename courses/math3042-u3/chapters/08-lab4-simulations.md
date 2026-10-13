@@ -3,7 +3,7 @@ title: Lab 4: simulating probabilities with sample() and replicate()
 minutes: 28
 ---
 
-Lab 4 is the relative-frequency definition made executable: simulate a random experiment $m$ times with `sample()`, count how often the event occurred, and estimate $P(E) \approx k/m$. Its twelve tasks build up from one die roll to a function that draws cards and plots the distribution of $X$. Package: `mosaic`.
+Lab 4 is the relative-frequency definition made executable: simulate a random experiment $m$ times with `sample()`, count how often the event occurred, and estimate $P(E) \approx k/m$. Package: `mosaic`.
 
 ## sample(): one call, three arguments that matter
 
@@ -15,9 +15,9 @@ sample.int(6, 5)                  # WITHOUT replacement: always five distinct va
 sample.int(6, 100, replace=TRUE, prob = c(0.1, 0.1, 0.1, 0.1, 0.1, 0.5))   # a loaded die
 ```
 
-The first argument is the sample space, the second how many draws. `replace=TRUE` puts each value back so it can come up again, which is how independent dice behave; without it the five values are always distinct, which is how cards behave. `prob=` gives unequal probabilities: the loaded die shows 6 half the time.
+The first argument is the sample space, the second how many draws. `replace=TRUE` puts each value back, which is how independent dice behave; without it the values are always distinct, which is how cards behave. `prob=` gives unequal probabilities.
 
-Counting an event is a comparison inside `sum()`: `X <- sum(die.outcomes == 6)` counts the sixes among 100 rolls (about 12 in the lab's run). Coins are strings: `sample(c("H","T"), 1)`; Task 2's 1000 flips with a 55% coin are `sample(c("H","T"), 1000, replace=TRUE, prob=c(0.55, 0.45))` and `X <- sum(coin.outcomes == "H")` (537 in the lab's run).
+Counting an event is a comparison inside `sum()`: `X <- sum(die.outcomes == 6)` counts the sixes in 100 rolls (12 in the lab's run). Coins are strings: `sample(c("H","T"), 1)`; Task 2's 1000 flips with a 55% coin are `sample(c("H","T"), 1000, replace=TRUE, prob=c(0.55, 0.45))` and `X <- sum(coin.outcomes == "H")` (537 in the lab's run).
 
 ## Functions and for loops
 
@@ -39,7 +39,7 @@ Flip.Coins <- function(n){                                          # Task 5
 }
 ```
 
-A function is defined with `function(...)` and returns with `return()`. A for loop `for (i in 1:n)` runs its body once per value of `i`; to keep results, allocate a vector first (`numeric(100)`, `character(n)`) and fill `res.coins[i]`.
+To keep a loop's results, allocate a vector first (`numeric(100)`, `character(n)`) and fill `res.coins[i]`.
 
 ## Estimating a probability
 
@@ -93,7 +93,7 @@ Prob.E <- function(m){
 }
 ```
 
-Same estimates (0.50364, 0.16849), less code, and much faster: Task 9 warns that for-loops slow the next part too much.
+Same estimates (0.50364, 0.16849), less code, and much faster, which Task 9 needs.
 
 ## How the estimate's variability shrinks with m
 
@@ -120,25 +120,25 @@ Each tenfold increase in $m$ divides the spread by about $\sqrt{10} \approx 3.2$
 
 ## The distribution of X
 
-Task 10, `Roll.Dice(m)`, draws `barplot(prop.table(table(die.vals)), col="lightblue", xlab="X = die value", ylab="rel. frequency", main=paste0("Simulated Die Rolls (", m, " Trials)"))` for $m$ = 100, 1000, 10 000: the bars flatten towards $1/6$ each as $m$ grows. `table()` counts, `prop.table()` turns counts into relative frequencies.
+Task 10, `Roll.Dice(m)`, draws `barplot(prop.table(table(die.vals)), ...)` for $m$ = 100, 1000, 10 000: the bars flatten towards $1/6$ each as $m$ grows. `prop.table()` turns counts into relative frequencies.
 
-Task 11, `Roll.Some.Dice(m, n)`, rolls $n$ dice per trial and lets $X$ be the number of 3s: `X.vals <- replicate(m, sum(sample.int(6, n, replace=TRUE)==3))`, then `table(X.vals)` and a bar plot titled with `paste0("Number of 3s Out of ", n, " Dice (Based on ", m, " Trials)")`. For $n$ = 1, 2, 5, 10, 100 the shape moves from two bars to a bell: **as $n$ increases the distribution of $X$ becomes closer and closer to a normal distribution, with its peak near $n/6$** ($X \approx 1$ for 10 dice, $X \approx 16$ for 100).
+Task 11, `Roll.Some.Dice(m, n)`, rolls $n$ dice per trial with $X$ = the number of 3s. For $n$ = 1, 2, 5, 10, 100 the shape moves from two bars to a bell: **as $n$ increases the distribution of $X$ becomes closer and closer to a normal distribution, with its peak near $n/6$** ($X \approx 1$ for 10 dice, $X \approx 16$ for 100).
 
 ```widget
 sim-lab
-{ "experiment": "dice3", "n": 10, "m": 10000, "title": "Roll.Some.Dice(m, n): slide n from 1 to 100 and watch the bell appear around n/6" }
+{ "experiment": "dice3", "n": 10, "m": 10000, "title": "Roll.Some.Dice(m, n): the number of 3s, with a bell forming around n/6 as n grows" }
 ```
 
-Task 12, `Draw.Cards(m, n, replace)`, models the deck as `deck <- c(rep("R", 26), rep("B", 26))`, draws with `sample(deck, n, replace)`, counts `== "R"`, and plots a mosaic `histogram(X.vals, type="d", breaks=seq(-0.5, n+0.5, by=1), ...)`. Ten runs (n = 1, 5, 10, 20, 50, with and without replacement) give the lab's two conclusions: the shape again approaches normal as $n$ grows, and **`replace=FALSE` makes the distribution narrower (less variability) without moving its centre, which is always $n/2$**.
+Task 12, `Draw.Cards(m, n, replace)`, models the deck as `deck <- c(rep("R", 26), rep("B", 26))` and plots a mosaic `histogram(X.vals, type="d", breaks=seq(-0.5, n+0.5, by=1), ...)`. Runs for n = 1, 5, 10, 20, 50, with and without replacement, give the lab's two conclusions: the shape again approaches normal as $n$ grows, and **`replace=FALSE` makes the distribution narrower (less variability) without moving its centre, which is always $n/2$**.
 
 ```widget
 sim-lab
-{ "experiment": "cards", "n": 20, "m": 10000, "replace": false, "title": "Draw.Cards: toggle replace and compare the spread; the centre stays at n/2" }
+{ "experiment": "cards", "n": 20, "m": 10000, "replace": false, "title": "Draw.Cards: with and without replacement, the centre stays at n/2" }
 ```
 
 ## Quiz 4 Part 2 as given: a match simulated, then "is X unusual?"
 
-The RStudio half of Quiz 4 was this lab turned into a quiz, and its posted solutions (two versions) share one pattern: simulate one game with `sample()`, wrap the match in a function, repeat it $m$ times, count the event, draw the distribution of $X$ with half-integer breaks, and decide whether an observed $X$ is unusual with a Z-score or a tail probability.
+The RStudio half of Quiz 4 was this lab applied to a game. Both posted versions follow one pattern: simulate one game with `sample()`, wrap the match in a function, repeat it $m$ times, count the event, draw the distribution of $X$ with half-integer breaks, and judge an observed $X$ with a Z-score or a tail probability.
 
 **V1: Alice and Bob play checkers.** Alice wins a game with probability 0.6; a match is 13 games.
 
@@ -176,7 +176,16 @@ Z <- (3 - mu.X)/sig.X; Z         ## -2.719164
 sum(X.vals <= 3)/m.trials        ## 0.0081
 ```
 
-`prob = c(0.6,0.4)` is Task 2's loaded coin and `sum(games == "A")` the count idiom. `breaks=seq(-0.5, n+0.5, by=1)` (Task 12) gives each integer value of $X$ its own bar and `freq = FALSE` makes the heights relative frequencies, an estimate of the distribution of $X$. The 0.77156 estimates a number Unit 4 computes exactly (binomial: 0.7712). The verdict on $X = 3$, in the solution's words: *unusual*, justified *in terms of the Z-score, which is −2.7*, or because *the left-tail from X = 3 and below has probability 0.0080, which is smaller than 0.0250*. With the rounded 7.80 and 1.77, $Z = -2.71$.
+`breaks=seq(-0.5, n+0.5, by=1)` (Task 12) gives each integer value of $X$ its own bar and `freq = FALSE` makes the heights relative frequencies. The 0.77156 estimates a number Unit 4 computes exactly (binomial: 0.7712). The verdict on $X = 3$, in the solution's words: *unusual*, justified *in terms of the Z-score, which is −2.7*, or because *the left-tail from X = 3 and below has probability 0.0080, which is smaller than 0.0250*. With the rounded 7.80 and 1.77, $Z = -2.71$.
+
+### Alice's 13-game match, simulated
+
+The same match in the simulator: 13 games, Alice wins each with probability 0.6. The bars centre near $13 \times 0.6 = 7.8$; the bars for $X = 7$ to 13 add to about 0.77, against the exact 0.7712.
+
+```widget
+sim-lab
+{ "experiment": "coins", "n": 13, "p": 0.6, "m": 10000, "title": "13 games, P(Alice wins a game) = 0.6: X = games Alice wins" }
+```
 
 **V1, Q2: Alice takes pity.** Before each game a die is rolled; a 6 means Alice throws the game. One game is a function, a match is `replicate()` of it, the trials are `replicate()` of the match:
 
@@ -200,9 +209,9 @@ p.Alice <- Simulate.Trials(m.trials)/m.trials
 p.Alice                          ## 0.49895
 ```
 
-Alice now wins a game with probability $(5/6)(0.6) = 0.5$ (AND rule), so the match is a fair coin.
+Alice now wins a game with probability $(5/6)(0.6) = 0.5$ (AND rule): a fair coin.
 
-**V3: Chad and Deb play blackjack.** The deck is 52 values: Ace to 10 four times each, plus twelve face cards worth 10.
+**V3: Chad and Deb play blackjack.** Ace to 10 four times each, plus twelve face cards worth 10.
 
 ```r
 cards <- c(rep(c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), 4), rep(10, 12))
@@ -233,10 +242,10 @@ Chad.params <- Chad.score.distribution(10^5)     ## mean 13.10392, sig 4.460993
 Z <- (5 - Chad.params$mean)/Chad.params$sig; Z   ## -1.816618
 ```
 
-`list(mean=, sig=)` returns two numbers from one function, read back as `Chad.params$mean` and `Chad.params$sig`; two cards score 2 to 20, so the breaks run 1.5 to 20.5. Typed answer: *No, Chad's score X = 5 is not unusual since it is less than two standard deviations away from its mean.* Q2 lets Chad hit on 18 or less (bust above 21 scores 0): 51.73%, lower.
+`list(mean=, sig=)` returns two numbers, read back as `Chad.params$mean`; two cards score 2 to 20, hence breaks 1.5 to 20.5. Typed answer: *No, Chad's score X = 5 is not unusual since it is less than two standard deviations away from its mean.* Q2 lets Chad hit on 18 or less (bust above 21 scores 0): 51.73%, lower.
 
 :::quiz Two accepted ways to say "unusual"
-Either $|Z| > 2$ (Alice: $Z = -2.72$, unusual; Chad: $Z = -1.82$, not unusual) or a tail probability below 0.025 (Alice: $P(X \le 3) = 0.0081 < 0.0250$). State the number and the cut-off; the verdict alone earns nothing.
+Either $|Z| > 2$ (Alice: $Z = -2.72$, unusual; Chad: $Z = -1.82$, not unusual) or a tail probability below 0.025 (Alice: $P(X \le 3) = 0.0081 < 0.0250$). State the number and the cut-off with the verdict.
 :::
 
 ```quiz

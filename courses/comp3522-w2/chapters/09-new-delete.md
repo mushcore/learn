@@ -3,11 +3,11 @@ title: new, delete and memory leaks
 minutes: 15
 ---
 
-Everything you have declared so far was created when its function started and destroyed when it returned. `new` asks for memory yourself, and `delete` gives it back. The slides call this **dynamic memory management**, and the instructor's first warning is the name: "dynamic to me means automatic, but what dynamic memory management actually refers to is manual memory management."
+`new` asks for memory yourself, and `delete` gives it back. The slides call this **dynamic memory management**, and the instructor's warning is the name: "dynamic to me means automatic, but what dynamic memory management actually refers to is manual memory management."
 
 ## Why manual memory exists
 
-Manual management lets you obtain memory when you need it and release it when you do not. Java's garbage collector cleans up in the background at a time you do not control; in C++ nothing runs in the background, which is more efficient and more dangerous. In C there was no language support, only four library functions from `stdlib.h`:
+Java's garbage collector cleans up in the background at a time you do not control; in C++ nothing runs in the background, which is more efficient and more dangerous. C had only four library functions from `stdlib.h`:
 
 | C function | Does |
 |---|---|
@@ -45,13 +45,7 @@ int main()
 }
 ```
 
-The three spellings from the slides:
-
-1. `int * my_pointer = nullptr;` then `my_pointer = new int { 3522 };`: declare the pointer safely, then point it at a freshly allocated `int`. The slides say `my_pointer` **refers to a data object**, not an instance of a class: a nameless box of data on the heap.
-2. `int * second = new int;` allocates an uninitialized `int`, and `*second = 3522;` writes into it through the pointer.
-3. `int * third = new int{3522};` does both in one line.
-
-The box has **no name**; the pointer is the only way to reach it, which is why losing the pointer is the disaster in the leak section. The widget shows the boxes appearing on the heap:
+The three spellings from the slides: declare the pointer safely and then `my_pointer = new int { 3522 };`; allocate an uninitialized `int` with `int * second = new int;` and write through the pointer; or `int * third = new int{3522};` in one line. The slides say `my_pointer` **refers to a data object**, not an instance of a class: a nameless box on the heap that only the pointer can reach.
 
 ```widget
 pointer-viz
@@ -81,7 +75,7 @@ int main()
 }
 ```
 
-`my_pointer = new int [5];` allocates five ints in one block and returns a pointer to the first, so `my_pointer[i] = i;` indexes the block like an array. `delete[] my_pointer;` frees it with the square-bracket form because it was allocated with the square-bracket form; mixing `delete` and `delete[]` is undefined behaviour.
+`my_pointer = new int [5];` allocates five ints in one block, so `my_pointer[i] = i;` indexes it like an array, and `delete[] my_pointer;` frees it with the matching square-bracket form; mixing `delete` and `delete[]` is undefined behaviour.
 
 ## Stack versus heap: what is the difference?
 
@@ -103,7 +97,7 @@ int * iArray = new int[10];
 - It is the **programmer's responsibility** to deallocate the memory when it is no longer needed.
 - **Memory leaks** occur if memory is not deallocated. The memory exists even after the function returns/completes.
 
-That last bullet is both the feature and the danger: a `new` block survives the function that created it, and nothing ever cleans it up for you. "There is no garbage collector in C++."
+"There is no garbage collector in C++."
 
 ## `delete` and `delete[]`
 
@@ -117,10 +111,7 @@ delete i;        //free allocated memory
 delete[] iArray; // freed block of allocated memory
 ```
 
-Two things the video stresses:
-
-- `delete i;` **does not delete the pointer `i`.** It frees the data object `i` points at. `i` still holds the old address and is now **dangling**: using `*i` afterwards is undefined behaviour, so set `i = nullptr;` after a delete.
-- Keep a tally: "whenever you have the `new` keyword written somewhere, you always need a corresponding `delete` somewhere else." An imbalance means a leak or a double free.
+`delete i;` **does not delete the pointer `i`**: it frees the data object `i` points at, and `i` is left **dangling**. Keep a tally: "whenever you have the `new` keyword written somewhere, you always need a corresponding `delete` somewhere else."
 
 ```cpp run pin deleteBasics.cpp
 // predict: Write the two lines printed.
@@ -141,7 +132,7 @@ int main()
 }
 ```
 
-`delete i;          // frees the 11, not the pointer` gives the block back, and `i = nullptr;` makes the pointer testable. The last line shows that `delete` on `nullptr` is allowed and does nothing, so a pointer you reset can never be double-freed.
+`i = nullptr;` makes the dangling pointer testable, and `delete` on `nullptr` is allowed and does nothing, so a pointer you reset can never be double-freed.
 
 ## Anatomy of a memory leak
 
@@ -169,12 +160,7 @@ int main()
 }
 ```
 
-1. `int *i = new int{11};` allocates a box at `0xffff000a` holding 11.
-2. `int *a = new int{99};` allocates a second box at `0xffff000b` holding 99.
-3. `i = a;      // creates a memory leak` copies the **address** in `a` into `i`. Both pointers now point at the 99 box and nothing points at the 11 box: no way to get a pointer back to it to delete it.
-4. `delete i;   // frees the 99 block (the one both pointers point at)` releases the 99. `a` is now dangling, and the 11 is still allocated with no way to reach it. **That is the memory leak.** The program prints `99 99` and one `int` is lost until the OS reclaims everything at exit.
-
-Done once, you never notice. In a loop, or a server that runs for weeks, the lost blocks add up until the process runs out of memory.
+`i = a;      // creates a memory leak` copies an **address**: afterwards nothing points at the 11 box, so nothing can ever delete it. `delete i;   // frees the 99 block (the one both pointers point at)` leaves `a` dangling and the 11 still allocated. **That is the memory leak.** Done once, you never notice; in a loop, or a server that runs for weeks, the lost blocks add up until the process runs out of memory.
 
 ## The fix: delete before you re-point
 
@@ -184,7 +170,7 @@ pointer-viz
 ```
 
 ```cpp run pin leakFixed.cpp
-// predict: Write the one line printed. Then count: how many blocks are freed, and by which lines?
+// predict: Write the one line printed.
 #include <iostream>
 using namespace std;
 
@@ -201,7 +187,7 @@ int main()
 }
 ```
 
-`delete i;   // deletes memory i is pointing at (the 11)` runs **before** `i` is moved, so the 11 is freed while a pointer still reaches it. Then `i = a;      // i can now safely point to something else` makes both pointers point at the 99, and the second `delete i;` frees that. Two `new`s, two `delete`s: the tally balances.
+The first `delete i;` runs **before** `i` is moved, while a pointer still reaches the 11. Two `new`s, two `delete`s: the tally balances.
 
 ## What if there is not enough memory?
 
@@ -227,17 +213,7 @@ int main()
 }
 ```
 
-`int * my_pointer = new (nothrow) int[100];` passes the `nothrow` object (from `<new>`) to `new`, so `if (my_pointer == nullptr)` can test for a failed allocation instead of catching an exception. For 100 ints the allocation succeeds. Exceptions come later in the course.
-
-## Stack versus heap
-
-| | Stack (`int i;`) | Heap (`int * i = new int;`) |
-|---|---|---|
-| Created by | the declaration | `new` / `new[]` |
-| Destroyed by | the function returning | `delete` / `delete[]` (you) |
-| Name | has one | none; reachable only through a pointer |
-| Survives the function? | no | yes, until deleted |
-| Forgetting to free | impossible | **memory leak**, no garbage collector |
+`int * my_pointer = new (nothrow) int[100];` passes the `nothrow` object (from `<new>`) to `new`, so `if (my_pointer == nullptr)` can test for a failed allocation instead of catching an exception.
 
 ```quiz
 [

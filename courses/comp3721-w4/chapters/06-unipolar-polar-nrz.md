@@ -64,9 +64,9 @@ The same level can therefore mean either bit in NRZ-I. Bits 2, 3 and 4 are all n
 The slide-55 definition of NRZ-L is positive for 0 and negative for 1. The chart of common line code formats on slide 4, the self-synchronization figure and the complementary note (04a) all draw 1 high and 0 low. Use the slide-55 definition unless a question states its own.
 :::
 
-### Play the eight bits: NRZ-I decides at every bit boundary
+### NRZ-I decides at every bit boundary
 
-Press Play, or step forward one bit at a time. The caption gives the rule each bit used. Tick **Predict each bit before it is drawn** and the signal waits for you to pick the level first.
+At each boundary NRZ-I inverts for a 1 and holds for a 0, so bits 2 to 4 share one level although only bit 2 is a 1.
 
 ```widget
 line-code-play

@@ -62,9 +62,6 @@ Two things to read off the figure. The PAM bars still have arbitrary heights: sa
 | Quantizing | [Quantization](#/comp3721-w5/quantization) | how many levels $L$, the zone height $\Delta$, the error |
 | Encoding | [Encoding and bit rate](#/comp3721-w5/encoding-bit-rate) | bits per sample $n_b = \log_2 L$ and the bit rate |
 
-:::quiz Three orderings that get mixed up
-Sampling comes first, quantizing second, encoding last. The PAM signal is the output of sampling, not of quantizing. The quantized signal is still a set of bar heights, not bits; the bits appear only after encoding.
-:::
 
 ```quiz
 [

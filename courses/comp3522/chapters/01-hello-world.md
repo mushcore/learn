@@ -7,9 +7,8 @@ Every C++ program you write this term starts from this shape. The program below 
 
 ## Each piece of `HelloWorld.cpp`
 
-Hovering a row of the table highlights the matching line of the program, and vice versa.
-
 ```cpp run pin HelloWorld.cpp
+// predict: Write the line printed.
 #include <iostream>
 
 int main()
@@ -50,11 +49,10 @@ Both appear together in `std::cout.setf(std::ios_base::boolalpha)`: `std::` pick
 
 `std::cout << n;` is a function call: `std::cout.operator<<(n);` whose header looks like `ostream& operator<<(int);`. It **returns the stream**, which is why you can chain: `cout << a << b << endl;` works because `(cout << a)` gives back `cout`.
 
-## `endl` vs `'\n'`
-
-`cout` has an internal buffer (a `streambuf`). `endl` writes `\n` **and flushes** the buffer to the screen. Writing `"\n"` just adds the newline; the buffer flushes on its own later. Both print a newline; `endl` is sometimes not necessary.
+## `endl` versus `'\n'`
 
 ```cpp run
+// predict: Write the three lines printed.
 #include <iostream>
 
 int main()
@@ -66,20 +64,19 @@ int main()
 }
 ```
 
-## `main` and its return value
+`cout` keeps its output in an internal buffer (a `streambuf`) until it is flushed; only `endl` forces the flush.
 
-Two valid signatures:
+## `main` and its return value
 
 ```cpp
 int main()
 int main(int argc, char ** argv)   // command-line arguments
 ```
 
-- `main` returns an `int`. **0 = ran without errors.**
-- Best practice: leave `return 0;` at the end.
-- **But the code still runs if `return` is omitted** — `main` is special and implicitly returns 0.
+Both signatures are valid. `main` is the one function allowed to omit `return`: it then returns 0.
 
 ```cpp run
+// predict: Does this compile without return 0;? If so, write the line printed.
 #include <iostream>
 
 int main()

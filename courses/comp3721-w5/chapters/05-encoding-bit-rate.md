@@ -20,13 +20,13 @@ signal-levels
 { "levels": 8 }
 ```
 
-### Watch one sample go through the whole encoder
+### Each code becomes a 3-bit word in the bitstream
 
-The slide's nine samples pass through sampling, quantizing and encoding one at a time, and each 3-bit word joins the bitstream under the plot. Watch the red gap: it is the quantization error. Tick the predict box to name each code before it is shown.
+The nine codes leave the encoder as nine 3-bit words, 27 bits in all; in predict mode the question is the word, not the code.
 
 ```widget
 pcm-play
-{ "vmin": -20, "vmax": 20, "levels": 8, "samples": "-6.1 7.5 16.2 19.7 11.0 -5.5 -11.3 -9.4 -6.0" }
+{ "vmin": -20, "vmax": 20, "levels": 8, "samples": "-6.1 7.5 16.2 19.7 11.0 -5.5 -11.3 -9.4 -6.0", "ask": "word", "title": "The slide's nine samples encoded as 3-bit words" }
 ```
 
 ## Bit rate = f_s × n_b
@@ -35,16 +35,9 @@ Slide wording: *Bit rate = Sampling rate × Number of bits per sample = $f_s \ti
 
 Each second the encoder produces $f_s$ samples and each sample costs $n_b$ bits. The units multiply the same way: samples/s × bits/sample = bits/s.
 
-## E05 exercise 1: the human voice at 8 bits per sample
+## From f_max to the bit rate
 
-*We know that the human voice normally includes frequencies from 0 to 4 kHz. If we want to digitize the human voice, what is the bit rate, assuming 8 bits per sample?*
-
-Frequencies from 0 to 4 kHz describe a low-pass signal, so $f_{max} = 4$ kHz $= 4000$ Hz.
-
-$$\text{Sampling rate} = f_{max} \times 2 = 4000 \times 2 = 8000\ \text{samples/s}$$
-$$\text{Bit rate} = \text{Sampling rate} \times \text{Number of bits per sample} = 8000 \times 8 = 64000\ \text{bps} = 64\ \text{kbps}$$
-
-Three operations, always in this order: highest frequency → sampling rate (× 2) → bit rate (× $n_b$).
+Three operations, always in this order: highest frequency → sampling rate ($\times 2$, for a low-pass signal) → bit rate ($\times n_b$). E05 exercise 1 (the human voice at 8 bits per sample) is this chain; it is worked in [E05 worked](#/comp3721-w5/e05-worked).
 
 ## Choosing L
 
@@ -63,11 +56,7 @@ Its three cases:
 
 And the cost of economizing: *Choosing lower values of L increases the quantization error if there is a lot of fluctuation in the signal.* Fewer zones means taller zones, and a sample can land farther from its midpoint.
 
-## E05 exercise 3: more levels, more bits, higher bit rate
-
-*Assume PCM is used to convert an analog signal to digital data. If we increase the number of quantization levels, what is its impact on the number of bits per sample and the bit rate? Explain.*
-
-E05 answer: $n_b = \log_2 L$, so the number of bits per sample **increases**. Bit rate $= f_s \times n_b$, so the bit rate also **increases**. The sampling rate does not change, because it depends on $f_{max}$, not on $L$.
+E05 exercise 3 asks what a larger $L$ does to $n_b$ and the bit rate; it is worked in [E05 worked](#/comp3721-w5/e05-worked).
 
 ### From f_max and L to the bit rate
 

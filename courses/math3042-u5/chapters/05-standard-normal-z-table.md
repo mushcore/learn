@@ -5,8 +5,8 @@ minutes: 20
 
 There is no formula for the area under a normal curve, so the areas were computed once and printed in a table. One table is enough, for one particular normal curve: the standard normal, with $\mu = 0$ and $\sigma = 1$. This lesson is how to read that table forwards, for an area, and backwards, for a $z$.
 
-:::info Table answers are computed
-The notes' three table lookups are blank. The answers below assume the course's table is the cumulative left-tail table of $P(Z \le z)$, with $z$ to two decimals, and are given to the 4 decimals such a table shows; the R values beside them are exact. If the posted table is instead the "area from 0 to $z$" kind, add 0.5 to its entry for a positive $z$ to get $P(Z \le z)$. The in-class answers replace these.
+:::info Which kind of table
+The answers below assume the course's table is the cumulative left-tail table of $P(Z \le z)$, with $z$ to two decimals, and give the 4 decimals such a table shows. If the posted table is instead the "area from 0 to $z$" kind, add 0.5 to its entry for a positive $z$ to get $P(Z \le z)$.
 :::
 
 ## μ = 0, σ = 1 gives the Z-distribution
@@ -39,7 +39,7 @@ Because a single point has no area, $P(Z < z)$ and $P(Z \le z)$ are the same ent
 
 ## The three lookups
 
-Slide wording: "Suppose $Z$ follows a *standard normal distribution*. Determine each of the following using the table of standard normal probabilities and using R." Try the second one, the right tail, before reading the solutions.
+Slide wording: "Suppose $Z$ follows a *standard normal distribution*. Determine each of the following using the table of standard normal probabilities and using R."
 
 ```quiz
 [
@@ -88,7 +88,7 @@ z-table
 { "z": -1.96, "mode": "left", "title": "P(Z ≤ −1.96): row −1.9, column .06" }
 ```
 
-The presets step through the three lookups; "right tail" and "between" show the arithmetic line.
+The widget's "right tail" and "between" modes print the arithmetic line under the table.
 
 ## Reading the table backwards
 
@@ -114,7 +114,7 @@ z-table
 { "p": 0.95, "mode": "inverse", "title": "Backwards: which z has 0.95 to its left?" }
 ```
 
-## Three ways to lose the mark
+## Three table-reading slips
 
 The two-decimal split: 1.96 is row 1.9 and column .06, never row 1.96 or column .96. A right tail needs the $1 -$; the entry alone is the left tail, and 0.9901 is not $P(Z > 2.33)$. And a "between" is the larger entry minus the smaller, never the two added.
 
@@ -139,7 +139,13 @@ The two-decimal split: 1.96 is row 1.9 and column .06, never row 1.96 or column 
     "type": "numeric",
     "answer": 0.8185,
     "tolerance": 0.0002,
-    "explain": "Upper entry minus lower entry: $P(Z \\le 2.00) - P(Z \\le -1.00) = 0.9772 - 0.1587 = 0.8185$. The 34 % and 47.5 % slices of the empirical rule added, more precisely."
+    "explain": "Upper entry minus lower entry: $P(Z \\le 2.00) - P(Z \\le -1.00) = 0.9772 - 0.1587 = 0.8185$. The 34 % and 47.5 % slices of the empirical rule added, more precisely. R's `pnorm(2) - pnorm(-1)` gives 0.8186 because it does not round the two entries first."
+  },
+  {
+    "q": "Write the table arithmetic for $P(0.55 \\le Z \\le 1.10)$ from the two entries 0.8643 and 0.7088, as one subtraction with no spaces.",
+    "type": "text",
+    "answer": ["0.8643-0.7088", "0.8643−0.7088", ".8643-.7088"],
+    "explain": "Between is the upper entry minus the lower entry: $P(Z \\le 1.10) - P(Z \\le 0.55) = 0.8643 - 0.7088 = 0.1555$. The other order gives a negative number, and adding the entries gives more than 1."
   },
   {
     "q": "Which $z$ has $P(Z \\le z) = 0.975$? (2 decimals)",

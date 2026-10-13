@@ -3,7 +3,7 @@ title: "Alice's datagram to Bob: the frames at every node"
 minutes: 16
 ---
 
-The last three lessons gave the pieces: frames, two kinds of addresses and ARP. This lesson runs them together for one datagram from Alice to Bob through two routers, writing the frame that leaves every node.
+One datagram goes from Alice to Bob through two routers, and every node builds the frame that leaves it from its forwarding table, ARP and its own interface.
 
 ## The setup
 
@@ -68,7 +68,7 @@ hop-walk
 { "preset": "Alice to Bob (slides 30-33)", "draw": false }
 ```
 
-Now cover the table and write the two L fields of each frame yourself:
+### The two L fields of each frame, filled in
 
 ```widget
 hop-walk
@@ -77,7 +77,7 @@ hop-walk
 
 ## What the data-link layer is responsible for
 
-The lecture's summary slide (slide 34) lists the layer's responsibilities. Write these on your study sheet as the lecture's own closing list:
+The lecture's summary slide (slide 34) lists the layer's responsibilities:
 
 - *The creation and delivery of a frame to another node, along the link*
 - *Packetizing (framing)*

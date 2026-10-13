@@ -32,6 +32,15 @@ More likely than not, with only 23 people. The demo notebook's simulation (`samp
 birthday
 ```
 
+### The product of shrinking fractions, one person at a time
+
+Each person who enters multiplies P(all different) by one more fraction, $(365 - k + 1)/365$. The fractions stay close to 1, yet their product falls below 0.5 at person 23.
+
+```widget
+birthday-play
+{}
+```
+
 ## The addition rule (OR)
 
 For one trial and two events $A$ and $B$,
@@ -54,10 +63,10 @@ $$P(\text{Red} \cup \text{Ace}) = P(\text{Red}) + P(\text{Ace}) - P(\text{Red} \
 
 ```widget
 prob-rules
-{ "preset": "black card or heart" }
+{ "preset": "red card or Ace" }
 ```
 
-Switch to "heart or Ace" to see the overlap appear, and to "7 or Ace" for the printed version of the second example.
+The diagram shows the in-class example: 26 red cards and 4 Aces overlap in the 2 red Aces, so the union holds 28 of 52 cards. The other presets hold the printed "7 or Ace", the heart-or-Ace overlap and the mutually exclusive black-or-heart pair.
 
 :::quiz Mutually exclusive is about one trial
 Black and heart cannot both happen to the same card. They can certainly both happen across two draws. The addition rule and the definition of mutually exclusive always refer to **one trial** of the experiment.

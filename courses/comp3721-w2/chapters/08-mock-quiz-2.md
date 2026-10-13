@@ -3,7 +3,7 @@ title: Mock Quiz 2 (01b, 01c, Week 2)
 minutes: 35
 ---
 
-Quiz 2 is expected to cover what came after Quiz 1's scope: Lecture 01b (protocol layering, the TCP/IP protocol suite, the OSI model, encapsulation and addressing) and the 01c complementary notes (hubs, switches, routers), both in the Week 1 module, plus Lecture 02 (data and signals, sine waves, phase, wavelength, composite signals, bandwidth, digital signals). Same rules as the real thing: one hand-written A4 note, a calculator, no other help. About a third of the questions are calculations; write the units with every answer.
+Quiz 2 is expected to cover what came after Quiz 1's scope: Lecture 01b (protocol layering, the TCP/IP protocol suite, the OSI model, encapsulation and addressing) and the 01c complementary notes (hubs, switches, routers), both in the Week 1 module, plus Lecture 02 (data and signals, sine waves, phase, wavelength, composite signals, bandwidth, digital signals). Work it under quiz conditions: one hand-written A4 note, a calculator, no other help. About a third of the questions are calculations; write the units with every answer.
 
 ```quiz
 [
@@ -33,8 +33,8 @@ Quiz 2 is expected to cover what came after Quiz 1's scope: Lecture 01b (protoco
   },
   {
     "q": "Select the three advantages of protocol layering listed in the lecture.",
-    "options": ["Separating the services from the implementation", "Faster transmission over the medium", "Simpler and less expensive intermediate systems", "Modularity (independent layers, a black box)", "Fewer protocols overall"],
-    "answer": [0, 2, 3],
+    "options": ["Faster transmission over the medium", "Separating the services from the implementation", "Fewer protocols overall", "Simpler and less expensive intermediate systems", "Modularity (independent layers, a black box)"],
+    "answer": [1, 3, 4],
     "explain": "The three: separating services from implementation; simpler and less expensive intermediate systems; modularity, so a change in one layer's implementation is transparent to the rest of the system."
   },
   {
@@ -75,8 +75,8 @@ Quiz 2 is expected to cover what came after Quiz 1's scope: Lecture 01b (protoco
   },
   {
     "q": "Select all the transport-layer protocols named in the lecture.",
-    "options": ["TCP", "IP", "UDP", "HTTP", "SCTP", "Ethernet"],
-    "answer": [0, 2, 4],
+    "options": ["IP", "TCP", "HTTP", "UDP", "Ethernet", "SCTP"],
+    "answer": [1, 3, 5],
     "explain": "TCP, UDP and SCTP are transport-layer protocols. IP is network layer, HTTP is application layer, Ethernet is data link."
   },
   {
@@ -105,8 +105,8 @@ Quiz 2 is expected to cover what came after Quiz 1's scope: Lecture 01b (protoco
   },
   {
     "q": "Select the two OSI layers that are combined into the application layer of the TCP/IP suite (besides the application layer itself).",
-    "options": ["Presentation", "Transport", "Session", "Network"],
-    "answer": [0, 2],
+    "options": ["Transport", "Presentation", "Network", "Session"],
+    "answer": [1, 3],
     "explain": "Presentation (lets applications interpret the meaning of the data exchanged: compression, encryption) and session (session management, synchronization of data exchange) become part of TCP/IP's application layer."
   },
   {
@@ -129,8 +129,8 @@ Quiz 2 is expected to cover what came after Quiz 1's scope: Lecture 01b (protoco
   },
   {
     "q": "Select the three differences between a router and a repeater or switch given in the 01c notes.",
-    "options": ["A router has a physical (link-layer) address and a logical (IP) address for each interface", "A router acts only on packets whose link-layer destination address matches the interface they arrived on", "A router changes the link-layer source and destination addresses of the packet when it forwards it", "A router regenerates the signal it receives", "A router changes the IP addresses of the packet when it forwards it"],
-    "answer": [0, 1, 2],
+    "options": ["A router regenerates the signal it receives", "A router has a physical (link-layer) address and a logical (IP) address for each interface", "A router acts only on packets whose link-layer destination address matches the interface they arrived on", "A router changes the IP addresses of the packet when it forwards it", "A router changes the link-layer source and destination addresses of the packet when it forwards it"],
+    "answer": [1, 2, 4],
     "explain": "Exactly three: two addresses per interface; acts only on frames addressed to the arriving interface; rewrites the link-layer addresses when forwarding. Regenerating the signal is something switches and repeaters also do, and a router does not change the IP addresses."
   },
   {
@@ -147,57 +147,57 @@ Quiz 2 is expected to cover what came after Quiz 1's scope: Lecture 01b (protoco
   },
   {
     "q": "Select the three parameters that represent a sine wave, as listed in the lecture.",
-    "options": ["Peak amplitude", "Bit rate", "Frequency", "Wavelength", "Phase (phase shift)", "Bandwidth"],
-    "answer": [0, 2, 4],
+    "options": ["Bit rate", "Peak amplitude", "Wavelength", "Frequency", "Bandwidth", "Phase (phase shift)"],
+    "answer": [1, 3, 5],
     "explain": "Peak amplitude A (highest intensity, in volts, proportional to the energy carried), frequency f (completed cycles in 1 s, in Hz), and phase φ (position of the waveform relative to time 0, in degrees or radians). Wavelength and bandwidth are derived quantities."
   },
   {
-    "q": "The power we use at home has a frequency of 60 Hz. What is the period, in milliseconds?",
+    "q": "Mains power in Europe has a frequency of 50 Hz. What is the period, in milliseconds?",
     "type": "numeric",
-    "answer": 16.7,
+    "answer": 20,
     "tolerance": 0.1,
     "unit": "ms",
-    "explain": "$T = 1/f = 1/60 = 0.0167$ s $= 16.7$ ms. (The slide also notes the peak value is about $120\\sqrt{2} \\approx 170$ V.)"
+    "explain": "$T = 1/f = 1/50 = 0.02$ s $= 20$ ms. Same steps as the slide's 60 Hz example, which gives 16.7 ms."
   },
   {
-    "q": "A sine wave has a period of 200 μs. What is its frequency, in kHz?",
+    "q": "A sine wave has a period of 250 μs. What is its frequency, in kHz?",
     "type": "numeric",
-    "answer": 5,
+    "answer": 4,
     "tolerance": 0.05,
     "unit": "kHz",
-    "explain": "$f = 1/T = 1/(200 \\times 10^{-6}) = 1000000/200 = 5000$ Hz $= 5$ kHz."
+    "explain": "$f = 1/T = 1/(250 \\times 10^{-6}) = 1000000/250 = 4000$ Hz $= 4$ kHz. Shortcut: $T$ in μs gives $f$ in MHz, so $1/250 = 0.004$ MHz $= 4$ kHz."
   },
   {
-    "q": "For the sine wave $s(t) = 5\\sin(20\\pi t)$, what is the frequency in Hz?",
+    "q": "For the sine wave $s(t) = 4\\sin(30\\pi t)$, what is the frequency in Hz?",
     "type": "numeric",
-    "answer": 10,
+    "answer": 15,
     "tolerance": 0.1,
     "unit": "Hz",
-    "explain": "Compare with $A\\sin(2\\pi f t)$: $2\\pi f = 20\\pi$, so $f = 10$ Hz. Peak amplitude $A = 5$ V and $T = 1/f = 0.1$ s."
+    "explain": "Compare with $A\\sin(2\\pi f t)$: $2\\pi f = 30\\pi$, so $f = 15$ Hz. Peak amplitude $A = 4$ V and $T = 1/f = 0.0667$ s."
   },
   {
-    "q": "For the sine wave $s(t) = \\sin(10t)$, what is the period in seconds?",
+    "q": "For the sine wave $s(t) = \\sin(5t)$, what is the period in seconds?",
     "type": "numeric",
-    "answer": 0.628,
+    "answer": 1.257,
     "tolerance": 0.005,
     "unit": "s",
-    "explain": "$2\\pi f = 10$, so $f = 10/(2\\pi) = 1.59$ Hz and $T = 1/1.59 = 0.628$ s. Peak amplitude is 1 V."
+    "explain": "No $\\pi$ inside, so $2\\pi f = 5$ gives $f = 5/(2\\pi) = 0.796$ Hz and $T = 1/0.796 = 2\\pi/5 = 1.257$ s. Peak amplitude is 1 V."
   },
   {
-    "q": "A sine wave is offset 1/9 cycle with respect to time 0. What is its phase in degrees?",
+    "q": "A sine wave is offset 1/8 cycle with respect to time 0. What is its phase in degrees?",
     "type": "numeric",
-    "answer": 40,
+    "answer": 45,
     "tolerance": 0.5,
     "unit": "°",
-    "explain": "A full cycle is 360°, so $\\phi = \\frac{1}{9} \\times 360° = 40°$."
+    "explain": "A full cycle is 360°, so $\\phi = \\frac{1}{8} \\times 360° = 45°$."
   },
   {
     "q": "Same sine wave: what is that phase in radians?",
     "type": "numeric",
-    "answer": 0.698,
+    "answer": 0.785,
     "tolerance": 0.005,
     "unit": "rad",
-    "explain": "$40° \\times \\frac{2\\pi}{360°} = \\frac{2\\pi}{9} = 0.698$ rad. Remember $360° = 2\\pi$ rad, $1° = 2\\pi/360$ rad, $1$ rad $= 360/(2\\pi)$ degrees."
+    "explain": "$45° \\times \\frac{2\\pi}{360°} = \\frac{2\\pi}{8} = \\frac{\\pi}{4} = 0.785$ rad. Remember $360° = 2\\pi$ rad, $1° = 2\\pi/360$ rad, $1$ rad $= 360/(2\\pi)$ degrees."
   },
   {
     "q": "The wave $A\\sin(\\omega t + \\phi)$ is the wave $A\\sin(\\omega t)$ shifted to the right by $\\phi/\\omega$.",
@@ -206,12 +206,12 @@ Quiz 2 is expected to cover what came after Quiz 1's scope: Lecture 01b (protoco
     "explain": "False. Adding $\\phi$ shifts the wave to the left by $\\phi/\\omega$; subtracting it, $A\\sin(\\omega t - \\phi)$, shifts it to the right. Here $\\omega = 2\\pi f$. In the slide example $\\sin(\\omega t + 90°)$ starts at its peak, a quarter period early."
   },
   {
-    "q": "What is the wavelength of red light with frequency $4 \\times 10^{14}$ Hz, if the propagation speed is $3 \\times 10^{8}$ m/s? Answer in micrometres.",
+    "q": "What is the wavelength of light with frequency $5 \\times 10^{14}$ Hz, if the propagation speed is $3 \\times 10^{8}$ m/s? Answer in micrometres.",
     "type": "numeric",
-    "answer": 0.75,
+    "answer": 0.6,
     "tolerance": 0.005,
     "unit": "μm",
-    "explain": "$\\lambda = c/f = \\frac{3 \\times 10^{8}}{4 \\times 10^{14}} = 0.75 \\times 10^{-6}$ m $= 0.75$ μm. Wavelength is the distance a simple signal travels in one period, so $\\lambda = c \\cdot T$ too."
+    "explain": "$\\lambda = c/f = \\frac{3 \\times 10^{8}}{5 \\times 10^{14}} = 0.6 \\times 10^{-6}$ m $= 0.6$ μm. Wavelength is the distance a simple signal travels in one period, so $\\lambda = c \\cdot T$ too."
   },
   {
     "q": "The frequency of a signal depends on the transmission medium it travels through.",
@@ -232,44 +232,44 @@ Quiz 2 is expected to cover what came after Quiz 1's scope: Lecture 01b (protoco
     "explain": "True. In the slide figure the periodic composite is built from the fundamental frequency f (first harmonic), 3f (third harmonic) and 9f (ninth harmonic). Nonperiodic examples: the human voice (a continuous range from 0 to 4 kHz) and an AM or FM radio signal."
   },
   {
-    "q": "A periodic signal is decomposed into five sine waves with frequencies 100, 400, 500, 750 and 900 Hz. What is its bandwidth?",
+    "q": "A periodic signal is decomposed into five sine waves with frequencies 150, 300, 450, 600 and 1200 Hz. What is its bandwidth?",
     "type": "numeric",
-    "answer": 800,
+    "answer": 1050,
     "tolerance": 1,
     "unit": "Hz",
-    "explain": "$B = f_h - f_l = 900 - 100 = 800$ Hz. Only the highest and lowest frequencies matter."
+    "explain": "$B = f_h - f_l = 1200 - 150 = 1050$ Hz. Only the highest and lowest frequencies matter."
   },
   {
-    "q": "The highest frequency in a nonperiodic composite signal is 400 MHz and the middle frequency is 300 MHz. What is the lowest frequency?",
+    "q": "The highest frequency in a nonperiodic composite signal is 500 MHz and the middle frequency is 320 MHz. What is the lowest frequency?",
     "type": "numeric",
-    "answer": 200,
+    "answer": 140,
     "tolerance": 0.5,
     "unit": "MHz",
-    "explain": "Middle frequency $= (f_h + f_l)/2 = 300$, so $f_h + f_l = 600$ and $f_l = 600 - 400 = 200$ MHz. The bandwidth is then $400 - 200 = 200$ MHz."
+    "explain": "Middle frequency $= (f_h + f_l)/2 = 320$, so $f_h + f_l = 640$ and $f_l = 640 - 500 = 140$ MHz. The bandwidth is then $500 - 140 = 360$ MHz."
   },
   {
-    "q": "A signal has a bit rate of 1 Mbps and travels at $2 \\times 10^{8}$ m/s. What is the bit length, in metres?",
+    "q": "A signal has a bit rate of 5 Mbps and travels at $2 \\times 10^{8}$ m/s. What is the bit length, in metres?",
     "type": "numeric",
-    "answer": 200,
-    "tolerance": 1,
+    "answer": 40,
+    "tolerance": 0.5,
     "unit": "m",
-    "explain": "Bit duration $= 1/(1\\ \\text{Mbps}) = 1$ μs. Bit length $=$ propagation speed $\\times$ bit duration $= 2 \\times 10^{8} \\times 10^{-6} = 200$ m: one bit occupies 200 m of the medium. At 10 Mbps it would be 20 m."
+    "explain": "Bit duration $= 1/(5\\ \\text{Mbps}) = 0.2$ μs. Bit length $=$ propagation speed $\\times$ bit duration $= 2 \\times 10^{8} \\times 0.2 \\times 10^{-6} = 40$ m: one bit occupies 40 m of the medium. The slide's 1 Mbps gives 200 m."
   },
   {
-    "q": "A digital signal has 11 levels. How many bits are needed per level?",
+    "q": "A digital signal has 25 levels. How many bits are needed per level?",
     "type": "numeric",
-    "answer": 4,
+    "answer": 5,
     "tolerance": 0.5,
     "unit": "bits",
-    "explain": "$\\log_{2} 11 = 3.46$ bits, which is not realistic: the number of bits must be an integer, usually a power of 2, so round up: $⌈3.46⌉ = 4$ bits. For 4 levels it is $\\log_{2} 4 = 2$; for 8 levels 3; for 16 levels 4."
+    "explain": "$\\log_{2} 25 = 4.64$ bits, which is not realistic: the number of bits must be an integer, so round up: $⌈4.64⌉ = 5$ bits. Four bits name only 16 levels. The slide's 11 levels give $⌈3.46⌉ = 4$."
   },
   {
-    "q": "Text documents are downloaded at 100 pages per second; a page averages 24 lines of 80 characters and a character needs 8 bits. What bit rate is required, in Mbps?",
+    "q": "Text documents are downloaded at 40 pages per second; a page averages 30 lines of 60 characters and a character needs 8 bits. What bit rate is required, in Mbps?",
     "type": "numeric",
-    "answer": 1.536,
+    "answer": 0.576,
     "tolerance": 0.005,
     "unit": "Mbps",
-    "explain": "$100 \\times 24 \\times 80 \\times 8 = 1536000$ bps $= 1.536$ Mbps. Doubling to 200 pages per second (E02) gives 3.072 Mbps."
+    "explain": "$40 \\times 30 \\times 60 \\times 8 = 576000$ bps $= 0.576$ Mbps. Pages/s × lines/page × characters/line × bits/character leaves bits/s."
   },
   {
     "q": "A digital signal, periodic or nonperiodic, is a composite analog signal with frequencies between zero and infinity, i.e. infinite bandwidth.",

@@ -7,9 +7,7 @@ A sample can be any voltage at all, but a code word can name only $L$ values. Qu
 
 ## Quantization maps an infinite set of amplitudes to L values
 
-Slide wording: *Quantization: The set of amplitudes (can be infinite with nonintegral values) is mapped to a set of discrete values.*
-
-Slide wording: *Quantization is an approximation process.*
+Slide wording: *Quantization: The set of amplitudes (can be infinite with nonintegral values) is mapped to a set of discrete values.* *Quantization is an approximation process.*
 
 ## The four steps
 
@@ -18,7 +16,7 @@ Slide wording: *Quantization is an approximation process.*
 3. *Assign quantized values of 0 to $L - 1$ to the midpoint of each zone.*
 4. *Approximate the value of the sample amplitude to the quantized values.*
 
-The quantized values are the codes $0 \ldots L - 1$; each code stands for the midpoint of its zone. Approximating a sample means replacing it by the midpoint of the zone it falls in.
+Each code $0 \ldots L - 1$ stands for the midpoint of its zone, and a sample is replaced by the midpoint of the zone it falls in.
 
 ## The slide example: L = 8, −20 V to +20 V, Δ = 5 V
 
@@ -26,7 +24,7 @@ The slide's signal lies between −20 V and +20 V with $L = 8$:
 
 $$\Delta = \frac{20 - (-20)}{8} = \frac{40}{8} = 5\ \text{V}$$
 
-The figure labels its vertical axis in units of $D = \Delta$, from $-4D$ to $4D$, with eight bands and the quantization codes 7 at the top down to 0 at the bottom. Zone $k$ runs from $(k - 4)D$ to $(k - 3)D$ and its midpoint is $(k - 3.5)D$:
+The figure labels its vertical axis in units of $D = \Delta$, from $-4D$ to $4D$, with codes 7 at the top down to 0 at the bottom. Zone $k$ runs from $(k - 4)D$ to $(k - 3)D$:
 
 | Code | Zone, in units of $\Delta$ | Zone, in volts | Midpoint (normalized) | Midpoint, in volts |
 |---|---|---|---|---|
@@ -41,8 +39,6 @@ The figure labels its vertical axis in units of $D = \Delta$, from $-4D$ to $4D$
 
 ## One sample through the recipe: −6.1 V
 
-The slide walks the first of its nine samples.
-
 1. Normalize: *Normalized PAM values = Actual amplitude/Δ. E.g., −6.1/5 = −1.22.*
 2. Find the zone: −1.22 lies between $-2D$ and $-D$, so *−1.22 belongs to zone 2*.
 3. Quantize: *Normalized quantized value = Midpoint of this zone = −1.50.*
@@ -50,9 +46,9 @@ The slide walks the first of its nine samples.
 5. Code: zone 2 gives quantization code 2.
 6. Encode: with $L = 8$ each code needs $\log_2 8 = 3$ bits, so 2 becomes 010. The slide labels this row *Encoding (Last step of PCM)*.
 
-### Code the nine samples before the table reveals them
+### The nine slide samples to code
 
-The slide's nine samples at $L = 8$ between −20 V and +20 V. For each one, divide by 5, find the zone, type its code, then Check.
+A code is the zone that the sample divided by 5 falls in.
 
 ```widget
 quantizer
@@ -71,29 +67,32 @@ quantizer
 | Quantization code | 2 | 5 | 7 | 7 | 6 | 2 | 1 | 2 | 2 |
 | Encoded word | 010 | 101 | 111 | 111 | 110 | 010 | 001 | 010 | 010 |
 
-Check two rows against the recipe. Sample 4: $19.7 / 5 = 3.94$, in zone 7 ($3D$ to $4D$), midpoint 3.50, error $3.50 - 3.94 = -0.44$, code 7, word 111. Sample 7: $-11.3 / 5 = -2.26$, in zone 1 ($-3D$ to $-2D$), midpoint −2.50, error $-2.50 - (-2.26) = -0.24$, code 1, word 001.
-
 ## Sample 2 lands exactly on a midpoint
 
-$7.5 / 5 = 1.50$ lies in zone 5 ($D$ to $2D$), and 1.50 is the midpoint of that zone. The quantized value equals the sample, so the error is 0: code 5, word 101. It is the only sample in the table with no error.
+$7.5 / 5 = 1.50$ is exactly the midpoint of zone 5 ($D$ to $2D$), so the error is 0, the only sample in the table with none.
 
-No sample in the slide's table falls exactly on a line between two zones (a normalized value such as 1.00 or 2.00), and the slide states no rule for one.
+No slide sample falls exactly on a zone line (a normalized value such as 2.00); the slide states no rule for one, and the widgets put it in the upper zone.
 
 ## Reading the error column
 
-The error is quantized minus PAM. A sample below its midpoint has a positive error (3.24 is below 3.50, error +0.26); a sample above it has a negative error. The largest magnitude in the table is 0.44, and none can exceed 0.50 because no point of a zone is more than half a zone from its midpoint. In volts that is $0.44 \times 5 = 2.2$ V out of a 5 V zone; the bound is $\pm\Delta/2$, taken up in the [next lesson but one](#/comp3721-w5/quantization-error-bandwidth).
+The error is quantized minus PAM. A sample below its midpoint has a positive error (3.24 is below 3.50, error +0.26); a sample above it has a negative error. The largest magnitude in the table is 0.44, and none can exceed 0.50, half a zone.
 
-## Zone arithmetic for any symmetric range
+### The zones for other values of L
 
-Not on the slides, but it reproduces every row: for a range symmetric about 0, the zone is $\lfloor \text{normalized value} \rfloor + L/2$, clamped to $0 \ldots L - 1$, and the midpoint is $\text{zone} - L/2 + 0.5$. For −1.22 that is $\lfloor -1.22 \rfloor + 4 = -2 + 4 = 2$ and $2 - 4 + 0.5 = -1.50$. For 1.50 it gives $1 + 4 = 5$ and $5 - 4 + 0.5 = 1.50$, the sample itself. The floor sends a value exactly on a zone line, such as 2.00, to the upper zone; that is the formula's choice, not a slide rule.
-
-### Change L or the samples and watch the zones move
-
-Set $L = 4$ and the same nine samples spread over only four zones, so the errors grow; set $L = 16$ and they shrink. Typing a sample on a zone line (10 V is 2.00) shows which zone the widget's formula gives it.
+At $L = 4$ the same nine samples spread over only four zones and the errors grow; at $L = 16$ they shrink.
 
 ```widget
 quantizer
 { "vmin": -20, "vmax": 20, "levels": 8, "samples": "-6.1 7.5 16.2 19.7 11.0 -5.5 -11.3 -9.4 -6.0", "draw": false, "title": "The slide's nine samples with editable L and range" }
+```
+
+### Each sample through the encoder in turn
+
+The ring is the sample, the dot its zone's midpoint, and the red gap between them the error, never more than half a zone.
+
+```widget
+pcm-play
+{ "vmin": -20, "vmax": 20, "levels": 8, "samples": "-6.1 7.5 16.2 19.7 11.0 -5.5 -11.3 -9.4 -6.0", "ask": "code" }
 ```
 
 ```quiz

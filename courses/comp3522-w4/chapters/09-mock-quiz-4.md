@@ -124,7 +124,7 @@ Written at the start of lab on the Learning Hub, covering both Week 4 decks and 
     "q": "The initializer list that fixes oop_multi2 (oop_multi3) is...",
     "options": ["`: student(name, passed), mathematician(name, proved), person(name)`", "`: person(name), student(passed), mathematician(proved)`", "`: person(name)`", "`: student(name), mathematician(name)`"],
     "answer": 1,
-    "explain": "math_student calls person's constructor directly and gives each middle class only its own data. (The first option compiles too, but the slide's canonical answer is the second; oop_multi2 calls it hacky.)"
+    "explain": "math_student calls person's constructor directly and gives each middle class only its own data. (`: student(name, passed), mathematician(name, proved), person(name)` compiles too, but the slide's canonical answer is `: person(name), student(passed), mathematician(proved)`; oop_multi2 calls it hacky.)"
   },
   {
     "q": "In oop_multi3 the one-parameter constructors of student and mathematician are `protected`. Why?",
@@ -146,7 +146,7 @@ Written at the start of lab on the Learning Hub, covering both Week 4 decks and 
     "explain": "Without virtual inheritance each of B and C carries its own A: two grandparents."
   },
   {
-    "q": "diamondmethods.cpp: father and mother (virtual bases of grandparent) both override `foo()`, and child overrides it too. `grandparent& gp = a; gp.foo();` prints...",
+    "q": "diamondmethods.cpp: father and mother (which inherit grandparent as a virtual base) both override `foo()`, and child overrides it too. `grandparent& gp = a; gp.foo();` prints...",
     "options": ["grandparent.foo", "father.foo", "child.foo", "ambiguous: compile error"],
     "answer": 2,
     "explain": "Virtual dispatch reaches the most derived override. It would be ambiguous only if child did not override."

@@ -1,10 +1,75 @@
 // Interactive STL widgets for COMP 3522 Week 6: a container picker (slide 18 categories, slide 25
 // adaptors), the begin/end walk (slides 58-63), the iterator-kind operation tables (slides 64-77),
 // a strict-weak-ordering checker (slides 32-36), a map/multimap insert visualizer (map.cpp,
-// multimap.cpp) and a stepper through the slide-89 partition implementation (slides 86-101).
+// multimap.cpp) and the slide-89 partition implementation played pass by pass (slides 86-101).
+// iter-walk and partition-stepper run on the shared playback bar (app/playback.js).
 import { el, esc, btnRow } from "./dom.js";
 import { highlight } from "./highlight.js";
+import { createPlayback } from "./playback.js";
 
+// ---------- predict mode for the playback widgets (same behaviour as line-code-play) ----------
+/**
+ * questions(): [{ at, text, options: [{ label, ok, why }] }], `at` = the rest position the question holds.
+ * The bar cannot pass `at` until the right option is picked; a wrong pick turns red and quotes the
+ * rule; tally() gives the first-try score for the last caption. Moving back re-opens the questions.
+ */
+function predictGates(ask, questions, getPb) {
+  const g = { on: false, answered: 0, asked: 0, firstTry: 0, missed: false, wrong: -1, key: null, refocus: false };
+  const cur = () => (g.on ? questions()[g.answered] || null : null);
+  g.limit = () => { const q = cur(); return q ? q.at : Infinity; };
+  g.asking = (pos) => { const q = cur(); return q && Math.abs(pos - q.at) < 1e-6 ? q : null; };
+  g.restart = (pos = 0) => {
+    g.answered = g.on ? questions().filter((q) => q.at < pos - 1e-9).length : 0;
+    g.asked = 0; g.firstTry = 0; g.missed = false; g.wrong = -1; g.key = null;
+  };
+  g.tally = () => (g.asked > 0 ? ` ${g.firstTry} of ${g.asked} right on the first try.` : "");
+  g.nudge = () => { ask.classList.remove("playback-nudge"); void ask.offsetWidth; ask.classList.add("playback-nudge"); };
+  g.render = (pos) => {
+    const q = g.asking(pos);
+    const key = q ? `${g.answered}|${g.wrong}|${q.text}|${q.options.map((o) => o.label).join("|")}` : "";
+    if (key === g.key) return;
+    g.key = key; ask.innerHTML = ""; ask.hidden = !g.on || !q;
+    if (!q) return;
+    const btns = q.options.map((o, i) => {
+      const b = el("button", "viz-btn" + (i === g.wrong ? " playback-wrong" : ""), o.label);
+      b.type = "button";
+      b.addEventListener("click", (e) => {
+        if (!g.missed) g.asked++;
+        g.refocus = e.detail === 0;
+        if (!o.ok) { g.missed = true; g.wrong = i; getPb().set(getPb().pos()); return; }
+        if (!g.missed) g.firstTry++;
+        g.missed = false; g.wrong = -1; g.answered++;
+        getPb().next();
+      });
+      ask.append(b);
+      return b;
+    });
+    if (g.wrong >= 0) ask.append(el("span", "playback-feedback", `Not that. ${q.options[g.wrong].why}`));
+    if (g.refocus) { g.refocus = false; (btns.find((b) => !b.classList.contains("playback-wrong")) || btns[0]).focus(); }
+  };
+  return g;
+}
+/** A predict checkbox, an ask row and a playback bar wired together. opts: checkText, predict, count(), unit, stepMs, questions(), onFrame(pos, playing, gate). */
+function playbackWithPredict(opts) {
+  const label = el("label", "playback-check");
+  const input = document.createElement("input");
+  input.type = "checkbox"; input.checked = !!opts.predict;
+  label.append(input, " " + opts.checkText);
+  const ask = el("div", "viz-btn-row playback-ask");
+  ask.hidden = true;
+  let pb = null, lastPos = 0;
+  const gate = predictGates(ask, opts.questions, () => pb);
+  gate.on = input.checked;
+  const onFrame = (pos, playing) => {
+    // Moving back (restart, back, scrub) re-opens the questions at or after the new position.
+    if (gate.on && !playing && pos < lastPos - 1e-9) { const qs = opts.questions(); while (gate.answered > 0 && qs[gate.answered - 1].at >= pos - 1e-9) gate.answered--; gate.missed = false; gate.wrong = -1; }
+    lastPos = pos;
+    opts.onFrame(pos, playing, gate); gate.render(pos);
+  };
+  pb = createPlayback({ count: opts.count(), unit: opts.unit, stepMs: opts.stepMs, onFrame, limit: () => gate.limit(), onBlocked: () => gate.nudge() });
+  input.addEventListener("change", () => { gate.on = input.checked; pb.pause(); gate.restart(pb.pos()); gate.key = null; pb.set(pb.pos()); });
+  return { pb, gate, check: label, ask, reset() { gate.restart(0); lastPos = 0; pb.reset(opts.count()); } };
+}
 // ---------- shared helpers ----------
 function note(text) { const p = el("p", "widget-note"); p.innerHTML = text; return p; }
 function verdict(ok, text) { const d = el("div", "oop-verdict " + (ok ? "ok" : "bad")); d.innerHTML = text; return d; }
@@ -118,57 +183,69 @@ function containerPicker(box, cfg) {
 }
 
 // =====================================================================
-// iter-walk: the begin()/end() walk of slides 58-63, one loop pass per Step
+// iter-walk: the begin()/end() walk of slides 58-63, one loop pass per playback step
 // =====================================================================
 function iterWalk(box, cfg) {
   box.append(el("h4", null, cfg.title || "begin() and end(): walk the loop one pass at a time"));
   const start = Array.isArray(cfg.values) ? cfg.values.map(Number).filter(Number.isFinite) : [9, 10, 11];
-  const st = { v: start.slice(), pos: 0, pass: 0, done: false, out: [], log: [] };
+  const st = { v: start.slice(), deref: -1 };
   const code = codeBox([]);
   const ctl = el("div", "stl-inline");
   const field = textField("elements of intVec", st.v.join(", "), (s) => { st.v = parseInts(s); reset(); });
-  const presets = btnRow(["{9}", "{9, 10, 11}", "{}"], (i) => { st.v = [[9], [9, 10, 11], []][i]; field.value = st.v.join(", "); reset(); }, [[9], [9, 10, 11], []].findIndex((p) => p.join() === st.v.join()));
-  const stepB = button("Step (one pass)", step), runB = button("Run to the end", () => { while (!st.done) step(); }), resetB = button("Reset: itBegin = intVec.begin()", reset), derefB = button("Dereference end()", deref);
-  ctl.append(el("span", "stat-label", "intVec ="), field, stepB, runB, resetB, derefB);
-  const cells = el("div"), grid = el("div", "stat-grid"), msg = el("div", "pv-msg"), log = el("pre", "manip-code stl-log");
-  box.append(note("Slide 60: <code>end()</code> returns an iterator pointing to a theoretical <b>one element past the last element</b>; it does not point to an element, so never dereference it. Each pass compares <code>itBegin != itEnd</code>, runs the loop body, then <code>itBegin++</code>."), presets, ctl, code, cells, grid, msg, log);
-  function lines() {
-    return [`vector<int> intVec = {${st.v.join(", ")}};`, "vector<int>::iterator itBegin = intVec.begin();", "vector<int>::iterator itEnd = intVec.end();", "", "for (itBegin; itBegin != itEnd; itBegin++)", "{", "    cout << *itBegin << endl;", "}"];
-  }
+  const PRE = [[9], [9, 10, 11], []];
+  const presets = btnRow(["{9}", "{9, 10, 11}", "{}"], (i) => { st.v = PRE[i].slice(); field.value = st.v.join(", "); reset(); }, PRE.findIndex((p) => p.join() === st.v.join()));
+  const derefB = button("Dereference end()", () => { st.deref = play.pb.pos(); play.pb.set(play.pb.pos()); });
+  ctl.append(el("span", "stat-label", "intVec ="), field, derefB);
+  const cells = el("div"), grid = el("div", "stat-grid"), caption = el("p", "playback-caption"), msg = el("div", "pv-msg error"), log = el("pre", "manip-code stl-log");
+  caption.setAttribute("aria-live", "polite");
+  msg.hidden = true;
+  const n = () => st.v.length;
+  const lines = () => [`vector<int> intVec = {${st.v.join(", ")}};`, "vector<int>::iterator itBegin = intVec.begin();", "vector<int>::iterator itEnd = intVec.end();", "", "for (itBegin; itBegin != itEnd; itBegin++)", "{", "    cout << *itBegin << endl;", "}"];
   function rebuildCode() { code.innerHTML = ""; lines().forEach((t, i) => { const r = el("div", "pl"); r.dataset.line = String(i + 1); r.innerHTML = `<span class="ln">${i + 1}</span><span class="lc">${highlight("cpp", t) || " "}</span>`; code.append(r); }); }
-  function say(s) { st.log.push(s); }
-  function reset() { st.pos = 0; st.pass = 0; st.done = false; st.out = []; st.log = []; rebuildCode(); render(5, "itBegin = intVec.begin(), itEnd = intVec.end()" + (st.v.length ? `: itEnd is one past ${st.v[st.v.length - 1]}.` : ": the vector is empty, so begin() == end() already."), ""); }
-  function step() {
-    if (st.done) return;
-    const n = st.v.length;
-    st.pass++;
-    if (st.pos < n) {
-      const val = st.v[st.pos];
-      say(`${ORD(st.pass)} pass: itBegin != itEnd, do loop code, output ${val}`);
-      st.out.push(val); st.pos++;
-      render(7, `${ORD(st.pass)} pass: itBegin != itEnd, so the loop body runs: cout << *itBegin prints ${val}; then itBegin++${st.pos === n ? " moves itBegin onto end()" : ""}.`, "");
-    } else {
-      say(`${ORD(st.pass)} pass: itBegin == itEnd, leave loop${n === 0 ? " (zero iterations)" : ""}`);
-      st.done = true;
-      render(5, `${ORD(st.pass)} pass: itBegin == itEnd, leave the loop. ${n === 0 ? "An empty vector: begin() == end() immediately, no iterations." : `Output: ${st.out.join(" ")}`}`, "end");
+  const at = (k) => (k < n() ? `the ${st.v[k]} (position ${k})` : "end(), one past the last element");
+  // One question before every test of itBegin != itEnd: pass k+1 is asked at rest position k.
+  function questions() {
+    const qs = [];
+    for (let k = 0; k <= n(); k++) {
+      const enter = k < n();
+      qs.push({
+        at: k,
+        text: `${ORD(k + 1)} pass: itBegin is on ${at(k)}. Is itBegin != itEnd?`,
+        options: [
+          { label: "true: enter the body", ok: enter, why: `itBegin is on end() now, so itBegin != itEnd is false and the loop is left${k === 0 ? ": an empty vector has begin() == end(), zero iterations" : ""}.` },
+          { label: "false: leave the loop", ok: !enter, why: `itBegin is on ${at(k)}, an element, so it is not equal to end(): the body runs.` },
+        ],
+      });
     }
+    return qs;
   }
-  function deref() {
-    say("*itEnd   // UNDEFINED BEHAVIOUR");
-    render(null, "<b>*itEnd is undefined behaviour.</b> end() is one past the last element and does not point to an element. No exception is thrown and nothing checks the bound: you read garbage, or the program crashes, or it seems to work until it does not.", "error");
-  }
-  function render(line, text, cls) {
-    markLine(code, line);
-    const n = st.v.length;
+  function frame(pos, playing, gate) {
+    const N = n(), k = Math.max(0, Math.min(N + 1, Math.ceil(pos - 1e-9)));
+    const it = Math.min(k, N), done = k === N + 1, out = st.v.slice(0, Math.min(k, N));
+    const q = gate.asking(pos);
+    markLine(code, k === 0 ? (q ? 5 : 2) : done ? 5 : 7);
     cells.innerHTML = "";
-    cells.append(cellRow(st.v.map((x, i) => ({ text: String(x), cls: i < st.pos ? "f" : "" })), [{ name: "itBegin", idx: st.pos, cls: "green" }, { name: "itEnd", idx: n, cls: "red" }], true));
+    cells.append(cellRow(st.v.map((x, i) => ({ text: String(x), cls: i < it ? "f" : "" })), [{ name: "itBegin", idx: it, cls: "green" }, { name: "itEnd", idx: N, cls: "red" }], true));
     grid.innerHTML = "";
-    grid.append(statCell("*itBegin", st.pos < n ? String(st.v[st.pos]) : "no element", st.pos < n ? `position ${st.pos}` : "itBegin == end(): do not dereference"), statCell("itEnd", "one past " + (n ? st.v[n - 1] : "nothing"), `position ${n} of ${n}`), statCell("passes", String(st.pass), st.done ? "loop left" : "itBegin != itEnd next"), statCell("output", st.out.length ? st.out.join(" ") : "(nothing yet)", `${st.out.length} line${st.out.length === 1 ? "" : "s"}`));
-    msg.className = "pv-msg" + (cls ? " " + cls : ""); msg.innerHTML = text;
-    log.textContent = st.log.length ? st.log.join("\n") : "Step runs one pass of the for loop.";
-    stepB.disabled = st.done; runB.disabled = st.done;
+    grid.append(statCell("*itBegin", it < N ? String(st.v[it]) : "no element", it < N ? `position ${it}` : "itBegin == end(): do not dereference"), statCell("itEnd", "one past " + (N ? st.v[N - 1] : "nothing"), `position ${N} of ${N}`), statCell("passes", String(k), done ? "loop left" : "itBegin != itEnd next"), statCell("output", out.length ? out.join(" ") : "(nothing yet)", `${out.length} line${out.length === 1 ? "" : "s"}`));
+    const logLines = [];
+    for (let p = 1; p <= k; p++) logLines.push(p <= N ? `${ORD(p)} pass: itBegin != itEnd, do loop code, output ${st.v[p - 1]}` : `${ORD(p)} pass: itBegin == itEnd, leave loop${N === 0 ? " (zero iterations)" : ""}`);
+    log.textContent = logLines.length ? logLines.join("\n") : "One step is one pass of the for loop: compare, run the body, itBegin++.";
+    let text;
+    if (q) text = q.text;
+    else if (k === 0) text = `itBegin = intVec.begin(), itEnd = intVec.end()${N ? `: itBegin is on the ${st.v[0]}, itEnd is one past the ${st.v[N - 1]}.` : ": the vector is empty, so begin() == end() already."}`;
+    else if (!done) text = `${ORD(k)} pass: itBegin != itEnd, so the loop body runs: cout << *itBegin prints ${st.v[k - 1]}; then itBegin++ ${k === N ? "moves itBegin onto end()" : `moves it to the ${st.v[k]}`}.`;
+    else text = `${ORD(k)} pass: itBegin == itEnd, leave the loop. ${N === 0 ? "An empty vector: begin() == end() immediately, no iterations." : `Output: ${out.join(" ")}, ${N} line${N === 1 ? "" : "s"} from ${N + 1} tests.`}${gate.tally()}`;
+    if (caption.textContent !== text) caption.textContent = text;
+    // The dereference warning stays until the position moves.
+    if (st.deref >= 0 && Math.abs(st.deref - pos) > 1e-9) st.deref = -1;
+    msg.hidden = st.deref < 0;
+    msg.innerHTML = "<b>*itEnd is undefined behaviour.</b> end() is one past the last element and does not point to an element. No exception is thrown and nothing checks the bound: you read garbage, or the program crashes, or it seems to work until it does not.";
   }
-  reset();
+  rebuildCode();
+  const play = playbackWithPredict({ checkText: "Predict each test before the pass runs", predict: cfg.predict, count: () => n() + 1, unit: "pass", stepMs: () => cfg.stepMs || 1400, questions, onFrame: frame });
+  box.append(note("Slide 60: <code>end()</code> returns an iterator pointing to a theoretical <b>one element past the last element</b>; it does not point to an element, so never dereference it. Each pass compares <code>itBegin != itEnd</code>, runs the loop body, then <code>itBegin++</code>."), presets, ctl, play.check, code, cells, grid, caption, play.ask, play.pb.el, msg, log);
+  function reset() { st.deref = -1; rebuildCode(); play.reset(); }
 }
 
 // =====================================================================
@@ -426,14 +503,14 @@ function mapInsert(box, cfg) {
 }
 
 // =====================================================================
-// partition-stepper: the slide-89 implementation stepped on an editable vector
+// partition-stepper: the slide-89 implementation played one pass of i at a time on an editable vector
 // =====================================================================
 const PART_CODE = ["template<class ForwardIt, class UnaryPredicate>", "ForwardIt partition(ForwardIt first, ForwardIt last, UnaryPredicate p)", "{", "    first = std::find_if_not(first, last, p); //find first false", "    if (first == last) return first;", "    for (ForwardIt i = std::next(first); i != last; ++i)", "    {", "        if (p(*i)) {", "            std::iter_swap(i, first);", "            ++first;", "        }", "    }", "    return first;", "}"];
 const PRED_NAMES = { odd: "IsOdd", even: "IsEven", gt: "GreaterThan", lt: "LessThan", close: "close_to_origin" };
 const CITIES = [[12.5, 2.7], [60.1, 80.2], [34.1, 6.3], [90, 10], [20, 20]];
 function partitionStepper(box, cfg) {
-  box.append(el("h4", null, cfg.title || "std::partition, one line at a time"));
-  const st = { pred: PRED_NAMES[cfg.pred] ? cfg.pred : "odd", k: Number.isFinite(Number(cfg.k)) ? Number(cfg.k) : 5, items: [], steps: [], at: 0 };
+  box.append(el("h4", null, cfg.title || "std::partition, one pass of i at a time"));
+  const st = { pred: PRED_NAMES[cfg.pred] ? cfg.pred : "odd", k: Number.isFinite(Number(cfg.k)) ? Number(cfg.k) : 5, items: [], steps: [], qs: [] };
   const isPairs = () => st.pred === "close";
   const dist = (p) => Math.sqrt(p.x * p.x + p.y * p.y);
   const fmt = (it) => (it.n != null ? `${it.n}` : String(it.v));
@@ -441,6 +518,7 @@ function partitionStepper(box, cfg) {
   const PREDS = { odd: (x) => x % 2 === 1, even: (x) => x % 2 === 0, gt: (x) => x > st.k, lt: (x) => x < st.k };
   const pred = (it) => (isPairs() ? 50 > dist(it) : PREDS[st.pred](it.v));
   const predText = () => ({ odd: "IsOdd(i): (i % 2) == 1", even: "IsEven(i): (i % 2) == 0", gt: `GreaterThan(i): i > ${st.k}`, lt: `LessThan(i): i < ${st.k}`, close: "close_to_origin(c): DISTANCE 50 > distance(c)" })[st.pred];
+  const call = (it) => `${PRED_NAMES[st.pred]}(${fmt(it)})`;
   function setItems(src) {
     if (isPairs()) st.items = src.map((p, i) => ({ n: i + 1, x: Array.isArray(p) ? p[0] : p.x, y: Array.isArray(p) ? p[1] : p.y }));
     else st.items = src.map((v) => ({ v: Number(v) })).filter((it) => Number.isFinite(it.v));
@@ -455,42 +533,52 @@ function partitionStepper(box, cfg) {
   const presets = btnRow(presetList.map((p) => p[0]), (i) => { const pairs = i === presetList.length - 1; if (pairs !== isPairs()) { st.pred = pairs ? "close" : "odd"; predSel.sel.value = st.pred; } setItems(presetList[i][1]); field.value = itemsText(); build(); }, -1);
   const row = el("div", "stl-inline"); row.append(el("span", "stat-label", "vector"), field, el("span", "stat-label", "k"), kIn);
   const code = codeBox(PART_CODE);
-  const bar = el("div", "pv-ctl");
-  const prevB = el("button", "reset-btn scrub-step", "←"), nextB = el("button", "reset-btn scrub-step", "→");
-  const range = document.createElement("input"); range.type = "range"; range.min = 0; range.max = 0; range.value = 0; range.className = "scrub-slider"; range.setAttribute("aria-label", "step");
-  const pos = el("span", "scrub-pos", ""), endB = button("Run to the end", () => go(st.steps.length - 1), "reset-btn scrub-step");
-  bar.append(prevB, range, nextB, pos, endB);
-  prevB.addEventListener("click", () => go(st.at - 1)); nextB.addEventListener("click", () => go(st.at + 1)); range.addEventListener("input", () => go(Number(range.value)));
-  const cells = el("div"), msg = el("div", "pv-msg"), grid = el("div", "stat-grid"), compare = el("div", "stat-steps");
-  box.append(note("Slide 86: the predicate decides, all <b>true</b> elements come before all <b>false</b> elements, relative order is <b>not</b> maintained, and the return value is an iterator to the <b>first element of the false group</b> (or <code>end()</code> if there is none). Slide 89 is a possible implementation; step through it."), predSel.row, presets, row, code, bar, cells, msg, grid, compare);
+  const cells = el("div"), caption = el("p", "playback-caption"), grid = el("div", "stat-grid"), compare = el("div", "stat-steps");
+  caption.setAttribute("aria-live", "polite");
+  const where = (a, f) => (f < a.length ? `the ${long(a[f])} (position ${f})` : "end()");
+  /** Steps: the call, find_if_not, one per pass of i, return. Each records the vector after it, first, i and the lines it ran. */
   function buildSteps() {
-    const a = st.items.slice(), n = a.length, steps = [];
-    const push = (line, text, first, i, extra = {}) => steps.push({ line, text, a: a.slice(), first, i, ...extra });
+    const a = st.items.slice(), n = a.length, steps = [], qs = [];
     const list = () => `{${a.map(fmt).join(",")}}`;
-    push(2, `partition(begin, end, ${PRED_NAMES[st.pred]}) on ${list()}: first = begin, last = end, p is ${predText()}.`, 0, null);
+    const push = (s) => steps.push({ a: a.slice(), ...s });
+    push({ lines: [2], first: 0, i: null, text: `partition(begin, end, ${PRED_NAMES[st.pred]}) on ${list()}: first = begin, last = end, p is ${predText()}.` });
     let first = 0; const scan = [];
-    while (first < n && pred(a[first])) { scan.push(`p(${fmt(a[first])}) true`); first++; }
-    if (first < n) scan.push(`p(${fmt(a[first])}) false`);
-    push(4, `find_if_not scans for the first false: ${scan.join(", ") || "empty range"}. first → ${first < n ? `${long(a[first])} (position ${first})` : "end()"}.`, first, null);
-    if (first === n) { push(5, n ? "first == last: every element is true, there is no false group. return first, which is end()." : "first == last: the range is empty. return first (end()).", first, null, { done: true, bound: first }); return steps; }
-    push(5, `first != last, so there is at least one false element (${long(a[first])}); carry on.`, first, null);
+    while (first < n && pred(a[first])) { scan.push(`${call(a[first])} true`); first++; }
+    if (first < n) scan.push(`${call(a[first])} false`);
+    // Q: where does find_if_not stop?
+    if (n) {
+      const cand = [...new Set([Math.max(0, first - 1), first, Math.min(n, first + 1)])].sort((x, y) => x - y);
+      qs.push({ at: 0, text: `find_if_not(first, last, ${PRED_NAMES[st.pred]}) scans from the front. Where does first land?`, options: cand.map((c) => ({ label: c < n ? `on the ${fmt(a[c])}` : "end()", ok: c === first, why: `find_if_not stops on the first element for which p is false: ${scan.join(", ")}.` })) });
+    }
+    if (first === n) {
+      push({ lines: [4, 5, 13], first, i: null, done: true, bound: first, text: `find_if_not: ${scan.join(", ") || "empty range"}. first == last: ${n ? "every element is true, there is no false group" : "the range is empty"}, so return first, which is end().` });
+      return { steps, qs };
+    }
     let i = first + 1;
-    push(6, i < n ? `i = std::next(first) → ${long(a[i])} (position ${i}); i != last.` : "i = std::next(first) == last: nothing after first to scan.", first, i);
+    push({ lines: [4, 5, 6], first, i: i < n ? i : n, text: `find_if_not: ${scan.join(", ")}, so first → ${where(a, first)}. first != last, so i = std::next(first) → ${where(a, i)}.` });
     while (i < n) {
-      const t = pred(a[i]);
-      push(8, `p(*i) = p(${long(a[i])}) is ${t ? "TRUE: it belongs in the true group, swap it with the element first points at" : "FALSE: it already belongs in the false group, leave it"}.`, first, i, { test: t });
+      const t = pred(a[i]), x = a[i], f0 = first;
+      qs.push({ at: steps.length - 1, text: `i is on the ${fmt(x)}, first is on the ${fmt(a[first])}. Swap or skip?`, options: [
+        { label: "swap: iter_swap(i, first), ++first", ok: t, why: `${call(x)} is FALSE: ${fmt(x)} already belongs in the false group, so nothing moves.` },
+        { label: "skip: leave it", ok: !t, why: `${call(x)} is TRUE: a true element after first is swapped into the true group, and first moves on.` },
+      ] });
       if (t) {
-        const oldI = a[i], oldF = a[first];
+        const was = a[first];
         [a[i], a[first]] = [a[first], a[i]];
-        push(9, `iter_swap(i, first): ${fmt(oldI)} ↔ ${fmt(oldF)} → ${list()}.`, first, i, { swapped: [first, i] });
         first++;
-        push(10, `++first → ${first < n ? `${long(a[first])} (position ${first})` : "end()"}: the true group grew by one.`, first, i);
+        push({ lines: [6, 8, 9, 10], first, i, test: true, swapped: [f0, i], text: `i at ${fmt(x)}: ${call(x)} is TRUE, so iter_swap(i, first) swaps ${fmt(x)} and ${fmt(was)}; first moves to ${first < n ? `the ${fmt(a[first])}` : "end()"}. Now ${list()}.` });
+      } else {
+        push({ lines: [6, 8], first, i, test: false, text: `i at ${fmt(x)}: ${call(x)} is FALSE, so it stays where it is; first stays on the ${fmt(a[first])}.` });
       }
       i++;
-      push(6, i < n ? `++i → ${long(a[i])} (position ${i}); i != last.` : "++i: i == last, leave the loop.", first, i);
     }
-    push(13, `return first → ${first < n ? `${long(a[first])} (position ${first})` : "end()"}: ${first === 0 ? "bound == begin(): nothing was true, the whole range is the false group" : first < n ? "the first element of the false group" : "end(): there is no false group"}. Result ${list()}.`, first, null, { done: true, bound: first });
-    return steps;
+    const opts = [{ label: `an iterator to the ${fmt(a[first])}`, ok: true }];
+    if (first > 0) opts.push({ label: `an iterator to the ${fmt(a[first - 1])}`, ok: false });
+    opts.push({ label: "end()", ok: false }, { label: `the int ${first}`, ok: false });
+    const why = `partition returns first: an iterator to the first element of the false group (slide 86), here the ${fmt(a[first])}. It is an iterator, not a count.`;
+    qs.push({ at: steps.length - 1, text: "++i reaches last and the loop ends. What does partition return?", options: opts.map((o) => ({ ...o, why })) });
+    push({ lines: [6, 13], first, i: n, done: true, bound: first, text: `++i == last, the loop ends. return first → ${where(a, first)}: ${first === 0 ? "bound == begin(), nothing was true" : "the first element of the false group"}. Result ${list()}.` });
+    return { steps, qs };
   }
   /** libstdc++'s std::partition for bidirectional and random-access iterators (vector, deque, list). */
   function stdPartition(src) {
@@ -502,20 +590,19 @@ function partitionStepper(box, cfg) {
       [a[first], a[last]] = [a[last], a[first]]; first++;
     }
   }
-  function build() { st.steps = buildSteps(); range.max = st.steps.length - 1; go(0); drawCompare(); }
-  function go(k) {
-    st.at = Math.max(0, Math.min(st.steps.length - 1, k)); range.value = st.at;
-    prevB.disabled = st.at === 0; nextB.disabled = st.at === st.steps.length - 1; pos.textContent = `step ${st.at + 1} / ${st.steps.length}`;
-    const s = st.steps[st.at];
-    markLine(code, s.line);
-    const n = s.a.length;
+  function frame(pos, playing, gate) {
+    const k = Math.max(0, Math.min(st.steps.length - 1, Math.ceil(pos - 1e-9))), s = st.steps[k], n = s.a.length;
+    const q = gate.asking(pos);
+    code.querySelectorAll(".pl").forEach((r) => r.classList.toggle("cur", s.lines.includes(Number(r.dataset.line))));
     const ptrs = [{ name: "first", idx: s.first, cls: "green" }];
     if (s.i != null) ptrs.push({ name: "i", idx: s.i, cls: "red" });
     cells.innerHTML = "";
     cells.append(cellRow(s.a.map((it, idx) => ({ text: fmt(it), cls: s.done ? (idx < s.bound ? "t" : "f") : s.swapped && s.swapped.includes(idx) ? "t" : "" })), ptrs, true));
-    msg.className = "pv-msg" + (s.done ? " end" : s.line === 9 ? " call" : ""); msg.innerHTML = esc(s.text);
     grid.innerHTML = "";
     grid.append(statCell("first", s.first < n ? long(s.a[s.first]) : "end()", `position ${s.first}`), statCell("i", s.i == null ? "—" : s.i < n ? long(s.a[s.i]) : "last", s.i == null ? "not yet declared" : `position ${s.i}`), statCell("p(*i)", s.test == null ? "—" : s.test ? "true" : "false", predText()), statCell("vector", `{${s.a.map(fmt).join(",")}}`, s.done ? `true group [0, ${s.bound}), false group [${s.bound}, ${n})` : "so far"));
+    const text = q ? q.text : s.text + (s.done ? gate.tally() : "");
+    if (caption.textContent !== text) caption.textContent = text;
+    compare.hidden = !s.done;
   }
   function drawCompare() {
     const last = st.steps[st.steps.length - 1];
@@ -527,7 +614,12 @@ function partitionStepper(box, cfg) {
     compare.append(line("slide-89 implementation", { a: last.a, bound: last.bound }, "what g++ runs for a forward_list"), line("std::partition (g++)", stdR, "vector, deque and list: libstdc++ swaps from both ends, same groups, different order"), line("std::stable_partition", stable, "keeps relative order"));
     compare.append(note(`${PRED_NAMES[st.pred]} is true for ${trues.length} of ${st.items.length} element${st.items.length === 1 ? "" : "s"}; every version puts the same ${trues.length} first and returns an iterator to position ${trues.length}.`));
   }
-  build();
+  ({ steps: st.steps, qs: st.qs } = buildSteps());
+  const play = playbackWithPredict({ checkText: "Predict each pass before it runs", predict: cfg.predict, count: () => st.steps.length - 1, unit: "step", stepMs: () => cfg.stepMs || 1800, questions: () => st.qs, onFrame: frame });
+  box.append(note("Slide 86: the predicate decides, all <b>true</b> elements come before all <b>false</b> elements, relative order is <b>not</b> maintained, and the return value is an iterator to the <b>first element of the false group</b> (or <code>end()</code> if there is none). Slide 89 is a possible implementation."), predSel.row, presets, row, play.check, code, cells, caption, play.ask, play.pb.el, grid, compare);
+  function build() { ({ steps: st.steps, qs: st.qs } = buildSteps()); drawCompare(); play.reset(); }
+  drawCompare();
+  play.pb.set(0);
 }
 
 export const WIDGETS = {

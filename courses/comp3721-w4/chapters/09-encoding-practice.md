@@ -3,7 +3,7 @@ title: Encoding practice: bits to waveforms
 minutes: 20
 ---
 
-Turning a bit pattern into a waveform is one rule per scheme, applied bit by bit. The six rules of Lecture 04 are drilled here on bit patterns of our own, in both directions: bits to waveform and waveform to bits. The Week 4 exercise sheet (E04) closes the lesson with the instructor's answers.
+Turning a bit pattern into a waveform is one rule per scheme, applied bit by bit, and reading a waveform back is the same rule in reverse.
 
 ## Six schemes, six rules
 
@@ -81,7 +81,7 @@ line-code
 
 ## E04, worked
 
-The Week 4 exercise sheet has three questions: the extra bits from a faster receiver clock, the ratio and the signal levels behind a baud rate, and the category of two drawn signals. The answers are the instructor's.
+The Week 4 exercise sheet has three questions; the answers in the explanations are the instructor's.
 
 ### Exercise 1
 
@@ -95,12 +95,10 @@ The Week 4 exercise sheet has three questions: the extra bits from a faster rece
     "answer": 2000,
     "tolerance": 0.5,
     "unit": "bps",
-    "explain": "$0.2\\% \\times 1000000 = 0.002 \\times 1000000 = 2000$ extra bps. The receiver reads $1000000 + 2000 = 1002000$ bits in 1 s."
+    "explain": "Instructor's answer: data rate = 1 Mbps = 1,000,000 bps, so 1,000,000 bits are sent per second. Bits received per second $= 1000000 + 1000000 \\times 0.2\\% = 1002000$, which is 2,000 extra bps. In one step: $0.2\\% \\times 1000000 = 0.002 \\times 1000000 = 2000$. The slide example's 0.1 percent gives 1000; twice the clock error, twice the extra bits."
   }
 ]
 ```
-
-**Instructor's answer.** Data rate = 1 Mbps = 1,000,000 bps, so 1,000,000 bits are sent per second. Bits received per second $= 1000000 + 1000000 \times 0.2\% = 1002000$, which is **2,000 extra bps**. Or in one step: $0.2\% \times 1000000 = 0.002 \times 1000000 = 2000$ extra bps.
 
 ### Exercise 2
 
@@ -114,7 +112,7 @@ The Week 4 exercise sheet has three questions: the extra bits from a faster rece
     "answer": 8,
     "tolerance": 0.01,
     "unit": "bits per baud",
-    "explain": "$S = c \\times N \\times \\frac{1}{r}$ with $c = 1$, so $r = \\frac{N}{S} = \\frac{8000}{1000} = 8$ data elements per signal element."
+    "explain": "Instructor's answer: $S = c \\times N \\times \\frac{1}{r}$ with $c = 1$, so $r = \\frac{N}{S} = \\frac{8000}{1000} = 8$ bits per baud. The \"assume c = 1\" matters: with the slide example's $c = \\frac{1}{2}$ the same rates would give $r = \\frac{c \\times N}{S} = 4$."
   },
   {
     "q": "E04 exercise 2: each signal element corresponds to a signal level. How many signal elements (levels) does the signal need?",
@@ -126,8 +124,6 @@ The Week 4 exercise sheet has three questions: the extra bits from a faster rece
   }
 ]
 ```
-
-**Instructor's answer.** $S = c \times N \times \frac{1}{r}$, so $r = \frac{N}{S} = \frac{8000}{1000} = 8$ bits per baud. Since each signal element corresponds to a signal level, $r = \log_2 L$ and $L = 2^r = 2^8 = 256$ signal elements.
 
 ### Exercise 3
 
@@ -152,9 +148,7 @@ The figure's bits are 0 1 0 0 1 1 0 0 0 1 1. Signal (a) is high for every 0 and 
 ]
 ```
 
-**Instructor's answer.** (a) *Polar scheme since we have two voltage levels on both sides of the time axis.* (b) *Bipolar scheme (AMI) since we have three voltage levels on both sides of the time axis (positive, negative and zero) and the voltage level for data element (bit) 1 alternates between positive and negative.*
-
-The sheet draws (a) with 0 high and 1 low, the NRZ-L convention of slide 55, so the slides' polarity is the one to use on the quiz.
+The sheet draws (a) with 0 high and 1 low, the NRZ-L convention of slide 55.
 
 ### The E04 pattern as NRZ-L and AMI
 

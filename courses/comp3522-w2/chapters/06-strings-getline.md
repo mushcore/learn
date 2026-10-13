@@ -3,7 +3,7 @@ title: std::string & getline
 minutes: 16
 ---
 
-In C a "string" was a `char` array you had to terminate with `'\0'` yourself. C++ gives you a class instead: `std::string`, from `<string>`, spelled with a **lower-case `string`**, not Java's `String`.
+In C a "string" was a `char` array you terminated with `'\0'` yourself. C++ gives you a class, `std::string` from `<string>`, with a lower-case `s`.
 
 ## Three ways to create a string
 
@@ -24,13 +24,7 @@ int main()
 }
 ```
 
-All three **statically allocate a string object** (on the stack, no `new`) and each calls a constructor:
-
-- `string s1;` calls the **default constructor**: a real, usable string that happens to be empty, which is why the first output line starts with a space.
-- `string s2 = "Hello";` builds a string from a literal.
-- `string s3{"world!"};` does the same with uniform (brace) initialization, the style the course prefers.
-
-The second line prints `s2 has 5 characters, s3 has 6`. `size()` and `length()` are the same function under two names, and the count is 5 because, as the slide says, "in C++, the string object needn't terminate with `\0`": the class keeps its own length.
+All three **statically allocate a string object** (on the stack, no `new`); `string s1;` calls the **default constructor**, a real string that happens to be empty, and `string s3{"world!"};` uses the brace style the course prefers. "In C++, the string object needn't terminate with `\0`": the class keeps its own length.
 
 ## Member functions: size, length, c_str
 
@@ -61,11 +55,11 @@ int main()
 }
 ```
 
-`cin >> line;` reads one whitespace-delimited word, and `line.size()` and `line.length()` both print `9`. `const char * c_line = line.c_str();` is the bridge back to C: a pointer to a null-terminated copy for functions that expect a `char *`. It is `const` because you may not modify the string through it.
+`const char * c_line = line.c_str();` is the bridge back to C: a pointer to a null-terminated copy for functions that expect a `char *`.
 
 ## Comparing strings
 
-Java needed `compareTo` or an overridden `equals`. In C++ the relational operators `>`, `<`, `>=`, `<=`, `==`, `!=` work directly on strings and compare **lexicographically**: character by character, by character code, the way a dictionary orders words.
+Where Java needed `compareTo` or `equals`, C++'s relational operators work directly on strings and compare **lexicographically**: character by character, by character code.
 
 ```cpp run pin compare.cpp
 // predict: true or false for each of the four comparisons?
@@ -78,22 +72,19 @@ int main()
     string a = "apple";
     string b = "bear";
     cout << boolalpha;
-    cout << (b > a) << endl;          // 'b' comes after 'a'
-    cout << (a == "apple") << endl;   // == compares the characters, not addresses
-    cout << ("Zebra" < a) << endl;    // 'Z' (90) is less than 'a' (97)
-    cout << (a < "apples") << endl;   // a shorter prefix comes first
+    cout << (b > a) << endl;
+    cout << (a == "apple") << endl;
+    cout << ("Zebra" < a) << endl;
+    cout << (a < "apples") << endl;
     return 0;
 }
 ```
 
-- `cout << (b > a) << endl;` is the slide's example: `true`, because `b` comes after `a`.
-- `cout << (a == "apple") << endl;` is `true`: unlike Java, `==` compares the **contents**.
-- `"Zebra" < a` is `true` because every upper-case letter (`'Z'` is 90) is smaller than every lower-case letter (`'a'` is 97).
-- `a < "apples"` is `true`: when one string runs out while all its characters matched, the shorter one is smaller.
+`cout << (b > a) << endl;` is the slide's example. Unlike Java, `==` compares the **contents**. Character codes decide the order, so every upper-case letter (`'Z'` is 90) sorts before every lower-case one (`'a'` is 97), and when one string runs out with all its characters matched, the shorter one is smaller.
 
 ## Picking out characters: `[ ]` and `at`
 
-Square brackets work on a string as on an array, and so does the `at(size_type pos)` member function. Both return a **reference** to the character, so you can read it or assign to it.
+Square brackets and the `at(size_type pos)` member function both return a **reference** to the character, so you can read it or assign to it.
 
 ```cpp run pin indexing.cpp
 // predict: Write everything printed, including the last line.
@@ -105,8 +96,8 @@ using namespace std;
 int main()
 {
     string s = "hello";
-    cout << s[0] << endl;      // prints h
-    cout << s.at(1) << endl;   // prints e
+    cout << s[0] << endl;
+    cout << s.at(1) << endl;
     s[0] = 'j';
     s.at(4) = '!';
     cout << s << endl;
@@ -119,13 +110,11 @@ int main()
 }
 ```
 
-`cout << s[0] << endl;` prints `h` and `cout << s.at(1) << endl;` prints `e`, the slide's two examples. Because both return a reference, `s[0] = 'j';` changes the string in place: `jell!`.
-
-The difference is a bad index. `s[10]` on a 5-character string is **undefined behaviour**: no check, you read whatever memory is there. `s.at(10)` **checks the bounds** and throws `std::out_of_range`, which the `try`/`catch` turns into a message. Exceptions come later in the course.
+`cout << s[0] << endl;` and `cout << s.at(1) << endl;` are the slide's two examples. Because both return a reference, `s[0] = 'j';` changes the string in place. The difference is a bad index: `s[10]` on a 5-character string is **undefined behaviour**, while `s.at(10)` **checks the bounds** and throws `std::out_of_range`, which the `try`/`catch` turns into a message.
 
 ## A short aside on classes
 
-Three lines that call three different pieces of the `string` class, a preview of what you will write yourself in a few weeks:
+Three lines that call three different pieces of the `string` class, a preview of Week 3:
 
 ```cpp run pin classesAside.cpp
 // predict: Write the three lines printed, brackets included.
@@ -148,15 +137,11 @@ int main()
 }
 ```
 
-- `string first;` calls the **default constructor**.
-- `string second = first;` is a declaration with an initializer, so it calls the **copy constructor**: `second` is a new object holding a copy of `first`'s characters.
-- `first = second;` has no type in front, so it is not a declaration: it calls the **assignment operator** on an object that already exists.
-
-A copy is a copy: after `second = "COMP 3522";`, `first` is still empty, and only the later `first = second;` copies the characters across.
+`string second = first;` is a declaration with an initializer, so it calls the **copy constructor**; `first = second;` has no type in front, so it calls the **assignment operator** on an object that already exists. A copy is a copy: changing one string afterwards does not change the other.
 
 ## Reading a whole line: `getline`
 
-`cin >> input` stops at the first whitespace, useless for a name like `Jeff Yim`. `getline`, defined in `<string>`, reads a **line** of characters from an input stream into the string you give it, **tosses the newline**, and returns the original input stream.
+`cin >> input` stops at the first whitespace, useless for `Jeff Yim`. `getline`, from `<string>`, reads a **line** into the string, **tosses the newline**, and returns the stream.
 
 ```cpp run pin getlineBasics.cpp
 // stdin: Hello World
@@ -177,18 +162,16 @@ int main()
 }
 ```
 
-`cin >> word;` extracts `Hello` and stops **at** the space without consuming it, so `getline(cin, rest);` starts there and `rest` is `" World"` **with the leading space**. The signature from the slides:
+`cin >> word;` stops at the space without consuming it, and `getline(cin, rest);` starts exactly where it stopped. The signature from the slides:
 
 ```cpp
 string input;
 getline(cin, input); // returns cin
 ```
 
-The return value is `cin` itself, which is what makes the loop idiom below work.
-
 ### The optional third argument: a delimiter
 
-The full form is `getline(inputstream, input, delimiter)`. The default delimiter is the newline; give a different character and `getline` reads up to that character instead, and tosses it:
+The full form is `getline(inputstream, input, delimiter)`; the default delimiter is the newline:
 
 ```cpp run pin delimiter.cpp
 // stdin: Yim,Jeff,COMP3522
@@ -208,26 +191,13 @@ int main()
 }
 ```
 
-`getline(cin, last, ',');` reads `Yim` and throws the comma away, `getline(cin, first, ',');` reads `Jeff`, and the plain `getline(cin, course);` takes the rest of the line: comma-separated data split without a parser.
+`getline(cin, last, ',');` reads up to the comma and throws the comma away; the plain `getline(cin, course);` takes the rest of the line.
 
 ## When getline stops, and what it sets
 
-The slides list three ways an extraction can end. `getline` keeps pulling characters until:
+The slides: getline stops at **EOF** (sets **eofbit**), at the **delimiter** (extracted and tossed), or at too many characters (**failbit**). Reading **no character at all** sets eofbit and failbit.
 
-1. **EOF** is reached: the characters read so far go into the string and **eofbit is set**.
-2. The **delimiter (or newline) is extracted**: it is **tossed**, not stored, and the read succeeds.
-3. So many characters were extracted that they exceed what a string can hold, which **sets the failbit**.
-
-One more case is on the next slide: if `getline` cannot read **even one character** because the stream is already at EOF, it sets **both eofbit and failbit** and leaves the string **unchanged**.
-
-In the simulator, `\n` is Enter and `*` marks the end of the input, as on the slide:
-
-```widget
-getline-sim
-{ "input": "Hello\\nworld\\n", "calls": 2 }
-```
-
-The slide's table: what one `getline(cin, input)` call leaves in `input` for each keyboard input.
+The slide's table: what one `getline(cin, input)` call leaves in `input` (`*` is EOF).
 
 | cin user input | `string input` | bits set |
 |---|---|---|
@@ -236,7 +206,20 @@ The slide's table: what one `getline(cin, input)` call leaves in `input` for eac
 | `\nWorld\n` | EMPTY | none |
 | `Hello*` | `Hello` | eofbit |
 | `Hello\n*` | `Hello` | none |
-| `*` | no change | eofbit **and** failbit |
+| `*` | slide: no change; g++: EMPTY | eofbit **and** failbit |
+
+:::warn The last row with real g++
+g++ empties the string on input `*`: `getline` erases it first, then finds nothing to read. The string keeps its value only when eofbit was already set by an earlier call, as on the second call after `Hello*`.
+:::
+
+### One getline call at a time
+
+Watch where the cursor stops, which character is tossed, and when the bits light up.
+
+```widget
+getline-sim
+{ "input": "Hello\\nworld\\n", "calls": 2 }
+```
 
 ```cpp run pin getlineTable.cpp
 // stdin: Hello\nworld\n
@@ -256,18 +239,11 @@ int main()
 }
 ```
 
-The program starts with `string input = "unchanged";` so the "no change" row is visible. Edit the stdin box to test every row (leave it empty for the `*` row):
-
-- `Hello\nworld\n`: `[Hello]`, then `[world]`, nothing set. The newlines were extracted and tossed.
-- `\nWorld\n`: first call `[]`. An empty line is a **successful** read of zero characters.
-- `Hello` with no Enter: `[Hello] eof=1 fail=0`. The read succeeded. The **second** call finds nothing, sets failbit as well, and `input` keeps `Hello`.
-- Empty stdin: `[unchanged] eof=1 fail=1`. Nothing could be read, so the string is untouched and both bits are set.
-
-Reaching EOF after reading some characters is not a failure; failing to read *anything* is what sets failbit. Same rule as `cin >> n` in Week 1.
+`string input = "unchanged";` makes a kept value visible, and each `getline(cin, input);` is one call of the table. An empty line is a **successful** read of zero characters; reaching EOF after some characters is not a failure; reading nothing at all is.
 
 ## The standard idiom: process a stream line by line
 
-`getline` returns the stream, and a stream converts to `false` once failbit is set, so the slides give this pattern:
+The slides' pattern:
 
 ```cpp run pin lineByLine.cpp
 // stdin: first line\nsecond line\nthird
@@ -290,7 +266,7 @@ int main()
 }
 ```
 
-`while (getline(cin, line))` reads a line, and the value of the expression is `cin`, true as long as failbit is clear. The third line has no newline after it, but `getline` still returns it (eofbit only), so the body runs three times. The **fourth** call reads nothing, sets failbit, and ends the loop; you never test `eof()` yourself.
+The value of `while (getline(cin, line))` is `cin`, true as long as failbit is clear. A last line with no newline after it is still returned (eofbit only); the call after it reads nothing, sets failbit and ends the loop, so you never test `eof()` yourself.
 
 ## The classic trap: `cin >>` followed by `getline`
 
@@ -334,14 +310,12 @@ int main()
 ```
 
 :::before Before
-`cin >> n;` reads the digits `42` and stops at the newline **without consuming it**. `getline(cin, name);` then reads up to that newline, which is immediately, and returns an empty string: `name = []`.
+`cin >> n;` reads the digits and stops at the newline **without consuming it**, so `getline(cin, name);` reads up to that newline at once.
 :::
 
 :::after After
-The Week 1 recovery tool: `cin.ignore(numeric_limits<streamsize>::max(), '\n');` throws away everything up to and including the leftover newline, so the next `getline` reads the real line, `Jeff Yim`. `numeric_limits` lives in `<limits>`.
+`cin.ignore(numeric_limits<streamsize>::max(), '\n');` (from `<limits>`) throws away everything up to and including the leftover newline, so the next `getline` reads the real line.
 :::
-
-The rule: `>>` leaves the newline behind, `getline` consumes it. Whenever you switch from `>>` to `getline`, `ignore` the rest of the line first.
 
 ```quiz
 [
@@ -406,9 +380,9 @@ The rule: `>>` leaves the newline behind, `getline` consumes it. Whenever you sw
   },
   {
     "q": "The input is only EOF (nothing typed). After `getline(cin, input);`...",
-    "options": ["`input` is empty and no bits are set", "`input` is unchanged, and eofbit and failbit are both set", "`input` is unchanged and only eofbit is set", "the program crashes"],
+    "options": ["`input` is empty and no bits are set", "`input` is empty, and eofbit and failbit are both set", "`input` is unchanged and only eofbit is set", "the program crashes"],
     "answer": 1,
-    "explain": "The last row of the slide's table: no character could be extracted, so input keeps its old value and both eofbit and failbit are set (cin is now false)."
+    "explain": "No character could be extracted, so both eofbit and failbit are set (cin is now false). The slide's table says 'no change' for the string; g++ erases it first, so it is empty. Only a call made after eofbit is already set leaves the string unchanged."
   },
   {
     "q": "The input is `Hello` followed immediately by EOF (no Enter). After `getline(cin, input);` the read has failed.",

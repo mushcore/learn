@@ -65,7 +65,7 @@ The slide's second table, for $n = 8$:
 | 5 | 7 |
 | 6 | 1 |
 
-$$f(8) = 1 + 3 \times (8 - 1) + 1 = 23$$
+$$f(8) = 1 + 3 \times (8 - 1) + 1$$
 
 For an input of size $n$, the running time is
 
@@ -77,7 +77,7 @@ $$f(n) = 1 + 3(n - 1) + 1 = 3n - 1$$
 
 ### find, one comparison at a time
 
-Each step below is one execution of line 4. The `runs` column counts every line as it executes: the ascending array gives the slide's 1, 2, 2, 2, 1. Press `descending` and line 5 drops to 0 while line 4 stays at $n - 1$. The predict box asks for the count first, then each comparison.
+Each step is one execution of line 4, and the `runs` column counts every line as it executes. The ascending array ends at the slide's 1, 2, 2, 2, 1; on a descending array line 5 stays at 0 while line 4 still reaches $n - 1$.
 
 ```widget
 find-play
@@ -107,15 +107,11 @@ with tiebreakers:
 - **which one is more "expensive"**;
 - **or maybe sometimes we don't care**.
 
-For `find` the accepted choice is line 4, the comparison `A[i] > m`: it is inside the loop, it is the actual work of the algorithm (a comparison of data), and it runs every iteration regardless of the input, unlike line 5. So **the running time of find is**
+For `find` the lecture picks line 4, the comparison `A[i] > m`. Line 5 sits inside the `if`, but "deepest" counts loops, not `if`s: lines 3, 4 and 5 are all one loop deep (a loop's own `for` line counts as inside it), so the tie goes to the more expensive line, and a comparison of data is the real work of the algorithm. So **the running time of find is**
 
 $$f(n) = n - 1$$
 
-> **We don't count instructions that are not basic operations.**
-
-:::tip The fundamental concept
-**Count the number of basic operations executed for an input of size n.** That count, as a function of $n$, is the running time.
-:::
+> **We don't count instructions that are not basic operations. This is the fundamental concept we use to analyze algorithmic efficiency: count the number of basic operations executed for an input of size n.**
 
 $3n - 1$ (every statement) and $n - 1$ (basic operation only) both grow linearly in $n$; the second is simpler to compute and does not depend on which statements happened to be inside the `if`. [Choosing the basic operation](#/comp3760-l1/basic-operation) makes that choice in harder pseudocode; [Setting up and simplifying the sums](#/comp3760-l1/counting-with-sums) counts it when loops nest.
 
@@ -148,7 +144,7 @@ $3n - 1$ (every statement) and $n - 1$ (basic operation only) both grow linearly
     "code": "1. Algo: find( A[0…n-1] )\n2.    m ← A[0]\n3.    for i ← 1 to n-1 do\n4.       if A[i] > m\n5.          m ← A[i]\n6.    return m",
     "options": ["Line 2: the assignment m ← A[0]", "Line 4: the comparison A[i] > m", "Line 5: the assignment m ← A[i]", "Line 6: return m"],
     "answer": 1,
-    "explain": "The basic operation is the statement executed most frequently; lines 3, 4, 5 tie at n − 1, and the tie goes to the comparison A[i] > m: it is the real work of the algorithm and it runs every iteration, while line 5 only runs when the if is true. Lines 2 and 6 run once."
+    "explain": "The basic operation is the statement executed most frequently; lines 3, 4, 5 tie at n − 1 and are all one loop deep (the `if` adds no depth), so cost decides: the comparison A[i] > m is the real work of the algorithm, and it runs every iteration, while line 5 only runs when the if is true. Lines 2 and 6 run once."
   },
   {
     "type": "spotbug",
@@ -186,7 +182,7 @@ $3n - 1$ (every statement) and $n - 1$ (basic operation only) both grow linearly
     "q": "According to the lecture, which of these is a tiebreaker when several statements execute equally often?",
     "options": ["The statement that appears first in the pseudocode", "The statement deepest inside the loop", "The statement with the shortest name", "The statement that uses the most variables"],
     "answer": 1,
-    "explain": "The slide's tiebreakers: deepest inside the loop; which one is more expensive; or maybe sometimes we don't care. Position in the listing and variable counts are not criteria."
+    "explain": "The slide's tiebreakers: deepest inside the loop; which one is more expensive; or maybe sometimes we don't care. \"Deepest\" means inside more loops; an `if` adds no depth. Position in the listing and variable counts are not criteria."
   }
 ]
 ```

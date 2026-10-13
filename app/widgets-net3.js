@@ -777,6 +777,246 @@ function clockDrift(box, cfg) {
   draw(); drawRate();
 }
 
+// ---------- shared: predict mode for the playback widgets below ----------
+/** Predict-mode state for a playback: the next step waits until its right answer is picked. `redraw` repaints the frame. */
+function predictKit(ask, label, getPb, redraw) {
+  const s = { on: false, answered: 0, asked: 0, firstTry: 0, missed: false, wrong: null, key: null, refocus: false };
+  const row = el("label", "playback-check");
+  const cb = document.createElement("input");
+  cb.type = "checkbox";
+  row.append(cb, " " + label);
+  s.row = row;
+  s.set = (v) => { s.on = !!v; cb.checked = s.on; };
+  s.reset = () => { s.answered = 0; s.asked = 0; s.firstTry = 0; s.missed = false; s.wrong = null; s.key = null; };
+  s.asking = (pos, n) => s.on && s.answered < n && Math.abs(pos - s.answered) < 1e-6;
+  s.limit = (n) => (s.on ? s.answered : n);
+  s.nudge = () => { ask.classList.remove("playback-nudge"); void ask.offsetWidth; ask.classList.add("playback-nudge"); };
+  s.tally = () => (s.asked > 0 ? ` ${s.firstTry} of ${s.asked} right on the first try.` : "");
+  function pick(o, e) {
+    s.asked += s.wrong == null && !s.missed ? 1 : 0;
+    s.refocus = e.detail === 0;
+    if (!o.ok) { s.missed = true; s.wrong = o.label; redraw(); return; }
+    if (!s.missed) s.firstTry++;
+    s.missed = false; s.wrong = null; s.answered++;
+    getPb().next();
+  }
+  /** Shows the answer buttons while `show` is true. opts: [{ label, ok, why }]; `why` is quoted after a wrong pick. */
+  s.render = (show, keyBase, opts) => {
+    const key = show ? `${keyBase}|${s.answered}|${s.wrong}` : "";
+    if (key === s.key) return;
+    s.key = key; ask.innerHTML = ""; ask.hidden = !s.on;
+    if (!key) return;
+    const btns = opts.map((o) => {
+      const b = el("button", "viz-btn" + (o.label === s.wrong ? " playback-wrong" : ""), o.label);
+      b.type = "button";
+      b.addEventListener("click", (e) => pick(o, e));
+      ask.append(b);
+      return b;
+    });
+    const w = opts.find((o) => o.label === s.wrong);
+    if (w) ask.append(el("span", "playback-feedback", `Not ${w.label}. ${w.why}`));
+    if (s.refocus) { s.refocus = false; (btns.find((b) => !b.classList.contains("playback-wrong")) || btns[0]).focus(); }
+  };
+  cb.addEventListener("change", () => {
+    const pb = getPb();
+    s.on = cb.checked; pb.pause(); s.reset();
+    // Steps already on screen count as answered; the questions start at the next one.
+    s.answered = Math.ceil(pb.pos() - 1e-9);
+    pb.set(pb.pos());
+  });
+  return s;
+}
+const smooth01 = (u) => { const c = clamp(u, 0, 1); return c * c * (3 - 2 * c); };
+const lerpN = (a, b, t) => a + (b - a) * t;
+
+// ---------- widget: baseline-play ----------
+// The baseline-dc trace drawn one bit at a time: the bit's level, then the receiver's running average across it.
+function baselinePlay(box, cfg) {
+  const schemes = (Array.isArray(cfg.schemes) ? cfg.schemes : ["nrz-l", "manchester"]).filter((s) => LC[s]);
+  if (!schemes.length) schemes.push("nrz-l", "manchester");
+  let scheme = schemes.includes(cfg.scheme) ? cfg.scheme : schemes[0];
+  const valid = (s) => /^[01]{4,24}$/.test(s);
+  let bits = valid(cfg.bits || "") ? cfg.bits : "0100000000001011";
+  let half = [], avgAt = [], pb = null;
+  const PER = 16, TAU = 6;
+
+  box.append(el("h4", null, cfg.title || "The running average, bit by bit"));
+  if (schemes.length > 1) box.append(btnRow(schemes.map((s) => LC[s].name), (i) => { scheme = schemes[i]; restart(); }, schemes.indexOf(scheme)));
+  const row = el("div", "unit-row");
+  const input = bitsInput(bits, 24);
+  row.append(el("label", null, "bits"), input);
+  for (const [label, b] of [["long run of 0s", "0100000000001011"], ["long run of 1s", "0111111111110100"], ["alternating", "0101010101010101"]]) {
+    const btn = el("button", "viz-btn", label);
+    btn.type = "button";
+    btn.addEventListener("click", () => { bits = b; input.value = bits; restart(); });
+    row.append(btn);
+  }
+  const svg = svgEl("svg", { viewBox: "0 0 640 200", class: "curve-svg net-svg", role: "img", "aria-label": "signal and the receiver's running average, drawn one bit at a time" });
+  const caption = el("p", "playback-caption");
+  caption.setAttribute("aria-live", "polite");
+  const ask = el("div", "viz-btn-row playback-ask");
+  const note = el("p", "widget-note");
+  const P = predictKit(ask, "Predict the baseline's move before each bit", () => pb, () => frame(pb.pos()));
+  P.set(cfg.predict);
+  box.append(row, P.row, svg, caption, ask);
+
+  const n = () => bits.length;
+  /** The running average at each of PER sub-steps per bit, with a time constant of TAU bit durations (as in baseline-dc). */
+  function compute() {
+    half = lcEncode(scheme, bits);
+    const levels = LC[scheme].levels, alpha = 1 - Math.exp(-1 / (TAU * PER));
+    let avg = (Math.max(...levels) + Math.min(...levels)) / 2;
+    avgAt = [avg];
+    for (let i = 0; i < n() * PER; i++) { avg += (half[Math.floor((i * 2) / PER)] - avg) * alpha; avgAt.push(avg); }
+  }
+  const moveOf = (i) => { const d = avgAt[(i + 1) * PER] - avgAt[i * PER]; return d > 0.02 ? "up" : d < -0.02 ? "down" : "hold"; };
+  const RULE = "The running average moves toward the level the signal holds during the bit. A bit with a positive and a negative half leaves it where it was, and so does a level the average has already drifted to.";
+  function levelsText(i) {
+    const a = half[2 * i], b = half[2 * i + 1];
+    return a === b ? `${LC[scheme].name} holds ${levelName(a)} for the whole bit` : `${LC[scheme].name} sends ${levelName(a)} then ${levelName(b)}, a positive and a negative half`;
+  }
+  function frame(pos) {
+    const N = n(), X0 = 46, X1 = 626, YC = 100, AMP = 58, bw = (X1 - X0) / N, y = (v) => YC - v * AMP;
+    const q = P.asking(pos, N), cur = q ? P.answered : Math.min(N - 1, Math.floor(pos - 1e-9));
+    const f = q ? 0 : cur < 0 ? 0 : pos - cur;
+    svg.innerHTML = "";
+    if (cur >= 0) svg.append(svgEl("rect", { x: X0 + cur * bw, y: 30, width: bw, height: 2 * AMP + 10, fill: "var(--hl-soft)" }));
+    for (let i = 0; i <= N; i++) svg.append(svgEl("line", { x1: X0 + i * bw, y1: 30, x2: X0 + i * bw, y2: YC + AMP + 12, stroke: "var(--rule)", "stroke-dasharray": "2 4" }));
+    for (let i = 0; i < N; i++) svg.append(svgEl("text", { x: X0 + (i + 0.5) * bw, y: 24, "text-anchor": "middle", "font-size": 12, fill: "var(--hl)", "font-weight": i === cur ? "700" : "400" }, bits[i]));
+    svg.append(svgEl("line", { x1: X0, y1: YC, x2: X1, y2: YC, stroke: "var(--rule-strong)" }));
+    lcLevelLabels(svg, scheme, X0 - 6, YC, AMP);
+    // The signal: whole bits so far, the current one drawn during the first 40 % of the step.
+    const sigTo = cur < 0 ? 0 : q ? P.answered : cur + Math.min(1, f / 0.4);
+    if (sigTo > 0) {
+      const pts = [];
+      for (let h = 0; h < 2 * N && sigTo > h / 2; h++) pts.push([X0 + (h / 2) * bw, y(half[h])], [X0 + Math.min((h + 1) / 2, sigTo) * bw, y(half[h])]);
+      svg.append(polyline(pts, "var(--ink-dim)", 1.8, 0.9));
+    }
+    // The running average follows over the rest of the step.
+    const avgTo = cur < 0 ? 0 : q ? P.answered : cur + smooth01((f - 0.3) / 0.7);
+    const kMax = Math.round(avgTo * PER), base = [];
+    for (let k = 0; k <= kMax; k++) base.push([X0 + (k / PER) * bw, y(avgAt[k])]);
+    if (base.length > 1) svg.append(polyline(base, "var(--hl)", 2.6));
+    svg.append(svgEl("circle", { cx: base[base.length - 1][0], cy: base[base.length - 1][1], r: 4.5, fill: "var(--hl)" }));
+    svg.append(svgEl("text", { x: 336, y: 194, "text-anchor": "middle", "font-size": 10.5, fill: "var(--ink-dim)" }, "grey: signal · yellow: the receiver's running average (the baseline)"));
+    let text;
+    if (q) text = `Bit ${P.answered + 1} is ${bits[P.answered]}: ${levelsText(P.answered)}. Does the baseline move up, move down or hold?`;
+    else if (cur < 0) text = `The receiver's running average starts at ${num(avgAt[0], 2)} V, midway between the levels. Each step adds one bit.`;
+    else {
+      const a0 = avgAt[cur * PER], a1 = avgAt[(cur + 1) * PER], m = moveOf(cur);
+      text = `Bit ${cur + 1} is ${bits[cur]}: ${levelsText(cur)}, so the running average ${m === "hold" ? "holds" : `moves ${m}`} (${num(a0, 2)} to ${num(a1, 2)} V).`;
+      if (pos >= N) {
+        let lo = Infinity, hi = -Infinity;
+        for (const v of avgAt) { lo = Math.min(lo, v); hi = Math.max(hi, v); }
+        text += hi - lo > 0.5 ? ` Over the ${N} bits the baseline wandered from ${num(lo, 2)} to ${num(hi, 2)} V.` : ` Over the ${N} bits the baseline stayed between ${num(lo, 2)} and ${num(hi, 2)} V.`;
+        text += P.tally();
+      }
+    }
+    if (caption.textContent !== text) caption.textContent = text;
+    P.render(q, `${scheme}|${bits}`, ["up", "down", "hold"].map((m) => ({ label: m === "hold" ? "holds" : `moves ${m}`, ok: m === moveOf(P.answered), why: RULE })));
+  }
+  function restart() {
+    compute(); P.reset();
+    note.textContent = BD_NOTES[scheme] + " The running average has a time constant of 6 bit durations.";
+    pb.reset(n());
+  }
+  compute();
+  pb = createPlayback({ count: n(), unit: "bit", onFrame: frame, stepMs: () => cfg.stepMs || 900, limit: () => P.limit(n()), onBlocked: P.nudge });
+  box.append(pb.el, note);
+  input.addEventListener("input", () => {
+    const v = input.value.replace(/[^01]/g, "");
+    if (valid(v)) { bits = v; restart(); } else note.textContent = "Type 4 to 24 bits, 0s and 1s only.";
+  });
+  restart();
+}
+
+// ---------- widget: clock-drift-play ----------
+// The receiver's clock ticking along the sent signal: one tick per step, the sample point sweeps to the middle of
+// the receiver's next bit interval and the bit it reads is appended.
+function clockDriftPlay(box, cfg) {
+  const bits = /^[01]{2,12}$/.test(cfg.bits || "") ? cfg.bits : "10110001";
+  const SPEEDS = [[1.5, "1.5× (slide figure)"], [1, "1× (matched)"], [0.75, "0.75× (slower)"]];
+  let speed = clamp(+cfg.speed || 1.5, 0.5, 2), pb = null;
+  box.append(el("h4", null, cfg.title || "The receiver's clock ticking along the sent signal"));
+  box.append(btnRow(SPEEDS.map((s) => s[1]), (i) => { speed = SPEEDS[i][0]; restart(); }, SPEEDS.findIndex((s) => Math.abs(s[0] - speed) < 1e-9)));
+  const svg = svgEl("svg", { viewBox: "0 0 640 236", class: "curve-svg net-svg", role: "img", "aria-label": "sent signal and the receiver's sample points, one clock tick at a time" });
+  const caption = el("p", "playback-caption");
+  caption.setAttribute("aria-live", "polite");
+  const ask = el("div", "viz-btn-row playback-ask");
+  const note = el("p", "widget-note");
+  const P = predictKit(ask, "Predict each bit the receiver reads", () => pb, () => frame(pb.pos()));
+  P.set(cfg.predict);
+  box.append(P.row, svg, caption, ask);
+
+  const n = bits.length;
+  const count = () => Math.floor(n * speed + 1e-9);
+  const tAt = (k) => (k + 0.5) / speed; // sample time of tick k, in sender bit durations
+  const level = (t) => {
+    // A sample that lands exactly on an edge is read as the higher of the two levels, as in clock-drift.
+    const k = Math.round(t);
+    if (Math.abs(t - k) < 1e-9 && k > 0 && k < n) return Math.max(+bits[k - 1], +bits[k]);
+    return +bits[clamp(Math.floor(t), 0, n - 1)];
+  };
+  const read = () => Array.from({ length: count() }, (_, k) => level(tAt(k)));
+  const rule = () => `The receiver reads the sent signal at the middle of its own bit interval, and its bit lasts ${num(1 / speed, 2)} of the sender's.`;
+  function frame(pos) {
+    const C = count(), R = read(), X0 = 40, X1 = 620, bw = (X1 - X0) / n, rw = bw / speed, AMP = 22;
+    const q = P.asking(pos, C), cur = q ? P.answered : Math.min(C - 1, Math.floor(pos - 1e-9));
+    const f = q ? 0 : cur < 0 ? 0 : pos - cur, done = q ? P.answered : cur + (f >= 0.6 ? 1 : 0); // ticks whose bit is read
+    svg.innerHTML = "";
+    const rowAt = (yc, title) => {
+      const y = (b) => yc - (b ? AMP : -AMP), pts = [];
+      svg.append(svgEl("line", { x1: X0, y1: yc, x2: X1, y2: yc, stroke: "var(--rule-strong)" }));
+      for (let i = 0; i < n; i++) pts.push([X0 + i * bw, y(+bits[i])], [X0 + (i + 1) * bw, y(+bits[i])]);
+      svg.append(polyline(pts, "var(--blue)", 2.6));
+      svg.append(svgEl("text", { x: (X0 + X1) / 2, y: yc + AMP + 22, "text-anchor": "middle", "font-size": 11, fill: "var(--ink-dim)" }, title));
+      return y;
+    };
+    rowAt(62, "a. Sent");
+    for (let i = 0; i <= n; i++) {
+      svg.append(svgEl("line", { x1: X0 + i * bw, y1: 24, x2: X0 + i * bw, y2: 90, stroke: "var(--rule-strong)", "stroke-dasharray": "3 4" }));
+      if (i < n) svg.append(svgEl("text", { x: X0 + (i + 0.5) * bw, y: 18, "text-anchor": "middle", "font-size": 13, fill: "var(--hl)", "font-weight": "600" }, bits[i]));
+    }
+    const y2 = rowAt(176, "b. Received");
+    // Receiver intervals that have started, and the reads so far.
+    const started = q ? P.answered + 1 : cur + 1;
+    for (let k = 0; k <= Math.min(started, C); k++) svg.append(svgEl("line", { x1: X0 + k * rw, y1: 138, x2: X0 + k * rw, y2: 204, stroke: "var(--red)", "stroke-dasharray": "3 4", opacity: 0.8 }));
+    if (q) svg.append(svgEl("rect", { x: X0 + P.answered * rw, y: 138, width: rw, height: 66, fill: "var(--hl-soft)" }));
+    for (let k = 0; k < done; k++) {
+      const x = X0 + (k + 0.5) * rw;
+      svg.append(svgEl("text", { x, y: 132, "text-anchor": "middle", "font-size": 13, fill: "var(--red)", "font-weight": "600" }, String(R[k])));
+      svg.append(svgEl("circle", { cx: x, cy: y2(R[k]), r: 3, fill: "var(--red)" }));
+    }
+    // The sample point sweeping from the last sample to this tick's.
+    if (cur >= 0 && !q) {
+      const t = lerpN(cur > 0 ? tAt(cur - 1) : 0, tAt(cur), smooth01(f / 0.6)), x = X0 + t * bw;
+      svg.append(svgEl("line", { x1: x, y1: 26, x2: x, y2: 204, stroke: "var(--hl)", "stroke-width": 1.6 }));
+      svg.append(svgEl("circle", { cx: x, cy: 62 - (level(t) ? AMP : -AMP), r: 5, fill: "var(--hl)" }));
+    }
+    svg.append(svgEl("text", { x: 632, y: 132, "text-anchor": "end", "font-size": 10.5, fill: "var(--ink-dim)" }, `read ${done} of ${C}`));
+    let text;
+    if (q) text = `Tick ${P.answered + 1}: the receiver samples at the middle of its interval ${P.answered + 1}, ${num(tAt(P.answered), 2)} sender bit durations from the start. Which bit does it read?`;
+    else if (cur < 0) text = `The sender sends ${bits}. The receiver's clock is ${num(speed, 2)}× the sender's, so its bit duration is ${num(1 / speed, 2)} of the sender's and it ticks ${C} times while ${n} bits arrive.`;
+    else {
+      const t = tAt(cur), j = clamp(Math.floor(t), 0, n - 1);
+      text = `Tick ${cur + 1}: the sample at ${num(t, 2)} sender bit durations falls in sent bit ${j + 1}, a ${bits[j]}, so the receiver reads ${R[cur]}.`;
+      if (pos >= C) text += ` ${n} bits sent, ${C} read: ${R.join("")}.${P.tally()}`;
+    }
+    if (caption.textContent !== text) caption.textContent = text;
+    P.render(q, String(speed), ["0", "1"].map((b) => ({ label: b, ok: +b === R[P.answered], why: rule() })));
+  }
+  function restart() {
+    P.reset();
+    note.textContent = Math.abs(speed - 1) < 1e-9 ? "The clocks match: one read per sent bit, and the receiver reads exactly what was sent."
+      : speed > 1 ? "A faster receiver clock has a shorter bit duration, so it reads more bits than were sent. At 1.5× this is the slide figure: 10110001 is read as 110111000011."
+        : "A slower receiver clock has a longer bit duration, so it reads fewer bits than were sent.";
+    pb.reset(count());
+  }
+  pb = createPlayback({ count: count(), unit: "tick", onFrame: frame, stepMs: () => cfg.stepMs || 900, limit: () => P.limit(count()), onBlocked: P.nudge });
+  box.append(pb.el, note);
+  restart();
+}
+
 export const WIDGETS = {
   "line-code": lineCode,
   "line-code-play": lineCodePlay,
@@ -785,4 +1025,6 @@ export const WIDGETS = {
   "baseline-dc": baselineDc,
   "dc-offset": dcOffset,
   "clock-drift": clockDrift,
+  "baseline-play": baselinePlay,
+  "clock-drift-play": clockDriftPlay,
 };

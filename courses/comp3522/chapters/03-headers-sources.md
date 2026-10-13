@@ -7,7 +7,7 @@ Unlike Java, C++ splits code across **two kinds of files**: header files **decla
 
 ## Declaration vs definition
 
-A **non-defining function declaration** (also called a *prototype*) states the return type, name, and parameters — but has **no body**, and ends with a semicolon:
+A **non-defining function declaration** (also called a prototype) states the return type, name, and parameters — but has **no body**, and ends with a semicolon:
 
 ```cpp
 int add(int first, int second);
@@ -22,7 +22,7 @@ int add(int first, int second)
 }
 ```
 
-Anything that calls `add` only needs to have *seen the declaration* — the compiler just needs to know the function's shape to generate a call to it. The actual body is resolved later, at link time.
+Anything that calls `add` only needs to have seen the declaration — the compiler just needs to know the function's shape to generate a call to it. The actual body is resolved later, at link time.
 
 ## The calculator sample
 
@@ -43,7 +43,7 @@ int add(int first, int second); //add function is usable by external files
 //int subtract(int first, int second); //subtract function is hidden to external files if this line is commented
 ```
 
-**calculator.cpp** — the source. Implements *both* functions:
+**calculator.cpp** — the source. Implements both functions:
 
 ```cpp
 /*
@@ -90,13 +90,20 @@ Running this prints `Hello, World!` then `15` (from `add(10,5)`).
 compile-pipeline
 ```
 
+### The build, stage by stage
+
+Each `.cpp` is preprocessed and compiled on its own, and only the linker sees the files together. Watch which stage stops when `subtract` is called but missing from the header, and which when it is declared but never defined.
+
+```widget
+build-play
+```
+
 ## Rules for headers and sources
 
-- **Quotes vs angle brackets**: `#include "calculator.hpp"` for your own headers (the preprocessor looks in your project directory first); `#include <iostream>` for library headers (angle brackets, no extension).
-- **Never `#include` a `.cpp` file.** Only ever include headers. `main.cpp` connects to `calculator.cpp`'s code through `calculator.hpp`, never by including `calculator.cpp` directly.
-- **`#pragma once`**, not `#ifndef` include guards. Both stop a header's contents from being pasted into the same file twice (which would redeclare everything and fail to compile), but `#pragma once` is one line instead of three (`#ifndef X_H` / `#define X_H` / `#endif`) and is what the slides prefer.
-- **Every `.cpp` should have a matching `.hpp`** — except `main.cpp`. `main.cpp` is the one file that's allowed to exist without a header of its own, since nothing else needs to call into it.
-- A source file **connects** to its header by `#include`-ing it and giving the *matching* function declaration as its definition — same return type, name, and parameter types.
+- **Quotes vs angle brackets**: `#include "calculator.hpp"` for your own headers (the preprocessor looks in your project directory first); `#include <iostream>` for library headers.
+- **Never `#include` a `.cpp` file.** `main.cpp` reaches `calculator.cpp`'s code through `calculator.hpp`; including the `.cpp` pastes the definitions twice and the linker reports a multiple definition.
+- **`#pragma once`** does in one line what the three-line `#ifndef X_H` / `#define X_H` / `#endif` guard does: the header is pasted at most once per file.
+- **Every `.cpp` has a matching `.hpp`**, except `main.cpp`, which nothing else calls into.
 
 ## Multi-file build tools
 
@@ -119,6 +126,7 @@ The `cpp run` blocks on this site compile with the same flags.
 One file can still show the rule that makes the multi-file version work: the compiler must see a declaration before it sees a call.
 
 ```cpp run
+// predict: Does this compile? If so, write the number printed.
 #include <iostream>
 using namespace std;
 
@@ -145,7 +153,7 @@ Without the standalone declaration line, the call in `main` is a compile error, 
 3. In C++, the source file is a `.cpp` file.
 4. In C++, the header file is a `.hpp` file.
 5. Put function declarations in the header file.
-6. Put function declarations *and* definitions in the source file.
+6. Put function declarations and definitions in the source file.
 7. Use `#pragma once` instead of `#ifndef` to ensure a header file is only included once.
 
 ```quiz

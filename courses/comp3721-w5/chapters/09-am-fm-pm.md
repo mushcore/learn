@@ -32,7 +32,7 @@ analog-mod
 
 *The bandwidth of an audio signal (speech and music) is usually 5 kHz → AM radio station needs a bandwidth of 10 kHz.* That is $B_{AM} = 2 \times 5 = 10$ kHz. *The Federal Communications Commission (FCC) allows 10 kHz for each AM station. To avoid interference, each station's carrier frequency must be separated from those on either side of it by at least 10 kHz.*
 
-Slide 42 is the United States frequency allocation chart (NTIA, October 2003); it shows how crowded the spectrum is and carries no number for the quiz.
+Slide 42 is the United States frequency allocation chart (NTIA, October 2003); it shows how crowded the spectrum is.
 
 ## FM: the frequency follows the modulating signal
 

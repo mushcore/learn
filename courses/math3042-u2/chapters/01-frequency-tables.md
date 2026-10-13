@@ -16,11 +16,13 @@ Unit 2 runs on a sample of $n = 302$ BCIT students, one row per student:
 | `Wr.Hnd` | categorical | writing hand: R, L, A |
 | `Height.CM` | numerical | 141 to 199 cm |
 
-The notes load it with `read.csv`:
+Load it with `read.csv`:
 
 ```r
-BCIT.students <- read.csv("Data\BCIT.students.csv", row.names = 1, sep="")
+BCIT.students <- read.csv(file.path("Data", "BCIT.students.csv"), row.names = 1)
 ```
+
+The printed notes show `read.csv("Data\BCIT.students.txt", row.names = 1, sep="")`, which does not run: `"\B"` is not a valid R escape, and `sep=""` splits on spaces rather than commas. `file.path()` joins the folder and file name with the right separator, as the demo notebook does.
 
 `row.names = 1` makes the first column the row labels, not data. `BCIT.students$Eye.Colour` is then the eye-colour column, like `TenMileRace$net` in Lab 1.
 

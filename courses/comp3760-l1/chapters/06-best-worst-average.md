@@ -3,7 +3,7 @@ title: Best, worst and average case
 minutes: 9
 ---
 
-For `find`, `Mystery1` and `Mystery2` the count came out as a function of $n$ and nothing else. For a search it does not: the same $n$ can cost 1 comparison or $n$ comparisons depending on *where the key is*. Step 3 of the textbook's strategy exists for this case, and the lecture's rule is short: analyze the worst case.
+For `find`, `Mystery1` and `Mystery2` the count came out as a function of $n$ and nothing else. For a search it does not: the same $n$ can cost 1 comparison or $n$ comparisons depending on where the key is. Step 3 of the textbook's strategy exists for this case, and the lecture's rule is short: analyze the worst case.
 
 ## Example 4: searching for a key
 
@@ -33,7 +33,7 @@ op-counter
 
 ### One comparison at a time
 
-Each step below is one execution of the key comparison on line 3. Try the four presets and watch where the count stops: 1 when the key is first, $n$ when it is last or absent. Tick the predict box to give the count before the run and the result of each comparison.
+Each step is one execution of the key comparison on line 3. The count stops at 1 when the key is first and at $n$ when it is last or absent.
 
 ```widget
 find-play
@@ -64,11 +64,7 @@ To find the largest element you must look at every element; there is no lucky in
 
 ## Where this sits in the strategy
 
-Step 3 of the textbook's general strategy (slide 62):
-
-> **Be sure the number of times the basic operation is executed depends only on the size of the input. If it depends on some other property, the best/worst/average case efficiencies must be investigated separately.**
-
-So: choose the basic operation, then ask whether its count could differ for two inputs of the same size. If yes, count the worst case (and the best, if asked). If no, there is one count and one function.
+Step 3 of the textbook's strategy ([slide 62](#/comp3760-l1/counting-with-sums)) is this check: could the count differ for two inputs of the same size? If yes, count the worst case (and the best, if asked); if no, there is one count and one function.
 
 | algorithm | basic operation | depends on input form? | $C_{best}(n)$ | $C_{worst}(n)$ |
 |---|---|---|---|---|
@@ -87,6 +83,15 @@ So: choose the basic operation, then ask whether its count could differ for two 
 ```widget
 op-counter
 { "preset": "UniqueElements", "mode": "best", "presets": false, "title": "UniqueElements in the best case: one comparison, then return" }
+```
+
+### The early exit, one comparison at a time
+
+A duplicate stops the walk through the triangle of pairs at its own dot; the presets put it first, in the middle and in the last pair.
+
+```widget
+pairs-play
+{ "array": [4, 4, 2, 7, 5], "title": "UniqueElements with A[0] = A[1]: the best case" }
 ```
 
 The mode does not change the basic operation: best and worst are different counts of the same statement, not different statements.
@@ -122,7 +127,7 @@ A loop that touches every element unconditionally (a sum, a product, a matrix mu
     "explain": "Slide 53: best case is the number of steps needed if you \"get lucky\" with a particular input. It is about the *form* of an input of size $n$, not about a small $n$. \"On average\" is the average case."
   },
   {
-    "q": "For which of these algorithms does the basic operation count depend on the form of the input, not just its size?",
+    "q": "Does the basic operation count of HasZero depend on the form of the input, not just its size?",
     "code": "Algorithm HasZero(A[0..n-1])\n    for i ← 0 to n-1 do\n        if A[i] = 0 then\n            return true\n        endif\n    endfor\n    return false",
     "options": ["Yes, it depends on the input: best case 1 comparison, worst case n comparisons", "No, the comparison always runs n times", "No, the comparison always runs n − 1 times", "Yes: best case 0 comparisons, worst case n comparisons"],
     "answer": 0,

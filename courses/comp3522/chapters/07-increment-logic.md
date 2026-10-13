@@ -21,6 +21,7 @@ x++; //post
 Both programs start with `x = 5`:
 
 ```cpp run
+// predict: Write the line printed.
 #include <iostream>
 
 int main()
@@ -32,6 +33,7 @@ int main()
 ```
 
 ```cpp run
+// predict: Write the line printed.
 #include <iostream>
 
 int main()
@@ -42,7 +44,7 @@ int main()
 }
 ```
 
-The first program prints `5 6` — the first `<<` grabs the old `x` (5) and increments as a side effect; by the time the second `<<` runs, `x` is already 6. The second prints `6 6` because `x` is incremented *before* it is used at all.
+In the first program the first `<<` gets the old `x` and the increment happens as a side effect, so the second `<<` sees the new value. g++ with `-Wall` flags that line with a `-Wsequence-point` warning; since C++17 the operands of `<<` are evaluated left to right, so the output is still defined.
 
 The stepper's default expression combines both increments on one variable:
 
@@ -69,14 +71,15 @@ Six of them, and they all produce a `bool`:
 | `<=` | less than or equal to |
 
 ```cpp run
+// predict: Write the three lines printed.
 #include <iostream>
 
 int main()
 {
     int a = 5, b = 3;
-    std::cout << (a > b) << std::endl;                        // 1
-    std::cout << std::boolalpha << (a > b) << std::endl;       // true
-    std::cout << std::boolalpha << (5 == 5.0) << std::endl;    // true
+    std::cout << (a > b) << std::endl;
+    std::cout << std::boolalpha << (a > b) << std::endl;
+    std::cout << std::boolalpha << (5 == 5.0) << std::endl;
     return 0;
 }
 ```
@@ -117,14 +120,14 @@ int main()
 | `&&` | logical AND |
 | `\|\|` | logical OR |
 
-`&&` and `\|\|` **short-circuit**: the right-hand side is only evaluated if it can change the answer.
-
-`std::cout << (loud(false, "left") && loud(true, "right")) << std::endl;` calls `loud(false, "left")` first, which prints `checking left` and returns `false`. The left side of `&&` is `false`, so the whole expression is `false` and `loud(true, "right")` is never called. On the next line `loud(true, "left")` returns `true`, so the right side of `||` is skipped.
+`&&` and `||` **short-circuit**: the right-hand side is only evaluated if it can change the answer. A `false` left side already decides `&&`, and a `true` left side already decides `||`, so in `loud(false, "left") && loud(true, "right")` the question is whether `loud` is called a second time.
 
 :::quiz `=` is not `==`
-`if (x = 10)` **compiles**. It assigns `10` to `x`, and then tests the assigned value for truthiness (non-zero is true), so the branch runs every time unless you assign `0`. This is one of the most common real bugs in C and C++\.
+`if (x = 10)` **compiles**. It assigns `10` to `x`, and then tests the assigned value for truthiness (non-zero is true), so the branch runs every time unless you assign `0`. This is one of the most common real bugs in C and C++.
+:::
 
 ```cpp run
+// predict: x starts at 5. Write the line printed, if any.
 #include <iostream>
 
 int main()
@@ -137,7 +140,6 @@ int main()
     return 0;
 }
 ```
-:::
 
 ```quiz
 [

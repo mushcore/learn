@@ -92,7 +92,7 @@ int main() {
 }
 ```
 
-Every try block throws a `child_type`, which derives from `parent_type`, which derives from `std::exception`. In A the child handler is listed first and runs: `A: child handler: child`. In B the parent handler comes first, and a reference to the parent type accepts a child, so it runs and the `catch (child_type& e)` below it is dead code; g++ says so with the warning "exception of type 'child_type' will be caught by earlier handler", a warning only, not an error. Because the catch is by reference, the object is still the child and the virtual `what()` prints `child`. In C, `catch (parent_type e)` catches by **value**: the thrown child is copied into a new `parent_type` object, the child part is sliced off, and `what()` is now `parent`. g++ warns again, "catching polymorphic type 'struct parent_type' by value". That slice is why guideline 1 says reference. In D, `throw 42;` throws an `int`; `catch (exception& e)` cannot match a number, but `catch (...)` matches anything, ints and string literals included, and prints `D: catch-all`. The ellipsis gives you no variable, so you cannot read what was thrown, and g++ refuses to compile a `catch (...)` that is not the last handler of its try block.
+Every block throws a `child_type`, which derives from `parent_type`, which derives from `std::exception`. A parent handler listed first swallows the child, and g++ only warns that the child handler below it will be caught by an earlier handler. By reference the object stays a child, so the virtual `what()` dispatches to the child; by value it is copied into a new `parent_type` and sliced, which is why guideline 1 says reference. `catch (exception& e)` cannot match a thrown `int`, but `catch (...)` matches anything, gives you no variable to read, and must be the last handler or g++ refuses to compile.
 
 ```widget
 catch-matcher
@@ -147,11 +147,13 @@ int main() {
 }
 ```
 
-`main` calls `level1`, which calls `level2`, which calls `level3`, and each one owns a `Guard` local that announces its construction and destruction. `throw runtime_error("boom");` starts the search for a handler. `level3` has none, so its frame is abandoned and its local is destroyed first: `g3 destroyed`. `level2` has `catch (runtime_error& e)`, which matches exactly; it prints `level2 caught: boom, rethrowing` and `throw; // rethrow the same object` sends the very same exception object onward, so leaving `level2` destroys `g2`. `level1` has no try block at all: `return level2();   // no handler here: the exception passes straight through` means the exception passes through and `g1` is destroyed on the way. `main` catches it through the base class, `catch (exception& e)`, prints `main caught: boom`, and normal execution resumes with `main continues`. The `return 3; // never reached` and every line after a throw are dead. Destruction is in reverse order of construction, exactly as at the end of a scope in Week 3: unwinding is scope exit performed by the exception, which is why cleanup belongs in destructors and not in code after the call.
+### The search for a handler, then the unwinding
+
+Each frame owns a `Guard` that prints when it dies. Watch the order: the frames between the throw and the handler are left, and their locals destroyed, before the handler's body prints anything. A bare `throw;` restarts the trip from the enclosing frames. Unwinding is scope exit performed by the exception, in reverse order of construction, which is why cleanup belongs in destructors.
 
 ```widget
 unwind-stepper
-{ "preset": "caught in main (rethrow in level2)" }
+{ "preset": "caught in main (rethrow in level2)", "predict": true }
 ```
 
 ## Terminate or rethrow

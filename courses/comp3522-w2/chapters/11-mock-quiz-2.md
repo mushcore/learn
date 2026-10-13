@@ -3,7 +3,7 @@ title: Mock Quiz 2
 minutes: 45
 ---
 
-62 questions in the real format: multiple choice, true/false, select-all, what-does-this-print, fill-in-the-code, matching and a bug hunt. Answer everything before you check. Every explanation says *why*, so a wrong answer is still a lesson; the ones you miss come back in later lessons until you get them right twice.
+62 questions in the real format: multiple choice, true/false, select-all, what-does-this-print, fill-in-the-code, matching and a bug hunt. Answer everything before you check. Every explanation says why, so a wrong answer is still a lesson; the ones you miss come back in later lessons until you get them right twice.
 
 :::quiz Real quiz conditions
 Written at the start of lab on the Learning Hub. It covers the **Week 2 slides**, the **lecture videos** and the **Pointers and References practice** sheet. Numbers in the questions are the instructor's own (3522 and 2526, 123 and 345, `Hello World` positions, `0xffff000A`), so if a number looks familiar, trust it. Aim for 90% here before you stop studying.
@@ -128,7 +128,7 @@ Written at the start of lab on the Learning Hub. It covers the **Week 2 slides**
       "`outFile.copy(inFile);`"
     ],
     "answer": 1,
-    "explain": "Every stream owns an internal buffer (a filebuf for file streams). `rdbuf()` hands you that buffer, and inserting a buffer into an output stream writes everything in it. Streams cannot be assigned to each other, so option A does not compile."
+    "explain": "Every stream owns an internal buffer (a filebuf for file streams). `rdbuf()` hands you that buffer, and inserting a buffer into an output stream writes everything in it. Streams cannot be assigned to each other, so `outFile = inFile;` does not compile."
   },
   {
     "type": "match",
@@ -550,13 +550,13 @@ Written at the start of lab on the Learning Hub. It covers the **Week 2 slides**
   {
     "q": "The input is empty: end-of-file right away. What happens on `getline(cin, input);`?",
     "options": [
-      "input becomes an empty string and eofbit is set",
-      "input is unchanged, and both eofbit and failbit are set",
+      "input becomes an empty string and only eofbit is set",
+      "both eofbit and failbit are set; the slide says input is unchanged, g++ leaves it empty",
       "input is unchanged and only eofbit is set",
       "The program crashes"
     ],
     "answer": 1,
-    "explain": "The last row of the slide table: `*` (EOF) gives No change, eofbit and failbit are set. getline extracted nothing at all, and extracting nothing is a failure. Compare `Hello*`: the string gets Hello and only eofbit is set, because characters were read before EOF."
+    "explain": "getline extracted nothing at all, and extracting nothing is a failure: eofbit and failbit are set. The slide's table says 'No change' for the string; g++ erases it first, so it is empty. Compare `Hello*`: the string gets Hello and only eofbit is set, because characters were read before EOF."
   },
   {
     "q": "The user types `42` Enter `hello` Enter. What is `line` after this code?",

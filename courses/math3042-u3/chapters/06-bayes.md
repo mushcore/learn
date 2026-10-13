@@ -71,7 +71,14 @@ bayes-tree
 { "preset": "defective CPUs" }
 ```
 
-The last column of the widget's table restates the tree in whole numbers: of 10 000 CPUs, 8500 are Intel and 85 of those are defective, 1000 are AMD with 30 defective, 500 Other with 10 defective; 125 defective in all, 85 of them Intel, $85/125 = 0.68$. If the algebra ever feels slippery, count a population of 10 000.
+### 10 000 CPUs, split and then restricted
+
+The same tree in whole numbers: 10 000 CPUs split by maker (8500, 1000, 500), then each maker by defective (85, 30, 10). Conditioning on "defective" throws away everything except those 125 units, and $85/125 = 0.68$ is read off what remains.
+
+```widget
+bayes-flow-play
+{}
+```
 
 :::quiz The two questions
 (a) asks for $P(B)$: multiply along each path and **add**. (b) asks for $P(A_i \mid B)$: one path **divided** by that sum. Read which is which before touching the calculator: "randomly select a CPU" is (a); "randomly select a defective unit" restricts the sample space to $B$ and is (b).

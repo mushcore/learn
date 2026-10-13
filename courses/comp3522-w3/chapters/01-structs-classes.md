@@ -36,7 +36,7 @@ int main()
 A class is defined with `class` or `struct` and can contain four kinds of thing: data (member variables, data members), functions (member functions; rarely called methods), type definitions, and contained classes. The one difference between the two keywords: with `class`, members are **private by default**.
 
 ```cpp run pin encapsulation.cpp
-// predict: Write the one line printed. Then guess what happens if main writes obj.x = 5 directly.
+// predict: Write the one line printed.
 #include <iostream>
 using namespace std;
 
@@ -68,6 +68,41 @@ int main()
 - **Abstraction**: only show relevant details and hide the rest. Access specifiers do it inside a class; header files do it across files (you call `pow(7, 3)` from `<cmath>` without knowing how it is implemented).
 - **Inheritance**: a class derives properties from another (base class, derived class), lesson 6.
 - **Polymorphism**: one call, different functions depending on the type of object, lesson 7.
+
+The deck's abstraction example hides the data behind two member functions:
+
+```cpp run
+// predict: Write the two lines printed.
+#include <iostream>
+using namespace std;
+
+class ImplementAbstraction
+{
+    private:
+        int a, b;
+    public:
+        void set(int x, int y)
+        {
+            a = x;
+            b = y;
+        }
+        void display()
+        {
+            cout << "a = " << a << endl;
+            cout << "b = " << b << endl;
+        }
+};
+
+int main()
+{
+    ImplementAbstraction obj;
+    obj.set(10, 20);
+    obj.display();
+    return 0;
+}
+```
+
+`main` knows only `set` and `display`; how `a` and `b` are stored could change without touching it.
 
 The closing `}; //end classes with semicolon` is the mistake every C++ beginner makes once: a class definition ends with a semicolon because objects may be declared between the brace and the semicolon, exactly as `apple, banana` were.
 
@@ -150,8 +185,8 @@ When the class lives in `Circle.hpp` and `Circle.cpp`, `main.cpp` must `#include
   },
   {
     "q": "Making data members private and providing public getters and setters is called...",
-    "type": "text",
-    "answer": ["encapsulation"],
+    "options": ["abstraction", "encapsulation", "inheritance", "polymorphism"],
+    "answer": 1,
     "explain": "Encapsulation: combining data members and functions into a single unit (the class) and hiding the data behind public functions."
   },
   {

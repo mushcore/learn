@@ -18,7 +18,7 @@ Slide wording: *the imperfection of transmission media causes signal impairment*
 The slide figure follows one signal through three points: the original at Point 1, the attenuated signal at Point 2 after the transmission medium, and the amplified signal at Point 3 after the amplifier.
 
 :::info Why a wire carrying electric signals gets warm
-The slide asks the question and prints no answer. An earlier edition of the textbook gives one: some of the electrical energy in the signal is converted to heat.
+The slide asks the question and prints no answer. Unverified, written from memory of the textbook rather than from a file on disk: some of the electrical energy in the signal is converted to heat.
 :::
 
 ## The decibel compares two strengths
@@ -64,6 +64,15 @@ Example: a cable has a loss of $-0.5$ dB/km and a signal enters it with a power 
 
 Decibels add along any path. A cable of $-3$ dB followed by an amplifier of $+7$ dB changes the power by $+4$ dB overall, a problem type from the textbook's practice set.
 
+### Power left along a cable of −0.5 dB/km
+
+The cable row multiplies dB/km by km, and the power at point 2 follows from that total.
+
+```widget
+decibel
+{ "p1": 4, "p1Unit": "mW", "perKm": -0.5, "km": 4, "title": "A cable of −0.5 dB/km, entered at 4 mW", "presets": { "4 km (the example)": { "p1": 4, "p1Unit": "mW", "perKm": -0.5, "km": 4 }, "8 km of the same cable": { "p1": 4, "p1Unit": "mW", "perKm": -0.5, "km": 8 }, "1 km of the same cable": { "p1": 4, "p1Unit": "mW", "perKm": -0.5, "km": 1 }, "−3 dB, no cable": { "p1": 4, "p1Unit": "mW", "db": -3 } } }
+```
+
 ## Power ratios in decibels
 
 | Power ratio $P_2 / P_1$ | dB |
@@ -95,14 +104,6 @@ Decibels add along any path. A cable of $-3$ dB followed by an amplifier of $+7$
     "explain": "$10 \\log_{10} \\frac{10}{1} = 10 \\log_{10} 10 = 10 \\times 1 = 10$ dB. Positive: the signal is amplified."
   },
   {
-    "q": "A signal enters a medium at 100 mW and leaves at 1 mW. What is the attenuation in dB? Include the sign.",
-    "type": "numeric",
-    "answer": -20,
-    "tolerance": 0.05,
-    "unit": "dB",
-    "explain": "$10 \\log_{10} \\frac{1}{100} = 10 \\log_{10} 10^{-2} = 10(-2) = -20$ dB."
-  },
-  {
     "q": "A signal's power drops from 20 mW at point 1 to 5 mW at point 2. What is the change in dB? Include the sign.",
     "type": "numeric",
     "answer": -6.02,
@@ -125,14 +126,6 @@ Decibels add along any path. A cable of $-3$ dB followed by an amplifier of $+7$
     "tolerance": 0.03,
     "unit": "mW",
     "explain": "Whole cable: $5 \\times (-0.4) = -2$ dB. $P_2 = 10 \\times 10^{-2/10} = 10 \\times 0.631 = 6.31$ mW."
-  },
-  {
-    "q": "A signal of 8 mW is attenuated by $-10$ dB. What is its power afterwards, in mW?",
-    "type": "numeric",
-    "answer": 0.8,
-    "tolerance": 0.005,
-    "unit": "mW",
-    "explain": "$P_2 = 8 \\times 10^{-10/10} = 8 \\times 10^{-1} = 0.8$ mW. Every $-10$ dB divides the power by 10."
   },
   {
     "q": "The decibel value is negative when a signal is attenuated.",

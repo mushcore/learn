@@ -3,14 +3,7 @@ title: What an algorithm is (and is not)
 minutes: 10
 ---
 
-Lecture 1 covers textbook sections **1.1, 1.2, 1.3 and 2.1**. The session topics, in the instructor's order:
-
-- Why do we care? What are we doing here?
-- Define **algorithm**
-- Examine **time efficiency** and **space efficiency**
-- Determine the **basic operation** for a given algorithm represented in pseudocode
-- Determine the **running time** of an algorithm
-- Define asymptotic notations (**big-O**)
+Before an algorithm's efficiency can be measured, it has to be one: Lecture 1 (textbook 1.1, 1.2, 1.3, 2.1) starts with the definition, then builds to the basic operation, the running time and big-O.
 
 ## Why we care
 
@@ -88,8 +81,6 @@ From the course intro: **"This is not a programming course!"** Labs are in Java,
 - if ever in doubt, ask
 
 ## Is this a valid algorithm?
-
-The first question type:
 
 ```pseudo
 Algorithm ReturnTheBiggest(x, y)

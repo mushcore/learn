@@ -20,7 +20,7 @@ A line starting with `#` is a **preprocessor directive**: an instruction for the
 ```
 
 :::quiz Semicolons and preprocessor directives
-"`#include <iostream>` must end with a semicolon." **False.** Directives end at the newline. A `;` after one is an empty statement in your *code*; the directive itself never wants one.
+"`#include <iostream>` must end with a semicolon." **False.** Directives end at the newline. Writing `#include <iostream>;` anyway is not an error: g++ prints `warning: extra tokens at end of #include directive`, ignores the `;`, and the program runs.
 :::
 
 ## Namespaces
@@ -36,6 +36,7 @@ Without namespaces, if two libraries both declared a `sort` function, including 
 ## The `using` keyword
 
 ```cpp run pin using-namespace-std.cpp
+// predict: Write the line printed.
 #include <iostream>
 
 //ALL names from std namespace visible below here
@@ -59,6 +60,7 @@ Every name from `std` becomes visible from `using namespace std;` down to the en
 Only the names you explicitly list become visible — nothing else from `std` is unlocked.
 
 ```cpp run
+// predict: Does this compile with only cout and endl unlocked? Write the line printed.
 #include <iostream>
 
 //ONLY cout and endl from std namespace visible below here
@@ -74,9 +76,10 @@ int main()
 
 ### Option 3: inside `main`
 
-Placing the `using` declarations *inside* the function scopes them to that function only. Nothing outside `main` gets the shortcut.
+Placing the `using` declarations inside the function scopes them to that function only. Nothing outside `main` gets the shortcut.
 
 ```cpp run
+// predict: Does the using inside main work? Write the line printed.
 #include <iostream>
 
 int main()
@@ -197,10 +200,10 @@ This is a compiler error, not a preprocessor error: name lookup runs during comp
   },
   {
     "type": "spotbug",
-    "q": "Click the line with the bug — this program fails to compile.",
+    "q": "Click the line that makes g++ print a warning. (The program still compiles and runs.)",
     "code": "#include <iostream>;\nusing namespace std;\nint main()\n{\n    cout << \"Hello world!\" << endl;\n    return 0;\n}",
     "answer": 1,
-    "explain": "Line 1: a preprocessor directive ends at the newline, not at a `;`. That stray semicolon becomes a lone empty statement sitting outside any function, which is not valid C++ — g++ rejects it with something like \"extra ';' outside of a function is invalid in C++\"."
+    "explain": "Line 1: a preprocessor directive ends at the newline, so the `;` is an extra token. g++ prints `warning: extra tokens at end of #include directive`, ignores it, and builds the program anyway. Directives never take a semicolon, but a stray one is a warning, not a compile error."
   }
 ]
 ```

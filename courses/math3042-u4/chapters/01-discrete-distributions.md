@@ -3,24 +3,22 @@ title: Discrete random variables, their distributions, mean and standard deviati
 minutes: 22
 ---
 
-A probability distribution lists a random variable's values with their probabilities, and its mean and standard deviation summarize that list the way $\bar{X}$ and $s$ summarize a data set. This lesson defines the pieces and computes both parameters by hand for family size and for the minimum of two dice.
+A probability distribution lists a random variable's values with their probabilities, and its mean and standard deviation summarize that list the way $\bar{X}$ and $s$ summarize a data set.
 
 ## A discrete random variable has countably many values
 
 *A discrete random variable $X$ is a random variable that has either a finite number or a countable number of values.* The notes' example is $X$ = the number of children a random person has in their lifetime: possible values 0, 1, 2, 3, 4, 5, …, a *countable infinity*.
 
-*The discrete probability distribution of $X$ tells us $P(x)$ for any possible value $x$.* It can be given by a table, by a probability histogram, or by a formula (the binomial, hypergeometric, geometric and Poisson distributions of the next lessons are formulas).
+*The discrete probability distribution of $X$ tells us $P(x)$ for any possible value $x$.* It can be given by a table, by a probability histogram, or by a formula (the named distributions of the next lessons).
 
 ## Requirements for a discrete probability distribution
 
 - $\sum P(x) = 1$: the probabilities of all the possible values add to 1.
 - $0 \le P(x) \le 1$ for each possible value $x$.
 
-A table that fails either test is not a probability distribution, whatever it is called.
-
 ## Canadian family size in 2023
 
-Statistics Canada counted families by number of children: 4 978 190 with 0, 2 770 850 with 1, 2 266 190 with 2, 1 049 870 with 3 (a total of 11 065 100; the "3" bar is really "3 or more" in the StatCan table, our reading). Dividing each count by the total gives the distribution, drawn as a probability histogram with the bars touching (`space=0`):
+Statistics Canada counted families by number of children: 4 978 190 with 0, 2 770 850 with 1, 2 266 190 with 2, 1 049 870 with 3, a total of 11 065 100. The "3" bar is really "3 or more" in the StatCan table. Dividing each count by the total gives the distribution, drawn as a probability histogram with the bars touching (`space=0`):
 
 | $x$ | 0 | 1 | 2 | 3 | total |
 |---|---|---|---|---|---|
@@ -52,7 +50,7 @@ The notes start from a fair six-sided die. `sample(1:6, 100, replace=TRUE)` gave
 
 $$\mu = \tfrac16 \cdot 1 + \tfrac16 \cdot 2 + \tfrac16 \cdot 3 + \tfrac16 \cdot 4 + \tfrac16 \cdot 5 + \tfrac16 \cdot 6 = \tfrac{21}{6} = 3.5$$
 
-The instructor's bubble beside it: the sample mean is $\dfrac{N_1 \cdot 1 + N_2 \cdot 2 + N_3 \cdot 3 + \cdots}{N}$, the same weighted sum with relative frequencies $N_i/N$ in place of the probabilities $\frac16$. As $N$ grows the relative frequencies settle at $\frac16$ and $\bar{X}$ settles at $\mu$; 3.38 is one sample's estimate of 3.5.
+The instructor's bubble: the sample mean $\dfrac{N_1 \cdot 1 + N_2 \cdot 2 + \cdots}{N}$ is the same weighted sum with relative frequencies $N_i/N$ in place of $\frac16$. As $N$ grows, $\bar{X}$ settles at $\mu$; 3.38 is one sample's estimate of 3.5.
 
 Definition: if $X$ is a discrete random variable with probability distribution $P(x)$,
 
@@ -64,7 +62,19 @@ $$\sigma^2 = \sum_x [(x - \mu)^2 \cdot P(x)], \qquad \sigma = \sqrt{\sum_x (x - 
 
 Take the square root once, of the whole sum, never term by term.
 
-## Number of children: μ = 0.94, σ = 1.02
+## Number of children: μ and σ
+
+```quiz
+[
+  {
+    "q": "Family size: P(0) = 0.4499, P(1) = 0.2504, P(2) = 0.2048, P(3) = 0.0949. The expected number of children μ = ? (2 decimals)",
+    "type": "numeric",
+    "answer": 0.94,
+    "tolerance": 0.01,
+    "explain": "μ = 0(0.4499) + 1(0.2504) + 2(0.2048) + 3(0.0949) = 0 + 0.2504 + 0.4096 + 0.2847 = 0.94."
+  }
+]
+```
 
 $$\mu = 0(0.4499) + 1(0.2504) + 2(0.2048) + 3(0.0949) = 0 + 0.2504 + 0.4096 + 0.2847 = 0.94$$
 
@@ -75,7 +85,7 @@ No family has 0.94 children; the expected value is a long-run average, not a pos
 
 ```widget
 pmf-table
-{ "rows": [[0, 0.4499], [1, 0.2504], [2, 0.2048], [3, 0.0949]], "preset": "Canadian family size", "simulate": true, "title": "Family size: the sum check, the histogram, and μ and σ term by term" }
+{ "preset": "Canadian family size", "simulate": true, "title": "Family size: the sum check, the histogram, and μ and σ term by term" }
 ```
 
 ```r
@@ -90,17 +100,24 @@ c(mu, sig)
 
 The unrounded 0.9447 and 1.0155 agree with the hand values to the two decimals the notes box.
 
-## Minimum of two dice: μ = 2.53, σ = 1.40
+## Minimum of two dice: μ and σ
 
-*The random experiment is rolling two fair six-sided dice. Let $X$ = the minimum of the two die values.* The sample space is the 6 × 6 grid of 36 equally likely pairs. The minimum is 1 whenever either die shows 1: the whole top row and the whole left column, 11 cells. The minimum is 2 on the next L-shape in (the instructor circles its corner, (2, 2)): 9 cells. Each L inward is 2 cells shorter, so
+*The random experiment is rolling two fair six-sided dice. Let $X$ = the minimum of the two die values.* The sample space is the 6 × 6 grid of 36 equally likely pairs. The minimum is 1 whenever either die shows 1: the whole top row and the whole left column, 11 cells. The minimum is 2 on the next L-shape in, 9 cells. Each L inward is 2 cells shorter, so
 
 $$P(1) = \tfrac{11}{36}, \; P(2) = \tfrac{9}{36}, \; P(3) = \tfrac{7}{36}, \; P(4) = \tfrac{5}{36}, \; P(5) = \tfrac{3}{36}, \; P(6) = \tfrac{1}{36}$$
 
 (11 + 9 + 7 + 5 + 3 + 1 = 36, so the table is a distribution).
 
-```widget
-sample-space
-{ "mode": "dice", "title": "Click the 11 cells with a 1 (top row and left column), then the 9-cell L for minimum 2; the widget's distribution panel shows the sum, not the minimum" }
+```quiz
+[
+  {
+    "q": "Minimum of two dice, P(x) = 11/36, 9/36, 7/36, 5/36, 3/36, 1/36 for x = 1, …, 6. μ = ? (2 decimals)",
+    "type": "numeric",
+    "answer": 2.53,
+    "tolerance": 0.01,
+    "explain": "μ = (1·11 + 2·9 + 3·7 + 4·5 + 5·3 + 6·1)/36 = (11 + 18 + 21 + 20 + 15 + 6)/36 = 91/36 = 2.53."
+  }
+]
 ```
 
 $$\mu = 1 \cdot \tfrac{11}{36} + 2 \cdot \tfrac{9}{36} + 3 \cdot \tfrac{7}{36} + 4 \cdot \tfrac{5}{36} + 5 \cdot \tfrac{3}{36} + 6 \cdot \tfrac{1}{36} = \tfrac{91}{36} = 2.53$$
@@ -110,7 +127,7 @@ $$= 0.7153 + 0.0702 + 0.0430 + 0.3001 + 0.5084 + 0.3345 = 1.97, \qquad \sigma = 
 
 ```widget
 pmf-table
-{ "preset": "minimum of two dice", "simulate": true, "title": "Minimum of two dice: P(x) = (13 − 2x)/36, with μ = 2.53 and σ = 1.40 term by term" }
+{ "preset": "minimum of two dice", "simulate": true, "grid": true, "title": "Minimum of two dice: the 36 pairs by their minimum, P(x) = (13 − 2x)/36, and μ and σ term by term" }
 ```
 
 ```r
@@ -125,9 +142,9 @@ c(mu, sig)
 [1] 2.527778 1.404084
 ```
 
-## Minimum of three dice, by simulation: μ = 2.04, σ = 1.15
+## Minimum of three dice, by simulation
 
-With three dice the grid is a 6 × 6 × 6 cube, so the notes ask for the mean *by simulation in R*: roll three dice, keep the minimum, repeat 100 000 times, and take the mean and sd of the simulated values. `sd()` is the sample standard deviation of the simulated values; with 100 000 trials it is an estimate of $\sigma$ good to about two decimals.
+With three dice the grid is a 6 × 6 × 6 cube, so the notes ask for the mean *by simulation in R*, 100 000 rolls of three dice. `sd()` is the sample standard deviation; with 100 000 trials it estimates $\sigma$ to about two decimals.
 
 ```r
 m.trials <- 10^5
@@ -144,11 +161,12 @@ c(mu, sig)
 [1] 2.042750 1.143986
 ```
 
-The digits past the second vary from run to run; the instructor wrote $\mu = 2.04$, $\sigma = 1.15$ and *$\mu$ gets smaller for more dice*: the more dice you roll, the more likely one of them is a 1. (Counting the cube exactly gives $P(x) = ((7 - x)^3 - (6 - x)^3)/216$ and $\mu = 2.0417$, $\sigma = 1.1439$, our check.)
+The digits past the second vary from run to run; the instructor wrote $\mu = 2.04$, $\sigma = 1.15$ and *$\mu$ gets smaller for more dice*: the more dice you roll, the more likely one of them is a 1. Counting the cube exactly gives $P(x) = ((7 - x)^3 - (6 - x)^3)/216$, with $\mu = 2.0417$ and $\sigma = 1.1439$.
 
-:::info Where the numbers come from
-Pages 55 to 57 of the Unit 4 notes are the only pages posted with the instructor's handwriting, so the boxed answers above are his. Every R check in this unit is run from the demo notebook (`demo_notebook_Unit_04.Rmd`), and the later lessons' answers, which the notes leave blank, are computed and checked against it.
-:::
+```widget
+pmf-table
+{ "preset": "minimum of three dice", "simulate": true, "title": "Minimum of three dice: the exact 216-cell table beside a simulation" }
+```
 
 ```quiz
 [
@@ -170,7 +188,7 @@ Pages 55 to 57 of the Unit 4 notes are the only pages posted with the instructor
     "q": "Which table is a valid discrete probability distribution?",
     "options": ["P(1) = 0.5, P(2) = 0.3, P(3) = 0.3", "P(1) = 0.6, P(2) = −0.1, P(3) = 0.5", "P(1) = 0.45, P(2) = 0.35, P(3) = 0.20", "P(1) = 0.4, P(2) = 0.4, P(3) = 0.1"],
     "answer": 2,
-    "explain": "Both requirements: every P(x) between 0 and 1, and Σ P(x) = 1. The first sums to 1.1, the second has a negative probability, the last sums to 0.9; 0.45 + 0.35 + 0.20 = 1."
+    "explain": "Both requirements: every P(x) between 0 and 1, and Σ P(x) = 1. 0.5 + 0.3 + 0.3 sums to 1.1, the table with −0.1 has a negative probability, and 0.4 + 0.4 + 0.1 sums to 0.9; 0.45 + 0.35 + 0.20 = 1."
   },
   {
     "q": "The expected value E[X] must be one of the possible values of X.",

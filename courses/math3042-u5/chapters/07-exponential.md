@@ -5,10 +5,6 @@ minutes: 18
 
 How long until the next http request reaches your server? The exponential distribution is the continuous model for that kind of waiting time, and one number, the average wait $\beta$, fixes everything about it.
 
-:::info Computed answers
-The Unit 5 notes were posted with every answer line blank. Every number in this lesson is computed from the formulas and checked in R; the in-class numbers replace them if they differ.
-:::
-
 ## The definition has one parameter, β
 
 Slide wording: "The exponential probability distribution is a model for *waiting time in a memory-less system*. A random variable $X$ is said to be *exponentially distributed* if $X \ge 0$ and the pdf for $X$ is"
@@ -27,7 +23,7 @@ A problem hands you one of two numbers. "Average wait 2.5 seconds" is $\beta = 2
 
 ```widget
 pdf-area
-{ "dist": "exponential", "beta": 2.5, "lo": 0, "hi": 4, "showCdf": true, "title": "Exponential, β = 2.5 s: drag the bounds; the right panel is F(x) = 1 − e^(−x/β)" }
+{ "dist": "exponential", "beta": 2.5, "lo": 0, "hi": 4, "showCdf": true, "title": "Exponential, β = 2.5 s: the area from 0 to 4 on the left, F(x) = 1 − e^(−x/β) on the right" }
 ```
 
 $f(0) = 1/\beta$ is the highest point of the curve: the shortest waits are the most likely, and the density falls by the same factor $e^{-1}$ every $\beta$ units. The distribution is right-skewed with its mode at 0 and a tail that never reaches zero, which is why long waits are rare but never impossible. A larger $\beta$ starts the curve lower (at $1/\beta$) and stretches it to the right.
@@ -50,7 +46,7 @@ Because $X$ is continuous, $P(X < x)$ and $P(X \le x)$ are the same number.
 
 ## μ = β and σ = β
 
-Slide wording: $\mu = ∫_0^{+\infty} x \cdot f(x)\,dx = \beta$ and $\sigma^2 = ∫_0^{+\infty} (x - \mu)^2 \cdot f(x)\,dx = \beta^2$.
+Slide wording: $\mu = \int_0^{+\infty} x \cdot f(x)\,dx = \beta$ and $\sigma^2 = \int_0^{+\infty} (x - \mu)^2 \cdot f(x)\,dx = \beta^2$.
 
 So $\sigma = \beta$: for an exponential variable the standard deviation equals the mean. Given the mean, you have the standard deviation without any further work.
 
@@ -62,7 +58,7 @@ Slide wording: "The amount of time $X$ that your web server waits in between htt
 
 $$f(x) = \frac{1}{2.5} e^{-x/2.5} = 0.4\,e^{-0.4x}, \quad x \ge 0$$
 
-**(b) $P(X \le 4)$.** Compute it before reading on.
+**(b) $P(X \le 4)$.**
 
 ```quiz
 [
@@ -70,7 +66,7 @@ $$f(x) = \frac{1}{2.5} e^{-x/2.5} = 0.4\,e^{-0.4x}, \quad x \ge 0$$
 ]
 ```
 
-$$P(X \le 4) = ∫_0^{4} 0.4\,e^{-0.4x}\,dx = 1 - e^{-4/2.5} = 1 - e^{-1.6} = 1 - 0.2019 = 0.7981$$
+$$P(X \le 4) = \int_0^{4} 0.4\,e^{-0.4x}\,dx = 1 - e^{-4/2.5} = 1 - e^{-1.6} = 1 - 0.2019 = 0.7981$$
 
 On the calculator: $4 \div 2.5 = 1.6$, change sign, $e^x$, then $1 -$. About 80 % of gaps between requests are 4 s or shorter; the other 20 % is $P(X > 4) = e^{-1.6} = 0.2019$.
 
@@ -93,7 +89,16 @@ dexp(0, rate = 1/beta)        # f(0) = 1/beta, the height at zero
 
 ```widget
 exp-wait
-{ "beta": 2.5, "x": 4, "lo": 1, "hi": 3, "title": "Web server, β = 2.5 s: slide x and read P(X ≤ x) and P(X > x); μ = σ = 2.5 are marked" }
+{ "beta": 2.5, "x": 4, "lo": 1, "hi": 3, "title": "Web server, β = 2.5 s: P(X ≤ x) and P(X > x), with μ = σ = 2.5 marked" }
+```
+
+### Gaps between requests
+
+Unit 4 counted the same stream: 1 request per 2.5 s is a Poisson count with $\lambda = 24$ per minute. Here each step is one gap between consecutive requests, and the histogram of gap lengths settles onto the density $0.4\,e^{-0.4x}$, with about 80 % of the gaps under 4 s.
+
+```widget
+arrivals-play
+{ "mode": "gaps" }
 ```
 
 ```quiz
@@ -110,6 +115,12 @@ exp-wait
     "answer": 0.3297,
     "tolerance": 0.0005,
     "explain": "$1 - e^{-1/2.5} = 1 - e^{-0.4} = 1 - 0.6703 = 0.3297$."
+  },
+  {
+    "q": "Web server, $\\beta = 2.5$ s. Write $P(X \\le 4)$ from the cdf with the numbers in, no spaces, using `e^(...)` for the exponential, for example `1-e^(-x/b)`.",
+    "type": "text",
+    "answer": ["1-e^(-4/2.5)", "1-e^(-1.6)", "1-exp(-4/2.5)", "1-exp(-1.6)", "1−e^(−4/2.5)", "1−e^(−1.6)", "1-e^(-0.4*4)", "1-e^(-0.4·4)"],
+    "explain": "$F(x) = 1 - e^{-x/\\beta}$ with $x = 4$, $\\beta = 2.5$: $1 - e^{-4/2.5} = 1 - e^{-1.6} = 0.7981$. Writing $e^{-4/2.5}$ alone is $P(X > 4)$."
   },
   {
     "q": "For an exponential random variable the standard deviation equals the mean.",

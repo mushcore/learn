@@ -3,7 +3,7 @@ title: Logs, transformations, phase & units
 minutes: 14
 ---
 
-Lab 1's Math Review (A01, A02) refreshes the pieces Lecture 02 leans on: logarithms for signal levels, function transformations for phase shift, degrees and radians for phase, and SI prefixes for period and frequency. These are calculator questions.
+Lab 1's Math Review (A01, A02) refreshes the pieces Lecture 02 leans on: logarithms for signal levels, function transformations for phase shift, and degrees and radians for phase. These are calculator questions.
 
 ## Logarithm
 
@@ -26,7 +26,7 @@ Most calculators have only $\log$ (base 10) and $\ln$, so use the change-of-base
 
 $$\log_{2} x = \frac{\log x}{\log 2}$$
 
-Lecture 02's example of 11 signal levels: $\log_{2} 11 = \dfrac{\log 11}{\log 2} = \dfrac{1.0414}{0.3010} = 3.46$. Either $\log$ or $\ln$ works, as long as top and bottom use the same one.
+For example, $\log_{2} 1000 = \dfrac{\log 1000}{\log 2} = \dfrac{3}{0.3010} = 9.97$. Either $\log$ or $\ln$ works, as long as top and bottom use the same one.
 
 ### Powers of 2 worth memorizing
 
@@ -36,12 +36,12 @@ Lecture 02's example of 11 signal levels: $\log_{2} 11 = \dfrac{\log 11}{\log 2}
 
 ## Ceiling and floor
 
-Lecture 02 uses these when the number of bits comes out fractional:
+Lecture 02 uses these when the number of bits comes out fractional; [digital signals](#/comp3721-w2/digital-signals) works its 11-level example.
 
 - **Ceiling function** ⌈ ⌉: rounds the number **up** to the nearest integer greater than or equal to the original value. E.g. ⌈π⌉ = ⌈3.1416⌉ = **4**.
 - **Floor function** ⌊ ⌋: rounds the number **down** to the nearest integer less than or equal to the original value. E.g. ⌊π⌋ = ⌊3.1416⌋ = **3**.
 
-For signal levels you always take the ceiling: 11 levels need $\log_{2} 11 = 3.46$ bits, the number of bits must be an integer, so ⌈3.46⌉ = **4 bits**. The slide adds "usually a power of 2," which 4 is.
+For signal levels you always take the ceiling: the number of bits must be an integer, and rounding down would leave some levels without a bit pattern.
 
 ## Function transformations
 
@@ -66,6 +66,13 @@ Lecture 02 writes a sine wave as $s(t) = A \sin(\omega t + \phi)$ with $\omega =
 - $\omega$ multiplies $t$ inside: a **horizontal dilation**. Bigger $\omega$ (bigger $f$), more cycles per second (shorter period).
 - $+\phi$ inside: a **horizontal translation**. Since $\sin(\omega t + \phi) = \sin(\omega(t + \phi/\omega))$, the wave moves **left** by $\phi/\omega$ seconds when $\phi > 0$; $\sin(\omega t - \phi)$ moves it **right** by $\phi/\omega$. This is Lecture 02's "Horizontal shifting (phase shift)" slide.
 
+```widget
+sine-wave
+{ "A": 1, "f": 1, "phase": 0, "title": "The three transformations on s(t) = A sin(2πft + φ)", "presets": { "parent: sin t (A = 1, f = 1)": [1, 1, 0], "vertical dilation A = 3": [3, 1, 0], "horizontal dilation f = 4": [1, 4, 0], "translation φ = 90°": [1, 1, 90] } }
+```
+
+With $f = 1$ Hz, $\phi = 90°$ moves the wave left by a quarter of its 1 s period, 0.25 s.
+
 ## Degrees and radians
 
 Phase is measured in degrees or radians. One full cycle is a full turn around the unit circle:
@@ -81,29 +88,11 @@ so $1° = \dfrac{2\pi}{360}$ rad and $1 \text{ rad} = \dfrac{360}{2\pi}°$ ($\ap
 
 The A02 handout draws one cycle of a sine wave with the phase marked from 0° to 360° (0 to $2\pi$) beside the unit circle with the same angles. **One trip around the circle is one cycle of the wave**, so a fraction of a cycle is the same fraction of 360° or of $2\pi$.
 
-Worked conversion (the Lecture 02 example): a wave offset by $1/9$ of a cycle has phase $\dfrac{1}{9} \times 360° = 40°$, and $40° \times \dfrac{2\pi}{360°} = \dfrac{2\pi}{9} = 0.698$ rad.
+For example, a wave offset by $1/8$ of a cycle has phase $\dfrac{1}{8} \times 360° = 45°$, and $45° \times \dfrac{2\pi}{360°} = \dfrac{\pi}{4} = 0.785$ rad.
 
-Set your calculator to the mode the question uses: $\sin(90)$ in radian mode gives 0.894, not 1. Quiz questions on phase are usually pure conversions from degrees to radians, which need no trig at all.
+Set your calculator to the mode the question uses: $\sin(90)$ in radian mode gives 0.894, not 1.
 
-## SI prefixes for time and frequency
-
-Lecture 02's unit table, with the pairing that makes the arithmetic fast:
-
-| Period unit | Equivalent | Frequency unit | Equivalent |
-|---|---|---|---|
-| second (s) | 1 s | hertz (Hz) | 1 Hz |
-| millisecond (ms) | $10^{-3}$ s | kilohertz (kHz) | $10^{3}$ Hz |
-| microsecond (μs) | $10^{-6}$ s | megahertz (MHz) | $10^{6}$ Hz |
-| nanosecond (ns) | $10^{-9}$ s | gigahertz (GHz) | $10^{9}$ Hz |
-| picosecond (ps) | $10^{-12}$ s | terahertz (THz) | $10^{12}$ Hz |
-
-Because $f = 1/T$, each row is a reciprocal pair: **1/ms = kHz, 1/μs = MHz, 1/ns = GHz, 1/ps = THz.** A period of 200 μs is a frequency in the kHz range before you touch the calculator.
-
-### Scientific-notation tips
-
-- Dividing by a small number: $\dfrac{1}{200 \times 10^{-6}} = \dfrac{10^{6}}{200} = 5000$. Flip the power of ten to the top, then divide.
-- Dividing powers of ten: $\dfrac{3 \times 10^{8}}{4 \times 10^{14}} = 0.75 \times 10^{8-14} = 0.75 \times 10^{-6}$.
-- Converting the answer to a prefix: $0.0167$ s $= 16.7 \times 10^{-3}$ s $= 16.7$ ms. Move the decimal three places per prefix step.
+The SI prefixes for period and frequency (ms ↔ kHz, μs ↔ MHz, ns ↔ GHz) and the scientific-notation steps are in [the sine-wave lesson](#/comp3721-w2/sine-wave).
 
 ```quiz
 [
@@ -128,12 +117,6 @@ Because $f = 1/T$, each row is a reciprocal pair: **1/ms = kHz, 1/μs = MHz, 1/n
     "explain": "A logarithm with no base written implies base 10, e.g. $\\log 100 = 2$. Base 2 must be written explicitly."
   },
   {
-    "q": "$\\log_{b} a = c$ means that $b^{c} = a$.",
-    "type": "tf",
-    "answer": true,
-    "explain": "That is the definition: the log is the exponent $c$ to which the base $b$ is raised to obtain $a$."
-  },
-  {
     "q": "Compute $\\log_{2} 11$ on a calculator (2 decimals).",
     "type": "numeric",
     "answer": 3.46,
@@ -146,12 +129,6 @@ Because $f = 1/T$, each row is a reciprocal pair: **1/ms = kHz, 1/μs = MHz, 1/n
     "answer": 4,
     "tolerance": 0,
     "explain": "The ceiling rounds up to the nearest integer greater than or equal to the value: 4. The floor ⌊3.46⌋ would be 3."
-  },
-  {
-    "q": "The floor of π (3.1416) is 4.",
-    "type": "tf",
-    "answer": false,
-    "explain": "Floor rounds down: ⌊3.1416⌋ = 3. Ceiling rounds up: ⌈3.1416⌉ = 4."
   },
   {
     "q": "The graph of $y = f(x + 2)$ is the graph of $f(x)$ moved...",
@@ -177,7 +154,7 @@ Because $f = 1/T$, each row is a reciprocal pair: **1/ms = kHz, 1/μs = MHz, 1/n
     "answer": 0.698,
     "tolerance": 0.002,
     "unit": "rad",
-    "explain": "$40° \\times 2\\pi / 360° = 2\\pi / 9 = 0.698$ rad. This is Lecture 02's example of a wave offset by 1/9 of a cycle."
+    "explain": "$40° \\times 2\\pi / 360° = 2\\pi / 9 = 0.698$ rad. This is Lecture 02's example of a wave offset by 1/9 of a cycle: $\frac{1}{9} \times 360° = 40°$."
   },
   {
     "q": "A phase of $\\pi/2$ radians is how many degrees?",
@@ -186,26 +163,6 @@ Because $f = 1/T$, each row is a reciprocal pair: **1/ms = kHz, 1/μs = MHz, 1/n
     "tolerance": 0,
     "unit": "°",
     "explain": "$2\\pi$ rad is 360°, so $\\pi/2$ rad is a quarter of that: 90°, one quarter of a cycle."
-  },
-  {
-    "q": "A period of 200 μs equals $200 \\times 10^{-6}$ s.",
-    "type": "tf",
-    "answer": true,
-    "explain": "Micro means $10^{-6}$. Its reciprocal pair is MHz ($10^{6}$ Hz): $1/(200 \\times 10^{-6}) = 10^{6}/200 = 5000$ Hz $= 5$ kHz."
-  },
-  {
-    "q": "1 GHz equals how many Hz? Give the exponent $n$ in $10^{n}$.",
-    "type": "numeric",
-    "answer": 9,
-    "tolerance": 0,
-    "explain": "Giga is $10^{9}$. Its reciprocal time unit is the nanosecond, $10^{-9}$ s: a 1 GHz signal has a period of 1 ns."
-  },
-  {
-    "q": "Compute $\\dfrac{1}{200 \\times 10^{-6}}$.",
-    "type": "numeric",
-    "answer": 5000,
-    "tolerance": 1,
-    "explain": "Flip the power of ten to the numerator: $10^{6}/200 = 1000000/200 = 5000$."
   }
 ]
 ```

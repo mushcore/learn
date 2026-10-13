@@ -3,7 +3,7 @@ title: Mock Quiz 1 (Lecture 01a)
 minutes: 25
 ---
 
-Quiz 1 covers **Lecture Notes 01a only**: data communications, the five components, data flow, networks and their criteria, connection types, the four topologies, LAN and WAN, internets and the Internet, and Internet standards. The real quiz is written in the lab with one hand-written A4 study note and a calculator, in three formats: true or false, fill in the blanks, and short written response. This mock uses the same wording as the slides, in slide order. Do it in one sitting without notes.
+Quiz 1 covers **Lecture Notes 01a only**: data communications, the five components, data flow, networks and their criteria, connection types, the four topologies, LAN and WAN, internets and the Internet, and Internet standards. The real quiz is written in the lab with one hand-written A4 study note and a calculator, in three formats: true or false, fill in the blanks, and short written response. This mock uses the same wording as the slides, in slide order; the written responses are graded by their key words.
 
 ```quiz
 [
@@ -33,8 +33,8 @@ Quiz 1 covers **Lecture Notes 01a only**: data communications, the five componen
   },
   {
     "q": "Select all four fundamental characteristics that the effectiveness of a data communications system depends on.",
-    "options": ["Delivery", "Accuracy", "Security", "Timeliness", "Jitter", "Cost"],
-    "answer": [0, 1, 3, 4],
+    "options": ["Security", "Delivery", "Cost", "Accuracy", "Timeliness", "Jitter"],
+    "answer": [1, 3, 4, 5],
     "explain": "Delivery (to the correct destination), accuracy, timeliness, and jitter. Security is a network criterion, not one of the four effectiveness characteristics; cost is not on the slide at all."
   },
   {
@@ -59,7 +59,7 @@ Quiz 1 covers **Lecture Notes 01a only**: data communications, the five componen
     "q": "In the lecture's definition, a protocol is...",
     "options": ["a set of rules that govern data communications", "the physical path a message travels along", "a device that connects a network to other networks", "the information (data) to be communicated"],
     "answer": 0,
-    "explain": "A protocol is a set of rules that govern data communications; it represents an agreement between the communicating devices. The other options are the transmission medium, a router, and the message."
+    "explain": "A protocol is a set of rules that govern data communications; it represents an agreement between the communicating devices. The wrong choices describe the transmission medium, a router, and the message."
   },
   {
     "q": "A mainframe sending data to a monitor, which can only receive, is the lecture's example of which data-flow mode?",
@@ -127,15 +127,21 @@ Quiz 1 covers **Lecture Notes 01a only**: data communications, the five componen
   },
   {
     "q": "Select all the advantages of a mesh topology listed in the lecture.",
-    "options": ["Each connection can carry its own data load (dedicated links)", "Robustness", "Less cabling than a star", "Privacy and security", "Ease of fault identification and fault isolation", "Ease of installation"],
-    "answer": [0, 1, 3, 4],
+    "options": ["Less cabling than a star", "Robustness", "Each connection can carry its own data load (dedicated links)", "Ease of installation", "Privacy and security", "Ease of fault identification and fault isolation"],
+    "answer": [1, 2, 4, 5],
     "explain": "Mesh advantages: dedicated links guarantee each connection carries its own load; robustness; privacy and security; ease of fault identification and isolation. Its disadvantages are the opposite of the two distractors: difficult installation and reconnection, and wiring that can exceed the available space."
   },
   {
-    "q": "Select the two disadvantages of a star topology given in the lecture.",
-    "options": ["The dependency of the whole topology on one single point", "Expensive hardware", "More cabling is required compared with bus and ring", "Difficult fault isolation"],
-    "answer": [0, 2],
-    "explain": "Exactly two on the slide: dependency on one single point (the hub) and more cabling than bus and ring. Expensive hardware belongs to mesh; difficult fault isolation belongs to bus."
+    "q": "Written response: list two disadvantages of star topology. First, the dependency of the whole topology on one single ________.",
+    "type": "text",
+    "answer": ["point", "single point", "hub", "the hub", "point (the hub)", "central controller"],
+    "explain": "Model answer: (1) the dependency of the whole topology on one single point, the hub: if it fails, the whole network is down; (2) more cabling is required compared with bus and ring. Expensive hardware belongs to mesh; difficult fault isolation belongs to bus."
+  },
+  {
+    "q": "Written response, second star disadvantage: more ________ is required compared with bus and ring.",
+    "type": "text",
+    "answer": ["cabling", "cable", "cables", "wiring"],
+    "explain": "More cabling than bus and ring, though less than mesh (one of star's advantages)."
   },
   {
     "q": "In a ring topology, a break in the ring can disable the whole network because traffic is unidirectional.",
@@ -148,9 +154,8 @@ Quiz 1 covers **Lecture Notes 01a only**: data communications, the five componen
     "q": "Match each topology to the number of cable links it needs for n devices.",
     "pairs": [
       ["Mesh", "n(n-1)/2"],
-      ["Star", "n (one per device, to the hub)"],
-      ["Bus", "1 backbone + n drop lines"],
-      ["Ring", "n (one to each neighbour, around the loop)"]
+      ["Star", "n, one per device to the hub"],
+      ["Bus", "1 backbone + n drop lines"]
     ],
     "explain": "Mesh is the number of pairs; star is one link per device to the hub; bus is one backbone cable plus a drop line per device; a ring of n devices closes with n links."
   },

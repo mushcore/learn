@@ -25,15 +25,37 @@ int main()
 }
 ```
 
-The semicolon in `for (int i = 0; i <= 4; i++);` ends the loop with an empty body, so the loop counts to 5 doing nothing. The braces that follow are an ordinary block that runs **once**: `sum = sum + 1;` makes sum 2, and the second line prints `22` because two insertions of 2 sit side by side. It compiles cleanly (g++ warns about the misleading indentation, nothing more), which is the deck's point: syntax errors are found by the compiler; **logic errors** are bugs, and the IDE cannot help. Some have no immediately obvious manifestation.
+The semicolon in `for (int i = 0; i <= 4; i++);` ends the loop with an empty body, so the braces that follow are an ordinary block, and in the second line two insertions of `sum` sit side by side. It compiles cleanly (g++ warns about the misleading indentation, nothing more), which is the deck's point: syntax errors are found by the compiler; **logic errors** are bugs, and the IDE cannot help. Some have no immediately obvious manifestation.
 
 ## Testing is not debugging
 
 - **Testing** reveals the **existence** of a problem. **Debugging** pinpoints the **source**. The manifestation may occur some distance from its source.
-- Typical error situations: implementing a class or method incorrectly, failing to meet the specification, making an inappropriate object request (an invalid index), generating an inconsistent object state (often through class extension). Errors also arise from the environment (a bad URL, a network interruption, a missing file, missing permissions), "but it usually is" programmer error.
+- Typical error situations: a class or method implemented incorrectly, the specification not met, an inappropriate object request (an invalid index), an inconsistent object state. The environment (a bad URL, a missing file) can be the cause, "but it usually is" programmer error.
 - Prevention: software engineering techniques such as encapsulation lessen the likelihood. Detection: modularization and documentation improve the odds, and then you test and debug.
 
 Three debugging techniques from the deck: **print statements** (most popular; put them in the right places, expect voluminous output, plan how to turn them off), **walkthroughs** (tabulate key variables and state changes after each call; explaining your code to a peer often makes you spot the error yourself), and **debuggers** (breakpoints, Step and Step-into, the call stack, watching variable and object state; CLion's is the one you will use in the lab).
+
+The deck's in-class debugger activity sums a range of integers; in CLion, a breakpoint inside the loop lets you watch the aggregator `sum` grow each pass:
+
+```cpp run
+// stdin: 3 7
+// predict: Input is 3 7. Write the line printed.
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    int low, high;
+    cin >> low >> high;
+    int sum = 0;
+    for (int i = low; i <= high; i++)
+    {
+        sum += i;           // breakpoint here: watch i and sum
+    }
+    cout << "sum of " << low << ".." << high << " = " << sum << endl;
+    return 0;
+}
+```
 
 ## Testing = verification + validation
 
@@ -49,7 +71,7 @@ Understand the contract of the test subject and look for violations, with positi
 partitions
 ```
 
-The deck's answer for a function that accepts 100 to 999 is five tests: 50 (way off), 100 and 999 (the boundaries), 500 (an arbitrary value inside), 1500 (way off). Click them in and watch the checklist fill.
+The deck's answer for a function that accepts 100 to 999 is five tests: 50 (way off), 100 and 999 (the boundaries), 500 (an arbitrary value inside), 1500 (way off). Each one exercises one partition or one edge of it.
 
 ## The three kinds of testing in COMP 3522
 
@@ -57,7 +79,7 @@ The deck's answer for a function that accepts 100 to 999 is five tests: 50 (way 
 
 ```cpp run pin assertDemo.cpp
 // stdin: 9
-// predict: Input is 9. Write what prints. Then change the input to -4 and describe what happens to the exit code.
+// predict: Input is 9. Write what prints.
 #include <cassert>
 #include <cmath>
 #include <iostream>
@@ -81,13 +103,13 @@ int main()
 }
 ```
 
-`assert(x >= 0);` is the precondition and `assert(result >= 0.0);` the postcondition of the deck's example. With 9 the program prints 3. With a negative input the first assertion fails, the program aborts with a message naming the file, line and expression, and the exit code is non-zero: the bug is caught at its source instead of surfacing as a `nan` somewhere downstream.
+`assert(x >= 0);` is the precondition and `assert(result >= 0.0);` the postcondition of the deck's example. With a negative input the first assertion fails, the program aborts with a message naming the file, line and expression, and the exit code is non-zero: the bug is caught at its source instead of surfacing as a `nan` somewhere downstream.
 
 **Unit tests** exercise a very small, specific area of functionality by invoking one function in one context (the deck's example: add a large value to a sorted list and confirm it appears at the end). A unit is the smallest testable part: a function, a method, a behaviour. Each unit test should **Assemble, Act, Assert**, and consider the starting state, the inputs and the expected result. JUnit organizes test methods into test cases with assertions and fixtures; in C++ we use **Catch**, next lesson.
 
 **Regression testing** re-runs the whole suite. Whenever you find and fix a bug, add a test for it and rerun everything, because fixing new bugs can reintroduce old ones; run the regression tests as often as possible.
 
-Two strategies close the deck. **Test-driven development**: write the tests first, implement, the code is complete when the tests pass, refactor and pass again. **Simplify**: find the simplest input that provokes the bug, which is often not the input that revealed it; narrow it down by binary search; take pieces away until the bug disappears, or add pieces until it appears; trace intermediate results and binary-search the ordered set of statements between the first and the last.
+Two strategies close the deck. **Test-driven development**: write the tests first, implement, the code is complete when the tests pass, refactor and pass again. **Simplify**: find the simplest input that provokes the bug, which is often not the input that revealed it; take pieces away until the bug disappears, or add them until it appears; binary-search the statements between the first good and the first bad intermediate result.
 
 ```quiz
 [

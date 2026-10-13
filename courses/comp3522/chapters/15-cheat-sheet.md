@@ -81,10 +81,10 @@ int main()               // execution starts here; returns int
 | Category | Operators |
 |---|---|
 | Arithmetic | `+` `-` `*` `/` `%` |
-| Compound | `+=` `-=` `*=` `/=` `%=` (also `<<=` `>>=` `&=` `|=` `^=`) |
+| Compound | `+=` `-=` `*=` `/=` `%=` (also `<<=` `>>=` `&=` `\|=` `^=`) |
 | Increment/decrement | `++` `--` (**pre** vs **post** matters) |
 | Relational | `==` `!=` `>` `>=` `<` `<=` |
-| Logical | `!` `&&` `||` (`&&`/`||` **short-circuit**) |
+| Logical | `!` `&&` `\|\|` (`&&` and `\|\|` **short-circuit**) |
 | Assorted | `?:` ternary, `,` comma, `( )` cast, `sizeof` |
 
 - `int / int` **truncates toward zero**: `7/2` is 3, `-7/2` is −3. `%` gives the remainder and takes the **sign of the left operand**.
@@ -144,7 +144,7 @@ For `int n; cin >> n;`:
 |---|---|---|---|
 | `123 456` | 123 | not set | not set |
 | `123<EOF>` | 123 | not set | **set** |
-| `hello` | unchanged | **set** | not set |
+| `hello` | **0** with g++ (C++11); slide: "No change" | **set** | not set |
 | `<EOF>` | unchanged | **set** | **set** |
 
 Recovery:
@@ -165,7 +165,7 @@ Reading into a `char[]` is unsafe (`char[]` decays to `char*`, `cin` does not kn
 
 ## True or false
 
-:::quiz Answers in order: F T T F T · F T T F T · F T F T F
+:::quiz Answers in order: F T T F T · F T T F T · F T F F F
 1. Preprocessor directives end with a semicolon.
 2. `main` compiles even with no `return` statement.
 3. `endl` flushes the stream; `'\n'` does not.
@@ -179,7 +179,7 @@ Reading into a `char[]` is unsafe (`char[]` decays to `char*`, `cin` does not kn
 11. `setw` stays in effect for all later output.
 12. Default `cout` precision is 6 significant digits.
 13. `cin.good()` is true if only eofbit is set.
-14. After a failed extraction the variable keeps its previous value.
+14. After `cin >> n` fails on the input `hello`, `n` keeps its previous value.
 15. `#include` may be used on a `.cpp` file if you are careful.
 :::
 

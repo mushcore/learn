@@ -13,7 +13,7 @@ In `a = 5 + 5;`:
 - `=` is also an operator — the **assignment operator**. `a` and the result of `5 + 5` are its operands.
 - Both `5`s are **literals**: values written directly into the source code, as opposed to variables that hold a value.
 
-So the same token can be described two ways depending on what you're pointing at: "operand of `+`" describes its *role*, "literal" describes *what kind of value it is*.
+So the same token can be described two ways depending on what you're pointing at: "operand of `+`" describes its role, "literal" describes what kind of value it is.
 
 ## Arithmetic operators
 
@@ -28,6 +28,7 @@ C++ has the five you'd expect:
 | `%` | Modulo (remainder) |
 
 ```cpp run
+// predict: Write the five lines printed.
 #include <iostream>
 
 int main()
@@ -44,7 +45,9 @@ int main()
 }
 ```
 
-## Integer division truncates
+When **both** operands of `/` are integers, the result is an integer: the fractional part is thrown away (truncated toward zero, not rounded), so `17 / 5` is `3`, not `3.4`. `%` gives back what division dropped: `17 % 5` is `2` because `17 = 3*5 + 2`.
+
+## Integer division truncates toward zero
 
 ```cpp run pin NegativeDivision.cpp
 // predict: Write the four numbers printed.
@@ -60,11 +63,7 @@ int main()
 }
 ```
 
-`17 / 5` is `3`, not `3.4`. When **both** operands of `/` are integers, the result is an integer — the fractional part is thrown away (truncated toward zero, not rounded). `%` gives you back what division dropped: `17 % 5 == 2` because `17 = 3*5 + 2`.
-
-Negative numbers are the trap. C++ truncates **toward zero**, and `%` follows the sign of the left-hand operand (the dividend).
-
-`-7 / 2` truncates toward zero: `-3.5` becomes `-3`, **not** `-4`. `%` fills the gap so that `(a/b)*b + a%b == a`: `-3*2 = -6` and `-7 - (-6) = -1`, so `-7 % 2` is `-1`. The same logic gives `7 / -2` equal to `-3` and `7 % -2` equal to `1`.
+Negative numbers are the trap. C++ truncates **toward zero**, never down, and `%` follows the sign of the left-hand operand (the dividend). `%` fills the gap so that `(a/b)*b + a%b == a` always holds: `-7 / 2` rounds toward zero, and `-7 % 2` takes the sign of the `-7`.
 
 :::quiz Division-by-zero is not a compile error
 `int x = 5 / 0;` **compiles fine** and then crashes (or does something undefined) **at runtime** — integer division by zero is undefined behaviour, not a syntax problem the compiler catches. Floating-point division by zero is different: `5.0 / 0.0` is well-defined and gives you `inf`.
@@ -88,6 +87,7 @@ expr-stepper
 If **either** operand of an arithmetic operator is a floating-point type, the other operand is promoted to floating-point first, and the whole expression is computed as floating-point. Only when you **assign** a floating-point result back into an `int` does it get truncated.
 
 ```cpp run
+// predict: Write the three lines printed.
 #include <iostream>
 
 int main()
@@ -95,10 +95,10 @@ int main()
     int a = 5;
     double b = 2.0;
 
-    std::cout << a / 2 << std::endl;       // 2      -- int / int
-    std::cout << a / b << std::endl;       // 2.5    -- a promoted to double
+    std::cout << a / 2 << std::endl;       // int / int
+    std::cout << a / b << std::endl;       // a promoted to double
     int truncated = a / b;
-    std::cout << truncated << std::endl;   // 2      -- 2.5 truncated on assignment
+    std::cout << truncated << std::endl;   // truncated on assignment
     return 0;
 }
 ```
@@ -108,16 +108,17 @@ int main()
 `a += 5;` means `a = a + 5;`. Same idea for the other four:
 
 ```cpp run
+// predict: score starts at 10. Write the one number printed.
 #include <iostream>
 
 int main()
 {
     int score = 10;
-    score += 5;   // 15
-    score -= 3;   // 12
-    score *= 2;   // 24
-    score /= 4;   // 6
-    score %= 4;   // 2
+    score += 5;
+    score -= 3;
+    score *= 2;
+    score /= 4;
+    score %= 4;
     std::cout << score << std::endl;
     return 0;
 }
@@ -137,7 +138,7 @@ int main()
     "code": "std::cout << -7 % 2 << std::endl;",
     "options": ["1", "-1", "3", "-3"],
     "answer": 1,
-    "explain": "C++ modulo follows the sign of the dividend. -7/2 truncates toward zero to -3, and -7 - (-3*2) = -1."
+    "explain": "C++ modulo follows the sign of the dividend. -7/2 truncates toward zero to -3 (not -4), and -7 - (-3*2) = -1. The same rule gives 7 / -2 = -3 and 7 % -2 = 1."
   },
   {
     "q": "Dividing an int by 0 (e.g. `int x = 5 / 0;`) causes a compile error.",

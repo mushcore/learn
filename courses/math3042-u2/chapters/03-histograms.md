@@ -3,7 +3,7 @@ title: Histograms: the class recipe
 minutes: 20
 ---
 
-Histograms are **"most common and important"** (the instructor's margin note): a bar chart for numerical data that groups values into a manageable number of rectangles and gives every possible $X$ value a place on the axis. The recipe below is the one thing in Unit 2 you must be able to run by hand.
+Histograms are **"most common and important"** (the instructor's margin note): a bar chart for numerical data that groups values into equal-width classes and gives every possible $X$ value a place on the axis.
 
 ## Three steps
 
@@ -19,7 +19,7 @@ R picks classes for you if you let it:
 hist( BCIT.students$Age, col="lightblue")
 ```
 
-That gives classes 18–20, 20–22, 22–24, ..., the biggest rectangle (about 110 students) over 20–22, and a long, nearly empty tail out to 42. The notes' seven-step recipe defines the classes yourself.
+That gives classes 18–20, 20–22, ..., the biggest rectangle (about 110 students) over 20–22, and a nearly empty tail out to 42. The notes' seven-step recipe chooses the classes yourself.
 
 ## The recipe, worked on Age ($n = 302$, min 18, max 42)
 
@@ -31,9 +31,9 @@ $$\sqrt{n} = \sqrt{302} = 17.4$$
 
 $$\text{class width} = \frac{R}{\sqrt{n}} = \frac{42 - 18}{17.4} = 1.38$$
 
-The instructor calls this **"the ideal class width."** It is a starting point: 1.38 is not a usable width for whole-number ages.
+The instructor calls this **"the ideal class width."**
 
-**3. Round the class width to match the precision of $X$:** $1.38 \to 2$, the **"actual class width."** Ages are whole years, so the width is a whole number. A width of 1 would give one rectangle per age, the bar plot again; "round (up or down)" to a nice number.
+**3. Round the class width to match the precision of $X$:** $1.38 \to 2$, the **"actual class width."** Ages are whole years, so the width is a whole number; a width of 1 would be the bar plot again.
 
 **4. First lower class limit = the minimum $X$ (you may round it down):** $18$.
 
@@ -41,23 +41,7 @@ The instructor calls this **"the ideal class width."** It is a starting point: 1
 
 **6. Count the $X$ values in each class.** The result is the **frequency distribution**:
 
-| lower class limit | upper class limit | frequency |
-|---|---|---|
-| 18 | 19 | 35 |
-| 20 | 21 | 94 |
-| 22 | 23 | 104 |
-| 24 | 25 | 53 |
-| 26 | 27 | 10 |
-| 28 | 29 | 2 |
-| 30 | 31 | 1 |
-| 32 | 33 | 0 |
-| 34 | 35 | 1 |
-| 36 | 37 | 0 |
-| 38 | 39 | 1 |
-| 40 | 41 | 0 |
-| 42 | 43 | 1 |
-
-The frequencies add to 302. Classes with frequency 0 (32–33, 36–37, 40–41) stay in the table and on the chart as empty rectangles, which is what the bar plot hid.
+Classes 18–19, 20–21, ..., 42–43 hold 35, 94, 104, 53, 10, 2, 1, 0, 1, 0, 1, 0, 1 students. The frequencies add to 302 (the widget below prints the full table). The empty classes (32–33, 36–37, 40–41) stay on the chart, which is what the bar plot hid.
 
 **7. Plot a rectangle for each class, showing the frequency:**
 
@@ -68,13 +52,14 @@ hist(BCIT.students$Age,
      main="Age of BCIT Students (n = 302)")
 ```
 
-- `breaks=seq(18, 44, by=2)`: boundaries 18, 20, ..., 44, thirteen classes of width 2 from the first lower limit. The sequence must run past the maximum (42), hence 44.
-- `right = FALSE`: each class **includes its left boundary and excludes its right boundary**. The instructor's arrow to the first rectangle: **"this rectangle represents students with $18 \le X < 20$, not including 20."** A 20-year-old is in the second class.
-- `xaxp=c(15, 45, 15)` places tick marks from 15 to 45 every 2 years; `xlab`, `ylab`, `main` label the chart.
+`breaks=seq(18, 44, by=2)` gives the boundaries 18, 20, ..., 44: thirteen classes, running past the maximum 42. `right = FALSE` makes each class **include its left boundary and exclude its right one**: **"this rectangle represents students with $18 \le X < 20$, not including 20."** The default `right = TRUE` would give $(18, 20]$. `xaxp=c(15, 45, 15)` puts a tick every 2 years.
 
-:::quiz right = FALSE
-Class "18–19" is $[18, 20)$: 18 is in, 20 is out. The default `right = TRUE` would give $(18, 20]$, the opposite. The notes always use `right = FALSE`.
-:::
+### The Age recipe on the 302 students
+
+```widget
+hist-builder
+{ "preset": "BCIT Age (n = 302)" }
+```
 
 ## Features of a histogram
 
@@ -95,32 +80,9 @@ $$\sqrt{n} = \sqrt{272} = 16.5$$
 $$\text{range of } X = \max - \min = 5.1 - 1.6 = 3.5$$
 $$\text{ideal class width} = \frac{\text{range}}{\sqrt{n}} = \frac{3.5}{16.5} = 0.21212$$
 
-The rounding rule in his words: **"The class width must have the same number of decimal places as the $X$ data (3 digits). We also should round down to a 'nice' number. → actual class width = 0.200."**
+**"The class width must have the same number of decimal places as the $X$ data (3 digits). We also should round down to a 'nice' number. → actual class width = 0.200."** Lower limits start at 1.600; the first class is 1.600 to 1.799, where 1.799 is **"the last possible $X$ value before the next lower limit."**
 
-Lower limits start at the minimum, 1.600, and rise by 0.200. Each upper limit is 0.001 below the next lower limit, so the first class is 1.600 to 1.799, where 1.799 is **"the last possible $X$ value before the next lower limit."**
-
-| Lower class limit | Upper class limit | Frequency |
-|---|---|---|
-| 1.600 | 1.799 | 12 |
-| 1.800 | 1.999 | 39 |
-| 2.000 | 2.199 | 20 |
-| 2.200 | 2.399 | 18 |
-| 2.400 | 2.599 | 3 |
-| 2.600 | 2.799 | 3 |
-| 2.800 | 2.999 | 2 |
-| 3.000 | 3.199 | 1 |
-| 3.200 | 3.399 | 4 |
-| 3.400 | 3.599 | 6 |
-| 3.600 | 3.799 | 10 |
-| 3.800 | 3.999 | 16 |
-| 4.000 | 4.199 | 31 |
-| 4.200 | 4.399 | 29 |
-| 4.400 | 4.599 | 35 |
-| 4.600 | 4.799 | 28 |
-| 4.800 | 4.999 | 11 |
-| 5.000 | 5.199 | 4 |
-
-Eighteen classes, frequencies summing to 272. The histogram *"is a direct visual representation of the frequency distribution"*:
+From 1.600–1.799 up to 5.000–5.199, the 18 class frequencies are 12, 39, 20, 18, 3, 3, 2, 1, 4, 6, 10, 16, 31, 29, 35, 28, 11, 4. They sum to 272. The histogram *"is a direct visual representation of the frequency distribution"*:
 
 ```r
 hist( faithful$eruptions,
@@ -130,27 +92,40 @@ hist( faithful$eruptions,
       col="pink")
 ```
 
-The first pink rectangle is $1.600 \le X < 1.800$. Conclusion from the notes: **eruption durations cluster around two different values, 2.0 and 4.5**, the two humps of the stem-and-leaf plot. The shape is bimodal, and the mean (3.49) sits in the empty valley between the peaks.
+Conclusion from the notes: **eruption durations cluster around two different values, 2.0 and 4.5**. The shape is bimodal, and the mean (3.49) sits in the valley between the peaks.
 
-:::warn Six frequencies that do not match an exact count
-Counting the Old Faithful values by hand with exact class limits gives different numbers in six classes: 2.200–2.399 has 16 (not 18), 2.400–2.599 has 5 (not 3), 2.600–2.799 has 2 (not 3), 2.800–2.999 has 3 (not 2), 4.600–4.799 has 22 (not 28) and 4.800–4.999 has 17 (not 11). The notes' table is what R's `hist()` printed: `seq(1.6, 5.2, 0.2)` builds its boundaries by repeated floating-point addition, so some are stored as 2.4000000000000004, 2.8000000000000003 and 4.800000000000001, and a value exactly on such a boundary (2.400, 2.800, 4.800) falls into the class **below**. Use the notes' numbers; the method is not wrong, and "exactly on a boundary" is where a computer and a pencil can disagree.
-:::
+### Values on a boundary
 
-## Pitfalls: too many classes, too few classes
+Six of the notes' frequencies differ from an exact hand count: 2.200–2.399 has 18 (exact 16), 2.400–2.599 has 3 (5), 2.600–2.799 has 3 (2), 2.800–2.999 has 2 (3), 4.600–4.799 has 28 (22) and 4.800–4.999 has 11 (17). The table is what R printed. `seq(1.6, 5.2, by=0.2)` computes each break as `from + (0:n)*by`, so some are stored as 2.4000000000000004, 2.8000000000000003 and 4.800000000000001, and a value exactly on one of them (2.400, 2.800, 4.800) falls into the class below. Use the notes' numbers.
 
-**Using too many classes is bad.** Old Faithful with a width of 0.020 instead of 0.200 (about 175 classes) **"shows a jagged shape and lots of empty classes."** Individual values show as spikes and the two humps disappear in the noise.
+### Tallying the classes
 
-**Using too few classes is also bad.** A width of 2.000 (two classes: 1.6–3.6 and 3.6–5.6) **"doesn't show enough detail about the shape of the distribution."** The bimodal shape is gone.
-
-**"Using $\sqrt{n}$ avoids these problems."**
+Each step counts one $[\text{lower}, \text{upper})$ class and raises its rectangle; the values sitting exactly on a break are marked as they are counted.
 
 ```widget
-hist-builder
+hist-tally-play
+{}
 ```
 
 ```widget
 hist-builder
 { "preset": "Old Faithful eruptions (n = 272)", "title": "Old Faithful: the 18 classes from the notes" }
+```
+
+## Too many classes, too few classes
+
+**Using too many classes is bad.** A width of 0.020 instead of 0.200 (about 175 classes) **"shows a jagged shape and lots of empty classes."**
+
+```widget
+hist-builder
+{ "preset": "Old Faithful eruptions (n = 272)", "width": 0.02, "title": "Width 0.020: too many classes" }
+```
+
+**Using too few classes is also bad.** A width of 2.000 (two classes, 1.6–3.6 and 3.6–5.6) **"doesn't show enough detail about the shape of the distribution."** **"Using $\sqrt{n}$ avoids these problems."**
+
+```widget
+hist-builder
+{ "preset": "Old Faithful eruptions (n = 272)", "width": 2, "title": "Width 2.000: too few classes" }
 ```
 
 ```quiz

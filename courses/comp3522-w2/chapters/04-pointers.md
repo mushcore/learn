@@ -7,21 +7,18 @@ Pointers are unchanged from C. Week 2 uses them to explain why a function cannot
 
 ## A variable is a box with a nickname
 
-`int num = 5;` reserves space in memory that can hold an integer and gives that space a name. The instructor draws it as a box labelled `num` containing `5`. The box also has a real location, a **memory address** written in hexadecimal, such as `0xffffcc10`; `num` is a nickname for that address. Two facts from the videos:
-
-- The address is decided when the program runs. Run the same program twice and `num` may sit at `0xffffcc14` one time and `0xffffcc1c` the next.
-- The box can only hold what its type allows: an `int` box holds integers, nothing else.
+`int num = 5;` reserves memory that can hold an integer and names it: the instructor draws a box labelled `num` containing `5`. The box has a real location, a **memory address** written in hexadecimal such as `0xffffcc10`, decided when the program runs, so it can change from run to run; `num` is a nickname for it.
 
 ## A pointer is a box that holds an address
 
-A **pointer** is another box, but the only thing it can store is a memory address: "not strings, not chars, not numbers." Two symbols do all the work:
+A **pointer** is another box that can store only a memory address: "not strings, not chars, not numbers."
 
 | Symbol | Where | Meaning |
 |---|---|---|
 | `*` after a type | in a declaration, `int* numPtr` | "numPtr is a pointer to an int" |
 | `&` before a variable | in an expression, `&num` | "the address of num" |
 
-The pointer's type must match the box it points at: an `int*` points at `int` boxes. The first video's program:
+An `int*` points only at `int` boxes. The first video's program:
 
 ```cpp run pin pointerBasics.cpp
 #include <iostream>
@@ -41,11 +38,7 @@ int main()
 }
 ```
 
-The hex numbers differ from run to run; the pattern does not:
-
-- `int* numPtr = &num;` creates a second box named `numPtr` holding the address of `num`: an arrow from `numPtr` to `num`.
-- `cout << "numPtr  = " << numPtr << endl;` prints what is *inside* the pointer box, and the next line, `&num`, prints the address *of* `num`. The two match: that is what "numPtr points at num" means.
-- `&numPtr` is different: the pointer is itself a box with its own address.
+The hex numbers differ from run to run; the pattern does not. `int* numPtr = &num;` creates a second box holding the address of `num`, an arrow from `numPtr` to `num`, so `numPtr` and `&num` print the same address. `&numPtr` is different: the pointer is itself a box with its own address.
 
 :::quiz Two jobs for one star
 In a declaration (`int* p`) the star means "p is a pointer". In an expression (`*p`) it means "the thing p points at". If there is a type immediately to the left of the star, it declares a pointer; otherwise it dereferences one.
@@ -53,12 +46,7 @@ In a declaration (`int* p`) the star means "p is a pointer". In an expression (`
 
 ## Dereferencing: go where the arrow points and look in the box
 
-The star in front of a pointer in an expression is **dereferencing**: "go to where I'm pointing at and look at the value in the box." `*c` reads the box `c` points at; `*c = -4` *writes* into it. This is `pointers.cpp` from the video, with the `sizeof` lines he added:
-
-```widget
-pointer-viz
-{ "presets": false, "watch": ["a", "b", "c"], "title": "pointers.cpp, one statement at a time", "program": "#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int a = 10;\n    int b = 7;\n    int* c = nullptr;   // an empty pointer\n\n    c = &a;             // c now holds the address of a\n    cout << *c << endl; // dereference: the value in a\n\n    *c = -4;            // write THROUGH the pointer: a changes\n    cout << a << endl;\n\n    c = &b;             // re-point c at b; a is untouched\n    cout << *c << endl;\n    cout << a << endl;\n    return 0;\n}" }
-```
+The star in front of a pointer in an expression is **dereferencing**: "go to where I'm pointing at and look at the value in the box." `*c` reads the box `c` points at; `*c = -4` writes into it. This is `pointers.cpp` from the video, with the `sizeof` lines he added:
 
 ```cpp run pin pointers.cpp
 // predict: Write every line printed, exactly as the code formats it. sizeof(int*) is 8 on the lab machines.
@@ -76,12 +64,12 @@ int main()
 
     c = &a;             // c now holds the address of a
     cout << "*c = " << *c << endl;          // dereference: the value in a
-    cout << boolalpha << (c == &a) << endl; // true: c points at a
+    cout << boolalpha << (c == &a) << endl;
 
-    *c = -4;            // write THROUGH the pointer: this changes a
+    *c = -4;            // write THROUGH the pointer
     cout << "a = " << a << endl;
 
-    c = &b;             // re-point c at b; a is untouched
+    c = &b;             // re-point c at b
     cout << "*c = " << *c << endl;
     cout << (c == &a) << " " << (c == &b) << endl;
     cout << "a = " << a << endl;
@@ -89,16 +77,14 @@ int main()
 }
 ```
 
-1. `sizeof(int)` is 4 bytes and `sizeof(int*)` is 8 on a 64-bit machine: a pointer is a different type from an int, and every pointer is 8 bytes whatever it points at.
-2. `c = &a;` puts the address of `a` into `c`; `*c` follows the arrow and shows `10`. The pointer's own address never changes, only its contents.
-3. `*c = -4;` is equivalent to `a = -4`. The pointer is unchanged; the box it points at now holds −4.
-4. `c = &b;` re-points `c`. Now `*c` is `7`, and `a` is still `-4` because nothing wrote to it.
+A pointer is a different type from an `int`, and on a 64-bit machine every pointer is 8 bytes whatever it points at. `*c = -4;` is equivalent to `a = -4`: the pointer is unchanged, the box it points at is written. `c = &b;` re-points `c`; nothing writes to `a` after that.
 
 ## nullptr: a pointer that points at nothing
 
-An unassigned pointer holds garbage. The slides: "Beware of null pointers (assign empty pointers to `nullptr` as much as possible!)." A null pointer can be *tested*; a garbage pointer cannot.
+An unassigned pointer holds garbage. The slides: "Beware of null pointers (assign empty pointers to `nullptr` as much as possible!)." A null pointer can be tested; a garbage pointer cannot.
 
 ```cpp run
+// predict: Write the two lines printed.
 #include <iostream>
 using namespace std;
 
@@ -120,7 +106,7 @@ int main()
 ```
 
 :::danger Never dereference nullptr
-`*p` when `p` is `nullptr` is undefined behaviour, in practice a segmentation fault. Test first (`if (p)` works because a null pointer converts to `false`), dereference second.
+`*p` on a null pointer is undefined behaviour, in practice a segmentation fault. Test first; `if (p)` works because a null pointer converts to `false`.
 :::
 
 ## The four ways a pointer gets a value
@@ -137,7 +123,7 @@ int* numPtr3 = &num;          //    (address-of again)
 int* numPtr4 = new int(123);  // 4. new: a fresh box on the heap (lesson 9)
 ```
 
-Assignment to a pointer changes *where it points*, never the value in the box it pointed at before. Copying a pointer (`numPtr2 = numPtr`) makes two arrows to the same box, so `*numPtr2 = 7` also changes what `*numPtr` reads.
+Assignment to a pointer changes where it points, never the value in the box it pointed at before. Copying a pointer makes two arrows to the same box.
 
 ## Pass by value: the swap that does not swap
 
@@ -172,7 +158,7 @@ int main()
 }
 ```
 
-It does not. `arg1` and `arg2` are new boxes in the `swap` frame holding *copies* of 3522 and 2526: **call by value**, the default for every function call in C++. `int temp{arg1};`, `arg1 = arg2;` and `arg2 = temp;` swap the copies, the frame is destroyed, and `first` and `second` in `main` were never touched: `3522 2526`.
+`arg1` and `arg2` are new boxes in the `swap` frame holding copies of the arguments: **call by value**, the default for every function call in C++. `int temp{arg1};`, `arg1 = arg2;` and `arg2 = temp;` work on those copies, and the frame is destroyed when `swap` returns.
 
 ## Pass a pointer: the swap that works
 
@@ -206,16 +192,11 @@ int main()
 }
 ```
 
-Call by value still happens: `arg1` receives a copy of `&first`. But a copy of an address points at the same box, so the arrows from the `swap` frame land on `first` and `second` in `main`. `int temp{*arg1};` reads `first` (3522), `*arg1 = *arg2;` writes 2526 into `first`, and `*arg2 = temp;` writes 3522 into `second`. The call must pass addresses, because a pointer cannot be assigned a plain value: `swap(first, second)` would not compile against this version. Output: `2526 3522`.
+Call by value still happens: `arg1` receives a copy of `&first`. But a copy of an address points at the same box, so `int temp{*arg1};` reads `first` and `*arg1 = *arg2;` writes into it. The call must pass addresses: `swap(first, second)` would not compile against this version.
 
 ## Why pointers: changing the original through a function
 
-The Pointer Basics videos make the same point with a smaller program. `addToNum(num)` increments a copy and `num` stays 5; pass a pointer and `(*numPtrCopy)++` reaches the original:
-
-```widget
-pointer-viz
-{ "presets": false, "watch": ["num"], "title": "Pointer Basics 3: copy versus pointer", "program": "#include <iostream>\nusing namespace std;\n\nvoid addToNumByValue(int numCopy)\n{\n    numCopy++;              // changes the copy only\n    cout << numCopy << endl;\n}\n\nvoid addToNumByPointer(int* numPtrCopy)\n{\n    (*numPtrCopy)++;        // go where it points, add one there\n}\n\nint main()\n{\n    int num = 5;\n    addToNumByValue(num);\n    cout << num << endl;    // still 5\n\n    int* numPtr = &num;\n    addToNumByPointer(numPtr);\n    cout << num << endl;    // 6\n    return 0;\n}" }
-```
+The Pointer Basics videos make the same point with a smaller program: one function receives a copy of `num`, the other a pointer to it.
 
 ```cpp run pin addToNum.cpp
 // predict: Three numbers are printed, one per line.
@@ -225,7 +206,7 @@ using namespace std;
 void addToNumByValue(int numCopy)
 {
     numCopy++;                     // changes the copy only
-    cout << numCopy << endl;       // 6, inside the function
+    cout << numCopy << endl;
 }
 
 void addToNumByPointer(int* numPtrCopy)
@@ -237,20 +218,20 @@ int main()
 {
     int num = 5;
     addToNumByValue(num);
-    cout << num << endl;           // still 5
+    cout << num << endl;
 
     int* numPtr = &num;
     addToNumByPointer(numPtr);
-    cout << num << endl;           // 6
+    cout << num << endl;
     return 0;
 }
 ```
 
-In `(*numPtrCopy)++;` the parentheses force the dereference first, so it adds one to the box `numPtrCopy` points at, which is `num`. Without them, `*numPtrCopy++` would move the pointer to the next int in memory and then dereference. The video overloads both functions as `addToNum`; they are named separately here so the widget can tell them apart. Output: `6`, `5`, `6`.
+In `(*numPtrCopy)++;` the parentheses force the dereference first, so it adds one to the box `numPtrCopy` points at, which is `num`. Without them, `*numPtrCopy++` reads the box at the old address and then moves the pointer to the next int; `num` is never changed. The video overloads both functions as `addToNum`.
 
 ## Arrays are pointers in disguise
 
-Passing an array to a function looks like passing by value, but the array "gets converted into a pointer" to the original. The video proves it with `sizeof`: 16 bytes in `main` (four ints), 8 inside the function (one pointer).
+Passing an array to a function looks like passing by value, but the array "gets converted into a pointer" to the original. The video proves it with `sizeof`.
 
 ```cpp run pin arraySwap.cpp
 // predict: Three lines, exactly as the code formats them. The last line is the array after swapping elements 0 and 3.
@@ -267,8 +248,8 @@ void swapElements(int* array, int i, int j)   // an array argument arrives as a 
 int main()
 {
     int numbers[] = {1, 2, 3, 4};
-    cout << "sizeof(numbers) = " << sizeof(numbers) << " bytes" << endl;  // 16: four ints
-    cout << "sizeof(int*) = " << sizeof(int*) << " bytes" << endl;        // 8: what the function sees
+    cout << "sizeof(numbers) = " << sizeof(numbers) << " bytes" << endl;  // four ints
+    cout << "sizeof(int*) = " << sizeof(int*) << " bytes" << endl;        // what the function sees
 
     swapElements(numbers, 0, 3);
     for (int i = 0; i < 4; i++) {
@@ -278,17 +259,7 @@ int main()
 }
 ```
 
-`swapElements(numbers, 0, 3);` passes the array name, which decays to the address of its first element, so `array[i] = array[j];` writes into the caller's array. Square brackets on a pointer are a second way to dereference (`array[i]` is `*(array + i)`); the slides list both: "we use `*` or `[]`." The output ends with `4 2 3 1`.
-
-## Pointer rules from the slides
-
-| Rule | Slide wording |
-|---|---|
-| A pointer stores only addresses | assign `nullptr`, an existing pointer, `&variable`, or `new` |
-| Assignment to a pointer | "makes the pointer point to a new address" |
-| Dereference | `*ptr` or `ptr[i]` |
-| Empty pointers | set them to `nullptr` so you can test them |
-| Function arguments | passed by value (copies) unless you pass an address |
+`swapElements(numbers, 0, 3);` passes the array name, which decays to the address of its first element, so `array[i] = array[j];` writes into the caller's array. Writing the parameter as `int arr[]` changes nothing: in a parameter list it means `int* arr`, and g++ warns that `sizeof` on it returns the size of `int*`. Square brackets on a pointer are a second way to dereference (`array[i]` is `*(array + i)`): "we use `*` or `[]`."
 
 ```quiz
 [

@@ -69,9 +69,9 @@ tdm-frames
 { "n": 4, "rate": 1, "unit": "Mbps", "slot": 1, "streams": ["11111", "00000", "10101", "00100"], "framing": false, "presets": { "Four 1 Mbps lines (slide 35)": { "n": 4, "rate": 1, "unit": "Mbps", "slot": 1, "streams": ["11111", "00000", "10101", "00100"] }, "Lines A, B, C (slide 29)": { "n": 3, "rate": 0, "slot": 1, "streams": ["A1 A2 A3", "B1 B2 B3", "C1 C2 C3"] }, "Example 2 (four 100 kbps lines, 2-bit slots)": { "n": 4, "rate": 100, "unit": "kbps", "slot": 2, "streams": ["110100", "001011", "101010", "011100"] } } }
 ```
 
-### Watch the multiplexer build each frame
+### The multiplexer building each frame
 
-One step is one frame. Watch the MUX take one unit from each line in turn, the frame cross the link, and the DEMUX hand each slot back to its line. A slot lasts $T / n$ and the whole frame lasts $T$. Tick the predict box to name each frame, or its timing, before it is built.
+One step is one frame: the MUX takes one unit from each line in turn, the frame crosses the link, and the DEMUX hands each slot back to its line. A slot lasts $T / n$ and the whole frame lasts $T$.
 
 ```widget
 tdm-play
@@ -80,18 +80,7 @@ tdm-play
 
 ## Example 2: four 100 kbps channels, 2-bit slots
 
-*A multiplexer combines four 100-kbps channels using a time slot of 2 bits. 1. What is the frame rate? 2. What is the frame duration? 3. What is the bit rate of the shared channel? 4. What is the bit duration?*
-
-1. Frame rate = input unit rate. A unit is 2 bits, so each line delivers $100\,000 / 2 = 50\,000$ units per second, and the frame rate is **50 000 frames per second**.
-2. Frame duration $= 1 / 50\,000 = $ **20 μs**, also the duration of one input unit.
-3. Bit rate of the shared channel $= 4 \times 100 = $ **400 kbps**.
-4. Bit duration on the link $= 1 / 400\,000 = $ **2.5 μs**.
-
-The slide's check: *the frame duration is 8 times the bit duration because each frame is carrying 8 bits.* Four slots of 2 bits is 8 bits, and $8 \times 2.5 = 20$ μs.
-
-:::quiz Frame rate is the unit rate, not the bit rate
-Had the slot been 1 bit, the frame rate would be 100 000 frames/s. The link bit rate (400 kbps) does not depend on the slot size; the frame rate and frame duration do.
-:::
+*A multiplexer combines four 100-kbps channels using a time slot of 2 bits. 1. What is the frame rate? 2. What is the frame duration? 3. What is the bit rate of the shared channel? 4. What is the bit duration?* It is worked in [Multiplexing examples](#/comp3721-w6/multiplexing-examples).
 
 ```quiz
 [

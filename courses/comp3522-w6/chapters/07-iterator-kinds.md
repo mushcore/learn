@@ -62,7 +62,7 @@ int main() {
 }
 ```
 
-The slide's four lines are the middle of the program: `iterSaved = iter; //copies iter to iterSaved`, then `iter++;`, then `Previous element is` from the copy and `Current element is` from the original. `*iterSaved = 100;` is the forward iterator's `*it = value`, written through the copy. A `forward_list` gives exactly this kind, so the commented `//iter--; //can't decrement forward iterator` would not compile.
+The slide's four lines are the middle of the program. `*iterSaved = 100;` is the forward iterator's `*it = value`, written through a saved copy. A `forward_list` gives exactly this kind, so `iter--` would not compile.
 
 ## 4. Bidirectional iterator: adds decrement
 
@@ -120,7 +120,7 @@ int main() {
 }
 ```
 
-A `list` hands out bidirectional iterators. `*itBegin = 999; //assign using iterator` writes through it, so the loop prints `999 2 3 4 5`. The line to read slowly is `list <int>::iterator it = itBegin++;`, the `i++` row of the input table: the postfix operator copies the current position, advances `itBegin`, and returns the copy, so `it` still points at 999 while `itBegin` has moved to 2. The commented `list <int>::iterator it = itBegin;` and `itBegin++;` are the same thing as two statements.
+A `list` hands out bidirectional iterators. The line to read slowly is `list <int>::iterator it = itBegin++;`, the `i++` row of the input table: postfix copies the current position, advances `itBegin`, and returns the copy.
 
 ## 5. Random access iterator: jump by n and compare
 
@@ -134,7 +134,7 @@ A `list` hands out bidirectional iterators. `*itBegin = 999; //assign using iter
 | `i[n]` | value_type | `*(i + n)` |
 | `i < j`, `i <= j`, `i > j`, `i >= j` | bool | |
 
-Slide wording for the two rules the quiz draws on: *only random-access iterators permit an integer value to be added to or subtracted from an iterator* (`iter1 - 5`), and *only random access iterators permit one iterator to be subtracted from another*, which results in a `difference_type` (`iter1 - iter2`).
+Slide wording: *only random-access iterators permit an integer value to be added to or subtracted from an iterator* (`iter1 - 5`), and *only random access iterators permit one iterator to be subtracted from another*, which results in a `difference_type` (`iter1 - iter2`).
 
 ```cpp run pin randomAccessIterator.cpp
 // predict: Write the eight lines printed.
@@ -174,7 +174,7 @@ int main() {
 }
 ```
 
-`auto nearEndIt = (v.end() - 1);` is `i - n`: a new iterator one before `end()`, the last element. `*(v.begin() + 3)` is `i + n`, the fourth element. `v.end() - nearEndIt` is `i - j`, a `difference_type` that prints as 1. `(nearEndIt < v.end())` is the comparison row, and `*midIt = "z"; //same as v[3] = "z";` writes through the iterator, so the second `print(v)` differs from the first. The shipped program goes on to print the address of a `new string` and of the iterator (cut here because addresses vary per run) to show that an iterator is not a pointer: `cout << midIt` does not compile.
+The program uses one row of the table per line: `v.end() - 1` is `i - n`, `v.begin() + 3` is `i + n`, `v.end() - nearEndIt` is `i - j`, and `<` is the comparison row. The shipped program goes on to print the address of a `new string` and of the iterator (cut here because addresses vary per run) to show that an iterator is not a pointer: `cout << midIt` does not compile.
 
 ## Which container gives which kind
 

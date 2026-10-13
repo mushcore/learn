@@ -69,3 +69,25 @@ One long quiz covering everything from Unit 1: definitions, symbols, formulas, s
   }
 ]
 ```
+
+## Quiz 1 format: symbol, value, calculation
+
+The real quiz gives a small data set and asks for each answer as a symbolic label, a value, and the calculation that supports it. Write all three on paper before checking.
+
+$X$ = number of siblings of a BCIT student, from a sample of $n = 9$: $0, 1, 1, 2, 6, 4, 3, 0, 1$. Sorted: $0, 0, 1, 1, 1, 2, 3, 4, 6$.
+
+```quiz
+[
+  {"q": "Record the symbolic label of the **sample mean**.", "type": "text", "answer": ["X̄", "Xbar", "X bar", "x̄", "xbar", "\\bar{X}"], "explain": "The sample mean is $\\bar{X}$ (a statistic). $\\mu$ would be the population mean."},
+  {"q": "Sample mean of the siblings data?", "type": "numeric", "answer": 2.0, "tolerance": 0.001, "explain": "$\\bar{X} = \\dfrac{\\sum X}{n} = \\dfrac{0+1+1+2+6+4+3+0+1}{9} = \\dfrac{18}{9} = 2.0$."},
+  {"q": "Record the symbolic label of the **median**.", "type": "text", "answer": ["Q2", "Q₂", "Q_2", "X̃", "\\tilde{X}"], "explain": "The median is the second quartile, $Q_2$ (also written $\\tilde{X}$)."},
+  {"q": "Median of the siblings data?", "type": "numeric", "answer": 1, "tolerance": 0, "explain": "$n = 9$ is odd, so $Q_2$ is the 5th sorted value: $0, 0, 1, 1, \\mathbf{1}, 2, 3, 4, 6$ gives $Q_2 = 1$."},
+  {"q": "Mode of the siblings data?", "type": "numeric", "answer": 1, "tolerance": 0, "explain": "1 occurs three times, more than any other value."},
+  {"q": "Record the symbolic label of the **sample standard deviation**.", "type": "text", "answer": ["s", "sx", "s_x"], "explain": "$s$ is the sample standard deviation (divide by $n-1$); $\\sigma$ is the population one."},
+  {"q": "Sample standard deviation $s$ of the siblings data?", "type": "numeric", "answer": 2.0, "tolerance": 0.001, "explain": "Squared deviations from $\\bar{X} = 2$: $4+4+1+1+1+0+1+4+16 = 32$. $s^2 = \\dfrac{32}{n-1} = \\dfrac{32}{8} = 4$, so $s = \\sqrt{4} = 2.0$."},
+  {"q": "Range $R$ of the siblings data?", "type": "numeric", "answer": 6, "tolerance": 0, "explain": "$R = \\max - \\min = 6 - 0 = 6$."},
+  {"q": "Coefficient of variation $CV$ of the siblings data?", "type": "numeric", "answer": 100, "tolerance": 0.1, "unit": "%", "explain": "$CV = \\dfrac{s}{\\bar{X}} \\times 100\\% = \\dfrac{2.0}{2.0} \\times 100\\% = 100\\%$."},
+  {"q": "Adult male heights are normal with $\\mu = 178.4$ cm, $\\sigma = 7.6$ cm. What percentage have $178.4 \\le X < 193.6$ cm?", "type": "numeric", "answer": 47.5, "tolerance": 0.2, "unit": "%", "explain": "$193.6 = 178.4 + 2(7.6) = \\mu + 2\\sigma$. The interval runs from the mean to $+2\\sigma$, half of the middle 95% band: $95\\%/2 = 47.5\\%$."},
+  {"type": "shade", "q": "Shade $178.4 \\le X < 193.6$ cm for $\\mu = 178.4$, $\\sigma = 7.6$, the drawing that supports the 47.5%.", "mu": 178.4, "sigma": 7.6, "answer": 47.5, "tolerance": 1, "lo": 0, "hi": 2, "explain": "From $Z = 0$ to $Z = 2$: half of 95% = 47.5%."}
+]
+```

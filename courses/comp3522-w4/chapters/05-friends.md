@@ -147,9 +147,9 @@ Friends matter next lesson: the stream operators `<<` and `>>` cannot be members
   },
   {
     "q": "Why does `class Spy;` appear before `class Boss` in FriendClass?",
-    "options": ["To make Spy a friend", "A forward declaration: Boss names Spy (in `friend class Spy;` and `print(Spy*)`) before Spy is defined", "To make Spy abstract", "It is optional decoration"],
+    "options": ["To make Spy a friend", "A forward declaration: Boss's `print(Spy*)` names Spy before Spy is defined", "To make Spy abstract", "It is optional decoration"],
     "answer": 1,
-    "explain": "Week 3's forward declaration: introduce the name so pointers to it and friend declarations can mention it before the definition."
+    "explain": "Week 3's forward declaration: introduce the name so a pointer parameter like `Spy*` can mention it before the definition. The `friend class Spy;` line alone would not need it, because a friend class declaration introduces the name itself."
   }
 ]
 ```

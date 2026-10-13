@@ -3,7 +3,7 @@ title: Formula sheet (Unit 5)
 minutes: 8
 ---
 
-Everything from Unit 5 on one page: the definitions, the three distributions side by side, the Z-table reading patterns, the worked numbers from the notes and the R. No new explanations here; if a line does not make sense, go back to its lesson. Every worked number is computed from blank notes; the in-class values replace them.
+Everything from Unit 5 on one page: the definitions, the three distributions side by side, the Z-table reading patterns, the worked numbers from the notes and the R. No new explanations here; if a line does not make sense, go back to its lesson.
 
 ## Definitions
 
@@ -11,18 +11,18 @@ Everything from Unit 5 on one page: the definitions, the three distributions sid
 |---|---|
 | continuous random variable | takes values on an interval of the real number line; uncountably infinite possible values |
 | $P(X = x) = 0$ | a single point has no width, so no area; $P(X \le b) = P(X < b)$ |
-| probability density function $f(x)$ | $P(X \le b) = ∫_{-\infty}^{b} f(x)\,dx$: probabilities are areas under $f$ |
-| cumulative probability function | $F(x) = P(X \le x) = ∫_{-\infty}^{x} f(t)\,dt$ |
+| probability density function $f(x)$ | $P(X \le b) = \int_{-\infty}^{b} f(x)\,dx$: probabilities are areas under $f$ |
+| cumulative probability function | $F(x) = P(X \le x) = \int_{-\infty}^{x} f(t)\,dt$ |
 | percentile $x_p$ | the $x$ with $F(x_p) = p$ |
 
 ## Properties of a pdf
 
 | Property | Statement |
 |---|---|
-| 1. total area | $F(+\infty) = ∫_{-\infty}^{+\infty} f(x)\,dx = 1$ |
+| 1. total area | $F(+\infty) = \int_{-\infty}^{+\infty} f(x)\,dx = 1$ |
 | 2. positivity | $f(x) \ge 0$ for all $x$ |
-| 3. interval | $P(a \le X \le b) = ∫_a^b f(x)\,dx = F(b) - F(a)$ |
-| mean, variance | $\mu = ∫ x\,f(x)\,dx$, $\sigma^2 = ∫ (x - \mu)^2 f(x)\,dx$ (the Unit 4 sums with ∫ for Σ) |
+| 3. interval | $P(a \le X \le b) = \int_a^b f(x)\,dx = F(b) - F(a)$ |
+| mean, variance | $\mu = \int x\,f(x)\,dx$, $\sigma^2 = \int (x - \mu)^2 f(x)\,dx$ (the Unit 4 sums with ∫ for Σ) |
 
 Heights are not probabilities: the uniform's $1/(b - a)$ and the exponential's $f(0) = 1/\beta$ can exceed 1.
 

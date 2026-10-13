@@ -5,10 +5,6 @@ minutes: 25
 
 The Z table covers one curve, with $\mu = 0$ and $\sigma = 1$. IQ has $\mu = 100$ and $\sigma = 15$; radiation dose has $\mu = 4.35$ and $\sigma = 0.5$. One conversion, $Z = (X - \mu)/\sigma$, turns any normal question into a Z-table question, and the reverse conversion $x = \mu + z\sigma$ turns a percentile back into real units.
 
-:::info Answers in this lesson are computed
-The notes' answer spaces for the IQ table calculation, the radiation parts and the bit-error question are blank. Every number below was computed with a left-tail Z table and checked in R; where the two differ in the 4th decimal it is said. In-class answers replace these.
-:::
-
 ## The IQ example and the N(100, 15²) notation
 
 Slide wording: "The IQ of a randomly selected person is a continuous variable $X$ that follows a normal distribution with parameters $\mu = 100$ and $\sigma = 15$. (This is sometimes written as $X ∼ N(100, 15^2)$.)"
@@ -31,7 +27,7 @@ Slide wording: "If $X$ follows a normal distribution with mean $\mu$ and standar
 
 This is the Unit 1 Z-score with a new payoff: the area to the left of $x$ under the $X$ curve equals the area to the left of $z$ under the $Z$ curve. Every normal probability is three steps: standardize the bound(s), read the table, apply the pattern (left, right or between).
 
-Slide wording: "Now do the same calculation using only the $Z$ table." Compute it before reading on.
+Slide wording: "Now do the same calculation using only the $Z$ table."
 
 ```quiz
 [
@@ -49,7 +45,7 @@ $$Z = \frac{120 - 100}{15} = \frac{20}{15} = 1.33$$
 
 Row 1.3, column .03: $P(Z \le 1.33) = \mathbf{0.9082}$.
 
-R gave 0.9088. The difference is in the 4th decimal because the table forces $Z$ to be rounded to 1.33 while R uses $1.3333\ldots$; the table answer is what a paper quiz expects, and the R answer is the exact one.
+R gave 0.9088. The difference is in the 4th decimal because the table forces $Z$ to be rounded to 1.33 while R uses $1.3333\ldots$; on paper give the table answer; the R answer is the exact one.
 
 ## The standardizing step, written out
 
@@ -58,9 +54,9 @@ normal-prob
 { "mu": 100, "sigma": 15, "lo": null, "hi": 120, "title": "IQ below 120: Z = (120 − 100)/15 = 1.33" }
 ```
 
-### Watch the curve being standardized
+### The curve being standardized, step by step
 
-Subtracting $\mu$ slides the curve to 0 and dividing by $\sigma$ squeezes it into the standard normal; the shaded area never changes. The other buttons play the radiation and noise examples from the sections below. Tick the predict box to give $Z$ and the table operation before each is shown.
+Subtracting $\mu$ slides the curve to 0 and dividing by $\sigma$ squeezes it into the standard normal; the shaded area never changes. The other presets are the radiation and noise examples below.
 
 ```widget
 standardize-play
@@ -124,7 +120,7 @@ About 1.2 % of transmitted 0-bits are flipped. By symmetry a sent 1 (3 V) is rea
 [1] 0.01152131
 ```
 
-R's 0.0115 and the table's 0.0116 differ in the 4th decimal as in the IQ example: $0.5/0.22 = 2.2727$ was rounded to 2.27 for the table.
+R's 0.0115 uses the unrounded $Z = 2.2727$.
 
 ## Two bells and a threshold
 
@@ -143,6 +139,12 @@ Raising $\sigma$ grows the tails that cross 2.5 V; moving the levels apart shrin
     "answer": 0.8413,
     "tolerance": 0.0002,
     "explain": "$Z = (182 - 175)/7 = 1.00$; row 1.0, column .00 gives 0.8413. One $\\sigma$ above the mean: the 84 % of the empirical rule."
+  },
+  {
+    "q": "Heights are $N(175, 7^2)$ cm. Write the standardizing step for $P(X < 182)$, the $Z$ value as a fraction with no spaces, in the form `(x-mu)/sigma` with the numbers in.",
+    "type": "text",
+    "answer": ["(182-175)/7", "(182−175)/7"],
+    "explain": "$Z = (x - \\mu)/\\sigma = (182 - 175)/7 = 7/7 = 1.00$. Subtract the mean first, then divide by the standard deviation 7, not the variance 49."
   },
   {
     "q": "Heights are $N(175, 7^2)$. What is $P(X > 189)$? (4 decimals)",
@@ -193,10 +195,10 @@ Raising $\sigma$ grows the tails that cross 2.5 V; moving the levels apart shrin
   {
     "q": "Radiation dose is $N(4.35, 0.5^2)$ mrem. What is the 99th percentile? (2 decimals)",
     "type": "numeric",
-    "answer": 5.515,
+    "answer": 5.52,
     "tolerance": 0.01,
     "unit": "mrem",
-    "explain": "$P(Z \\le z) = 0.99$ is 0.9901 at $z = 2.33$. Then $x = 4.35 + 2.33 \\times 0.5 = 5.515$, about 5.52 mrem; `qnorm(0.99, 4.35, 0.5)` gives 5.513."
+    "explain": "$P(Z \\le z) = 0.99$ is 0.9901 at $z = 2.33$. Then $x = 4.35 + 2.33 \\times 0.5 = 5.515$, which rounds to 5.52 mrem. `qnorm(0.99, 4.35, 0.5)` gives 5.513, so 5.51 is accepted too."
   }
 ]
 ```

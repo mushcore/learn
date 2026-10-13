@@ -66,11 +66,8 @@ int main()
 }
 ```
 
-- `vector <int> intVector;` declares an empty vector; the three `push_back` calls make it `[5, 10, 15]` with `size()` 3.
-- `intVector.erase(intVector.begin()+1); //erases 10 at index 1` takes an **iterator**, not an index: `begin()` points at the first element and `+1` moves to the second. Everything after shifts left: `[5, 15]`.
-- `for (int value: intVector)` is the **ranged-for** (C++'s for-each). Each pass copies the next element into `value`: the **element itself, not the index**, so the loop prints `5 15`, not `0 1`.
-
-Both loops print `5 15`.
+- `intVector.erase(intVector.begin()+1); //erases 10 at index 1` takes an **iterator**, not an index: `begin()` points at the first element and `+1` moves to the second. Everything after it shifts left.
+- `for (int value: intVector)` is the **ranged-for** (C++'s for-each). Each pass copies the next element into `value`: the element itself, not its index.
 
 :::warn size() is unsigned
 The slide writes `for(int i=0; i<intVector.size(); i++)`. That compiles, but `size()` returns an unsigned `size_t`, and comparing it with a signed `int` warns under `-Wall` ("comparison of integer expressions of different signedness"); the program above uses `size_t i`. On a quiz either spelling is a correct loop.
@@ -92,7 +89,7 @@ int main()
     vector<int> v;
     v.push_back(5);
     v.push_back(15);
-    cout << v[1] << " " << v.at(1) << endl;   // both fine: 15 15
+    cout << v[1] << " " << v.at(1) << endl;   // a valid index: both fine
     v.at(0) = 7;                              // at returns a reference, so this assigns
     cout << v[0] << endl;
     try {
@@ -105,7 +102,7 @@ int main()
 }
 ```
 
-For a valid index the two are interchangeable, and `v.at(0) = 7;` shows that `at` returns a reference you can assign through. With two elements, `cout << v.at(5) << endl;` is past the end, so `at` throws `std::out_of_range` and the `catch` prints the message. `v[5]` would throw nothing: **undefined behaviour**, reading memory that is not the vector's. Prefer `at` while learning; use `[ ]` in loops whose bounds you have already checked.
+For a valid index the two are interchangeable, and `v.at(0) = 7;` shows that `at` returns a reference you can assign through. `cout << v.at(5) << endl;` is past the end of a two-element vector, so `at` throws `std::out_of_range`. `v[5]` would throw nothing: **undefined behaviour**, reading memory that is not the vector's. Prefer `at` while learning; use `[ ]` in loops whose bounds you have already checked.
 
 ## size versus capacity
 
@@ -139,13 +136,15 @@ int main()
 }
 ```
 
-- After one `push_back`, `cout << v.size() << " " << v.capacity() << endl;` prints `1 1`.
-- Two more pushes: `3 4`. Size is how many elements are in the vector; capacity is how much memory is allocated behind it.
-- A fourth push fills the allocation: `4 4`.
-- The fifth does not fit, so the vector allocates a bigger block and copies the elements over: `5 8`. With g++ the capacity doubles: 1, 2, 4, 8, 16, ...
-- `v.clear();` removes the elements but keeps the storage: `0 8`. The ranged-for runs zero times.
+`cout << v.size() << " " << v.capacity() << endl;` separates two numbers: size is how many elements are in the vector, capacity is how much memory is allocated behind it. A push that does not fit makes the vector allocate a bigger block (g++ doubles it) and copy the elements over; `v.clear();` removes the elements but keeps the storage. That is why `push_back` is occasionally slower and why `capacity()` is at least `size()`.
 
-You never manage this yourself, but it explains why `push_back` is occasionally slower (a reallocation) and why `capacity()` is at least `size()`.
+### push_back on a full vector, played
+
+One `push_back` per step: when size equals capacity, watch the new block appear, the elements copy across one by one, and the old block disappear.
+
+```widget
+vector-grow-play
+```
 
 ```quiz
 [

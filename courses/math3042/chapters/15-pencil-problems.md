@@ -102,7 +102,11 @@ Hank: mean 62 items/shift, $s = 4.2$. Pete: mean 59 items/shift, $s = 4.1$. Pete
   { "q": "(b) Empirical rule: % of boards between 17% and 19% (same interval, but now we use the bell shape)?", "type": "numeric", "answer": 95, "tolerance": 1, "unit": "%", "explain": "Because the data is bell-shaped we can use the sharper empirical rule instead of Chebyshev's guarantee: $\\mu \\pm 2\\sigma \\to 95\\%$." },
   { "q": "(c) Empirical rule: % of boards **above** 19.5% (which is $\\mu + 3\\sigma$)?", "type": "numeric", "answer": 0.15, "tolerance": 0.05, "unit": "%", "explain": "99.7% is within $\\mu\\pm3\\sigma$, leaving 0.3% split between the two tails: $0.3\\%/2 = 0.15\\%$ above." },
   { "q": "(d) Empirical rule: % of boards between 18% (the mean) and 18.5% ($\\mu+1\\sigma$)?", "type": "numeric", "answer": 34, "tolerance": 1, "unit": "%", "explain": "68% lies within $\\mu\\pm1\\sigma$; half of that, from the mean to $+1\\sigma$, is $68\\%/2 = 34\\%$." },
-  { "q": "(e) Building code needs moisture under 19% ($\\mu+2\\sigma$). What % of 4x4's qualify?", "type": "numeric", "answer": 97.5, "tolerance": 0.5, "unit": "%", "explain": "Everything below the mean (50%) plus everything within 1 more empirical-rule half-band above it: $50\\% + 95\\%/2 = 97.5\\%$." }
+  { "q": "(e) Building code needs moisture under 19% ($\\mu+2\\sigma$). What % of 4x4's qualify?", "type": "numeric", "answer": 97.5, "tolerance": 0.5, "unit": "%", "explain": "The whole lower half (50%) plus the upper half of the middle 95% band: $50\\% + 95\\%/2 = 97.5\\%$." },
+  {"type": "shade", "q": "Problem 5(b). Moisture $\\mu=18\\%$, $\\sigma=0.5\\%$, bell-shaped. Shade 17% to 19% and read the percentage.", "mu": 18, "sigma": 0.5, "answer": 95, "lo": -2, "hi": 2, "explain": "17 and 19 are $\\mu\\pm2\\sigma$ — the empirical rule gives 95% (Chebyshev would only promise 75%)."},
+  {"type": "shade", "q": "Problem 5(c). Shade above 19.5%.", "mu": 18, "sigma": 0.5, "answer": 0.15, "tolerance": 0.1, "region": "above", "lo": 3, "explain": "19.5 is $\\mu+3\\sigma$; the upper tail beyond $3\\sigma$ is $0.3\\%/2 = 0.15\\%$."},
+  {"type": "shade", "q": "Problem 5(d). Shade from the mean (18%) up to 18.5%.", "mu": 18, "sigma": 0.5, "answer": 34, "tolerance": 1, "lo": 0, "hi": 1, "explain": "Mean to $+1\\sigma$ is half of the 68% band = 34%."},
+  {"type": "shade", "q": "Problem 5(e). Shade everything below 19% — the boards suitable to be closed in.", "mu": 18, "sigma": 0.5, "answer": 97.5, "tolerance": 1, "region": "below", "hi": 2, "explain": "19 is $\\mu+2\\sigma$: 95% inside the band plus the 2.5% lower tail = 97.5%."}
 ]
 ```
 
@@ -112,10 +116,11 @@ $\mu = 98.20°F$, $\sigma = 0.62°F$. "Unusual" means $|Z| > 2$, i.e. outside $\
 
 ```quiz
 [
-  { "q": "What is the usual range ($\\mu \\pm 2\\sigma$)?", "type": "numeric", "answer": 96.96, "tolerance": 0.02, "explain": "Lower bound: $98.20 - 2(0.62) = 96.96$. Upper bound: $98.20 + 2(0.62) = 99.44$." },
-  { "q": "Is $101.00°F$ usual or unusual?", "type": "tf", "answer": false, "explain": "$101.00 > 99.44$ (the upper bound), so it is **unusual** ($Z = (101.00-98.20)/0.62 = 4.52$). Answer 'false' for usual." },
-  { "q": "Is $96.90°F$ usual or unusual?", "type": "tf", "answer": false, "explain": "$96.90 < 96.96$ (the lower bound), so it is **unusual**, just barely ($Z = -2.10$)." },
-  { "q": "Is $96.98°F$ usual or unusual?", "type": "tf", "answer": true, "explain": "$96.98$ is inside $[96.96, 99.44]$, so it is **usual** ($Z = -1.97$, just inside $-2$)." }
+  { "q": "Lower bound of the usual range $\\mu - 2\\sigma$ (°F)?", "type": "numeric", "answer": 96.96, "tolerance": 0.01, "explain": "$98.20 - 2(0.62) = 96.96$." },
+  { "q": "Upper bound of the usual range $\\mu + 2\\sigma$ (°F)?", "type": "numeric", "answer": 99.44, "tolerance": 0.01, "explain": "$98.20 + 2(0.62) = 99.44$." },
+  { "q": "Is $101.00°F$ usual or unusual?", "options": ["unusual", "usual"], "answer": 0, "explain": "$Z = (101.00-98.20)/0.62 = 4.52$, and $|Z| > 2$: $101.00 > 99.44$, so it is **unusual**." },
+  { "q": "Is $96.90°F$ usual or unusual?", "options": ["unusual", "usual"], "answer": 0, "explain": "$Z = (96.90-98.20)/0.62 = -2.10$: just below the lower bound 96.96, so **unusual**." },
+  { "q": "Is $96.98°F$ usual or unusual?", "options": ["usual", "unusual"], "answer": 0, "explain": "$Z = (96.98-98.20)/0.62 = -1.97$: inside $[96.96, 99.44]$, so **usual**." }
 ]
 ```
 
@@ -155,10 +160,6 @@ stat-calc
   { "q": "(b) Site B's maximum value (13.6) is more than $3s$ above Site B's mean.", "type": "tf", "answer": true, "explain": "$\\bar{X}_B + 3s_B = 4.078 + 3(3.142) \\approx 13.50$, and $13.6 > 13.50$, so the max sits just past 3 standard deviations — it could reasonably be discounted as an outlier." },
   { "q": "(b) Site B's minimum value (1.02) is also more than $3s$ below Site B's mean.", "type": "tf", "answer": false, "explain": "$\\bar{X}_B - 3s_B \\approx -5.35$, and $1.02$ is nowhere near that — only the maximum, not the minimum, is extreme enough to consider discounting." },
   { "q": "(c) If Site A's minimum (1.9) is removed, the new mean will...", "options": ["Increase", "Decrease", "Stay exactly the same"], "answer": 0, "explain": "Removing the smallest value pulls the mean up: $4.39 \\to 4.888$." },
-  { "q": "(c) If Site A's minimum (1.9) is removed, the new standard deviation will...", "options": ["Increase", "Decrease", "Stay exactly the same"], "answer": 1, "explain": "Removing the point furthest from the mean reduces spread: $s_A$ drops from $2.5836 \\to 2.5463$." },
-  {"type": "shade", "q": "Problem 5(b). Moisture $\\mu=18\\%$, $\\sigma=0.5\\%$, bell-shaped. Shade 17% to 19% and read the percentage.", "mu": 18, "sigma": 0.5, "answer": 95, "lo": -2, "hi": 2, "explain": "17 and 19 are $\\mu\\pm2\\sigma$ — the empirical rule gives 95% (Chebyshev would only promise 75%)."},
-  {"type": "shade", "q": "Problem 5(c). Shade above 19.5%.", "mu": 18, "sigma": 0.5, "answer": 0.15, "tolerance": 0.1, "region": "above", "lo": 3, "explain": "19.5 is $\\mu+3\\sigma$; the upper tail beyond $3\\sigma$ is $0.3\\%/2 = 0.15\\%$."},
-  {"type": "shade", "q": "Problem 5(d). Shade from the mean (18%) up to 18.5%.", "mu": 18, "sigma": 0.5, "answer": 34, "tolerance": 1, "lo": 0, "hi": 1, "explain": "Mean to $+1\\sigma$ is half of the 68% band = 34%."},
-  {"type": "shade", "q": "Problem 5(e). Shade everything below 19% — the boards suitable to be closed in.", "mu": 18, "sigma": 0.5, "answer": 97.5, "tolerance": 1, "region": "below", "hi": 2, "explain": "19 is $\\mu+2\\sigma$: 95% inside the band plus the 2.5% lower tail = 97.5%."}
+  { "q": "(c) If Site A's minimum (1.9) is removed, the new standard deviation will...", "options": ["Increase", "Decrease", "Stay exactly the same"], "answer": 1, "explain": "Removing the point furthest from the mean reduces spread: $s_A$ drops from $2.5836 \\to 2.5463$." }
 ]
 ```

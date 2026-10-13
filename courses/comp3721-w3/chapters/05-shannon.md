@@ -96,14 +96,6 @@ data-rate
     "explain": "$4\\ \\text{Mbps} = 2 \\times 1\\ \\text{MHz} \\times \\log_{2} L$, so $\\log_{2} L = 2$ and $L = 2^{2} = 4$."
   },
   {
-    "q": "A channel has a bandwidth of 4 kHz and an SNR of 255. What is its capacity, in kbps?",
-    "type": "numeric",
-    "answer": 32,
-    "tolerance": 0.1,
-    "unit": "kbps",
-    "explain": "$C = 4000 \\log_{2}(1 + 255) = 4000 \\log_{2} 256 = 4000 \\times 8 = 32000$ bps $= 32$ kbps."
-  },
-  {
     "q": "A channel has a bandwidth of 500 kHz and an SNR of 1023. Shannon gives 5 Mbps. How many signal levels does Nyquist give for that bit rate?",
     "type": "numeric",
     "answer": 32,
@@ -144,12 +136,6 @@ data-rate
     "options": ["Number of signal levels", "Propagation speed", "Bandwidth of the channel", "Signal-to-noise ratio"],
     "answer": [2, 3],
     "explain": "$\\text{Capacity} = \\text{bandwidth} \\times \\log_{2}(1 + \\text{SNR})$. The number of signal levels belongs to the Nyquist formula."
-  },
-  {
-    "q": "In reality, we cannot have a noiseless channel; the channel is always noisy.",
-    "type": "tf",
-    "answer": true,
-    "explain": "Slide wording. That is why the Nyquist bit rate is only a theoretical maximum and the Shannon capacity is the limit that counts."
   },
   {
     "q": "For Example 2 (1 MHz, SNR 63), which pair is the slide's answer?",

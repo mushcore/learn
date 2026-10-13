@@ -60,7 +60,7 @@ access-matrix
 The shipped Visibility project is the table as code:
 
 ```cpp run pin Spy.hpp
-// predict: Write the two lines printed by main. Then uncomment privatePrint() in PublicSpy::print and read the error.
+// predict: Write the two lines printed by main.
 #include <iostream>
 using namespace std;
 
@@ -170,7 +170,7 @@ lifetime-trace
 { "preset": "Base before derived (whichconstructor.cpp)", "presets": false }
 ```
 
-The shipped `private.cpp` shows the three wrong ways to initialize a base's private member from a derived constructor: `B(int x) : x{x}` fails with `member initializer 'x' does not name a non-static data member or base class` (x belongs to A, and a derived list may only name its own members and direct bases); `B(int x) { set_x(x); }` compiles but default-constructs A and then assigns, the "NO DON'T DO THIS" of the slide; the right one is `B(int x) : A{x}`.
+The shipped `private.cpp` shows two wrong ways and the right way to initialize a base's private member from a derived constructor: `B(int x) : x{x}` fails with `member initializer 'x' does not name a non-static data member or base class` (x belongs to A, and a derived list may only name its own members and direct bases); `B(int x) { set_x(x); }` compiles but default-constructs A and then assigns, the "NO DON'T DO THIS" of the slide; the right way is `B(int x) : A{x}`.
 
 ```quiz
 [

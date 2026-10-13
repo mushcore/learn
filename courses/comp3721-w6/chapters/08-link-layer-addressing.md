@@ -26,7 +26,7 @@ The slide's stock image splits the address in half:
 | Bytes | `00:1A:3F` | `F1:4C:C6` |
 |---|---|---|
 | Name | **Organizationally Unique Identifier (OUI)** | device part (the image labels it "Universally Administered Address") |
-| Who assigns it | the registry, per manufacturer | the manufacturer, per interface |
+| Who assigns it (ours, not on the slide) | the registry, per manufacturer | the manufacturer, per interface |
 
 The lookup screenshot on the next slide types in `F0:1F:C7` and gets **Apple, Inc.**, 1 Infinite Loop, Cupertino. Its block type is **MA-L**, *MAC Address Block Large (previously named OUI)*, with *number of address 2^24 (~16 million)*: three bytes are fixed by the OUI, so the remaining three bytes, 24 bits, give $2^{24}$ = 16 777 216 addresses in the block.
 
@@ -68,16 +68,12 @@ hop-walk
 { "preset": "small internet (slides 18-21)", "draw": false }
 ```
 
-Click each link and check the frame against the table. Then fill the two L fields yourself on every link:
+### The two L fields on every link, filled in
 
 ```widget
 hop-walk
 { "preset": "small internet (slides 18-21)", "draw": true }
 ```
-
-:::quiz Reading a frame in the slide's order
-When a question shows a frame $[L_x \mid L_y \mid N_1 \mid N_8 \mid \text{Data}]$, $L_x$ is the receiver on this link and $L_y$ is the sender on this link. To write the frame for a link, ask: which interface sends it, which interface receives it, then write receiver first.
-:::
 
 ```quiz
 [

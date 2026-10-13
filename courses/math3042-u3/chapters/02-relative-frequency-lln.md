@@ -44,14 +44,18 @@ prob.B
 [1] 0.02799
 ```
 
-`sample(c(1,2,3,4,5,6), n.dice, replace=TRUE)` rolls two dice (`replace=TRUE` lets both show the same number, lesson 8). `success` is `TRUE` or `FALSE`, and adding it to `X.success` counts the TRUEs. The run in the filled notes gave $P(B) \approx x/n = 0.0281$, against the exact $1/36 = 0.0278$; the demo notebook's `prob.B.classical <- 1/(6^2)` prints 0.02777778. Every run lands on a slightly different third decimal, which is the point of the next widget.
+`sample(c(1,2,3,4,5,6), n.dice, replace=TRUE)` rolls two dice (`replace=TRUE` lets both show the same number, lesson 8). `success` is `TRUE` or `FALSE`, and adding it to `X.success` counts the TRUEs. The run in the filled notes gave $P(B) \approx x/n = 0.0281$, against the exact $1/36 = 0.0278$; the demo notebook's `prob.B.classical <- 1/(6^2)` prints 0.02777778. Every run lands on a slightly different third decimal.
+
+### x/n settling as n grows
+
+Each step adds a batch of trials on a log schedule (1, 2, 5, 10 … 100 000). Early points swing between 0 and large fractions; by $n = 10^4$ the trace sits within a few thousandths of 1/36.
 
 ```widget
 lln-sim
 { "experiment": "Boxcars (two sixes)" }
 ```
 
-Press "+1 trial" a few times and watch $x/n$ jump between 0 and 1. Then "+10 000" twice: the blue line flattens onto the green one. The notes' phrase is exact: the relative frequency **must** approach $P(A)$, but only as $n$ becomes large; ten trials of boxcars will usually show zero successes.
+The notes' phrase is exact: the relative frequency **must** approach $P(A)$, but only as $n$ becomes large; ten trials of boxcars will usually show zero successes.
 
 :::tip Two definitions, one number
 Classical: count outcomes, exact, needs equally likely outcomes you can list. Relative frequency: run trials, approximate, works for any experiment you can repeat. Lab 4 lives entirely in the second world; the pencil part of the quiz in the first.

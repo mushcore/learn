@@ -1,7 +1,7 @@
 # COMP 3721 Week 3 (lecture 03, E03) — facts and worked answers transcribed from the instructor's material
 
 Source files: `D:/BCIT/COMP3721/lectures/COMP3721 - 03 - Week 3.pdf` (53 slides, downloaded 2026-09-28),
-`exercises/COMP3721 - E03 - Week 3 Exercises.pdf` (2 exercises, no answer sheet posted).
+`exercises/COMP3721 - E03 - Week 3 Exercises.pdf` (2 exercises) and `exercises/COMP3721 - E03 - Week 3 Exercises with Answers.pdf` (the instructor's answer sheet, posted 2026-10-12).
 Textbook: Forouzan, *Data Communications and Networking with TCP/IP Protocol Suite*, 6th ed. Reading for 03: Ch 2 §2.1 (Transmission of Digital Signals), §2.2, §2.8 (practice set).
 `COMP3721_Assignment1_v1.pdf` (posted 2026-09-28) is graded work on Week 2 material; none of it is worked in the app.
 
@@ -55,6 +55,7 @@ Textbook: Forouzan, *Data Communications and Networking with TCP/IP Protocol Sui
 - Textbook §2.2 Example 2.12: the link as a pipe (cross section = bandwidth, length = delay, volume = bandwidth-delay product).
 - Problem types from the assigned practice set (§2.8), taught with numbers of our own, never the textbook's: decibels add along a path (-3 dB then +7 dB = +4 dB); SNR from a voltage ratio (SNR = ratio squared, or 20 log10 of the ratio in dB); Shannon solved for the SNR (SNR = 2^(C/B) - 1).
 
-## E03 (Week 3 exercises) — no instructor answer sheet; worked from the lecture formulas
-1. Cable -0.3 dB/km, 2 mW at the start, power at 5 km: 5 × (-0.3) = -1.5 dB; P2/P1 = 10^-0.15 = 0.708; P2 = **1.42 mW** (1.4 mW to one decimal).
-2. 200 mW through 10 devices, each 2 μW of noise: total noise 20 μW; SNR = 200000/20 = **10000**; SNRdB = **40 dB**.
+## E03 (Week 3 exercises) — instructor's answer sheet (`... with Answers.pdf`, 5 pages)
+1. P1 = 2 mW. "The loss in the cable in decibels = −0.3 × 5 = −1.5 dB". −1.5 = 10 log10(P2/2); −0.15 = log10(P2/2); P2/2 = 10^−0.15; **P2 = 0.708 × 2 = 1.42 mW**.
+2. "SNR = Average signal power / Average noise power". "Average noise power from 10 devices = 10 × 2 μW = 20 μW". SNR = 200 mW / 20 μW = 10 × 1000 = **10000**. SNRdB = 10 log10 SNR = 10 log10 10000 = **40 dB**.
+- The lessons' answers (worked from the lecture formulas before the sheet was posted) match both.

@@ -53,7 +53,7 @@ channel-filter
 2. **Digital cellular phones**, which convert the digitized voice signal to a composite analog signal before sending.
 
 :::info The slides ask "why?" twice and print no answer
-These answers follow the longer treatment of the same two examples in an earlier edition of the textbook. An answer given in class replaces them.
+Unverified: these answers were written from memory of a textbook treatment of the same two examples, not from a file on disk, and the 6th edition does not contain them. An answer given in class replaces them.
 
 - The subscriber line *can be used as a low-pass channel but it is considered as a bandpass channel, why?* The bandwidth is so narrow that baseband transmission would be very slow: with two signal levels the limit of a 4 kHz channel is 8 kbps. Treating the line as a bandpass channel and converting with a modem does better.
 - Cellular phones: *their allocated bandwidth is very wide, so, why not sending the digital signal without conversion?* The band is divided among many calls at once. One caller gets a slice of it, and a slice does not start from zero, so it is a bandpass channel.
@@ -72,12 +72,6 @@ These answers follow the longer treatment of the same two examples in an earlier
     "type": "text",
     "answer": ["low-pass", "lowpass", "low pass", "low-pass channel"],
     "explain": "A low-pass channel primarily passes signals below a certain frequency: it has an upper bound and starts at zero."
-  },
-  {
-    "q": "Fill in the blank: broadband transmission is also called ________.",
-    "type": "text",
-    "answer": ["modulation"],
-    "explain": "Broadband transmission (modulation) means changing the digital signal to an analog signal for transmission."
   },
   {
     "q": "Which description matches a bandpass channel?",
@@ -102,12 +96,6 @@ These answers follow the longer treatment of the same two examples in an earlier
     "options": ["A digital signal is a simple sine wave with a single frequency", "A low-pass channel amplifies the signal as it passes through", "An infinite bandwidth removes the noise added by the medium", "A digital signal is a composite analog signal with infinite bandwidth"],
     "answer": 3,
     "explain": "Each digital signal corresponds to a composite analog signal with infinite bandwidth, so preserving its shape needs a channel with infinite or very wide bandwidth."
-  },
-  {
-    "q": "Fill in the blank: the converter that changes a digital signal to analog and back is called a ________ (modulator/demodulator).",
-    "type": "text",
-    "answer": ["modem"],
-    "explain": "Two converters are installed, one at each end. The converter is called a modem."
   },
   {
     "q": "Which media does the slide name as having a very wide bandwidth, so that two stations can communicate using digital signals with very good accuracy?",

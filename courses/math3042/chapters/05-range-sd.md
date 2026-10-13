@@ -27,9 +27,23 @@ The **typical distance of the $X$ values away from the mean**. Same units as $X$
 - Standard deviation depends on **all** of the data values — unlike $R$ and $IQR$.
 :::
 
-### Worked example from the lecture
+### s for the lecture sample 5.0, 4.5, 6.0, 7.0, 5.2
 
-Calculate $s$ from the sample $5.0,\ 4.5,\ 6.0,\ 7.0,\ 5.2$. Hovering a part of the formula highlights it in the working and in the chart.
+Calculate $s$ from the sample $5.0,\ 4.5,\ 6.0,\ 7.0,\ 5.2$ before reading the working below.
+
+```quiz
+[
+  {
+    "q": "For the sample 5.0, 4.5, 6.0, 7.0, 5.2 what is the sample standard deviation $s$? (3 decimals)",
+    "type": "numeric",
+    "answer": 0.979,
+    "tolerance": 0.002,
+    "explain": "$\\bar{X}=5.54$, $\\sum(X-\\bar{X})^2 = 3.832$, $s=\\sqrt{3.832/4}=0.9788$."
+  }
+]
+```
+
+Each part of the formula is linked to its step in the working and its bar in the chart.
 
 $$s = \tag{sqrt}{\sqrt{\tag{frac}{\frac{\tag{dev}{\sum (X - \bar{X})^2}}{\tag{nm1}{n - 1}}}}}$$
 
@@ -46,18 +60,9 @@ stat-bars
 
 In R: `sd(c(5.0, 4.5, 6.0, 7.0, 5.2))` → `0.9788`. R's `sd` **always** computes the sample version with $n-1$.
 
-:::tip Calculator
+:::tip Reading s on the calculator
 In STAT mode, read $\bar{x}$, $s$ (often labelled $s_x$ or $\sigma_{n-1}$) and $\sigma$ (labelled $\sigma_n$).
 :::
-
-## Calculator
-
-Any data set: the sorted values, every statistic from this unit, and the worked $s$ computation.
-
-```widget
-stat-calc
-{ "data": "5.0 4.5 6.0 7.0 5.2" }
-```
 
 ## Grouped data
 
@@ -74,13 +79,6 @@ grouped-mean
 
 ```quiz
 [
-  {
-    "q": "For the sample 5.0, 4.5, 6.0, 7.0, 5.2 what is the sample standard deviation $s$? (3 decimals)",
-    "type": "numeric",
-    "answer": 0.979,
-    "tolerance": 0.002,
-    "explain": "$\\bar{X}=5.54$, $\\sum(X-\\bar{X})^2 = 3.832$, $s=\\sqrt{3.832/4}=0.9788$."
-  },
   {
     "q": "Same data, but treat it as a whole **population**. What is $\\sigma$? (3 decimals)",
     "type": "numeric",

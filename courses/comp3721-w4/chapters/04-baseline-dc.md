@@ -35,6 +35,15 @@ baseline-dc
 { "bits": "0100000000001011", "scheme": "nrz-l", "schemes": ["nrz-l", "manchester"] }
 ```
 
+### The baseline drifting one bit at a time
+
+Under NRZ-L each 0 of the long run pulls the average further toward the positive level. Under Manchester the two halves of every bit cancel and the average holds.
+
+```widget
+baseline-play
+{ "bits": "0100000000001011", "scheme": "nrz-l", "schemes": ["nrz-l", "manchester"] }
+```
+
 ## DC components are the frequencies around zero
 
 *The very low frequencies (around zero) that are created by the spectrum as a result of a duration of fixed voltage level in a digital signal are called Direct Current (DC) Components (or constant components).*

@@ -3,7 +3,7 @@ title: Example 1 and Example 2, worked, and the FDM / TDM arithmetic
 minutes: 20
 ---
 
-Quiz 6's calculations are the two slide examples in different clothes. Answer both from memory first; the working and the general formulas follow.
+Most FDM and TDM calculations are Example 1 and Example 2 with new numbers. This lesson holds the one worked copy of each.
 
 ## The two slide examples, cold
 
@@ -52,7 +52,7 @@ Quiz 6's calculations are the two slide examples in different clothes. Answer bo
 ]
 ```
 
-## Example 1 worked: 540 kHz
+## Example 1 worked: five channels, four guard bands
 
 *Five channels, each with a 100-kHz bandwidth, are to be multiplexed together. What is the minimum bandwidth of the link if there is a need for a guard band of 10 kHz between the channels to prevent interference?*
 
@@ -72,7 +72,7 @@ fdm-plan
 { "n": 5, "bandwidth": 100, "unit": "kHz", "guard": 10, "start": 0, "presets": { "Example 1 (five 100 kHz channels, 10 kHz guard)": { "n": 5, "bandwidth": 100, "unit": "kHz", "guard": 10, "start": 0 }, "Three voice channels (slide 17)": { "n": 3, "bandwidth": 4, "unit": "kHz", "guard": 0, "start": 20 } } }
 ```
 
-## Example 2 worked: 50 000 frames/s, 20 μs, 400 kbps, 2.5 μs
+## Example 2 worked: four 100 kbps channels, 2-bit slots
 
 *A multiplexer combines four 100-kbps channels using a time slot of 2 bits.*
 
@@ -82,6 +82,10 @@ fdm-plan
 4. *Bit duration = 1/400 kbps = 2.5 μs.* The reciprocal of the link bit rate.
 
 Check: *the frame duration is 8 times the bit duration because each frame is carrying 8 bits.* Four slots of 2 bits is 8 bits; $8 \times 2.5 = 20$ μs.
+
+:::quiz Frame rate is the unit rate, not the bit rate
+Had the slot been 1 bit, the frame rate would be 100 000 frames/s. The link bit rate (400 kbps) does not depend on the slot size; the frame rate and frame duration do.
+:::
 
 ## The TDM recipe, generalized
 
@@ -103,7 +107,7 @@ tdm-frames
 { "n": 4, "rate": 100, "unit": "kbps", "slot": 2, "streams": ["110100", "001011", "101010", "011100"], "framing": false, "presets": { "Example 2 (four 100 kbps lines, 2-bit slots)": { "n": 4, "rate": 100, "unit": "kbps", "slot": 2, "streams": ["110100", "001011", "101010", "011100"] }, "Four 1 Mbps lines (slide 35)": { "n": 4, "rate": 1, "unit": "Mbps", "slot": 1, "streams": ["11111", "00000", "10101", "00100"] } } }
 ```
 
-## Units to write on the quiz
+## The unit of each quantity
 
 | Quantity | Unit |
 |---|---|
@@ -112,23 +116,17 @@ tdm-frames
 | frame rate | frames/s |
 | duration | s, μs |
 
-A frame rate written in bps, or a bandwidth in bps, is marked wrong even when the number is right.
+A frame rate is in frames/s and a bandwidth in Hz, never bps.
 
 ## Practice problems of our own
 
-These three are not from the slides. They use the same recipes with new numbers.
+These three are not from the slides; their working follows the questions.
 
 **Problem A (FDM).** Six channels of 8 kHz are multiplexed with a 2 kHz guard band between neighbouring channels, starting at 100 kHz. Find the link bandwidth and the band of the sixth channel.
 
-Six channels, five guard bands: $6 \times 8 + 5 \times 2 = 48 + 10 = 58$ kHz. Each channel starts $8 + 2 = 10$ kHz after the one before, so channel 6 starts at $100 + 5 \times 10 = 150$ kHz and occupies 150 to 158 kHz. The link runs from 100 to 158 kHz, 58 kHz wide.
-
 **Problem B (TDM).** Eight 64 kbps channels are multiplexed with a time slot of 8 bits. Find the frame rate, frame duration, link bit rate and bit duration.
 
-Frame rate $= 64\,000 / 8 = 8000$ frames/s. Frame duration $= 1 / 8000 = 125$ μs. Link bit rate $= 8 \times 64 = 512$ kbps. Bit duration $= 1 / 512\,000 = 1.953$ μs. Check: $8 \times 8 = 64$ bits per frame, $64 \times 1.953 = 125$ μs.
-
 **Problem C (rate management).** Inputs of 30, 30, 60 and 60 kbps, then a fifth input of 58 kbps is added. What does the link run at, and which strategies are used?
-
-The two 30 kbps lines are pre-multiplexed into one 60 kbps line (multilevel), or each 60 kbps line is given two 30 kbps slots (multiple-slot); either way the output is $3 \times 60 = 180$ kbps. The 58 kbps line is not a multiple of 60, so pulse stuffing pads it to 60 kbps, and the link becomes $4 \times 60 = 240$ kbps.
 
 ```quiz
 [
@@ -206,3 +204,11 @@ The two 30 kbps lines are pre-multiplexed into one 60 kbps line (multilevel), or
   }
 ]
 ```
+
+## Problems A, B and C worked
+
+**A.** Six channels, five guard bands: $6 \times 8 + 5 \times 2 = 48 + 10 = 58$ kHz. Each channel starts $8 + 2 = 10$ kHz after the one before, so channel 6 starts at $100 + 5 \times 10 = 150$ kHz and occupies 150 to 158 kHz. The link runs from 100 to 158 kHz, 58 kHz wide.
+
+**B.** Frame rate $= 64\,000 / 8 = 8000$ frames/s. Frame duration $= 1 / 8000 = 125$ μs. Link bit rate $= 8 \times 64 = 512$ kbps. Bit duration $= 1 / 512\,000 = 1.953$ μs. Check: $8 \times 8 = 64$ bits per frame, $64 \times 1.953 = 125$ μs.
+
+**C.** The two 30 kbps lines are pre-multiplexed into one 60 kbps line (multilevel), or each 60 kbps line is given two 30 kbps slots (multiple-slot); either way the output is $3 \times 60 = 180$ kbps. The 58 kbps line is not a multiple of 60, so pulse stuffing pads it to 60 kbps, and the link becomes $4 \times 60 = 240$ kbps.

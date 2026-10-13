@@ -15,17 +15,21 @@ MyClass& MyClass::operator=(MyClass rhs)   // a member function; rhs BY VALUE
 }
 ```
 
-Three things to notice. It is a member (assignment modifies the left-hand object). Its parameter is taken **by value**, so the copy constructor builds a local copy of the right-hand side before the body runs. And it returns `*this` by reference so that `C = B = A` chains. Then copy-and-swap in three steps:
+Three things to notice. It is a member (assignment modifies the left-hand object). Its parameter is taken **by value**, so the copy constructor builds a local copy of the right-hand side before the body runs. And it returns `*this` by reference so that `C = B = A` chains. Copy-and-swap then runs in four steps, the slide's three plus that return:
 
 1. Use the copy constructor to create a local copy of the original object (that is the by-value parameter).
 2. Acquire the copied data with a swap function, swapping the old data with the new.
-3. The temporary local copy is destroyed as the function ends, taking the old data with it and leaving the new data in the destination.
+3. `return *this;` hands back the destination, now holding the new data.
+4. The temporary local copy is destroyed as the function ends, taking the old data with it and leaving the new data in the destination.
+
+### B = A, stepped through copy-and-swap
+
+Watch which object holds B's old array after the swap: it is `other`, and its destructor frees it. The compiler-generated mode shows the leak and the double free that the idiom prevents.
 
 ```widget
 copy-swap
+{ "mode": "swap", "predict": true }
 ```
-
-Step through it, then switch to the compiler-generated version to see the leak and the double free that the idiom prevents.
 
 ## What you need: a copy constructor, a destructor, a swap
 
@@ -86,7 +90,17 @@ int main()
 }
 ```
 
-`Example& operator=(Example other)` receives `other` by value, and the message `copy constructed a list of 3` is the copy constructor building it from A. `mySwap(*this, other);` exchanges the two sizes and the two pointers with `std::swap` on each member, so B now owns the fresh copy of A's data and `other` holds B's old array of 2. When the function returns, `other` is destroyed: `destroying a list of 2` is B's old array being freed by the temporary. Then main ends and the two remaining lists of 3 are destroyed. Every array is freed exactly once, and no line of copying code was written twice.
+```quiz
+[
+  {
+    "q": "In Example.cpp, which list size does the first `destroying a list of` line report?",
+    "type": "numeric",
+    "answer": 2,
+    "tolerance": 0,
+    "explain": "`Example& operator=(Example other)` receives `other` by value, and the message `copy constructed a list of 3` is the copy constructor building it from A. `mySwap(*this, other);` exchanges the two sizes and the two pointers with `std::swap` on each member, so B now owns the fresh copy of A's data and `other` holds B's old array of 2. When the function returns, `other` is destroyed: `destroying a list of 2` is B's old array being freed by the temporary. Then main ends and the two remaining lists of 3 are destroyed. Every array is freed exactly once, and no line of copying code was written twice."
+  }
+]
+```
 
 The swap function must not throw and must swap **all** data members. Do not call `std::swap` on the entire object: it is implemented with the copy constructor and the copy assignment operator, which would call `mySwap`, which would call `std::swap`, another recursive compiler spiral.
 
@@ -112,7 +126,7 @@ Think of assignment as replacing the object's old state with a copy of some othe
     "q": "Which statement calls the copy assignment operator?",
     "options": ["`Example B = A;`", "`Example B(A);`", "`B = A;` where B already exists", "`Example B;`"],
     "answer": 2,
-    "explain": "Assignment needs an existing left-hand object. The first two create a new object: copy constructor."
+    "explain": "Assignment needs an existing left-hand object. `Example B = A;` and `Example B(A);` create a new object: copy constructor."
   },
   {
     "q": "In the canonical `MyClass& operator=(MyClass rhs)`, why is `rhs` taken by value?",

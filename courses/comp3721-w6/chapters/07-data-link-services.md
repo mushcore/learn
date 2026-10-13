@@ -3,7 +3,7 @@ title: Node-to-node communication, framing and the four services
 minutes: 14
 ---
 
-A datagram crosses the Internet one link at a time, and the data-link layer is the layer that carries it across each link. This lesson names the pieces (nodes, links, frames), explains why every router unpacks and repacks the datagram, and lists the services the layer provides.
+A datagram crosses the Internet one link at a time, and the data-link layer is the layer that carries it across each link.
 
 ## The Internet is networks glued together by routers or switches
 
@@ -37,7 +37,7 @@ The slide asks this and answers it (slide 8), two reasons:
 
 The datagram inside stays the same; the frame around it is rebuilt at every node.
 
-### Week 1's walk: watch the data-link header change at the switch and the router
+### Week 1's walk: the data-link header changes at the router, not at the switch
 
 ```widget
 encapsulation
@@ -59,7 +59,7 @@ Slide wording for the services provided by the data-link layer:
 | 3 | **Error control** | *Error detection and correction* |
 | 4 | **Congestion control** | listed as the fourth service, with no definition on the slide |
 
-Flow control is about a fast producer and a slow consumer on one link: if the sender produces frames faster than the receiver consumes them, frames are lost at the receiver, so the sender's rate is controlled with respect to the receiver's.
+Flow control is about a fast producer and a slow consumer on one link. Not on the slide: if the sender produces frames faster than the receiver consumes them, frames are lost at the receiver.
 
 ## Two sublayers: DLC for every link, MAC only for shared links
 
@@ -73,7 +73,7 @@ Flow control is about a fast producer and a slow consumer on one link: if the se
 The slide's figure shows the two cases: the data-link layer of a **broadcast link** has a DLC sublayer on top of a MAC sublayer; the data-link layer of a **point-to-point link** has the DLC sublayer only, the MAC space greyed out. A dedicated link has one sender at each end, so there is no access to control.
 
 :::quiz MAC the sublayer, MAC the address
-"MAC" here is the sublayer that controls access to a shared link. The MAC address of the next lesson is named after it; a question about "the MAC sublayer" is about shared links, not about addresses.
+"MAC" here is the sublayer that controls access to a shared link. The MAC address of the next lesson is named after it, but the MAC sublayer is about shared links, not about addresses.
 :::
 
 ```quiz

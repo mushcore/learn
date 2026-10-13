@@ -1,7 +1,14 @@
 // Interactive statistics widgets (Descriptive stats, normal curve, Chebyshev,
 // quartiles/boxplot/outliers, correlation, grouped mean, skewness).
 import { el, html, esc, slider, btnRow, fmtNum } from "./dom.js";
-import { MTCARS } from "./data-stats.js";
+import { MTCARS, DATASETS } from "./data-stats.js";
+
+/** cfg.dataset → a space-separated string of numbers ("precip" = the 70 cities' inches, "cats" = body weights). */
+function datasetText(name) {
+  const d = name && DATASETS[name] ? DATASETS[name]() : null;
+  if (!d) return "";
+  return d.map((v) => (Array.isArray(v) ? v[v.length - 1] : v)).filter((v) => typeof v === "number").join(" ");
+}
 
 // ---------- pure stats helpers (exported for reuse/tests) ----------
 export const sum = (a) => a.reduce((s, v) => s + v, 0);
@@ -133,7 +140,7 @@ function statCalc(box, cfg) {
   const ta = document.createElement("textarea");
   ta.className = "data-input";
   ta.rows = 2;
-  ta.value = cfg.data || "22 19 20 22 35 19 21 23";
+  ta.value = cfg.data || datasetText(cfg.dataset) || "22 19 20 22 35 19 21 23";
   const presets = cfg.presets || {
     "Ages (n=8)": "22 19 20 22 35 19 21 23",
     "s example": "5.0 4.5 6.0 7.0 5.2",
@@ -342,7 +349,7 @@ function boxplotWidget(box, cfg) {
   box.append(el("h4", null, cfg.title || "Quartiles, IQR, fences and outliers"));
   const ta = document.createElement("textarea");
   ta.className = "data-input"; ta.rows = 2;
-  ta.value = cfg.data || "1.02 3.56 3.5 3.45 4.5 13.6 4.5 2.3 3.5 2.6 3.31 3.1";
+  ta.value = cfg.data || datasetText(cfg.dataset) || "1.02 3.56 3.5 3.45 4.5 13.6 4.5 2.3 3.5 2.6 3.31 3.1";
   const svg = svgEl("svg", { class: "boxplot-svg" });
   const out = el("div", "stat-grid");
   const sortedLine = el("div", "sorted-line");

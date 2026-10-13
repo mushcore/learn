@@ -3,7 +3,7 @@ title: First-class containers and adaptors, pair, map and multimap
 minutes: 25
 ---
 
-"I'm so tired of vectors." Java has the Java Collections Framework; C++ has the Standard Template Library. Java has collections; C++ has containers, and this lesson introduces the ones beyond `vector`: `deque`, the adaptors, `pair`, `map` and `multimap`.
+"I'm so tired of vectors." Java has the Java Collections Framework; C++ has the Standard Template Library, and `vector` is only one of its containers.
 
 ## First-class containers and the adaptors built on them
 
@@ -149,7 +149,7 @@ Three ways to build one: default-construct and assign the members (`myPair.first
 `std::map`, from `<map>`, is a *sorted associative container*: a collection of 1-to-1 mappings, i.e. a collection of key/value pair objects. Its `value_type` is a **pair type** that combines key and value. **Keys must be unique.** Keys are sorted using a comparison function (like the Java Comparator). Search, insertion and removal are logarithmic ("fast!").
 
 ```cpp run pin map.cpp
-// predict: Write what prints (the first line is empty).
+// predict: Write the five lines printed (the first is empty). Which Tom number survives?
 #include <utility>
 #include <iostream>
 #include <map>
@@ -182,20 +182,20 @@ int main()
 
     //get iterator pointing to Tom and print
     map<string, string>::iterator oneNumber = nameAndNumbers.find("Tom");
-    cout << oneNumber->first << " - " << oneNumber->second;
+    cout << oneNumber->first << " - " << oneNumber->second << endl;
 
-//    //print out everything in map
-//    for(auto it = nameAndNumbers.begin(); it != nameAndNumbers.end(); ++it)
-//    {
-//        cout << it->first << " - " << it->second << endl;
-//    }
+    //print out everything in map
+    for(auto it = nameAndNumbers.begin(); it != nameAndNumbers.end(); ++it)
+    {
+        cout << it->first << " - " << it->second << endl;
+    }
 
     return 0;
 
 }
 ```
 
-The three insert spellings build the same `pair<string, string>`: approach 1 names the pair type, approach 2 uses the container's own typedef `map<string, string>::value_type("Tom", "604-123-4567")`, approach 3 lets `make_pair("Tom", "604-123-4567")` deduce it. The slide's rule: an insert **fails if an element with the same key is already in the map**, so the four later Tom inserts are silently refused and `nameAndNumbers.find("Tom")` still returns the first number, `Tom - 604-123-4567`. `find` returns an iterator to the pair, so the key is `oneNumber->first` and the value `oneNumber->second`. Uncomment the loop and it prints `Harry` before `Tom`: a map is always sorted by key, not by insertion.
+The three insert spellings build the same `pair<string, string>`: approach 1 names the pair type, approach 2 uses the container's own typedef `map<string, string>::value_type`, approach 3 lets `make_pair` deduce it. The slide's rule: an insert **fails if an element with the same key is already in the map**, and the refusal is silent. `find` returns an iterator to the pair, so the key is `oneNumber->first` and the value `oneNumber->second`. The closing loop (commented out in the shipped file, and given an `endl` before it here) shows that a map is always sorted by key, not by insertion.
 
 `insert` returns a `pair<iterator, bool>` whose `.second` is `false` on a refused duplicate. The other way in, `nameAndNumbers["Tom"] = "..."`, behaves differently: `operator[]` **creates** the key with a default value if it is missing and **overwrites** the value if it exists.
 
@@ -207,7 +207,7 @@ map-insert
 ## multimap keeps duplicate keys
 
 ```cpp run pin multimap.cpp
-// predict: Write the six lines printed, in order.
+// predict: Write the sixteen lines printed, in order (the seventh and the last are empty).
 #include <iostream>
 #include <map>
 #include <iterator>
@@ -232,36 +232,36 @@ int main()
         cout << pairs->first << " phone number is " << pairs->second << endl;
     }
 
-//    cout << endl << "Phone numbers of Tom" << endl;
+    cout << endl << "Phone numbers of Tom" << endl;
 
-//    //Method 1 - find duplicates using 1 iterator and size
-//    multimap<string, string>::iterator PhoneValues = nameAndNumber.find("Tom");
-//    int count = nameAndNumber.count("Tom");
-//    for (int i = 0; i < count; i++)
-//    {
-//        cout << PhoneValues->first << " " << PhoneValues->second << endl;
-//        ++PhoneValues;
-//    }
+    //Method 1 - find duplicates using 1 iterator and size
+    multimap<string, string>::iterator PhoneValues = nameAndNumber.find("Tom");
+    int count = nameAndNumber.count("Tom");
+    for (int i = 0; i < count; i++)
+    {
+        cout << PhoneValues->first << " " << PhoneValues->second << endl;
+        ++PhoneValues;
+    }
 
-////    Method 2 - find duplicates using 2 iterators
-////     pairIters.first = iterator pointing to first appearance of Tom
-////     pairIters.second = iterator pointing to one past last appearance of Tom
-//
-//    pair <multimap<string, string>::iterator, multimap<string, string>::iterator> pairIters = nameAndNumber.equal_range("Tom");
-//
-////    typedef multimap<string, string>::iterator mapIterator;
-////    pair <mapIterator, mapIterator> pairIters = nameAndNumber.equal_range("Tom");
-//
-//    //ret is a pair containing iteratorBeginning, iteratorEnd>
-//    for (auto it=pairIters.first; it!=pairIters.second; ++it)
-//        std::cout << it->first << " "<< it->second << endl;
-//    std::cout << '\n';
+//    Method 2 - find duplicates using 2 iterators
+//     pairIters.first = iterator pointing to first appearance of Tom
+//     pairIters.second = iterator pointing to one past last appearance of Tom
+
+    pair <multimap<string, string>::iterator, multimap<string, string>::iterator> pairIters = nameAndNumber.equal_range("Tom");
+
+//    typedef multimap<string, string>::iterator mapIterator;
+//    pair <mapIterator, mapIterator> pairIters = nameAndNumber.equal_range("Tom");
+
+    //ret is a pair containing iteratorBeginning, iteratorEnd>
+    for (auto it=pairIters.first; it!=pairIters.second; ++it)
+        std::cout << it->first << " "<< it->second << endl;
+    std::cout << '\n';
 
     return 0;
 }
 ```
 
-A `multimap<string, string>` accepts every insert: all four Toms are kept, sorted by key (`Chris`, `Harry`, `Tom`) and, within the equal keys, in **insertion order**, so `604-123-4567` prints before `604-888-8883`. Two commented methods list one key's values. Method 1 pairs `nameAndNumber.find("Tom")`, the first Tom, with `nameAndNumber.count("Tom")`, how many there are, and increments four times. Method 2 asks `nameAndNumber.equal_range("Tom")` for a pair of iterators: `pairIters.first` is the first Tom and `pairIters.second` is one past the last, a half-open range to loop over. The pair's type is long enough that lesson 05's `typedef multimap<string, string>::iterator mapIterator;` exists to shorten it. A multimap has no `operator[]`: with several values per key there is no single one to return.
+A `multimap<string, string>` accepts every insert, sorted by key and, within equal keys, kept in **insertion order**. The shipped file has the two lookup methods commented out; here they run. Method 1 pairs `find("Tom")`, the first Tom, with `count("Tom")`, how many there are. Method 2 asks `equal_range("Tom")` for a pair of iterators: `pairIters.first` is the first Tom and `pairIters.second` is one past the last, a half-open range to loop over. The pair's type is long enough that lesson 05's `typedef multimap<string, string>::iterator mapIterator;` exists to shorten it. A multimap has no `operator[]`: with several values per key there is no single one to return.
 
 ```widget
 map-insert

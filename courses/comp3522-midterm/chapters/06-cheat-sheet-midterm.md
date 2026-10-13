@@ -22,7 +22,7 @@ One page, double sided, handwritten or printed in Arial 10 or larger. Side 1 is 
 | casting | `(int)2.25` is 2: truncates, never rounds |
 | constants | `#define PI 3.14` preprocessor, no `;`; `const int n = f();` must be initialized, may come from run time; `constexpr` must be known at compile time |
 | manipulators | `setw` next field only, everything else sticky; `setw`, `setfill`, `setprecision` need `<iomanip>`; default precision 6 significant digits; `fixed` then `setprecision(2)` gives decimals; `boolalpha` prints `true`; `hex`/`oct`/`dec`, `showbase`, `showpos`, `left`/`right`/`internal` |
-| stream state | `fail()` failbit or badbit; `eof()`; `good()` no bits; `while (cin >> n)` stops on bad input or EOF; after a failure the variable is unchanged |
+| stream state | `fail()` failbit or badbit; `eof()`; `good()` no bits; `while (cin >> n)` stops on bad input or EOF; a failed `int` read stores 0 since C++11 (older slides say the variable is unchanged); `if (cin)` is false only for failbit or badbit, eofbit alone keeps it true |
 | recovery | `cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n');` (`<limits>`) |
 
 ### Week 2: files, pointers, memory
@@ -151,9 +151,14 @@ One page, double sided, handwritten or printed in Arial 10 or larger. Side 1 is 
 | algorithms | `<algorithm>` (`<numeric>` for numeric ones); work on `[first, last)`; **never change the container's size**; kinds: non-modifying (`find`, `for_each`), modifying (`copy`, `remove_if`), partitioning, sorting (`sort`, `is_sorted`), binary search, merge, heap, min/max |
 | `partition` | `partition(first, last, pred)` moves the true elements before the false ones, **relative order not kept**, returns an iterator to the first false element (or `end()`); `{1..10}` with `IsOdd` gives `1 9 3 7 5 6 4 8 2 10`, bound at 6; `stable_partition` keeps order |
 
-### Week 7 (to add)
+### Week 7 (partly added)
 
-Space for the Week 7 deck once it is posted: static members and static member functions, copy elision, lvalues and rvalues, and the review-week topics.
+| Topic | Fact |
+|---|---|
+| static data member | one copy per class, shared by every object; declared `static` in the class, defined once outside it: `int city::counter = 0;`, `const int Date::days_in_regular_year[] = {...};` |
+| static member function | called through the class, `A::staticFunction1()`, `Date::today()`; **no `this` pointer**, so it reaches non-static members only through an object (`a.nonStaticFunction()`); a non-static function may call a static one |
+
+Space for the rest of the Week 7 deck once it is posted: copy elision, lvalues and rvalues, and the review-week topics.
 
 :::quiz Twenty true or false across the six weeks (answers at the bottom)
 1. `int x{2.5};` compiles.

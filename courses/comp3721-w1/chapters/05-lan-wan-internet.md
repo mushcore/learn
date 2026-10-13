@@ -3,7 +3,7 @@ title: LAN, WAN, internets & the Internet
 minutes: 13
 ---
 
-Networks come in two sizes, LAN and WAN. Connecting networks together makes an internet, and eventually *the* Internet, which has a structure, access methods and a standards body of its own.
+Networks come in two sizes, LAN and WAN. Connecting networks together makes an internet, and eventually the Internet, which has a structure, access methods and a standards body of its own.
 
 ## Network types
 
@@ -99,12 +99,6 @@ A **Request for Comment (RFC)** is:
 ```quiz
 [
   {
-    "q": "A LAN is usually privately owned and connects some hosts in a single office, building, or campus.",
-    "type": "tf",
-    "answer": true,
-    "explain": "That is the slide definition of a LAN: privately owned, limited in size, within one office, building or campus; each host has a unique identifier."
-  },
-  {
     "q": "A LAN that is connected wirelessly is called a ___.",
     "type": "text",
     "answer": ["wlan", "wireless lan", "wireless local area network"],
@@ -123,39 +117,21 @@ A **Request for Comment (RFC)** is:
     "explain": "A **switched WAN** connects more than two communication devices; a **point-to-point WAN** connects exactly two. The switched WAN is used in the backbone of global communication today."
   },
   {
-    "q": "Which of these does a WAN interconnect, according to the slide?",
-    "options": ["Only hosts inside one building", "Network devices such as switches, routers, and modems", "Only wireless access points", "Only two computers"],
-    "answer": 1,
-    "explain": "A WAN interconnects network devices such as switches, routers, and modems, over a town, state, country or the world."
-  },
-  {
     "q": "An internet (lower-case i) and the Internet (upper-case I) are two names for the same thing.",
     "type": "tf",
     "answer": false,
     "explain": "An **internet** is any two or more networks that can communicate with each other. The **Internet** is the most notable internet, composed of thousands of interconnected networks. Every Internet is an internet, not the reverse."
   },
   {
-    "q": "When two or more networks are connected, they make an ___.",
-    "type": "text",
-    "answer": ["internetwork", "internet", "internetwork (internet)"],
-    "explain": "Two or more connected networks make an **internetwork**, or internet with lower-case i. The slide's example is different branches of the same organization."
-  },
-  {
-    "q": "The main design goal of ARPANET was ___.",
-    "type": "text",
-    "answer": ["survivability"],
-    "explain": "ARPANET, founded by the DoD, was designed for **survivability**: to keep working even when parts of the network failed."
-  },
-  {
-    "q": "Match each event to its year or date.",
+    "q": "Match each item from the Internet's history to what the slide says about it.",
     "type": "match",
     "pairs": [
-      ["First message over the Internet, 'LO', from UCLA", "October 29, 1969"],
-      ["Tim Berners-Lee invented the World Wide Web", "1990"],
+      ["First message over the Internet, 'LO'", "October 29, 1969, from UCLA"],
+      ["The World Wide Web", "1990, Tim Berners-Lee"],
       ["Mosaic, the first popular user-friendly browser", "1993"],
-      ["RFC-1 was written", "1969"]
+      ["ARPANET's main design goal", "survivability"]
     ],
-    "explain": "1969: first message ('LO', Charley Kline and Leonard Kleinrock) and RFC-1. 1990: the WWW. 1993: Mosaic, which led to Netscape, Mozilla and Firefox."
+    "explain": "October 29, 1969: the first message, 'LO', from UCLA (Charley Kline and Leonard Kleinrock); RFC-1 was written the same year. 1990: Tim Berners-Lee invented the WWW. 1993: Mosaic, which led to Netscape, Mozilla and Firefox. ARPANET, founded by the DoD, was designed for survivability."
   },
   {
     "q": "The network that physically connects an end system to the first (edge) router is called the ___ network.",
@@ -175,15 +151,9 @@ A **Request for Comment (RFC)** is:
     "explain": "Hosts are at the edge and run applications such as a browser; the core network is the routers, link-layer switches and links that interconnect them. Customer networks reach the backbones through provider networks (national/regional ISPs) via peering points."
   },
   {
-    "q": "With DSL service, the telephone line can be used simultaneously for both voice and data communication.",
-    "type": "tf",
-    "answer": true,
-    "explain": "That is the slide's note on DSL (Digital Subscriber Line), under telephone-network access; dial-up did not allow this."
-  },
-  {
     "q": "Which of these are listed on the slide as ways of accessing the Internet? Select all that apply.",
-    "options": ["Telephone networks (dial-up, DSL)", "Cable networks", "Wireless networks", "Direct connection to the Internet", "Peering points"],
-    "answer": [0, 1, 2, 3],
+    "options": ["Cable networks", "Peering points", "Telephone networks (dial-up, DSL)", "Direct connection to the Internet", "Wireless networks"],
+    "answer": [0, 2, 3, 4],
     "explain": "The four access methods: telephone networks (dial-up and DSL), cable networks, wireless networks, and direct connection. Peering points are where backbones and providers interconnect, not an access method for end systems."
   },
   {
@@ -197,12 +167,6 @@ A **Request for Comment (RFC)** is:
     "options": ["To make the Internet faster", "For interoperability between systems and products", "To reduce the number of ISPs", "To assign IP addresses"],
     "answer": 1,
     "explain": "Standards exist for **interoperability**: products from different vendors can work together because they follow the same thoroughly tested specification."
-  },
-  {
-    "q": "An RFC is a numbered, technical and detailed document; RFC-1 was written in 1969.",
-    "type": "tf",
-    "answer": true,
-    "explain": "A Request for Comment is assigned a number, is technical and detailed, defines standards, protocols, procedures and technologies, and RFC-1 dates from 1969."
   }
 ]
 ```

@@ -301,7 +301,7 @@ Written at the start of lab on the Learning Hub, covering the Week 6 slides and 
     "code": "bool IsOdd(int i) { return (i % 2) == 1; }\nint main() {\n    vector<int> myvector;\n    for (int i = 1; i < 11; ++i) myvector.push_back(i);\n    vector<int>::iterator iterBound;\n    iterBound = partition(myvector.begin(), myvector.end(), IsOdd);\n    cout << \"odd elements:\";\n    for (auto it = myvector.begin(); it != iterBound; ++it) cout << ' ' << *it;\n    cout << '\\n';\n    cout << \"even elements:\";\n    for (auto it = iterBound; it != myvector.end(); ++it) cout << ' ' << *it;\n    cout << '\\n';\n}",
     "options": ["odd elements: 1 3 5 7 9 / even elements: 2 4 6 8 10", "odd elements: 9 7 5 3 1 / even elements: 10 8 6 4 2", "odd elements: 1 9 3 7 5 / even elements: 2 4 6 8 10", "odd elements: 1 9 3 7 5 / even elements: 6 4 8 2 10"],
     "answer": 3,
-    "explain": "Slide 101 and the real run agree: {1,9,3,7,5,6,4,8,2,10}, iterBound at 6. Relative order is NOT maintained; the first option is what stable_partition would give."
+    "explain": "Slide 101 and the real run agree: {1,9,3,7,5,6,4,8,2,10}, iterBound at 6. Relative order is NOT maintained; '1 3 5 7 9 / 2 4 6 8 10' is what stable_partition would give."
   },
   {
     "q": "`std::partition(first, last, p)` returns...",
@@ -347,13 +347,13 @@ Written at the start of lab on the Learning Hub, covering the Week 6 slides and 
     "q": "The Date activity. `dates1` is a `priority_queue<Date>` and `stub` uses the shipped `operator<` that always returns false. c = 2016/06/30, a = 2018/01/01, b = 2017/01/01 are pushed in the order c, a, b. With the correct year-month-day `operator<`, `print_queue(dates1)` then `print_queue(stub)` print...",
     "options": ["2018/01/01 2017/01/01 2016/06/30 then 2016/06/30 2018/01/01 2017/01/01", "2016/06/30 2017/01/01 2018/01/01 then the same again", "2018/01/01 2017/01/01 2016/06/30 twice", "2016/06/30 2018/01/01 2017/01/01 then 2018/01/01 2017/01/01 2016/06/30"],
     "answer": 0,
-    "explain": "A priority_queue puts the largest (latest) date on top, so the correct ordering drains 2018, 2017, 2016. With an always-false comparison no element is ever 'less', so the heap never reorders and the dates come out roughly as pushed. The shipped DateTester pushes a, b, c newest-first, which is why it could not show the difference."
+    "explain": "A priority_queue puts the largest (latest) date on top, so the correct ordering drains 2018, 2017, 2016. With an always-false comparison no element is ever 'less', so the heap does not sort them, and these three dates come out roughly as pushed. The shipped DateTester pushes a, b, c newest-first, which is why it could not show the difference."
   },
   {
     "q": "Which `operator<` gives Date a strict weak ordering?",
     "options": ["`return lhs.day < rhs.day;`", "`return lhs.year <= rhs.year;`", "`return lhs.year < rhs.year || lhs.month < rhs.month || lhs.day < rhs.day;`", "`if (lhs.year != rhs.year) return lhs.year < rhs.year; if (lhs.month != rhs.month) return lhs.month < rhs.month; return lhs.day < rhs.day;`"],
     "answer": 3,
-    "explain": "Compare the most significant field first and fall through only on ties. Option 1 ignores year and month; option 2 fails irreflexivity; option 3 says 2018/01/01 < 2017/12/31 (month 1 < 12) AND the reverse, breaking antisymmetry. `>` is then `operator<(rhs, lhs)`, `>=` is `!operator<(lhs, rhs)`, `<=` is `!operator>(lhs, rhs)`."
+    "explain": "Compare the most significant field first and fall through only on ties. Comparing only `day` ignores year and month; `<=` fails irreflexivity; the `||` chain says 2018/01/01 < 2017/12/31 (month 1 < 12) AND the reverse, breaking antisymmetry. `>` is then `operator<(rhs, lhs)`, `>=` is `!operator<(lhs, rhs)`, `<=` is `!operator>(lhs, rhs)`."
   }
 ]
 ```

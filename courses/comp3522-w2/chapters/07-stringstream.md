@@ -33,7 +33,7 @@ int main()
 }
 ```
 
-`istringstream iss{input};` passes the string to the constructor, so the stream's contents are `" 123abc"`. `iss >> n;` does what `cin >> n` would do with that text typed at the keyboard: skip the leading whitespace, read the longest run of characters that can be an `int` (`123`), and stop at the first that cannot (`a`). Output: `123`.
+`istringstream iss{input};` passes the string to the constructor, and `iss >> n;` does what `cin >> n` would do with that text typed at the keyboard: skip the leading whitespace, read the longest run that can be an `int`, and stop at the first character that cannot.
 
 The slides also load the text **after** construction with `str()`, which is how you reuse one stream for many strings:
 
@@ -48,7 +48,7 @@ cout << n << endl;   // 123
 ## Extracting a number and then a string
 
 ```cpp run pin numberThenString.cpp
-// predict: Write the two lines printed. (A second input is tried in the prose.)
+// predict: Write the two lines printed.
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -67,11 +67,9 @@ int main()
 }
 ```
 
-`iss >> n >> aString;` chains two extractions: `123` into `n`, pausing at `a`, then a **string**, which means one whitespace-delimited word, `abc`. Output: `123` then `abc`.
+`iss >> n >> aString;` chains two extractions: an `int`, then a **string**, which means one whitespace-delimited word. The slide's second input, `" 123a b c"`, gives the string only `a`, because the space after it is a delimiter.
 
-Change `iss.str(" 123abc");` to `" 123a b c"` and the string extraction reads only `a`, because the space after it is a delimiter. Output: `123` then `a`, with `b c` still in the stream.
-
-The Week 1 simulator models `>>` on any text, which is exactly what an istringstream does. The last preset shows `abc`: extracting an `int` fails, sets failbit, and leaves the letters in place, as with `cin`.
+The Week 1 simulator models `>>` on any text, which is what an istringstream does. With the `abc` preset the `int` extraction fails, stores 0 and leaves the letters in place, as with `cin`.
 
 ```widget
 cin-sim
@@ -101,16 +99,10 @@ int main()
 }
 ```
 
-The destination is a string every pass, so digits are not special: a string stops only at whitespace. `while(!iss.eof())` runs until the end of the text is reached. First pass `123a`, second `b`, third `c`, and reaching the end sets eofbit, so the loop ends:
-
-```text
-123a
-b
-c
-```
+`iss >> newString;` has a string as destination every pass, so digits are not special: a string stops only at whitespace. `while(!iss.eof())` runs until an extraction reaches the end of the text and sets eofbit.
 
 :::warn The eof loop is fragile
-Add one trailing space to the text (`" 123a b c "`) and you get a **fourth, empty line**: after `c` the stream is not at EOF yet, so the loop runs once more, the extraction finds only whitespace and fails, and an empty string prints. The robust form tests the read itself, `while (iss >> newString)`. Know what the slide's loop prints for the slide's input, but do not copy the pattern.
+Add one trailing space (`" 123a b c "`) and the loop runs once more than there are words: after the last word the stream is not at EOF yet, the next extraction finds only whitespace and fails, and an empty string prints. The robust form tests the read itself, `while (iss >> newString)`.
 :::
 
 ## The real job: numbers typed one per line
@@ -142,19 +134,14 @@ int main()
 }
 ```
 
-1. `while (getline(cin, line)) {` takes one whole line and stops at EOF.
-2. `iss.clear(); //clear iss of failbits` resets the state bits (why, below).
-3. `iss.str(line); //load line string into re-used iss` replaces the stream's text with this line.
-4. `if (iss >> n) {` is true only if the extraction succeeded, so `abc` is skipped rather than breaking the sum. From `" 7 8"` only the leading `7` is read.
-
-`12 + 50 + 7 = 69`: `sum = 69`. The one `istringstream iss;` is created once and reused for every line.
+`if (iss >> n) {` is true only if the extraction succeeded, so a line like `abc` is skipped rather than breaking the sum, and only the leading number of a line is read. The one `istringstream iss;` is created once and reused for every line.
 
 ### Why `clear()` is there
 
-In the video, deleting `clear()` and typing `12`, Enter, `50`, Enter makes the 50 silently **not added**. Extracting the int from `12` runs into the end of the text, which sets **eofbit**. On the next pass `iss.str("50")` replaces the *text* but not the *state bits*, and a stream with eofbit set refuses to extract, so `iss >> n` fails (setting failbit too) and `50` is lost, as is every later line. `clear()` wipes eofbit and failbit so the fresh text can be read: **`str()` loads new text; only `clear()` resets the state.**
+In the video, deleting `clear()` and typing `12`, Enter, `50`, Enter makes the 50 silently **not added**. Extracting the int from `12` runs into the end of the text, which sets **eofbit**. `iss.str("50")` replaces the text but not the state bits, and a stream with eofbit set refuses to extract, so every later line is lost: **`str()` loads new text; only `clear()` resets the state.**
 
 :::warn About the video's explanation
-The video says the stream failed because it "was expecting the space character after 12". The precise cause is the eofbit left over from running off the end of the previous line, which `str()` does not reset. If asked *why* `clear()` is needed: to reset the failbit/eofbit left by the previous line so the reused stream can extract again.
+The video says the stream failed because it "was expecting the space character after 12". The precise cause is the eofbit left over from the previous line, which `str()` does not reset.
 :::
 
 ## The alternative: a fresh stream per line
@@ -182,7 +169,7 @@ int main()
 }
 ```
 
-`istringstream iss{line}; //load line string into new iss` builds a new stream every pass, so there are no leftover bits and no `clear()`/`str()` pair. Same output, `sum = 69`. Both work; the instructor prefers **reusing** one stream as "more effective in use of our memory".
+`istringstream iss{line}; //load line string into new iss` builds a new stream every pass, so there are no leftover bits and no `clear()`/`str()` pair. Both work; the instructor prefers **reusing** one stream as "more effective in use of our memory".
 
 :::quiz A failed extraction into an int
 If `iss >> n` fails (the line was `abc`), g++ follows the C++11 rule: a failed numeric extraction **stores 0** in `n` and sets failbit. The `if (iss >> n)` guard keeps that 0 out of the sum.
@@ -211,7 +198,7 @@ int main()
 }
 ```
 
-`oss << "COMP " << a << " and " << b;` formats as `cout` would, but into memory, and `string output = oss.str();` extracts the result: `COMP 3522 and 2526`, 18 characters. Manipulators such as `setprecision` work here too, which is how you round a number into a string.
+`oss << "COMP " << a << " and " << b;` formats as `cout` would, but into memory, and `string output = oss.str();` extracts the result. Manipulators such as `setprecision` work here too, which is how you round a number into a string.
 
 ```quiz
 [

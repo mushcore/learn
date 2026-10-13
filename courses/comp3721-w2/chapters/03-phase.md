@@ -3,13 +3,22 @@ title: Phase & the sine equation
 minutes: 14
 ---
 
-Amplitude says how tall the wave is and frequency how fast it repeats; the third parameter, **phase**, says where the wave *starts*. With all three, the wave can be written as an equation.
+Amplitude says how tall the wave is and frequency how fast it repeats; the third parameter, **phase**, says where the wave starts. With all three, the wave can be written as an equation.
 
 ## Phase ($\phi$)
 
 Slide definition: *the position of the waveform relative to time 0 (it indicates the status of the first cycle). Measured in degrees or radians.*
 
 Phase is an angle, not a voltage or a time: one full cycle of a sine wave is one trip around a circle.
+
+### One trip around the circle is one cycle
+
+The point turns 45° per step, and its height is the value of the sine at that angle, traced out to the right. After eight steps (360°, or $2\pi$ rad) the wave has completed one cycle.
+
+```widget
+phase-circle-play
+{}
+```
 
 ## Degrees and radians
 
@@ -71,14 +80,14 @@ In that equation the phase is zero. Adding or subtracting a non-zero $\phi$ make
 
 $$s(t) = A\sin(\omega t \pm \phi)$$
 
-## Which way does it shift?
+## A plus shifts left, a minus shifts right
 
 The "Horizontal Shifting" slide draws both cases:
 
 - $A\sin(\omega t - \phi)$: the wave shifts to the **right** by $\frac{\phi}{\omega}$.
 - $A\sin(\omega t + \phi)$: the wave shifts to the **left** by $\frac{\phi}{\omega}$.
 
-The wave crosses zero going up where the inside of the sine is zero: at $t = +\frac{\phi}{\omega}$ for $\omega t - \phi$ (shifted right) and at $t = -\frac{\phi}{\omega}$ for $\omega t + \phi$ (shifted left). The shift is a *time*, $\phi/\omega$ seconds; $\phi$ itself is an angle.
+The wave crosses zero going up where the inside of the sine is zero: at $t = +\frac{\phi}{\omega}$ for $\omega t - \phi$ (shifted right) and at $t = -\frac{\phi}{\omega}$ for $\omega t + \phi$ (shifted left). The shift is a time, $\phi/\omega$ seconds; $\phi$ itself is an angle.
 
 ## Example 1 (slide): same $A$ and $f$, three phases
 
@@ -109,14 +118,6 @@ The general recipe: **phase in degrees = fraction of a cycle × 360°** and **ph
 
 ```quiz
 [
-  {
-    "q": "$s(t) = 3\\sin(50\\pi t)$. What is the peak amplitude in volts?",
-    "type": "numeric",
-    "answer": 3,
-    "tolerance": 0.01,
-    "unit": "V",
-    "explain": "The number in front of the sine is the peak amplitude: $A = 3$ V."
-  },
   {
     "q": "$s(t) = 3\\sin(50\\pi t)$. What is the frequency in Hz?",
     "type": "numeric",
@@ -166,24 +167,10 @@ The general recipe: **phase in degrees = fraction of a cycle × 360°** and **ph
     "explain": "$\\frac{1}{4} \\times 360° = 90° = \\frac{\\pi}{2} = 1.571$ rad. That is $\\sin(\\omega t + 90°)$ from Example 1, the wave that starts at its peak."
   },
   {
-    "q": "Slide Example 2: a wave offset $\\frac{1}{9}$ cycle has a phase of how many degrees?",
-    "type": "numeric",
-    "answer": 40,
-    "tolerance": 0.5,
-    "unit": "°",
-    "explain": "$\\frac{1}{9} \\times 360° = 40°$, which is $2\\pi/9 = 0.698$ rad."
-  },
-  {
     "q": "$A\\sin(\\omega t + \\phi)$ is the wave $A\\sin(\\omega t)$ shifted to the right by $\\phi/\\omega$.",
     "type": "tf",
     "answer": false,
     "explain": "A **plus** inside shifts the wave to the **left** by $\\phi/\\omega$; $A\\sin(\\omega t - \\phi)$ shifts it to the right. The zero crossing moves to $t = -\\phi/\\omega$ for the plus case."
-  },
-  {
-    "q": "Fill in the blank: $2\\pi$ radians equals ______ degrees.",
-    "type": "text",
-    "answer": ["360", "360°", "360 degrees"],
-    "explain": "$360° = 2\\pi$ rad is the conversion the slides give; a shift of a complete cycle is a phase shift of $360°$."
   },
   {
     "q": "At time 0, the wave $\\sin(\\omega t + 90°)$ is...",

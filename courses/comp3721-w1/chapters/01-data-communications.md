@@ -3,7 +3,7 @@ title: What data communications is
 minutes: 10
 ---
 
-Lecture 01a opens with five definitions. Quiz 1 is written on 01a alone, and its fill-in-the-blank questions use this exact wording.
+Lecture 01a opens with five definitions that build on each other, from exchanging information to the hardware and software that carry it out. Quiz 1 is written on 01a alone.
 
 ## Five definitions
 
@@ -46,7 +46,7 @@ The effectiveness of a data communications system *depends on four fundamental c
 3. **Timeliness**: deliver data in a **timely manner**.
 4. **Jitter**: **uneven delay** in the delivery of audio or video packets.
 
-Jitter is the odd one out. It is *uneven* delay, not total delay, and it matters for audio and video because packets must arrive at a steady rhythm. The slide lists **four** characteristics, not three.
+Jitter is the odd one out. It is uneven delay, not total delay, and it matters for audio and video because packets must arrive at a steady rhythm. The slide lists **four** characteristics, not three.
 
 ## The benefits of data communication
 
@@ -78,19 +78,13 @@ Jitter is the odd one out. It is *uneven* delay, not total delay, and it matters
       "A network of hardware and software"
     ],
     "answer": 1,
-    "explain": "Data is raw facts or information presented in a form **agreed upon by the parties** (sender and receiver): text, numbers, images, audio, and video. The last option is the definition of a data communications *system*."
+    "explain": "Data is raw facts or information presented in a form **agreed upon by the parties** (sender and receiver): text, numbers, images, audio, and video. *A network of hardware and software* is the definition of a data communications *system*."
   },
   {
     "q": "A data communications system is a network of hardware and software that enables the exchange of data between devices over various transmission mediums.",
     "type": "tf",
     "answer": true,
     "explain": "That is the slide wording exactly. The key phrase is *network of hardware and software*."
-  },
-  {
-    "q": "In digital communication, all messages should be represented and transmitted as bits.",
-    "type": "tf",
-    "answer": true,
-    "explain": "Digital communication uses digital signals, and the slide states that all digital communication messages should be represented and transmitted as **bits**."
   },
   {
     "q": "Analog communication transmits information using continuous signals that vary in which three properties?",
@@ -105,8 +99,8 @@ Jitter is the odd one out. It is *uneven* delay, not total delay, and it matters
   },
   {
     "q": "Which of these are among the four fundamental characteristics that the effectiveness of a data communications system depends on? Select all that apply.",
-    "options": ["Delivery", "Accuracy", "Timeliness", "Jitter", "Cost", "Security"],
-    "answer": [0, 1, 2, 3],
+    "options": ["Delivery", "Cost", "Accuracy", "Timeliness", "Security", "Jitter"],
+    "answer": [0, 2, 3, 5],
     "explain": "The four are delivery (correct destination), accuracy, timeliness, and jitter (uneven delay of audio/video packets). Cost is a *benefit* item (cost saving) and security is a *network criterion*, covered in a later lesson."
   },
   {
@@ -114,12 +108,6 @@ Jitter is the odd one out. It is *uneven* delay, not total delay, and it matters
     "type": "text",
     "answer": ["jitter"],
     "explain": "**Jitter** is uneven delay. It matters for audio and video, where packets must arrive at a steady rhythm to play back smoothly."
-  },
-  {
-    "q": "Fibre optic cable carries radio waves.",
-    "type": "tf",
-    "answer": false,
-    "explain": "Fibre optic carries **light**. It is air or space that carries radio waves (electromagnetic waves)."
   },
   {
     "q": "In the case of a wired communication, we should use an electrically ___ material.",
@@ -140,8 +128,8 @@ Jitter is the odd one out. It is *uneven* delay, not total delay, and it matters
   },
   {
     "q": "Which of the following is listed on the slide as a benefit of data communication? Select all that apply.",
-    "options": ["Real-time data and information sharing and analysis", "Enhanced connectivity", "Cost saving", "Expanded social engagement", "Guaranteed accuracy"],
-    "answer": [0, 1, 2, 3],
+    "options": ["Enhanced connectivity", "Guaranteed accuracy", "Real-time data and information sharing and analysis", "Cost saving", "Expanded social engagement"],
+    "answer": [0, 2, 3, 4],
     "explain": "The four benefits are real-time sharing and analysis, enhanced connectivity, cost saving, and expanded social engagement. Accuracy is one of the four *effectiveness characteristics*, not a benefit."
   }
 ]

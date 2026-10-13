@@ -54,7 +54,7 @@ Uniform quantization is what the previous lesson did: every zone the same height
 Slide wording: *In nonuniform quantization, height of Δ is not fixed; it is greater near the lower amplitudes and less near the higher amplitudes.*
 
 :::warn Ask in class about the direction
-The slide says $\Delta$ is greater near the lower amplitudes. The textbook, from memory and unverified, describes the opposite: smaller zones where the signal is concentrated, which for audio is near zero. Learn the slide's sentence for the quiz and ask the instructor which direction is intended; the in-class answer replaces this note.
+The slide says $\Delta$ is greater near the lower amplitudes. The textbook, from memory and unverified, describes the opposite: smaller zones where the signal is concentrated, which for audio is near zero. The slide's sentence is the course's wording; the instructor can confirm which direction is intended.
 :::
 
 ## PCM bandwidth: the channel must be n_b times wider
@@ -80,25 +80,18 @@ The $\frac{1}{2}$ from $c$ cancels the 2 from Nyquist, and $r = 1$ leaves $n_b$ 
 | NRZ, bipolar (the slide's case) | 1 | $\frac{1}{2}$ | $n_b \times B_{analog}$ |
 | Manchester (computed, not on the slide) | $\frac{1}{2}$ | $\frac{1}{2}$ | $2\, n_b \times B_{analog}$ |
 
-## E05 exercise 2: 64 levels and a 300 MHz signal
-
-*Assume PCM is used to convert an analog signal to digital data. If the number of quantization levels is 64, how many bits are required per sample? If the bandwidth of the original analog signal is 300 MHz, what is the minimum required bandwidth to for transmission of the corresponding digital signal (assume r = 1)?*
-
-$$n_b = \log_2 64 = 6$$
-$$B_{min} = n_b \times B_{analog} = 6 \times 300\ \text{MHz} = 1800\ \text{MHz} = 1.8\ \text{GHz}$$
-
-The answer sheet uses $B_{min} = n_b \times B_{analog}$ directly, so it takes $c = \frac{1}{2}$ as on slide 48 without saying so; the question states only $r = 1$.
+E05 exercise 2 (64 levels, a 300 MHz signal, $r = 1$) applies this formula; it is worked in [E05 worked](#/comp3721-w5/e05-worked).
 
 ### The general formula collapsing to n_b × B_analog
 
-Set $c$ and $r$ to see the general $B_{min}$; with $c = \frac{1}{2}$ and $r = 1$ the row reads $n_b \times B_{analog}$. The E05 2 preset gives 1.8 GHz.
+With $c = \frac{1}{2}$ and $r = 1$ the general $B_{min}$ row reads $n_b \times B_{analog}$; $r = \frac{1}{2}$ doubles it.
 
 ```widget
 pcm-calc
 { "fmax": 300, "unit": "MHz", "levels": 64, "c": "1/2", "r": "1", "presets": { "E05 2": { "fmax": 300, "unit": "MHz", "levels": 64, "c": "1/2", "r": "1" }, "E05 2 with Manchester (r = 1/2)": { "fmax": 300, "unit": "MHz", "levels": 64, "c": "1/2", "r": "1/2" }, "Voice, 8 bits": { "fmax": 4, "unit": "kHz", "levels": 256, "c": "1/2", "r": "1" } } }
 ```
 
-## The lecture's summary
+## PCM needs more bandwidth than the analog signal
 
 Slide 49: *PCM is a technique for analog-to-digital conversion. PCM includes sampling, quantizing and encoding. PCM requires more bandwidth than the bandwidth of the input analog signal.*
 

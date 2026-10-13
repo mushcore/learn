@@ -3,7 +3,7 @@ title: Errors, assertions and the trouble with error codes
 minutes: 16
 ---
 
-A negative number reaches `square_root`; a file the program needs is not there. C++ has one tool for each kind of trouble: assertions for mistakes in the program, exceptions for situations the function cannot deal with itself. This lesson draws that line and shows why the C habit of returning an error code is not enough.
+A negative number reaches `square_root`; a file the program needs is not there. C++ has one tool for each kind of trouble: assertions for mistakes in the program, exceptions for situations the function cannot deal with itself. The C habit of returning an error code is not enough for either.
 
 ## Four typical error situations
 

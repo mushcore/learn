@@ -63,9 +63,18 @@ export function mountQuiz(container, questions, ctx) {
         const span = el("span");
         span.innerHTML = inlineMd(opt);
         label.append(input, span);
-        qEl.append(label);
         return { label, input, oi };
       });
+      // Options are shown in a random order (the file order would otherwise give the answer away);
+      // `"shuffle": false` keeps the file order for options that must stay in sequence.
+      const order = opts.slice();
+      if (spec.shuffle !== false) {
+        for (let k = order.length - 1; k > 0; k--) {
+          const j = Math.floor(Math.random() * (k + 1));
+          [order[k], order[j]] = [order[j], order[k]];
+        }
+      }
+      for (const o of order) qEl.append(o.label);
       if (type === "multi") qEl.append(el("div", "q-note", "Select all that apply."));
       graders.push(() => {
         const correct = new Set(Array.isArray(spec.answer) ? spec.answer : [spec.answer]);
@@ -161,7 +170,8 @@ export function mountQuiz(container, questions, ctx) {
     graders.forEach((g, i) => {
       const ok = g();
       if (ok) correct++; else missed.push(i);
-      if (ctx && ctx.lessonId) recordAnswer(ctx.recordAs ? ctx.recordAs[i].lesson : ctx.lessonId, ctx.recordAs ? ctx.recordAs[i].index : i, ok, ctx.course);
+      // A lesson may hold several quiz blocks; the review queue indexes questions across the whole lesson.
+      if (ctx && ctx.lessonId) recordAnswer(ctx.recordAs ? ctx.recordAs[i].lesson : ctx.lessonId, ctx.recordAs ? ctx.recordAs[i].index : (ctx.quizBase || 0) + i, ok, ctx.course);
       qEls[i].classList.add(ok ? "got" : "missed");
       const explain = box.querySelectorAll(".quiz-explain")[i];
       explain.classList.add("show");
@@ -172,16 +182,29 @@ export function mountQuiz(container, questions, ctx) {
     score.className = "quiz-score " + (passed ? "pass" : "fail");
     submit.style.display = "none";
     retry.style.display = "";
+    // With several quiz blocks in one lesson, the lesson score is the sum over the blocks answered so far,
+    // and the lesson is complete only when every block has been answered and the total is 80% or more.
+    const blockCount = (ctx && ctx.quizBlocks) || 1;
+    let lessonPassed = passed;
+    let blocksLeft = 0;
     if (ctx && ctx.lessonId && !ctx.review) {
-      markLessonScore(ctx.lessonId, "quiz", { score: correct, total: graders.length });
-      if (passed && !lessonState(ctx.lessonId).done) markLessonDone(ctx.lessonId, true);
+      const st = lessonState(ctx.lessonId);
+      const blocks = { ...(st.quizBlocks || {}), [ctx.quizBlock || 0]: { score: correct, total: graders.length } };
+      const sum = Object.values(blocks).reduce((a, b) => ({ score: a.score + b.score, total: a.total + b.total }), { score: 0, total: 0 });
+      blocksLeft = Math.max(0, blockCount - Object.keys(blocks).length);
+      lessonPassed = blocksLeft === 0 && sum.total > 0 && sum.score / sum.total >= 0.8;
+      if (blockCount > 1) markLessonScore(ctx.lessonId, "quizBlocks", blocks);
+      markLessonScore(ctx.lessonId, "quiz", blockCount > 1 ? sum : { score: correct, total: graders.length });
+      if (lessonPassed && !lessonState(ctx.lessonId).done) markLessonDone(ctx.lessonId, true);
       if (ctx.onProgress) ctx.onProgress();
     } else if (ctx && ctx.review && ctx.onProgress) ctx.onProgress();
     const summary = el("div", "quiz-summary");
     const msg = el("div", "msg");
-    if (missed.length === 0) msg.innerHTML = "<b>All correct.</b> This lesson is marked complete.";
-    else if (passed) msg.innerHTML = `<b>Passed.</b> Lesson marked complete. Missed ${missed.length} — the explanations under each are worth a read.`;
-    else msg.innerHTML = `<b>Missed ${missed.length} of ${graders.length}.</b> Read the explanations, then try again — 80% marks the lesson complete.`;
+    const moreBlocks = blocksLeft ? ` ${blocksLeft} more quiz block${blocksLeft === 1 ? "" : "s"} in this lesson to go.` : "";
+    const completeNote = lessonPassed ? " This lesson is marked complete." : (passed && blockCount > 1 ? moreBlocks : "");
+    if (missed.length === 0) msg.innerHTML = `<b>All correct.</b>${completeNote}`;
+    else if (passed) msg.innerHTML = `<b>Passed.</b>${completeNote} Missed ${missed.length} — the explanations under each are worth a read.`;
+    else msg.innerHTML = `<b>Missed ${missed.length} of ${graders.length}.</b> Read the explanations, then try again — 80% marks ${blockCount > 1 ? "this block" : "the lesson"} complete.`;
     summary.append(msg);
     if (missed.length) {
       const review = el("button", "reset-btn", "Jump to first missed");

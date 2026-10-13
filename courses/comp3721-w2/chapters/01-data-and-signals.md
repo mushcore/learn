@@ -84,12 +84,6 @@ Neither carries data, which is why data communication needs composite signals.
     "explain": "Data (information) is what Alice and Bob exchange. What goes through the network at the physical layer is **signals** (e.g. electrical signals). Data must be changed to signals for transmission."
   },
   {
-    "q": "Fill in the blank: communication at the application, transport, network and data-link layers is logical; communication at the physical layer is ______.",
-    "type": "text",
-    "answer": ["physical"],
-    "explain": "Only the physical layer moves something real (electromagnetic signals) across a medium. The four layers above it communicate logically."
-  },
-  {
     "q": "Which is the slide's real-life example of **analog data**?",
     "options": ["Data stored in computer memory as 1s and 0s", "Sound: when someone speaks, an analog wave is created in the air", "A digital photo file", "A text message"],
     "answer": 1,
@@ -100,12 +94,6 @@ Neither carries data, which is why data communication needs composite signals.
     "options": ["has many levels of intensity over a period of time", "has a limited number of defined values (often 0 and 1)", "carries digital data only", "cannot be decomposed into simpler signals"],
     "answer": 1,
     "explain": "Digital signal: a limited number of defined values, often 0 and 1. \"Many levels of intensity over a period of time\" is the analog signal definition; \"cannot be decomposed\" describes a simple sine wave."
-  },
-  {
-    "q": "Fill in the blank: in data communications, we commonly use periodic ______ signals.",
-    "type": "text",
-    "answer": ["analog"],
-    "explain": "The slide sentence is: we commonly use **periodic analog** signals and **nonperiodic digital** signals."
   },
   {
     "q": "In data communications, we commonly use nonperiodic analog signals and periodic digital signals.",
@@ -127,8 +115,8 @@ Neither carries data, which is why data communication needs composite signals.
   },
   {
     "q": "Which statements about the physical layer are on the slides? Select all that apply.",
-    "options": ["It moves data in the form of electromagnetic signals across a transmission medium", "Data must be changed to signals for transmission", "Communication at the physical layer is logical", "Communication at the physical layer is physical"],
-    "answer": [0, 1, 3],
+    "options": ["Communication at the physical layer is logical", "It moves data in the form of electromagnetic signals across a transmission medium", "Communication at the physical layer is physical", "Data must be changed to signals for transmission"],
+    "answer": [1, 2, 3],
     "explain": "All three of those are slide wording. Communication at the physical layer is physical, not logical; the logical layers are application, transport, network and data-link."
   },
   {

@@ -66,25 +66,15 @@ Computed from the slide formula with $c = \frac{1}{2}$; the slide works only the
 
 A larger $r$ sends the same data rate at a lower signal rate. Dividing by a fraction is where slips happen: $r = \frac{1}{2}$ doubles the signal rate.
 
-## E04: the ratio and the levels from two rates
+## E04 runs the formula backwards
 
-The Week 4 exercise sheet turns the formula around. *An analog signal has a bit rate of 8000 bps and a baud rate of 1000 baud. How many data elements are carried by each signal element? How many signal elements do we need? Assume c = 1 and each signal element corresponds to a signal level.*
-
-Both rates are given, so solve $S = c \times N \times \frac{1}{r}$ for $r$. With the sheet's $c = 1$:
-
-$$r = \frac{N}{S} = \frac{8000}{1000} = 8\ \text{bits per baud}$$
-
-Each signal element corresponds to a signal level, so a signal element carrying $r$ bits needs one level for every $r$-bit pattern, $r = \log_2 L$:
-
-$$L = 2^{r} = 2^{8} = 256\ \text{signal elements}$$
-
-The "assume $c = 1$" matters: the same two rates with the slide example's $c = \frac{1}{2}$ would give $r = \frac{c \times N}{S} = 4$.
+E04 exercise 2 gives both rates and asks for $r$ and the number of signal levels; it is worked in [Encoding practice](#/comp3721-w4/encoding-practice).
 
 ## Signal rate from N, r and c
 
 ```widget
 signal-rate
-{ "show": "signal", "N": 100, "unit": "kbps", "r": "1", "c": "1/2", "presets": { "Slide example: r = 1": { "N": 100, "unit": "kbps", "r": "1", "c": "1/2" }, "r = 1/2": { "N": 100, "unit": "kbps", "r": "1/2", "c": "1/2" }, "r = 2": { "N": 100, "unit": "kbps", "r": "2", "c": "1/2" }, "r = 4/3": { "N": 100, "unit": "kbps", "r": "4/3", "c": "1/2" } } }
+{ "show": "signal", "N": 100, "unit": "kbps", "r": "1", "c": "1/2" }
 ```
 
 ```quiz

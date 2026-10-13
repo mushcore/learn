@@ -3,7 +3,7 @@ title: Study sheet (Lecture 1)
 minutes: 10
 ---
 
-The main quizzes are **closed-everything**, so this page is what should be in your head, not something to bring. Read it, close it, write it out from memory, and reread whatever you could not reproduce.
+The main quizzes are **closed-everything**, so this page is what should be in your head, not something to bring.
 
 ## The definition (slide 7)
 
@@ -37,9 +37,9 @@ Tie-breakers, in order (slide 41; "guidelines, not strict rules"):
 4. assignments (copying data)
 5. expression evaluations
 
-Arithmetic: multiplication/division before addition/subtraction. Also: deepest inside the loop wins; a loop with a constant bound (1 to 10) does not grow with n, so its body is never the basic operation when something else grows.
+Arithmetic: multiplication/division before addition/subtraction. Order of precedence: count first; then depth, counting loops only (a loop's own test sits at its loop's depth, an `if` adds no depth); then the cost list above. That reproduces the lecture's picks: line 4 in `find`, the key comparison on line 5 in `Loops`. A loop with a constant bound (1 to 10) does not grow with n, so its body is never the basic operation when something else grows.
 
-## The recipe (slide 62, textbook p62)
+## The recipe (slide 62, citing textbook p. 62)
 
 1. Decide on a parameter for the input's size.
 2. Identify the basic operation.
@@ -62,7 +62,7 @@ Sum facts you need: $\sum_{i=l}^{u} 1 = u - l + 1$, $\sum_{i=1}^{n} i = \frac{n(
 | halving loop (i ← i/2) | division | ⌊log₂ n⌋ + 1 ≈ log n | O(log n) |
 | sequential search | key comparison | worst n, best 1 | O(n) |
 | element uniqueness | comparison, inner loop | worst n(n − 1)/2 = n²/2 − n/2, best 1 | O(n²) |
-| fib recursive vs fib2 | calls vs additions | grows like 1.6ⁿ vs n − 1 | fib2 wins (1627 ms vs 0 ms at N = 40) |
+| fib recursive vs fib2 | calls vs additions | grows like 1.6ⁿ vs n − 1 | exponential vs O(n); 1627 ms vs 0 ms at N = 40 |
 
 Worst case = most possible steps; best = "get lucky"; average = "on average". **Unless otherwise specified, always analyze the worst case.**
 
@@ -121,8 +121,6 @@ We usually use Big-O: it focuses on the worst case and it is what people mean wh
 - A function call is always the most expensive kind of statement in the tie-break; an addition is the cheapest arithmetic.
 - Integer halving (i ← i/2) is logarithmic; subtracting a constant is linear.
 
-## Self-check
-
 ```quiz
 [
   {
@@ -138,10 +136,17 @@ We usually use Big-O: it focuses on the worst case and it is what people mean wh
     "explain": "The statement that gets executed most frequently. Per-execution cost only enters through the tie-breakers when two lines tie on frequency."
   },
   {
-    "q": "Put the first three tie-breakers in order: which comes first?",
-    "options": ["function calls", "key comparisons", "assignments", "expression evaluations"],
-    "answer": 0,
-    "explain": "1 function calls (growing with N), 2 function calls (constant time), 3 key comparisons, 4 assignments, 5 expression evaluations."
+    "q": "Put slide 41's tie-breakers in order, most expensive first.",
+    "type": "reorder",
+    "lang": "pseudo",
+    "lines": [
+      "Function calls (growing with N)",
+      "Function calls (constant time)",
+      "Key comparisons (comparing data)",
+      "Assignments (copying data)",
+      "Expression evaluations"
+    ],
+    "explain": "1 function calls (growing with N), 2 function calls (constant time), 3 key comparisons (comparing data), 4 assignments (copying data), 5 expression evaluations. Arithmetic: multiplication/division before addition/subtraction. These are all more like guidelines than strict rules."
   },
   {
     "q": "What is $\\sum_{i=1}^{n-1} i$?",

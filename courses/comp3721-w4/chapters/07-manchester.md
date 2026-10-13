@@ -37,11 +37,11 @@ The same bits 0 1 0 0 1 1 on the slide, with the level before the first bit take
 |---|---|---|---|---|---|---|
 | Differential Manchester | −+ | +− | +− | +− | −+ | +− |
 
-The complementary note (04a) states the same rule from the other side: a 1 has its first half equal to the last half of the previous bit's signal, a 0 has it opposite.
+The complementary note (04a) states the same rule from the other side: a 1 has its first half equal to the last half of the previous bit's signal.
 
-### Play the six bits: the start of the bit, then the middle
+### Differential Manchester decides at the start of each bit
 
-Each bit is drawn in two halves. In differential Manchester, watch the start of the bit: the signal either inverts there or carries on from where it was, and the transition at the middle follows either way. With **Predict each bit before it is drawn** ticked, you pick the level of the first half.
+Each bit is drawn in two halves. At the start of a bit the signal either inverts (a 0) or carries on from where it was (a 1); the transition at the middle follows either way.
 
 ```widget
 line-code-play
@@ -92,7 +92,7 @@ Both schemes carry one data element per two signal elements, so $r = \frac{1}{2}
 | NRZ-L | 1 | $\frac{1}{2} \times 100000 \times 1 = 50000$ baud |
 | Manchester, differential Manchester | $\frac{1}{2}$ | $\frac{1}{2} \times 100000 \times 2 = 100000$ baud |
 
-The bandwidth follows the signal rate ($B = c \times N \times \frac{1}{r}$), so the same data rate needs twice the bandwidth.
+The bandwidth follows the signal rate, so the same data rate needs twice the bandwidth.
 
 ### A run of 0s in NRZ-L and in the two biphase schemes
 
@@ -110,11 +110,7 @@ The complementary note builds Manchester another way: it *does a more explicit j
 | 0 | low, low | low, high | low, high |
 | 1 | high, high | low, high | high, low |
 
-Because both 0s and 1s result in a transition, the receiver can recover the clock from the signal.
-
-:::warn The note's Manchester is the mirror image of the slide's
-04a encodes 0 as a low-to-high transition and 1 as high-to-low. Slide 57 encodes 0 as high-to-low and 1 as low-to-high. Use slide 57 unless a question states its own.
-:::
+Both 0s and 1s result in a transition, so the receiver can recover the clock. The note's result is the mirror image of slide 57: 0 low-to-high, 1 high-to-low. Use slide 57 unless a question states its own.
 
 ```quiz
 [

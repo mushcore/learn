@@ -14,6 +14,15 @@ Attenuation makes a signal weaker. The other two causes of impairment change wha
 
 The slide figure shows three components in phase at the sender and out of phase at the receiver; added together they give a composite signal of a different shape. The textbook's reason: each component has its own propagation speed through the medium, so each arrives with its own delay.
 
+### Each component arrives with its own delay
+
+The three components leave the sender in phase. Over each unit of distance 3f falls 45° and 5f falls 90° further behind f, so their sum at the receiver takes a new shape although no component has lost any amplitude.
+
+```widget
+distortion-play
+{}
+```
+
 ## Four types of noise
 
 Slide wording: *different types of noise may corrupt the signal*.
@@ -39,7 +48,7 @@ $$\text{SNR} = \frac{\text{average signal power}}{\text{average noise power}}$$
 | Slide question | Slide answer |
 |---|---|
 | Why do we need to calculate the SNR? | To find the **theoretical bit rate limit**, we need to know the ratio of the signal power to the noise power. |
-| Why the *average* signal power and the *average* noise power? | Because these **may change with time**. |
+| Why the average signal power and the average noise power? | Because these **may change with time**. |
 
 ## SNR in decibels
 
@@ -102,14 +111,6 @@ snr-noise
     "explain": "$2\\ \\text{W} = 2000\\ \\text{mW}$, so $\\text{SNR} = 2000 / 20 = 100$ and $\\text{SNR}_{dB} = 10 \\log_{10} 100 = 20$ dB."
   },
   {
-    "q": "A channel has an SNR of 500. What is $\\text{SNR}_{dB}$?",
-    "type": "numeric",
-    "answer": 26.99,
-    "tolerance": 0.05,
-    "unit": "dB",
-    "explain": "$10 \\log_{10} 500 = 10 \\times 2.699 = 26.99$ dB."
-  },
-  {
     "q": "The noise power equals the signal power. What is $\\text{SNR}_{dB}$?",
     "type": "numeric",
     "answer": 0,
@@ -122,12 +123,6 @@ snr-noise
     "type": "tf",
     "answer": false,
     "explain": "A noiseless channel has a noise power of 0, so $\\text{SNR} = (\\text{signal power})/0 = \\infty$ and $\\text{SNR}_{dB} = \\infty$. An SNR near zero is the opposite: an extremely noisy channel."
-  },
-  {
-    "q": "Fill in the blank: ________ noise is the random motion of electrons in a wire, which creates an extra signal not originally sent by the transmitter.",
-    "type": "text",
-    "answer": ["thermal", "thermal noise"],
-    "explain": "Thermal noise. It comes from the wire itself, not from an outside source."
   },
   {
     "type": "match",
@@ -151,12 +146,6 @@ snr-noise
     "options": ["Because these may change with time", "Because the peak power cannot be measured", "Because noise has no peak value", "Because the decibel formula needs an average"],
     "answer": 0,
     "explain": "Slide answer: we need to consider the average signal power and the average noise power because these may change with time."
-  },
-  {
-    "q": "A high SNR means the signal is less corrupted by noise.",
-    "type": "tf",
-    "answer": true,
-    "explain": "High SNR: the signal is **less** corrupted by noise. SNR is the ratio of what is wanted (signal) to what is not wanted (noise), so bigger is better."
   },
   {
     "q": "Fill in the blank: we calculate the SNR in order to find the theoretical ________ limit.",

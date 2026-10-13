@@ -41,20 +41,25 @@ Slide 14 draws the same dashed analog curve, one cycle positive then negative, s
 
 Ideal sampling reads the signal at an instant of zero width. Natural sampling closes a switch for a short time, so the pulse top is a slice of the curve. Flat-top sampling reads the value once and holds it flat until the next sample, which is what a sample-and-hold circuit does and why it is the one real converters use.
 
-The two FYI slides give ideal sampling's other name, **impulse sampling**, and say it is impractical because a pulse width cannot be zero and an impulse train cannot be generated; they also note that in the time domain sampling is multiplication by an impulse train and in the frequency domain it is convolution by one. That is background, not quiz material.
+The two FYI slides give ideal sampling's other name, **impulse sampling**, and say it is impractical because a pulse width cannot be zero and an impulse train cannot be generated; they also note that in the time domain sampling is multiplication by an impulse train and in the frequency domain it is convolution by one.
 
 ### The three methods on the same curve
 
-Switch between the method buttons: the sample values are the same for all three, only the pulse shape changes. The $f_s$ slider changes how many samples the cycle gets.
+The sample values are the same for all three methods; only the pulse shape changes.
 
 ```widget
 sampler
 { "f": 1, "fs": 8, "method": "ideal", "methods": ["ideal", "natural", "flat"], "title": "Ideal, natural and flat-top sampling of one cycle" }
 ```
 
-:::quiz Which method is the common one
-Flat-top (sample-and-hold) is the most commonly used method. Ideal sampling is the textbook picture and cannot be easily implemented. Natural sampling is the one with the high-speed switch.
-:::
+### A sample-and-hold circuit, one sample at a time
+
+Each tick of the $T_s$ clock reads the curve once, and the flat top holds that value until the pulse ends.
+
+```widget
+sampling-play
+{ "f": 1, "fs": 4, "method": "flat", "methods": ["ideal", "natural", "flat"], "title": "Flat-top sampling, one tick of the sampling clock at a time" }
+```
 
 ```quiz
 [

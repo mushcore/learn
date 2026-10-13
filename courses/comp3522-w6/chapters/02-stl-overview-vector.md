@@ -86,9 +86,9 @@ int main() {
 }
 ```
 
-`for (vector<int>::iterator it = v.begin(); it != v.end(); ++it) cout << *it << endl;` is slide 20's loop: `vector<int>::iterator` is the iterator type the vector provides, `*it` is the element it points at, and with one element it prints `2`.
+`for (vector<int>::iterator it = v.begin(); it != v.end(); ++it) cout << *it << endl;` is slide 20's loop: `vector<int>::iterator` is the iterator type the vector provides, and `*it` is the element it points at.
 
-The three edits on `v2` take an iterator, not an index. `v2.insert(v2.begin(), 6);` puts 6 **before** the first element. `v2.insert(v2.begin() + 3, -4);` puts -4 before whatever is at position 3 (the second 6), so the new element lands at index 3: `6 2 4 -4 6 8 10`. `v2.erase(v2.begin() + 1);` removes the 2 and shifts everything after it one place left. `vector<int> v3 {a, a + 5};` builds a vector from the range `[a, a + 5)`, five elements, so `size 5 front 3 back 15`.
+The three edits on `v2` take an iterator, not an index. `v2.insert(v2.begin(), 6);` puts 6 **before** the first element. `v2.insert(v2.begin() + 3, -4);` puts -4 before whatever is at position 3, so the new element lands at index 3, never index 4, and `insert` returns an iterator to it. `v2.erase(v2.begin() + 1);` removes the 2 and shifts everything after it one place left. `vector<int> v3 {a, a + 5};` builds a vector from the range `[a, a + 5)`: five elements.
 
 ```widget
 vector-viz
@@ -96,10 +96,6 @@ vector-viz
 ```
 
 The slide asks you to (re-)familiarize yourself with the vector's members: `empty()`, `size()`, `capacity()`, `clear()`, `insert()`, `push_back()` and `pop_back()`, `front()` and `back()`.
-
-:::quiz Where insert puts the element
-`insert(pos, x)` inserts **before** the element `pos` points at, and returns an iterator to the new element. `v.insert(v.begin() + 3, -4)` therefore makes -4 the element at index 3, never index 4.
-:::
 
 ```quiz
 [
@@ -163,7 +159,7 @@ The slide asks you to (re-)familiarize yourself with the vector's members: `empt
     "q": "Which of these are true of the STL? (select all)",
     "options": ["It is described as the Java Collections Framework superpowered", "Its ranges are half-open: [first, last)", "It stores references to your objects, never copies", "Unordered associative containers are stored using a hash"],
     "answer": [0, 1, 3],
-    "explain": "Value semantics means copies, so the third option is the false one; the other three are slide wording."
+    "explain": "Value semantics means copies, so 'stores references, never copies' is the false one; the other three are slide wording."
   }
 ]
 ```
