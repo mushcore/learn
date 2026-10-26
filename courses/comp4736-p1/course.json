@@ -1,0 +1,146 @@
+{
+  "lang": "cpp",
+  "title": "COMP 4736 · Part 1",
+  "subtitle": "Introduction: multilevel machines, the OS as extended machine and resource manager, kernel and user mode, the CPU and pipelining, memory, registers and cache, disks, I/O and interrupts, buses, the OS zoo, processes, files and protection",
+  "description": "Part 1 of Rahim Oraji's lectures (Tanenbaum Ch. 1 and lecture notes), the largest deck and more than half of the practice midterm: the six-level machine from digital logic to high-level language, the OS as software, extended machine and resource manager, kernel versus user mode and the four x86 rings, the CPU's ALU (the B − A example in 8 bits), control unit and fetch-decode-execute, RISC against CISC, pipelining with the car factory (cycle time 2 h, latency 6 h) and superscalar CPUs, multithreading, multicore, multiprocessors and multicomputers, the memory hierarchy, PC, stack pointer and PSW, EFLAGS, cache lines and sets (64 KB ÷ 64 B = 1024 lines, 128 sets), direct mapping CI = MI % lines and the slide's 15-request trace, replacement algorithms, RAM organizations, disks (seek, rotation, transfer rates) and SSDs, device controllers and drivers, busy waiting, interrupts and DMA, the buses, the nine-entry OS zoo, processes, files, i-nodes, mount, pipes and the rwx protection bits. Playback animations for the pipeline, the cache trace and the interrupt; an ALU and an rwx widget. Ends with a mock midterm section and the closed-book recall drill.",
+  "intro": ":::quiz Midterm weight\nOn the instructor's practice paper 42 of the 74 Part 1 marks and two of the five written questions (a pipeline's instructions per second and delay; a direct-mapped cache trace) come from this Part. The T/F items are slide sentences with one word changed (\"Operating systems turn ugly software into beautiful abstractions\" is False; \"Registers are used just only in CPUs\" is False). Closed book: every list, ring number and figure must come from memory.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "mock-part-1",
+        "note": "take it cold (about 40 min)"
+      },
+      {
+        "lesson": "pipelining",
+        "note": "cycle time = slowest stage, latency = stages × cycle time; redo the car factory and the 3/3/5 ns practice question"
+      },
+      {
+        "lesson": "cache-mapping",
+        "note": "CI = MI % lines; trace the slide's 15 requests by hand"
+      },
+      {
+        "lesson": "kernel-and-user-mode",
+        "note": "rings 0 to 3 and what user mode may not do"
+      },
+      {
+        "lesson": "cpu",
+        "note": "ALU, control unit, registers; PC, SP, PSW"
+      },
+      {
+        "lesson": "io-devices",
+        "note": "busy waiting, interrupt, DMA: who waits"
+      },
+      {
+        "lesson": "mock-part-1",
+        "note": "retake; aim for 90 % or better"
+      },
+      {
+        "lesson": "recall-drill-1",
+        "note": "every list and number from memory"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. What an operating system is",
+      "lessons": [
+        {
+          "id": "multilevel-machines",
+          "title": "The six-level machine",
+          "file": "chapters/01-multilevel-machines.md"
+        },
+        {
+          "id": "what-the-os-is",
+          "title": "Software, extended machine, resource manager",
+          "file": "chapters/02-what-the-os-is.md"
+        },
+        {
+          "id": "kernel-and-user-mode",
+          "title": "Kernel mode, user mode and the four x86 rings",
+          "file": "chapters/03-kernel-and-user-mode.md"
+        }
+      ]
+    },
+    {
+      "title": "2. The CPU",
+      "lessons": [
+        {
+          "id": "cpu",
+          "title": "ALU, control unit, registers, fetch-decode-execute, RISC and CISC",
+          "file": "chapters/04-cpu.md"
+        },
+        {
+          "id": "pipelining",
+          "title": "Pipelining: cycle time and latency, superscalar CPUs",
+          "file": "chapters/05-pipelining.md"
+        },
+        {
+          "id": "parallel-processors",
+          "title": "Multithreading, multicore, multiprocessors and multicomputers",
+          "file": "chapters/06-parallel-processors.md"
+        }
+      ]
+    },
+    {
+      "title": "3. Memory",
+      "lessons": [
+        {
+          "id": "memory-and-registers",
+          "title": "The memory hierarchy, PC, SP, PSW and EFLAGS",
+          "file": "chapters/07-memory-and-registers.md"
+        },
+        {
+          "id": "cache-mapping",
+          "title": "Cache lines, sets, direct mapping and replacement",
+          "file": "chapters/08-cache-mapping.md"
+        }
+      ]
+    },
+    {
+      "title": "4. Disks, I/O and buses",
+      "lessons": [
+        {
+          "id": "disks",
+          "title": "Disks and SSDs",
+          "file": "chapters/09-disks.md"
+        },
+        {
+          "id": "io-devices",
+          "title": "Controllers, drivers, busy waiting, interrupts and DMA",
+          "file": "chapters/10-io-devices.md"
+        },
+        {
+          "id": "buses",
+          "title": "Buses: SCSI, USB, DMI, PCI, PCI-Express",
+          "file": "chapters/11-buses.md"
+        }
+      ]
+    },
+    {
+      "title": "5. The OS zoo, processes, files and protection",
+      "lessons": [
+        {
+          "id": "os-zoo-processes-files",
+          "title": "The OS zoo, processes, files, mount, pipes and protection",
+          "file": "chapters/12-os-zoo-processes-files.md"
+        }
+      ]
+    },
+    {
+      "title": "6. Midterm prep",
+      "lessons": [
+        {
+          "id": "mock-part-1",
+          "title": "Mock midterm: Part 1",
+          "file": "chapters/13-mock-part-1.md"
+        },
+        {
+          "id": "recall-drill-1",
+          "title": "Recall drill: Part 1 (closed book)",
+          "file": "chapters/14-recall-drill-1.md"
+        }
+      ]
+    }
+  ]
+}

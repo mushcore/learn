@@ -1,0 +1,122 @@
+{
+  "lang": "cpp",
+  "title": "COMP 4736 · Part 4",
+  "subtitle": "Threads: why they exist, the word processor and web server, the classical thread model, Pthreads, user-space, kernel and hybrid implementations, Java platform and virtual threads, pop-up threads",
+  "description": "Part 4 of Rahim Oraji's lectures (Tanenbaum Ch. 2): a thread as a flow of execution with its own program counter, registers and stack; the four motivations (10–100 times faster to create than a process); the word processor with three threads and the dispatcher/worker web server with the three ways to construct a server; the classical model's per-process and per-thread items, each thread's own stack and the four thread states; the six Pthreads calls and the instructor's two-thread demo with pstree and /proc/<pid>/task; user-level versus kernel-level threads with their advantages and problems and the slide's comparison table; hybrid many-to-one, one-to-one and many-to-many; Java threads by extending Thread, implementing Runnable and a lambda, and virtual threads; pop-up threads. Ends with a mock midterm section and the closed-book recall drill.",
+  "intro": ":::quiz What the exam asks here\nMostly definitions and comparisons: shared versus private items, the problems of user-level threads (blocking system calls, no clock interrupts within a process), what the kernel can do when a kernel thread blocks, the three hybrid mappings, and the Pthreads call names. The practice paper's own key says thread switching costs more with user-level threads; the slide says user-level switching is faster (no trap, no context switch). Know both.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "mock-part-4",
+        "note": "take it cold (about 20 min)"
+      },
+      {
+        "lesson": "classical-thread-model",
+        "note": "write the two columns (per process / per thread) from memory"
+      },
+      {
+        "lesson": "user-vs-kernel-threads",
+        "note": "two advantages and two problems of user-level; what the kernel can do instead"
+      },
+      {
+        "lesson": "hybrid-models",
+        "note": "draw many-to-one, one-to-one, many-to-many"
+      },
+      {
+        "lesson": "pthreads",
+        "note": "the six calls and what each does"
+      },
+      {
+        "lesson": "mock-part-4",
+        "note": "retake; aim for 90 % or better"
+      },
+      {
+        "lesson": "recall-drill-4",
+        "note": "every list from memory"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Why threads",
+      "lessons": [
+        {
+          "id": "what-is-a-thread",
+          "title": "A thread is a flow of execution with its own PC, registers and stack",
+          "file": "chapters/01-what-is-a-thread.md"
+        },
+        {
+          "id": "thread-usage",
+          "title": "The word processor, the web server and three ways to build a server",
+          "file": "chapters/02-thread-usage.md"
+        }
+      ]
+    },
+    {
+      "title": "2. The classical thread model",
+      "lessons": [
+        {
+          "id": "classical-thread-model",
+          "title": "Resource grouping versus execution: what is shared and what is private",
+          "file": "chapters/03-classical-thread-model.md"
+        }
+      ]
+    },
+    {
+      "title": "3. Pthreads",
+      "lessons": [
+        {
+          "id": "pthreads",
+          "title": "The Pthreads calls and the two-thread demo",
+          "file": "chapters/04-pthreads.md"
+        }
+      ]
+    },
+    {
+      "title": "4. Implementing threads",
+      "lessons": [
+        {
+          "id": "user-vs-kernel-threads",
+          "title": "Threads in user space, threads in the kernel",
+          "file": "chapters/05-user-vs-kernel-threads.md"
+        },
+        {
+          "id": "hybrid-models",
+          "title": "Hybrid implementations: many-to-one, one-to-one, many-to-many",
+          "file": "chapters/06-hybrid-models.md"
+        }
+      ]
+    },
+    {
+      "title": "5. Java and pop-up threads",
+      "lessons": [
+        {
+          "id": "java-threads",
+          "title": "Java platform threads three ways, and virtual threads",
+          "file": "chapters/07-java-threads.md"
+        },
+        {
+          "id": "pop-up-threads",
+          "title": "Pop-up threads",
+          "file": "chapters/08-pop-up-threads.md"
+        }
+      ]
+    },
+    {
+      "title": "6. Midterm prep",
+      "lessons": [
+        {
+          "id": "mock-part-4",
+          "title": "Mock midterm: Part 4",
+          "file": "chapters/09-mock-part-4.md"
+        },
+        {
+          "id": "recall-drill-4",
+          "title": "Recall drill: Part 4 (closed book)",
+          "file": "chapters/10-recall-drill-4.md"
+        }
+      ]
+    }
+  ]
+}

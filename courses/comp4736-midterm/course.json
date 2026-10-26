@@ -1,0 +1,97 @@
+{
+  "lang": "cpp",
+  "title": "COMP 4736 · Midterm",
+  "subtitle": "Exam week Oct 26–30: closed book, LockDown Browser; Part 1 T/F and MCQ, Part 2 written; lecture Parts 1 to 5",
+  "description": "The instructor's practice midterm, worked: all 74 Part 1 questions grouped by lecture Part with explanations that teach the slide fact behind each one, the five written questions (pipeline rate and delay, CPU utilization from a job timeline with and without multiprogramming, 1 − pⁿ with a RAM budget, two parallel jobs with 50 % I/O wait, a direct-mapped cache trace) asked for your number first and then worked step by step, a mock Part 1 and a mock Part 2 in the real format with new questions, and the closed-book recall drill across all five Parts.",
+  "intro": ":::quiz Midterm facts\n**Exam week Oct 26–30 2026, no classes; check the Learning Hub for your slot.** Two parts: **Part 1** T/F and MCQ in **LockDown Browser** on your own laptop (fully charged); **Part 2** written, on paper or online. **Closed book: no cell phone, no cheat sheet, no lecture notes, no book.** Bring blank paper, a calculator (LockDown Browser has one) and your student ID. No makeup exam. Topics: Part 1 Introduction, Part 2 OS Structures and Clocks, Part 3 Processes, Part 4 Threads, Part 5 System Calls. The posted practice (Quizzes → Midterm_Practice_Part_1, 74 marks) weighs Part 1 at 42 of 74; the written practice is five calculations.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "mock-part-1-exam",
+        "note": "take it cold, timed, no notes (about 45 min)"
+      },
+      {
+        "lesson": "written-practice",
+        "note": "the five calculations on paper before you open the solutions"
+      },
+      {
+        "lesson": "practice-part-1-intro",
+        "note": "42 questions; read every explanation you got wrong"
+      },
+      {
+        "lesson": "practice-processes-syscalls",
+        "note": "22 questions"
+      },
+      {
+        "lesson": "practice-structures-threads",
+        "note": "10 questions"
+      },
+      {
+        "lesson": "mock-part-2-exam",
+        "note": "five new calculations, show every step"
+      },
+      {
+        "lesson": "recall-drill-all",
+        "note": "every list, table and number across the five Parts"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. The exam",
+      "lessons": [
+        {
+          "id": "midterm-format",
+          "title": "What the midterm looks like and how to study for a closed-book paper",
+          "file": "chapters/01-midterm-format.md"
+        }
+      ]
+    },
+    {
+      "title": "2. The practice paper, worked",
+      "lessons": [
+        {
+          "id": "practice-part-1-intro",
+          "title": "Practice Part 1: the 42 Introduction questions",
+          "file": "chapters/02-practice-part-1-intro.md"
+        },
+        {
+          "id": "practice-structures-threads",
+          "title": "Practice Part 1: OS structures, clocks and threads (10 questions)",
+          "file": "chapters/03-practice-structures-threads.md"
+        },
+        {
+          "id": "practice-processes-syscalls",
+          "title": "Practice Part 1: processes and system calls (22 questions)",
+          "file": "chapters/04-practice-processes-syscalls.md"
+        },
+        {
+          "id": "written-practice",
+          "title": "Practice Part 2: the five written questions, worked",
+          "file": "chapters/05-written-practice.md"
+        }
+      ]
+    },
+    {
+      "title": "3. Mock midterm",
+      "lessons": [
+        {
+          "id": "mock-part-1-exam",
+          "title": "Mock Part 1 (T/F and MCQ, 50 questions)",
+          "file": "chapters/06-mock-part-1-exam.md"
+        },
+        {
+          "id": "mock-part-2-exam",
+          "title": "Mock Part 2 (five written calculations)",
+          "file": "chapters/07-mock-part-2-exam.md"
+        },
+        {
+          "id": "recall-drill-all",
+          "title": "Recall drill: all five Parts (closed book)",
+          "file": "chapters/08-recall-drill-all.md"
+        }
+      ]
+    }
+  ]
+}

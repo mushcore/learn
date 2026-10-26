@@ -1,0 +1,132 @@
+{
+  "lang": "cpp",
+  "title": "COMP 4736 · Part 5",
+  "subtitle": "System calls: interrupt classes, the procedure library, standard streams, x86 registers and int 80h, the eleven steps of read(), the POSIX tables, fork, execve and the shell, links and mount, Win32, blocking and non-blocking I/O",
+  "description": "Part 5 of Rahim Oraji's lectures (Tanenbaum Ch. 1 §1.6 and lecture notes): external, internal and software interrupts; what a system call is and why C programs reach it through a procedure library; stdin, stdout and stderr as file descriptors 0, 1, 2 with the read/write demos; the x86 convention (number in EAX, arguments in EBX, ECX, …, int 80h, result in EAX) and the MIPS equivalent; the eleven steps of read(fd, buffer, nbytes) played step by step; the four POSIX tables verbatim; fork's three return values and every fork program on the slides with its real output; execve and the stripped-down shell; link, hard and symbolic links, mount; the UNIX-to-Win32 table; blocking, non-blocking and POSIX asynchronous I/O. Ends with a mock midterm section and the closed-book recall drill.",
+  "intro": ":::quiz What the exam asks here\nDefinitions and tables: which interrupt class a system call is, what each POSIX call returns (pid, fd, n, position, seconds, s = −1 on error), the Win32 name for fork + execve, the order of the eleven steps, and what a fork program prints. Learn the tables as tables: the recall drill asks for them blank.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "mock-part-5",
+        "note": "take it cold (about 25 min)"
+      },
+      {
+        "lesson": "eleven-steps",
+        "note": "write the eleven steps from memory, then play them"
+      },
+      {
+        "lesson": "fork-programs",
+        "note": "write each program's output before stepping it"
+      },
+      {
+        "lesson": "posix-tables",
+        "note": "cover the right column and say what each call returns"
+      },
+      {
+        "lesson": "win32-api",
+        "note": "the UNIX → Win32 pairs, especially CreateProcess = fork + execve"
+      },
+      {
+        "lesson": "mock-part-5",
+        "note": "retake; aim for 90 % or better"
+      },
+      {
+        "lesson": "recall-drill-5",
+        "note": "every table from memory"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. What a system call is",
+      "lessons": [
+        {
+          "id": "interrupt-classes",
+          "title": "External, internal and software interrupts",
+          "file": "chapters/01-interrupt-classes.md"
+        },
+        {
+          "id": "system-call-interface",
+          "title": "The system-call interface and the procedure library",
+          "file": "chapters/02-system-call-interface.md"
+        },
+        {
+          "id": "standard-streams",
+          "title": "stdin, stdout, stderr: file descriptors 0, 1, 2",
+          "file": "chapters/03-standard-streams.md"
+        },
+        {
+          "id": "registers-and-int80",
+          "title": "x86 registers, int 80h and the syscall table",
+          "file": "chapters/04-registers-and-int80.md"
+        }
+      ]
+    },
+    {
+      "title": "2. Making a system call",
+      "lessons": [
+        {
+          "id": "eleven-steps",
+          "title": "The eleven steps of read(fd, buffer, nbytes)",
+          "file": "chapters/05-eleven-steps.md"
+        }
+      ]
+    },
+    {
+      "title": "3. POSIX calls",
+      "lessons": [
+        {
+          "id": "posix-tables",
+          "title": "The POSIX system calls and what they return",
+          "file": "chapters/06-posix-tables.md"
+        },
+        {
+          "id": "fork-programs",
+          "title": "fork returns three ways: every slide program and its output",
+          "file": "chapters/07-fork-programs.md"
+        },
+        {
+          "id": "execve-and-the-shell",
+          "title": "execve, the shell loop, and why \"Error\" never prints",
+          "file": "chapters/08-execve-and-the-shell.md"
+        },
+        {
+          "id": "links-and-mount",
+          "title": "link, hard and symbolic links, mount",
+          "file": "chapters/09-links-and-mount.md"
+        }
+      ]
+    },
+    {
+      "title": "4. Beyond POSIX",
+      "lessons": [
+        {
+          "id": "win32-api",
+          "title": "The Win32 API against UNIX, and strace",
+          "file": "chapters/10-win32-api.md"
+        },
+        {
+          "id": "blocking-io",
+          "title": "Blocking, non-blocking and asynchronous I/O",
+          "file": "chapters/11-blocking-io.md"
+        }
+      ]
+    },
+    {
+      "title": "5. Midterm prep",
+      "lessons": [
+        {
+          "id": "mock-part-5",
+          "title": "Mock midterm: Part 5",
+          "file": "chapters/12-mock-part-5.md"
+        },
+        {
+          "id": "recall-drill-5",
+          "title": "Recall drill: Part 5 (closed book)",
+          "file": "chapters/13-recall-drill-5.md"
+        }
+      ]
+    }
+  ]
+}

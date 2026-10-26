@@ -29,6 +29,10 @@ const WIDGETS = new Set([
   "stem-leaf-play", "ogive-play", "hist-tally-play", "birthday-play", "bayes-flow-play", "perm-fill-play",
   "arrivals-play", "deal-play", "cdf-sweep-play",
   "insertion-play", "pairs-play", "halving-play",
+  // COMP 4736 operating systems (widgets-os*.js)
+  "pipeline-play", "alu-calc", "cache-map-play", "interrupt-io-play", "rwx-bits", "clock-play", "alarm-list-play",
+  "process-states-play", "context-switch-play", "cpu-util", "multiprog-play", "fork-play",
+  "thread-models", "syscall-steps-play", "file-links",
 ]);
 const SERVER = process.env.LEARN_URL || "http://localhost:4321";
 const args = process.argv.slice(2);

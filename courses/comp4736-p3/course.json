@@ -1,0 +1,137 @@
+{
+  "lang": "cpp",
+  "title": "COMP 4736 · Part 3",
+  "subtitle": "Processes: the model, creation and termination, states and transitions, the process table and context switch, modeling multiprogramming, Linux processes, zombies and orphans",
+  "description": "Part 3 of Rahim Oraji's lectures (Tanenbaum Ch. 2): a process as a program in execution with its three segments, multiprogramming as rapid switching, the four creation events and four termination conditions, UNIX process groups against Windows handles, the three states and four numbered transitions, the process table entry and the context switch into the PCB, the interrupt skeleton and vector, CPU utilization = 1 − pⁿ with the 80 % / 10-process example, then Linux: the address space, fork() with pids 4508 and 4509, the stripped-down shell, /proc, pstree, ps and top, the ps state letters D I R S T X Z, the Linux state diagram, zombies and orphans. Playback animations for the state transitions, the context switch and fork; a utilization calculator with the RAM-budget and parallel-jobs modes the written midterm uses. Ends with a mock midterm section and the closed-book recall drill.",
+  "intro": ":::quiz Midterm weight\nOn the instructor's practice paper this Part carries 11 of the 74 Part 1 marks and three of the five written questions (CPU utilization from a job timeline, 1 − pⁿ with a RAM budget, two parallel jobs with I/O wait). The written questions are arithmetic you must show on paper: utilization = CPU busy ÷ total time, 1 − pⁿ, n = (RAM − OS) ÷ process size. Closed book, so every definition and list here must come from memory.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "mock-part-3",
+        "note": "take it cold (about 30 min)"
+      },
+      {
+        "lesson": "process-states",
+        "note": "draw the three states and number the four transitions from memory, then check"
+      },
+      {
+        "lesson": "modeling-multiprogramming",
+        "note": "1 − pⁿ: redo the 80 % / 10 processes example and the RAM-budget question by hand"
+      },
+      {
+        "lesson": "fork-and-the-shell",
+        "note": "predict every fork program's output before stepping it"
+      },
+      {
+        "lesson": "zombies-and-orphans",
+        "note": "who reaps whom; the Z state"
+      },
+      {
+        "lesson": "mock-part-3",
+        "note": "retake; aim for 90 % or better"
+      },
+      {
+        "lesson": "recall-drill-3",
+        "note": "every list and number from memory"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. The process model",
+      "lessons": [
+        {
+          "id": "process-model",
+          "title": "A process is a program in execution",
+          "file": "chapters/01-process-model.md"
+        },
+        {
+          "id": "process-creation",
+          "title": "The four events that create a process",
+          "file": "chapters/02-process-creation.md"
+        },
+        {
+          "id": "process-termination",
+          "title": "The four ways a process ends, and process hierarchies",
+          "file": "chapters/03-process-termination.md"
+        }
+      ]
+    },
+    {
+      "title": "2. States, the process table and interrupts",
+      "lessons": [
+        {
+          "id": "process-states",
+          "title": "Running, Ready, Blocked and the four transitions",
+          "file": "chapters/04-process-states.md"
+        },
+        {
+          "id": "process-table",
+          "title": "The process table, the PCB and the context switch",
+          "file": "chapters/05-process-table.md"
+        },
+        {
+          "id": "interrupts",
+          "title": "What the lowest level of the OS does when an interrupt occurs",
+          "file": "chapters/06-interrupts.md"
+        }
+      ]
+    },
+    {
+      "title": "3. Modeling multiprogramming",
+      "lessons": [
+        {
+          "id": "modeling-multiprogramming",
+          "title": "CPU utilization = 1 − pⁿ",
+          "file": "chapters/07-modeling-multiprogramming.md"
+        },
+        {
+          "id": "job-timelines",
+          "title": "Utilization from a job timeline, with and without multiprogramming",
+          "file": "chapters/08-job-timelines.md"
+        }
+      ]
+    },
+    {
+      "title": "4. Processes in Linux",
+      "lessons": [
+        {
+          "id": "linux-address-space",
+          "title": "Text, data, BSS, heap, stack and /proc",
+          "file": "chapters/09-linux-address-space.md"
+        },
+        {
+          "id": "fork-and-the-shell",
+          "title": "fork(), parent_pid 4508 and child 4509, and the stripped-down shell",
+          "file": "chapters/10-fork-and-the-shell.md"
+        },
+        {
+          "id": "linux-process-states",
+          "title": "pstree, ps, top and the state letters D I R S T X Z",
+          "file": "chapters/11-linux-process-states.md"
+        },
+        {
+          "id": "zombies-and-orphans",
+          "title": "Zombie and orphan processes",
+          "file": "chapters/12-zombies-and-orphans.md"
+        }
+      ]
+    },
+    {
+      "title": "5. Midterm prep",
+      "lessons": [
+        {
+          "id": "mock-part-3",
+          "title": "Mock midterm: Part 3",
+          "file": "chapters/13-mock-part-3.md"
+        },
+        {
+          "id": "recall-drill-3",
+          "title": "Recall drill: Part 3 (closed book)",
+          "file": "chapters/14-recall-drill-3.md"
+        }
+      ]
+    }
+  ]
+}

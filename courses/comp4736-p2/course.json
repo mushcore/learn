@@ -1,0 +1,105 @@
+{
+  "lang": "cpp",
+  "title": "COMP 4736 · Part 2",
+  "subtitle": "OS structures (monolithic, layered, microkernel, client-server, virtual machines) and clocks (hardware, one-shot and square-wave modes, the clock driver's six duties)",
+  "description": "Part 2 of Rahim Oraji's lectures (Tanenbaum Ch. 1 and 5): the six structures on the agenda and the five taught; the monolithic main program / service procedures / utility procedures with Linux's loadable modules and the hello-world kernel module; Dijkstra's THE layers and MS-DOS; microkernels and MINIX 3; the client-server model; virtual machines, VM/370 with CMS, type 1 and type 2 hypervisors with ESXi and VirtualBox; then clocks: crystal, counter and holding register, one-shot versus square-wave mode, the 500 MHz → 2 nsec → 8.6 sec arithmetic, the clock driver's six duties, time of day in ticks (overflows in 2.274 years) or seconds (136 years), the quantum counter, CPU accounting, the alarm linked list 3 → 4 → 6 → 2 → 1, and watchdog timers. Playback animations for the programmable clock and the alarm list. Ends with a mock midterm section and the closed-book recall drill.",
+  "intro": ":::quiz What the exam asks here\nStructure questions are definitions and examples (which structure runs most of the OS as user processes; which OS is monolithic; what a type 1 hypervisor runs on). Clock questions are arithmetic: period = 1/f, the largest interval a 32-bit counter can time, the value to load for a quantum, when a tick counter overflows, and the next-signal list. Show the formula and the units on paper.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "mock-part-2",
+        "note": "take it cold (about 25 min)"
+      },
+      {
+        "lesson": "clock-hardware",
+        "note": "the three components, the two modes, 500 MHz → 2 ns → 8.6 s by hand"
+      },
+      {
+        "lesson": "clock-software",
+        "note": "the six duties in order; 60 Hz overflow in ticks and in seconds"
+      },
+      {
+        "lesson": "alarms-and-watchdogs",
+        "note": "rebuild the 4203 … 4216 list as differences"
+      },
+      {
+        "lesson": "monolithic-and-layered",
+        "note": "three parts of a monolithic OS; THE layers"
+      },
+      {
+        "lesson": "microkernels-and-client-server",
+        "note": "what stays in the kernel"
+      },
+      {
+        "lesson": "virtual-machines",
+        "note": "type 1 vs type 2 with the slide's examples"
+      },
+      {
+        "lesson": "mock-part-2",
+        "note": "retake; aim for 90 % or better"
+      },
+      {
+        "lesson": "recall-drill-2",
+        "note": "every list and number from memory"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Operating system structure",
+      "lessons": [
+        {
+          "id": "monolithic-and-layered",
+          "title": "Monolithic systems and layered systems",
+          "file": "chapters/01-monolithic-and-layered.md"
+        },
+        {
+          "id": "microkernels-and-client-server",
+          "title": "Microkernels and the client-server model",
+          "file": "chapters/02-microkernels-and-client-server.md"
+        },
+        {
+          "id": "virtual-machines",
+          "title": "Virtual machines and hypervisors",
+          "file": "chapters/03-virtual-machines.md"
+        }
+      ]
+    },
+    {
+      "title": "2. Clocks",
+      "lessons": [
+        {
+          "id": "clock-hardware",
+          "title": "Clock hardware: crystal, counter, holding register",
+          "file": "chapters/04-clock-hardware.md"
+        },
+        {
+          "id": "clock-software",
+          "title": "The clock driver's duties: time of day, quantum, accounting",
+          "file": "chapters/05-clock-software.md"
+        },
+        {
+          "id": "alarms-and-watchdogs",
+          "title": "Alarm system calls, the next-signal list and watchdog timers",
+          "file": "chapters/06-alarms-and-watchdogs.md"
+        }
+      ]
+    },
+    {
+      "title": "3. Midterm prep",
+      "lessons": [
+        {
+          "id": "mock-part-2",
+          "title": "Mock midterm: Part 2",
+          "file": "chapters/07-mock-part-2.md"
+        },
+        {
+          "id": "recall-drill-2",
+          "title": "Recall drill: Part 2 (closed book)",
+          "file": "chapters/08-recall-drill-2.md"
+        }
+      ]
+    }
+  ]
+}

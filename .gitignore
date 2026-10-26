@@ -7,3 +7,6 @@ courses/_*/
 
 # runtime mirror of the visitor counter
 data/
+
+# COMP 4736 scoping notes (contain transcriptions of graded lab quizzes)
+spec/
