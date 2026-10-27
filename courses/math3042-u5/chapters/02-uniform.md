@@ -4,7 +4,7 @@ minutes: 20
 ---
 <!-- facts: classic.formula.damage-roll -->
 
-A bus comes every twenty minutes and you arrive at a random moment. Every wait from 0 to 20 minutes is equally likely, so the probability of any range of waits is just a fraction of the 20 minutes. That is the uniform distribution, and it is the one continuous distribution whose areas are rectangles. MapleStory Classic's damage roll draws a uniform multiplier on every hit, so the same rectangle answers how often a hit lands in the top quarter of its range.
+A bus comes every twenty minutes and you arrive at a random moment. Every wait from 0 to 20 minutes is equally likely, so the probability of any range of waits is just a fraction of the 20 minutes. That is the uniform distribution, and it is the one continuous distribution whose areas are rectangles. MapleStory Classic's damage roll draws a uniform multiplier on every hit, so the same rectangle answers how often a hit draws its multiplier from the top quarter of the multiplier's range.
 
 ## A flat density on [a, b]
 
@@ -38,7 +38,7 @@ In MapleStory Classic, meowdb's reconstructed damage formula multiplies every hi
 
 $$P(B > 0.95) = \frac{1.0 - 0.95}{1.0 - 0.8} = \frac{0.05}{0.2} = \mathbf{0.2500}$$
 
-One hit in four lands in the top quarter of the range. **Mean and standard deviation.** $\mu = \dfrac{0.8 + 1.0}{2} = 0.9$ and $\sigma = \dfrac{0.2}{\sqrt{12}} = \dfrac{0.2}{3.4641} = 0.0577$. In R the right tail is `1 - punif(0.95, 0.8, 1.0)`, which prints 0.25.
+One hit in four draws B in the top quarter of B's range. **Mean and standard deviation.** $\mu = \dfrac{0.8 + 1.0}{2} = 0.9$ and $\sigma = \dfrac{0.2}{\sqrt{12}} = \dfrac{0.2}{3.4641} = 0.0577$. In R the right tail is `1 - punif(0.95, 0.8, 1.0)`, which prints 0.25.
 
 ### B above 0.95 as a rectangle
 

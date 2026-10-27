@@ -48,7 +48,7 @@ $$P(X \le b) = P(X < b), \qquad P(a \le X \le b) = P(a < X < b)$$
 
 This is the opposite of Unit 4. For a binomial $X$, $P(X \le 4)$ includes the bar at 4 and $P(X < 4) = P(X \le 3)$ does not; the two differ by $P(X = 4)$, which is not zero. For a continuous $X$ the "bar" at 4 has no width, so "at most 4 minutes" and "less than 4 minutes" are the same question.
 
-## Classic's multiplier B lands on 0.9 exactly with probability 0
+## Classic's multiplier B at one exact value
 
 In MapleStory Classic, meowdb's reconstructed damage formula draws a base multiplier B as `uniform(0.8, 1.0)` on every hit [Classic, meowdb's Classic World formulas page, no version shown, checked 2026-10-27]. B is drawn from an interval, not from a list, so it is continuous like the weight: any single value of B is an interval of width zero.
 
