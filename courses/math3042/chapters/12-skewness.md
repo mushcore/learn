@@ -32,7 +32,7 @@ Anything between $-1$ and $+1$ is only mildly skewed (or symmetric, near 0).
 "Mean 50, median 55": the mean is below the median, so the distribution is skewed **left**, even though nothing in the numbers says "left" directly.
 :::
 
-## Allflame Divine prices skew left, Classic monster HP skews right
+## Pearson's Sk for Allflame Divine prices and Classic monster HP
 
 poe.ninja's daily price of a Divine Orb, PoE1's high-value currency, climbs over the first 30 days of the Allflame league from 75.9 to about 193 chaos [PoE1, 3.29 Allflame, poe.ninja daily Divine price, checked 2026-10-27]. meowdb's monster table for MapleStory Classic, with the five zero-EXP test mobs dropped, lists 25 monsters from level 41 to 60 [Classic, Classic World Grand Launch build, meowdb monster table, checked 2026-10-27]: 22 field monsters between 1278 and 5428 HP and three bosses, Shade 47000, Zombie Mushmom 66640 and Rotten Mushmom 86400. A price that starts low and settles high has its tail on the left; a list where a few bosses dwarf the field has its tail on the right.
 
