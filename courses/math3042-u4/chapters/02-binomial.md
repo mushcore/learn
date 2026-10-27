@@ -210,7 +210,7 @@ dbinom(1, 5, 4/52)
 
 ## Six items tapped once at 12→13, and Vaal Orbs on ten gems
 
-Star Force, the GMS enhancement that adds stars to gear, succeeds 40 % at 12→13 on the wiki's table [GMS, Star Force 12→13 wiki table, checked 2026-10-27], without the Star Catching bonus that v.271 builds in; below 15 stars a non-Superior item keeps its star when a tap fails. A Vaal Orb on a PoE1 skill gem adds one level with probability 1/8, the wiki gives [PoE1, 3.29 Allflame Vaal Orb on a gem, checked 2026-10-27].
+Star Force, the GMS enhancement that adds stars to gear, succeeds 40 % at 12→13 on the wiki's table [GMS, Star Force 12→13 wiki table, checked 2026-10-27], without the Star Catch bonus that v.271 builds in; below 15 stars a non-Superior item keeps its star when a tap fails. A Vaal Orb on a PoE1 skill gem adds one level with probability 1/8, the wiki gives [PoE1, 3.29 Allflame Vaal Orb on a gem, checked 2026-10-27].
 
 ```quiz
 [

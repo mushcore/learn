@@ -95,7 +95,7 @@ skewness
 
 ## Sk as one point moves into a tail
 
-Twelve settled Allflame days, 47 to 36 days before 2026-10-27, sit between 324.0 and 350.0 chaos with $Sk = -0.86$. Drag one price down toward 204.0, the price 35 days before, and watch $s$ grow with the tail.
+Twelve settled Allflame days, 47 to 36 days before 2026-10-27, sit between 324.0 and 350.0 chaos with $Sk = -0.86$. Drag one price down toward 204.0, the one-day receive-side reading 35 days before, and watch $s$ grow with the tail.
 
 ```widget
 drag-data
