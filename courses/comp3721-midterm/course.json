@@ -9,7 +9,7 @@
       { "lesson": "mock-midterm", "note": "take it cold, on paper, 120 minutes, with your draft sheets" },
       { "lesson": "formula-drill", "note": "name the formula before you compute; redo every miss" },
       { "lesson": "differences", "note": "write each difference in two sentences, then compare with the model" },
-      { "lesson": "review-signals-coding", "note": "items 3 to 5: dB, SNR, Nyquist, Shannon, line-coding problems" },
+      { "lesson": "review-signals-coding", "note": "items 4 and 5: dB, SNR, Nyquist, Shannon, line-coding problems" },
       { "lesson": "review-conversion-mux", "note": "items 6 to 11: PCM, constellations, AM/FM, TDM, ARP" },
       { "lesson": "cheat-sheet-midterm", "note": "print the four sides; add whatever you missed in the mock" }
     ]

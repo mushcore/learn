@@ -27,6 +27,7 @@ The sender runs the rule as a counter:
 2. When the count reaches five, insert a 0 and restart the count.
 3. Insert the 0 whatever the next data bit is, even when it is already a 0.
 4. At the very start of the data, the bit before it is the flag's last 0, so five leading 1s are stuffed too.
+5. At the very end of the data, five 1s are still followed by a stuffed 0, even though the closing flag comes next.
 
 Unstuffing is the mirror: the receiver removes the 0 that follows any five consecutive 1s. After stuffing, the data field never holds six 1s in a row, so the only 01111110 the receiver sees is a real flag.
 

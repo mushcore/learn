@@ -195,7 +195,7 @@ Type the slide's word for the blank; case does not matter.
   {
     "q": "**B8 (1 mark).** The ________ product is the number of bits that can fill the link.",
     "type": "text",
-    "answer": ["bandwidth-delay", "bandwidth delay", "bandwidth × delay", "bandwidth x delay"],
+    "answer": ["bandwidth-delay", "bandwidth–delay", "bandwidth delay", "bandwidth × delay", "bandwidth x delay"],
     "explain": "The bandwidth-delay product. With bursts that wait for an acknowledgment, the burst size that uses the link fully is 2 × bandwidth × delay. See [bandwidth-delay product](#/comp3721-w3/bandwidth-delay)."
   },
   {
@@ -267,7 +267,7 @@ Type the slide's word for the blank; case does not matter.
   {
     "q": "**B20 (1 mark).** In one's complement arithmetic, adding the extra leftmost bits to the m rightmost bits is called ________.",
     "type": "text",
-    "answer": ["wrapping", "wrap", "wrap-around"],
+    "answer": ["wrapping", "wrap", "wrap-around", "wrap around", "wraparound"],
     "explain": "Wrapping, repeated until the sum fits in m bits. Slide 47: 36 = 100100 → 10 + 0100 = 0110 = 6. See [checksum](#/comp3721-w7/checksum)."
   }
 ]
@@ -294,7 +294,7 @@ Write two to four sentences on paper for each: name the thing in the slide's wor
   {
     "q": "**C3 (3 marks).** Explain the difference between a time-domain plot and a frequency-domain plot, and why the frequency-domain plot is useful. Then type what one simple sine wave looks like on a frequency-domain plot.",
     "type": "text",
-    "answer": ["spike", "a spike", "one spike", "a single spike"],
+    "answer": ["spike", "a spike", "one spike", "a single spike", "spikes"],
     "explain": "Model answer: a time-domain plot shows amplitude against time, and the phase is not explicitly shown. A frequency-domain plot shows peak amplitude against frequency, so one sine wave is a single spike at its frequency, with height equal to its peak amplitude. It is compact when a signal has many components: a composite periodic signal is a row of discrete spikes and a nonperiodic one a continuous band. See [sine wave](#/comp3721-w2/sine-wave) and [composite signals](#/comp3721-w2/composite-bandwidth)."
   },
   {

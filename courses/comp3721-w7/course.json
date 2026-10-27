@@ -11,7 +11,7 @@
       { "lesson": "checksum", "note": "7, 11, 12, 0, 6 → 36 → wrap to 6 → checksum 9; then one 16-bit hex sum with a wrap" },
       { "lesson": "hamming-distance", "note": "XOR and count the 1s; detect d_min − 1, correct (d_min − 1)/2 rounded down" },
       { "lesson": "block-coding", "note": "2^k valid, 2^n − 2^k invalid; when an error goes undetected" },
-      { "lesson": "bit-stuffing", "note": "a 0 after every five 1s, even when the next bit is 0; redo the slide's 22-bit string" },
+      { "lesson": "bit-stuffing", "note": "a 0 after every five 1s, even when the next bit is 0 and even at the end of the data; redo the slide's 22-bit string" },
       { "lesson": "simple-and-stop-and-wait", "note": "the FSM boxes, what a time-out does, why a lost ACK makes a duplicate, ACK = next frame expected" },
       { "lesson": "mock-quiz-7", "note": "retake; aim for 90% or better" },
       { "lesson": "study-note", "note": "hand-write the Week 7 block of your notes from this draft" }
