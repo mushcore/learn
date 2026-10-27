@@ -2,6 +2,7 @@
 title: Hypergeometric: sampling without replacement, and the 5% rule
 minutes: 24
 ---
+<!-- facts: none; renderer test -->
 
 Sampling without replacement changes $p$ after every draw, so the binomial formula is wrong. The hypergeometric distribution is the exact formula, and the 5 % rule says when the binomial is close enough anyway.
 

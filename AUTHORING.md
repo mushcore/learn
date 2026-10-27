@@ -13,6 +13,7 @@ minutes: 15
 
 ## Supported markdown
 - `#`–`####` headings, paragraphs, `-` / `1.` lists (2-space continuation lines OK), `> quote`, `---` rule
+- a line consisting only of an HTML comment (`<!-- ... -->`) is not rendered; lessons use it for the `<!-- facts: ... -->` line
 - tables with `| a | b |` + `|---|---|` separator; `\|` inside a cell is a literal pipe
 - inline: `` `code` ``, `**bold**`, `*italic*`, `[text](url)`
 - inline math between `$...$` (LaTeX subset): `\frac{a}{b}` / `\dfrac`, `\sqrt{x}`, `\bar{X}`, `\hat{p}`, `\tilde{X}`, `\text{words}`, `\mathbf{x}`,
