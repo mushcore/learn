@@ -11,7 +11,7 @@ Slides 3 and 4: *Networks must be able to transfer data from one device to anoth
 
 Slide 4 says what most links do with a damaged frame: *The approach of most link-layer protocols for error control → simply discard the frame and let the upper-layer protocols handle the retransmission of the frame.* Error control is one of the data-link services from Week 6 ([data-link services](#/comp3721-w6/data-link-services)).
 
-## A single-bit error changes 1 bit, a burst error 2 or more
+## Two kinds of data error
 
 Slide 5: *Interference can change the shape of the signal. Bits are subject to unpredictable changes.* Slide 6 names the two results:
 

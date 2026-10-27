@@ -16,7 +16,7 @@ Slide 23:
 
 A check on the C(5, 4) table below: 00011 (dataword 0001) ⊕ 00101 (dataword 0010) = 00110, the codeword of 0011. The C(7, 4) CRC table passes the same test (1001110 ⊕ 1011000 = 0010110, the codeword of 0010).
 
-## Parity-check code: n = k + 1 and an even number of 1s
+## The parity-check code adds one bit
 
 Slide 25: *Parity-check code is a linear block code. A k-bit dataword is changed to an n-bit codeword where n = k + 1. Parity bit: The extra bit and it is selected such that the total number of 1s in the codeword becomes even (We only consider even parity here, while some implementations specify an odd number of 1s).*
 

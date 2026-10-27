@@ -14,7 +14,7 @@ Slide 16:
 
 So r = n − k. The slide adds an inequality, $2^k$ datawords $<$ $2^n$ codewords: k bits make $2^k$ different datawords, while n bits make $2^n$ different words, and n is bigger than k.
 
-## One-to-one coding leaves 2^n − 2^k invalid codewords
+## Only 2^k of the 2^n possible words are ever sent
 
 Slide 16 again: *The block coding process is one-to-one. The same dataword is always encoded as the same codeword.* Only $2^k$ of the $2^n$ possible n-bit words are ever sent. The rest, *(2^n − 2^k) codewords are not used (invalid codes) → the trick in error detection*: a corruption that lands on one of them is visibly wrong.
 
@@ -128,7 +128,7 @@ Each item gives k and n. Valid is $2^k$, invalid is $2^n - 2^k$.
     "answer": 256,
     "tolerance": 0,
     "unit": "codewords",
-    "explain": "Invalid = $2^9 - 2^8 = 512 - 256 = 256$. With one redundant bit, exactly half of all 9-bit words are valid, as in C(5, 4) (16 of 32)."
+    "explain": "Invalid = $2^9 - 2^8 = 512 - 256 = 256$. With one redundant bit, exactly half of all 9-bit words are valid."
   }
 ]
 ```

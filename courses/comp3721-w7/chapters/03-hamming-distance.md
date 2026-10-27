@@ -40,7 +40,7 @@ codeword-lab
 { "mode": "distance", "a": "10101", "b": "11110" }
 ```
 
-## d(received, sent) is the number of corrupted bits
+## Comparing the received and sent codewords
 
 Slide 20 asks *How does the Hamming distance help in error detection?* and answers it: *The Hamming distance between the received codeword and the sent codeword is the number of bits that are corrupted during transmission. d(x, y) = 0 → no error; d(x, y) > 0 → error*
 
