@@ -1434,6 +1434,492 @@ function stopWaitPlay(box, cfg) {
   restart();
 }
 
+// ---------- Task 4 pure functions (exported; pinned by spec/comp3721/tools/net6.test.js) ----------
+/** Slides 54-55: R = P1 ⊕ … ⊕ PN, so a lost Pi = P1 ⊕ … ⊕ R ⊕ … ⊕ PN. lostIndex is 0-based into chunks. */
+export function xorRebuild(chunks, lostIndex) {
+  const R = chunks.reduce((a, c) => xorBits(a, c));
+  return chunks.reduce((a, c, i) => (i === lostIndex ? a : xorBits(a, c)), R);
+}
+/** Slide 57: packets × packets chunks numbered row by row; sent Packet j (1-based) is column j read bottom to top. */
+export function interleaveSent(packets) {
+  const n = packets;
+  return Array.from({ length: n }, (_, j) => Array.from({ length: n }, (_, r) => (n - 1 - r) * n + j + 1));
+}
+/** Slide 7: bits affected = data rate × noise duration (to 12 significant digits, so 1e6 × 0.001 is 1000). */
+export const bitsHit = (rateBps, durationS) => Number((rateBps * durationS).toPrecision(12));
+
+// FSMs of slides 29 (turnstile), 31 (Simple) and 34 (Stop-and-Wait). One entry per node; `why` gives the
+// reason an event has no transition in a state; `layout` places the drawing (arrows in transition order).
+const SW_PACKET = "Packet came from network layer.";
+const SW_READY_WHY = "Ready: no frame is waiting for an ACK, so there is no timer to expire and no ACK to receive.";
+const FSM_NODES = {
+  turnstile: [{
+    name: "Turnstile", states: ["Locked", "Unlocked"], start: "Locked",
+    transitions: [
+      { from: "Locked", event: "coin", actions: ["Unlocks the turnstile so that the customer can push through."], to: "Unlocked" },
+      { from: "Locked", event: "push", actions: [], to: "Locked" },
+      { from: "Unlocked", event: "coin", actions: [], to: "Unlocked" },
+      { from: "Unlocked", event: "push", actions: ["When the customer has pushed through, locks the turnstile."], to: "Locked" },
+    ],
+    why: {},
+    layout: { w: 360, h: 142, dot: true, actions: false, start: [8, 79, 30, 79],
+      states: { Locked: [30, 62, 100, 34], Unlocked: [230, 62, 100, 34] },
+      arrows: [
+        { p: [110, 62, 180, 22, 250, 62], x: 180, y: 36 },
+        { p: [55, 62, 40, 18, 100, 18, 85, 62], x: 70, y: 14 },
+        { p: [275, 62, 260, 18, 320, 18, 305, 62], x: 290, y: 14 },
+        { p: [250, 96, 180, 136, 110, 96], x: 180, y: 134 },
+      ] },
+  }],
+  simple: [{
+    name: "Sending node", states: ["Ready"], start: "Ready",
+    transitions: [{ from: "Ready", event: SW_PACKET, actions: ["Make a frame and send it."], to: "Ready" }],
+    why: {},
+    layout: { w: 240, h: 120, start: [40, 33, 70, 33], states: { Ready: [70, 16, 100, 34] },
+      arrows: [{ p: [105, 50, 90, 92, 150, 92, 135, 50], x: 120, y: 98, wrap: 36 }] },
+  }, {
+    name: "Receiving node", states: ["Ready"], start: "Ready",
+    transitions: [{ from: "Ready", event: "Frame arrived.", actions: ["Deliver the packet to network layer."], to: "Ready" }],
+    why: {},
+    layout: { w: 240, h: 120, start: [40, 33, 70, 33], states: { Ready: [70, 16, 100, 34] },
+      arrows: [{ p: [105, 50, 90, 92, 150, 92, 135, 50], x: 120, y: 98, wrap: 36 }] },
+  }],
+  sw: [{
+    name: "Sending node", states: ["Ready", "Blocking"], start: "Ready",
+    transitions: [
+      { from: "Ready", event: SW_PACKET, actions: ["Make a frame, save a copy, and send the frame.", "Start the timer."], to: "Blocking" },
+      { from: "Blocking", event: "Time-out.", actions: ["Resend the saved frame.", "Restart the timer."], to: "Blocking" },
+      { from: "Blocking", event: "Corrupted ACK arrived.", actions: ["Discard the ACK."], to: "Blocking" },
+      { from: "Blocking", event: "Error-free ACK arrived.", actions: ["Stop the timer.", "Discard the saved frame."], to: "Ready" },
+    ],
+    why: {
+      [`Blocking|${SW_PACKET}`]: "Blocking: a new packet is not accepted until the ACK arrives.",
+      "Ready|Time-out.": SW_READY_WHY, "Ready|Corrupted ACK arrived.": SW_READY_WHY, "Ready|Error-free ACK arrived.": SW_READY_WHY,
+    },
+    layout: { w: 360, h: 186, start: [4, 89, 30, 89],
+      states: { Ready: [30, 72, 90, 34], Blocking: [250, 72, 90, 34] },
+      arrows: [
+        { p: [80, 72, 170, 22, 262, 72], x: 140, y: 12, wrap: 32 },
+        { p: [290, 106, 275, 148, 335, 148, 320, 106], x: 356, y: 152, anchor: "end", wrap: 24 },
+        { p: [290, 72, 275, 30, 335, 30, 320, 72], x: 356, y: 12, anchor: "end", wrap: 24 },
+        { p: [262, 106, 170, 156, 80, 106], x: 150, y: 150, wrap: 28 },
+      ] },
+  }, {
+    name: "Receiving node", states: ["Ready"], start: "Ready",
+    transitions: [
+      { from: "Ready", event: "Corrupted frame arrived.", actions: ["Discard the frame."], to: "Ready" },
+      { from: "Ready", event: "Error-free frame arrived.", actions: ["Extract and deliver the packet to network layer.", "Send ACK."], to: "Ready" },
+    ],
+    why: {},
+    layout: { w: 240, h: 190, start: [40, 91, 70, 91], states: { Ready: [70, 74, 100, 34] },
+      arrows: [
+        { p: [105, 74, 90, 32, 150, 32, 135, 74], x: 120, y: 14, wrap: 31 },
+        { p: [105, 108, 90, 150, 150, 150, 135, 108], x: 120, y: 156, wrap: 31 },
+      ] },
+  }],
+};
+const copyNode = (n) => ({ name: n.name, states: [...n.states], start: n.start, transitions: n.transitions.map((t) => ({ ...t, actions: [...t.actions] })) });
+/** The machine's first node (the sending node for Simple and Stop-and-Wait) plus `nodes`, every node of the slide. */
+export function fsm(machine) {
+  const nodes = FSM_NODES[machine];
+  if (!nodes) throw new Error(`unknown machine ${machine}`);
+  return { ...copyNode(nodes[0]), nodes: nodes.map(copyNode) };
+}
+/** Greedy word wrap at max characters. */
+function wrapWords(text, max) {
+  const out = [];
+  for (const w of String(text).split(/\s+/).filter(Boolean)) {
+    if (out.length && (out[out.length - 1] + " " + w).length <= max) out[out.length - 1] += " " + w;
+    else out.push(w);
+  }
+  return out;
+}
+
+// ---------- widget: fsm-explorer ----------
+// The slide-28 convention: rounded states, coloured event text over black action text, a coloured start arrow.
+const FSM_TITLES = { turnstile: "FSM example: the turnstile (slide 29)", simple: "Simple protocol: FSM (slide 31)", sw: "Stop-and-Wait protocol: FSM (slide 34)" };
+function arrowHead(p, cls) {
+  const n = p.length, ex = p[n - 2], ey = p[n - 1], a = Math.atan2(ey - p[n - 3], ex - p[n - 4]);
+  const pt = (d, s) => `${(ex - d * Math.cos(a) + s * Math.sin(a)).toFixed(1)},${(ey - d * Math.sin(a) - s * Math.cos(a)).toFixed(1)}`;
+  return svgEl("polygon", { points: `${ex},${ey} ${pt(8, 4)} ${pt(8, -4)}`, class: cls });
+}
+function drawFsm(node, cur, hot) {
+  const L = node.layout;
+  const svg = svgEl("svg", { viewBox: `0 0 ${L.w} ${L.h}`, class: "net6-fsm-svg", role: "img", "aria-label": `${node.name} FSM, current state ${cur}` });
+  svg.style.maxWidth = `${L.w}px`;
+  node.transitions.forEach((t, i) => {
+    const a = L.arrows[i], p = a.p;
+    const d = p.length === 6 ? `M ${p[0]} ${p[1]} Q ${p[2]} ${p[3]} ${p[4]} ${p[5]}` : `M ${p[0]} ${p[1]} C ${p[2]} ${p[3]} ${p[4]} ${p[5]} ${p[6]} ${p[7]}`;
+    const g = svgEl("g", { class: "net6-fsm-arrow" + (i === hot ? " hot" : "") });
+    g.append(svgEl("path", { d, class: "ln" }), arrowHead(p, "hd"));
+    const lines = [[t.event, "ev"]];
+    if (L.actions !== false) for (const s of wrapWords(t.actions.join(" "), a.wrap || 32)) lines.push([s, "act"]);
+    lines.forEach(([s, c], k) => g.append(svgEl("text", { x: a.x, y: a.y + k * 13, "text-anchor": a.anchor || "middle", class: c }, s)));
+    svg.append(g);
+  });
+  const [x1, y1, x2, y2] = L.start, sg = svgEl("g", { class: "start" });
+  sg.append(svgEl("path", { d: `M ${x1} ${y1} L ${x2 - 1} ${y2}`, class: "ln" }), arrowHead([x1, y1, x2, y2], "hd"));
+  if (L.dot) sg.append(svgEl("circle", { cx: x1, cy: y1, r: 4 }));
+  svg.append(sg);
+  for (const s of node.states) {
+    const [x, y, w, h] = L.states[s];
+    svg.append(svgEl("rect", { x, y, width: w, height: h, rx: 10, class: "st" + (s === cur ? " cur" : "") }),
+      svgEl("text", { x: x + w / 2, y: y + h / 2 + 4, "text-anchor": "middle", class: "stl" }, s));
+  }
+  return svg;
+}
+function fsmTable(machine, nodes, last) {
+  const t = el("table", "net6-tt");
+  const tr = (cells, cls, tag = "td") => { const r = el("tr", cls); for (const [txt, c, span] of cells) { const x = el(tag, c, txt); if (span) x.colSpan = span; r.append(x); } return r; };
+  if (machine === "turnstile") {
+    t.append(tr([["Current State"], ["Input"], ["Next State"], ["Output"]], null, "th"));
+    nodes[0].transitions.forEach((x, k) => t.append(tr([[x.from], [x.event, "ev"], [x.to], [x.actions.join(" ") || "None"]], k === last[0] ? "hot" : null)));
+    return t;
+  }
+  t.append(tr([["From"], ["Event"], ["Actions"], ["To"]], null, "th"));
+  nodes.forEach((n, i) => {
+    t.append(tr([[n.name, null, 4]], "grp"));
+    n.transitions.forEach((x, k) => t.append(tr([[x.from], [x.event, "ev"], [x.actions.join(" ") || "None"], [x.to]], k === last[i] ? "hot" : null)));
+  });
+  return t;
+}
+function fsmExplorer(box, cfg) {
+  const machine = cfg.machine === "simple" || cfg.machine === "sw" ? cfg.machine : "turnstile";
+  const nodes = FSM_NODES[machine];
+  const cur = nodes.map((n) => n.start), last = nodes.map(() => -1), said = nodes.map(() => "");
+  let refocus = null;
+  box.append(el("h4", null, cfg.title || FSM_TITLES[machine]));
+  const wrap = el("div", "net6-fsm"), table = el("div", "net6-scroll"), tools = el("div", "viz-btn-row");
+  tools.append(button("Reset", () => { nodes.forEach((n, i) => { cur[i] = n.start; last[i] = -1; said[i] = ""; }); render(); }));
+  box.append(wrap, tools, table, el("p", "widget-note", "Rounded rectangles show states, coloured text events and regular text actions. Note: The colored arrow shows the starting state."));
+  function fired(from, t) {
+    const move = t.to === from ? `stays ${from}` : `${from} → ${t.to}`;
+    if (machine === "turnstile") return `${t.event}: ${move}. Output: ${t.actions.join(" ") || "None."}`;
+    return `${t.event} ${move}. Actions: ${t.actions.join(" ")}`;
+  }
+  function render() {
+    wrap.innerHTML = "";
+    nodes.forEach((n, i) => {
+      const card = el("div", "net6-fsm-node");
+      if (nodes.length > 1) card.append(el("div", "net6-fsm-title", n.name));
+      card.append(drawFsm(n, cur[i], last[i]), line("State", el("span", "net6-pill on", cur[i])));
+      const row = el("div", "viz-btn-row net6-fsm-evs"), why = [];
+      for (const ev of [...new Set(n.transitions.map((t) => t.event))]) {
+        const ti = n.transitions.findIndex((t) => t.from === cur[i] && t.event === ev);
+        const b = button(ev, (e) => {
+          const from = cur[i], t = n.transitions[ti];
+          cur[i] = t.to; last[i] = ti; said[i] = fired(from, t);
+          refocus = e.detail === 0 ? [i, ev] : null;
+          render();
+        });
+        b.dataset.event = ev;
+        if (ti < 0) { b.disabled = true; b.title = n.why[`${cur[i]}|${ev}`] || `${cur[i]}: no transition for this event.`; why.push(b.title); }
+        row.append(b);
+      }
+      card.append(row);
+      for (const r of new Set(why)) card.append(el("div", "net6-fsm-why", r));
+      card.append(el("div", "net6-fsm-out", said[i] || `Start: ${n.start}. Fire an event with the buttons.`));
+      wrap.append(card);
+      if (refocus && refocus[0] === i) { const b = [...row.children].find((x) => x.dataset.event === refocus[1] && !x.disabled) || [...row.children].find((x) => !x.disabled); if (b) b.focus(); }
+    });
+    refocus = null;
+    table.innerHTML = "";
+    table.append(fsmTable(machine, nodes, last));
+  }
+  render();
+}
+
+// ---------- widget: fec-lab ----------
+// Slides 54-55 (XOR of N chunks, rebuild one) and slide 57 (chunk interleaving, grids a-d).
+const pad2 = (c) => String(c).padStart(2, "0");
+const ORIG_ROW = (r, n) => Array.from({ length: n }, (_, k) => r * n - k); // original Packet r, written right to left
+function chunkCells(nums, cls) {
+  const row = el("span", "net6-cells");
+  nums.forEach((c, k) => row.append(el("span", "net6-b" + (cls ? " " + (cls(c, k) || "") : ""), c == null ? "" : pad2(c))));
+  return row;
+}
+function fecLab(box, cfg) {
+  let mode = cfg.mode === "interleave" ? "interleave" : "xor";
+  let chunks = Array.isArray(cfg.chunks) ? cfg.chunks.map(String) : ["1010", "0111", "1100", "0011"];
+  let lost = new Set(Number.isInteger(cfg.lost) && cfg.lost >= 0 ? [cfg.lost] : cfg.lost == null ? [2] : []);
+  let lostPacket = Number.isInteger(cfg.lostPacket) ? cfg.lostPacket : 3, plain = false;
+  box.append(el("h4", null, cfg.title || "Forward error correction: XOR and chunk interleaving"));
+  const modeCh = choice(["Using XOR (slides 54-55)", "Chunk interleaving (slide 57)"], mode === "xor" ? 0 : 1, (i) => { mode = i ? "interleave" : "xor"; render(); });
+  const cF = textField("chunks", chunks.join(" "), 260);
+  cF.on(() => { chunks = cF.get().split(/[\s,]+/).filter(Boolean); lost = new Set(); render(); });
+  const plainCk = checkbox(" without interleaving", plain, (v) => { plain = v; render(); });
+  const view = el("div");
+  box.append(modeCh.row, cF.row, plainCk.row, view);
+  const toggle = (set, i) => { if (set.has(i)) set.delete(i); else set.add(i); };
+  function xorView() {
+    const N = chunks.length, m = chunks[0] ? chunks[0].length : 0;
+    if (N < 2 || N > 8 || !chunks.every((c) => BITS.test(c) && c.length === m) || m > 16) {
+      view.append(verdict("bad", "Chunks: 2 to 8 chunks of 0s and 1s, all the same length (at most 16 bits), separated by spaces."));
+      return;
+    }
+    const R = chunks.reduce((a, c) => xorBits(a, c)), names = chunks.map((_, i) => `P${i + 1}`);
+    view.append(el("div", "net6-grid-h", "Sender: N chunks and R = their XOR (click a chunk to lose it)"));
+    const rowOf = (i, name, bits, extraCls) => {
+      const isLost = lost.has(i);
+      const b = el("button", "net6-pkt" + (isLost ? " gone" : ""));
+      b.type = "button"; b.setAttribute("aria-pressed", String(isLost)); b.title = isLost ? `${name}: lost (click to restore)` : `Lose ${name}`;
+      b.append(el("span", "lab", name), bitCells(bits, () => (isLost ? "lost" : extraCls)));
+      if (isLost) b.append(el("span", "tag", "✕ Lost"));
+      b.addEventListener("click", () => { toggle(lost, i); render(); });
+      return b;
+    };
+    chunks.forEach((c, i) => view.append(rowOf(i, names[i], c, "")));
+    view.append(rowOf(N, "R", R, "dw"));
+    view.append(line(null, el("span", "net6-key", `R = ${names.join(" ⊕ ")} = ${R}`)));
+    const pct = Math.round((100 / N) * 100) / 100;
+    view.append(line("Overhead", `send N + 1 = ${N + 1} chunks: 1 extra chunk for N = ${N} → 1/${N} = ${pct}% extra data`));
+    view.append(el("div", "net6-grid-h", "Receiver"));
+    const L = [...lost].filter((i) => i <= N).sort((a, b) => a - b);
+    if (!L.length) { view.append(verdict("ok", `All ${N + 1} chunks arrived: nothing to rebuild. Click a chunk above to lose it.`)); return; }
+    if (L.length > 1) {
+      const lostNames = L.map((i) => (i === N ? "R" : names[i]));
+      view.append(verdict("bad", `${L.length} chunks lost (${lostNames.join(", ")}): cannot rebuild: one chunk per group. The XOR of the chunks that arrived gives ${lostNames.join(" ⊕ ")}, not either chunk.`));
+      return;
+    }
+    const i = L[0];
+    if (i === N) { view.append(verdict("ok", "R lost: every data chunk arrived, so nothing needs rebuilding.")); return; }
+    // Pi = P1 ⊕ … ⊕ R ⊕ … ⊕ PN: R takes the lost chunk's place
+    const ops = chunks.map((c, k) => (k === i ? ["R", R] : [names[k], c]));
+    view.append(line(null, el("span", "net6-key", `${names[i]} = ${ops.map((o) => o[0]).join(" ⊕ ")}`)));
+    let acc = null;
+    const tbl = el("div", "net6-xor");
+    for (const [k, [nm, bits]] of ops.entries()) {
+      acc = acc == null ? bits : xorBits(acc, bits);
+      tbl.append(line(k === 0 ? nm : `⊕ ${nm}`, bitCells(bits, () => (nm === "R" ? "dw" : "")), el("span", "net6-msg", "→"), bitCells(acc, () => "")));
+    }
+    view.append(tbl);
+    const ok = acc === chunks[i];
+    view.append(verdict(ok ? "ok" : "bad", `${names[i]} rebuilt: ${acc}${ok ? ` = ${names[i]}, the chunk that was lost.` : "."}`));
+  }
+  function grid(title, sub, rows) {
+    const g = el("div", "net6-grid");
+    g.append(el("div", "net6-grid-h", title));
+    if (sub) g.append(el("div", "net6-grid-sub", sub));
+    for (const r of rows) g.append(r);
+    return g;
+  }
+  function interleaveView() {
+    const n = 5, sent = plain ? Array.from({ length: n }, (_, j) => ORIG_ROW(j + 1, n)) : interleaveSent(n);
+    const lostSet = new Set(lostPacket >= 1 && lostPacket <= n ? sent[lostPacket - 1] : []);
+    const pkt = (label, nums, cls, tag) => { const r = el("div", "net6-pkt"); r.append(el("span", "lab", label), chunkCells(nums, cls)); if (tag) r.append(el("span", "tag", tag)); return r; };
+    const a = grid("a. Packet creation at sender", plain ? "Sending row by row" : "Sending column by column",
+      Array.from({ length: n }, (_, r) => pkt(`Packet ${r + 1}`, ORIG_ROW(r + 1, n), (c) => (lostSet.has(c) ? "cur" : ""))));
+    const bRows = sent.map((nums, j) => {
+      const isLost = j + 1 === lostPacket;
+      const b = el("button", "net6-pkt");
+      b.type = "button"; b.setAttribute("aria-pressed", String(isLost)); b.title = isLost ? `Packet ${j + 1}: lost (click to restore)` : `Lose sent Packet ${j + 1}`;
+      b.append(el("span", "lab", `Packet ${j + 1}`), chunkCells(nums, () => (isLost ? "cur" : "")));
+      b.addEventListener("click", () => { lostPacket = isLost ? 0 : j + 1; render(); });
+      return b;
+    });
+    const bG = grid("b. Packets sent", "Click a sent packet to lose it", bRows);
+    const cG = grid("c. Packets received", null, sent.map((nums, j) => (j + 1 === lostPacket ? pkt(`Packet ${j + 1}`, nums.map(() => null), () => "lost", "Lost") : pkt(`Packet ${j + 1}`, nums))));
+    const dG = grid("d. Packet recreation at receiver", plain ? "Receiving row by row" : "Receiving column by column",
+      Array.from({ length: n }, (_, r) => pkt(`Packet ${r + 1}`, ORIG_ROW(r + 1, n).map((c) => (lostSet.has(c) ? null : c)), (c) => (c == null ? "lost" : ""))));
+    const grids = el("div", "net6-grids");
+    grids.append(a, bG, cG, dG);
+    view.append(grids);
+    if (!lostSet.size) { view.append(verdict("ok", "Nothing lost: every packet is complete. Click a sent packet to lose it.")); return; }
+    const missing = [...lostSet].sort((x, y) => x - y).map(pad2).join(", ");
+    if (plain) view.append(verdict("bad", `Packet ${lostPacket} is missing all ${n} chunks (${missing}): not all the chunks belonging to the same packet can be missing.`));
+    else view.append(verdict("ok", `Chunks ${missing} are missing: one chunk in each packet, not ${n} from one. We can afford to let one chunk be missing in each packet.`));
+  }
+  function render() {
+    modeCh.set(mode === "xor" ? 0 : 1);
+    cF.row.style.display = mode === "xor" ? "" : "none";
+    plainCk.row.style.display = mode === "interleave" ? "" : "none";
+    view.innerHTML = "";
+    if (mode === "xor") xorView(); else interleaveView();
+  }
+  render();
+}
+
+// ---------- widget: interleave-play ----------
+// Slide 57 as a playback: the sender's grid fills, one sent packet per step (one lost on the link), the
+// receiver refilling its grid column by column, then the gaps: one per original packet.
+function interleavePlay(box, cfg) {
+  const clampN = (v) => Math.max(3, Math.min(6, Math.round(+v) || 5));
+  let n = cfg.packets != null ? clampN(cfg.packets) : 5;
+  let lost = cfg.lost != null ? Math.round(+cfg.lost) : 3;
+  if (!(lost >= 0 && lost <= n)) lost = Math.min(3, n);
+  let sent = interleaveSent(n), pb = null;
+  const q = playQuiz(() => pb, () => frame(pb.pos()));
+  q.on = !!cfg.predict;
+  box.append(el("h4", null, cfg.title || "Chunk interleaving: sending column by column (slide 57)"));
+  const nCh = choice(["3", "4", "5", "6"], n - 3, (i) => { n = i + 3; if (lost > n) lost = n; sent = interleaveSent(n); lostRow(); restart(); });
+  const lostWrap = el("span");
+  let lostCh = null;
+  function lostRow() {
+    lostCh = choice(["none", ...Array.from({ length: n }, (_, j) => `Packet ${j + 1}`)], lost, (i) => { lost = i; restart(); });
+    lostWrap.innerHTML = ""; lostWrap.append(lostCh.row);
+  }
+  lostRow();
+  const pred = predictToggle("Predict each sent packet", q.on, (v) => {
+    q.on = v; pb.pause(); q.reset();
+    for (let i = 0; i < Math.ceil(pb.pos() - 1e-9); i++) q.done.add(i);
+    pb.set(pb.pos());
+  });
+  const view = el("div", "net6-grids"), out = el("div");
+  const caption = el("p", "playback-caption");
+  caption.setAttribute("aria-live", "polite");
+  const ask = el("div", "viz-btn-row playback-ask");
+  box.append(line("Packets", nCh.row), line("Sent packet lost", lostWrap), pred.row, view, out, caption, ask);
+  const count = () => n + 2;
+  const needs = (i) => i >= 1;
+  const asking = (pos) => {
+    if (!q.on) return -1;
+    const b = q.block(count(), needs);
+    return b < count() && Math.abs(pos - b) < 1e-6 ? b : -1;
+  };
+  const list = (nums) => nums.map(pad2).join(" ");
+  const askP = () => Math.min(4, n);
+  const missingOf = () => (lost ? [...sent[lost - 1]].sort((a, b) => a - b) : []);
+  function options(j) {
+    const opts = [list(sent[j - 1]), list(ORIG_ROW(j, n)), list(sent[j % n])];
+    const k = j % 3;
+    return [...opts.slice(k), ...opts.slice(0, k)].map((t) => [t, t]);
+  }
+  function renderAsk(qi) {
+    const key = qi >= 0 ? `${qi}|${q.wrong}` : "";
+    if (key === q.key) return;
+    q.key = key; ask.innerHTML = ""; ask.hidden = !q.on;
+    if (qi < 0) return;
+    if (qi <= n) {
+      askButtons(ask, q, options(qi), (v, e) => q.answer(qi, v === list(sent[qi - 1]), v, e),
+        `Sending column by column: sent Packet j carries chunk j of every packet, read from the bottom row up (Packet 1 = ${list(sent[0])}).`);
+      return;
+    }
+    const right = lost ? "1" : "0";
+    askButtons(ask, q, [["0", "None"], ["1", "One"], [String(n), `All ${n}`]], (v, e) => q.answer(qi, v === right, v, e),
+      "Each sent packet carries one chunk of every packet, so losing one sent packet takes one chunk from each.");
+  }
+  function frame(pos) {
+    const f = (k) => clamp01(pos - k), qi = asking(pos), drawn = Math.ceil(pos - 1e-9) - 1;
+    // the packet being drawn (none while a question waits: the grid must not give the answer away)
+    const active = qi < 0 && drawn >= 1 && drawn <= n && f(drawn) < 1 ? drawn : -1;
+    view.innerHTML = ""; out.innerHTML = "";
+    const row = (label, nums, cls, tag, style) => { const r = el("div", "net6-pkt"); r.append(el("span", "lab", label), chunkCells(nums, cls)); if (tag) r.append(el("span", "tag", tag)); if (style != null) r.style.opacity = style; return r; };
+    // a. the sender's grid: rows fill top to bottom during step 0; a column dims once its packet has left
+    const colOf = (c) => ((c - 1) % n) + 1;
+    const a = el("div", "net6-grid");
+    a.append(el("div", "net6-grid-h", "a. Packet creation at sender"), el("div", "net6-grid-sub", "Sending column by column"));
+    for (let r = 1; r <= n; r++) {
+      const shown = clamp01(f(0) * n - (r - 1));
+      const rr = row(`Packet ${r}`, ORIG_ROW(r, n), (c) => [colOf(c) === active ? "cur" : "", f(colOf(c)) >= 0.4 ? "dim" : ""].filter(Boolean).join(" "));
+      rr.style.opacity = shown;
+      a.append(rr);
+    }
+    // b/c. the sent packets on the link
+    const b = el("div", "net6-grid");
+    b.append(el("div", "net6-grid-h", "b. Packets sent / c. received"));
+    for (let j = 1; j <= n; j++) {
+      if (f(j) <= 0) continue;
+      const gone = j === lost && f(j) >= 0.5;
+      b.append(row(`Packet ${j}`, gone ? sent[j - 1].map(() => null) : sent[j - 1], () => (gone ? "lost" : j === active ? "cur" : ""), gone ? "Lost" : null, clamp01(f(j) / 0.3)));
+    }
+    // d. the receiver's grid refills column j at 0.7 of step j; a lost column stays an orange gap
+    const d = el("div", "net6-grid");
+    d.append(el("div", "net6-grid-h", "d. Packet recreation at receiver"), el("div", "net6-grid-sub", "Receiving column by column"));
+    const final = f(n + 1) > 0;
+    for (let r = 1; r <= n; r++) {
+      const nums = ORIG_ROW(r, n).map((c) => (f(colOf(c)) >= 0.7 && colOf(c) !== lost ? c : null));
+      d.append(row(`Packet ${r}`, nums, (c, k) => {
+        const col = n - k;
+        if (c != null) return "";
+        return f(col) >= 0.7 && col === lost ? "lost" + (final ? " hot-gap" : "") : "empty";
+      }));
+    }
+    view.append(a, b, d);
+    const miss = missingOf();
+    if (final && f(n + 1) >= 0.5) out.append(verdict("ok", lost ? `Missing: ${miss.map(pad2).join(", ")}, one chunk in each packet.` : "Nothing lost: every packet is complete."));
+    let text;
+    if (qi >= 1 && qi <= n) text = `Which chunks travel in sent Packet ${qi}?`;
+    else if (qi === n + 1) text = `All sent packets are in. How many chunks is Packet ${askP()} missing?`;
+    else if (drawn < 0) text = `Packet creation at sender: ${n} packets of ${n} chunks (01 to ${pad2(n * n)}), written right to left. Press Play to send them column by column.`;
+    else if (drawn === 0) text = `Packet creation at sender: Packet 1 = ${list(ORIG_ROW(1, n))}, …, Packet ${n} = ${list(ORIG_ROW(n, n))}. Sending column by column: the rightmost column leaves first.`;
+    else if (drawn <= n) text = drawn === lost
+      ? `Sent Packet ${drawn} (${list(sent[drawn - 1])}) is lost on the link: the receiver gets nothing for column ${drawn}, one chunk of every packet.`
+      : `Sent Packet ${drawn} carries chunk ${drawn} of every packet: ${list(sent[drawn - 1])}. The receiver puts each chunk back in its own packet.`;
+    else text = (lost
+      ? `Packet recreation at receiver: chunks ${miss.map(pad2).join(", ")} are missing, one in each packet. Each packet is missing one chunk out of ${n}: we can afford to let one chunk be missing in each packet.`
+      : `Packet recreation at receiver: every sent packet arrived, so all ${n} packets are complete.`) + (pos >= count() ? q.tally() : "");
+    if (caption.textContent !== text) caption.textContent = text;
+    renderAsk(qi);
+  }
+  function restart() { q.reset(); pb.reset(count()); }
+  pb = createPlayback({ count: count(), unit: "step", onFrame: frame, stepMs: () => cfg.stepMs || 1200,
+    limit: () => (q.on ? q.block(count(), needs) : count()), onBlocked: nudge(ask) });
+  box.append(pb.el, el("p", "widget-note", "Not all the chunks belonging to the same packet can be missing. We can afford to let one chunk be missing in each packet."));
+  restart();
+}
+
+// ---------- widget: noise-burst ----------
+// Slides 7-9: bits affected = data rate × noise duration.
+const RATE_UNITS = { bps: 1, kbps: 1e3, Mbps: 1e6, Gbps: 1e9 };
+const DUR_UNITS = { s: 1, ms: 1e-3, "μs": 1e-6 };
+const NOISE_PRESETS = { "1 kbps (slide 9a)": [1, "kbps", 0.001, "s"], "1 Mbps (slide 9b)": [1, "Mbps", 0.001, "s"] };
+const NOISE_BITS = "0110100111010010110010110100110";
+/** A plain decimal (no exponent): 0.000001, 1000000. */
+function plainNum(x) {
+  if (Number.isInteger(x)) return Math.abs(x) < 1e21 ? x.toLocaleString("en-US", { useGrouping: false }) : String(x);
+  return x.toFixed(12).replace(/0+$/, "").replace(/\.$/, "");
+}
+function noiseBurst(box, cfg) {
+  const presets = presetsOf(cfg, NOISE_PRESETS), names = Object.keys(presets);
+  const unitOf = (u, table, dflt) => { if (u == null) return dflt; const k = Object.keys(table).find((x) => x.toLowerCase() === String(u).toLowerCase()) || (String(u) === "us" ? "μs" : null); return k || dflt; };
+  const fromPreset = (p) => (Array.isArray(p) ? { rate: p[0], unit: p[1], duration: p[2], durUnit: p[3] } : p || {});
+  const init = (c) => ({ rate: c.rate != null ? String(c.rate) : "1", unit: unitOf(c.unit, RATE_UNITS, "kbps"), duration: c.duration != null ? String(c.duration) : "0.001", durUnit: unitOf(c.durUnit, DUR_UNITS, "s") });
+  let st = init(cfg);
+  box.append(el("h4", null, cfg.title || "Bits affected by a noise burst (slides 7-9)"));
+  const presetCh = choice(names, -1, (i) => { st = init(fromPreset(presets[names[i]])); sync(); render(); });
+  const rF = textField("data rate", st.rate, 110), dF = textField("noise duration", st.duration, 110);
+  const uKeys = Object.keys(RATE_UNITS), dKeys = Object.keys(DUR_UNITS);
+  const uCh = choice(uKeys, uKeys.indexOf(st.unit), (i) => { st.unit = uKeys[i]; render(); });
+  const dCh = choice(dKeys, dKeys.indexOf(st.durUnit), (i) => { st.durUnit = dKeys[i]; render(); });
+  rF.row.append(uCh.row); dF.row.append(dCh.row);
+  rF.on(() => { st.rate = rF.get(); render(); });
+  dF.on(() => { st.duration = dF.get(); render(); });
+  const view = el("div");
+  box.append(presetCh.row, rF.row, dF.row, view, el("p", "widget-note", "Number of bits affected by the noise depends on the data rate and the duration of noise. Convert first: kbps × 1000, Mbps × 1 000 000, Gbps × 10⁹ give bps; ms ÷ 1000 and μs ÷ 1 000 000 give seconds."));
+  function sync() { rF.set(st.rate); dF.set(st.duration); uCh.set(uKeys.indexOf(st.unit)); dCh.set(dKeys.indexOf(st.durUnit)); }
+  function render() {
+    view.innerHTML = "";
+    const rate = Number(st.rate), dur = Number(st.duration);
+    names.forEach((nm, i) => { const p = init(fromPreset(presets[nm])); presetCh.row.children[i].classList.toggle("active", Number(p.rate) === rate && p.unit === st.unit && Number(p.duration) === dur && p.durUnit === st.durUnit); });
+    if (!(rate > 0) || !(dur > 0) || !Number.isFinite(rate) || !Number.isFinite(dur)) { view.append(verdict("bad", "Data rate and noise duration: positive numbers.")); return; }
+    const bps = bitsHit(rate, RATE_UNITS[st.unit]), sec = bitsHit(dur, DUR_UNITS[st.durUnit]), hits = bitsHit(bps, sec);
+    const conv = [];
+    if (st.unit !== "bps") conv.push(`${plainNum(rate)} ${st.unit} = ${plainNum(bps)} bps`);
+    if (st.durUnit !== "s") conv.push(`${plainNum(dur)} ${st.durUnit} = ${plainNum(sec)} s`);
+    if (conv.length) view.append(line("Convert", conv.join("; ")));
+    view.append(line("One bit lasts", `1 / ${plainNum(bps)} s = ${plainNum(bitsHit(1 / bps, 1))} s; the noise lasts ${plainNum(sec)} s`));
+    // the bit row: 4 bits either side of the window, at most 32 shaded cells (16 + … + 16 beyond that)
+    const shade = Math.max(1, Math.ceil(hits - 1e-9)), row = el("span", "net6-cells net6-noise");
+    let k = 0;
+    const cell = (cls) => { row.append(el("span", "net6-b sm" + (cls ? " " + cls : ""), NOISE_BITS[k++ % NOISE_BITS.length])); };
+    for (let i = 0; i < 4; i++) cell("");
+    const part = hits < 1 ? " part" : "";
+    if (shade <= 32) for (let i = 0; i < shade; i++) cell("noise" + part);
+    else {
+      for (let i = 0; i < 16; i++) cell("noise");
+      row.append(el("span", "net6-msg net6-more", `… ${plainNum(bitsHit(hits - 32, 1))} more …`));
+      for (let i = 0; i < 16; i++) cell("noise");
+    }
+    for (let i = 0; i < 4; i++) cell("");
+    view.append(line(`Noise ${plainNum(dur)} ${st.durUnit}`, row));
+    const unitW = hits === 1 ? "bit" : "bits";
+    view.append(el("div", "net6-verdict " + (hits > 1 ? "warn" : "ok"), `bits affected = data rate × noise duration = ${plainNum(bps)} × ${plainNum(sec)} = ${plainNum(hits)} ${unitW}`));
+    view.append(el("p", "net6-msg", hits > 1 ? `A burst error: the noise lasts longer than one bit, so ${plainNum(hits)} bits in a row are corrupted.` : hits === 1 ? "A single-bit error: the noise lasts exactly one bit time." : "The noise is shorter than one bit time: at most one bit is hit."));
+  }
+  sync();
+  render();
+}
+
 export const WIDGETS = {
   "codeword-lab": codewordLab,
   "crc-calc": crcCalc,
@@ -1442,4 +1928,8 @@ export const WIDGETS = {
   "crc-play": crcPlay,
   "stuff-play": stuffPlay,
   "stop-wait-play": stopWaitPlay,
+  "fsm-explorer": fsmExplorer,
+  "fec-lab": fecLab,
+  "interleave-play": interleavePlay,
+  "noise-burst": noiseBurst,
 };

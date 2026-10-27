@@ -1281,3 +1281,45 @@ select.q-input { width: auto; }
 .net6-pill.on { border-color: var(--hl); background: var(--hl-soft); color: var(--hl); font-weight: 600; }
 .net6-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12px; color: var(--ink-dim); margin: -4px 0 4px; }
 .net6-legend-item { display: inline-flex; align-items: center; gap: 5px; }
+/* ---------- COMP 3721 Week 7 P2 widgets (app/widgets-net6.js): fsm-explorer, fec-lab, interleave-play, noise-burst ---------- */
+.net6-fsm { display: flex; flex-wrap: wrap; gap: 12px 22px; align-items: flex-start; }
+.net6-fsm-node { flex: 1 1 240px; min-width: 0; max-width: 100%; }
+.net6-fsm-title { font-size: 13px; font-weight: 600; color: var(--ink-2); margin: 2px 0 4px; }
+.net6-fsm-svg { display: block; width: 100%; height: auto; }
+.net6-fsm-svg text { font-family: var(--body); font-size: 10.5px; }
+.net6-fsm-svg .st { fill: var(--paper-2); stroke: var(--green); stroke-width: 1.5; }
+.net6-fsm-svg .st.cur { fill: var(--hl-soft); stroke: var(--hl); stroke-width: 2.5; }
+.net6-fsm-svg .stl { fill: var(--ink); font-size: 12px; font-weight: 600; }
+.net6-fsm-svg .ln { fill: none; stroke: var(--ink-dim); stroke-width: 1.4; }
+.net6-fsm-svg .hd { fill: var(--ink-dim); }
+.net6-fsm-svg .ev { fill: var(--blue); }
+.net6-fsm-svg .act { fill: var(--ink); }
+.net6-fsm-svg .hot .ln { stroke: var(--hl); stroke-width: 2.4; }
+.net6-fsm-svg .hot .hd, .net6-fsm-svg .hot .ev { fill: var(--hl); }
+.net6-fsm-svg .start .ln { stroke: var(--red); stroke-width: 2; }
+.net6-fsm-svg .start .hd, .net6-fsm-svg .start circle { fill: var(--red); }
+.net6-fsm-evs .viz-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.net6-fsm-why { font-size: 12px; color: var(--ink-dim); margin: 2px 0; }
+.net6-fsm-out { font-size: 13px; color: var(--ink); margin: 6px 0 2px; min-height: 18px; }
+.net6-tt { border-collapse: collapse; font-size: 12.5px; margin: 8px 0; width: 100%; }
+.net6-tt th, .net6-tt td { border: 1px solid var(--rule); padding: 3px 6px; text-align: left; vertical-align: top; color: var(--ink-2); }
+.net6-tt th { color: var(--ink-dim); font-weight: 600; background: var(--paper-2); }
+.net6-tt td.ev { color: var(--blue); }
+.net6-tt tr.grp td { background: var(--paper-3); color: var(--ink); font-weight: 600; }
+.net6-tt tr.hot td { background: var(--hl-soft); color: var(--ink); }
+.net6-grids { display: flex; flex-wrap: wrap; gap: 8px 26px; align-items: flex-start; margin: 4px 0; }
+.net6-grid { min-width: 0; }
+.net6-grid-h { font-size: 12.5px; font-weight: 600; color: var(--ink-2); margin: 8px 0 3px; }
+.net6-grid-sub { font-size: 11.5px; color: var(--ink-dim); margin-bottom: 3px; }
+.net6-pkt { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 2px 0; padding: 1px 4px; border: 1px solid transparent; border-radius: 4px; background: none; color: inherit; font: inherit; text-align: left; }
+button.net6-pkt { cursor: pointer; }
+button.net6-pkt:hover { border-color: var(--rule-strong); }
+.net6-pkt .lab { width: 60px; flex: none; font-size: 12px; color: var(--ink-dim); }
+.net6-pkt .tag { font-size: 12px; font-weight: 600; color: var(--red); }
+.net6-b.lost { color: transparent; border: 1px dashed #ffa94d; background: rgba(255, 169, 77, 0.18); }
+.net6-b.lost.hot-gap { box-shadow: 0 0 0 2px #ffa94d; }
+.net6-b.empty { color: transparent; border-style: dashed; background: none; }
+.net6-b.noise { color: var(--red); border-color: var(--red); background: repeating-linear-gradient(45deg, var(--red-soft) 0 4px, transparent 4px 8px); }
+.net6-b.noise.part { background: linear-gradient(90deg, var(--red-soft) 0 30%, transparent 30%); }
+.net6-more { align-self: center; padding: 0 4px; white-space: nowrap; }
+.net6-xor .net6-row > .lab { min-width: 36px; font-family: var(--mono); }
