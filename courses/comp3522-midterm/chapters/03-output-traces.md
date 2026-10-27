@@ -430,7 +430,7 @@ int main()
     "type": "numeric",
     "answer": 1,
     "tolerance": 0,
-    "explain": "Real output: `Number(int) 5` / `~Number 5`, so one object. The slide's \"based on code\" picture shows a temporary copied into n by the copy constructor, but since C++17 the elision is guaranteed: `Number(num)` is built directly in n."
+    "explain": "Real output: `Number(int) 5` / `~Number 5`, so one object. Read from the code alone, `return Number(num);` asks for three objects (the temporary, the function's return value, n) and two copy-constructor calls, but since C++17 the elision is guaranteed: `Number(num)` is built directly in n."
   },
   {
     "q": "Same class, main changed to `Number n (Number(2));`. Which constructor is called after the `Number(2)` object is created?",
@@ -447,7 +447,7 @@ int main()
 ]
 ```
 
-Both programs print one constructor line and one destructor line: one object. The deck draws the "based on code" picture first, where `return Number(num);` (or `Number(2)`) makes a temporary and the copy constructor `Number(const Number &n2)` copies it into `n`. Then slide 20 gives the rule. Slide wording: *the compiler optimized our call by avoiding the call to copy constructor and directly called 1 parameter constructor*.
+Both programs print one constructor line and one destructor line: one object. Read from the code alone, `return Number(num);` asks for three objects (the temporary, the function's return value and `n`) and two calls to the copy constructor `Number(const Number &n2)`. The deck's "based on code" picture is the `Number(2)` case: one temporary, copied into `n` by one copy-constructor call. Then slide 20 gives the rule. Slide wording: *the compiler optimized our call by avoiding the call to copy constructor and directly called 1 parameter constructor*.
 
 The slides call this an optimization that some compilers may skip. Since C++17 it is guaranteed: an unnamed temporary of the same type that initializes an object is built directly in that object. No temporary exists, so no copy runs, even with `-fno-elide-constructors`. Only slide 16's named version, `Number tempN(num); return tempN;` (NRVO), is still optional; g++ performs it, so that version also prints one object. The full treatment is in [Week 7: copy elision and RVO](#/comp3522-w7/copy-elision-rvo).
 

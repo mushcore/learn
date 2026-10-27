@@ -1,0 +1,108 @@
+{
+  "lang": "cpp",
+  "title": "COMP 3522 C++ · Week 7",
+  "subtitle": "static members, copy elision and return value optimization, the right-left rule, and the midterm review: references, operators, virtual, functions, the copy constructor",
+  "description": "Everything in the Week 7 deck and the Week7 sample programs (static, static_functions, Calculator, StaticCalculator, basic, copy_elision, Inheritance, Inheritance2, oop_multi3, operators, operatorsBasic): static data members declared in the class and defined once outside, the two ways to reach them, the three in-class initialization cases, static member functions and the class you never instantiate, copy elision and return value optimization with the Number class, NRVO, what C++17 guarantees, the three times the copy constructor runs with basic.cpp and copy_elision.cpp run for real, the right-left rule for reading declarations in five steps, and the instructor's review block: references, member versus friend operators, the three meanings of virtual, kinds of functions, shallow and deep copies. Every program runnable with its real output; a mock quiz and a one-page sheet close the week.",
+  "intro": ":::quiz The midterm and this week\nThe midterm is on **Thursday October 29, 2026, 3:30 pm, SW03-1710**: 90 minutes, on paper, one hand-written double-sided cheat sheet, covering **Weeks 1 to 7**. The first half of this deck is new (static members, copy elision and RVO, the right-left rule); the second half is the **instructor's review list** for the midterm: references, overloaded operators, virtual, functions, the copy constructor.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "mock-quiz-7",
+        "note": "take it cold first, so you know where the gaps are"
+      },
+      {
+        "lesson": "right-left-rule",
+        "note": "the five steps on int (**var[])(); then the six slide declarations"
+      },
+      {
+        "lesson": "copy-elision-rvo",
+        "note": "how many Number objects; RVO versus NRVO; what C++17 guarantees"
+      },
+      {
+        "lesson": "static-data-members",
+        "note": "declared inside, defined once outside; the three in-class initialization cases"
+      },
+      {
+        "lesson": "review-virtual",
+        "note": "virtual functions, the virtual destructor, virtual inheritance and the most derived class"
+      },
+      {
+        "lesson": "cheat-sheet-7",
+        "note": "read it once, then copy the rules you missed onto your midterm sheet"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Static members",
+      "lessons": [
+        {
+          "id": "static-data-members",
+          "title": "Static data members: one copy per class",
+          "file": "chapters/01-static-data-members.md"
+        },
+        {
+          "id": "static-member-functions",
+          "title": "Static member functions and the class you never instantiate",
+          "file": "chapters/02-static-member-functions.md"
+        }
+      ]
+    },
+    {
+      "title": "2. Copy elision and the copy constructor",
+      "lessons": [
+        {
+          "id": "copy-elision-rvo",
+          "title": "Copy elision and return value optimization",
+          "file": "chapters/03-copy-elision-rvo.md"
+        },
+        {
+          "id": "copy-constructor-calls",
+          "title": "When the copy constructor runs: basic.cpp and copy_elision.cpp",
+          "file": "chapters/04-copy-constructor-calls.md"
+        }
+      ]
+    },
+    {
+      "title": "3. The right-left rule and the review",
+      "lessons": [
+        {
+          "id": "right-left-rule",
+          "title": "The right-left rule for reading declarations",
+          "file": "chapters/05-right-left-rule.md"
+        },
+        {
+          "id": "review-references-operators",
+          "title": "Review: references, and member versus friend operators",
+          "file": "chapters/06-review-references-operators.md"
+        },
+        {
+          "id": "review-virtual",
+          "title": "Review: the three meanings of virtual",
+          "file": "chapters/07-review-virtual.md"
+        },
+        {
+          "id": "review-functions-copy-ctor",
+          "title": "Review: kinds of functions, and the copy constructor",
+          "file": "chapters/08-review-functions-copy-ctor.md"
+        }
+      ]
+    },
+    {
+      "title": "4. Mock quiz and cheat sheet",
+      "lessons": [
+        {
+          "id": "mock-quiz-7",
+          "title": "Mock Quiz 7",
+          "file": "chapters/09-mock-quiz-7.md"
+        },
+        {
+          "id": "cheat-sheet-7",
+          "title": "Week 7 on one page",
+          "file": "chapters/10-cheat-sheet-7.md"
+        }
+      ]
+    }
+  ]
+}

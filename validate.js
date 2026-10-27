@@ -34,6 +34,7 @@ const WIDGETS = new Set([
   "process-states-play", "context-switch-play", "cpu-util", "multiprog-play", "fork-play",
   "thread-models", "syscall-steps-play", "file-links",
   "codeword-lab", "crc-calc", "crc-play", "checksum-calc", "stuffing", "stuff-play", "stop-wait-play", "fsm-explorer", "fec-lab", "interleave-play", "noise-burst", // COMP 3721 Week 7
+  "rl-rule-step", "elision-trace", // COMP 3522 Week 7
 ]);
 const SERVER = process.env.LEARN_URL || "http://localhost:4321";
 const args = process.argv.slice(2);

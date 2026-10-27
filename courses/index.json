@@ -43,6 +43,12 @@
           "description": "Built from the Week 6 deck and the twelve Week6 programs. A container picker, a begin/end walker, an iterator-operations table that shows what compiles, a strict-weak-ordering checker, a map insert visualizer and a partition stepper; every program runnable with its real output and the three activities worked (cities, the Date operator<, two structures and two algorithms). Ends with a mock quiz and a cheat sheet."
         },
         {
+          "id": "comp3522-w7",
+          "title": "Week 7",
+          "subtitle": "static members, copy elision and return value optimization, the right-left rule, and the midterm review: references, operators, virtual, functions, the copy constructor",
+          "description": "Built from the Week 7 deck and the Week7 sample programs (static, static_functions, Calculator, StaticCalculator, basic, copy_elision, Inheritance, Inheritance2, oop_multi3, operators, operatorsBasic). Static members, copy elision and RVO with the real outputs, the right-left rule as a stepper, and the instructor's review block condensed with links back to Weeks 2 to 4. Ends with a mock quiz and a one-page sheet."
+        },
+        {
           "id": "comp3522-midterm",
           "title": "Midterm",
           "subtitle": "Oct 29, 3:30 pm, SW03-1710: the practice midterm worked, the theory questions drilled, a double-sided cheat sheet",
