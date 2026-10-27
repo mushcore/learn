@@ -113,13 +113,13 @@ $\mu = 98.20$, $\sigma = 0.62$. The "usual" range is $\mu \pm 2\sigma = 98.20 \p
 
 ## Z-scores for a month of Allflame Divine prices
 
-The Divine Orb is PoE1's high-value currency, priced in Chaos Orbs. Take poe.ninja's daily Divine price for the last 30 days of the Allflame league, 2026-09-28 to 2026-10-27 [PoE1, 3.29 Allflame Divine price, checked 2026-10-27]: $\bar{X} = 329.22$ chaos and $s = 46.5915$ chaos. The window opens on a 163.8-chaos day, today's price is 270.0, and the window's high is 379.0.
+The Divine Orb is PoE1's high-value currency, priced in Chaos Orbs. Take poe.ninja's daily Divine price for the last 30 days of the Allflame league, 2026-09-28 to 2026-10-27 [PoE1, 3.29 Allflame Divine price, checked 2026-10-27]: $\bar{X} = 329.22$ chaos and $s = 46.5915$ chaos. The window opens with poe.ninja's 163.8-chaos reading for 28 September, a receive-side-only dip (that day's pay side works out to about 300 chaos), likely a recording artifact. The 27 October price is 270.0, and the window's high is 379.0.
 
 ```quiz
 [
-  {"q": "Allflame Divine, last 30 days: $\\bar{X} = 329.22$, $s = 46.5915$ chaos. Z-score of the 163.8-chaos day? (2 decimals)", "type": "numeric", "answer": -3.55, "tolerance": 0.01, "explain": "$Z = (X - \\bar{X})/s = (163.8 - 329.22)/46.5915 = -165.42/46.5915 = -3.55$: three and a half standard deviations below the window's mean."},
-  {"q": "Is the 163.8-chaos day usual or unusual for this window?", "type": "text", "answer": ["unusual", "Unusual", "it is unusual"], "explain": "$Z = -3.55 < -2$, so it is unusual: far below every other day in the window, which runs 265.0 to 379.0."},
-  {"q": "Z-score of today's price, 270.0 chaos? (2 decimals)", "type": "numeric", "answer": -1.27, "tolerance": 0.01, "explain": "$Z = (270.0 - 329.22)/46.5915 = -59.22/46.5915 = -1.27$: below the mean but inside $-2 < Z < 2$, so usual."},
+  {"q": "Allflame Divine, last 30 days: $\\bar{X} = 329.22$, $s = 46.5915$ chaos. Z-score of poe.ninja's 163.8-chaos reading? (2 decimals)", "type": "numeric", "answer": -3.55, "tolerance": 0.01, "explain": "$Z = (X - \\bar{X})/s = (163.8 - 329.22)/46.5915 = -165.42/46.5915 = -3.55$: three and a half standard deviations below the window's mean."},
+  {"q": "Is the 163.8-chaos reading usual or unusual for this window?", "type": "text", "answer": ["unusual", "Unusual", "it is unusual"], "explain": "$Z = -3.55 < -2$, so it is unusual: far below every other day in the window, which runs 265.0 to 379.0. A Z-score this far out is how you catch a likely recording error before trusting it."},
+  {"q": "Z-score of the 27 October price, 270.0 chaos? (2 decimals)", "type": "numeric", "answer": -1.27, "tolerance": 0.01, "explain": "$Z = (270.0 - 329.22)/46.5915 = -59.22/46.5915 = -1.27$: below the mean but inside $-2 < Z < 2$, so usual."},
   {"q": "Above what price is a day unusually high for this window? (chaos, 1 decimal)", "type": "numeric", "answer": 422.4, "tolerance": 0.05, "unit": "chaos", "explain": "Unusual means $Z > 2$: $X = \\bar{X} + 2s = 329.22 + 2(46.5915) = 329.22 + 93.183 = 422.4$ chaos. The window's high of 379.0 is below it, so no day is unusually high. The low cutoff is $329.22 - 93.183 = 236.0$ chaos."},
   {"q": "Which price has $Z = -1.5$ in this window? (chaos, 1 decimal)", "type": "numeric", "answer": 259.3, "tolerance": 0.05, "unit": "chaos", "explain": "$X = \\bar{X} + Zs = 329.22 + (-1.5)(46.5915) = 329.22 - 69.887 = 259.3$ chaos."}
 ]

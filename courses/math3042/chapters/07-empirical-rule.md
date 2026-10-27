@@ -4,7 +4,7 @@ minutes: 20
 ---
 <!-- facts: classic.data.monsters, gms.data.ranking-level-hero-2026-10-27 -->
 
-If $X$ follows a **normal distribution**, the **empirical rule** gives three fixed percentages for the share of values near the mean, built entirely from $\mu$ and $\sigma$ (or $\bar{X}$ and $s$ for a sample). If $X$ is not bell-shaped, those percentages are simply wrong, and a skewed MapleStory Classic monster list shows by how much.
+If $X$ follows a **normal distribution**, the **empirical rule** gives three fixed percentages for the share of values near the mean, built entirely from $\mu$ and $\sigma$ (or $\bar{X}$ and $s$ for a sample). If $X$ is not bell-shaped, those percentages can be far off, and a skewed MapleStory Classic monster list shows by how much.
 
 ## The three bands
 
@@ -49,13 +49,13 @@ Every band question is adding and subtracting slices of 68/95/99.7 on a curve sy
 
 ## Classic World monster HP: the rule fails on a skewed list
 
-meowdb's monster table for MapleStory Classic World, Nexon's separate classic-era server, lists 92 monsters with their HP [Classic, Classic World Grand Launch monster table, checked 2026-10-27]. Drop the 5 rows that give 0 EXP (four Lv 200 "Super" test mobs and the Lv 30 Straw Training Dummy) and 87 monsters remain. Most have a few hundred to a few thousand HP, with median 1 001, but bosses and elites run from Mano's 7 420 up to Jr. Balrog's 325 400. The rule assumes a bell and this list is heavily right-skewed, so the rule should fail here.
+meowdb's monster table for MapleStory Classic World, Nexon's separate classic-era server, lists 92 monsters with their HP [Classic, Classic World Grand Launch monster table, checked 2026-10-27]. Drop the 5 rows that give 0 EXP (four Lv 200 "Super" test mobs and the Lv 30 Straw Training Dummy) and 87 monsters remain. Most have a few hundred to a few thousand HP, with median 1 001, but bosses and high-level monsters run from Mano's 7 420 up to Jr. Balrog's 325 400. The rule assumes a bell and this list is heavily right-skewed, so the rule should fail here.
 
 The 87 values have $\bar{X}$ = 8 610 HP and $s$ = 36 800 HP (unrounded 8 614.07 and 36 751.8).
 
 ```quiz
 [
-  {"q": "Classic World monster HP, 87 monsters: $\\bar{X} = 8614.07$, $s = 36751.8$. Lower end of $\\bar{X} \\pm s$? (3 significant digits)", "type": "numeric", "answer": -28100, "tolerance": 50, "unit": "HP", "explain": "$\\bar{X} - s = 8614.07 - 36751.8 = -28137.7$, or −28 100 HP to 3 significant digits. A negative HP: no monster can sit at or below it, so the band's whole lower half is empty, where a bell would put 16% of values below $\\bar{X} - s$."},
+  {"q": "Classic World monster HP, 87 monsters: $\\bar{X} = 8614.07$, $s = 36751.8$. Lower end of $\\bar{X} \\pm s$? (3 significant digits)", "type": "numeric", "answer": -28100, "tolerance": 50, "unit": "HP", "explain": "$\\bar{X} - s = 8614.07 - 36751.8 = -28137.7$, or −28 100 HP to 3 significant digits. A negative HP: no monster can sit at or below it, so nothing lies below the band, where a bell would put 16% of values."},
   {"q": "83 of the 87 HP values fall inside $\\bar{X} \\pm s$ (−28 100 to 45 400 HP). What percentage is that? (1 decimal)", "type": "numeric", "answer": 95.4, "tolerance": 0.05, "unit": "%", "explain": "$83/87 = 0.9540 = 95.4\\%$. The rule says about 68%. Only the four biggest monsters (Shade 47 000, Zombie Mushmom 66 640, Rotten Mushmom 86 400, Jr. Balrog 325 400) are outside: the few huge values inflate $s$ until one $s$ covers nearly the whole list."}
 ]
 ```
@@ -66,7 +66,7 @@ The 87 values have $\bar{X}$ = 8 610 HP and $s$ = 36 800 HP (unrounded 8 614.07 
 | $\bar{X} \pm 2s$ | −64 900 to 82 100 | 85 | 97.7% | 95% |
 | $\bar{X} \pm 3s$ | −102 000 to 119 000 | 86 | 98.9% | 99.7% |
 
-Three things break. Every lower end is negative, so there is no lower tail at all. The one-$s$ band holds 95.4%, not 68%. And the three-$s$ band still misses Jr. Balrog, 8.62 standard deviations above the mean: 1.1% of the list sits outside $\bar{X} \pm 3s$ where a bell leaves 0.3%. The rule is not roughly right here; it is the wrong tool. A mean of 8 610 against a median of 1 001 is the warning to check before using it, and Chebyshev's rule (next lesson) is the bound that still holds.
+Three things break. Every lower end is negative, so nothing lies below any band: there is no lower tail at all. The one-$s$ band holds 95.4%, not 68%. And the three-$s$ band still misses Jr. Balrog, 8.62 standard deviations above the mean: 1.1% of the list sits outside $\bar{X} \pm 3s$ where a bell leaves 0.3%. The rule is not roughly right here; it is the wrong tool. A mean of 8 610 against a median of 1 001 is the warning to check before using it, and Chebyshev's rule (next lesson) is the bound that still holds.
 
 ## Lab 1 pencil problem 5: moisture content
 
@@ -96,7 +96,7 @@ Nexon's North America ranking lists the top 500 Heroes, a MapleStory warrior job
 
 ```quiz
 [
-  {"q": "Top 500 Heroes: $\\bar{X} = 294.896$, $s = 1.43991$. Upper end of $\\bar{X} \\pm s$? (2 decimals)", "type": "numeric", "answer": 296.34, "tolerance": 0.005, "explain": "$\\bar{X} + s = 294.896 + 1.43991 = 296.336 \\approx 296.34$. The lower end is $294.896 - 1.43991 = 293.456$, so the band holds levels 294, 295 and 296."},
+  {"q": "Top 500 Heroes: $\\bar{X} = 294.896$, $s = 1.43991$. Upper end of $\\bar{X} \\pm s$? (2 decimals, because the band ends fall between whole levels)", "type": "numeric", "answer": 296.34, "tolerance": 0.005, "explain": "$\\bar{X} + s = 294.896 + 1.43991 = 296.336 \\approx 296.34$. The lower end is $294.896 - 1.43991 = 293.456$, so the band holds levels 294, 295 and 296. Rounding to 3 significant digits would turn 293.456 into 293 and wrongly put level 293 inside; at $2s$ the same happens to 297.776 and level 298."},
   {"q": "What percentage of the 500 Heroes sit inside $\\bar{X} \\pm s$? (1 decimal)", "type": "numeric", "answer": 72.2, "tolerance": 0.05, "unit": "%", "explain": "Levels 294 to 296: $102 + 200 + 59 = 361$ Heroes, and $361/500 = 72.2\\%$. The rule says about 68%: close."},
   {"q": "What percentage sit inside $\\bar{X} \\pm 2s$? (1 decimal)", "type": "numeric", "answer": 94.0, "tolerance": 0.05, "unit": "%", "explain": "$2s = 2.87982$, so the band is $292.016$ to $297.776$: levels 293 to 297. $85 + 102 + 200 + 59 + 24 = 470$, and $470/500 = 94.0\\%$ against the rule's 95%."},
   {"q": "What percentage sit inside $\\bar{X} \\pm 3s$? (1 decimal)", "type": "numeric", "answer": 98.8, "tolerance": 0.05, "unit": "%", "explain": "$3s = 4.31973$, so the band is $290.576$ to $299.216$: levels 293 to 299, $500 - 6 = 494$ Heroes, $494/500 = 98.8\\%$ against the rule's 99.7%. The six level-300 Heroes are the ones outside."},
