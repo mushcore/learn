@@ -36,7 +36,7 @@ Rule 3 follows from unstuffing. The receiver removes the bit after every five 1s
 Week 6's TDM [pulse stuffing](#/comp3721-w6/tdm-rate-management) (06a, slide 43, "bit padding, bit stuffing") adds dummy bits to raise a slower line to the dominant rate; it is a different thing from this framing bit stuffing, a 0 after five 1s.
 :::
 
-## The slide's 22 bits become 24
+## Slide 21 stuffs a 22-bit data field
 
 Slide 21 stuffs the 22-bit data 0001111111001111101000. Grouped by the counter:
 
@@ -101,18 +101,18 @@ Run the counter on each string and type the result without spaces.
 ```quiz
 [
   {
-    "q": "Bit-stuff the slide's data 0001111111001111101000. Type the stuffed data field without spaces.",
+    "q": "Bit-stuff the data 00111111011111. Type the stuffed data field without spaces.",
     "type": "text",
-    "answer": ["000111110110011111001000"],
-    "explain": "000 | 11111 → stuff 0 | 11 | 00 | 11111 → stuff 0 | 01000. Stuffed: 000 11111 0 11 00 11111 0 01000 = 000111110110011111001000, 24 bits."
+    "answer": ["0011111010111110"],
+    "explain": "00 | 11111 → stuff 0 | 1 | 0 | 11111 → stuff 0. Stuffed: 00 11111 0 1 0 11111 0 = 0011111010111110, 16 bits. The last five 1s end the data, and the 0 is stuffed there too: the receiver removes the bit after any five 1s."
   },
   {
-    "q": "How many extra bits does bit stuffing add to the slide's 22-bit data 0001111111001111101000?",
+    "q": "How many extra bits does bit stuffing add to the 14-bit data 00111111011111?",
     "type": "numeric",
     "answer": 2,
     "tolerance": 0,
     "unit": "bits",
-    "explain": "Two runs reach five 1s (data bits 4 to 8 and 13 to 17), so two 0s are inserted: 22 → 24 bits, *Two extra bits*."
+    "explain": "Two runs reach five 1s: the first five of the six 1s, and the five 1s at the end. 14 → 16 bits, 2 extra."
   },
   {
     "q": "Bit-stuff the data 1111101111110. Type the stuffed bits without spaces.",

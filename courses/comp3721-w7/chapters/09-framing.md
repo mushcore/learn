@@ -96,13 +96,13 @@ Count the bytes first, then write the stream. FLAG and ESC are one byte each.
     "answer": 7,
     "tolerance": 0,
     "unit": "bytes",
-    "explain": "One FLAG and one ESC, so 2 ESCs are added: 5 + 2 = 7 bytes. The stuffed field is A ESC FLAG B ESC ESC C."
+    "explain": "One FLAG and one ESC, so 2 ESCs are added: 5 + 2 = 7 bytes."
   },
   {
-    "q": "Which is the stuffed data field for A FLAG B ESC C?",
-    "options": ["A ESC FLAG B ESC ESC C", "A ESC FLAG B ESC C", "A FLAG ESC B ESC ESC C", "ESC A FLAG B ESC C ESC"],
-    "answer": 0,
-    "explain": "ESC goes before every flag or ESC in the text: A, ESC FLAG, B, ESC ESC, C. Stuffing only the FLAG leaves the data's own ESC unprotected, and the ESC always goes in front of the byte, never after it."
+    "q": "Byte-stuff the data A FLAG B ESC C. Type the stuffed data field as bytes separated by single spaces, e.g. P ESC Q.",
+    "type": "text",
+    "answer": ["A ESC FLAG B ESC ESC C", "A,ESC,FLAG,B,ESC,ESC,C", "A, ESC, FLAG, B, ESC, ESC, C"],
+    "explain": "A ESC FLAG B ESC ESC C. ESC goes before every flag or ESC in the text: A, ESC FLAG, B, ESC ESC, C. Stuffing only the FLAG leaves the data's own ESC unprotected, and the ESC always goes in front of the byte, never after it."
   },
   {
     "q": "The data is ESC ESC (2 bytes). How many bytes does the data field have after byte stuffing?",
@@ -113,9 +113,9 @@ Count the bytes first, then write the stream. FLAG and ESC are one byte each.
     "explain": "Each ESC gets an ESC in front: ESC ESC ESC ESC, 2 + 2 = 4 bytes."
   },
   {
-    "q": "The receiver gets the data field X ESC ESC ESC FLAG Y. What does it deliver to the upper layer?",
-    "options": ["X ESC FLAG Y", "X FLAG Y", "X ESC ESC FLAG Y", "X, then the frame ends at FLAG"],
-    "answer": 0,
+    "q": "The receiver gets the data field X ESC ESC ESC FLAG Y. What does it deliver to the upper layer? Type the bytes separated by single spaces, e.g. P ESC Q.",
+    "type": "text",
+    "answer": ["X ESC FLAG Y", "X,ESC,FLAG,Y", "X, ESC, FLAG, Y"],
     "explain": "The receiver removes each ESC and treats the next character as data: X; ESC → remove it, keep ESC; ESC → remove it, keep FLAG as data; Y. Result X ESC FLAG Y. The FLAG follows an ESC, so it does not end the frame."
   }
 ]

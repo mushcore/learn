@@ -44,6 +44,13 @@ The receiver has one state, Ready, with two loops:
 
 Blocking has no transition for a new packet from the network layer, so no new packet is accepted until the ACK arrives. That missing arrow is the flow control. The saved copy is what makes resending possible. A corrupted frame gets no ACK, so the sender's timer runs out and it resends.
 
+Fire the sender's events from Ready: a new packet is disabled while Blocking, and only an error-free ACK takes the sender back to Ready. Fire the receiver's two events to see which one sends an ACK.
+
+```widget
+fsm-explorer
+{ "machine": "sw" }
+```
+
 ## Three exchanges on slide 35
 
 Slide 35's legend: dark blue clock *Start the timer.*, white clock *Stop the timer.*, light blue clock *Restart a time-out timer.* Its notes: *A lost frame means either lost or corrupted. A lost ACK means either lost or corrupted.*

@@ -78,6 +78,13 @@ Slide 29 models a coin turnstile with two states, Locked and Unlocked; a black d
 
 In the diagram, push is a loop on Locked and coin is a loop on Unlocked: pushing a locked turnstile does nothing, and a second coin is accepted without changing anything. The other two inputs move the machine across, coin from Locked to Unlocked and push from Unlocked back to Locked.
 
+Click coin and push in any order: the lit arrow shows the transition, and the output prints under the drawing. Pushing while Locked and paying twice both leave the state as it was.
+
+```widget
+fsm-explorer
+{ "machine": "turnstile" }
+```
+
 ```quiz
 [
   {
