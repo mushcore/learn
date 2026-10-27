@@ -67,6 +67,121 @@ lifetime-trace
 
 Tally: 1 default, 5 copies, 2 fooing lines, 6 destructors = 14. Every constructor message must be matched by a destructor message eventually: 1 + 5 constructions, 6 destructions.
 
+:::info The review copy of Q20
+The instructor re-posted this program for the review lecture as `ReviewQuestion20`, with a `cout << endl;` after each of the four statements, so that copy prints these 14 lines plus four blank lines between the statements. Compiling it with `-fno-elide-constructors` changes nothing, because `A yetAnotherA = foo(littleA);` is guaranteed elision since C++17 and a returned parameter is never elided, so every copy above is one the language requires. In the first call the returned temporary and `input` both die at the semicolon; g++ destroys the temporary first and then `input` (the instructor's annotation lists `input` first), but both print the same `Destructor!`, so the output cannot show the order.
+:::
+
+## Parent and Child
+
+The review code also holds `ParentChild`: a `struct Parent` with a virtual destructor, a `struct Child : public Parent`, and two functions that take a `Parent` by value and by reference. Every constructor and destructor prints. As shipped only `Parent p;` runs; main carries three experiments as comments. Run it, then predict each experiment.
+
+```cpp run pin ParentChild.cpp
+// predict: As shipped, only `Parent p;` runs in main. Write every line printed.
+#include <iostream>
+using namespace std;
+struct Parent
+{
+    Parent() { cout << "Parent default constructor.\n"; }
+    Parent(const Parent&) { cout << "A Parent copy was made.\n"; }
+    virtual ~Parent() {cout << "Parent destructor.\n"; }
+};
+
+struct Child : public Parent
+{
+    Child() { cout << "Child default constructor.\n"; }
+    Child(const Child&) { cout << "A Child copy was made.\n"; }
+    ~Child() {cout << "Child destructor.\n"; }
+};
+
+void passByValue(Parent p) {
+    cout << "in passByValue" << endl;
+}
+
+void passByReference(Parent &p) {
+    cout << "in passByReference" << endl;
+}
+
+int main()
+{
+    //examine constructor/destructor calls for parent and child separately
+    Parent p;
+//    Child c;
+
+//    //examine constructor/destructor calls if parent does NOT have virtual destructor
+//    Parent *pPtr = new Child;
+//    delete pPtr;
+
+//    //examine constructor/destructor calls when passing by value or reference in functions
+//    Child c;
+//    passByValue(c);
+//    passByReference(c);
+
+    return 0;
+}
+```
+
+g++ prints three warnings for this file (Child's copy constructor does not name its Parent base, and both `p` parameters are unused); they do not stop it running.
+
+```quiz
+[
+  {
+    "q": "Experiment 1: main's only statement is `Child c;`. What prints?",
+    "code": "int main()\n{\n    Child c;\n    return 0;\n}",
+    "options": [
+      "`Parent default constructor.` / `Child default constructor.` / `Child destructor.` / `Parent destructor.`",
+      "`Child default constructor.` / `Parent default constructor.` / `Parent destructor.` / `Child destructor.`",
+      "`Parent default constructor.` / `Child default constructor.` / `Parent destructor.` / `Child destructor.`",
+      "`Child default constructor.` / `Child destructor.`"
+    ],
+    "answer": 0,
+    "explain": "Real output, four lines. A Child is built base first, so Parent's constructor runs before Child's body, and it is destroyed in reverse: the child destructor runs before the parent's."
+  },
+  {
+    "q": "Experiment 2, with Parent's destructor still `virtual`: what prints?",
+    "code": "int main()\n{\n    Parent *pPtr = new Child;\n    delete pPtr;\n    return 0;\n}",
+    "options": [
+      "`Parent default constructor.` / `Child default constructor.` / `Parent destructor.`",
+      "`Parent default constructor.` / `Child default constructor.` / `Child destructor.` / `Parent destructor.`",
+      "`Parent default constructor.` / `Parent destructor.`",
+      "`Parent default constructor.` / `Child default constructor.` / `Parent destructor.` / `Child destructor.`"
+    ],
+    "answer": 1,
+    "explain": "Real output, the same four lines as `Child c;`. `new Child` builds Parent then Child; because the destructor is virtual, `delete pPtr` dispatches to the dynamic type's destructor, so the child destructor runs, then the parent's."
+  },
+  {
+    "q": "Experiment 2 again, with `virtual` removed from Parent's destructor. What does g++ print?",
+    "code": "// in struct Parent:\n~Parent() {cout << \"Parent destructor.\\n\"; }   // no virtual\n\nint main()\n{\n    Parent *pPtr = new Child;\n    delete pPtr;\n    return 0;\n}",
+    "options": [
+      "`Parent default constructor.` / `Child default constructor.` / `Child destructor.` / `Parent destructor.`",
+      "`Parent default constructor.` / `Child default constructor.` / `Parent destructor.`",
+      "`Parent default constructor.` / `Parent destructor.`",
+      "`Child default constructor.` / `Parent destructor.`"
+    ],
+    "answer": 1,
+    "explain": "Deleting a Child through a `Parent*` whose destructor is not virtual is undefined behaviour; this is what g++ prints. The call binds statically to `~Parent`, so the child's destructor is skipped and `Child destructor.` never appears."
+  },
+  {
+    "q": "Experiment 3, virtual destructor restored: what prints?",
+    "code": "int main()\n{\n    Child c;\n    passByValue(c);\n    passByReference(c);\n    return 0;\n}",
+    "options": [
+      "`Parent default constructor.` / `Child default constructor.` / `A Parent copy was made.` / `in passByValue` / `Parent destructor.` / `in passByReference` / `Child destructor.` / `Parent destructor.`",
+      "`Parent default constructor.` / `Child default constructor.` / `A Child copy was made.` / `in passByValue` / `Child destructor.` / `Parent destructor.` / `in passByReference` / `Child destructor.` / `Parent destructor.`",
+      "`Parent default constructor.` / `Child default constructor.` / `in passByValue` / `in passByReference` / `Child destructor.` / `Parent destructor.`",
+      "`Parent default constructor.` / `Child default constructor.` / `A Parent copy was made.` / `in passByValue` / `Parent destructor.` / `A Parent copy was made.` / `in passByReference` / `Parent destructor.` / `Child destructor.` / `Parent destructor.`"
+    ],
+    "answer": 0,
+    "explain": "Real output, eight lines. The parameter `Parent p` is a Parent, so passing a Child by value runs Parent's copy constructor on c's Parent part (slicing), and that copy's destructor prints only `Parent destructor.`. The reference parameter makes no object at all."
+  }
+]
+```
+
+### What each experiment shows
+
+- **Construction and destruction order.** `Child c;` builds the Parent part first and destroys it last: four lines, the child destructor before the parent's.
+- **Virtual destructor.** `delete pPtr;` through a `Parent*` reaches `~Child` only because `~Parent` is virtual; the output then matches the stack object exactly.
+- **Without `virtual`.** The same `delete` is undefined behaviour. g++ calls `~Parent` alone, so anything Child owned would leak. It gives no warning here: `-Wdelete-non-virtual-dtor` fires only for a class with some other virtual function, and this Parent has none. A base class you delete through a base pointer needs a virtual destructor.
+- **Slicing.** `passByValue(c)` constructs a brand-new Parent from c with `Parent(const Parent&)`, never Child's copy constructor. The parameter dies at the end of the call with one `Parent destructor.`. `passByReference(c)` binds to c itself, so it prints only its message. In none of the three experiments does `A Child copy was made.` print.
+
 ## Q27 (4). What is printed to standard output by this code? HINT: this prints 14 lines.
 
 ```cpp run pin q27.cpp
@@ -278,6 +393,66 @@ Part B hands you the program and a line count. These three are new: a function t
   }
 ]
 ```
+
+## One Number, how many objects
+
+The Week 7 deck asks the same kind of question with a smaller class. Slides 13 to 21 show a `Number` class and `Number createNumber(int num) { return Number(num); }`, then ask: *How many objects of type Number are created?* The slide's class is missing two semicolons; the copy below compiles, and every constructor and the destructor print, so the run counts the objects for you.
+
+```cpp run pin Number.cpp
+// predict: Write every line printed. How many Number objects does this program create?
+#include <iostream>
+using namespace std;
+
+class Number {
+private:
+    int num;
+public:
+    Number(int n) : num(n) { cout << "Number(int) " << num << endl; }
+    Number(const Number &n2) { num = n2.num; cout << "Number(const Number&) " << num << endl; }
+    ~Number() { cout << "~Number " << num << endl; }
+};
+
+Number createNumber(int num)
+{
+    return Number(num);
+}
+
+int main()
+{
+    Number n = createNumber(5);
+}
+```
+
+```quiz
+[
+  {
+    "q": "In the program above, `Number n = createNumber(5);`: how many objects of type Number are created?",
+    "type": "numeric",
+    "answer": 1,
+    "tolerance": 0,
+    "explain": "Real output: `Number(int) 5` / `~Number 5`, so one object. The slide's \"based on code\" picture shows a temporary copied into n by the copy constructor, but since C++17 the elision is guaranteed: `Number(num)` is built directly in n."
+  },
+  {
+    "q": "Same class, main changed to `Number n (Number(2));`. Which constructor is called after the `Number(2)` object is created?",
+    "code": "int main()\n{\n    Number n (Number(2));\n}",
+    "options": [
+      "none: only the one-parameter constructor runs, building `n` directly",
+      "the copy constructor, copying the `Number(2)` temporary into `n`",
+      "the copy constructor, then the destructor of the `Number(2)` temporary",
+      "the one-parameter constructor a second time, with the value 2"
+    ],
+    "answer": 0,
+    "explain": "Real output: `Number(int) 2` / `~Number 2`. The slide's \"based on code\" picture shows a copy constructor after `Number(2)`, but since C++17 the elision is guaranteed: the temporary is never made, and the one-parameter constructor builds n itself."
+  }
+]
+```
+
+Both programs print one constructor line and one destructor line: one object. The deck draws the "based on code" picture first, where `return Number(num);` (or `Number(2)`) makes a temporary and the copy constructor `Number(const Number &n2)` copies it into `n`. Then slide 20 gives the rule. Slide wording: *the compiler optimized our call by avoiding the call to copy constructor and directly called 1 parameter constructor*.
+
+The slides call this an optimization that some compilers may skip. Since C++17 it is guaranteed: an unnamed temporary of the same type that initializes an object is built directly in that object. No temporary exists, so no copy runs, even with `-fno-elide-constructors`. Only slide 16's named version, `Number tempN(num); return tempN;` (NRVO), is still optional; g++ performs it, so that version also prints one object. The full treatment is in [Week 7: copy elision and RVO](#/comp3522-w7/copy-elision-rvo).
+
+## Variations on Q20, Q27 and Q28
+
 ```quiz
 [
   {

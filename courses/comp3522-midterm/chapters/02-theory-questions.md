@@ -89,7 +89,7 @@ int main()
     cout << *success << endl;           // *success: the string it points to
     cout << success->length() << endl;  // same object, member access through the pointer
 
-    string** pp = &success;             // &success: the address of the pointer itself
+    string** pp = &success;
     cout << (*pp == &s ? "same" : "different") << endl;
 
     reset(&success, other);             // pass &success so reset can change where it points
@@ -98,22 +98,22 @@ int main()
 }
 ```
 
-`string** pp = &success;` takes the address of the pointer itself, and `reset(&success, other);` hands that address to a function.
-
 ```quiz
 [
   {
-    "q": "Q4 model answer. Write yours on paper first, then type the type of `&success`.",
+    "q": "Q4 model answer. Write yours on paper first. Then a new case: with `int n = 7; int* count = &n;`, type the type of `&count`.",
     "type": "text",
     "answer": [
-      "string**",
-      "std::string**",
-      "string **"
+      "int**",
+      "int **",
+      "int * *"
     ],
-    "explain": "With `string* success = &s;`, `*success` is the dereference: the `string` object the pointer points to, so `cout << *success` prints the text and `*success = \"done\"` changes the string (`success->length()` is the same access for a member). `&success` is the address-of operator applied to the pointer variable itself, so its type is `string**`, a pointer to a pointer. Use `*success` whenever you want to read or change the string; use `&success` when a function must change **where the pointer points**, as in `reset(&success, other);` with `void reset(string** pp, ...)` doing `*pp = &target;`.\n\nThe program prints `ok`, `2`, `same`, `done`: the first two lines go through the pointer to the string, `string** pp = &success;` holds the pointer's own address, and after `reset` the same name `success` prints the other string."
+    "explain": "With `string* success = &s;`, `*success` is the dereference: the `string` object the pointer points to, so `cout << *success` prints the text and `*success = \"done\"` changes the string (`success->length()` is the same access for a member). `&success` is the address-of operator applied to the pointer variable itself, so its type is `string**`, a pointer to a pointer; in the same way `&count` on an `int*` is an `int**`. Use `*success` whenever you want to read or change the string; use `&success` when a function must change **where the pointer points**, as in `reset(&success, other);` with `void reset(string** pp, ...)` doing `*pp = &target;`.\n\nThe program prints `ok`, `2`, `same`, `done`: the first two lines go through the pointer to the string, `string** pp = &success;` holds the pointer's own address, and after `reset` the same name `success` prints the other string."
   }
 ]
 ```
+
+`string** pp = &success;` takes the address of the pointer itself, and `reset(&success, other);` hands that address to a function.
 
 Taught in [Week 2: pointers](#/comp3522-w2/pointers).
 
@@ -185,7 +185,6 @@ public:
 void print(const Fraction& f)             // const reference parameter: no copy, no modification
 {
     cout << f.get_numerator() << endl;    // allowed: get_numerator is const
-    // f.set_numerator(9);                // error: f is const, set_numerator is not
 }
 
 int main()
@@ -266,7 +265,7 @@ public:
 void risky()
 {
     Noisy local("local");
-    throw runtime_error("boom");          // unwinding destroys local before the catch runs
+    throw runtime_error("boom");
 }
 
 int main()
@@ -276,7 +275,7 @@ int main()
         Noisy block("block");
     }                                     // end of block: block destroyed
     Noisy* heap = new Noisy("heap");
-    delete heap;                          // delete: heap destroyed now
+    delete heap;
     try {
         risky();
     } catch (const runtime_error& e) {
@@ -292,12 +291,10 @@ Four objects to track: `Noisy outer("outer");`, `Noisy block("block");`, `Noisy*
 ```quiz
 [
   {
-    "q": "Q8 model answer. Write yours on paper first, then type the operator that runs a heap object's destructor.",
+    "q": "Q8 model answer. Write yours on paper first, then type the line the program prints right after `destroy local`.",
     "type": "text",
     "answer": [
-      "delete",
-      "delete p",
-      "delete p;"
+      "caught boom"
     ],
     "explain": "The destructor runs automatically when the object goes out of scope: at the end of the block or function it was declared in, including when an exception unwinds the stack through that scope. For a dynamically allocated object it runs when `delete` (or `delete[]` for an array) is applied to the pointer. It also runs for a temporary at the end of the full expression that created it, for members and base subobjects after the enclosing object's destructor body, and for static and global objects when the program ends. Objects in one scope are destroyed in the reverse order of their construction.\n\nTen lines: `destroy block` prints at the closing brace of the inner block, `destroy heap` prints at `delete heap;`, and `destroy local` prints **before** `caught boom` because the stack unwinds from `risky()` before the handler runs. `destroy outer` is last, after `end of main`."
   }
@@ -448,14 +445,6 @@ Taught in [Week 4: multiple inheritance](#/comp3522-w4/multiple-inheritance) and
 
 ## Q16 (3). When we implement the assignment operator, we use the "copy and swap" algorithm. How does the "copy and swap" algorithm work? Can you identify an easy way to introduce an error into a "copy and swap" function?
 
-```cpp
-MyClass& MyClass::operator=(MyClass other)   // other BY VALUE
-{
-    mySwap(*this, other);
-    return *this;
-}
-```
-
 ```quiz
 [
   {
@@ -471,6 +460,16 @@ MyClass& MyClass::operator=(MyClass other)   // other BY VALUE
 ]
 ```
 
+In code, the copy-and-swap assignment operator is one swap and a return:
+
+```cpp
+MyClass& MyClass::operator=(MyClass other)   // other BY VALUE
+{
+    mySwap(*this, other);
+    return *this;
+}
+```
+
 ### B = A through copy-and-swap
 
 The copy constructor builds `other` before the body runs; after the swap, `other` holds B's old array, and its destructor frees it on the way out.
@@ -484,7 +483,7 @@ Taught in [Week 4: the copy assignment operator and copy-and-swap](#/comp3522-w4
 
 ## Static members (Week 7)
 
-The midterm covers "all the topics up to and including Week 7" (Midterm Info deck), so the mock paper's Q17 asks about static members, which the Week 7 sample code introduces. A **static data member** belongs to the class, not to any object: there is one copy shared by every instance. It is declared `static` inside the class and defined once, outside it, in the implementation file. A **static member function** is called through the class name, `A::staticFunction1()`, with no object, so it has no `this` pointer and can touch only static members directly.
+The midterm covers "all the topics up to and including Week 7" (Midterm Info deck), so the mock paper's Q17 asks about static members, which the Week 7 sample code introduces. A **static data member** belongs to the class, not to any object: there is one copy shared by every instance. It is declared `static` inside the class and defined once, outside it, in the implementation file. A **static member function** is called through the class name, `A::staticFunction1()`, with no object, and can touch only static members directly.
 
 The Week 6 `Date` class uses both kinds:
 
@@ -493,7 +492,7 @@ class Date {
 public:
     static bool is_leap_year(int year);
     static bool is_valid_date(int year, int month, int date);
-    static Date today();   // no *this pointer
+    static Date today();
 private:
     int year, month, day;
     static const int days_in_regular_year[];
@@ -567,9 +566,31 @@ int main() {
     "type": "text",
     "answer": ["this", "this pointer", "the this pointer", "*this"],
     "explain": "A static member function is called as `A::staticFunction1()` with no object, so there is no `this` and no object whose `nonStaticName` it could read. It can use static data (`staticNum` prints 5) and call other static functions. `staticFunctionParam(A a)` reaches the non-static members only through its parameter: `a.nonStaticFunction()` prints `nonStaticFunction` and then `Printing non static name: My name is class A`. `int A::staticNum = 5;` is the one definition, outside the class."
+  },
+  {
+    "q": "True or false: `static int m = 5;` written inside the class definition is a valid way to initialize a static data member.",
+    "type": "tf",
+    "answer": false,
+    "explain": "Slide 6: a static data member *Can't be initialized inside the class definition*, so declare `static int m;` inside and define `int X::m = 5;` outside; since C++17, `inline static int m = 5;` is the one way to initialize a non-const static inside the class."
+  },
+  {
+    "q": "True or false: `static void f() const` declares a valid static member function.",
+    "type": "tf",
+    "answer": false,
+    "explain": "Slide 9: static member functions *Cannot be virtual or const*; a `const` member function promises not to change the object `this` points to, and a static function has no `this`, so g++ rejects the declaration."
   }
 ]
 ```
+
+### Initializing and reaching static members
+
+- **Plain `static`:** *Can't be initialized inside the class definition*. `static int m = 5; //ERROR`, so declare `static int n;` inside and define `int X::n = 5;` outside (since C++17, `inline static int m = 5;` is allowed inside).
+- **`const static` integral or enum:** *constant integral or enumeration types can be initialized inside the class definition*, as `const static int m = 9;`, or declared `const static int k;` and defined outside as `const int X::k = 3;`.
+- **`constexpr static`:** *must be initialized with a literal inside the class definition*. `constexpr static int arr[] = { 1, 2, 3 };` is OK and `constexpr static int k;` is an ERROR (C++ accepts any constant expression, not only a literal).
+- **Two access forms:** the *Qualified name* `X::n`, or a *Member access expression* on an object or pointer, `obj.n` or `ptr->n`. Slide 5 writes *Class->member or Class.member*, but on the class name neither `X.n` nor `X->n` compiles. Statics *Exist even if no objects have been defined*.
+- **Static member functions:** *Cannot be virtual or const* and have no `this` pointer, so `virtual static void staticFunction()` and `static void staticFunction() const` are both errors. The slide's *Can only access static data* means directly: through an object, as `a.nonStaticFunction()` shows, a static function reaches non-static members.
+
+Taught in [Week 7](#/comp3522-w7/static-data-members).
 
 ## Answer Part A questions from five new snippets
 

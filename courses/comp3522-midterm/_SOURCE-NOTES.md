@@ -198,5 +198,103 @@ A deallocated
 ```
 Why: A is a **virtual** base of B, so the single shared A is constructed once, first, by the most-derived class E; C's B is virtual (constructed next, by E, before any non-virtual base), while D's B is a normal base and is constructed again inside D, hence B appears twice but A only once (14 − 2 = 12 lines). g++ also warns `virtual base 'B' inaccessible in 'E' due to ambiguity`: E has two Bs (one virtual via C, one ordinary via D), so `B` is still ambiguous in E. Destruction mirrors construction: E, D (with its own B), C, then the virtual B, then the virtual A.
 
+## ReviewSampleCode1
+
+Source: `D:/BCIT/COMP3522/Lectures/Week 7/ReviewSampleCode1/`. All outputs below are real, from the app's server (`POST /api/run`, g++ `-std=c++20 -Wall -Wextra -pedantic`) via `docs/superpowers/tools/run-cpp.py`, 2026-10-26. They match the recon audit's mingw `-std=c++17` outputs line for line.
+
+### ReviewQuestion20 (`ReviewQuestion20/main.cpp`)
+The practice Q20 with `cout << endl;` after each of the four statements in main. 18 lines (14 plus 4 blank):
+```
+Default constructor!
+
+Copy constructor!
+Look ma, I'm fooing!
+Copy constructor!
+Destructor!
+Destructor!
+
+Copy constructor!
+
+Copy constructor!
+Look ma, I'm fooing!
+Copy constructor!
+Destructor!
+
+Destructor!
+Destructor!
+Destructor!
+```
+Per the audit: identical with `-fno-elide-constructors`; GCC destroys the first call's return temporary before `input` (shown by printing addresses); the instructor's annotation lists `input` first.
+
+### ParentChild (`ParentChild/main.cpp`)
+`struct Parent` (default constructor, copy constructor `A Parent copy was made.`, virtual destructor) and `struct Child : public Parent` (default, copy `A Child copy was made.`, destructor); `passByValue(Parent p)` and `passByReference(Parent &p)`. Compiles with three warnings on the server: `base class 'struct Parent' should be explicitly initialized in the copy constructor [-Wextra]` and `unused parameter 'p' [-Wunused-parameter]` twice. The non-virtual variant draws no `-Wdelete-non-virtual-dtor` warning (Parent has no other virtual function).
+
+As shipped (`Parent p;`):
+```
+Parent default constructor.
+Parent destructor.
+```
+`Child c;`:
+```
+Parent default constructor.
+Child default constructor.
+Child destructor.
+Parent destructor.
+```
+`Parent *pPtr = new Child; delete pPtr;` (virtual destructor):
+```
+Parent default constructor.
+Child default constructor.
+Child destructor.
+Parent destructor.
+```
+Same, with `virtual` removed from `~Parent` (undefined behaviour; this is what g++ prints):
+```
+Parent default constructor.
+Child default constructor.
+Parent destructor.
+```
+`Child c; passByValue(c); passByReference(c);`:
+```
+Parent default constructor.
+Child default constructor.
+A Parent copy was made.
+in passByValue
+Parent destructor.
+in passByReference
+Child destructor.
+Parent destructor.
+```
+
+### Week 7 deck slides 13 to 21: `Number`
+The slide class (missing `;` after `int num` and after `}`) made compilable, with a print in each constructor and the destructor:
+```cpp
+class Number {
+private:
+    int num;
+public:
+    Number(int n) : num(n) { cout << "Number(int) " << num << endl; }
+    Number(const Number &n2) { num = n2.num; cout << "Number(const Number&) " << num << endl; }
+    ~Number() { cout << "~Number " << num << endl; }
+};
+Number createNumber(int num) { return Number(num); }
+```
+`Number n = createNumber(5);` (slides 13, 14, 21; "How many objects of type Number are created?"):
+```
+Number(int) 5
+~Number 5
+```
+`Number n (Number(2));` (slides 17 to 20; "Which constructor is called after Number(2) object created?"):
+```
+Number(int) 2
+~Number 2
+```
+NRVO, slide 16 (`Number tempN(num); return tempN;`, then `Number n = createNumber(5);`):
+```
+Number(int) 5
+~Number 5
+```
+One object each time. The first two are guaranteed elision since C++17 (prvalue initializing an object of the same type); the NRVO case is optional, and g++ performs it. No warnings.
+
 ## Week coverage map for the theory drill (which existing lesson teaches each answer)
 Q1 w3 copy-constructor; Q2 w2 pointers, references; Q3 w4 midterm-practice; Q4 w2 pointers; Q5 w4 midterm-practice; Q6 w2 new-delete; Q7 w3 constructors (const member functions), w2 references (const references); Q8 w3 destructor; Q9 w1 initialization; Q10 w1 hello-world, preprocessor-namespaces; Q11 w3 structs-classes; Q12 w3 forward-declaration; Q13 w4 abstract-classes; Q14 w4 interfaces; Q15 w4 multiple-inheritance, diamond-virtual-base; Q16 w4 copy-assignment; Q20 w3 copy-constructor, destructor; Q21 w5 throw-try-catch; Q22–25 w3, w4 operator-overloading; Q26 w2 file-streams, w3 lab3-stack; Q27–28 w3 inheritance, w4 diamond-virtual-base.
