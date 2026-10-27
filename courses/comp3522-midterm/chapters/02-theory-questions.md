@@ -178,13 +178,13 @@ private:
     int denominator;
 public:
     Fraction(int n, int d) : numerator(n), denominator(d) {}
-    int get_numerator() const { return numerator; }      // const member function: cannot change members
-    void set_numerator(int n) { numerator = n; }          // not const: may change members
+    int get_numerator() const { return numerator; }
+    void set_numerator(int n) { numerator = n; }
 };
 
-void print(const Fraction& f)             // const reference parameter: no copy, no modification
+void print(const Fraction& f)
 {
-    cout << f.get_numerator() << endl;    // allowed: get_numerator is const
+    cout << f.get_numerator() << endl;
 }
 
 int main()
@@ -192,7 +192,7 @@ int main()
     Fraction half(1, 2);
     const Fraction third(1, 3);
     print(half);
-    print(third);                         // a const object can be passed
+    print(third);
     half.set_numerator(3);
     cout << half.get_numerator() << endl;
     return 0;

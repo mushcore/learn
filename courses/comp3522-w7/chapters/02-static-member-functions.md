@@ -70,11 +70,11 @@ The other direction always works: a non-static member function may call static o
 
 ## No this, never virtual, never const
 
-| Restriction | The `//ERROR` line | g++ says |
+| Restriction | The `//ERROR` line (source) | g++ says |
 |---|---|---|
-| no `this` | `//cout << nonStaticName << endl; //ERROR: can't call non static data members in static function` | invalid use of member in static member function; `this->` gives "'this' is unavailable for static member functions" |
-| not virtual | `virtual static void staticFunction() //ERROR` | member 'staticFunction' cannot be declared both 'virtual' and 'static' |
-| not const | `static void staticFunction() const //ERROR` | static member function cannot have cv-qualifier |
+| no `this` | `//cout << nonStaticName << endl; //ERROR: can't call non static data members in static function` (sample `static_functions/main.cpp`) | invalid use of member in static member function; `this->` gives "'this' is unavailable for static member functions" |
+| not virtual | `virtual static void staticFunction() //ERROR` (slide 9) | member 'staticFunction' cannot be declared both 'virtual' and 'static' |
+| not const | `static void staticFunction() const //ERROR` (slide 9) | static member function cannot have cv-qualifier |
 
 The second and third follow from the first. A trailing `const` promises not to change `*this`, and there is no `*this` to protect. A `virtual` call picks the function from the object's dynamic type, and a static call has no object to look at.
 
@@ -171,7 +171,7 @@ One program to trace and two that do not compile, then a class to write. Type th
   },
   {
     "q": "Why can a static member function not be declared `const`?",
-    "options": ["a trailing const promises not to change `*this`, and a static function has no `*this`", "static data members are always const already", "const functions must be virtual", "a static function cannot return a value"],
+    "options": ["a trailing const protects `*this`, and a static function has no `*this`", "static data members are already const, so the const would be redundant", "a const member function must also be declared virtual", "a static function cannot return a value, so const has nothing to qualify"],
     "answer": 0,
     "explain": "const qualifies the object the function is called on. With no object there is nothing to qualify, so g++ reports that a static member function cannot have a cv-qualifier."
   },

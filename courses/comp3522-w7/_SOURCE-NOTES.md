@@ -229,6 +229,7 @@ Default constructor.
 A copy was made.
 ```
 `C obj = C{};` → `Default constructor.` only (guaranteed elision from a prvalue). `C obj2 = f();` → `Default constructor.` only: `return C{};` is a prvalue, so the object is built straight into `obj2`. The file comment's three predictions describe `C obj2 = f();` with two copies (no elision), one copy, or none: the server matches the **third** (fully elided, `Hello World!` / `Default constructor.` for that statement). Then `C c; C obj3 = c;` add `Default constructor.` and `A copy was made.`
+- What a non-eliding compiler would print instead (reasoned, not run: the server takes no extra flags): under C++17 or later, nothing changes. Both statements initialize from a prvalue, and that elision is guaranteed even with `-fno-elide-constructors`. Only under `-std=c++14 -fno-elide-constructors` does `C obj = C{};` add one `A copy was made.` (the temporary copied into `obj`) and `C obj2 = f();` add two (`C{}` into the return value, the return value into `obj2`): the file comment's first prediction. Its middle prediction, one copy, is a pre-C++17 compiler that elides only one of the two. `C obj3 = c;` copies in every mode.
 
 #### Inheritance/main.cpp → `tmp/w7/Inheritance.cpp`
 Warnings: `unused parameter 'a'` / `'b'` / `'c' [-Wunused-parameter]` on the three copy constructors; `base class 'class Animal' should be explicitly initialized in the copy constructor [-Wextra]` on Bird's and Canine's. Output:
@@ -305,7 +306,7 @@ After adding 2 character objects: Character: �
 
 ```
 - `operator<<` ends with `endl` and every caller adds `<< endl`, hence the blank lines. `char1 + "1"` → 'B', `"1" + char1` → 'C'. No "constructing char" for copies: the copy constructor is defaulted and `explicit Character(char)` is the only printing one.
-- **The last character is garbage**: `'B' + 'C'` is 66 + 67 = 133, which overflows `char`; the server returns the byte 0x85, which is not valid UTF-8 (shown as U+FFFD). A `// predict:` must not quote that line.
+- **The last character is garbage**: `'B' + 'C'` is 66 + 67 = 133, which overflows `char`; the program writes the byte 0x85, which is not valid UTF-8, and the server decodes output as UTF-8, so `/api/run` returns U+FFFD (�) in its place. A `// predict:` must not quote that line.
 
 #### operatorsBasic (merged the same way) → `tmp/w7/operatorsBasic.cpp`
 No warnings. Output:
@@ -320,7 +321,7 @@ Adding Character objects
 char1: Character: �
 
 ```
-Same problem: `'A' + 'B'` is 131, byte 0x83, not printable. Do not pin a predict that quotes the `char1:` line.
+Same problem: `'A' + 'B'` is 131; the program writes the byte 0x83 and `/api/run` returns U+FFFD (�). Do not pin a predict that quotes the `char1:` line.
 
 ### Slide-typed programs
 

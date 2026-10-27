@@ -155,8 +155,15 @@ function rlTokenize(src) {
     if (c === "=") {
       const j = s.indexOf(";", i), end = j < 0 ? s.length : j;
       const init = s.slice(i + 1, end).trim(); if (!init) return { error: "an empty initializer" };
-      let d = 0;
-      for (const ch of init) { if ("({[".includes(ch)) d++; else if (")}]".includes(ch)) d--; else if (ch === "," && d === 0) return { error: "more than one declaration: the rule reads one name at a time" }; }
+      // A comma at depth 0 starts a second declarator; one inside ( ), { }, [ ] or template < > does not.
+      // A < straight after a name (pair<int, int>) opens template arguments; a spaced a < b is less-than.
+      let d = 0, angle = 0;
+      for (let k = 0; k < init.length; k++) {
+        const ch = init[k];
+        if ("({[".includes(ch)) d++; else if (")}]".includes(ch)) d--;
+        else if (ch === "<" && /\w/.test(init[k - 1] || "")) angle++; else if (ch === ">" && angle > 0) angle--;
+        else if (ch === "," && d === 0 && angle === 0) return { error: "more than one declaration: the rule reads one name at a time" };
+      }
       toks.push({ t: "=", text: `= ${init}` }); i = end; continue;
     }
     if (c === ";") { toks.push({ t: ";", text: ";" }); if (s.slice(i + 1).trim()) return { error: "more than one declaration" }; break; }
@@ -263,7 +270,7 @@ export function rlRead(decl) {
       if (!rStop || rStop.t !== ")") return { error: "parentheses that do not pair up around the name" };
       L--; R++; pass++; continue;
     }
-    if (L >= b) return { error: toks[L].t === "id" ? `the name ${toks[L].text} sits where the rule expects *, & or (` : `a ${toks[L].text} sits where the rule expects *, & or (` };
+    if (L >= b) return { error: `found ${toks[L].t === "id" ? `the name ${toks[L].text}` : `"${toks[L].text}"`} where the rule expects a *, a & or an opening parenthesis` };
     if (rStop && rStop.t === ")") return { error: "unbalanced parentheses" };
     const idx = []; for (let i = 0; i < b; i++) idx.push(i);
     steps.push({ toks: idx, kind: "base", base, dir: "left", pass, after: first ? { rightCount, rStop } : null });
@@ -333,6 +340,11 @@ export function rlRead(decl) {
     const plainName = ni === b, inner = toks[ni + 1].params.trim(), objectFix = plainName ? ` For an object, use braces: <code>${escHtml(base)} ${escHtml(name)}{${escHtml(inner)}};</code>${inner ? "" : ` or no parentheses: <code>${escHtml(base)} ${escHtml(name)};</code>`}.` : "";
     if (inner) notes.push(`C++ reads this as a function declaration: when <code>${escHtml(toks[ni + 1].text)}</code> could be a parameter list, it is one (the most vexing parse).${objectFix}`);
     else if (plainName) notes.push(`Empty parentheses after the name declare a function, not an object built by its default constructor (the most vexing parse).${objectFix}`);
+  }
+  if (paren === "func") {
+    // (x * y) or (x & y) is a parameter list only if x names a type; for a variable x it is an expression.
+    const amb = toks[ni + 1].params.split(",").map((a) => a.trim().match(/^([A-Za-z_][\w:]*)\s*(\*|&&?)\s*[A-Za-z_]\w*$/)).find((m) => m && !TYPE_WORDS.has(m[1]) && m[1] !== base && !m[1].startsWith("std::"));
+    if (amb) notes.push(`Read as a parameter list, because <code>${escHtml(amb[1])}</code> is taken to name a type: then <code>${escHtml(amb[0])}</code> declares a parameter. If <code>${escHtml(amb[1])}</code> is a variable, it is an expression instead, and ${escHtml(name)} is ${/^[aeiou]/i.test(base) ? "an" : "a"} ${escHtml(base)} initialized with it.`);
   }
   if (ks.length && (ks[0].kind === "&" || ks[0].kind === "&&") && !init) notes.push("A reference must be initialized, so as a definition this needs <code>= something</code>. The reading is the same.");
   return { toks, name, base, steps: out, generic, sentence, notes, slideWording: out !== steps };

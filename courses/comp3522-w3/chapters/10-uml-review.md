@@ -3,7 +3,7 @@ title: UML review: class, collaboration, sequence diagrams
 minutes: 15
 ---
 
-The term's assignments describe designs in UML before any C++ is written, so the deck posted with Lab 3 reviews the three diagrams you will read and draw: class diagrams for structure, collaboration and sequence diagrams for interactions. UML is language agnostic; every arrow here has a C++ spelling, and that mapping is what to learn.
+The deck posted with Lab 3 reviews the three UML diagrams the assignments use: class diagrams for structure, collaboration and sequence diagrams for interactions. UML is language agnostic; learn each arrow's C++ spelling.
 
 ## Class diagrams
 
@@ -60,7 +60,7 @@ public:
 };
 ```
 
-**Association**, a solid line: *A contains data attributes B. A knows-a B. General form of composition and aggregation*. It *indicates no conceptual ownership* (Teacher and Student). The slide's `ClassB* savedPtrB, savedPtrB2;` makes only the first a pointer, so the code splits them.
+**Association**, a solid line: *A contains data attributes B. A knows-a B. General form of composition and aggregation*. It *indicates no conceptual ownership* (Teacher and Student). The slide's `ClassB* savedPtrB, savedPtrB2;` makes only the first a pointer, so the code splits them. As on the slide, nothing deletes the `new ClassB`: it leaks.
 
 ```cpp
 class ClassA {
@@ -101,6 +101,8 @@ public:
 };
 ```
 
+Slide 11 restates the pair: *in a composition relationship, if the whole is destroyed, the parts cannot exist* (*If an Order is destroyed, then so are the OrderItems of which it is composed*; `Order` 0..1, filled diamond, `OrderItems` 1..*), and *in an aggregation relationship, if the class referencing it is destroyed, the referenced class can live on* (*If a Pond is destroyed, the Ducks can live on*; `Pond` 0..1, hollow diamond, `Ducks` 0..*).
+
 **Generalization (inheritance)**, a solid line with a hollow triangle at A: *B derives from concrete or abstract class A*, and *B is-a A*.
 
 ```cpp
@@ -113,7 +115,7 @@ public:
 class ClassB : public ClassA {};   // Generalization: ClassB inherits from ClassA
 ```
 
-**Realization (implementation)**, a dashed line with a hollow triangle at A: *B implements interface A*, and *B is-a A for interfaces*. ClassA *ONLY has pure virtual functions, no data members or implemented functions*. The slide omits `virtual` from `void function() = 0;`, and as printed it does not compile: only a virtual function can be pure.
+**Realization (implementation)**, a dashed line with a hollow triangle at A: *B implements interface A*, and *B is-a A for interfaces*. ClassA *ONLY has pure virtual functions, no data members or implemented functions*. The slide omits `virtual` from `void function() = 0;`, which cannot compile: only virtual functions can be pure.
 
 ```cpp
 class ClassA {
@@ -131,7 +133,7 @@ public:
 
 ### Multiplicity
 
-*Multiplicity* is *how many instances of one class can be associated with instance of another*. *Read multiplicity by looking at number on opposite end of the line.* *Car owns-a (composition) carburetor*: the 1 at the carburetor end means a car has exactly 1 carburetor; the 0..1 at the car end means a carburetor belongs to 0 to 1 cars. Likewise `Order` 0..1 to `OrderItems` 1..* (composition) and `Pond` 0..1 to `Ducks` 0..* (aggregation).
+*Multiplicity* is *how many instances of one class can be associated with instance of another*. *Read multiplicity by looking at number on opposite end of the line.* *Car owns-a (composition) carburetor*: the 1 at the carburetor end means a car has exactly 1 carburetor; the 0..1 at the car end means a carburetor belongs to 0 to 1 cars.
 
 ### Car, Wheel, Professor, Class, Person
 
@@ -148,8 +150,6 @@ A collaboration diagram presents interactions between objects as a sequence of m
 - **Links**: solid lines connecting objects and actors; they are instances of the associations in the class diagram, and messages are sent across them.
 - **Messages**: labelled arrows near a link, directed from sender to receiver, numbered to show the sequence; messages within the same call get decimals, 1.1, 1.2.
 
-Read one by following the numbers, and you can name the use case it illustrates.
-
 ## Sequence diagrams
 
 A sequence diagram shows the same messages from a **time-based** perspective, including the lifetime of the interaction. Time runs downward.
@@ -159,11 +159,11 @@ A sequence diagram shows the same messages from a **time-based** perspective, in
 - **Activation**: a thin rectangle on the lifeline showing how long the element is performing an operation.
 - **Messages**: a **call** message invokes an operation on the target lifeline (a method call); a **return** message passes information back to the caller (the return statement); a **self** message invokes an operation on the same lifeline; a **create** message instantiates the target lifeline.
 
-Structure versus time is the whole difference: a collaboration diagram numbers the messages on a graph of links; a sequence diagram orders them top to bottom on lifelines.
+The difference: a collaboration diagram numbers messages on a graph of links; a sequence diagram orders them top to bottom on lifelines.
 
 ### A checkout, one message at a time
 
-Each step draws one call, return, self or create message down the lifelines, and the activation bars open and close with it. The toggle redraws the same messages as a collaboration diagram, numbered 1, 1.1, 1.2.
+Each step draws one message; the toggle redraws them as a collaboration diagram (1, 1.1, 1.2).
 
 ```widget
 sequence-play
@@ -246,12 +246,6 @@ New classes, the same six relationships: name each one and its verb.
 ```quiz
 [
   {
-    "q": "The purpose of a class diagram is to describe...",
-    "options": ["the order in which functions are called", "the static structure of the system: classes, attributes, operations and relationships", "the user interface", "the runtime memory layout"],
-    "answer": 1,
-    "explain": "Slide wording: purpose is to describe the static structure of the system. Collaboration and sequence diagrams show interactions."
-  },
-  {
     "q": "The three sections of a class rectangle, top to bottom, are...",
     "options": ["member functions, data members, name", "name, data members, member functions", "name, member functions, data members", "data members, name, member functions"],
     "answer": 1,
@@ -299,12 +293,6 @@ New classes, the same six relationships: name each one and its verb.
     "options": ["`class Person : public Student`", "`class Student : public Person`", "`Person* student;`", "`class Student { Person p; };`"],
     "answer": 1,
     "explain": "The hollow triangle points at the base class. In the deck's letters, B derives from A as `class ClassB : public ClassA`; here Student is-a Person."
-  },
-  {
-    "q": "In a collaboration diagram, how is an object drawn?",
-    "options": ["A circle with its class name", "A square containing 'object name : class name', underlined", "A stick figure", "A dashed vertical line"],
-    "answer": 1,
-    "explain": "Objects are squares with name and class separated by a colon and underlined; actors are the invokers; links are solid lines carrying numbered messages."
   },
   {
     "q": "Messages 1.1 and 1.2 in a collaboration diagram are...",

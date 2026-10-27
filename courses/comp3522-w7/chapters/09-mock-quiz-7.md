@@ -43,6 +43,13 @@ True/false and multiple choice follow the slide's rule; where C++17 says somethi
     "explain": "A static is reached by its qualified name `Class::member`, or by member access on an object or a pointer. Slide 5 writes the second form as `Class.member`, a wording slip: the dot needs an object, so `X.n` fails with 'expected primary-expression before . token'."
   },
   {
+    "type": "spotbug",
+    "q": "Click the line that does not compile.",
+    "code": "class X {\n    static int n;\n    const static int m = 9;\n    static int k = 5;\n};\nint X::n = 1;\n\nint main() { return 0; }",
+    "answer": 4,
+    "explain": "`static int k = 5;` initializes a plain static inside the class (slide 6: ERROR; g++: 'ISO C++ forbids in-class initialization of non-const static member X::k'). The other two members are legal; why the `const` one may be initialized inside comes up next. Fix: `static int k;` in the class and `int X::k = 5;` outside."
+  },
+  {
     "q": "Slide 6: `static int m = 5;` written inside the class definition is an ERROR.",
     "type": "tf",
     "answer": true,
@@ -108,13 +115,6 @@ True/false and multiple choice follow the slide's rule; where C++17 says somethi
     "type": "tf",
     "answer": false,
     "explain": "Slide 9: static functions cannot be const. A trailing const promises not to change `*this`, and a static function has no `this`; g++: 'static member function cannot have cv-qualifier'."
-  },
-  {
-    "type": "spotbug",
-    "q": "Click the line that does not compile.",
-    "code": "class X {\n    static int n;\n    const static int m = 9;\n    static int k = 5;\n};\nint X::n = 1;\n\nint main() { return 0; }",
-    "answer": 4,
-    "explain": "`static int k = 5;` initializes a plain static inside the class (slide 6: ERROR; g++: 'ISO C++ forbids in-class initialization of non-const static member X::k'). `static int n;` with `int X::n = 1;` outside is the slide's OK form, and `const static int m = 9;` is the const integral exception. Fix: `static int k;` in the class and `int X::k = 5;` outside."
   }
 ]
 ```
@@ -167,18 +167,18 @@ True/false and multiple choice follow the slide's rule; where C++17 says somethi
     "explain": "g++ applies named return value optimization: tempN is built directly in n, so the copy constructor never runs. The returned object has a name here, which is what makes this NRVO rather than the RVO of slide 15."
   },
   {
-    "q": "Slide 16: there's no guarantee that all compilers use RVO and NRVO.",
-    "type": "tf",
-    "answer": true,
-    "explain": "That is the slide's note. C++17 truth: elision from a prvalue of the same type (`return Number(num);` into n) is now guaranteed; only NRVO, returning a named local, is still optional."
-  },
-  {
     "q": "Slide 17: `Number n (Number(2));`. Which constructor is called after the Number(2) object is created? Type how many times the copy constructor runs in the server's run of this program.",
     "type": "numeric",
     "code": "#include <iostream>\n\n//Number.cpp\nclass Number {\nprivate:\n        int num;\npublic:\n        Number(int n) : num (n) { std::cout << \"1-param constructor\\n\"; }\n        Number(const Number &n2)\n        {num = n2.num; std::cout << \"copy constructor\\n\"; }\n};\n\n//main function\nint main() {\n        Number n (Number(2));\n        return 0;\n}",
     "answer": 0,
     "tolerance": 0,
     "explain": "Zero. Slide 18, 'Based on code': after Number(2) the copy constructor would be called to copy the temporary into n. Slide 19, 'With copy elision': no constructor runs after it; slide 20, 'the compiler optimized our call by avoiding the call to copy constructor and directly called 1 parameter constructor'. Since C++17 that elision is guaranteed."
+  },
+  {
+    "q": "Slide 16: there's no guarantee that all compilers use RVO and NRVO.",
+    "type": "tf",
+    "answer": true,
+    "explain": "That is the slide's note. C++17 truth: elision from a prvalue of the same type (`return Number(num);` into n) is now guaranteed; only NRVO, returning a named local, is still optional."
   },
   {
     "q": "Slide 23: when is the copy constructor called? Select all that apply.",

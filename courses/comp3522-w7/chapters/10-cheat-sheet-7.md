@@ -1,5 +1,5 @@
 ---
-title: Week 7 on one page
+title: Week 7 cheat sheet
 minutes: 10
 ---
 

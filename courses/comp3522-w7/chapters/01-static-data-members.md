@@ -7,7 +7,7 @@ Two objects that must share one counter, one buffer or one helper object cannot 
 
 ## Only one copy per class exists
 
-Slide 4: in C++, member variables can be static. *Only one copy per class exists.* A static member permits a single resource to be shared between instances, and it has independent static storage for the life of the program. The Singleton design pattern, later in the course, is built on this.
+Slide 4: in C++, member variables can be static. *Only one copy per class exists.* A static member permits a single resource to be shared between instances, and it has independent static storage for the life of the program. *This can be useful for the Singleton design pattern* (later in the course; *the name is a hint*).
 
 ```cpp run pin static.cpp
 // predict: Write every line printed (eleven lines).
@@ -81,7 +81,7 @@ class X { static int n; }; // incomplete declaration
 int X::n = 1; // definition outside class
 ```
 
-Leave the definition out and the program still compiles, but the linker fails with `undefined reference to 'X::n'`. Repeat the keyword, as in `static int X::n = 1;`, and g++ stops: "'static' may not be used when defining (as opposed to declaring) a static data member".
+Leave the definition out and the program still compiles, but once code uses `n` the linker fails with `undefined reference to 'X::n'` (a program that never touches `n` links). Repeat the keyword, as in `static int X::n = 1;`, and g++ stops: "'static' may not be used when defining (as opposed to declaring) a static data member".
 
 ## Two ways to reach a static
 
@@ -146,7 +146,7 @@ Two new classes share a static counter across their objects; the third has one l
   },
   {
     "q": "Where does the keyword `static` go for a static data member `n` of class `X`?",
-    "options": ["on the declaration inside the class only: `static int n;` inside, then `int X::n = 1;` outside", "on the definition outside the class only", "on both the declaration and the definition", "on neither: writing `X::n` is what makes it static"],
+    "options": ["on the declaration only: `static int n;` inside, `int X::n = 1;` outside", "on the definition only: `int n;` inside, `static int X::n = 1;` outside", "on both: `static int n;` inside, `static int X::n = 1;` outside", "on neither: `int n;` inside, and writing `X::n` makes it static"],
     "answer": 0,
     "explain": "Static keyword used with declaration not definition. Writing `static int X::n = 1;` draws the g++ error ''static' may not be used when defining (as opposed to declaring) a static data member'."
   },
@@ -182,7 +182,7 @@ Two new classes share a static counter across their objects; the third has one l
   },
   {
     "q": "In the static.cpp program above, why does `A() created` print before the first `B() created`?",
-    "options": ["`A B::my_a = A{};` is a definition at namespace scope, so the A is built before main starts", "B's constructor builds an A each time it runs", "the first B object is built lazily, after main's first statement", "class A is defined before class B in the file"],
+    "options": ["`A B::my_a = A{};` is a namespace-scope definition, built before main starts", "B's constructor builds an A member object each time it runs", "the first B object is built lazily, after main's first statement", "class A is defined before class B in the file, so it is built first"],
     "answer": 0,
     "explain": "Statics have storage for the life of the program, so the definition outside the class builds `my_a` before main. B's constructor never touches it, which is why only one 'A() created' prints for two Bs, and 'A() destroyed' prints last."
   }

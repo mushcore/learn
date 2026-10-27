@@ -97,7 +97,7 @@ Taught in [Week 2: file streams](#/comp3522-w2/file-streams) and [Week 3: Lab 3,
 
 ```cpp run pin Fraction.cpp
 // stdin: 1 2\n3 4\n5 6
-// predict: The input rows are 1 2, 3 4, 5 6. Write the four lines printed.
+// predict: The input rows are 1 2, 3 4, 5 6. Write the first three lines printed.
 #include <iostream>
 #include <stack>
 #include <stdexcept>
@@ -214,6 +214,7 @@ The same guided long question on a new class: a `Time` of hours and minutes that
 ```challenge
 {"prompt": "Part (f), the program: read rows of <code>hours minutes</code> from <code>cin</code> (in the exam, <code>ifstream in(\"Times.txt\")</code>) and push a <code>Time</code> for each into a <code>std::queue&lt;Time&gt;</code>. A row whose constructor throws is caught, skipped and counted. Print the queue front to back with <code>front()</code> and <code>pop()</code>, then <code>skipped N</code>.", "starter": "#include <iostream>\n#include <queue>\n#include <stdexcept>\nusing namespace std;\n\nclass Time {\nprivate:\n    int hours;\n    int minutes;\npublic:\n    Time(int hours, int minutes) : hours(hours), minutes(minutes) {\n        if (minutes < 0 || minutes > 59) {\n            throw invalid_argument(\"minutes must be 0 to 59\");\n        }\n    }\n    Time(const Time& other) : hours(other.hours), minutes(other.minutes) {}\n    ~Time() {}\n    friend ostream& operator<<(ostream& os, const Time& t);\n};\n\nostream& operator<<(ostream& os, const Time& t) {\n    os << t.hours << \":\" << (t.minutes < 10 ? \"0\" : \"\") << t.minutes;\n    return os;\n}\n\nint main() {\n    // Rows of \"hours minutes\" arrive on cin (standing in for ifstream in(\"Times.txt\")).\n    // Push a Time for each valid row into a std::queue<Time>. A row whose Time\n    // constructor throws is skipped and counted. Then print the queue front to back,\n    // one Time per line, and finally \"skipped N\".\n    return 0;\n}\n", "expected": "9:05\n13:30\nskipped 1", "stdin": "9 5\n10 75\n13 30", "hints": ["<code>while (cin &gt;&gt; h &gt;&gt; m)</code> stops by itself at the end of input.", "Put the <code>try</code> around the push inside the loop, so one bad row does not end the reading.", "<code>while (!times.empty()) { cout &lt;&lt; times.front() &lt;&lt; endl; times.pop(); }</code>"], "solution": "#include <iostream>\n#include <queue>\n#include <stdexcept>\nusing namespace std;\n\nclass Time {\nprivate:\n    int hours;\n    int minutes;\npublic:\n    Time(int hours, int minutes) : hours(hours), minutes(minutes) {\n        if (minutes < 0 || minutes > 59) {\n            throw invalid_argument(\"minutes must be 0 to 59\");\n        }\n    }\n    Time(const Time& other) : hours(other.hours), minutes(other.minutes) {}\n    ~Time() {}\n    friend ostream& operator<<(ostream& os, const Time& t);\n};\n\nostream& operator<<(ostream& os, const Time& t) {\n    os << t.hours << \":\" << (t.minutes < 10 ? \"0\" : \"\") << t.minutes;\n    return os;\n}\n\nint main() {\n    queue<Time> times;\n    int skipped = 0;\n    int h, m;\n    while (cin >> h >> m) {\n        try {\n            times.push(Time(h, m));\n        } catch (const invalid_argument&) {\n            ++skipped;\n        }\n    }\n    while (!times.empty()) {\n        cout << times.front() << endl;\n        times.pop();\n    }\n    cout << \"skipped \" << skipped << endl;\n    return 0;\n}\n"}
 ```
+
 ```quiz
 [
   {
@@ -225,7 +226,7 @@ The same guided long question on a new class: a `Time` of hours and minutes that
   },
   {
     "q": "Why does the insertion operator end by handing back the stream it wrote to, so that `cout << a << b` works?",
-    "options": ["`cout << a << b` is `(cout << a) << b`, so the value of `cout << a` must be the same stream for `<< b` to apply to", "returning the stream flushes it so the output appears", "a friend function must return one of its parameters", "it lets the compiler skip copying the Fraction"],
+    "options": ["`cout << a << b` is `(cout << a) << b`: `<< b` needs that stream as its left operand", "returning the stream flushes it, so the output appears on screen at once", "a friend function must always return one of its own reference parameters", "returning the stream lets the compiler skip copying the Fraction argument"],
     "answer": 0,
     "explain": "The chain groups left to right: `cout << a` runs first and its result is the left operand of `<< b`, so the operator returns the ostream by reference."
   },
@@ -252,7 +253,7 @@ The same guided long question on a new class: a `Time` of hours and minutes that
   },
   {
     "q": "Why must the copy constructor's parameter be a reference, `Fraction(const Fraction& other)`?",
-    "options": ["a by-value parameter would need the copy constructor to build itself: infinite recursion", "references are faster to type", "the compiler requires const on all constructors", "so the parameter can be nullptr"],
+    "options": ["passing by value would itself call the copy constructor, recursing forever", "a reference parameter is shorter to write than a full Fraction value", "the compiler requires every constructor parameter to be declared const", "a reference lets the caller pass nullptr when there is nothing to copy"],
     "answer": 0,
     "explain": "Passing by value copies, and copying is what we are defining. const lets const Fractions be copied too."
   },
@@ -264,7 +265,7 @@ The same guided long question on a new class: a `Time` of hours and minutes that
   },
   {
     "q": "Why is `while (in >> num >> den)` the right loop for Fractions.txt?",
-    "options": ["it reads one line at a time regardless of content", "it throws when the file ends", "it skips the first line", "the extraction returns the stream, which tests false when a read fails at end of file, so the loop stops by itself with no eof check"],
+    "options": ["it reads exactly one line at a time, whatever that line contains", "it throws an exception as soon as the file reaches its end", "it skips the header line before reading the first fraction", "each `>>` returns the stream, which tests false once a read fails at the end"],
     "answer": 3,
     "explain": "operator>> returns the istream, and in a condition it is false only when failbit or badbit is set. eofbit alone leaves it true: a last read that reaches the end of the file without a trailing newline still succeeds and its row is used. The next read finds nothing, sets failbit, and the loop stops. Whitespace separates the two integers whether on one line or several."
   },

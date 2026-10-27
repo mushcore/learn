@@ -3,15 +3,15 @@ title: The five kinds of iterator
 minutes: 25
 ---
 
-`v.begin() + 3` compiles for a vector and not for a list, and `fi--` fails on a forward_list, because "iterator" is five different contracts and each container hands out one of them.
+`v.begin() + 3` compiles for a vector, not a list: "iterator" is five different contracts, and each container hands out one.
 
 ## Five kinds, defined by five operations
 
-Slide wording: there are five kinds of iterators, *Input*, *Output*, *Forward*, *Bidirectional*, *Random Access*, and *each kind of iterator is defined by the operations that can be performed on it*: 1. *Read*, 2. *Write*, 3. *Increment (with or without multiple passes)*, 4. *Decrement*, 5. *Random access*. The slide also says where to access each kind: input from *istream_iterator*; output from *ostream_iterator*; forward from *forward_list, unordered_map*; bidirectional from *list, map, set etc*; random access from *vector, deque, array etc*. Each kind from forward onward can do everything the kinds before it can; the tables below list only what each adds.
+There are five kinds of iterators, *Input*, *Output*, *Forward*, *Bidirectional*, *Random Access*, and *each kind of iterator is defined by the operations that can be performed on it*: 1. *Read*, 2. *Write*, 3. *Increment (with or without multiple passes)*, 4. *Decrement*, 5. *Random access*. Each kind from forward onward can do everything the kinds before it can; the tables list only what each adds.
 
 ## 1. Input iterator: read once, forward only
 
-*Single pass forward direction sequential input operations: `==`, `!=`, `++`, `*it`*. Only reading, and incrementing. Single pass means you cannot go back and read an element again: think of reading `cin`. Slide wording: *there is not a single type of input iterator. Each container defines its own specific iterator type.* In the table `i` and `j` are iterators.
+*Single pass forward direction sequential input operations: `==`, `!=`, `++`, `*it`*. Single pass means you cannot go back and read an element again: think of reading `cin`. *There is not a single type of input iterator. Each container defines its own specific iterator type.* In the table `i` and `j` are iterators.
 
 | Supported expression | Returns | Equivalent expression |
 |---|---|---|
@@ -22,11 +22,9 @@ Slide wording: there are five kinds of iterators, *Input*, *Output*, *Forward*, 
 | `i++` | It | `It temp = i; ++i; return temp;` |
 | `*i++` | value_type | `value_type x = *i; ++i; return x;` |
 
-The last three rows are Week 4's prefix/postfix rule applied to iterators: `++i` returns the new position, `i++` returns a copy of the old one, and `*i++` reads the old position before advancing.
-
 ## 2. Output iterator: write once, forward only
 
-*Single pass forward direction sequential output operations: `*it`, `++`, `*it = value`*. Only writing, and incrementing. Think of writing to `cout`: you can put a value at the current position and move on, never read it back.
+*Single pass forward direction sequential output operations: `*it`, `++`, `*it = value`*. Think of writing to `cout`: put a value, move on, never read it back.
 
 | Supported expression | Returns | Equivalent expression |
 |---|---|---|
@@ -37,7 +35,7 @@ The last three rows are Week 4's prefix/postfix rule applied to iterators: `++i`
 
 ## 3. Forward iterator: read and write, multi-pass
 
-*Multi-pass forward direction sequential output operations: `==`, `!=`, `++`, `*it`, `*it = value`*. *Reading AND writing*, incrementing. Multi-pass is the new word: *we can make a copy of the iterator and dereference the same iterant*, so a saved copy still refers to its element after the original moves on.
+*Multi-pass forward direction sequential output operations: `==`, `!=`, `++`, `*it`, `*it = value`*. *Reading AND writing*, incrementing. Multi-pass is the new word: *we can make a copy of the iterator and dereference the same iterant*.
 
 ```cpp run pin forwardCopy.cpp
 // predict: Write the three lines printed.
@@ -62,7 +60,7 @@ int main() {
 }
 ```
 
-The slide's four lines are the middle of the program. `*iterSaved = 100;` is the forward iterator's `*it = value`, written through a saved copy. A `forward_list` gives exactly this kind, so `iter--` would not compile.
+The added `*iterSaved = 100;` writes through the copy made by `iterSaved = iter;`.
 
 ## 4. Bidirectional iterator: adds decrement
 
@@ -120,7 +118,7 @@ int main() {
 }
 ```
 
-A `list` hands out bidirectional iterators. The line to read slowly is `list <int>::iterator it = itBegin++;`, the `i++` row of the input table: postfix copies the current position, advances `itBegin`, and returns the copy.
+Read `list <int>::iterator it = itBegin++;` slowly: it is the `i++` row, so postfix copies the current position, advances `itBegin`, and returns the copy.
 
 ## 5. Random access iterator: jump by n and compare
 
@@ -134,7 +132,7 @@ A `list` hands out bidirectional iterators. The line to read slowly is `list <in
 | `i[n]` | value_type | `*(i + n)` |
 | `i < j`, `i <= j`, `i > j`, `i >= j` | bool | |
 
-Slide wording: *only random-access iterators permit an integer value to be added to or subtracted from an iterator* (`iter1 - 5`), and *only random access iterators permit one iterator to be subtracted from another*, which results in a `difference_type` (`iter1 - iter2`).
+*Only random-access iterators permit an integer value to be added to or subtracted from an iterator* (`iter1 - 5`), and *only random access iterators permit one iterator to be subtracted from another*, which results in a `difference_type` (`iter1 - iter2`).
 
 ```cpp run pin randomAccessIterator.cpp
 // predict: Write the eight lines printed.
@@ -174,17 +172,19 @@ int main() {
 }
 ```
 
-The program uses one row of the table per line: `v.end() - 1` is `i - n`, `v.begin() + 3` is `i + n`, `v.end() - nearEndIt` is `i - j`, and `<` is the comparison row. The shipped program goes on to print the address of a `new string` and of the iterator (cut here because addresses vary per run) to show that an iterator is not a pointer: `cout << midIt` does not compile.
+One table row per line: `v.end() - 1` is `i - n`, `v.begin() + 3` is `i + n`, `v.end() - nearEndIt` is `i - j`, then `<`. Address lines cut: an iterator is not a pointer; `cout << midIt` does not compile.
 
-## Which container gives which kind
+## Where to access each kind
 
-| Container | Iterator kind | So you can |
-|---|---|---|
-| `vector`, `deque`, `array` | random access | `it + n`, `it - n`, `it[n]`, `it1 - it2`, `<` |
-| `list`, `set`, `multiset`, `map`, `multimap` | bidirectional | `++`, `--`, read, write (set and map keys are const) |
-| `forward_list`, `unordered_map` | forward | `++`, read, write, copies |
-| `istream_iterator` | input | read once, `++` |
-| `ostream_iterator` | output | write once, `++` |
+The slide's list (set and map keys stay const):
+
+| Kind | Access from (slide) |
+|---|---|
+| input | *istream_iterator* |
+| output | *ostream_iterator* |
+| forward | *forward_list, unordered_map* |
+| bidirectional | *list, map, set etc* |
+| random access | *vector, deque, array etc* |
 
 ```widget
 iterator-ops
@@ -211,11 +211,9 @@ int main() {
 }
 ```
 
-g++ rejects both marked lines: `list<int>::iterator it = l.begin() + 2;` gives `error: no match for 'operator+' (operand types are 'std::list<int>::iterator' and 'int')` followed by every `operator+` it tried, and `fi--;` gives `error: no 'operator--(int)' declared for postfix '--'`. To reach the third element of a list, increment twice or use `std::next(l.begin(), 2)`, which repeats `++` for you.
+g++ rejects `list<int>::iterator it = l.begin() + 2;` (`no match for 'operator+'`) and `fi--;` (`no 'operator--(int)' declared for postfix '--'`). For a list's third element, increment twice: `std::next(l.begin(), 2)`.
 
-## Step a list iterator back and jump a vector iterator forward
-
-Bidirectional moves on a list, random-access arithmetic on the letters of `program`, and a set iterator asked to do too much.
+## Move list and vector iterators
 
 ```quiz
 [

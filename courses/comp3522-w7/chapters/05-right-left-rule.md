@@ -68,28 +68,28 @@ Slide 33, `int * (* (*fp1) (int) ) [10];`:
 
 | Slide step | You see | Adds to the reading |
 |---|---|---|
-| Start from the variable name | `fp1` | fp1 is |
-| Nothing to the right but `)`, so go left | `*` | a pointer |
-| Jump out of parentheses | `(int)` | to a function that takes an int parameter |
-| Go left | `*` | and returns a pointer |
-| Jump out of parentheses, go right | `[10]` | to an array of 10 |
-| Go left | `*` | pointers to |
-| Go left again | `int` | ints |
+| *Start from the variable name* | `fp1` | fp1 is |
+| *Nothing to right but* `)` *so go left to find* | `*` | a pointer |
+| *Jump out of parentheses and encounter* | `(int)` | to a function that takes an int parameter |
+| *Go left, find* | `*` | and returns a pointer |
+| *Jump out of parentheses, go right and hit* | `[10]` | to an array of 10 |
+| *Go left find* | `*` | pointers to |
+| *Go left again, find* | `int` | ints |
 
 Slide 34, `int *( *( *arr[5])())();`:
 
 | Slide step | You see | Adds to the reading |
 |---|---|---|
-| Start from the variable name | `arr` | arr is |
-| Go right | `[5]` | an array of 5 |
-| Go left | `*` | pointers |
-| Jump out of parentheses, go right | `()` | to functions |
-| Go left | `*` | that return pointers |
-| Jump out, go right | `()` | to functions |
-| Go left | `*` | that return pointers |
-| Continue left | `int` | to ints |
+| *Start from the variable name* | `arr` | arr is |
+| *Go right, find array subscript* | `[5]` | an array of 5 |
+| *Go left, find* | `*` | pointers |
+| *Jump out of parentheses, go right to find* | `()` | to functions |
+| *Go left, encounter* | `*` | that return pointers |
+| *Jump out, go right, find* | `()` | to functions |
+| *Go left, find* | `*` | that return pointers |
+| *Continue left, find* | `int` | to ints |
 
-Each "jump out" is steps 4 and 5 again, one level further out.
+Each "jump out" repeats steps 4 and 5, one level out.
 
 ## Names that explain themselves
 

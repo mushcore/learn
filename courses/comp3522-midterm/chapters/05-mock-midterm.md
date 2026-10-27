@@ -180,7 +180,7 @@ Each program compiles warning-free with `g++ -std=c++20 -Wall -Wextra -pedantic`
     "explain": "`p->draw()` is virtual through a base pointer: Circle::draw. `p->info()` is not virtual, so the pointer's static type decides: Shape::info. `p->Shape::draw()` is a qualified call that bypasses dispatch: Shape::draw. `show(c)` copies the Circle into a `Shape` parameter (slicing), so `s.draw()` prints Shape::draw and the copy's destructor prints ~Shape when show returns. `delete h` through a base pointer with a virtual destructor runs ~Circle then ~Shape. Then end, and `c` dies at the end of main: ~Circle, ~Shape. Ten lines."
   },
   {
-    "q": "**Q20 (4 marks).** What is printed? Hint: 7 lines.",
+    "q": "**Q20 (3 marks).** What is printed? Hint: 7 lines.",
     "week": "W4",
     "code": "#include <iostream>\n#include <string>\nusing namespace std;\n\nclass Device {\nprotected:\n    string name;\npublic:\n    Device() : name(\"unnamed\") { cout << \"Device()\" << endl; }\n    Device(const string& n) : name(n) { cout << \"Device(\" << n << \")\" << endl; }\n};\n\nclass Phone : virtual public Device {\npublic:\n    Phone(const string& n) : Device(n) { cout << \"Phone\" << endl; }\n};\n\nclass Camera : virtual public Device {\npublic:\n    Camera(const string& n) : Device(n) { cout << \"Camera\" << endl; }\n};\n\nclass SmartPhone : public Phone, public Camera {\npublic:\n    SmartPhone(const string& n) : Phone(n), Camera(n) { cout << \"SmartPhone\" << endl; }\n    void describe() const { cout << \"I am \" << name << endl; }\n};\n\nint main() {\n    SmartPhone s(\"Pixel\");\n    s.describe();\n    Phone p(\"Nokia\");\n}",
     "options": [
@@ -232,7 +232,7 @@ Each program compiles warning-free with `g++ -std=c++20 -Wall -Wextra -pedantic`
     "explain": "`setfill('.')` stays in force, so every padded field pads with dots. `setw(6)` applies to the next insertion only: the first 42 is padded to six characters, the second prints at its natural width. `left` stays in force and puts the padding after the value. `setprecision(3)` with neither `fixed` nor `scientific` on means 3 significant digits, 3.14; after `fixed` it means 3 digits after the decimal point, 3.142."
   },
   {
-    "q": "**Q24 (2 marks).** What is printed? Hint: 8 lines.",
+    "q": "**Q24 (3 marks).** What is printed? Hint: 8 lines.",
     "week": "W3 W7",
     "code": "#include <iostream>\nusing namespace std;\n\nstruct Parent {\n    Parent() { cout << \"Parent()\" << endl; }\n    Parent(const Parent&) { cout << \"Parent copy\" << endl; }\n    virtual ~Parent() { cout << \"~Parent\" << endl; }\n    virtual void who() const { cout << \"Parent::who\" << endl; }\n};\n\nstruct Child : public Parent {\n    Child() { cout << \"Child()\" << endl; }\n    Child(const Child& other) : Parent(other) { cout << \"Child copy\" << endl; }\n    ~Child() { cout << \"~Child\" << endl; }\n    void who() const override { cout << \"Child::who\" << endl; }\n};\n\nvoid passByValue(Parent p) { p.who(); }\n\nvoid passByReference(const Parent& p) { p.who(); }\n\nint main() {\n    Child c;\n    passByValue(c);\n    passByReference(c);\n}",
     "options": [
