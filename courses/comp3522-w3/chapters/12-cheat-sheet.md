@@ -110,7 +110,7 @@ public:
 | Relationship | Arrow | C++ |
 |---|---|---|
 | association | solid line | member `B*` / `B&` / `B` |
-| generalization | solid line, hollow triangle | `class A : public B` |
+| generalization | solid line, hollow triangle | `class B : public A` |
 | realization | dashed line, hollow triangle | implements an interface |
 | dependency | dashed arrow | uses B as a parameter or local |
 | composition | filled diamond at the whole | parts die with the whole |

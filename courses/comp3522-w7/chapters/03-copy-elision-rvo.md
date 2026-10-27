@@ -92,8 +92,6 @@ Without elision `Number(2)` would be its own object, copied into `n` and then de
 
 Slide 16 changes the body of `createNumber` to `Number tempN(num); return tempN;`. Slide wording: *Named return value optimization can remove the temporaries by directly initializing n even if the returned object is named*. The compiler builds `tempN` in the memory of `n` from the start, so returning it needs no copy. The slide adds: *Note, there's no guarantee that all compilers use RVO and NRVO*. g++ applies NRVO here, so the slide-16 version also prints a single `1-param constructor`.
 
-NRVO needs one named object that every return statement returns. A function that may return either of two locals cannot build both in the caller's memory, so the one it returns is copied.
-
 ## What C++17 guarantees
 
 The slides call all of this an optimization that some compilers may skip. Since C++17 that is true only of NRVO. When an object is initialized from a prvalue of the same type (an unnamed temporary such as `Number(num)` or `Number(2)`, or a call that returns one), the elision is guaranteed: no temporary exists, the copy constructor is never called, and the code compiles even when the copy constructor is deleted. NRVO, returning a named local, is still optional; g++ does it, but the standard allows a copy. Returning a function parameter is never elided: the standard excludes parameters, because a parameter is a separate object built before the function body runs, so it cannot also be the caller's object. It is copied (or moved) into it. The next lesson runs that case.
@@ -138,7 +136,7 @@ Each program uses a new class, `Box`, whose two constructors print. Decide wheth
       "Not elided: `Box(int) 1` / `Box(int) 9` / `Box copy 1`"
     ],
     "answer": 1,
-    "explain": "Real output: `Box(int) 1` / `Box(int) 9` / `Box copy 9`. NRVO builds one named local in the caller's memory, but here two locals exist at once and which one is returned is decided at run time, so g++ cannot place both in `d`. `large` is returned, so it is copied into `d` (the class has no move constructor, so the copy constructor runs)."
+    "explain": "Real output: `Box(int) 1` / `Box(int) 9` / `Box copy 9`. NRVO builds one named local in the caller's memory, but here two locals exist at once and which one is returned is decided at run time, so g++ cannot place both in `d`. NRVO needs one named object that every return statement returns; a function that may return either of two locals copies the one it returns. `large` is returned, so it is copied into `d` (the class has no move constructor, so the copy constructor runs)."
   }
 ]
 ```

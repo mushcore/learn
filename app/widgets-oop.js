@@ -1048,8 +1048,8 @@ function copySwap(box, cfg) {
 // Pick a class-diagram relationship: the arrow as UML draws it, the meaning, the C++ it maps to.
 const UML = {
   "Association": { arrow: "line", head: "open", dash: false, meaning: "A reference-based relationship: A contains member variables of type B (or pointers to B). \"A knows about B.\"", code: "class Professor {\n    std::vector<Student*> listOfStudents;   // A has B members\n};", ex: "Professor — Student" },
-  "Generalization (inheritance)": { arrow: "line", head: "triangle", dash: false, meaning: "A is a specialized form of B: a subclass. Every A is a B.", code: "class Student : public Person { };   // A is a B", ex: "Student ▷ Person" },
-  "Realization (implementation)": { arrow: "line", head: "triangle", dash: true, meaning: "A implements the behaviours that interface B specifies: same hollow triangle, dashed line.", code: "class Animal { public: virtual void eat() = 0; virtual ~Animal() {} };\nclass Dog : public Animal { public: void eat() override { } };", ex: "Dog ⊳ Animal (interface)" },
+  "Generalization (inheritance)": { arrow: "line", head: "triangle", dash: false, meaning: "B derives from concrete or abstract class A: B is a subclass, and every B is an A. The hollow triangle sits at A.", code: "class Person { };\nclass Student : public Person { };   // B is an A", ex: "A = Person ◁— Student = B" },
+  "Realization (implementation)": { arrow: "line", head: "triangle", dash: true, meaning: "B implements interface A, so B is an A for interfaces: the same hollow triangle at A, on a dashed line.", code: "// A: the interface\nclass Animal { public: virtual void eat() = 0; virtual ~Animal() {} };\n// B implements A\nclass Dog : public Animal { public: void eat() override { } };", ex: "A = Animal (interface) ◁‑‑ Dog = B" },
   "Dependency": { arrow: "line", head: "open", dash: true, meaning: "A communicates with B without containing an instance: a method of A uses B as a parameter or local variable.", code: "class Car {\npublic:\n    void fit(Wheel& w);     // uses a Wheel, does not own one\n};", ex: "Car ‑‑> Wheel" },
   "Composition": { arrow: "line", head: "diamondFilled", dash: false, meaning: "A is made up of B objects and the parts cannot exist without the whole: destroy the order and its order_items go with it. Filled diamond on the whole.", code: "class Order {\n    std::vector<OrderItem> items;   // owned by value: dies with the Order\n};", ex: "Order ◆— OrderItem   0..1 to 1..*" },
   "Aggregation": { arrow: "line", head: "diamondHollow", dash: false, meaning: "A references B objects that live on if A is destroyed: the pond is drained, the ducks fly off. Hollow diamond on the whole.", code: "class Pond {\n    std::vector<Duck*> ducks;   // pointers: the ducks outlive the pond\n};", ex: "Pond ◇— Duck   0..1 to 0..*" },
@@ -1068,9 +1068,10 @@ function umlRelations(box, cfg) {
     boxAt(60, "A"); boxAt(430, "B");
     const y = 60, x1 = 210, x2 = 430;
     const hx = r.head === "diamondFilled" || r.head === "diamondHollow" ? x1 : x2;
-    const lineFrom = r.head.startsWith("diamond") ? x1 + 24 : x1, lineTo = r.head.startsWith("diamond") ? x2 : x2 - (r.head === "triangle" ? 18 : 0);
+    // Diamonds and triangles sit at A (the whole, the base or the interface); open arrowheads point at B.
+    const lineFrom = r.head.startsWith("diamond") ? x1 + 24 : r.head === "triangle" ? x1 + 18 : x1, lineTo = x2;
     svg.append(svgEl("line", { x1: lineFrom, y1: y, x2: lineTo, y2: y, stroke: "var(--hl)", "stroke-width": 2, "stroke-dasharray": r.dash ? "8 6" : "" }));
-    if (r.head === "triangle") svg.append(svgEl("polygon", { points: `${x2},${y} ${x2 - 18},${y - 10} ${x2 - 18},${y + 10}`, fill: "var(--paper)", stroke: "var(--hl)", "stroke-width": 2 }));
+    if (r.head === "triangle") svg.append(svgEl("polygon", { points: `${x1},${y} ${x1 + 18},${y - 10} ${x1 + 18},${y + 10}`, fill: "var(--paper)", stroke: "var(--hl)", "stroke-width": 2 }));
     if (r.head === "open") svg.append(svgEl("polyline", { points: `${x2 - 14},${y - 9} ${x2},${y} ${x2 - 14},${y + 9}`, fill: "none", stroke: "var(--hl)", "stroke-width": 2 }));
     if (r.head.startsWith("diamond")) svg.append(svgEl("polygon", { points: `${hx},${y} ${hx + 12},${y - 8} ${hx + 24},${y} ${hx + 12},${y + 8}`, fill: r.head === "diamondFilled" ? "var(--hl)" : "var(--paper)", stroke: "var(--hl)", "stroke-width": 2 }));
     svg.append(svgEl("text", { x: 320, y: 108, "text-anchor": "middle", "font-size": 11, fill: "var(--ink-dim)" }, r.ex));

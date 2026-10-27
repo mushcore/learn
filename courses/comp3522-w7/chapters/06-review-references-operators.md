@@ -127,7 +127,7 @@ Slides 55 and 56 as one table (`num` is 5, `num2` is 10, `arr` is `{0,1,2}`):
 | | Pointer | Reference |
 |---|---|---|
 | What it is | *Holds memory addresses*: `int *numPtr = &num;` | *A nickname for an existing variable*: `int &numRef = num;` |
-| Declared with no initializer | `int *numPtr; //OK` | `int &numRef; //ERROR` (only a class data member may be declared this way) |
+| Declared with no initializer | `int *numPtr; //OK` | `int &numRef; //ERROR` (only class data members, function parameters and `extern` declarations may omit it: they are bound elsewhere) |
 | Null | `int *numPtr = nullptr; //OK` | `int &numRef = NULL //ERROR` |
 | Reach the value | by dereferencing: `*numPtr = 5;` | directly: `numRef = 5;` |
 | Next element | `numPtr++;` moves to the next element | cannot move; `int (&numRef)[3] = arr; numRef[0]++;` changes element 0 |
@@ -190,7 +190,7 @@ This is the course's convention, and the sample files `operatorsBasic.cpp` and `
     "q": "Given `int num = 5;` inside main, which lines compile? (select all)",
     "options": ["`int *numPtr;`", "`int &numRef;`", "`int *numPtr = nullptr;`", "`int &numRef = num;`", "`int &numRef = NULL;`"],
     "answer": [0, 2, 3],
-    "explain": "A pointer may start uninitialized or null. A reference must be bound to an existing variable when it is declared (outside class data members) and can never refer to NULL or nothing."
+    "explain": "A pointer may start uninitialized or null. A reference must be bound to an existing variable when it is declared (class data members, function parameters and `extern` declarations are bound elsewhere) and can never refer to NULL or nothing."
   },
   {
     "q": "Which operators do the slides say to implement as member functions? (select all)",

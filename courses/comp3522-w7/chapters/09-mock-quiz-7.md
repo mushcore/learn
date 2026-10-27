@@ -255,7 +255,7 @@ True/false and multiple choice follow the slide's rule; where C++17 says somethi
   },
   {
     "q": "Slide 26: `swap` takes references to pointers. What prints?",
-    "code": "#include <iostream>\n#include <complex>\nvoid swap(int*&p, int *&q)\n{\n       int* temp = p;\n       p = q;\n       q = temp;\n}\nint main() {\n  int x = 1, y = 2;\n  int *px = &x, *py = &y;\n  swap(px, py);\n  std::cout << *px << \" \" << *py << \" \" << x << \" \" << y << std::endl;\n}",
+    "code": "#include <iostream>\nvoid swap(int*&p, int *&q)\n{\n       int* temp = p;\n       p = q;\n       q = temp;\n}\nint main() {\n  int x = 1, y = 2;\n  int *px = &x, *py = &y;\n  swap(px, py);\n  std::cout << *px << \" \" << *py << \" \" << x << \" \" << y << std::endl;\n}",
     "options": [
       "2 1 1 2",
       "2 1 2 1",
@@ -394,7 +394,7 @@ True/false and multiple choice follow the slide's rule; where C++17 says somethi
       "`!x`"
     ],
     "answer": 2,
-    "explain": "`x + y` modifies neither operand and produces a new value, so the slides make it a friend non-member (as are -, ==, !=). Unary operators are members, and binary operators that modify the left operand (`+=`, `-=`) are members too. It is a convention: `=`, `[]`, `()` and `->` must be members."
+    "explain": "`x + y` modifies neither operand and produces a new value, so the slides make it a friend non-member (as are -, ==, !=). Unary operators are members, and binary operators that modify the left operand (`+=`, `-=`) are members too. The split is the course's convention; the language itself requires `=`, `[]`, `()` and `->` to be members."
   },
   {
     "q": "Slide 56: after `int& numRef = num;`, the line `numRef = num2;` makes numRef refer to num2.",
@@ -406,7 +406,7 @@ True/false and multiple choice follow the slide's rule; where C++17 says somethi
     "q": "Slide 55: `int &numRef;` with no initializer is OK, just like `int *numPtr;`.",
     "type": "tf",
     "answer": false,
-    "explain": "A pointer can be declared uninitialized, but a reference must be bound when it is created: `int &numRef;` is an ERROR outside of class data members. It can't be null either (`int &numRef = NULL` is an ERROR)."
+    "explain": "A pointer can be declared uninitialized, but a reference must be bound when it is created: `int &numRef;` is an ERROR except for class data members, function parameters and `extern` declarations, which are bound elsewhere. It can't be null either (`int &numRef = NULL` is an ERROR)."
   },
   {
     "q": "Slide 92: a friend that takes the object by value. What prints?",

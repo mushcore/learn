@@ -416,7 +416,8 @@ function rlRuleStep(box, cfg) {
 // =====================================================================
 const NUMBER_CLASS = ["class Number {", "private:", "    int num;", "public:", "    Number(int n) : num (n) {}", "    Number(const Number &n2) {num = n2.num;}", "};", ""];
 /**
- * Each object frame: { line(s), who: [slide, compiler], ctor, elided (in compiler mode), text: [slide, compiler] }.
+ * Each object frame: { line(s), who: [slide, compiler], ctor, elided, text: [slide, compiler] }. elided is a boolean
+ * (struck out in compiler mode only) or [slide, compiler] when the slide itself counts no copy for that object.
  * Frame 0 is the starting statement and the last frame the count. Compiler counts match the server's
  * output for slide13-rvo.cpp, slide16-nrvo.cpp, slide17-temp.cpp and slide95-param.cpp (courses/comp3522-w7/_SOURCE-NOTES.md).
  */
@@ -463,11 +464,11 @@ const ELISION_CASES = {
     frames: [
       { lines: [13], who: ["mc", "mc"], ctor: "default constructor", elided: false, text: ["MyClass mc; runs the default constructor.", "MyClass mc; runs the default constructor."] },
       { lines: [7, 14], who: ["mcCopy", "mcCopy"], ctor: "copy constructor", elided: false, text: ["Passing mc by value builds the parameter mcCopy: copy constructor.", "Passing mc by value builds the parameter mcCopy: copy constructor. Nothing elides this: mc is an lvalue the caller keeps."] },
-      { lines: [10], who: ["return value", "mc2 (return value)"], ctor: "copy constructor", elided: false, text: ["return mcCopy; copies the parameter into a temporary object that holds the return value: copy constructor.", "return mcCopy; copies the parameter into mc2's memory: copy constructor (MyClass has no move constructor, so the copy is used). A parameter is never elided: NRVO applies only to a function's own locals."] },
-      { lines: [14], who: ["mc2", "mc2"], ctor: "copy constructor", elided: true, text: ["mc2 is initialized from the returned temporary: copy constructor again.", "myFunction(mc) is a prvalue initializing mc2, so mc2 is the object the return statement built: guaranteed elision, no further copy."] },
+      { lines: [10], who: ["return value", "mc2 (return value)"], ctor: "copy constructor", elided: false, text: ["return mcCopy; copies the parameter into the object that holds the return value: copy constructor (slide 95: return value is also copied).", "return mcCopy; copies the parameter into mc2's memory: copy constructor (MyClass has no move constructor, so the copy is used). A parameter is never elided: NRVO applies only to a function's own locals."] },
+      { lines: [14], who: ["mc2 (from the return value)", "mc2"], ctor: "copy constructor", elided: [true, true], text: ["mc2 is initialized from the return value, and slide 95 names no copy for it: the return value is mc2, so no copy constructor runs here.", "myFunction(mc) is a prvalue initializing mc2, so mc2 is the object the return statement built: guaranteed elision, no further copy."] },
     ],
-    end: ["As written on the slide: 4 MyClass objects (mc, mcCopy, the return value, mc2): one default constructor and three copies.", "C++17 compiler: 3 MyClass objects (mc, mcCopy, mc2): one default constructor and two copies. The server's Number version prints 1-param constructor, copy constructor, copy constructor."],
-    counts: [4, 3],
+    end: ["As written on the slide: 3 MyClass objects (mc, mcCopy, the return value that initializes mc2): one default constructor and two copies, the parameter copy and the return-value copy.", "C++17 compiler: 3 MyClass objects (mc, mcCopy, mc2): one default constructor and two copies. The server's Number version prints 1-param constructor, copy constructor, copy constructor."],
+    counts: [3, 3],
   },
 };
 
@@ -477,7 +478,7 @@ export function elisionFrames(caseName, mode) {
   const out = [{ lines: c.start.lines, boxes: [], text: c.start.text, count: 0 }];
   const boxes = [];
   c.frames.forEach((f) => {
-    const elided = m === 1 && f.elided;
+    const elided = Array.isArray(f.elided) ? f.elided[m] : m === 1 && f.elided;
     boxes.forEach((b) => (b.cur = false));
     boxes.push({ who: f.who[m], ctor: f.ctor, elided, cur: true });
     out.push({ lines: f.lines, boxes: boxes.map((b) => ({ ...b })), text: f.text[m], count: boxes.filter((b) => !b.elided).length });
@@ -506,7 +507,7 @@ function elisionTrace(box, cfg) {
     for (let k = 1; k < fr.length - 1; k++) {
       const b = fr[k].boxes[fr[k].boxes.length - 1], right = b.elided ? NONE : b.ctor;
       const all = [...ctorOpts, NONE].filter((x, i, a) => a.indexOf(x) === i);
-      const why = st.mode === "compiler" ? "Since C++17 a prvalue of the same type initializes the object directly (guaranteed elision); NRVO of a named local is optional and g++ does it; a parameter is never elided." : "As written, every by-value copy runs: a by-value parameter, the temporary that holds a return value, and initializing a variable from a temporary each call the copy constructor.";
+      const why = st.mode === "compiler" ? "Since C++17 a prvalue of the same type initializes the object directly (guaranteed elision); NRVO of a named local is optional and g++ does it; a parameter is never elided." : st.name === "param" ? "Slide 95 counts two copies: the by-value parameter mcCopy and the return value (return value is also copied); mc2 is initialized from that return value with no further copy." : "As written, every by-value copy runs: a by-value parameter, the temporary that holds a return value, and initializing a variable from a temporary each call the copy constructor.";
       const src = c.frames[k - 1], ln = src.lines[src.lines.length - 1], who = src.who[st.mode === "compiler" ? 1 : 0];
       qs.push({ at: k - 1, text: `Line ${ln}: ${c.code[ln - 1].replace(/\s*\/\/.*$/, "").trim()} Which constructor runs for ${/^(temporary|return)/.test(who) ? "the " : ""}${who}?`, options: placeOptions({ label: right, ok: true, why }, all.filter((x) => x !== right).map((x) => ({ label: x, ok: false, why })), k) });
     }
@@ -530,7 +531,7 @@ function elisionTrace(box, cfg) {
     grid.innerHTML = "";
     const asking = !!gate.asking(pos);
     const stat = (label, value, extra) => { const c = el("div", "stat-cell"); c.append(el("div", "stat-label", label), el("div", "stat-value", value)); if (extra) c.append(el("div", "stat-note", extra)); return c; };
-    grid.append(stat(`${ELISION_CASES[st.name].type} objects`, asking ? "?" : String(f.count), asking ? "answer first" : f.done ? "in total" : "so far"), stat("mode", st.mode === "compiler" ? "C++17 compiler" : "as written", st.mode === "compiler" ? "g++ -std=c++20, as the server runs it" : "every copy runs"));
+    grid.append(stat(`${ELISION_CASES[st.name].type} objects`, asking ? "?" : String(f.count), asking ? "answer first" : f.done ? "in total" : "so far"), stat("mode", st.mode === "compiler" ? "C++17 compiler" : "as written", st.mode === "compiler" ? "g++ -std=c++20, as the server runs it" : "the slide's count"));
     const q = gate.asking(pos);
     const text = q ? q.text : f.text + (f.done ? gate.tally() : "");
     if (caption.textContent !== text) caption.textContent = text;

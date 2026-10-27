@@ -13,7 +13,7 @@ This is the sheet to copy by hand for the midterm (Thursday October 29, 2026, 3:
 - `int x{0};` uniform, preferred: narrowing `int y{3.7}` is a compile error; `= 3.7` and `(3.7)` truncate; `(int)2.25` is 2.
 - `int / int` truncates toward zero (`-7/2` is -3); `%` takes the sign of the left operand.
 - `x++` yields the old value, `++x` the new. `const` may come from run time, `constexpr` must be compile time.
-- Sizes: `char` 1, `int` 4, `long` 4, `long long` 8, `float` 4, `double` 8.
+- Sizes: `char` 1, `int` 4, `long` 4 (Windows), `long long` 8, `float` 4, `double` 8.
 - `setw` next field only, others sticky; default precision 6 significant; `fixed` then `setprecision(2)`: 2 decimals.
 - `while (cin >> n)` stops on bad input or EOF. Recover: `cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n');`
 

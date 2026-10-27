@@ -163,7 +163,7 @@ New classes this time: shapes, a bank account, an A-to-F chain and a polygon, ea
     "q": "Which uses of an abstract class `A` compile? (select all)",
     "options": ["`A* pa;`", "`A& f(A& a);`", "`A g();`", "`void h(A a);`", "`A a;`"],
     "answer": [0, 1],
-    "explain": "Pointers and references to an abstract class are fine; anything that would create an A by value (a variable, a return value, a by-value parameter) is rejected."
+    "explain": "Pointers and references to an abstract class are fine; anything that would create an A by value (a variable, a return value, a by-value parameter) is rejected. Since C++20 only defining or calling such a function is an error, and the app's compiler accepts the bare declarations `A g();` and `void h(A a);`."
   },
   {
     "q": "B derives from abstract class A but overrides only one of A's two pure virtual functions. B is...",
