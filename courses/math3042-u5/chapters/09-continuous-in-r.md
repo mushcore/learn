@@ -1,9 +1,10 @@
 ---
 title: punif, pnorm, qnorm, pexp, qexp and curve()
-minutes: 20
+minutes: 22
 ---
+<!-- facts: classic.formula.damage-roll -->
 
-Every area and percentile in this unit is one line of base R, in the same `p`/`q`/`d`/`r` pattern the Unit 4 notebook used for `dbinom` and `pbinom`. No Unit 5 notebook is posted yet; the one R line in the notes, `pnorm(120, 100, 15)`, sets the style.
+Every area and percentile in this unit is one line of base R, in the same `p`/`q`/`d`/`r` pattern the Unit 4 notebook used for `dbinom` and `pbinom`. No Unit 5 notebook is posted yet; the one R line in the notes, `pnorm(120, 100, 15)`, sets the style. A uniform damage multiplier from MapleStory Classic gives `punif` and `runif` a second set of numbers to check.
 
 ## The letter in front says what the function answers
 
@@ -145,13 +146,43 @@ mean(Y < 120)                      # near 0.9088
 
 Without `set.seed` each run prints different numbers; with the seed every run repeats the same draws. Either way the results sit within a few hundredths of the formula values. `mean(X <= 4)` is Lab 4's $k/m$ estimate written in one call.
 
-## Three new problems in R
+## punif and runif on Classic's multiplier B
 
-A part's machining time is uniform on [5, 25] minutes, exam scores are N(500, 100²), and the wait for a taxi is exponential with mean 6 minutes.
+In MapleStory Classic, meowdb's reconstructed damage formula draws a base multiplier B as `uniform(0.8, 1.0)` on every hit [Classic, meowdb's Classic World formulas page, no version shown, checked 2026-10-27]. B is a named uniform with both limits known, so 0.8 and 1.0 are `punif`'s `min` and `max` exactly. The final damage number mixes in a second uniform draw and is not itself uniform; only B is.
 
 ```quiz
 [
-  {"type": "fill", "q": "Complete the call for P(machining time ≤ 12 minutes).", "code": "punif(12, ___, ___)", "answer": ["5", "25"], "explain": "punif(x, min, max) with the interval [5, 25]: (12 − 5)/(25 − 5) = 7/20, so it prints 0.35."},
+  {"q": "P(B > 0.95): write the full command on paper, then type the name of the function you used.", "type": "text", "answer": ["punif"], "explain": "1 - punif(0.95, 0.8, 1.0). punif is the left tail (0.95 − 0.8)/0.2 = 0.75, so the right tail is 1 − 0.75 = 0.25."},
+  {"type": "fill", "q": "Complete the call for the 90th percentile of B.", "code": "qunif(0.9, ___, 1.0)", "answer": ["0.8", ".8"], "explain": "qunif(p, min, max) returns a + p(b − a) = 0.8 + 0.9 × 0.2 = 0.98."}
+]
+```
+
+```r
+1 - punif(0.95, 0.8, 1.0)          # P(B > 0.95): the top quarter of the range
+qunif(0.9, 0.8, 1.0)               # 90th percentile of B
+```
+
+```text
+[1] 0.25
+[1] 0.98
+```
+
+The simulation check is the bus check with new limits: $\mu = (0.8 + 1.0)/2 = 0.9$ and $\sigma = 0.2/\sqrt{12} = 0.0577$.
+
+```r
+set.seed(1)
+B <- runif(10000, 0.8, 1.0)        # 10 000 hits' multipliers
+mean(B); sd(B)                     # near 0.9 and 0.0577 = 0.2/sqrt(12)
+mean(B > 0.95)                     # near 0.25
+```
+
+## Three new problems in R
+
+Classic's base multiplier B is uniform on [0.8, 1.0], exam scores are N(500, 100²), and the wait for a taxi is exponential with mean 6 minutes.
+
+```quiz
+[
+  {"type": "fill", "q": "Complete the call for P(B ≤ 0.86).", "code": "punif(0.86, 0.8, ___)", "answer": ["1.0", "1"], "explain": "punif(x, min, max) with the interval [0.8, 1.0]: (0.86 − 0.8)/(1.0 − 0.8) = 0.06/0.2, so it prints 0.3."},
   {"type": "fill", "q": "Complete the call for the 90th percentile of exam scores.", "code": "qnorm(___, 500, 100)", "answer": ["0.9", "0.90", ".9", ".90"], "explain": "qnorm takes the probability first, as a proportion: qnorm(0.90, 500, 100) = 628.1552. By the table, z = 1.28 gives 500 + 128 = 628."},
   {"q": "Write the R line for P(score > 650), no spaces.", "type": "text", "answer": ["1-pnorm(650,500,100)", "pnorm(650,500,100,lower.tail=FALSE)", "pnorm(650,500,100,lower.tail=F)", "pnorm(650,mean=500,sd=100,lower.tail=FALSE)", "1-pnorm(650,mean=500,sd=100)"], "explain": "pnorm is the left tail P(X ≤ 650), so the right tail is 1 minus it: 1 - pnorm(650, 500, 100)."},
   {"q": "What does `1 - pnorm(650, 500, 100)` print, to 4 decimals?", "type": "numeric", "answer": 0.0668, "tolerance": 6e-05, "explain": "Z = (650 − 500)/100 = 1.50 exactly, so R and the table agree: 1 − 0.9332 = 0.0668 (R prints 0.0668072)."},
