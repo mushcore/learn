@@ -1,189 +1,249 @@
 ---
-title: Double-sided cheat sheet (Weeks 1 to 6, Week 7 pending)
+title: Double-sided cheat sheet, Weeks 1 to 7: copy it by hand
 minutes: 25
 ---
 
-One page, double sided, handwritten or printed in Arial 10 or larger. Side 1 is Weeks 1 to 3, Side 2 is Weeks 4 to 6 with a space for Week 7. Every line is a fact from the weekly lessons; copy what you still get wrong and skip what you know.
+This is the sheet to copy by hand for the midterm (Thursday October 29, 2026, 3:30 pm, SW03-1710, Weeks 1 to 7): one double-sided page, Side 1 then Side 2, each side under 600 words and 45 lines. Rules are in the slide's wording; a short "C++17:" or "C++20:" tag marks a slide rule the standard has since changed. Code is written the way you would write it by hand. Copy it, then take the self-test below without looking.
 
-## Side 1: Weeks 1 to 3
+## Side 1: Weeks 1 to 3 and the right-left rule
 
 ### Week 1: syntax, types, streams
 
-| Fact | Detail |
-|---|---|
-| `::` vs `.` | `::` scope resolution: namespace or class member (`std::cout`, `Circle::area`, `Base::f()`); `.` member of an object (`c.area()`); `->` through a pointer |
-| header / source | `.hpp` declarations (`int add(int, int);`, `#pragma once`); `.cpp` definitions; never `#include` a `.cpp`; declared but not defined = linker error |
-| `using` | `using namespace std;` all names from that line; `using std::cout;` one name; inside a function: that function only |
-| `main` | returns `int`; omitting `return` still compiles (implicit 0); directives end at the newline, no `;` |
-| sizes | `bool` 1, `char` 1 (an integer type, `'A'` is 65), `short` 2, `int` 4, `long` 4 on Windows, `long long` 8, `float` 4, `double` 8, `long double` 16 |
-| initialization | `int x = 0;` (C-like), `int x(0);` (constructor), `int x{0};` (uniform, C++11, **preferred: narrowing is a compile error**; `int y{3.7}` fails, the other two truncate) |
-| integer maths | `int / int` truncates toward zero (`7/2` is 3, `-7/2` is -3); `%` takes the sign of the left operand; one `double` operand promotes: `(double)a / b`, not `(double)(a / b)` |
-| `++` | `x++` yields the old value then increments; `++x` increments first; `&&` and `\|\|` short-circuit |
-| casting | `(int)2.25` is 2: truncates, never rounds |
-| constants | `#define PI 3.14` preprocessor, no `;`; `const int n = f();` must be initialized, may come from run time; `constexpr` must be known at compile time |
-| manipulators | `setw` next field only, everything else sticky; `setw`, `setfill`, `setprecision` need `<iomanip>`; default precision 6 significant digits; `fixed` then `setprecision(2)` gives decimals; `boolalpha` prints `true`; `hex`/`oct`/`dec`, `showbase`, `showpos`, `left`/`right`/`internal` |
-| stream state | `fail()` failbit or badbit; `eof()`; `good()` no bits; `while (cin >> n)` stops on bad input or EOF; a failed `int` read stores 0 since C++11 (older slides say the variable is unchanged); `if (cin)` is false only for failbit or badbit, eofbit alone keeps it true |
-| recovery | `cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n');` (`<limits>`) |
+- `::` scope resolution (namespace or class member); `.` member of an object; `->` through a pointer. `.hpp` declares, `.cpp` defines.
+- `int x{0};` uniform, preferred: narrowing `int y{3.7}` is a compile error; `= 3.7` and `(3.7)` truncate; `(int)2.25` is 2.
+- `int / int` truncates toward zero (`-7/2` is -3); `%` takes the sign of the left operand.
+- `x++` yields the old value, `++x` the new. `const` may come from run time, `constexpr` must be compile time.
+- Sizes: `char` 1, `int` 4, `long` 4, `long long` 8, `float` 4, `double` 8.
+- `setw` next field only, others sticky; default precision 6 significant; `fixed` then `setprecision(2)`: 2 decimals.
+- `while (cin >> n)` stops on bad input or EOF. Recover: `cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n');`
 
 ### Week 2: files, pointers, memory
 
-| Fact | Detail |
-|---|---|
-| file streams | `<fstream>`: `ifstream` (fails if missing), `ofstream` (creates or **truncates**), `fstream`; `if (!f.is_open()) { cerr << "Unable to open file"; exit(1); }`; `close()` also runs in the destructor |
-| open modes | `in`, `out` (alone truncates), `app` (to the end before every write), `trunc`, `ate` (to the end once on opening), `binary`; combine with `\|` |
-| seeking | `tellg`/`seekg` input, `tellp`/`seekp` output (wrong one = compile error); `seekp(pos)` or `seekp(offset, ios::beg\|cur\|end)`; on `Hello World` (11 chars): `seekp(6)` 6, `seekp(4, ios::beg)` 4, `seekp(-4, ios::end)` 7, then `seekp(-6, ios::cur)` 1; `ofstream` without `app` opens at 0 because it truncated |
-| pointer vs reference | pointer holds an address, may be null, may be re-pointed, `*p` to reach the value; reference is another name, must be initialized, never re-seated, `ref = m` writes into the referent |
-| `&` and `*` | type on the left (`int& r`, `int* p`) declares; `&x` address-of; `*p` dereference; `&p` on a `string* p` is a `string**` (the address of the pointer itself), `*p` is the string |
-| passing | by value copies (callee cannot change the caller's variable); by pointer `swap(&a, &b)` with `int*`; by reference `swap(a, b)` with `int&`; `const T&` = no copy and no change; never return a reference to a local |
-| `getline` | `getline(cin, s)` reads a line, tosses the newline, returns the stream; after `cin >> n` the newline is still in the buffer, so the next `getline` is empty (fix: `cin.ignore(...)`); `while (getline(in, line))` idiom |
-| `istringstream` | `<sstream>`: `istringstream iss(line); iss >> n >> word;` splits a line; a fresh stream per line needs no `clear()` |
-| `vector` | `<vector>`: `push_back`, `size()`, `v[i]` unchecked, `at(i)` throws `out_of_range`, `erase(v.begin() + 1)`, `clear()`, `for (int x : v)`; capacity doubles 1, 2, 4, 8 |
-| `new`/`delete` | heap, manual: `int* p = new int{5}; delete p;` and `int* a = new int[n]; delete[] a;`; forgetting = leak (no garbage collector); after `delete` the pointer dangles (set `nullptr`) |
-| leak pattern | `i = new int{11}; a = new int{99}; i = a;` loses the 11 block; order: `delete i; i = a;` |
-| `rand` | `srand(time(NULL))` once; `rand() % 100 + 1` is 1 to 100; `<random>`: `uniform_int_distribution<> d(a, b)` inclusive |
+- `ifstream` fails if missing; `ofstream` creates or truncates; `app` writes at the end every time, `ate` goes to the end once.
+- `seekg`/`tellg` input, `seekp`/`tellp` output; on `Hello World` (11): `seekp(-4, ios::end)` is 7 (with `app`).
+- Pointer holds an address, may be null, may be re-pointed; reference is another name, must be initialized, never re-seated (`r = m` copies m's value).
+- By value copies; by pointer `swap(&a, &b)`; by reference `swap(a, b)`; `const T&` no copy, no change; never return a reference to a local.
+- `new`/`delete`, `new[]`/`delete[]`; losing the pointer leaks; after `delete` it dangles. `&p` on `string* p` is `string**`.
+- `v[i]` unchecked, `v.at(i)` throws `out_of_range`. After `cin >> n` the newline stays, so the next `getline` is empty.
+
+```cpp
+while (getline(in, line)) { istringstream iss(line); iss >> n >> word; }
+```
 
 ### Week 3: classes, constructors, inheritance
 
-| Fact | Detail |
-|---|---|
-| `struct` vs `class` | identical except the default: struct members public, class members private (same for default inheritance) |
-| access | public anywhere; protected the class and derived classes; private the class only (and friends) |
-| constructor | no return type, not even `void`; declaring any constructor removes the compiler's default one; `Circle c();` is a function prototype (most vexing parse), `Circle c{};` is safe |
-| initializer list | `Circle(int r) : radius(r) { }`; members initialize in **declaration order**, whatever the list says; class-type members not listed are default-constructed before the body; same names allowed `: r(r), i(i)` |
-| default args | trailing parameters only, written in the header prototype; `Complex(double r = 0, double i = 0)` is also a default constructor |
-| `const` member | `int get() const;` promises not to change the object; only const members may be called on a const object or through a `const T&`; use it on every getter |
-| copy constructor | `T(const T& other)`: `const` to copy immutable objects, `&` to avoid infinite recursion; runs on `T b(a);`, `T b = a;`, pass by value, return by value; **not** on `b = a;` (assignment operator) |
-| shallow vs deep | the compiler's copy copies each member: a pointer is shared, its array is not; with a destructor that means double free; deep copy allocates `new double[size]` and copies the elements |
-| destructor | `~T()`: no parameters, no return type, one per class; runs at end of scope, on `delete`/`delete[]`, for temporaries at the end of the full expression, for statics at program end; by-value parameters are copied on the call and destroyed on return |
-| order | construction: base, then members in declaration order, then the body; destruction exactly reversed; locals die in reverse order of declaration |
-| forward declaration | `class Car;` introduces the name: `Car*` and `Car&` allowed, `Car owner;` is an incomplete type; breaks the include cycle, speeds compiles |
-| inheritance | `class Bus : public Vehicle`; `Derived(int a) : Base(a) { }` chooses the base constructor, otherwise `Base()` runs; a derived initializer list may name only its own members and direct bases |
-| access table | public inheritance keeps public/protected; protected makes both protected; private (the default for `class`) makes both private; private base members are never accessible |
-| not inherited | constructors (unless `using Base::Base;`), destructor, friends, private members |
-| virtual | `virtual` in the base lets a call through `Base*` or `Base&` run the override: dynamic binding, late binding; `override` makes the compiler check; `d.Base::print()` forces the base version |
-| slicing | `Base b = derived;` copies the base part only: calls on `b` run the base version; polymorphism needs pointers or references |
-| testing | testing shows a problem exists, debugging finds its source; boundaries 100 to 999 are tested with 50, 100, 500, 999, 1500; `assert` from `<cassert>`, off with `#define NDEBUG` before the include |
-| UML | association solid line; generalization solid line with hollow triangle; realization dashed with hollow triangle; dependency dashed arrow; composition filled diamond (parts die with the whole); aggregation hollow diamond |
+- `struct` members (and inheritance) default public, `class` private. Protected: the class and derived classes.
+- Constructor: no return type; any constructor removes the default one; `C c();` is a function prototype, `C c{};` an object.
+- Members initialize in declaration order, not list order; unlisted class-type members are default-constructed before the body.
+- Default arguments trailing only. Only `const` member functions may be called on a const object or a `const T&`.
+- Copy constructor runs on `T b(a);`, `T b = a;`, pass by value, return by value; not on `b = a;`. Compiler's copy is shallow: shared pointer, double free.
+- Destructor: no parameters, no return type, one per class; runs at end of scope, on `delete`, at end of full expression (temporaries), at program end (statics).
+- **Order**: base, then members in declaration order, then the body; destruction exactly reversed; locals die in reverse order of declaration.
+- `class Car;` forward declaration: `Car*`, `Car&` fine, `Car c;` incomplete type. Not inherited: constructors, destructor, friends.
+- Public inheritance keeps public/protected; protected makes both protected; private (`class` default) both private; private base members never accessible.
+- `virtual` + call through `Base*`/`Base&` = dynamic binding; `override` checks; `Base b = derived;` slices: base version runs.
+- UML: generalization solid, realization dashed (hollow triangles); composition filled diamond, aggregation hollow.
 
-## Side 2: Weeks 4 to 6
+```cpp
+T(const T& o) : n(o.n), p(new int[o.n]) { for (int i = 0; i < n; ++i) p[i] = o.p[i]; }
+Derived(int a) : Base(a), m(a) { }   // else Base() runs
+```
+
+### Right-left rule
+
+1. Start from variable name (var)
+2. Keep going right. Read what we see until we see right parentheses `)`
+3. Then go left of var. Read what we see until we see left parentheses `(`
+4. Exit parentheses and go right. Read what we see until right parentheses or semicolon
+5. Go left of where we exited bracket. Read what we see until left parentheses or finish
+
+Repeat steps as needed. `int (**ppf)();` pointer to a pointer to a function returning an int. `int *(*pap)[];` pointer to an array of int pointers. `int (*paa)[][];`, `int (*paf)[]();` don't compile.
+
+## Side 2: Weeks 4 to 7
 
 ### Week 4: abstract classes, diamonds, friends, operators
 
-| | Interface | Abstract class | Concrete class |
-|---|---|---|---|
-| functions | only pure virtual | at least one pure virtual (`= 0`, the pure specifier) | none pure virtual |
-| destructor | virtual | virtual | virtual if it has children |
-| data | none | allowed | allowed |
-| `X x;` | no | no | yes |
+- No `abstract` keyword. Abstract: at least one pure virtual (`= 0`); `A a;`, `A f();`, `void h(A a);` fail (C++20: only defining or calling them), `A*`, `A&` fine. Interface: only pure virtual, no data.
+- A derived class stays abstract until it overrides every pure virtual function. `delete basePtr;` runs the derived destructor only if the base destructor is virtual.
+- Same name in two bases is ambiguous (`c.A::x`). Diamond: `class B : public virtual A` in **both** middle classes; the most-derived class constructs `A`.
+- **Order**: virtual bases first, then direct bases left to right, then members, then the body; destruction reverses. diamond: `A B C D`, `D C B A`; no virtual: `A B A C D`.
+- Friend: declared inside the class, not a member; not mutual, not transitive, not inherited. Unary and `+=` are members; `+ ==` `<<` `>>` friendly non-members.
+- Copy-and-swap: by-value parameter built by the copy constructor; swap every member (never the whole object); `return *this;`; the parameter dies with the old data.
 
-- No `abstract` keyword. `virtual void g() { } = 0;` is an error. Abstract `A`: `A a;`, `A f();`, `void h(A a);` fail; `A*`, `A&` fine. A derived class stays abstract until it overrides every pure virtual function. Calling a pure virtual function from the abstract constructor is undefined.
-- Virtual destructor: `delete basePtr;` runs the derived destructor only if the base destructor is virtual.
-- Multiple inheritance: members are the union of all bases; the same name in two bases is ambiguous (`c.A::x`, `bob.mathematician::all_info()`, or override it).
-
-| Diamond | no `virtual` | `virtual` bases, middle classes call `person(name)` | `virtual` bases, most derived calls `person(name)` |
-|---|---|---|---|
-| person subobjects | 2 | 1 | 1 |
-| person constructor | 1-param twice | default once: **name lost** | 1-param once |
-| `person::all_info()` in the grandchild | ambiguous | fine | fine |
-
-- Declare `class student : public virtual person` in **both** middle classes. The most-derived class constructs the virtual base: `: person(name), student(passed), mathematician(proved)`; the middle classes' `person(name)` is ignored inside a bigger object but works when a student is built directly.
-- Construction: virtual bases first, then direct bases left to right, then members, then the body; destruction reverses it. diamond.cpp: `A B C D allocated`, `D C B A deallocated`; without virtual `A B A C D`, `D C A B A`.
-- Friends: declared inside the class (`friend Dollar sum(const Dollar&, const Dollar&);`, `friend class Spy;`), defined anywhere, not a member. Not mutual, not transitive, not inherited; access specifier irrelevant.
-
-| Operator | Member or friend | Signature | Body |
-|---|---|---|---|
-| `<<` | friend | `ostream& operator<<(ostream& os, const T& o)` | `os << o.x; return os;` |
-| `>>` | friend | `istream& operator>>(istream& is, T& o)` | `is >> o.x; return is;` |
-| `==`, `<` | friend | `bool operator==(const T& lhs, const T& rhs)` | the real comparison |
-| `!=`, `>`, `<=`, `>=` | friend | same shape | `!(lhs == rhs)`, `rhs < lhs`, `!(rhs < lhs)`, `!(lhs < rhs)` |
-| prefix `++` | member | `T& operator++()` | increment; `return *this;` |
-| postfix `++` | member | `T operator++(int)` (dummy int) | `T tmp(*this); operator++(); return tmp;` |
-| `+=` | member | `T& operator+=(const T& rhs)` | add; `return *this;` |
-| `+` | friend | `T operator+(T lhs, const T& rhs)` | `lhs += rhs; return lhs;` |
-| `=` | member | `T& operator=(T other)` | `mySwap(*this, other); return *this;` |
-
-- Rules: keep the usual meaning; provide the whole set (`+` with `+=`, prefix with postfix); unary and left-modifying operators are members; symmetric binary operators and anything with a stream or a non-class left operand are friendly non-members (`5 + a` works through the one-argument constructor).
-- Copy-and-swap: 1. the by-value parameter is built by the copy constructor; 2. swap every member with `std::swap` (never the whole object: infinite recursion); 3. `return *this;`; 4. the parameter dies, freeing the old data. Needs a working copy constructor, destructor and non-throwing swap. Easy errors: parameter by reference, `std::swap` on the whole object, a member missed in the swap. Assignment = replacing the old state with a copy of another object's state; the compiler's `operator=` copies the pointer: leak plus double free.
+```cpp
+virtual void f() = 0;   virtual ~B() { }
+friend ostream& operator<<(ostream& os, const T& t) { os << t.x; return os; }
+friend istream& operator>>(istream& is, T& t) { is >> t.x; return is; }
+friend bool operator<(const T& a, const T& b) { return a.x < b.x; }
+friend void mySwap(T& a, T& b) { swap(a.n, b.n); swap(a.p, b.p); }
+T& operator=(T o) { mySwap(*this, o); return *this; }
+```
 
 ### Week 5: exceptions and design
 
-| Fact | Detail |
-|---|---|
-| two tools | assertions detect programming errors; exceptions handle situations that prevent proper continuation and cannot be handled locally |
-| error codes | C returned codes (`return 1;` error, `return 0;` success): can be ignored, steal the return value, force out-parameters |
-| throw | anything: strings (`throw "msg"` is a `const char*`, not a `string`), numbers, user types, standard exceptions; prefer a type |
-| catch | `try { } catch (T& e) { }`; **catch by reference** (a base reference catches derived types; by value slices); the **first matching** handler runs; later handlers of the same or a child type are ignored, so child types first; `catch (...)` catches everything and goes last |
-| after catching | print and `exit(EXIT_FAILURE)` (`<cstdlib>`), or rethrow with a bare `throw;` |
-| unwinding | leaving a frame destroys its locals in reverse order before the next frame is tried; code after the `throw` and after the failed call never runs |
-| uncaught | `std::terminate` (`<exception>`) calls the termination handler, which calls `abort` |
-| `noexcept` | `double f(double x) noexcept`: no exception may leave; if one does, the program ends; destructors are implicitly noexcept: never throw from one; C++03 throw lists are deprecated |
-| `std::exception` | `<exception>`, base designed to be derived, virtual `what()` returns `const char*`; override: `const char* what() const noexcept override { return "..."; }` |
-| hierarchy | `<stdexcept>`: `logic_error` (`invalid_argument`, `length_error`, `out_of_range`), `runtime_error` (`range_error`, `overflow_error`); also `bad_alloc` (new), `bad_cast` (dynamic_cast), `bad_typeid`, `bad_function_call`, `bad_weak_ptr` |
-| constructors | a constructor that throws creates no object: no destructor for it, but already-built bases and members are destroyed; `Fraction(int n, int d) : numerator(n), denominator(d) { if (d == 0) throw invalid_argument("Denominator cannot be zero"); }` |
-| function-try-block | `C(int x) try : A(), my_b(x) { } catch (...) { throw; }` sees an exception from an initializer; its handler always rethrows |
-| coupling | the strength of the connection between modules; aim for loose coupling (understand and change one class alone); tight coupling = cascading changes, hard to test alone |
-| cohesion | the glue that holds a module together: one unit, one task; high cohesion = clear names, reuse; applies to functions, classes, modules |
-| decoupling | inheritance and interfaces/abstract classes are the most common way (`Filling` under `Sushi`; `DataSource` under `UI`); dependencies remain, keep them weak |
-| S | Single Responsibility: each class is responsible for only one thing; one reason to change (`User` stops creating the database and posting) |
-| O | Open/Closed: open for extension, closed for modification (`UIWidget::draw() = 0` with `UIButton` overriding instead of an if-chain on `type`) |
-| L | Liskov Substitution: objects of type T may be replaced with objects of a subtype S (`vector<UIWidget*>` drawn in one loop) |
-| I | Interface Segregation: many client-specific interfaces beat one general-purpose one; no client depends on functions it does not use (`Walkable`, `Swimmable`, `Flyable` instead of one `Animal` with all three); SRP for interfaces |
-| D | Dependency Inversion: high-level and low-level modules both depend on abstractions; abstractions do not depend on details (`UI` and `TextFile` both depend on `DataSource`) |
-| Demeter | each unit talks only to its friends: no `obj.getX().getY().doSomething()` trainwrecks; `customer.getMoney(amount)` instead of `customer.getWallet().getMoney(amount)` |
+- Assertions detect programming errors; exceptions handle situations that prevent proper continuation. `throw "msg"` throws a `const char*`.
+- Catch by reference (by value slices); the first matching handler runs, so child types first, `catch (...)` last; bare `throw;` rethrows.
+- Unwinding destroys locals in reverse order; uncaught: `std::terminate` calls `abort`. `noexcept` broken ends the program; destructors are implicitly `noexcept`.
+- A constructor that throws creates no object: no destructor for it; already-built bases and members are destroyed.
+- `<stdexcept>`: `logic_error` (`invalid_argument`, `out_of_range`, `length_error`), `runtime_error` (`range_error`, `overflow_error`).
+- Coupling: strength of connection between modules, aim loose. Cohesion: one unit, one task, aim high. Demeter: talk only to friends, no `a.getB().getC()`.
+- SOLID: S one reason to change; O open for extension, closed for modification; L a subtype replaces its base; I many client-specific interfaces; D depend on abstractions.
+
+```cpp
+struct E : exception { const char* what() const noexcept override { return "E"; } };
+try { throw E(); } catch (const E& e) { cerr << e.what(); } catch (...) { throw; }
+```
 
 ### Week 6: auto, STL, iterators, algorithms
 
-| Fact | Detail |
-|---|---|
-| `auto` | type deduced from the initializer (`auto d = 5.0;` double, `auto i = 1 + 2;` int); `auto a;` is an error; not for parameters (slide rule); allowed as a return type but discouraged; trailing return `auto add(int x, int y) -> int;` is syntax only |
-| ranged for | `for (const int& x : v)`, `for (auto x : v)` copies, `for (int& x : v)` modifies; works on braced lists and arrays |
-| STL | containers, iterators, algorithms; **value semantics** (containers store copies: element needs copy constructor, assignment, destructor); almost no checking; **half-open ranges** `[first, last)` |
-| container kinds | sequence: `array`, `vector`, `deque`, `list`, `forward_list`; associative (sorted, O(log n) search): `set`, `multiset`, `map`, `multimap`; unordered (hash, O(1) to O(n)): `unordered_*` |
-| adaptors | `stack` (deque), `queue` (deque), `priority_queue` (vector, largest first by `operator<`); they restrict a first-class container |
-| `vector` | `insert(v.begin() + 3, -4)`, `erase(v.begin() + 1)`, `vector<int> v3{a, a + 5}` copies `[a, a+5)`, `front()`, `back()`, `empty()`, `capacity()`, `pop_back()` |
-| `pair`, `map` | `<utility>` `pair` with `first`/`second`, `make_pair`; `<map>` sorted key/value pairs, `value_type` is a pair, **keys unique**: a second `insert` with the same key is refused (`m["k"] = v` overwrites); `find(key)` returns an iterator; `multimap` keeps equal keys in insertion order, `count`, `equal_range` |
-| `set` | sorted unique elements, const once inserted, binary search tree; elements equivalent under `<` are not inserted; `multiset::erase(key)` removes **all** equal elements, `erase(it)` one, `erase(it, end())` a range |
-| strict weak ordering | irreflexive (`!less(x, x)`), antisymmetric (`less(x, y)` means `!less(y, x)`), transitive; three ways to supply it: `operator<`, a binary predicate function, a functor struct with `operator()` |
-| typedefs | `typedef int arr_t[3];`, `typedef map<string, string>::iterator mapIterator;`; standard container typedefs `size_type` (unsigned), `value_type`, `iterator`, `const_iterator`, `reverse_iterator` (`rbegin()`), `pointer`, `reference`, `difference_type` |
-| `begin`/`end` | `end()` is one past the last element, never dereference it; empty container: `begin() == end()`; `for (auto it = c.begin(); it != c.end(); ++it)` |
-| iterator kinds | input (read, `++`, single pass), output (write, `++`), forward (read and write, multi-pass), bidirectional (adds `--`: `list`, `set`, `map`), random access (adds `it + n`, `it - n`, `it - jt`, `it[n]`, `<`: `vector`, `deque`, `array`); only random access allows arithmetic and iterator subtraction |
-| `*it++` | copy the iterator, advance, use the copy: `it = itBegin++;` leaves `it` on the old element |
-| algorithms | `<algorithm>` (`<numeric>` for numeric ones); work on `[first, last)`; **never change the container's size**; kinds: non-modifying (`find`, `for_each`), modifying (`copy`, `remove_if`), partitioning, sorting (`sort`, `is_sorted`), binary search, merge, heap, min/max |
-| `partition` | `partition(first, last, pred)` moves the true elements before the false ones, **relative order not kept**, returns an iterator to the first false element (or `end()`); `{1..10}` with `IsOdd` gives `1 9 3 7 5 6 4 8 2 10`, bound at 6; `stable_partition` keeps order |
+- `auto a;` is an error; `auto` not for parameters (C++20: allowed). `for (auto x : v)` copies, `for (auto& x : v)` modifies.
+- STL value semantics: containers store copies. Half-open `[first, last)`; `end()` one past the last, never dereference it.
+- `map` keys unique: second `insert` refused, `m[k] = v` overwrites; `set` skips equal elements; `multiset::erase(key)` removes all equal.
+- Strict weak ordering: irreflexive, antisymmetric, transitive; give it by `operator<`, a predicate function, or a functor. `priority_queue` top is the largest.
+- Iterators: input `istream_iterator`; output `ostream_iterator`; forward `forward_list`, `unordered_map`; bidirectional `list`, `map`, `set`; random access (`it + n`, `it[n]`, `<`) `vector`, `deque`, `array`.
+- Algorithms never change container size; non-modifying won't modify element order, modifying will. `partition` breaks relative order, `stable_partition` keeps it.
 
-### Week 7 (partly added)
+```cpp
+m.insert({"a", 1});  for (auto it = m.begin(); it != m.end(); ++it) cout << it->first << it->second;
+sort(v.begin(), v.end());   sort(v.begin(), v.end(), cmp);
+```
 
-| Topic | Fact |
-|---|---|
-| static data member | one copy per class, shared by every object; declared `static` in the class, defined once outside it: `int city::counter = 0;`, `const int Date::days_in_regular_year[] = {...};` |
-| static member function | called through the class, `A::staticFunction1()`, `Date::today()`; **no `this` pointer**, so it reaches non-static members only through an object (`a.nonStaticFunction()`); a non-static function may call a static one |
+### Week 7: static, copy elision, review
 
-Space for the rest of the Week 7 deck once it is posted: copy elision, lvalues and rvalues, and the review-week topics.
+- Static data member: one copy per class, shared. The static keyword is used with the declaration, not the definition: `int X::n = 0;`.
+- Plain static can't be initialized inside the class (C++17: `inline` can); `const static` integral can; `constexpr static` must.
+- Static member function: can only access static data (members of an object it is given are fine); there is no `*this` pointer; cannot be virtual or const. Call `X::f()` or `obj.f()`.
+- Elision: RVO `return Number(num);`; temporary `Number n(Number(2));`; NRVO `return tempN;`; no guarantee all compilers use them (C++17: first two guaranteed, NRVO optional). A returned parameter is never elided.
+- Copy constructor called: directly, passing by value, returning by value (elision may remove the return copy). Virtual destructor: child's, then parent's.
 
-:::quiz Twenty true or false across the six weeks (answers at the bottom)
-1. `int x{2.5};` compiles.
-2. `%` takes the sign of the right operand.
-3. `ofstream` opened without flags keeps the old contents.
-4. A reference can be re-seated with `=`.
-5. `delete` on a dangling pointer is safe.
-6. `Circle c();` creates a Circle.
-7. Members are initialized in declaration order, not list order.
-8. `b = a;` on two existing objects calls the copy constructor.
-9. `class X : Spy` is private inheritance.
-10. `Base b = derived;` keeps the derived override.
-11. C++ has an `abstract` keyword.
-12. With virtual bases the most-derived class constructs the shared base.
-13. Friendship is transitive.
-14. `operator<<` for your class should be a member.
-15. Catching by value can slice the exception.
-16. `catch (...)` should be the first handler.
-17. Destructors are implicitly `noexcept`.
-18. `map::insert` with an existing key overwrites the value.
-19. `list` iterators support `it + 2`.
-20. `partition` keeps the relative order of elements.
+## Self-test: twenty true or false
 
-Answers, in order: F F F F F · F T F T F · F T F F T · F T F F F
-:::
+Answer from memory first; the key is in each explanation.
+
+```quiz
+[
+  {
+    "q": "`int x{2.5};` compiles.",
+    "type": "tf",
+    "answer": false,
+    "explain": "Key: false. Brace (uniform) initialization rejects narrowing, so `double` to `int` inside braces is a compile error; `int x = 2.5;` and `int x(2.5);` compile and truncate to 2."
+  },
+  {
+    "q": "`%` takes the sign of the right operand.",
+    "type": "tf",
+    "answer": false,
+    "explain": "Key: false. The result takes the sign of the left operand: `-7 % 2` is -1 and `7 % -2` is 1."
+  },
+  {
+    "q": "An `ofstream` opened without flags keeps the old contents of the file.",
+    "type": "tf",
+    "answer": false,
+    "explain": "Key: false. `ofstream` opens with `out`, which alone truncates the file; `ios::app` keeps the contents and writes at the end."
+  },
+  {
+    "q": "A reference can be re-seated with `=`.",
+    "type": "tf",
+    "answer": false,
+    "explain": "Key: false. A reference is never re-seated: `ref = m;` copies m's value into the variable `ref` already names. A pointer is re-pointed with `p = &m;`."
+  },
+  {
+    "q": "`delete` on a dangling pointer is safe.",
+    "type": "tf",
+    "answer": false,
+    "explain": "Key: false. Deleting memory that is already freed is a double free, which is undefined behaviour; set the pointer to `nullptr` after `delete`, since `delete nullptr` does nothing."
+  },
+  {
+    "q": "`Circle c();` creates a Circle with the default constructor.",
+    "type": "tf",
+    "answer": false,
+    "explain": "Key: false. It declares a function named c that takes nothing and returns a Circle (the most vexing parse); `Circle c;` or `Circle c{};` creates the object."
+  },
+  {
+    "q": "Members are initialized in declaration order, not in initializer-list order.",
+    "type": "tf",
+    "answer": true,
+    "explain": "Key: true. The order of the member declarations in the class decides, whatever order the initializer list is written in; g++ warns with `-Wreorder` when they differ."
+  },
+  {
+    "q": "`b = a;` on two existing objects calls the copy constructor.",
+    "type": "tf",
+    "answer": false,
+    "explain": "Key: false. Both objects already exist, so this is assignment and runs `operator=`; the copy constructor runs only when a new object is made from another (`T b(a);`, `T b = a;`, pass or return by value)."
+  },
+  {
+    "q": "`class X : Spy { };` is private inheritance.",
+    "type": "tf",
+    "answer": true,
+    "explain": "Key: true. A `class` defaults to private inheritance (a `struct` defaults to public), so Spy's public and protected members become private in X."
+  },
+  {
+    "q": "`Base b = derived;` keeps the derived override, so `b.print()` runs the derived version.",
+    "type": "tf",
+    "answer": false,
+    "explain": "Key: false. Copying into a `Base` object slices off the derived part, so calls on `b` run the base version; polymorphism needs a `Base*` or `Base&`."
+  },
+  {
+    "q": "C++ has an `abstract` keyword.",
+    "type": "tf",
+    "answer": false,
+    "explain": "Key: false. A class is abstract because it has at least one pure virtual function (`= 0`); there is no `abstract` (or `interface`) keyword."
+  },
+  {
+    "q": "With virtual bases, the most-derived class constructs the shared base.",
+    "type": "tf",
+    "answer": true,
+    "explain": "Key: true. In the diamond, `math_student` calls `person(name)` itself; the `person(name)` calls written in `student` and `mathematician` are ignored inside a bigger object."
+  },
+  {
+    "q": "Friendship is transitive: a friend of a friend is a friend.",
+    "type": "tf",
+    "answer": false,
+    "explain": "Key: false. Friendship is granted only by the class that declares it: not mutual, not transitive, not inherited."
+  },
+  {
+    "q": "`operator<<` for your class should be a member function.",
+    "type": "tf",
+    "answer": false,
+    "explain": "Key: false. Its left operand is the `ostream`, not your object, so it is a friendly non-member: `friend ostream& operator<<(ostream& os, const T& t)`."
+  },
+  {
+    "q": "Catching an exception by value can slice it.",
+    "type": "tf",
+    "answer": true,
+    "explain": "Key: true. A by-value handler for a base type copies only the base part of a derived exception, so `what()` reports the base; catch by reference."
+  },
+  {
+    "q": "`catch (...)` should be the first handler.",
+    "type": "tf",
+    "answer": false,
+    "explain": "Key: false. The first matching handler runs and `catch (...)` matches everything, so it goes last; any handler after it would never run."
+  },
+  {
+    "q": "Destructors are implicitly `noexcept`.",
+    "type": "tf",
+    "answer": true,
+    "explain": "Key: true. Since C++11 a destructor is `noexcept` unless declared otherwise, so an exception escaping one calls `std::terminate`; never throw from a destructor."
+  },
+  {
+    "q": "`map::insert` with a key already in the map overwrites the value.",
+    "type": "tf",
+    "answer": false,
+    "explain": "Key: false. Keys are unique and `insert` refuses the second pair, leaving the old value; `m[key] = value` is the form that overwrites."
+  },
+  {
+    "q": "`list` iterators support `it + 2`.",
+    "type": "tf",
+    "answer": false,
+    "explain": "Key: false. A list iterator is bidirectional: `++` and `--` only. Arithmetic like `it + 2` needs a random access iterator (vector, deque, array); use `std::next(it, 2)` for a list."
+  },
+  {
+    "q": "`partition` keeps the relative order of the elements.",
+    "type": "tf",
+    "answer": false,
+    "explain": "Key: false. `partition` moves the elements that pass the predicate before the others but does not keep their relative order; `stable_partition` does."
+  }
+]
+```
 
 ```quiz
 [

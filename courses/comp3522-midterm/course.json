@@ -2,34 +2,79 @@
   "lang": "cpp",
   "title": "COMP 3522 C++ · Midterm",
   "subtitle": "Thursday Oct 29, 3:30 pm, SW03-1710, 90 minutes, one double-sided cheat sheet: Weeks 1 to 7",
-  "description": "The practice midterm, worked: sixteen theory questions with model answers written the way the marker expects, the three read-the-code questions traced line by line with the real output, the six Fraction questions built into one program you can run, and a mock midterm in the real format (multiple choice and true/false, definitions, write the output, a short and a guided long coding question). Ends with a cheat-sheet draft for both sides of the page.",
+  "description": "The practice midterm, worked: sixteen theory questions with model answers written the way the marker expects, the three read-the-code questions traced line by line with the real output, the six Fraction questions built into one program you can run, and a mock midterm in the real format (multiple choice and true/false, definitions, write the output, a short and a guided long coding question). Ends with the cheat sheet you copy by hand, both sides, Weeks 1 to 7.",
   "intro": ":::quiz Midterm facts\n**Thursday Oct 29, 3:30 pm, room SW03-1710, 90 minutes, on paper.** Arrive 10 minutes early. Covers everything up to and including Week 7. One page, double-sided cheat sheet, handwritten or printed in Arial 10 pt or larger (the practice paper's \"no cheat sheets\" line is the old rule). Format: multiple choice and true/false; definitions; read a code snippet and write the output; a short coding question; a long coding question broken into guided parts. Instructor's strategy: slides and their links, the sample code referenced in the slides, labs and assignments, the coding challenges in the lectures, this practice midterm, your old quiz attempts (Activities > Quizzes > Quiz 2 > Submissions > Attempt 1), and \"topic geeks for geeks\" searches. Next week is review; anonymous topic requests at https://forms.gle/HAcpDu8cZTw5yY9bA.\n:::",
   "plan": {
-    "title": "If you only have tonight",
+    "title": "Three evenings and the exam morning",
     "steps": [
       {
-        "lesson": "mock-midterm",
-        "note": "take it cold, on paper, 90 minutes, no notes"
+        "href": "#/comp3522/mock-quiz",
+        "title": "Mock Quiz 1",
+        "note": "Evening 1: take it cold, mark it, then the lessons the quiz exposed (80 min)"
       },
       {
-        "lesson": "output-traces",
-        "note": "Q20, Q27, Q28: write the output before you run; count the lines"
+        "href": "#/comp3522-w2/mock-quiz-2",
+        "title": "Mock Quiz 2",
+        "note": "Evening 1: take it cold, mark it, then the lessons the quiz exposed (80 min)"
       },
       {
-        "lesson": "fraction-program",
-        "note": "write the six Fraction answers on paper, then build them into the runnable program"
+        "href": "#/comp3522-w3/mock-quiz-3",
+        "title": "Mock Quiz 3",
+        "note": "Evening 1: take it cold, mark it, then the lessons the quiz exposed (80 min)"
+      },
+      {
+        "href": "#/comp3522-w4/mock-quiz-4",
+        "title": "Mock Quiz 4",
+        "note": "Evening 2: take it cold, mark it, then the lessons the quiz exposed (60 min)"
+      },
+      {
+        "href": "#/comp3522-w5/mock-quiz-5",
+        "title": "Mock Quiz 5",
+        "note": "Evening 2: take it cold, mark it, then the lessons the quiz exposed (60 min)"
+      },
+      {
+        "href": "#/comp3522-w6/mock-quiz-6",
+        "title": "Mock Quiz 6",
+        "note": "Evening 2: take it cold, mark it, then the lessons the quiz exposed (60 min)"
       },
       {
         "lesson": "theory-questions",
-        "note": "answer every Part A question in two or three sentences, then compare with the model answers"
+        "note": "Evening 2: answer every Part A question in two or three sentences, then compare with the model answers (35 min)"
+      },
+      {
+        "lesson": "output-traces",
+        "note": "Evening 2: Q20, Q27, Q28: write the output before you run; count the lines (25 min)"
+      },
+      {
+        "href": "#/comp3522-w7/mock-quiz-7",
+        "title": "Mock Quiz 7",
+        "note": "Evening 3: take it cold, mark it, then the lessons the quiz exposed (30 min)"
+      },
+      {
+        "href": "#/comp3522-w7/right-left-rule",
+        "title": "The right-left rule for reading declarations",
+        "note": "Evening 3: read every declaration aloud from the name outward (30 min)"
+      },
+      {
+        "href": "#/comp3522-w7/copy-elision-rvo",
+        "title": "Copy elision and return value optimization",
+        "note": "Evening 3: predict which constructors print, then run (30 min)"
+      },
+      {
+        "lesson": "fraction-program",
+        "note": "Evening 3: write the six Fraction answers on paper, then build them into the runnable program (35 min)"
       },
       {
         "lesson": "mock-midterm",
-        "note": "retake; aim for 90% or better"
+        "note": "Evening 3: cold, on paper, 90 minutes, no notes (90 min)"
       },
       {
         "lesson": "cheat-sheet-midterm",
-        "note": "hand-write both sides from this draft, Arial 10 if printed"
+        "note": "Evening 3: hand-write both sides from this page (25 min)"
+      },
+      {
+        "lesson": "mock-midterm",
+        "note": "Exam morning: retake on paper, mark it, fix every slip against the key (90 min)"
       }
     ]
   },
@@ -69,7 +114,7 @@
         },
         {
           "id": "cheat-sheet-midterm",
-          "title": "Double-sided cheat sheet (Weeks 1 to 6, Week 7 pending)",
+          "title": "Double-sided cheat sheet, Weeks 1 to 7: copy it by hand",
           "file": "chapters/06-cheat-sheet-midterm.md"
         }
       ]

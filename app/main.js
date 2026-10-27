@@ -226,6 +226,7 @@ async function renderCourseHome(course) {
       const li = el("li");
       const target = course.lessons.find((l) => l.id === step.lesson);
       if (target) { const a = el("a", null, target.title); a.href = `#/${course.id}/${target.id}`; li.append(a, document.createTextNode(step.note ? ` — ${step.note}` : "")); }
+      else if (step.href) { const a = el("a", null, step.title || step.href); a.href = step.href; li.append(a, document.createTextNode(step.note ? ` — ${step.note}` : "")); }
       else li.textContent = step.note || "";
       ol.append(li);
     }
