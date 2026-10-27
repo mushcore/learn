@@ -111,3 +111,11 @@ Downloaded from the Rdatasets mirror (R is not installed on this machine) and ch
 - **IQ percentiles (pencil problem 2d).** The key labels μ + σ = 115 as P66; the 68–95–99.7 rule puts 84% below μ + σ, so 115 is P84. Taught as P84 with the key's label noted.
 - **Task 9.** The task asks for grouping by Age and Sex; the solution groups by Eth and Sex (A.M most consistent, N.M least). The lesson reproduces the solution and says so.
 - **Units.** The notes label Old Faithful eruptions as seconds in two places (axis label "Eruptions (sec)", "around 1.8 sec or 4.4 sec"); the variable is in minutes.
+
+## Game facts used
+- 01-frequency-tables.md: poe2.data.ascendancy-counts-forbidden-rites, poe1.ladder.class-counts
+- 02-stem-and-leaf.md: none (not touched)
+- 03-histograms.md: poe1.data.divine-chaos-mirage, classic.data.monsters
+- 04-cumulative-ogive.md: none (not touched)
+- 05-scatter-plots.md: classic.data.monsters
+- 06-lab2-grouped.md: poe1.data.divine-chaos-allflame, poe1.data.divine-chaos-mirage, poe1.data.divine-chaos-keepers
