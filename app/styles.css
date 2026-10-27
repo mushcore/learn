@@ -1266,3 +1266,18 @@ select.q-input { width: auto; }
 .net6-frame { display: flex; flex-wrap: wrap; gap: 3px; align-items: center; margin: 6px 0; }
 .net6-frame .fld { padding: 2px 8px; border: 1px solid var(--rule-strong); border-radius: 4px; font-size: 12.5px; color: var(--ink); background: var(--paper-3); font-family: var(--mono); line-height: 18px; }
 .net6-frame .fld.flag { color: var(--red); border-color: var(--red); }
+/* ---------- COMP 3721 Week 7 animations (app/widgets-net6.js): crc-play, stuff-play, stop-wait-play ---------- */
+.net6-slot.win { box-shadow: inset 0 0 0 1px var(--hl); }
+.net6-slot.lead { background: var(--hl); color: var(--hl-ink); font-weight: 700; }
+.net6-slot.qhot { color: var(--hl); }
+.net6-cols { display: flex; flex-wrap: wrap; gap: 4px 2px; margin: 4px 0; font-family: var(--mono); }
+.net6-col { display: inline-flex; flex-direction: column; gap: 2px; align-items: center; }
+.net6-b.cur { box-shadow: 0 0 0 2px var(--hl); }
+.net6-b.dim { opacity: 0.45; }
+.net6-badges { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 8px 0 2px; font-size: 12.5px; }
+.net6-badge { display: inline-flex; align-items: center; gap: 5px; }
+.net6-badge .lab { color: var(--ink-dim); margin-right: 2px; }
+.net6-pill { padding: 1px 8px; border: 1px solid var(--rule-strong); border-radius: 10px; color: var(--ink-dim); }
+.net6-pill.on { border-color: var(--hl); background: var(--hl-soft); color: var(--hl); font-weight: 600; }
+.net6-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12px; color: var(--ink-dim); margin: -4px 0 4px; }
+.net6-legend-item { display: inline-flex; align-items: center; gap: 5px; }

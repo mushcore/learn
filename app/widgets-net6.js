@@ -3,6 +3,7 @@
 // and data-link control (byte and bit stuffing, Simple and Stop-and-Wait). No top-level DOM access, so
 // Bun can import the pure functions for tests.
 import { el } from "./dom.js";
+import { createPlayback } from "./playback.js";
 
 // ---------- pure arithmetic (exported; pinned by spec/comp3721/tools/net6.test.js) ----------
 const BITS = /^[01]+$/;
@@ -765,9 +766,680 @@ function stuffing(box, cfg) {
   render();
 }
 
+// ---------- Task 3: pure event generators for the animations (exported; pinned by net6.test.js) ----------
+const toTokens = (data) => (Array.isArray(data) ? data.map((t) => normTok(String(t))) : String(data ?? "").split(/\s+/).filter(Boolean).map(normTok));
+/**
+ * The steps of the stuff-play animation. Sender pass (unstuff false): one step per bit/byte of the
+ * stuffed output; `index` is its position in the output, `insert` marks a stuffed 0 / an inserted ESC.
+ * Receiver pass (unstuff true): one step per bit/byte of the received field (the stuffed `data`);
+ * `insert` marks the bit/ESC the receiver removes. `count`: bit mode, the consecutive 1s after this
+ * step (0 after a stuffed or removed 0); byte mode, the ESC bytes inserted (or removed) so far.
+ */
+export function stuffSteps(mode, data, unstuff) {
+  const steps = [];
+  if (mode === "byte") {
+    const toks = toTokens(data);
+    let n = 0;
+    if (!unstuff) {
+      for (const t of toks) {
+        if (isSpecial(t)) steps.push({ index: steps.length, insert: true, count: ++n });
+        steps.push({ index: steps.length, insert: false, count: n });
+      }
+      return steps;
+    }
+    const rec = stuffBytes(toks);
+    for (let i = 0; i < rec.length; i++) {
+      if (rec[i] === "ESC") { steps.push({ index: i, insert: true, count: ++n }); i++; if (i >= rec.length) break; }
+      steps.push({ index: i, insert: false, count: n });
+    }
+    return steps;
+  }
+  const bits = String(data ?? "").replace(/\s+/g, "");
+  let run = 0;
+  if (!unstuff) {
+    for (const b of bits) {
+      run = b === "1" ? run + 1 : 0;
+      steps.push({ index: steps.length, insert: false, count: run });
+      if (run === 5) { run = 0; steps.push({ index: steps.length, insert: true, count: 0 }); }
+    }
+    return steps;
+  }
+  const rec = stuffBits(bits);
+  for (let i = 0; i < rec.length; i++) {
+    run = rec[i] === "1" ? run + 1 : 0;
+    steps.push({ index: i, insert: false, count: run });
+    if (run === 5 && rec[i + 1] === "0") { i++; run = 0; steps.push({ index: i, insert: true, count: 0 }); }
+  }
+  return steps;
+}
+
+const SW_SCENARIOS = ["all", "normal", "frame-lost", "ack-lost", "frame-corrupted", "ack-corrupted"];
+const SW_D = 1.6, SW_TO = 4.6; // time units: one crossing of the link; the sender's time-out
+/**
+ * The slide-35 flow diagram as a list of events, each with its drawing (time units on the y axis).
+ * Internal: stopWaitEvents exports the { who, text, timer, lost } view of it.
+ */
+function swScript(protocol, scenario, seq) {
+  const simple = protocol === "simple";
+  seq = !!seq && !simple;
+  const ev = [];
+  let t = 0, pkt = 0, s = 0;
+  const F = (n) => (seq ? `Frame ${n}` : "Frame"), A = (n) => (seq ? `ACK ${n}` : "ACK");
+  const arrow = (a, t1, b, t2, style, label, extra = {}) => ({ type: "arrow", a, t1, b, t2, style, label, ...extra });
+  const kinds = simple
+    ? (scenario === "frame-lost" ? ["normal", "frame-lost"] : ["normal", "normal"])
+    : (!SW_SCENARIOS.includes(scenario) || scenario === "all" ? ["normal", "frame-lost", "ack-lost"] : [scenario]);
+  const RULE = {
+    send: simple ? "Ready + \"Packet came from network layer.\" → \"Make a frame and send it.\"" : "Ready + \"Packet came from network layer.\" → \"Make a frame, save a copy, and send the frame. Start the timer.\"",
+    resend: "Blocking + \"Time-out.\" → \"Resend the saved frame. Restart the timer.\"",
+    deliver: simple ? "\"Frame arrived.\" → \"Deliver the packet to network layer.\"" : "Ready + \"Error-free frame arrived.\" → \"Extract and deliver the packet to network layer. Send ACK.\"",
+    "discard-frame": "Ready + \"Corrupted frame arrived.\" → \"Discard the frame.\"",
+    "discard-ack": "Blocking + \"Corrupted ACK arrived.\" → \"Discard the ACK.\"",
+    seqcopy: "With sequence numbers the receiver checks the number: a frame that is not the one it expects was already delivered, so it is discarded and the ACK for the expected frame is sent again.",
+    ack: "\"An acknowledgment number always define the sequence number of the next frame to receive.\"",
+  };
+  for (const kind of kinds) {
+    const p = ++pkt, n = s, r = 1 - n;
+    ev.push({ who: "sender", kind: "packet", sender: "Ready",
+      text: simple ? `Packet ${p} came from the network layer.` : `Packet ${p} came from the network layer; the sender is Ready, so it accepts it.`,
+      draw: [arrow("sn", t, "sd", t + 0.5, "packet", "Packet")] });
+    t += 0.6;
+    let sendT = t;
+    const frameLost = kind === "frame-lost", frameBad = kind === "frame-corrupted";
+    ev.push({ who: "sender", kind: "send", sender: simple ? "Ready" : "Blocking", timer: simple ? undefined : "start", ask: "send", rule: RULE.send,
+      text: simple ? "The sender makes a frame and sends it: no saved copy, no timer." : `The sender makes ${F(n)}, saves a copy, sends it and starts the timer (dark blue clock). Sender: Blocking: no new packet is accepted until the ACK arrives.`,
+      draw: [...(simple ? [] : [{ type: "timer", t: sendT, kind: "start" }]), arrow("sd", sendT, "rd", sendT + SW_D, "frame", F(n), { half: frameLost, bad: frameBad })] });
+    if (frameLost || frameBad) {
+      if (frameLost) ev.push({ who: "link", kind: "lost", lost: true, sender: simple ? "Ready" : "Blocking",
+        text: simple ? "Frame lost: the Simple protocol has no error control, so nobody notices and the packet is gone." : `Frame lost: ${F(n)} never reaches the receiver, so no ACK comes back.`,
+        draw: [{ type: "mark", x: "mid", t: sendT + SW_D / 2, text: "✕ Lost", color: "var(--red)", dy: 14 }] });
+      else ev.push({ who: "receiver", kind: "discard-frame", sender: "Blocking", ask: "discard-frame", rule: RULE["discard-frame"],
+        text: "Corrupted frame arrived: the CRC does not check, so the receiver discards the frame and sends no ACK.",
+        draw: [{ type: "mark", x: "rd", t: sendT + SW_D, text: "Corrupted: discarded", color: "var(--red)", side: "right" }] });
+      if (simple) { t = sendT + SW_D + 0.8; continue; }
+      sendT += SW_TO;
+      ev.push({ who: "sender", kind: "timeout", sender: "Blocking", timer: "restart", ask: "resend", rule: RULE.resend,
+        text: frameLost ? `Frame lost: no ACK comes back, the timer expires; the sender resends the saved frame (${F(n)} (resent)) and restarts the timer (light blue clock).`
+          : "A lost frame means either lost or corrupted: no ACK comes back, the timer expires; the sender resends the saved frame and restarts the timer (light blue clock).",
+        draw: [{ type: "timer", t: sendT, kind: "restart" }, arrow("sd", sendT, "rd", sendT + SW_D, "frame", `${F(n)} (resent)`)] });
+    }
+    let tA = sendT + SW_D;
+    if (simple) {
+      ev.push({ who: "receiver", kind: "deliver", sender: "Ready", ask: "deliver", rule: RULE.deliver,
+        text: "Frame arrived: the receiver delivers the packet to the network layer. Nothing goes back: the Simple protocol has no flow or error control.",
+        draw: [arrow("rd", tA, "rn", tA + 0.5, "packet", "Packet")] });
+      t = tA + 0.9;
+      continue;
+    }
+    ev.push({ who: "receiver", kind: "deliver", sender: "Blocking", ask: "deliver", rule: RULE.deliver, delivered: p,
+      text: seq ? `${F(n)} arrived error-free and is the frame expected: the receiver delivers Packet ${p} to the network layer.` : `Error-free frame arrived: the receiver extracts Packet ${p} and delivers it to the network layer.`,
+      draw: [arrow("rd", tA, "rn", tA + 0.5, "packet", "Packet")] });
+    let tK = tA + 0.6;
+    const ackLost = kind === "ack-lost", ackBad = kind === "ack-corrupted";
+    ev.push({ who: "receiver", kind: "ack", sender: "Blocking", ask: seq ? "ack" : null, answer: r, rule: RULE.ack,
+      text: seq ? `The receiver sends ACK ${r}: an acknowledgment number names the next frame to receive.` : "The receiver sends an ACK back to the sender.",
+      draw: [arrow("rd", tK, "sd", tK + SW_D, "ack", A(r), { half: ackLost, bad: ackBad })] });
+    if (ackLost || ackBad) {
+      if (ackLost) ev.push({ who: "link", kind: "lost", lost: true, sender: "Blocking",
+        text: `ACK lost: ${seq ? `ACK ${r}` : "the ACK"} never reaches the sender, which is still Blocking with its timer running.`,
+        draw: [{ type: "mark", x: "mid", t: tK + SW_D / 2, text: "✕ Lost", color: "var(--red)", dy: 14 }] });
+      else ev.push({ who: "sender", kind: "discard-ack", sender: "Blocking", ask: "discard-ack", rule: RULE["discard-ack"],
+        text: "Corrupted ACK arrived: the sender discards the ACK and stays Blocking; the timer keeps running.",
+        draw: [{ type: "mark", x: "sd", t: tK + SW_D, text: "Corrupted: discarded", color: "var(--red)", side: "left" }] });
+      sendT += SW_TO;
+      ev.push({ who: "sender", kind: "timeout", sender: "Blocking", timer: "restart", ask: "resend", rule: RULE.resend,
+        text: `${ackLost ? "ACK lost" : "No error-free ACK"}: the timer expires; the sender resends the saved frame (${F(n)} (resent)) and restarts the timer (light blue clock).`,
+        draw: [{ type: "timer", t: sendT, kind: "restart" }, arrow("sd", sendT, "rd", sendT + SW_D, "frame", `${F(n)} (resent)`)] });
+      tA = sendT + SW_D;
+      if (seq) ev.push({ who: "receiver", kind: "seqcopy", sender: "Blocking", ask: "discard-frame", rule: RULE.seqcopy,
+        text: `Frame ${n} again: the receiver expected Frame ${r}, so it discards the frame and resends ACK ${r}.`,
+        draw: [{ type: "mark", x: "rd", t: tA, text: `Frame ${n} discarded`, color: "var(--blue)", side: "right" }] });
+      else ev.push({ who: "receiver", kind: "deliver", sender: "Blocking", ask: "deliver", rule: RULE.deliver, delivered: p, dup: true,
+        text: `${ackLost ? "ACK lost" : "ACK corrupted"}: the receiver already delivered this packet; without sequence numbers it delivers it again: a duplicate.`,
+        draw: [arrow("rd", tA, "rn", tA + 0.5, "packet", "Packet"), { type: "mark", x: "rn", t: tA + 0.95, text: "Duplicate", color: "var(--blue)", side: "left" }] });
+      tK = tA + 0.6;
+      ev.push({ who: "receiver", kind: "ack", sender: "Blocking", ask: seq ? "ack" : null, answer: r, rule: RULE.ack,
+        text: seq ? `ACK ${r} goes back again: the receiver still expects Frame ${r}.` : "The receiver sends an ACK again.",
+        draw: [arrow("rd", tK, "sd", tK + SW_D, "ack", A(r))] });
+    }
+    ev.push({ who: "sender", kind: "ack-arrive", sender: "Ready", timer: "stop",
+      text: seq ? `ACK ${r} arrived error-free: the sender stops the timer (white clock) and discards the saved frame; Frame ${r} is next. Sender: Ready.` : "Error-free ACK arrived: the sender stops the timer (white clock) and discards the saved frame. Sender: Ready.",
+      draw: [{ type: "timer", t: tK + SW_D, kind: "stop" }] });
+    s = r;
+    t = tK + SW_D + 0.7;
+  }
+  return ev;
+}
+/** stop-wait-play's events: who acts, the caption text, the timer event, and whether a frame or ACK is lost. */
+export function stopWaitEvents(protocol, scenario, seq) {
+  return swScript(protocol, scenario, seq).map((e) => {
+    const o = { who: e.who, text: e.text };
+    if (e.timer) o.timer = e.timer;
+    if (e.lost) o.lost = true;
+    return o;
+  });
+}
+
+// ---------- shared playback helpers (Task 3) ----------
+const SVG_NS = "http://www.w3.org/2000/svg";
+function svgEl(tag, attrs = {}, text) {
+  const e = document.createElementNS(SVG_NS, tag);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  if (text != null) e.textContent = text;
+  return e;
+}
+const clamp01 = (v) => Math.max(0, Math.min(1, v));
+/**
+ * Predict-mode bookkeeping shared by the -play widgets. `done` holds the question steps answered right;
+ * block(count, needs) is the first unanswered question step (the playback's limit).
+ */
+function playQuiz(getPb, redraw) {
+  const q = { on: false, done: new Set(), asked: 0, first: 0, missed: false, wrong: null, key: null, refocus: false };
+  q.reset = () => { q.done = new Set(); q.asked = 0; q.first = 0; q.missed = false; q.wrong = null; q.key = null; };
+  q.block = (count, needs) => { for (let i = 0; i < count; i++) if (needs(i) && !q.done.has(i)) return i; return count; };
+  q.answer = (i, ok, v, e) => {
+    if (!q.missed && q.wrong == null) q.asked++;
+    q.refocus = !!e && e.detail === 0;
+    if (!ok) { q.missed = true; q.wrong = v; redraw(); return false; }
+    if (!q.missed) q.first++;
+    q.missed = false; q.wrong = null; q.done.add(i);
+    getPb().next();
+    return true;
+  };
+  q.tally = () => (q.asked ? ` ${q.first} of ${q.asked} right on the first try.` : "");
+  return q;
+}
+function predictToggle(label, checked, onChange) {
+  const lab = el("label", "playback-check");
+  const input = document.createElement("input");
+  input.type = "checkbox"; input.checked = !!checked;
+  input.addEventListener("change", () => onChange(input.checked));
+  lab.append(input, " " + label);
+  return { row: lab, input };
+}
+const nudge = (ask) => () => { ask.classList.remove("playback-nudge"); void ask.offsetWidth; ask.classList.add("playback-nudge"); };
+/** Answer buttons in the ask row; a wrong pick is marked and the rule printed under them. */
+function askButtons(ask, q, opts, onPick, feedback) {
+  const btns = opts.map(([v, lab]) => {
+    const b = el("button", "viz-btn" + (v === q.wrong ? " playback-wrong" : ""), lab);
+    b.type = "button";
+    b.addEventListener("click", (e) => onPick(v, e));
+    ask.append(b);
+    return b;
+  });
+  if (q.wrong != null && feedback) ask.append(el("span", "playback-feedback", feedback));
+  if (q.refocus) { q.refocus = false; (btns.find((b) => !b.classList.contains("playback-wrong")) || btns[0]).focus(); }
+}
+
+// ---------- widget: crc-play ----------
+// The slide-38 division one quotient bit per step, then a final step for the remainder (or syndrome).
+function crcPlay(box, cfg) {
+  const presets = presetsOf(cfg, CRC_PRESETS), names = Object.keys(presets);
+  const init = (c) => ({
+    dataword: c.dataword != null ? String(c.dataword) : "1001",
+    divisor: c.divisor != null ? String(c.divisor) : "1011",
+    mode: c.mode === "decode" ? "decode" : "encode",
+    received: c.received != null ? String(c.received) : "1000110",
+  });
+  let st = init({ ...cfg, ...(startPreset(cfg, presets) || {}) });
+  let D = null, pb = null, err = "";
+  const q = playQuiz(() => pb, () => frame(pb.pos()));
+  q.on = !!cfg.predict;
+
+  box.append(el("h4", null, cfg.title || "CRC division, one quotient bit at a time"));
+  const presetCh = choice(names, -1, (i) => { st = init(presets[names[i]]); sync(); restart(); });
+  const modeCh = choice(["Encode (sender)", "Decode (receiver)"], st.mode === "decode" ? 1 : 0, (i) => { st.mode = i ? "decode" : "encode"; sync(); restart(); });
+  const dF = textField("dataword", st.dataword, 170), vF = textField("divisor", st.divisor, 120), rF = textField("received", st.received, 200);
+  dF.on(() => { st.dataword = dF.get(); restart(); });
+  vF.on(() => { st.divisor = vF.get(); restart(); });
+  rF.on(() => { st.received = rF.get(); restart(); });
+  const pred = predictToggle("Predict each quotient bit and the remainder", q.on, (v) => {
+    q.on = v; pb.pause(); q.reset();
+    for (let i = 0; i < Math.ceil(pb.pos() - 1e-9); i++) q.done.add(i);
+    pb.set(pb.pos());
+  });
+  const view = el("div", "net6-scroll");
+  const out = el("div");
+  const caption = el("p", "playback-caption");
+  caption.setAttribute("aria-live", "polite");
+  const ask = el("div", "viz-btn-row playback-ask");
+  box.append(presetCh.row, modeCh.row, dF.row, vF.row, rF.row, pred.row, view, out, caption, ask);
+  function sync() {
+    modeCh.set(st.mode === "decode" ? 1 : 0);
+    dF.set(st.dataword); vF.set(st.divisor); rF.set(st.received);
+    dF.row.style.display = st.mode === "encode" ? "" : "none";
+    rF.row.style.display = st.mode === "decode" ? "" : "none";
+  }
+  function compute() {
+    const enc = st.mode === "encode", dv = st.divisor;
+    err = "";
+    if (!/^1[01]{1,8}$/.test(dv)) err = "Divisor: 2 to 9 bits (0s and 1s) with a leading 1.";
+    else if (enc && !/^[01]{1,16}$/.test(st.dataword)) err = "Dataword: 1 to 16 bits (0s and 1s only).";
+    else if (!enc && (!BITS.test(st.received) || st.received.length < dv.length || st.received.length > 25)) err = `Received word: bits only, at least as long as the divisor (${dv.length} bits) and at most 25 bits.`;
+    if (err) { D = null; return; }
+    const nk = dv.length - 1, dividend = enc ? st.dataword + "0".repeat(nk) : st.received;
+    D = { enc, dv, nk, dividend, r: crcDivide(dividend, dv), data: enc ? st.dataword : st.received.slice(0, st.received.length - nk) };
+  }
+  const count = () => (D ? D.r.steps.length + 1 : 1);
+  const asking = (pos) => {
+    if (!q.on || !D) return -1;
+    const b = q.block(count(), () => true);
+    return b < count() && Math.abs(pos - b) < 1e-6 ? b : -1;
+  };
+  function stepCaption(i) {
+    const { dv, r } = D, n = dv.length, zeros = "0".repeat(n), s = r.steps[i], next = r.steps[i + 1];
+    const by = s.useDivisor ? dv : zeros;
+    const head = s.useDivisor ? `Step ${i + 1}: leftmost bit 1, so use the divisor ${dv}.` : `Step ${i + 1}: leftmost bit 0: use ${zeros}.`;
+    if (!next) return `${head} ${s.window} ⊕ ${by} = ${s.xor}; no bits left to bring down. Quotient ${r.quotient}.`;
+    const down = next.window[n - 1];
+    return s.useDivisor ? `${head} ${s.window} ⊕ ${by} = ${s.xor}; drop the leading 0 and bring down ${down} → ${next.window}.` : `${head} ${s.window} ⊕ ${by} = ${s.xor} → bring down ${down} → ${next.window}.`;
+  }
+  function finalCaption() {
+    const { enc, r, data } = D;
+    if (enc) return `Remainder ${r.remainder}: codeword ${data} ${r.remainder}.`;
+    const zero = !/1/.test(r.remainder);
+    return `Syndrome ${r.remainder}: ${zero ? `Zero → dataword ${data} accepted.` : "Non-zero → dataword discarded."}`;
+  }
+  function divisionRows(pos, hot) {
+    const { dv, dividend, r, enc } = D, n = dv.length, L = dividend.length, base = n + 1, cols = base + L, S = r.steps.length, zeros = "0".repeat(n);
+    const f = (k) => clamp01(pos - k);
+    const wrap = el("div", "net6-div");
+    const drow = (items, tag) => {
+      const row = el("div", "net6-drow");
+      for (let c = 0; c < cols; c++) { const it = items[c]; row.append(el("span", "net6-slot" + (it && it.cls ? " " + it.cls : ""), it ? it.t : "")); }
+      if (tag) row.append(el("span", "net6-tag", tag));
+      return row;
+    };
+    const place = (bits, at, cls) => { const o = {}; [...bits].forEach((b, i) => { o[at + i] = { t: b, cls: typeof cls === "function" ? cls(i) : cls }; }); return o; };
+    const winCls = (k) => (j) => (k === hot && k < S ? (j === 0 ? "win lead" : "win") : "");
+    // quotient: bit k appears once step k starts
+    const qo = {};
+    for (let k = 0; k < S; k++) if (f(k) > 0) qo[base + n - 1 + k] = { t: r.quotient[k], cls: "q" + (k === hot ? " qhot" : "") };
+    wrap.append(drow(qo, "Quotient"));
+    const head = { ...place(dv, 0, "b"), [n]: { t: ")", cls: "paren" } };
+    [...dividend].forEach((b, j) => { head[base + j] = { t: b, cls: "bar" + (enc && j >= L - (n - 1) ? " y" : "") + (j < n && hot === 0 && S > 0 ? " win" + (j === 0 ? " lead" : "") : "") }; });
+    wrap.append(drow(head, enc ? "Dividend = dataword + zeros" : "Dividend = received codeword"));
+    for (let k = 0; k < S; k++) {
+      const s = r.steps[k];
+      if (k > 0) {
+        if (f(k - 1) < 0.66) break;
+        wrap.append(drow(place(s.window, base + k, (j) => [j === n - 1 ? "down" : "", winCls(k)(j)].filter(Boolean).join(" ")), `bring down ${s.window[n - 1]}`));
+      }
+      if (f(k) < 0.33) break;
+      wrap.append(drow(place(s.useDivisor ? dv : zeros, base + k, "b ul"), s.useDivisor ? `leftmost bit 1: use the divisor ${dv}` : `Leftmost bit 0: use ${zeros} divisor`));
+    }
+    if (f(S) >= 0.5) wrap.append(drow(place(r.remainder, base + S, "y"), enc ? "Remainder" : "Syndrome"));
+    return wrap;
+  }
+  function renderAsk(pos, qi) {
+    const key = qi >= 0 ? `${qi}|${qi < count() - 1 ? q.wrong : ""}` : "";
+    if (key === q.key) return;
+    q.key = key; ask.innerHTML = ""; ask.hidden = !q.on;
+    if (qi < 0) return;
+    const S = D.r.steps.length;
+    if (qi < S) {
+      askButtons(ask, q, [["1", `1 (XOR the divisor ${D.dv})`], ["0", `0 (XOR ${"0".repeat(D.dv.length)})`]],
+        (v, e) => q.answer(qi, v === (D.r.steps[qi].useDivisor ? "1" : "0"), v, e),
+        "Look only at the leftmost bit of the window: 1 → divisor, 0 → 0000.");
+      return;
+    }
+    const bi = bitInputs(D.nk, D.enc ? "remainder" : "syndrome");
+    const msg = el("span", "playback-feedback");
+    const check = button("Check", (e) => {
+      const g = bi.get(); let ok = true;
+      for (let i = 0; i < D.nk; i++) { const good = g[i] === D.r.remainder[i]; bi.mark(i, good); if (!good) ok = false; }
+      if (!ok) msg.textContent = `Not yet: wrong bits are red. Do the last XOR, then drop its leading bit: the ${D.enc ? "remainder" : "syndrome"} is the last n − k = ${D.nk} bits.`;
+      q.answer(qi, ok, "x", e);
+    });
+    ask.append(el("span", "net6-msg", `Type the ${D.enc ? "remainder" : "syndrome"} (${D.nk} bits):`), bi.row, check, msg);
+  }
+  function frame(pos) {
+    view.innerHTML = ""; out.innerHTML = "";
+    if (!D) { caption.textContent = err; ask.innerHTML = ""; q.key = null; return; }
+    const N = count(), S = N - 1, qi = asking(pos), drawn = Math.ceil(pos - 1e-9) - 1, hot = qi >= 0 ? qi : drawn;
+    view.append(divisionRows(pos, hot));
+    if (pos - S >= 0.5) {
+      if (D.enc) out.append(line("Codeword = dataword + remainder", bitCells(D.data + D.r.remainder, (i) => (i < D.data.length ? "dw" : "y"))));
+      else { const zero = !/1/.test(D.r.remainder); out.append(verdict(zero ? "ok" : "bad", zero ? `Syndrome ${D.r.remainder}: Zero → dataword ${D.data} accepted.` : `Syndrome ${D.r.remainder}: Non-zero → dataword discarded.`)); }
+    }
+    let text;
+    if (qi >= 0) text = qi < S ? `Step ${qi + 1}: the window is ${D.r.steps[qi].window}. Quotient bit: 1 (XOR the divisor) or 0 (XOR ${"0".repeat(D.dv.length)})?` : `Last step: what is the ${D.enc ? "remainder" : "syndrome"}?`;
+    else if (drawn < 0) text = D.enc ? `Dividend = dataword ${D.data} + ${D.nk} zeros = ${D.dividend}. Press Play to divide by ${D.dv} one quotient bit at a time.` : `Dividend = received codeword ${D.dividend}. Press Play to divide by ${D.dv} one quotient bit at a time.`;
+    else if (drawn < S) text = stepCaption(drawn);
+    else text = finalCaption() + (pos >= N ? q.tally() : "");
+    if (caption.textContent !== text) caption.textContent = text;
+    renderAsk(pos, qi);
+  }
+  function restart() { compute(); q.reset(); pb.reset(count()); }
+  compute();
+  pb = createPlayback({ count: count(), unit: "step", onFrame: frame, stepMs: () => cfg.stepMs || 1600,
+    limit: () => (q.on && D ? q.block(count(), () => true) : count()), onBlocked: nudge(ask) });
+  box.append(pb.el, el("p", "widget-note", "Each step: the leftmost bit of the window picks the divisor (1) or 0000 (0); XOR, drop the leading 0, bring down the next bit. Multiply: AND, Subtract: XOR."));
+  sync();
+  restart();
+}
+
+// ---------- widget: stuff-play ----------
+// The sender's pass one bit (byte) per step, the frame crossing between the flags, then the receiver's pass.
+function stuffPlay(box, cfg) {
+  const presets = presetsOf(cfg, STUFF_PRESETS), names = Object.keys(presets);
+  const init = (c) => {
+    const mode = c.mode === "byte" ? "byte" : "bit";
+    return { mode, data: c.data != null ? (Array.isArray(c.data) ? c.data.join(" ") : String(c.data)) : DEFAULT_DATA[mode] };
+  };
+  const unstuff = cfg.unstuff !== false;
+  let st = init({ ...cfg, ...(startPreset(cfg, presets) || {}) });
+  let P = null, pb = null, err = "";
+  const q = playQuiz(() => pb, () => frame(pb.pos()));
+  q.on = !!cfg.predict;
+
+  box.append(el("h4", null, cfg.title || (st.mode === "byte" ? "Byte stuffing, one byte at a time" : "Bit stuffing: the sender's counter of 1s")));
+  const presetCh = choice(names, -1, (i) => { st = init(presets[names[i]]); sync(); restart(); });
+  const modeCh = choice(["Bit stuffing", "Byte stuffing"], st.mode === "byte" ? 1 : 0, (i) => { st.mode = i ? "byte" : "bit"; st.data = DEFAULT_DATA[st.mode]; sync(); restart(); });
+  const dF = textField("data", st.data, 300);
+  dF.on(() => { st.data = dF.get(); restart(); });
+  const pred = predictToggle("Predict each step before it is drawn", q.on, (v) => {
+    q.on = v; pb.pause(); q.reset();
+    for (let i = 0; i < Math.ceil(pb.pos() - 1e-9); i++) q.done.add(i);
+    pb.set(pb.pos());
+  });
+  const view = el("div");
+  const caption = el("p", "playback-caption");
+  caption.setAttribute("aria-live", "polite");
+  const ask = el("div", "viz-btn-row playback-ask");
+  box.append(presetCh.row, modeCh.row, dF.row, pred.row, view, caption, ask);
+  function sync() { modeCh.set(st.mode === "byte" ? 1 : 0); dF.set(st.data); }
+  function compute() {
+    err = "";
+    const bit = st.mode === "bit";
+    let data;
+    if (bit) { data = st.data.replace(/\s+/g, ""); if (!/^[01]{1,64}$/.test(data)) err = "Bit mode: 1 to 64 bits, 0s and 1s only."; }
+    else { data = toTokens(st.data); if (!data.length || data.length > 24) err = "Byte mode: 1 to 24 bytes separated by spaces; FLAG and ESC are the special bytes, anything else is data."; }
+    if (err) { P = null; return; }
+    const S = stuffSteps(st.mode, data, false), R = unstuff ? stuffSteps(st.mode, data, true) : [];
+    const sent = bit ? stuffBits(data) : stuffBytes(data);
+    // data index of each sender step (an inserted ESC belongs to the byte after it; a stuffed 0 to the bit before it)
+    const dIdx = [];
+    let k = -1;
+    S.forEach((s, j) => { if (bit) { if (!s.insert) k++; dIdx.push(k); } else { if (!s.insert && !(j > 0 && S[j - 1].insert)) k++; if (s.insert) k++; dIdx.push(k); } });
+    P = { bit, data, S, R, sent, dIdx, extra: S.filter((s) => s.insert).length };
+  }
+  const count = () => (P ? P.S.length + (unstuff ? 1 + P.R.length : 0) : 1);
+  const needs = (i) => {
+    if (!P || i >= P.S.length) return false;
+    const s = P.S[i];
+    if (P.bit) return !s.insert && P.data[P.dIdx[i]] === "1";
+    return s.insert || i === 0 || !P.S[i - 1].insert;
+  };
+  const answerOf = (i) => (P.bit ? !!(P.S[i + 1] && P.S[i + 1].insert) : P.S[i].insert);
+  const asking = (pos) => {
+    if (!q.on || !P) return -1;
+    const b = q.block(count(), needs);
+    return b < count() && Math.abs(pos - b) < 1e-6 ? b : -1;
+  };
+  const unitName = () => (P.bit ? "bits" : "bytes");
+  function capSender(i) {
+    const s = P.S[i], d = P.dIdx[i];
+    if (P.bit) {
+      if (s.insert) return "Five 1s after a 0: stuff a 0 so 01111110 cannot appear in the data. The counter resets to 0.";
+      const b = P.data[d];
+      if (b === "0") return `Bit ${d + 1} is 0: copied; the counter of consecutive 1s resets to 0.`;
+      return s.count === 5 ? `Bit ${d + 1} is 1: five consecutive 1s after a 0. A 0 goes in next.` : `Bit ${d + 1} is 1: copied; ${s.count} consecutive ${s.count === 1 ? "1" : "1s"}.`;
+    }
+    const t = P.data[d];
+    if (s.insert) return `Byte ${d + 1} is ${t === "FLAG" ? "a Flag" : "an ESC"}: an ESC is inserted before it (orange), so the receiver treats the byte as data, not as a delimiting flag.`;
+    return isSpecial(t) ? `Byte ${d + 1}, the ${tokText(t)}, is copied after its ESC.` : `Byte ${d + 1} is "${t}": a data byte, copied as is.`;
+  }
+  function capReceiver(j) {
+    const s = P.R[j], i = s.index;
+    if (P.bit) {
+      if (s.insert) return `Received bit ${i + 1} is a 0 after five 1s: the receiver removes it (a stuffed bit) and resets the counter.`;
+      const b = P.sent[i];
+      return b === "0" ? `Received bit ${i + 1} is 0: kept; the counter resets to 0.` : `Received bit ${i + 1} is 1: kept; ${s.count} consecutive ${s.count === 1 ? "1" : "1s"}.`;
+    }
+    const t = P.sent[i];
+    if (s.insert) return `Received byte ${i + 1} is an ESC: the receiver removes it and keeps the next byte as data.`;
+    return j > 0 && P.R[j - 1].insert ? `Received byte ${i + 1}, ${tokText(t)}, follows an ESC: kept as data, not as a flag.` : `Received byte ${i + 1}, "${tokText(t)}": data, kept.`;
+  }
+  function finalText() {
+    const n = P.data.length, m = P.sent.length, u = unitName();
+    if (!unstuff) return `Sender done: ${n} → ${m} ${u}, ${P.extra} extra ${P.extra === 1 ? u.slice(0, -1) : u}.`;
+    return `Receiver done: the ${m}-${u.slice(0, -1)} field gives the ${n} ${u} sent: ${P.extra} ${P.bit ? "stuffed 0" : "ESC byte"}${P.extra === 1 ? "" : "s"} removed.`;
+  }
+  function cols(cells, counts, cls, cur) {
+    const row = el("div", "net6-cols");
+    cells.forEach((c, i) => {
+      const col = el("span", "net6-col");
+      const extra = cls(i);
+      col.append(el("span", "net6-b sm" + (P.bit ? "" : " tok") + (c === "FLAG" ? " flag" : "") + (i === cur ? " cur" : "") + (extra ? " " + extra : ""), P.bit ? c : tokText(c)));
+      if (counts) col.append(el("span", "net6-b sm cnt" + (counts[i] === 5 ? " hot" : ""), counts[i] == null ? "" : String(counts[i])));
+      row.append(col);
+    });
+    return row;
+  }
+  function renderAsk(qi) {
+    const key = qi >= 0 ? `${qi}|${q.wrong}` : "";
+    if (key === q.key) return;
+    q.key = key; ask.innerHTML = ""; ask.hidden = !q.on;
+    if (qi < 0) return;
+    const right = answerOf(qi);
+    askButtons(ask, q, [[true, P.bit ? "Yes, stuff a 0 after it" : "Yes, insert ESC"], [false, "No"]], (v, e) => q.answer(qi, v === right, v, e),
+      P.bit ? "Rule: whenever five consecutive 1s follow a 0 in the data, add one extra 0; count the 1s since the last 0, including this one."
+        : "Rule: an ESC is added whenever there is a flag or ESC in the text; any other byte is data and is copied as is.");
+  }
+  function frame(pos) {
+    view.innerHTML = "";
+    if (!P) { caption.textContent = err; ask.innerHTML = ""; q.key = null; return; }
+    const N = count(), nS = P.S.length, qi = asking(pos), drawn = Math.ceil(pos - 1e-9) - 1, hot = qi >= 0 ? qi : drawn;
+    const sDone = Math.max(0, Math.min(nS, drawn + 1));
+    const curD = hot >= 0 && hot < nS ? P.dIdx[hot] : -1;
+    const dataArr = P.bit ? [...P.data] : P.data;
+    // counts under each data bit, once its step is drawn
+    let counts = null;
+    if (P.bit) { counts = dataArr.map(() => null); P.S.slice(0, sDone).forEach((s, j) => { if (!s.insert) counts[P.dIdx[j]] = s.count; }); }
+    const doneD = new Set(P.S.slice(0, sDone).map((_, j) => P.dIdx[j]));
+    view.append(line(`Data from upper layer (${P.data.length} ${unitName()})`, null),
+      cols(dataArr, counts, (i) => (doneD.has(i) ? "" : "dim"), curD));
+    if (P.bit) view.append(el("p", "net6-msg", "Under each bit: consecutive 1s after a 0 (5 → stuff)."));
+    const outArr = P.bit ? [...P.sent].slice(0, sDone) : P.sent.slice(0, sDone);
+    const ins = new Set(P.S.slice(0, sDone).filter((s) => s.insert).map((s) => s.index));
+    const mk = (arr, insSet) => (P.bit ? bitCells(arr.join(""), (i) => (insSet.has(i) ? "bad" : "dw"), { sm: true }) : byteCells(arr, (i) => (insSet.has(i) ? "esc" : "")));
+    view.append(line(`Stuffed data (${outArr.length} ${unitName()})`, outArr.length ? mk(outArr, ins) : el("span", "net6-msg", "—")));
+    if (unstuff && drawn >= nS) {
+      const allIns = new Set(P.S.filter((s) => s.insert).map((s) => s.index));
+      view.append(line("Frame on the link", null), frameView(P.bit ? "bit" : "byte", mk(P.bit ? [...P.sent] : P.sent, allIns)));
+    }
+    if (unstuff && drawn > nS) {
+      const rDone = Math.min(P.R.length, drawn - nS);
+      const rec = P.bit ? [...P.sent] : P.sent;
+      const rHot = hot - nS - 1, curR = rHot >= 0 && rHot < P.R.length ? P.R[rHot].index : -1;
+      const seen = new Set(), removed = new Set();
+      let rc = P.bit ? rec.map(() => null) : null;
+      const kept = [];
+      P.R.slice(0, rDone).forEach((s) => { seen.add(s.index); if (s.insert) removed.add(s.index); else kept.push(rec[s.index]); if (rc) rc[s.index] = s.count; });
+      view.append(line(`Received data field (${rec.length} ${unitName()})`, null),
+        cols(rec, rc, (i) => (removed.has(i) ? (P.bit ? "bad gone" : "esc gone") : seen.has(i) ? "" : "dim"), curR));
+      view.append(line(`Data to upper layer (${kept.length} ${unitName()})`, kept.length ? (P.bit ? bitCells(kept.join(""), null, { sm: true }) : byteCells(kept)) : el("span", "net6-msg", "—")));
+    }
+    let text;
+    if (qi >= 0) {
+      const d = P.dIdx[qi], t = dataArr[d];
+      text = P.bit ? `Bit ${d + 1} is 1; the counter of consecutive 1s stands at ${P.S[qi].count - 1}. Insert a 0 after this bit?` : `Byte ${d + 1} is ${t === "FLAG" ? "a Flag" : t === "ESC" ? "an ESC" : `"${t}"`}. Insert ESC before this byte?`;
+    } else if (drawn < 0) text = P.bit ? "The sender scans the data bit by bit, counting consecutive 1s after a 0. Press Play." : "The sender scans the data byte by byte, looking for Flag and ESC bytes. Press Play.";
+    else if (drawn < nS) text = drawn === nS - 1 && !unstuff ? `${capSender(drawn)} ${finalText()}` : capSender(drawn);
+    else if (drawn === nS) text = `The frame crosses the link between the flags: ${P.bit ? "01111110" : "Flag"} | Header | ${P.sent.length} ${unitName()} of stuffed data | Trailer | ${P.bit ? "01111110" : "Flag"}. The receiver now scans the data field.`;
+    else text = drawn === N - 1 ? `${capReceiver(drawn - nS - 1)} ${finalText()}` : capReceiver(drawn - nS - 1);
+    if (pos >= N) text += q.tally();
+    if (caption.textContent !== text) caption.textContent = text;
+    renderAsk(qi);
+  }
+  function restart() { compute(); q.reset(); pb.reset(count()); }
+  compute();
+  pb = createPlayback({ count: count(), unit: "step", onFrame: frame, stepMs: () => cfg.stepMs || 900,
+    limit: () => (q.on && P ? q.block(count(), needs) : count()), onBlocked: nudge(ask) });
+  box.append(pb.el, el("p", "widget-note", st.mode === "byte" ? "Rule: an ESC is added whenever there is a flag or ESC in the text; the receiver removes each ESC and treats the next character as data." : "Rule: whenever five consecutive 1s follow a 0 in the data, add one extra 0 so the receiver does not mistake 01111110 for a flag; the receiver removes the 0 after any five 1s."));
+  sync();
+  restart();
+}
+
+// ---------- widget: stop-wait-play ----------
+// The slide-35 (or slide-32) flow diagram, one event per step, with the sender's and receiver's FSM states.
+const SW_X = { sn: 36, sd: 160, rd: 320, rn: 444, mid: 240 };
+const SW_LABELS = { all: "All three (slide 35)", normal: "Normal", "frame-lost": "Frame lost", "ack-lost": "ACK lost", "frame-corrupted": "Frame corrupted", "ack-corrupted": "ACK corrupted" };
+const SW_NEXT = [["send", "Send the next frame"], ["resend", "Time-out: resend the saved frame"], ["deliver", "Deliver the packet and send ACK"], ["discard-frame", "Discard the frame"], ["discard-ack", "Discard the ACK"]];
+const SW_NEXT_SIMPLE = [["send", "Send the frame"], ["deliver", "Deliver the packet to the network layer"], ["discard-frame", "Discard the frame"]];
+function swClock(x, y, kind) {
+  const g = svgEl("g");
+  const fill = kind === "start" ? "#1f4e9c" : kind === "stop" ? "var(--ink)" : "var(--blue)";
+  const hand = kind === "stop" ? "var(--paper)" : kind === "start" ? "var(--ink)" : "var(--paper)";
+  g.append(svgEl("circle", { cx: x, cy: y, r: 7, fill, stroke: "var(--blue)", "stroke-width": 1.4 }),
+    svgEl("line", { x1: x, y1: y, x2: x, y2: y - 4.5, stroke: hand, "stroke-width": 1.4 }),
+    svgEl("line", { x1: x, y1: y, x2: x + 3.5, y2: y, stroke: hand, "stroke-width": 1.4 }));
+  return g;
+}
+function stopWaitPlay(box, cfg) {
+  let protocol = cfg.protocol === "simple" ? "simple" : "stop-and-wait";
+  let scenario = SW_SCENARIOS.includes(cfg.scenario) ? cfg.scenario : "all";
+  let seq = !!cfg.seq;
+  let E = [], pb = null;
+  const q = playQuiz(() => pb, () => frame(pb.pos()));
+  q.on = !!cfg.predict;
+
+  box.append(el("h4", null, cfg.title || "Flow diagram: frames, ACKs and the timer"));
+  const protoCh = choice(["Simple (slide 32)", "Stop-and-Wait (slide 35)"], protocol === "simple" ? 0 : 1, (i) => { protocol = i ? "stop-and-wait" : "simple"; sync(); restart(); });
+  const scenKeys = SW_SCENARIOS;
+  const scenCh = choice(scenKeys.map((k) => SW_LABELS[k]), scenKeys.indexOf(scenario), (i) => { scenario = scenKeys[i]; restart(); });
+  const seqBox = checkbox("Sequence numbers (slide 36): Frame 0, 1 and ACK 1, 0", seq, (v) => { seq = v; restart(); });
+  const pred = predictToggle("Predict each action before it is drawn", q.on, (v) => {
+    q.on = v; pb.pause(); q.reset();
+    for (let i = 0; i < Math.ceil(pb.pos() - 1e-9); i++) q.done.add(i);
+    pb.set(pb.pos());
+  });
+  const badges = el("div", "net6-badges");
+  const svg = svgEl("svg", { viewBox: "0 0 480 300", class: "curve-svg net-svg", style: "max-width: 560px" });
+  const legend = el("div", "net6-legend");
+  const caption = el("p", "playback-caption");
+  caption.setAttribute("aria-live", "polite");
+  const ask = el("div", "viz-btn-row playback-ask");
+  box.append(protoCh.row, scenCh.row, seqBox.row, pred.row, badges, svg, legend, caption, ask);
+  function sync() {
+    protoCh.set(protocol === "simple" ? 0 : 1);
+    const sw = protocol !== "simple";
+    seqBox.row.style.display = sw ? "" : "none";
+    legend.style.display = sw ? "" : "none";
+  }
+  // legend: the slide's three clocks
+  for (const [kind, text] of [["start", "Start the timer."], ["stop", "Stop the timer."], ["restart", "Restart a time-out timer."]]) {
+    const item = el("span", "net6-legend-item");
+    const ic = svgEl("svg", { viewBox: "0 0 18 18", width: 16, height: 16 });
+    ic.append(swClock(9, 9, kind));
+    item.append(ic, document.createTextNode(text));
+    legend.append(item);
+  }
+  const needs = (i) => !!E[i] && !!E[i].ask && (E[i].ask !== "ack" || seq);
+  const asking = (pos) => {
+    if (!q.on) return -1;
+    const b = q.block(E.length, needs);
+    return b < E.length && Math.abs(pos - b) < 1e-6 ? b : -1;
+  };
+  const sim = () => protocol === "simple";
+  function renderAsk(qi) {
+    const key = qi >= 0 ? `${qi}|${q.wrong}` : "";
+    if (key === q.key) return;
+    q.key = key; ask.innerHTML = ""; ask.hidden = !q.on;
+    if (qi < 0) return;
+    const e = E[qi];
+    if (e.ask === "ack") {
+      askButtons(ask, q, [[0, "ACK 0"], [1, "ACK 1"]], (v, ev) => q.answer(qi, v === e.answer, v, ev), `${e.rule} The receiver now expects Frame ${e.answer}.`);
+      return;
+    }
+    askButtons(ask, q, sim() ? SW_NEXT_SIMPLE : SW_NEXT, (v, ev) => q.answer(qi, v === e.ask, v, ev), e.rule);
+  }
+  function summary() {
+    const del = E.filter((e) => e.kind === "deliver").length, pk = E.filter((e) => e.kind === "packet").length;
+    const dup = E.find((e) => e.dup);
+    let s = `Done: ${pk} ${pk === 1 ? "packet" : "packets"} sent, ${del} ${del === 1 ? "delivery" : "deliveries"} to the network layer.`;
+    if (dup) s += ` Packet ${dup.delivered} was delivered twice: Duplicate.`;
+    else if (seq && E.some((e) => e.kind === "seqcopy")) s += " Each packet was delivered once: the sequence numbers caught the resent frame.";
+    else if (sim() && E.some((e) => e.lost)) s += " The lost packet was never delivered: no error control.";
+    return s;
+  }
+  function frame(pos) {
+    const qi = asking(pos), drawn = Math.ceil(pos - 1e-9) - 1, hot = qi >= 0 ? -1 : drawn;
+    const U = 21, TOP = 52;
+    const maxT = Math.max(1, ...E.flatMap((e) => e.draw.map((d) => (d.type === "arrow" ? d.t2 : d.t + 0.4))));
+    const H = TOP + maxT * U + 40, y = (t) => TOP + t * U;
+    svg.setAttribute("viewBox", `0 0 480 ${H.toFixed(0)}`);
+    svg.innerHTML = "";
+    const X = SW_X;
+    // headers and time lines
+    svg.append(svgEl("text", { x: (X.sn + X.sd) / 2, y: 14, "text-anchor": "middle", "font-size": 13, fill: "var(--ink-2)" }, "Sending node"),
+      svgEl("text", { x: (X.rd + X.rn) / 2, y: 14, "text-anchor": "middle", "font-size": 13, fill: "var(--ink-2)" }, "Receiving node"));
+    for (const [k, lab] of [["sn", "Network"], ["sd", "Data-link"], ["rd", "Data-link"], ["rn", "Network"]]) {
+      svg.append(svgEl("text", { x: X[k], y: 32, "text-anchor": "middle", "font-size": 12, fill: "var(--ink-dim)" }, lab));
+      svg.append(svgEl("line", { x1: X[k], y1: 40, x2: X[k], y2: H - 22, stroke: "var(--rule-strong)", "stroke-dasharray": "4 4" }));
+      svg.append(svgEl("text", { x: X[k], y: H - 8, "text-anchor": "middle", "font-size": 10, fill: "var(--ink-dim)" }, "Time ↓"));
+    }
+    E.forEach((e, i) => {
+      if (i > drawn) return;
+      const f = i === drawn ? clamp01(pos - i) || 1 : 1, isHot = i === hot;
+      for (const d of e.draw) {
+        if (d.type === "arrow") {
+          const x1 = X[d.a], y1 = y(d.t1), x2f = X[d.b], y2f = y(d.t2);
+          const reach = (d.half ? 0.5 : 1) * f;
+          const x2 = x1 + (x2f - x1) * reach, y2 = y1 + (y2f - y1) * reach;
+          const color = d.bad ? "var(--red)" : d.style === "packet" ? "var(--blue)" : d.style === "ack" ? "var(--green)" : "var(--ink)";
+          svg.append(svgEl("line", { x1, y1, x2, y2, stroke: color, "stroke-width": isHot ? 2.8 : 1.8, "stroke-dasharray": d.style === "packet" ? "5 3" : "none" }));
+          if (reach >= 1 - 1e-9) {
+            const ang = Math.atan2(y2 - y1, x2 - x1), a1 = ang + 2.7, a2 = ang - 2.7;
+            svg.append(svgEl("polygon", { points: `${x2},${y2} ${x2 + 8 * Math.cos(a1)},${y2 + 8 * Math.sin(a1)} ${x2 + 8 * Math.cos(a2)},${y2 + 8 * Math.sin(a2)}`, fill: color }));
+          }
+          // Labels sit on the free side of a slanted arrow: above-right of a frame (it descends to the right), above-left of an ACK.
+          const at = d.half ? 0.2 : 0.45, rightward = x2f > x1;
+          const lx = d.style === "packet" ? (x1 + x2f) / 2 : x1 + (x2f - x1) * at + (rightward ? 4 : -4), ly = d.style === "packet" ? Math.min(y1, y2f) - 4 : y1 + (y2f - y1) * at - 6;
+          const anchor = d.style === "packet" ? "middle" : rightward ? "start" : "end";
+          if (f > 0.3) svg.append(svgEl("text", { x: lx, y: ly, "text-anchor": anchor, "font-size": 12.5, fill: isHot ? "var(--hl)" : color, "font-weight": isHot ? "700" : "400" }, d.label));
+        } else if (d.type === "timer") svg.append(swClock(X.sd - 16, y(d.t), d.kind));
+        else if (d.type === "mark") {
+          const anchor = d.side === "right" ? "start" : d.side === "left" ? "end" : "middle", dx = d.side === "right" ? 8 : d.side === "left" ? -8 : 0;
+          svg.append(svgEl("text", { x: X[d.x] + dx, y: y(d.t) + 4 + (d.dy || 0), "text-anchor": anchor, "font-size": 12.5, "font-weight": "700", fill: isHot ? "var(--hl)" : d.color }, d.text));
+        }
+      }
+    });
+    if (sim() && drawn >= E.length - 1) svg.append(svgEl("text", { x: 240, y: H - 26, "text-anchor": "middle", "font-size": 14, fill: "var(--ink-dim)" }, "• • •"));
+    // FSM badges
+    const sState = drawn >= 0 && E[drawn] ? E[drawn].sender : "Ready";
+    badges.innerHTML = "";
+    const pill = (text, on) => el("span", "net6-pill" + (on ? " on" : ""), text);
+    const sb = el("span", "net6-badge"); sb.append(el("span", "lab", "Sender"), pill("Ready", sState === "Ready"));
+    if (!sim()) sb.append(pill("Blocking", sState === "Blocking"));
+    const rb = el("span", "net6-badge"); rb.append(el("span", "lab", "Receiver"), pill("Ready", true));
+    badges.append(sb, rb);
+    let text;
+    if (qi >= 0) text = E[qi].ask === "ack" ? "Which acknowledgment number?" : `What happens next? (${E[qi].who === "sender" ? "the sender acts" : "the receiver acts"})`;
+    else if (drawn < 0) text = sim() ? "Simple protocol (slide 32): no flow or error control. Press Play." : "Stop-and-Wait (slide 35): one frame at a time, a timer, and an ACK for each error-free frame. Press Play.";
+    else {
+      text = E[drawn].text;
+      if (pos >= E.length) text += " " + summary() + q.tally();
+    }
+    if (caption.textContent !== text) caption.textContent = text;
+    renderAsk(qi);
+  }
+  function restart() { E = swScript(protocol, scenario, seq); q.reset(); pb.reset(E.length); }
+  E = swScript(protocol, scenario, seq);
+  pb = createPlayback({ count: E.length, unit: "event", onFrame: frame, stepMs: () => cfg.stepMs || 1500,
+    limit: () => (q.on ? q.block(E.length, needs) : E.length), onBlocked: nudge(ask) });
+  box.append(pb.el, el("p", "widget-note", "A lost frame means either lost or corrupted. A lost ACK means either lost or corrupted."));
+  sync();
+  restart();
+}
+
 export const WIDGETS = {
   "codeword-lab": codewordLab,
   "crc-calc": crcCalc,
   "checksum-calc": checksumCalc,
   "stuffing": stuffing,
+  "crc-play": crcPlay,
+  "stuff-play": stuffPlay,
+  "stop-wait-play": stopWaitPlay,
 };
