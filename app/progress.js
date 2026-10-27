@@ -72,3 +72,32 @@ export function recordAnswer(lessonId, index, correct, courseId = currentCourse)
   saveReview(courseId, r);
 }
 export function reviewCount(courseId = currentCourse) { return Object.keys(loadReview(courseId)).length; }
+
+// ---------- one-time migrations ----------
+// Marker key `learn:migrations` holds a JSON array of applied migration ids.
+const MIGRATIONS = [
+  {
+    id: "math-game-2026-10",
+    // The MATH 3042 practice sets were rebuilt, so saved question indexes no longer line up.
+    run() {
+      for (const c of ["math3042", "math3042-u2", "math3042-u3", "math3042-u4", "math3042-u5", "math3042-midterm"]) {
+        localStorage.removeItem(rkey(c));
+      }
+    },
+  },
+];
+export function runMigrations() {
+  try {
+    let applied = [];
+    try { applied = JSON.parse(localStorage.getItem("learn:migrations") || "[]"); } catch { applied = []; }
+    if (!Array.isArray(applied)) applied = [];
+    for (const m of MIGRATIONS) {
+      if (applied.includes(m.id)) continue;
+      m.run();
+      applied.push(m.id);
+      localStorage.setItem("learn:migrations", JSON.stringify(applied));
+    }
+  } catch (e) {
+    console.warn("migration skipped", e);
+  }
+}
