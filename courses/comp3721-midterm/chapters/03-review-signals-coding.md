@@ -5,7 +5,7 @@ minutes: 25
 
 Review items 4 and 5 are Weeks 3 and 4: how a digital signal travels, what weakens it, the two limits on its data rate, and the line coding schemes with the three problems a waveform can show. Each point starts with a question to answer cold, then the facts in the slides' words, then the lesson that teaches it.
 
-## 4a. Baseband needs a low-pass channel; broadband needs a bandpass channel
+## 4a. Baseband and broadband need different channels
 
 Recall first.
 
@@ -239,7 +239,7 @@ Recall first.
     "explain": "$N_{max} = \\frac{1}{c} \\times B \\times r$ with c = 1/2 and r = log₂ 8 = 3: $2 \\times 50 \\times 3 = 300$ kbps, the same as Nyquist's $2 \\times B \\times \\log_2 L$."
   },
   {
-    "q": "A signal has a bit rate of 12 000 bps and a baud rate of 2000 baud, with c = 1 and each signal element one level. How many levels does it use?",
+    "q": "A signal has a bit rate of 12 000 bps and a baud rate of 2000 baud, and each signal element is one level. How many levels does it use?",
     "type": "numeric",
     "answer": 64,
     "tolerance": 0,
@@ -272,23 +272,44 @@ Lesson: [Line coding and its elements](#/comp3721-w4/line-coding-elements), [dat
 
 ## 5b. The six schemes' characteristics, as a matrix to fill
 
-You do not need to memorize how each scheme encodes, but you do need its family, its r and the three problems. Fill both matrices from memory, in lowercase.
+You do not need to memorize how each scheme encodes, but you do need its family, its r and the three problems. Fill each column from memory; each stem gives the answer format.
 
 ```quiz
 [
   {
-    "q": "Family (unipolar, polar or bipolar) and r (1 or 1/2) for each scheme.",
+    "q": "Family of each scheme. Type unipolar, polar or bipolar, lowercase.",
     "type": "fill",
-    "code": "scheme                    family     r\nunipolar NRZ              ___        ___\nNRZ-L                     ___        ___\nNRZ-I                     ___        ___\nManchester                ___        ___\ndifferential Manchester   ___        ___\nAMI                       ___        ___",
-    "answer": ["unipolar", "1", "polar", "1", "polar", "1", "polar", "1/2", "polar", "1/2", "bipolar", "1"],
-    "explain": "Unipolar: NRZ. Polar: NRZ-L, NRZ-I, RZ and the biphase pair, Manchester and differential Manchester. Bipolar: AMI. The NRZ schemes and AMI send one signal element per bit (r = 1); the Manchester schemes split every bit into two (r = 1/2), which is why their signal rate is higher."
+    "code": "scheme                    family\nunipolar NRZ              ___\nNRZ-L                     ___\nNRZ-I                     ___\nManchester                ___\ndifferential Manchester   ___\nAMI                       ___",
+    "answer": ["unipolar", "polar", "polar", "polar", "polar", "bipolar"],
+    "explain": "Unipolar: NRZ. Polar: NRZ-L, NRZ-I, RZ and the biphase pair, Manchester and differential Manchester. Bipolar: AMI."
   },
   {
-    "q": "For each scheme, type yes or no: does it have self-synchronization; can baseline wandering occur; does it have a DC component?",
+    "q": "r, the data elements per signal element, for each scheme. Type 1 or 1/2.",
     "type": "fill",
-    "code": "scheme                    self-sync   baseline wandering   DC component\nunipolar NRZ              ___         ___                  ___\nNRZ-L                     ___         ___                  ___\nNRZ-I                     ___         ___                  ___\nManchester                ___         ___                  ___\ndifferential Manchester   ___         ___                  ___\nAMI                       ___         ___                  ___",
-    "answer": ["no", "yes", "yes", "no", "yes", "yes", "no", "yes", "yes", "yes", "no", "no", "yes", "no", "no", "no", "no", "no"],
-    "explain": "The slides list the polar NRZ problems: DC components, baseline wandering and no self-synchronization, all from a long sequence of 0s or 1s. Manchester and differential Manchester have self-synchronization (the transition at the middle of the bit), no baseline wandering and no DC component. Unipolar NRZ and AMI are derived from their rules: unipolar has every level on one side, so a DC component and the NRZ problems; AMI's 1s alternate, so no DC and no wandering, but a long run of 0s has no transition, so no self-synchronization."
+    "code": "scheme                    r\nunipolar NRZ              ___\nNRZ-L                     ___\nNRZ-I                     ___\nManchester                ___\ndifferential Manchester   ___\nAMI                       ___",
+    "answer": ["1", "1", "1", "1/2", "1/2", "1"],
+    "explain": "The NRZ schemes and AMI send one signal element per bit (r = 1); the Manchester schemes split every bit into two (r = 1/2), which is why their signal rate is higher."
+  },
+  {
+    "q": "Does each scheme have self-synchronization? Type yes or no, lowercase.",
+    "type": "fill",
+    "code": "scheme                    self-sync\nunipolar NRZ              ___\nNRZ-L                     ___\nNRZ-I                     ___\nManchester                ___\ndifferential Manchester   ___\nAMI                       ___",
+    "answer": ["no", "no", "no", "yes", "yes", "no"],
+    "explain": "Manchester and differential Manchester have self-synchronization: the transition at the middle of the bit. The polar NRZ schemes lose it in a long sequence of 0s or 1s (NRZ-I only for 0s); unipolar NRZ has the same NRZ problem (derived); AMI holds 0 V for every 0, so a long run of 0s has no transition (derived)."
+  },
+  {
+    "q": "Can baseline wandering occur in each scheme? Type yes or no, lowercase.",
+    "type": "fill",
+    "code": "scheme                    baseline wandering\nunipolar NRZ              ___\nNRZ-L                     ___\nNRZ-I                     ___\nManchester                ___\ndifferential Manchester   ___\nAMI                       ___",
+    "answer": ["yes", "yes", "yes", "no", "no", "no"],
+    "explain": "A long sequence of 0s or 1s holds one level in the NRZ schemes, so the running average drifts (unipolar derived from the same rule). The Manchester schemes have a mid-bit transition, so no wandering; AMI's 1s alternate and its 0s sit at zero, so no wandering (derived)."
+  },
+  {
+    "q": "Does each scheme have a DC component? Type yes or no, lowercase.",
+    "type": "fill",
+    "code": "scheme                    DC component\nunipolar NRZ              ___\nNRZ-L                     ___\nNRZ-I                     ___\nManchester                ___\ndifferential Manchester   ___\nAMI                       ___",
+    "answer": ["yes", "yes", "yes", "no", "no", "no"],
+    "explain": "The NRZ schemes have a DC component: unipolar has every level on one side (derived), and polar NRZ holds a level through a long run. Manchester and differential Manchester have none; AMI's alternating 1s keep the mean at zero (derived)."
   }
 ]
 ```

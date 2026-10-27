@@ -396,7 +396,7 @@ The review list's words: *with L signal levels, the number of bits per signal le
 
 Lesson: [Digital signals and levels](#/comp3721-w2/digital-signals), [encoding and bit rate](#/comp3721-w5/encoding-bit-rate), [constellation diagrams](#/comp3721-w5/constellation).
 
-## 11. ARP maps an IP address to a link-layer address: request broadcast, reply unicast
+## 11. ARP: what it maps, and how it sends its request and reply
 
 Recall first.
 

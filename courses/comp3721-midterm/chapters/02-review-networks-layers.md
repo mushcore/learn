@@ -27,7 +27,7 @@ Recall first.
 
 Lesson: [Data communications](#/comp3721-w1/data-communications), [components and data flow](#/comp3721-w1/components-data-flow).
 
-## 1b. Simplex is one way, half-duplex one at a time, full-duplex both at once
+## 1b. The three communication modes
 
 Recall first.
 
@@ -255,15 +255,7 @@ Lesson: [TCP/IP and OSI](#/comp3721-w1/tcpip-osi).
 
 ## The full layer table, items 2c to 2f in one place
 
-| Layer | Job | PDU | Address | Protocols | Runs in |
-|---|---|---|---|---|---|
-| 5 Application | network applications between end systems | message | names | HTTP, SMTP, IMAP, FTP, Telnet, DNS | hosts |
-| 4 Transport | process-to-process | segment / user datagram | port numbers | TCP, UDP, SCTP | hosts |
-| 3 Network | host-to-host routing of datagrams | datagram / packet | IP (logical) | IP, ICMP, DHCP, ARP | hosts, routers |
-| 2 Data link | node-to-node, without errors | frame | MAC (link-layer) | Ethernet, 802.11 | hosts, routers, switches |
-| 1 Physical | bits to signals across the link | bits | none | link dependent | hosts, routers, switches, hubs |
-
-Cover the table and match each row's cells to the layer.
+Match each layer from memory first; the full table follows.
 
 ```quiz
 [
@@ -305,7 +297,15 @@ Cover the table and match each row's cells to the layer.
 ]
 ```
 
-## 2g. Encapsulation adds a header per layer, and a router rewrites the link header
+| Layer | Job | PDU | Address | Protocols | Runs in |
+|---|---|---|---|---|---|
+| 5 Application | network applications between end systems | message | names | HTTP, SMTP, IMAP, FTP, Telnet, DNS | hosts |
+| 4 Transport | process-to-process | segment / user datagram | port numbers | TCP, UDP, SCTP | hosts |
+| 3 Network | host-to-host routing of datagrams | datagram / packet | IP (logical) | IP, ICMP, DHCP, ARP | hosts, routers |
+| 2 Data link | node-to-node, without errors | frame | MAC (link-layer) | Ethernet, 802.11 | hosts, routers, switches |
+| 1 Physical | bits to signals across the link | bits | none | link dependent | hosts, routers, switches, hubs |
+
+## 2g. Encapsulation and the connecting devices
 
 Recall first.
 
@@ -405,7 +405,7 @@ sine-wave
 
 Lesson: [Sine wave](#/comp3721-w2/sine-wave), [phase](#/comp3721-w2/phase), [wavelength](#/comp3721-w2/wavelength).
 
-## 3c. The time domain shows amplitude against time; the frequency domain, peak amplitude against frequency
+## 3c. Time-domain and frequency-domain plots
 
 On paper, before the questions below, draw two pairs of plots:
 
