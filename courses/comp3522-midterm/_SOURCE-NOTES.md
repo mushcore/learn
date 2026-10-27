@@ -3,11 +3,14 @@
 Source files: `D:\BCIT\COMP3522\Lectures\Week 6\3522 Midterm Info6.pdf` (4 slides) and `D:\BCIT\COMP3522\Lectures\Week 6\COMP 3522 Practice Midterm.pdf` (17 pages). Code answers were compiled with g++ -std=c++20 -Wall -Wextra -pedantic (GCC 13.1.0 mingw) and run; sources in `$S\build\pm_*.cpp`, outputs in `$S\build\outputs.txt`.
 
 ## Midterm info (slides 1–4)
-- **Oct 29, 3:30 pm, SW03-1710.** "Come 10 minutes early to make sure we don't start late. I won't let you in early, but be ready outside."
+- **Oct 29, 3:30 pm, SW03-1710.** "Come 10 minutes early to make sure we don't start late." (Info6 had one more sentence here; see the Info7 section below.)
 - "Midterm will cover all the topics up to and including Week 7 material." 90 minute exam. "Can bring 1 page, double sided cheat sheet: handwritten or printed with Arial size 10 font and up." Written on paper.
 - Format: multiple choice, true/false; definitions ("What is a reference?"); read code snippet and write the output; short coding question; long coding question ("Long questions are guided: broken down into multiple parts, ask you to write individual functions").
 - Study strategy: go over slides and links in slides; understand code samples referenced in slides (sample.cpp); recall what we did in labs/assignments; try out coding challenges within the lectures; try out COMP 3522 Practice midterm (Week 6 > COMP 3522 Practice Midterm); go over old quizzes (Activities > Quizzes > Quiz 2 (down arrow) > Submissions > Attempt 1). Not sure about a topic? Online resources: https://www.geeksforgeeks.org/c-plus-plus/ and https://www.tutorialspoint.com/cplusplus/index.htm; search "`topic` geeks for geeks", e.g. "multiple inheritance geeks for geeks"; ask me.
 - Midterm review: "We'll spend next week on review"; anonymous midterm review topic requests: https://forms.gle/HAcpDu8cZTw5yY9bA.
+
+## 3522 Midterm Info7.pdf
+Source: `D:\BCIT\COMP3522\Lectures\Week 7\3522 Midterm Info7.pdf`, the Week 7 re-post. Its text equals Info6 except that the sentence after "Come 10 minutes early to make sure we don't start late." is gone: Info6 added that the instructor would not admit anyone before the start and to be ready outside; Info7 drops it. Every other fact above (date, time, room, coverage, 90 minutes, the cheat-sheet rule, format, strategy, review week) is unchanged, so the lessons cite Info7. The slides never name the weekday; Oct 29, 2026 is a **Thursday**.
 
 ## Practice midterm, page 1
 Header: COMP 3522 Object Oriented Programming 2, Midterm Exam; Full Name, Signature, Student ID, Set. Instructions (11 points): no phones (zero if it rings); "closed-book exam. No cheat sheets" (**superseded by the Midterm Info slide's one double-sided page**); no electronic devices, calculators, watches, music players, headphones; no talking; eyes on your own paper; 90 minutes; write answers on the exam, back allowed; no admission after 30 minutes, no leaving in the first 30; no questions except supposed typos; "Good luck. You've got this." Final grade: PART A ___/66 + PART B ___/39 = ___/105. Question numbers 17–19 do not exist.

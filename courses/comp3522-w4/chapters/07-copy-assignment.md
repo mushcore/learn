@@ -31,7 +31,7 @@ copy-swap
 { "mode": "swap", "predict": true }
 ```
 
-## What you need: a copy constructor, a destructor, a swap
+## What you need: a copy constructor, a swap, a destructor
 
 ```cpp run pin Example.cpp
 // predict: Write everything printed. Which array is freed by the temporary `other`?

@@ -7,9 +7,9 @@ The midterm is a paper exam in five question shapes, and the 105-mark practice p
 
 ## When, where, what you may bring
 
-**Wednesday Oct 29, 3:30 pm, room SW03-1710, 90 minutes, written on paper.** The instructor's words: "Come 10 minutes early to make sure we don't start late. I won't let you in early, but be ready outside." It covers all the topics up to and including Week 7.
+**Thursday Oct 29, 3:30 pm, room SW03-1710, 90 minutes, written on paper.** The instructor's words: "Come 10 minutes early to make sure we don't start late." It covers all the topics up to and including Week 7.
 
-You may bring **one page, double-sided cheat sheet, handwritten or printed with Arial size 10 font and up**. The practice paper's instruction 2 says "closed-book exam. No cheat sheets"; that is the older template, and the Midterm Info slide from Week 6 is the rule that applies.
+You may bring **one page, double-sided cheat sheet, handwritten or printed with Arial size 10 font and up**. The practice paper's instruction 2 says "closed-book exam. No cheat sheets"; that is the older template, and the Midterm Info slide from Week 7 is the rule that applies.
 
 The rest of the practice paper's instructions carry over. No phones: if yours rings you earn zero. No electronic devices, calculators, watches, music players or headphones. No talking, eyes on your own paper. Answers go on the exam itself, and you may write on the back. Nobody is admitted after 30 minutes and nobody leaves during the first 30. No questions during the exam except for a supposed typo. Then: "Good luck. You've got this."
 
@@ -52,7 +52,7 @@ Not sure about a topic? Search "`topic` geeks for geeks" (for example "multiple 
     "q": "The midterm is written...",
     "options": ["on paper, 90 minutes, Oct 29 at 3:30 pm in SW03-1710", "online on the Learning Hub, 60 minutes", "on paper, 120 minutes, in the usual lab room", "on your laptop with CLion"],
     "answer": 0,
-    "explain": "Midterm Info slide: Oct 29, 3:30 pm, SW03-1710, 90 minutes, on paper. Arrive 10 minutes early; you will not be let in early."
+    "explain": "Midterm Info slide: Oct 29, 3:30 pm, SW03-1710, 90 minutes, on paper. Arrive 10 minutes early."
   },
   {
     "q": "The practice paper says the exam is closed-book with no cheat sheets, so nothing may be brought in.",

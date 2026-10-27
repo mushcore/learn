@@ -7,30 +7,137 @@ The term's assignments describe designs in UML before any C++ is written, so the
 
 ## Class diagrams
 
-A class diagram describes the **static structure** of a system: the classes, their attributes and operations, and the relationships among them. Each class is a rectangle in three sections: the name on top, the attributes with their types in the middle, the methods at the bottom. The deck's example: a `Car` with two strings `model` and `manufacturer` and methods `turnRight`, `turnLeft`, `driveStraight`.
+*Purpose is to describe the static structure of the system*: classes, their attributes and operations, and relationships.
 
-Arrows say how two classes are related:
+### The class rectangle
 
-```widget
-uml-relations
+*Top section is the name of the class*, the middle holds data members, the bottom member functions. A member is `name : type`, with any initial value after `=`; a function adds `(param : type)` and its return type: `+ deposit ( amount : int ) : void`.
+
+```
+          <<interface>>
+          AbstractBank
+------------------------------------
+# abstractFunction() : string          italic: abstract
+
+          BankAccount
+------------------------------------
++ staticName : string                  underlined: static
++ publicName : string
+# protectedOwner : string
+- privateBalance : int = 0
+------------------------------------
++ deposit ( amount : int ) : void
++ withdraw ( amount : int ) : void
+# abstractFunction() : string
 ```
 
-| Relationship | Arrow | Meaning | C++ |
-|---|---|---|---|
-| Association | solid line | reference-based: A contains member variables of B | a member of type B, `B*` or `B&` |
-| Generalization (inheritance) | solid line, hollow triangle at the base | A is a specialized form of B | `class A : public B` |
-| Realization (implementation) | dashed line, hollow triangle | A implements the behaviour interface B specifies | `class A : public B` where B is pure virtual (Week 4) |
-| Dependency | dashed arrow | A communicates with B without necessarily containing one; a method of A uses B | B as a parameter or local variable |
-| Composition | solid line, **filled** diamond at the whole | A is made up of B; the parts cannot exist without the whole | B members held by value (or owned and deleted by A) |
-| Aggregation | solid line, **hollow** diamond at the whole | A references B; B lives on if A is destroyed | pointers to B that A does not own |
+### Visibility, static, abstract and `<<interface>>`
 
-The classes deck's inheritance slide uses the same notation: `Bus`, `Car` and `Truck` generalize `Vehicle`, and `Truck` holds `+Car *carPtr` with `+attach(Car*)`, an association from Truck to Car through a pointer member.
+Visibility prefixes each member: `+` public, `#` protected, `-` private. An underline marks a *static member or function*, italics an *abstract class or function*. `<<interface>>` above a class name marks an interface: pure virtual functions only.
 
-The deck's two multiplicity examples: an `order` (0..1) composed of `order_items` (1..*), so destroying the order destroys its items; a `pond` (0..1) aggregating `ducks` (0..*), so the ducks live on when the pond is destroyed. A `Car` is composed of exactly 1 `carburetor`, and a carburetor belongs to 0..1 cars. A `Professor` aggregates 1..* classes and each class has exactly 1 professor. `Person` (string name, int age) is generalized by `Student` (a list of grades) and `Professor` (a list of students).
+### Six relationships, five verbs
 
-:::quiz Composition versus aggregation
-Both are "has a"; the diamond's fill answers one question: does the part die with the whole? Filled diamond, yes (order items). Hollow diamond, no (ducks). The multiplicities at each end are a separate fact.
-:::
+Each gets a verb and the slide's code, plus the `public:` its footnote assumes. Every example uses this `ClassB`:
+
+```cpp
+class ClassB {
+public:
+    ClassB() {}
+    void function() {}
+};
+```
+
+**Dependency**, a dashed arrow from A to B: *A contains code that temporarily uses B in some way. A uses B*.
+
+```cpp
+class ClassA {
+public:
+    ClassA() {}
+    ClassB aFunction(ClassB b) {
+        b.function();     // Dependency. Calls a function in ClassB
+        return ClassB();  // Dependency. Instantiates ClassB but doesn't save as data member
+    }
+};
+```
+
+**Association**, a solid line: *A contains data attributes B. A knows-a B. General form of composition and aggregation*. It *indicates no conceptual ownership* (Teacher and Student). The slide's `ClassB* savedPtrB, savedPtrB2;` makes only the first a pointer, so the code splits them.
+
+```cpp
+class ClassA {
+public:
+    ClassB savedB;        // Association: ClassA saves ClassB as data member
+    ClassB* savedPtrB;
+    ClassB* savedPtrB2;
+    ClassA(ClassB& b) {
+        savedPtrB = new ClassB;
+        savedPtrB2 = &b;
+    }
+};
+```
+
+**Composition**, a filled diamond at A: *A is composed of B. A owns-a B, and if A is destroyed, B also destroyed*, *strong conceptual ownership* (House and Room). The slide leaves out the destructor `savedPtrB` needs.
+
+```cpp
+class ClassA {
+public:
+    ClassB savedB;        // Composition: ClassA owns instances of ClassB
+    ClassB* savedPtrB;
+    ClassA() {
+        savedPtrB = new ClassB;
+    }
+    ~ClassA() { delete savedPtrB; }   // not on the slide
+};
+```
+
+**Aggregation**, a hollow diamond at A: *A is aggregated with B. A has-a B, and if A is destroyed B still exists*, *weak conceptual ownership, A weakly owns B* (Library and Book). The `ClassB` is *passed in from external source*.
+
+```cpp
+class ClassA {
+public:
+    ClassB* savedPtrB2;   // Aggregation: ClassB passed in from external source
+    ClassA(ClassB* b) {
+        savedPtrB2 = b;
+    }
+};
+```
+
+**Generalization (inheritance)**, a solid line with a hollow triangle at A: *B derives from concrete or abstract class A*, and *B is-a A*.
+
+```cpp
+class ClassA {
+public:
+    int num;
+    ClassA() {}
+    void function() {}
+};
+class ClassB : public ClassA {};   // Generalization: ClassB inherits from ClassA
+```
+
+**Realization (implementation)**, a dashed line with a hollow triangle at A: *B implements interface A*, and *B is-a A for interfaces*. ClassA *ONLY has pure virtual functions, no data members or implemented functions*. The slide omits `virtual` from `void function() = 0;`, and as printed it does not compile: only a virtual function can be pure.
+
+```cpp
+class ClassA {
+public:
+    ClassA() {}
+    virtual void function() = 0;
+    virtual void function2() = 0;
+};
+class ClassB : public ClassA {     // implements interface ClassA's pure virtual functions
+public:
+    void function() override {}
+    void function2() override {}
+};
+```
+
+### Multiplicity
+
+*Multiplicity* is *how many instances of one class can be associated with instance of another*. *Read multiplicity by looking at number on opposite end of the line.* *Car owns-a (composition) carburetor*: the 1 at the carburetor end means a car has exactly 1 carburetor; the 0..1 at the car end means a carburetor belongs to 0 to 1 cars. Likewise `Order` 0..1 to `OrderItems` 1..* (composition) and `Pond` 0..1 to `Ducks` 0..* (aggregation).
+
+### Car, Wheel, Professor, Class, Person
+
+- `Car`: public string `model`, private string `manufacturer`, public `turnRight`, `turnLeft`, `driveStraight`. `Wheel`: an int size. *Car uses-a (dependency) Wheel, perhaps instantiating it, or accessing its size*.
+- *Professor has-a (aggregation) relationship with classes*, 1..* of them; each class, with its public list `listOfStudents`, is *shared to exactly 1 Professor*.
+- `Person` (public string `name`, int `age`) has two *is-a (generalization)* derived classes: `Student` (public list `grades`) and `Professor` (public list `listOfStudents`).
 
 ## Collaboration (communication) diagrams
 
@@ -64,7 +171,7 @@ sequence-play
 
 ## Classify six new relationships and number a new collaboration
 
-New classes, the same six arrows; ask whether A inherits, implements, holds, owns or merely uses B.
+New classes, the same six relationships: name each one and its verb.
 
 ```quiz
 [
@@ -73,42 +180,42 @@ New classes, the same six arrows; ask whether A inherits, implements, holds, own
     "q": "Match each scenario to its UML relationship.",
     "pairs": [
       [
-        "A `Library` holds `Book*` pointers; books stay when the library closes",
-        "Aggregation (hollow diamond)"
+        "A `Playlist` stores `Song*` pointers passed in from the music library; deleting the playlist leaves the songs",
+        "Aggregation: has-a (hollow diamond)"
       ],
       [
-        "A `House` is made of `Room`s that are destroyed with it",
-        "Composition (filled diamond)"
+        "A `Window` creates its `Button`s with `new` and deletes them in its destructor",
+        "Composition: owns-a (filled diamond)"
       ],
       [
         "`Report::print(Printer& p)` uses a printer only as a parameter",
-        "Dependency (dashed arrow)"
+        "Dependency: uses-a (dashed arrow)"
       ],
       [
         "`class Manager : public Employee`",
-        "Generalization (hollow triangle)"
+        "Generalization: is-a (solid line, hollow triangle)"
       ],
       [
         "`Dog` implements every pure virtual function of the interface `Pet`",
-        "Realization (dashed line, hollow triangle)"
+        "Realization: is-a for interfaces (dashed line, hollow triangle)"
       ],
       [
-        "`Teacher` has a member `Course* current;`",
-        "Association (solid line)"
+        "A `Doctor` keeps a `Patient*` member; neither owns the other",
+        "Association: knows-a (solid line)"
       ]
     ],
-    "explain": "Inheritance is generalization; implementing an interface is realization. A part held by value and destroyed with the whole is composition; a pointer to something that outlives the holder is aggregation. A plain member reference is an association, and use as a parameter or local only is a dependency."
+    "explain": "Inheriting from a class is generalization and implementing an interface is realization, both is-a. A part created by the whole and destroyed with it is composition (owns-a). A pointer passed in from outside, whose object still exists when the holder is destroyed, is aggregation (has-a, weakly owns). A data member with no conceptual ownership is plain association (knows-a), and using B only as a parameter or local is dependency (uses-a)."
   },
   {
     "q": "Which relationship does this C++ describe? `class Invoice { std::vector<LineItem> items; };`",
     "options": [
-      "Composition: the line items are held by value and die with the invoice",
-      "Aggregation: the invoice only references the items",
-      "Dependency: the invoice uses LineItem in a method",
-      "Generalization: Invoice is a kind of LineItem"
+      "Composition: the invoice owns-a set of line items, destroyed with it",
+      "Aggregation: the invoice has-a set of line items passed in from outside",
+      "Dependency: the invoice uses-a LineItem in a method",
+      "Generalization: Invoice is-a LineItem"
     ],
     "answer": 0,
-    "explain": "The `LineItem`s live inside the invoice's vector, so destroying the `Invoice` destroys them: the parts cannot exist without the whole, a filled diamond at `Invoice`. This is the deck's order and order_items example in new names."
+    "explain": "The `LineItem`s live inside the invoice's vector, so destroying the `Invoice` destroys them: A owns-a B, a filled diamond at `Invoice`. This is the deck's Order and OrderItems example in new names."
   },
   {
     "q": "The program prints each message as it is sent. On a collaboration diagram numbered from `1: checkout()`, which number does `charge()` get?",
@@ -140,46 +247,58 @@ New classes, the same six arrows; ask whether A inherits, implements, holds, own
 [
   {
     "q": "The purpose of a class diagram is to describe...",
-    "options": ["the order in which methods are called", "the static structure of the system: classes, attributes, operations and relationships", "the user interface", "the runtime memory layout"],
+    "options": ["the order in which functions are called", "the static structure of the system: classes, attributes, operations and relationships", "the user interface", "the runtime memory layout"],
     "answer": 1,
-    "explain": "Class diagrams are static; collaboration and sequence diagrams show interactions."
+    "explain": "Slide wording: purpose is to describe the static structure of the system. Collaboration and sequence diagrams show interactions."
   },
   {
     "q": "The three sections of a class rectangle, top to bottom, are...",
-    "options": ["methods, attributes, name", "name, attributes and types, methods", "name, methods, attributes", "attributes, name, methods"],
+    "options": ["member functions, data members, name", "name, data members, member functions", "name, member functions, data members", "data members, name, member functions"],
     "answer": 1,
-    "explain": "Top: the class name. Middle: attributes with their types. Bottom: the operations."
+    "explain": "Top: the class name. Middle: data members, as `name : type`. Bottom: member functions, as `name(param : type) : returnType`."
+  },
+  {
+    "q": "In a class diagram, `<<interface>>` written above the class name `Shape` means...",
+    "options": ["Shape is an interface: it has only pure virtual functions, which realizing classes implement", "every member of Shape is static", "Shape is a private class", "Shape depends on another class"],
+    "answer": 0,
+    "explain": "The deck draws `<<interface>> AbstractBank` this way. An interface ONLY has pure virtual functions, no data members or implemented functions, and a class that implements it is joined to it by realization."
   },
   {
     "type": "match",
-    "q": "Match each relationship to its description from the deck.",
+    "q": "Match each relationship to its definition from the deck.",
     "pairs": [
-      ["Association", "reference-based: A contains member variables of B"],
-      ["Generalization", "A is a subclass (specialized form) of B"],
-      ["Realization", "A implements the behaviours that interface B specifies"],
-      ["Dependency", "A has methods that use B without necessarily containing an instance"],
-      ["Composition", "parts cannot exist without the whole (filled diamond)"],
-      ["Aggregation", "the referenced objects live on if the referencing class is destroyed (hollow diamond)"]
+      ["Dependency", "A contains code that temporarily uses B: A uses B"],
+      ["Association", "A contains data attributes B: A knows-a B, no conceptual ownership"],
+      ["Composition", "A owns-a B; if A is destroyed, B is also destroyed"],
+      ["Aggregation", "A has-a B and weakly owns it; if A is destroyed, B still exists"],
+      ["Generalization", "B derives from concrete or abstract class A: B is-a A"],
+      ["Realization", "B implements interface A: B is-a A for interfaces"]
     ],
-    "explain": "Two solid-line 'has a' relationships differ by diamond fill; two triangle-headed 'is a' relationships differ by dashed (realization) versus solid (generalization); dependency is the dashed arrow with no ownership."
+    "explain": "Association is the general form; composition (strong ownership, filled diamond) and aggregation (weak ownership, hollow diamond) are its specific forms. Generalization and realization are both is-a with a hollow triangle at A, solid versus dashed. Dependency stores nothing: it uses B temporarily."
   },
   {
-    "q": "If an order is destroyed, so are its order_items. Which relationship and which diamond?",
+    "q": "A line joins `Library` and `Book`. Next to `Library` is written `0..1`; next to `Book` is written `0..*`. How many libraries can one book belong to?",
+    "options": ["0 to 1", "0 or more", "exactly 1", "1 or more"],
+    "answer": 0,
+    "explain": "Read multiplicity by looking at the number on the opposite end of the line. From a book, the opposite end is `Library`, which says `0..1`. From a library, the opposite end says `0..*`: a library has any number of books."
+  },
+  {
+    "q": "If an Order is destroyed, so are its OrderItems. Which relationship and which diamond?",
     "options": ["Aggregation, hollow diamond", "Composition, filled diamond", "Association, no diamond", "Dependency, dashed arrow"],
     "answer": 1,
-    "explain": "Composition: the parts cannot exist without the whole. The deck's other example, pond and ducks, is aggregation because the ducks live on."
+    "explain": "Composition: the Order owns-a set of OrderItems, and the parts cannot exist without the whole. The deck's other example, Pond and Ducks, is aggregation because the Ducks live on."
   },
   {
-    "q": "In the deck's Car diagram, some method of Car uses Wheel as a local variable or parameter, but Car stores no Wheel. That is...",
+    "q": "In the deck's Car diagram, Car instantiates a Wheel or reads its size inside a function, but stores no Wheel. That is...",
     "options": ["composition", "aggregation", "dependency", "generalization"],
     "answer": 2,
-    "explain": "Dependency: communication between two classes where one does not necessarily contain an instance of the other."
+    "explain": "Car uses-a Wheel: dependency, code that temporarily uses B without saving it as a data member."
   },
   {
     "q": "Which C++ declaration matches a generalization arrow from `Student` to `Person`?",
     "options": ["`class Person : public Student`", "`class Student : public Person`", "`Person* student;`", "`class Student { Person p; };`"],
     "answer": 1,
-    "explain": "The hollow triangle points at the base class; Student is the specialized form."
+    "explain": "The hollow triangle points at the base class. In the deck's letters, B derives from A as `class ClassB : public ClassA`; here Student is-a Person."
   },
   {
     "q": "In a collaboration diagram, how is an object drawn?",

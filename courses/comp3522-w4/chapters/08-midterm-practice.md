@@ -3,7 +3,7 @@ title: Midterm practice questions, worked
 minutes: 25
 ---
 
-The Week 4 deck ends with five practice questions for the midterm. They are short-answer questions: write each answer on paper first, then type the key term into the check under the question to reveal the model answer.
+These five questions come from an earlier version of the Week 4 deck and remain good midterm practice. They are short-answer questions: write each answer on paper first, then type the key term into the check under the question to reveal the model answer.
 
 ## 1. What is a copy constructor? When is it used? How can it be invoked in code?
 

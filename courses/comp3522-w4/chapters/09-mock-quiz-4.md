@@ -6,7 +6,7 @@ minutes: 45
 50 questions in the real format: multiple choice, true/false, select-all, what-does-this-print, fill-in-the-code, matching and bug hunts. Answer everything before you check. The programs are the instructor's own (oop_abstract, oop_multi0 to 3, diamond, Dollar, FriendClass, operators), so if a line looks familiar, trust what you ran.
 
 :::quiz Real quiz conditions
-Written at the start of lab on the Learning Hub, covering both Week 4 decks and the Week 4 sample projects. Aim for 90% here before you stop studying, then do the midterm practice questions on paper.
+Written at the start of lab on the Learning Hub, covering both Week 4 decks and the Week 4 sample projects. Aim for 90% here before you stop studying, then do the five midterm practice questions on paper; they come from an earlier version of the Week 4 deck and remain good midterm practice.
 :::
 
 ```quiz
@@ -62,7 +62,7 @@ Written at the start of lab on the Learning Hub, covering both Week 4 decks and 
       ["abstract class", "at least one pure virtual function, may have data and other functions, cannot be instantiated"],
       ["concrete class", "no pure virtual functions, can be instantiated"]
     ],
-    "explain": "The slide's three-column table from 'not implemented' to 'fully implemented'."
+    "explain": "The slide's three-column table from 'least implemented' to 'most implemented'."
   },
   {
     "q": "Why does the interface `Animal` declare `virtual ~Animal() {}`?",

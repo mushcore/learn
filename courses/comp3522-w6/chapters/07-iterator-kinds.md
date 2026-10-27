@@ -7,7 +7,7 @@ minutes: 25
 
 ## Five kinds, defined by five operations
 
-Slide wording: there are five kinds of iterators, *Input*, *Output*, *Forward*, *Bidirectional*, *Random Access*, and *each kind of iterator is defined by the operations that can be performed on it*: 1. *Read*, 2. *Write*, 3. *Increment (with or without multiple passes)*, 4. *Decrement*, 5. *Random access*. Each kind from forward onward can do everything the kinds before it can; the tables below list only what each adds.
+Slide wording: there are five kinds of iterators, *Input*, *Output*, *Forward*, *Bidirectional*, *Random Access*, and *each kind of iterator is defined by the operations that can be performed on it*: 1. *Read*, 2. *Write*, 3. *Increment (with or without multiple passes)*, 4. *Decrement*, 5. *Random access*. The slide also says where to access each kind: input from *istream_iterator*; output from *ostream_iterator*; forward from *forward_list, unordered_map*; bidirectional from *list, map, set etc*; random access from *vector, deque, array etc*. Each kind from forward onward can do everything the kinds before it can; the tables below list only what each adds.
 
 ## 1. Input iterator: read once, forward only
 
@@ -182,7 +182,7 @@ The program uses one row of the table per line: `v.end() - 1` is `i - n`, `v.beg
 |---|---|---|
 | `vector`, `deque`, `array` | random access | `it + n`, `it - n`, `it[n]`, `it1 - it2`, `<` |
 | `list`, `set`, `multiset`, `map`, `multimap` | bidirectional | `++`, `--`, read, write (set and map keys are const) |
-| `forward_list` | forward | `++`, read, write, copies |
+| `forward_list`, `unordered_map` | forward | `++`, read, write, copies |
 | `istream_iterator` | input | read once, `++` |
 | `ostream_iterator` | output | write once, `++` |
 

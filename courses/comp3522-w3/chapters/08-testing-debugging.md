@@ -3,7 +3,7 @@ title: Testing and debugging
 minutes: 22
 ---
 
-Lab 3 asks you to review the testing deck from COMP 2910 before writing your first Catch tests. This lesson is that deck, with its one code example turned into runnable C++ and its partition exercise turned into a widget.
+Lab 3 asks you to review the COMP 3522 testing deck, `TestingReview.pdf`, before writing your first Catch tests. This lesson is that deck, with its one code example turned into runnable C++ and its partition exercise turned into a widget.
 
 ## The warm-up: what is the output?
 

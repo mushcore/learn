@@ -20,7 +20,7 @@ public:
 
 An interface describes the behaviour of a class without committing to an implementation: no implementation at all, only a polymorphic interface. It has pure virtual functions and no other kinds of functions, except the regular virtual destructor, and no data. Java's `class Dog implements Animal` becomes `class Dog : public Animal` with every function overridden.
 
-## Not implemented, partly implemented, fully implemented
+## Least implemented, partly implemented, most implemented
 
 | | Interface | Abstract class | Concrete class |
 |---|---|---|---|
@@ -184,7 +184,7 @@ A printable report that owns a logo, then three classes from a water system to p
     "q": "Which of these distinguish an abstract class from an interface? (select all)",
     "options": ["an abstract class may have data members", "an abstract class may have virtual and non-virtual functions with bodies", "an abstract class can be instantiated", "an interface needs no destructor"],
     "answer": [0, 1],
-    "explain": "Both cannot be instantiated and both have a virtual destructor. The abstract class is partly implemented (at least one pure virtual, plus data and bodies); the interface is not implemented at all."
+    "explain": "Both cannot be instantiated and both have a virtual destructor. The abstract class is partly implemented (at least one pure virtual, plus data and bodies); the interface is the least implemented: only pure virtual functions and no data."
   },
   {
     "q": "Why does an interface declare `virtual ~Animal() {}`?",

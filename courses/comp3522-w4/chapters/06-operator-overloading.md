@@ -7,13 +7,13 @@ minutes: 30
 
 ## Rules before syntax
 
-- Adhere to the operator's commonly known semantics; if the meaning is not obviously clear, do not overload it.
+- Adhere to the operator's commonly known semantics: operator + should conceptually add objects together. If the meaning is not obviously clear, do not overload it.
 - If you provide one operation from a set, provide them all: overload `+` and you overload `+=`; overload prefix `++` and you overload postfix `++`.
 - An operator is overloaded as a function named `operator+=`, `operator<=`, `operator<<`. It is either a **member function of the left operand's type** or a **friendly non-member function**; a non-member that must read private members is declared a friend.
 
 | Operator kind | Overloaded as | Why |
 |---|---|---|
-| unary `!`, `~`, `++`, `--` | member | operates on a single object (self) |
+| unary `!`, `~`, `++`, `--` | member | operates on a single object (`*this`) |
 | assignment `=`, `+=`, `-=` | member | modifies the left-hand object |
 | comparison `==`, `!=`, `<`, `>` | non-member (friend) | symmetric comparison between two objects |
 | arithmetic `+`, `-`, `*`, `/` | non-member (friend) | flexibility for non-class types (`int + MyClass`) |

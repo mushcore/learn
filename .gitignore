@@ -10,3 +10,6 @@ data/
 
 # COMP 4736 scoping notes (contain transcriptions of graded lab quizzes)
 spec/
+
+# design specs and plans (local only; the repo is public)
+docs/

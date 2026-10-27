@@ -763,3 +763,15 @@ Output as shipped (stub `operator<`), run on 2026-10-12: `Date::Date(int, int, i
 ### Extra verified programs (`$S\build\`)
 - `ex_auto_for.cpp`, `ex_vector21.cpp`, `ex_mypair_set.cpp`, `ex_partition_trace.cpp`, `ex_date_fixed.cpp`: above.
 - `ex_adaptors.cpp`: `stack top 3 size 3` (LIFO), `queue front 1 back 3` (FIFO), `priority_queue top 30`, `set: 1 3 5 size 3` (sorted, unique), `multiset: 1 1 3 5 count(1)=2`, `map: a=1 b=20` (`m["b"] = 20` overwrote 2), `insert a again -> false, a=1`, `list: 0 1 2 3 4` (push_front/push_back).
+
+## 3522 Week 62.pdf
+Source: `D:\BCIT\COMP3522\Lectures\Week 6\3522 Week 62.pdf` (text in `Lectures\txt\3522 Week 62.txt`), the re-posted Week 6 deck, diffed against Week 61. Nine changes:
+1. `auto` slide reflowed only: "Pair, map" became "pair, Map", "value_type of a map is a Pair" became "...a pair". No edit.
+2. Typedef code fixed: the stray `it` tokens are gone. The slide now reads `pair <map<string, string>::iterator, map<string, string>::iterator> pairMapIters;` and `typedef map<string, string>::iterator mapIterator;`, the corrected form the lessons (05, 03, cheat sheet) already use, and adds a reference to `*multi_map.cpp` (already covered in lesson 03). No edit.
+3. Restaurant slide: "name/alias for their internal implementation" became "...their specific internal implementation". No edit.
+4. The "5 kinds of iterators" slide now says where to access each kind: "1. Input: istream_iterator; 2. Output: ostream_iterator; 3. Forward: forward_list, unordered_map; 4. Bidirectional: list, map, set etc; 5. Random Access: vector, deque, array etc". Lesson 07 (slide-wording paragraph and the "Which container gives which kind" table) and the cheat-sheet iterator table now include `unordered_map` as forward.
+5. Forward-iterator slide gained "there is not a single type of forward iterator, either. Each container defines its own specific iterator type...". Already implied; no edit.
+6. Bidirectional slide: "Multi-pass bidirectional direction sequential output" became "Multi-pass bidirectional sequential output". Lesson 07 already uses the new wording.
+7. Types of algorithms: new sub-bullets "Won't modify element order" under "1. Sequential, non-modifying (find(), for_each())" and "Will modify element order" under "2. Sequential, modifying (copy(), remove_if())". Added to the family tables in lesson 08 and the cheat sheet.
+8. Partition slide: new signature line `iter = partition(container.begin(), container.end(), compareFunc)`; parameter 3 ends "returns a Boolean. (Predicate)"; the IsOdd slides add "(Predicate)" twice; "p is our function IsOdd()" became "p is our IsOdd() function". Lessons already agree.
+9. Partition walkthrough: the `{1,2,3,4,5}` annotations moved and the swap comment was reworded. No edit.

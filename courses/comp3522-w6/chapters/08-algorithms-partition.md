@@ -15,8 +15,8 @@ Two of those are quiz traps. The range is half-open, so `last` is never visited.
 
 | Family | Examples on the slide |
 |---|---|
-| 1. sequential, non-modifying | `find()`, `for_each()` |
-| 2. sequential, modifying | `copy()`, `remove_if()` |
+| 1. sequential, non-modifying: *Won't modify element order* | `find()`, `for_each()` |
+| 2. sequential, modifying: *Will modify element order* | `copy()`, `remove_if()` |
 | 3. partitioning | `partition()`, `is_partitioned()` |
 | 4. sorting | `sort()`, `is_sorted()` |
 | 5. binary search | `binary_search()` |

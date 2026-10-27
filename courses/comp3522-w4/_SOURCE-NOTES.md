@@ -1,6 +1,6 @@
 # COMP 3522 Week 4 — facts, programs and outputs transcribed from the instructor's material
 
-Source files (Learning Hub export `3522.zip`, 2026-09-30): `3522 Week 41.pdf` (Week 4 slides, 81 pages, two decks: abstract classes / interfaces / multiple inheritance + midterm practice questions, then friends / operator overloading / copy assignment operator), the `Week4/` CLion projects (Dollar, FriendClass, diamond, diamondmethods, inherit_constructor, oop_abstract, oop_multi0, oop_multi1, oop_multi2, oop_multi3, oop_virtual, operators). Every program was compiled with g++ -std=c++20 -Wall -Wextra -pedantic and its output recorded.
+Source files (Learning Hub export `3522.zip`, 2026-09-30; the deck was later re-posted as `3522 Week 44.pdf`, see the last section): `3522 Week 41.pdf` (Week 4 slides, 81 pages, two decks: abstract classes / interfaces / multiple inheritance + midterm practice questions, then friends / operator overloading / copy assignment operator), the `Week4/` CLion projects (Dollar, FriendClass, diamond, diamondmethods, inherit_constructor, oop_abstract, oop_multi0, oop_multi1, oop_multi2, oop_multi3, oop_virtual, operators). Every program was compiled with g++ -std=c++20 -Wall -Wextra -pedantic and its output recorded.
 
 ## Deck 1: abstract classes
 - Java `public abstract class AbstractClass {}` / `class ConcreteClass extends AbstractClass`.
@@ -8,7 +8,7 @@ Source files (Learning Hub export `3522.zip`, 2026-09-30): `3522 Week 41.pdf` (W
 - `class AbstractClass { public: virtual void AbstractMemberFunction( ) = 0; // PURE SPECIFIER  virtual void NonAbstractMemberFunction1( ); void NonAbstractMemberFunction2( ); int x; };` `class ConcreteClass : public AbstractClass { public: void AbstractMemberFunction( ) override { } void NonAbstractMemberFunction1( ) override { } };`
 - Pure specifier: a pure virtual function MUST be overridden by a concrete derived class; a declaration cannot have both a pure specifier and a definition: `virtual void g() { } = 0; // ERROR!`.
 - Rules: cannot use an abstract class as a function return type or a parameter type: `A functionA(); // WRONG`, `void functionB(A aParam); // WRONG`. Can use pointers and references: `A* pa; // OK`, `A& functionA(A& aParam); // OK`.
-- Virtual members are inherited: a class derived from an abstract class is abstract unless we override **each** pure virtual function (just like Java); we can derive an abstract class from a non-abstract class; CAUTION: calling (directly or indirectly) a pure virtual function from an abstract class constructor is UNDEFINED. See oop_abstract.cpp and oop_virtual.cpp.
+- Virtual members are inherited: a class derived from an abstract class is abstract unless we override **each** pure virtual function (just like Java); we can derive an abstract class from a non-abstract class; CAUTION: calling (directly or indirectly) a pure virtual function from an abstract class constructor is UNDEFINED. See oop_abstract.cpp and oop_virtual.cpp. (Week 44 cites only oop_abstract.cpp.)
 - oop_abstract/main.cpp: `class creature { public: virtual void all_info() const = 0; }; class person : public creature { person() = default; person(const std::string& name) : name(name) {} set_name, get_name const, void all_info() const override { cout << "My name is " << name << endl; } protected: std::string name; };` main: `//creature some_beast; // Error: abstract class  creature* hulk = new person("Dr Bruce Banner"); hulk->all_info();` → `My name is Dr Bruce Banner` (never deleted: leak, and creature has no virtual destructor). oop_virtual/main.cpp is identical plus `int age = 0;` in creature (an abstract class can have data members).
 
 ## Deck 1: interfaces
@@ -32,7 +32,7 @@ Source files (Learning Hub export `3522.zip`, 2026-09-30): `3522 Week 41.pdf` (W
 - diamondmethods.cpp: `grandparent` with `virtual void foo()` (`grandparent.foo`), `father : virtual public grandparent` and `mother : virtual public grandparent` each override foo, `child : public father, public mother` overrides foo (`child.foo`); `child a; grandparent &gp = a; gp.foo();` → `child.foo` (dynamic dispatch through the virtual base reference reaches the most derived override; without child::foo the call would be ambiguous — the final overrider is not unique).
 - inherit_constructor.cpp: `person() = default; person(const std::string& name) : name(name) {}`, `all_info()` prints `[person name=…]`; `class student : public person { using person::person; //is equivalent to writing: student() = default; student(const std::string& name) : person(name) {} };` main: `person serena("Serena Chacha"); serena.all_info(); student bill("Bill Gates"); bill.all_info();` → `[person name=Serena Chacha]` / `[person name=Bill Gates]`.
 
-## Deck 1: Activity — midterm practice questions
+## Deck 1: Activity — midterm practice questions (Week 41 only; the slide is gone from Week 44)
 1. What is a copy constructor? When is it used? How can it be invoked in code?
 2. What is a reference? How is it different from a pointer?
 3. In C++ we may pass arguments by value, pointer, or reference. What is the difference? Why choose one over the other?
@@ -64,3 +64,17 @@ Source files (Learning Hub export `3522.zip`, 2026-09-30): `3522 Week 41.pdf` (W
 - Needs: 1. a working copy constructor; 2. a working destructor; 3. a swap function that does not throw and swaps all data members. Don't use std::swap on the ENTIRE object: it uses the copy constructor and the copy assignment operator → recursive spiral.
 - Example class: `class Example { size_t list_size; int * my_list; public: Example(size_t size = 0) : list_size{size}, my_list{size ? new int[size] : nullptr} {} Example(const Example& other) : list_size{other.size}, my_list{size ? new int[size] : nullptr} { // A loop here to copy the data… } ~Example() { delete[] my_list; } void mySwap(Example& first, Example& second) { using std::swap; swap(first.size, second.size); swap(first.my_list, second.my_list); } Example& operator=(Example other) { mySwap(*this, other); return *this; } };` (slides mix `size`/`list_size`). Walkthrough of `B = A;`: pass by value uses the copy constructor to create a copy named `other` holding A's contents; mySwap exchanges other's and B's contents (B now has A's contents, other has B's old contents); other's destructor is invoked when leaving function scope, freeing B's old data. "Think of assignment as replacing the object's old state with a copy of some other object's state."
 - Final notes: you now have most of the information to finish the first assignment; NO LATE SUBMISSIONS.
+
+## 3522 Week 44.pdf
+Source: `D:\BCIT\COMP3522\Lectures\Week 4\3522 Week 44.pdf` (text in `Lectures\txt\3522 Week 44.txt`), the re-posted Week 4 deck, diffed against Week 41. Ten changes:
+1. Abstract-classes slide: "see oop_abstract.cpp and oop_virtual.cpp" became "see oop_abstract.cpp". oop_virtual is no longer cited; it was dropped from the course intro's sample-project list.
+2. Interface / abstract / concrete table header: "Not implemented ... Fully implemented" became "Least implemented ... Most implemented". Lesson 02 heading and quiz explain, and mock quiz 4, now use the new wording.
+3. Multiple-inheritance ambiguity slide gained `int num = c.x; //ERROR ambiguous x call` and `c.function1(); //ERROR ambiguous function1() call` next to the qualified calls. Lessons already agree.
+4. The "Activity: Midterm Practice questions" slide (five questions) was removed. Lesson 08 keeps the questions, reframed as coming from an earlier version of the deck and still good midterm practice; the course intro and mock quiz 4 say the same.
+5. Operator-overloading rules: new sub-bullet "operator + should conceptually add objects together" under "Adhere to the operator's commonly known semantics". Added to lesson 06.
+6. "Most commonly overloaded operator" became "Most commonly overloaded operator: <<". Lessons already agree.
+7. Fraction `operator+` annotation "lhs equals Fraction(6.6) but a copy" became "lhs is a copy of x. Equals Fraction(6.6) after +=". Same meaning; no edit.
+8. Copy-and-swap "what do we need" list reordered to "1. Working copy constructor 2. A swap function. 3. Working destructor"; "does swap all data members" became "swaps all data members". Lesson 07 heading reordered to match.
+9. "Pass by value - uses your copy constructor to create a copy named "other"" became "...to copy A to "other"". Same fact; no edit.
+10. Member/non-member table, unary row: "Operates on a single object (self)" became "(*this)". Lesson 06 table updated.
+Also changed, no lesson impact: "do actual comparison" became "write comparison code" (twice), a comma became a colon, and the `Date` / `operator<<` / `operator>>` examples moved `{` onto the same line.

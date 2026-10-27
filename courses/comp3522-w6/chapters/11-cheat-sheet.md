@@ -125,7 +125,7 @@ An iterator is an object that points to some element in a range, can iterate thr
 |---|---|---|---|---|---|---|---|
 | Input | single | yes | no | yes | no | no | istream_iterator |
 | Output | single | no | yes | yes | no | no | ostream_iterator |
-| Forward | multi | yes | yes | yes | no | no | forward_list |
+| Forward | multi | yes | yes | yes | no | no | forward_list, unordered_map |
 | Bidirectional | multi | yes | yes | yes | yes | no | list, set, multiset, map, multimap |
 | Random access | multi | yes | yes | yes | yes | yes | vector, deque, array |
 
@@ -148,8 +148,8 @@ A function used on a range of elements, always `[first, last)`, **does not chang
 
 | Family | Examples |
 |---|---|
-| 1. sequential, non-modifying | `find()`, `for_each()` |
-| 2. sequential, modifying | `copy()`, `remove_if()` |
+| 1. sequential, non-modifying: won't modify element order | `find()`, `for_each()` |
+| 2. sequential, modifying: will modify element order | `copy()`, `remove_if()` |
 | 3. partitioning | `partition()`, `is_partitioned()` |
 | 4. sorting | `sort()`, `is_sorted()` |
 | 5. binary search | `binary_search()` |
