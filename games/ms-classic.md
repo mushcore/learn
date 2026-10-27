@@ -1,6 +1,6 @@
 # MapleStory Classic World fact bank
 
-Covers Nexon's official **Global MapleStory Classic World**: Nexon's own pre-Big Bang style world, run by Nexon America on nexon.com and played through the Nexon Launcher or Steam. Its region is Global, and English is the official language. Founder's Access opened 2026-10-06 and the Grand Launch was 2026-10-21. The live version is the Grand Launch build: Maple Island and Victoria Island, 1st and 2nd job only, level cap Lv. 100. It has no public patch number, so entries cite the Grand Launch Release Notes (posted 2026-10-20). Checked on 2026-10-27. Official facts come from Nexon's MapleStory news posts and Nexon's Cash Shop rate pages. Nexon publishes no scroll rates, monster stats or EXP/meso/drop rates for Classic World, so those entries come from the fan database meowdb.com ("NiaMeowDB", not affiliated with Nexon), and each is marked `Trust: wiki`. meowdb shows no client version number, so those entries are dated by the day the page was read. This is not a private server. Nexon's own 2026-09-11 post "Notice Regarding Unauthorized MapleStory Servers" is about private servers.
+Covers Nexon's official **Global MapleStory Classic World**: Nexon's own pre-Big Bang style world, run by Nexon America on nexon.com and played through the Nexon Launcher or Steam. Its region is Global, and English is the official language. Founder's Access opened 2026-10-06 and the Grand Launch was 2026-10-21. The live version is the Grand Launch build: Maple Island and Victoria Island, 1st and 2nd job only, level cap Lv. 100. It has no public patch number, so entries cite the Grand Launch Release Notes (posted 2026-10-20). Checked on 2026-10-27. Official facts come from Nexon's MapleStory news posts and Nexon's Cash Shop rate pages. Nexon publishes no scroll rates, monster stats or EXP/meso/drop rates for Classic World, so those entries come from the fan database meowdb.com ("NiaMeowDB", not affiliated with Nexon), and each is marked `Trust: wiki`. meowdb shows no client version number. Its item pages carry a change history (for example the Chaos scroll, item 135, "updated in COT2": COT1 was INT +5 with 100% destroy on failure, COT2 is INT +4 with 50%), so item entries say that the item text was last changed in COT2 and are dated by the day the page was read. This is not a private server. Nexon's own 2026-09-11 post "Notice Regarding Unauthorized MapleStory Servers" is about private servers.
 
 ### classic.server.identity
 MapleStory Classic World is Nexon's official world, run separately from modern Global MapleStory. Only the NX balance is shared between the two, and an account ban applies to both.
@@ -107,7 +107,7 @@ Each Classic World scroll family comes in four tiers. Lesser always succeeds, In
 | Intermediate | 60% | no | INT +2 |
 | Greater | 10% | no | INT +3 |
 | Chaos | 10% | 50% | INT +4 |
-Source: https://meowdb.com/msclassic/item-db/145 (meowdb.com, fan database). Version: MapleStory Classic World Grand Launch build, page read 2026-10-27, no client version shown. Checked: 2026-10-27. Trust: wiki.
+Source: https://meowdb.com/msclassic/item-db/145 (meowdb.com, fan database). Version: MapleStory Classic World item text last changed in COT2 per meowdb change history, no change listed in meowdb's patch log through 2026-10-22; page read 2026-10-27. Checked: 2026-10-27. Trust: wiki.
 Notes: Item 145 ("Overall Armor INT Scroll: Intermediate") carries the in-game text "Improves Intelligence on overalls. Success rate: 60%, INT +2". The other tiers of the same family: item-db/150 (Lesser, "Success rate: 100%, INT +1"), item-db/140 (Greater, "Success rate: 10%, INT +3"), item-db/135 (Chaos, "Success rate: 10%, INT +4 / Upon failure, the item has a 50% chance to be destroyed."). All 208 scrolls in meowdb ids 1-208 follow this pattern, 52 per tier (dataset classic.data.scrolls). Classic World does NOT use old-GMS "10% / 60% / 100%" names or 30% / 70% dark scrolls. Each tier's rate is fixed and attempts are independent, so Intermediate (p = 0.6) and Greater (p = 0.1) suit binomial and geometric work; Lesser is a 100% control case. Equipment shows its slots as "Available Enhancements" (e.g. the event Pumpkin Basket has "Available Enhancements: 7", per Nexon's Grand Launch notes).
 
 ### classic.scroll.chaos-outcomes
@@ -117,7 +117,7 @@ A Chaos scroll has three outcomes per use: success (10%), failure with the item 
 | Success (stat added) | 10% |
 | Fail, item kept | 90% × 50% |
 | Fail, item destroyed | 90% × 50% |
-Source: https://meowdb.com/msclassic/item-db/135 (meowdb.com, fan database). Version: MapleStory Classic World Grand Launch build, page read 2026-10-27. Checked: 2026-10-27. Trust: wiki.
+Source: https://meowdb.com/msclassic/item-db/135 (meowdb.com, fan database). Version: MapleStory Classic World item text last changed in COT2 per meowdb change history, no change listed in meowdb's patch log through 2026-10-22; page read 2026-10-27. Checked: 2026-10-27. Trust: wiki.
 Notes: The page text is "Success rate: 10%, INT +4 / Upon failure, the item has a 50% chance to be destroyed." The table's second and third rows are the tree that wording implies, which makes this a tree-diagram and conditional-probability exercise: P(destroyed | failed) = 0.5. Lessons should do the multiplication (0.45 each) as the exercise.
 
 ### classic.scroll.stat-ladders
@@ -129,7 +129,7 @@ The stat a scroll adds depends on its family as well as its tier. HP/MP scrolls 
 | Polearm / Spear Attack (Weapon Attack) | +1 | +2 | +4 | +5 |
 | Staff / Wand Magic Attack | +2 | +4 | +8 | +10 |
 | Overall / Topwear / Shield DEF | W.Def +2 | W.Def +4, M.Def +2 | W.Def +6, M.Def +4 | W.Def +8, M.Def +6 |
-Source: https://meowdb.com/msclassic/item-db/122 (meowdb.com, fan database). Version: MapleStory Classic World Grand Launch build, page read 2026-10-27. Checked: 2026-10-27. Trust: wiki.
+Source: https://meowdb.com/msclassic/item-db/122 (meowdb.com, fan database). Version: MapleStory Classic World item text last changed in COT2 per meowdb change history, no change listed in meowdb's patch log through 2026-10-22; page read 2026-10-27. Checked: 2026-10-27. Trust: wiki.
 Notes: Item 122 is "Hat HP Scroll: Chaos": "Success rate: 10%, Max HP +25". The other cells are item-db 125/128/131 (Hat HP), 161-164 (Polearm), 185-188 (Spear), 189-192 (Staff), 205-208 (Wand), 133/138/143/148 (Overall DEF). Every row is in classic.data.scrolls. This is an expected-value table: E = p × gain per slot. For HP scrolls Lesser (+10) beats Intermediate (0.6 × 15); for primary stats Intermediate (0.6 × 2) beats Lesser (+1). Lessons compute these themselves.
 
 ### classic.monster.training-hp
@@ -158,7 +158,7 @@ Notes: The page text is "B = uniform(0.8, 1.0)", "Q = uniform(Primary × M, Prim
 
 ### classic.data.scrolls
 Dataset of every scroll in meowdb's Classic World item database (ids 1-208): name, tier, success rate, destroy-on-failure chance and the in-game description.
-Source: https://meowdb.com/msclassic/item-db/1 (meowdb.com, fan database). Version: MapleStory Classic World Grand Launch build, pages read 2026-10-27. Checked: 2026-10-27. Trust: wiki.
+Source: https://meowdb.com/msclassic/item-db/1 (meowdb.com, fan database). Version: MapleStory Classic World item text last changed in COT2 per meowdb change history, no change listed in meowdb's patch log through 2026-10-22; pages read 2026-10-27. Checked: 2026-10-27. Trust: wiki.
 Notes: File `games/datasets/classic-meowdb-scrolls-2026-10-27.csv`, 208 rows. It was pulled with one GET per page, https://meowdb.com/msclassic/item-db/{id} for id 1-208. Each row is the page `<title>` and the schema.org "description" field. The `tier`, `success_rate_pct` and `destroy_on_fail_pct` columns were parsed from the name and description; `description` is verbatim, including the literal `\n` separators. Counts: Lesser 52 (100%), Intermediate 52 (60%), Greater 52 (10%), Chaos 52 (10%, 50% destroy). Ids 209+ are not scrolls.
 
 ### classic.data.monsters

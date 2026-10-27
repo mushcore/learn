@@ -35,18 +35,18 @@ A Vaal Orb on equipment applies one of four outcomes with equal chance: add a co
 | One white socket becomes non-white | 1/4 |
 | Becomes rare, six random affixes, sockets and links rerolled | 1/4 |
 | No effect (other than corrupted) | 1/4 |
-Source: https://www.poewiki.net/wiki/Vaal_Orb (poewiki.net). Version: PoE1 3.29 Allflame (wiki page last edited 2026-09-06). Checked: 2026-10-27. Trust: wiki.
+Source: https://www.poewiki.net/wiki/Vaal_Orb (poewiki.net). Version: wiki page last edited 2026-09-06 (PoE1 3.29 Allflame); equal outcome weights and the 1/144 figure date from GGG statements of 2014 and 2015. Checked: 2026-10-27. Trust: wiki.
 Notes: Equal outcome weights and the 1/144 figure are cited on the wiki to Chris Wilson (GGG) statements from 2014 and 2015. Certain items (Tear of Purity, Voll's Vision) can instead transform; the page says that chance is unknown. The page also gives jewels four equal-chance outcomes.
 
 ### poe1.vaal.map-outcomes
-A Vaal Orb on a map applies one of four outcomes, each about 24-25%: reroll with random affixes (a Tier 1-15 map then has a 50% chance to go up one tier), reroll into an eight-affix rare, add a Vaal implicit, or no effect.
+A Vaal Orb on a map applies one of four outcomes, reroll with random affixes (a Tier 1-15 map then has a 50% chance to go up one tier), reroll into an eight-affix rare, add a Vaal implicit, or no effect (4 outcomes; the wiki's ~24-25% each has no n).
 Source: https://www.poewiki.net/wiki/Vaal_Orb (poewiki.net). Version: PoE1 3.29 Allflame (wiki page last edited 2026-09-06). Checked: 2026-10-27. Trust: wiki.
-Notes: The Tier 16 to Vaal Temple Map chance disagrees between pages: this page says 2% to 2.5%, and the Map page (https://www.poewiki.net/wiki/Map, last edited 2026-07-28) says "~10% chance" for Tier 16 to Vaal Temple. That number is left out of the statement (see Unverified). The ~24-25% figure is cited to a community spreadsheet, and the page gives no sample size.
+Notes: The Tier 16 to Vaal Temple Map chance disagrees between pages: this page says 2% to 2.5%, and the Map page (https://www.poewiki.net/wiki/Map, last edited 2026-07-28) says "~10% chance" for Tier 16 to Vaal Temple. That number is left out of the statement (see Unverified). The wiki's ~24-25% per outcome is cited to a Discord message and a Google spreadsheet and gives no sample size, so it is not used (see Unverified).
 
 ### poe1.fusing.six-link-measured
 A test of 100 000 Orbs of Fusing on a six-socket, 20% quality item found that the chance to six-link is about 0.1% (1 in 1000). There is a 95% chance that the mean number of orbs needed is between 836 and 1244. This means about a 77% chance to six-link within 1500 fusings and a 5% chance it takes more than 3000.
-Source: https://www.poewiki.net/wiki/Orb_of_Fusing (poewiki.net). Version: PoE1 3.29 Allflame (wiki page last edited 2026-07-26). Checked: 2026-10-27. Trust: measured (n = 100000).
-Notes: n is the number of Orbs of Fusing used in the cited community test (the test's date is not given on the page). Each 1% item quality improves the result by 1%. A Fusing will not reroll an item that is already fully six-linked. Chris Wilson historically said the six-link odds were "very close to 1/1500", but that was before the quality change in 2.2.0. Good for geometric distribution, "at least one in n tries", and comparison with the bench price (poe1.fusing.bench-costs). An Orb of Fusing sold for 0.1098 chaos on 2026-10-27 (poe1.price.currency-snapshot).
+Source: https://www.poewiki.net/wiki/Orb_of_Fusing (poewiki.net). Version: test 2017-10 (PoE1 3.0), still cited by the wiki at 3.29 (wiki page last edited 2026-07-26). Checked: 2026-10-27. Trust: measured (n = 100000).
+Notes: n is the number of Orbs of Fusing used in the cited community test (the page's reference dates it: gvieira, Reddit, 2017-10-11, i.e. a 3.0-era test; 3.29 reworked sockets, so 3.29 mechanics may differ). Each 1% item quality improves the result by 1%. A Fusing will not reroll an item that is already fully six-linked. Chris Wilson historically said the six-link odds were "very close to 1/1500", but that was before the quality change in 2.2.0. Good for geometric distribution, "at least one in n tries", and comparison with the bench price (poe1.fusing.bench-costs). An Orb of Fusing sold for 0.1098 chaos on 2026-10-27 (poe1.price.currency-snapshot).
 
 ### poe1.fusing.bench-costs
 The Crafting Bench sets links for a fixed number of Orbs of Fusing.
@@ -216,3 +216,5 @@ Notes: Counted from dataset poe1.data.ladder-allflame (offsets 0, 4600, 9016). R
 - **poe1.vaal.t16-vaal-temple**: The Vaal Orb page says 2% to 2.5% and the Map page says ~10%. The pages conflict, so neither is usable.
 
 - **poe1.ladder.level-distribution-softcore**: Every sampled Allflame (softcore) ladder entry, from ranks 1-200 down to 14801-15000, is level 100, and the API caps the ladder at 15000. So the softcore ladder has no level spread to teach from. Use poe1.ladder.ruthless-levels. poe.ninja builds level data was not used because poe.ninja states that its builds API is internal and not for third-party use (https://poe.ninja/docs/api).
+
+- **poe1.vaal.map-outcome-percentages**: The Vaal Orb wiki page gives ~24-25% for each of the four map outcomes, citing a Discord message and a docs.google.com spreadsheet (references 7 and 8). Both hosts are banned and no sample size is given. Not usable.
