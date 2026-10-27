@@ -103,7 +103,7 @@ boxplot
 
 ## Quartiles without the boss, and a percentile on the Ruthless ladder
 
-Drop Mano and eleven field monsters remain: 45, 115, 142, 172, 233, 403, 510, 842, 982, 1 336, 3 218 HP. Then take the Ruthless Allflame ladder, PoE1's harder ruleset, where ranks 1 to 200 on 2026-10-27 have levels 92: 88 characters, 93: 53, 94: 29, 95: 15, 96: 7, 97: 7, 99: 1 [PoE1, 3.29 Allflame Ruthless ladder, checked 2026-10-27].
+Drop Mano and eleven field monsters remain: 45, 115, 142, 172, 233, 403, 510, 842, 982, 1 336, 3 218 HP. Then take the official PoE1 Ruthless Allflame ladder, where ranks 1 to 200 on 2026-10-27 have levels 92: 88 characters, 93: 53, 94: 29, 95: 15, 96: 7, 97: 7, 99: 1 [PoE1, 3.29 Allflame Ruthless ladder, checked 2026-10-27].
 
 ```quiz
 [
