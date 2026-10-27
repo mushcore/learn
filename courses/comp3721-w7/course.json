@@ -1,0 +1,51 @@
+{
+  "title": "COMP 3721 · Week 7",
+  "subtitle": "Error detection and correction (block coding, Hamming distance, parity, CRC, checksum, FEC) and data-link control (framing, byte and bit stuffing, flow and error control, Simple and Stop-and-Wait), preparing for the midterm",
+  "description": "Lecture 07a: single-bit and burst errors and the bits a noise burst corrupts (1 bit at 1 kbps, 1000 bits at 1 Mbps), detection against correction, redundancy, datawords and codewords with 2^k valid and 2^n − 2^k invalid codewords, Hamming distance by XOR, d_min = s + 1 to detect and 2t + 1 to correct, linear block codes, the even-parity C(5, 4) code and its syndrome, cyclic codes and the C(7, 4) CRC with the divisor 1011, the slide's long divisions (1001 → 1001110, syndromes 000 and 011) and the modulo-2 note, the checksum of 7, 11, 12, 0, 6 in one's complement (sum 6, checksum 9, receiver 0), wrapping in binary and hex, the Internet's 16-bit procedure, and FEC by Hamming distance, XOR and chunk interleaving. Lecture 07b: data-link control, why frames, fixed and variable size, the character-oriented frame and byte stuffing with ESC, the bit-oriented flag 01111110 and bit stuffing (two extra bits in the slide's frame), flow control with buffers and feedback, error control, finite state machines, the Simple protocol and Stop-and-Wait with its timer, lost frames, lost ACKs and the 0, 1 sequence numbers. A live widget for each calculation, playback animations for CRC division, stuffing, Stop-and-Wait and interleaving, Mock Quiz 7 and the Week 7 study note.",
+  "intro": ":::quiz Midterm scope\nThe midterm on Thursday 29 October covers Lecture Notes 01 to 07, and item 12 of the instructor's review list is this whole week: datawords and codewords (how many valid and invalid), Hamming distance and how many errors a code detects or corrects, parity and its syndrome, CRC division and the syndrome, the checksum in one's complement with wrapping (also in hex), FEC, framing with byte and bit stuffing, flow and error control, and the Simple and Stop-and-Wait protocols. The calculations are done by hand: XOR two words, divide in modulo 2, add words and wrap the carry, complement, and stuff a bit string. Bit strings are typed without spaces; hex answers with or without 0x.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      { "lesson": "mock-quiz-7", "note": "take it cold first to find the gaps (about 40 min)" },
+      { "lesson": "crc-division", "note": "divide 1001000 by 1011 by hand until the remainder 110 comes out every time; then the two syndromes" },
+      { "lesson": "checksum", "note": "7, 11, 12, 0, 6 → 36 → wrap to 6 → checksum 9; then one 16-bit hex sum with a wrap" },
+      { "lesson": "hamming-distance", "note": "XOR and count the 1s; detect d_min − 1, correct (d_min − 1)/2 rounded down" },
+      { "lesson": "block-coding", "note": "2^k valid, 2^n − 2^k invalid; when an error goes undetected" },
+      { "lesson": "bit-stuffing", "note": "a 0 after every five 1s, even when the next bit is 0; redo the slide's 22-bit string" },
+      { "lesson": "simple-and-stop-and-wait", "note": "the FSM boxes, what a time-out does, why a lost ACK makes a duplicate, ACK = next frame expected" },
+      { "lesson": "mock-quiz-7", "note": "retake; aim for 90% or better" },
+      { "lesson": "study-note", "note": "hand-write the Week 7 block of your notes from this draft" }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Error detection and correction (07a, 07c)",
+      "lessons": [
+        { "id": "types-of-errors", "title": "Single-bit and burst errors, detection against correction, redundancy", "file": "chapters/01-types-of-errors.md" },
+        { "id": "block-coding", "title": "Block coding: datawords, codewords, valid and invalid codewords", "file": "chapters/02-block-coding.md" },
+        { "id": "hamming-distance", "title": "Hamming distance: d_min = s + 1 to detect, 2t + 1 to correct", "file": "chapters/03-hamming-distance.md" },
+        { "id": "parity-check", "title": "Linear block codes and the parity-check code C(5, 4)", "file": "chapters/04-parity-check.md" },
+        { "id": "cyclic-codes", "title": "Cyclic codes, the C(7, 4) CRC and modulo-2 arithmetic", "file": "chapters/05-cyclic-codes.md" },
+        { "id": "crc-division", "title": "CRC division: the encoder's remainder and the decoder's syndrome", "file": "chapters/06-crc-division.md" },
+        { "id": "checksum", "title": "Checksum: one's complement, wrapping in binary and hex", "file": "chapters/07-checksum.md" },
+        { "id": "fec", "title": "Forward error correction: Hamming distance, XOR and chunk interleaving", "file": "chapters/08-fec.md" }
+      ]
+    },
+    {
+      "title": "2. Data-link control (07b)",
+      "lessons": [
+        { "id": "framing", "title": "Framing: fixed and variable size, the character-oriented frame and byte stuffing", "file": "chapters/09-framing.md" },
+        { "id": "bit-stuffing", "title": "The bit-oriented frame, the flag 01111110 and bit stuffing", "file": "chapters/10-bit-stuffing.md" },
+        { "id": "flow-and-error-control", "title": "Flow control, error control and finite state machines", "file": "chapters/11-flow-and-error-control.md" },
+        { "id": "simple-and-stop-and-wait", "title": "The Simple protocol and Stop-and-Wait", "file": "chapters/12-simple-and-stop-and-wait.md" }
+      ]
+    },
+    {
+      "title": "3. Quiz prep",
+      "lessons": [
+        { "id": "mock-quiz-7", "title": "Mock Quiz 7 (Week 7)", "file": "chapters/13-mock-quiz-7.md" },
+        { "id": "study-note", "title": "Your one-page study note (Week 7)", "file": "chapters/14-study-note.md" }
+      ]
+    }
+  ]
+}

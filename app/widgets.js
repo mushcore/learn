@@ -17,8 +17,9 @@ import * as cpp3 from "./widgets-cpp3.js";
 import * as os from "./widgets-os.js";
 import * as os2 from "./widgets-os2.js";
 import * as os3 from "./widgets-os3.js";
+import * as net6 from "./widgets-net6.js";
 
-const REGISTRY = { ...cpp.WIDGETS, ...stats.WIDGETS, ...net.WIDGETS, ...viz.WIDGETS, ...cpp2.WIDGETS, ...algo.WIDGETS, ...net2.WIDGETS, ...oop.WIDGETS, ...prob.WIDGETS, ...net3.WIDGETS, ...net4.WIDGETS, ...net5.WIDGETS, ...prob2.WIDGETS, ...stl.WIDGETS, ...cont.WIDGETS, ...cpp3.WIDGETS, ...os.WIDGETS, ...os2.WIDGETS, ...os3.WIDGETS };
+const REGISTRY = { ...cpp.WIDGETS, ...stats.WIDGETS, ...net.WIDGETS, ...viz.WIDGETS, ...cpp2.WIDGETS, ...algo.WIDGETS, ...net2.WIDGETS, ...oop.WIDGETS, ...prob.WIDGETS, ...net3.WIDGETS, ...net4.WIDGETS, ...net5.WIDGETS, ...prob2.WIDGETS, ...stl.WIDGETS, ...cont.WIDGETS, ...cpp3.WIDGETS, ...os.WIDGETS, ...os2.WIDGETS, ...os3.WIDGETS, ...net6.WIDGETS };
 
 export function widgetNames() {
   return Object.keys(REGISTRY);
