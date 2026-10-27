@@ -4,7 +4,7 @@ minutes: 18
 ---
 <!-- facts: poe1.ladder.ruthless-levels, classic.monster.training-hp, gms.data.ranking-level-hero-2026-10-27 -->
 
-The top 200 of a PoE1 ladder are mostly level 92 with a tail to 99, and one boss outweighs eleven field monsters: which value is "typical"? The **median** and **mode** each answer the question differently, and each has a situation where it beats the mean outright.
+The top 200 of a PoE1 ladder are most often level 92 with a tail to 99, and one boss carries almost half the HP of twelve monsters: which value is "typical"? The **median** and **mode** each answer the question differently, and each has a situation where it beats the mean outright.
 
 ## Median: the middle value
 
@@ -68,13 +68,13 @@ In R: `as.double(names(which.max(table(survey$Pulse))))` → `80`.
 
 ## Ruthless ladder ranks 1-200: three centres from one level table
 
-The official PoE1 ladder for Ruthless Allflame, the harsher-loot variant of the league, listed these levels for ranks 1-200 on 27 October 2026 [PoE1, 3.29 Allflame Ruthless ladder, checked 2026-10-27]:
+The official PoE1 Ruthless Allflame ladder listed these levels for ranks 1-200 on 27 October 2026 [PoE1, 3.29 Allflame Ruthless ladder, checked 2026-10-27]:
 
 | Level | 92 | 93 | 94 | 95 | 96 | 97 | 99 |
 |---|---|---|---|---|---|---|---|
 | Characters | 88 | 53 | 29 | 15 | 7 | 7 | 1 |
 
-Most sit at 92 with a thin tail to 99, a right-skewed table, so the three centres land in different places.
+The counts pile up at 92 with a thin tail to 99, a right-skewed table, so the three centres land in different places.
 
 ```quiz
 [

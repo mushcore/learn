@@ -80,7 +80,7 @@ poe.ninja's daily price of a Divine Orb, PoE1's high-value currency, in chaos or
 2. Mean: $\bar{X} = \dfrac{346.0 + 337.0 + 324.0 + 345.0 + 343.0 + 343.0 + 342.0}{7} = \dfrac{2380.0}{7} = 340.0$
 3. Deviations: $6, -3, -16, 5, 3, 3, 2$; squared: $36 + 9 + 256 + 25 + 9 + 9 + 4 = 348$
 4. Divide by $n - 1 = 6$: $348/6 = 58$
-5. Square root: $s = \sqrt{58} = \mathbf{7.616}$ chaos
+5. Square root: $s = \sqrt{58} = 7.6158 \approx \mathbf{7.62}$ chaos
 
 The single 324.0 day supplies 256 of the 348, so it dominates both $R$ and $s$. Treated as the whole population, the same week gives $\sigma = \sqrt{348/7} = 7.051$ chaos.
 
@@ -106,15 +106,15 @@ grouped-mean
 { "rows": [[10.00, 40], [10.01, 75], [10.02, 100], [10.03, 90], [10.04, 45]], "title": "Steel rod diameters (Lab 1, pencil problem 2)" }
 ```
 
-## Five Allflame days that end in a 204-chaos dip
+## Five Allflame days ending on poe.ninja's 204.0 reading
 
-Shift the window: the Allflame Divine prices for 18 to 22 September 2026 are 345.0, 343.0, 343.0, 342.0 and 204.0 chaos [PoE1, 3.29 Allflame, poe.ninja daily Divine price, checked 2026-10-27].
+Shift the window: the Allflame Divine prices for 18 to 22 September 2026 are 345.0, 343.0, 343.0, 342.0 and 204.0 chaos [PoE1, 3.29 Allflame, poe.ninja daily Divine price, checked 2026-10-27]. The 204.0 is a one-day drop in poe.ninja's recorded series, between readings of 342.0 and 360.0, not a lasting price change; the formulas still take it as one of the five values.
 
 ```quiz
 [
   {"q": "Compute $\\bar{X}$. (1 decimal)", "type": "numeric", "answer": 315.4, "tolerance": 0.05, "unit": "chaos", "explain": "$\\sum X = 345.0 + 343.0 + 343.0 + 342.0 + 204.0 = 1577.0$, $n = 5$, $\\bar{X} = 1577.0/5 = 315.4$ chaos."},
   {"q": "Compute $\\sum (X - \\bar{X})^2$. (1 decimal)", "type": "numeric", "answer": 15517.2, "tolerance": 0.05, "explain": "Deviations: $29.6, 27.6, 27.6, 26.6, -111.4$. Squared: $876.16 + 761.76 + 761.76 + 707.56 + 12409.96 = 15517.2$."},
-  {"q": "Compute the sample standard deviation $s$. (2 decimals)", "type": "numeric", "answer": 62.28, "tolerance": 0.05, "unit": "chaos", "explain": "$15517.2/(5 - 1) = 3879.3$, $s = \\sqrt{3879.3} = 62.284$ chaos, about eight times the 7.616 of the 15 to 21 September week."},
+  {"q": "Compute the sample standard deviation $s$. (2 decimals)", "type": "numeric", "answer": 62.28, "tolerance": 0.05, "unit": "chaos", "explain": "$15517.2/(5 - 1) = 3879.3$, $s = \\sqrt{3879.3} = 62.284$ chaos, about eight times the 7.62 of the 15 to 21 September week."},
   {"q": "Treat the five days as the whole population. Compute $\\sigma$. (2 decimals)", "type": "numeric", "answer": 55.71, "tolerance": 0.05, "unit": "chaos", "explain": "Divide by $N = 5$: $15517.2/5 = 3103.44$, $\\sigma = \\sqrt{3103.44} = 55.709$ chaos, smaller than $s$."},
   {"q": "What is the range $R$?", "type": "numeric", "answer": 141, "tolerance": 0, "unit": "chaos", "explain": "$R = 345.0 - 204.0 = 141.0$ chaos. One day moved it from 22.0 to 141.0, since $R$ uses only the two extremes."},
   {"type": "fill", "q": "Fill the blank with the R function that prints $s$.", "code": "___(c(345.0, 343.0, 343.0, 342.0, 204.0))\n## [1] 62.28403", "answer": ["sd"], "explain": "`sd()` always divides by $n - 1$: $\\sqrt{15517.2/4} = 62.28403$."}
