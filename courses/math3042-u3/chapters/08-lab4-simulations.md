@@ -1,9 +1,10 @@
 ---
 title: Lab 4: simulating probabilities with sample() and replicate()
-minutes: 28
+minutes: 32
 ---
+<!-- facts: gms.starforce.rates-15-plus, gms.starforce.star-catch, classic.scroll.chaos-outcomes -->
 
-Lab 4 is the relative-frequency definition made executable: simulate a random experiment $m$ times with `sample()`, count how often the event occurred, and estimate $P(E) \approx k/m$. Package: `mosaic`.
+How often does a Star Force tap at 15 stars destroy the item (Star Force, the GMS enhancement that adds stars to gear)? Lab 4 answers such questions by simulation: run the experiment $m$ times with `sample()`, count the event, and estimate $P(E) \approx k/m$. Package: `mosaic`.
 
 ## sample(): one call, three arguments that matter
 
@@ -94,6 +95,37 @@ Prob.E <- function(m){
 ```
 
 Same estimates (0.50364, 0.16849), less code, and much faster, which Task 9 needs.
+
+## Star Force at 15 stars: three outcomes in one sample() call
+
+A tap from 15 stars succeeds 30.00 %, keeps the star 67.90 % and destroys the item 2.10 % [GMS, v.264 Star Force 15→16, checked 2026-10-27]: Nexon's v.264 published rates, without the Star Catch bonus that v.271 builds in. Three outcomes with published weights summing to 1 is exactly what `sample(..., prob =)` draws.
+
+```r
+Tap.Once <- function(){
+  return( sample(c("success","maintain","destroy"), 1, prob = c(0.30, 0.679, 0.021)) )
+}
+m <- 10^5
+taps <- replicate(m, Tap.Once())
+sum(taps == "destroy")/m
+```
+
+```quiz
+[
+  {"q": "As $m$ grows, what exact proportion does `sum(taps == \"destroy\")/m` settle to? (4 decimals)", "type": "numeric", "answer": 0.021, "tolerance": 0.0001, "explain": "The estimate $k/m$ settles to the weight given to \"destroy\" in `prob =`: $0.0210$."},
+  {"q": "How many destroys do you expect in $m = 10^5$ taps?", "type": "numeric", "answer": 2100, "tolerance": 0, "explain": "$10^5 \\times 0.021 = 2100$, beside 30 000 successes and 67 900 maintains."}
+]
+```
+
+No run is printed: each run is one random draw near the exact 0.0210.
+
+### One tap, m times: the success bar settles at 0.30
+
+Maintain and destroy both count as X = 0.
+
+```widget
+sim-lab
+{ "experiment": "coins", "n": 1, "p": 0.3, "m": 10000, "title": "One Star Force tap at 15 stars, m times: X = 1 is a success (0.30)" }
+```
 
 ## How the estimate's variability shrinks with m
 
@@ -248,18 +280,17 @@ Z <- (5 - Chad.params$mean)/Chad.params$sig; Z   ## -1.816618
 Either $|Z| > 2$ (Alice: $Z = -2.72$, unusual; Chad: $Z = -1.82$, not unusual) or a tail probability below 0.025 (Alice: $P(X \le 3) = 0.0081 < 0.0250$). State the number and the cut-off with the verdict.
 :::
 
-## Simulate an 8-game match
+## Simulate a Classic Chaos scroll on 20 items
 
-Bob wins each game of a match with probability 0.7 and a match is 8 games; $X$ is the number of games Bob wins.
+A Classic Chaos scroll (the 10 % tier whose failures can destroy the item) succeeds 10 % of the time, and a failure destroys the item 50 % of the time [Classic, meowdb's copy of the in-game item text, unchanged since Closed Online Test 2, checked 2026-10-27]. One use is success, fail with the item kept, or fail with it destroyed; $X$ counts the destroyed items when 20 items get one use each.
 
 ```quiz
 [
-  {"type": "fill", "q": "Fill the two blanks so one call plays the 8 games.", "code": "games <- sample(c(\"B\",\"O\"), 8, replace=___, prob=c(___, 0.3))\nX <- sum(games == \"B\")", "answer": ["TRUE", "0.7"], "explain": "Games repeat outcomes, so `replace=TRUE`; `prob=` lists Bob's 0.7 first, in the order of the outcomes."},
-  {"type": "fill", "q": "Fill the upper break so every value 0 to 8 gets its own bar.", "code": "X.vals <- replicate(10^5, sum(sample(c(\"B\",\"O\"), 8, replace=TRUE, prob=c(0.7, 0.3)) == \"B\"))\nhist(X.vals, breaks=seq(-0.5, ___, by=1), freq=FALSE)", "answer": ["8.5"], "explain": "Half-integer breaks from −0.5 to $n + 0.5 = 8.5$ centre a bar on each integer; `freq=FALSE` makes the heights relative frequencies."},
-  {"q": "A simulation gives mean 5.60 and sd 1.30 for $X$. Compute $Z$ for a match where Bob wins only 2 games. (2 decimals)", "type": "numeric", "answer": -2.77, "tolerance": 0.006, "explain": "$Z = (2 - 5.60)/1.30 = -3.60/1.30 = -2.7692$."},
-  {"q": "Is $X = 2$ unusual for Bob?", "type": "text", "answer": ["unusual", "yes", "yes, unusual", "it is unusual"], "explain": "$|Z| = 2.77 > 2$, so yes, unusual. The other accepted test is a tail probability below 0.025."},
-  {"q": "`Prob.E` is changed to count `X == 9` for the sum of two dice. What exact probability does it estimate? (4 decimals)", "type": "numeric", "answer": 0.1111, "tolerance": 6e-05, "explain": "(3, 6), (4, 5), (5, 4), (6, 3): 4 of 36 outcomes, $4/36 = 0.1111$."},
-  {"q": "The sd of 100 estimates is 0.05 at $m = 100$ trials. About what is it at $m = 10^4$?", "type": "numeric", "answer": 0.005, "tolerance": 0.0005, "explain": "Each tenfold increase in $m$ divides the spread by about $\\sqrt{10}$; two tenfold steps divide by $\\sqrt{100} = 10$: $0.05/10 = 0.005$."}
+  {"type": "fill", "q": "Fill the missing weight.", "code": "Chaos.Once <- function(){\n  return( sample(c(\"success\",\"kept\",\"destroyed\"), 1, prob = c(0.10, ___, 0.45)) )\n}", "answer": ["0.45"], "explain": "AND rule: $P(\\text{fail} \\cap \\text{kept}) = 0.90 \\times 0.50 = 0.45$, and the three weights $0.10 + 0.45 + 0.45$ sum to 1."},
+  {"q": "What exact proportion does `sum(replicate(m, Chaos.Once()) == \"destroyed\")/m` settle to? (4 decimals)", "type": "numeric", "answer": 0.45, "tolerance": 0.0001, "explain": "The \"destroyed\" weight, $0.90 \\times 0.50 = 0.4500$; one run with $m = 10^5$ is one draw near 45 000 destroyed."},
+  {"type": "fill", "q": "Fill the upper break so every value of $X$ from 0 to 20 gets its own bar.", "code": "X.vals <- replicate(10^5, sum(replicate(20, Chaos.Once()) == \"destroyed\"))\nhist(X.vals, breaks=seq(-0.5, ___, by=1), freq=FALSE)", "answer": ["20.5"], "explain": "Half-integer breaks from −0.5 to $n + 0.5 = 20.5$ centre a bar on each integer; `freq=FALSE` makes the heights relative frequencies."},
+  {"q": "`mean(X.vals)` and `sd(X.vals)` settle near 9 and 2.22 (computed: $np = 20 \\times 0.45$ and $\\sqrt{np(1-p)} = \\sqrt{20 \\times 0.45 \\times 0.55}$). Compute $Z$ for 15 destroyed items. (2 decimals)", "type": "numeric", "answer": 2.7, "tolerance": 0.006, "explain": "$Z = (15 - 9)/2.2249 = 2.6968$, or $6/2.22 = 2.7027$; both round to 2.70."},
+  {"q": "Is $X = 15$ destroyed items out of 20 unusual?", "type": "text", "answer": ["unusual", "yes", "Yes", "yes, unusual", "it is unusual"], "explain": "$|Z| = 2.70 > 2$, so yes, unusual. The other accepted test is a tail probability below 0.025."}
 ]
 ```
 

@@ -1,9 +1,10 @@
 ---
 title: Random experiments, sample spaces, events
-minutes: 18
+minutes: 20
 ---
+<!-- facts: poe1.vaal.gem-outcomes, classic.scroll.chaos-outcomes, poe2.corruption.outcomes-gems -->
 
-Units 1 and 2 described samples. From here on the sample is treated as the outcome of a random process, because a sample statistic like $\bar{X}$ is itself a random variable, and inferential statistics will need to say how close $\bar{X}$ is, with a certain probability, to the population mean $\mu$. Unit 3 builds the vocabulary of probability that makes that sentence meaningful.
+A Vaal Orb on a gem and a Chaos scroll on an item are random experiments: you know the list of outcomes, not which one you get. This lesson names that list and says when counting it gives a probability.
 
 ## What "64% chance of rain" means
 
@@ -44,18 +45,32 @@ the number of outcomes in $A$ divided by the number in $S$. Three consequences f
 The classical formula only applies when every outcome in $S$ has the same chance. Three coins with $S = \{0, 1, 2, 3 \text{ heads}\}$ is a legal sample space, but its four outcomes are **not** equally likely (one way to get 0 heads, three ways to get 1), so $|A|/|S|$ on it gives wrong answers. List the outcomes at the level where they are equally likely: the eight strings.
 :::
 
-## Four coins and a spinner
+## A Vaal Orb on a PoE1 gem: four equal effects, six unequal outcomes
 
-Flip four fair coins and let $X$ be the number of heads. Separately, a spinner with three equal sectors (red, blue, green) is spun twice.
+A Vaal Orb, the currency that corrupts an item, applies one of four effects to a skill gem, each of equal weight 1/4 [PoE1, 3.29 Allflame, Vaal Orb on a gem (poewiki), checked 2026-10-27]: level by one, quality by 1 to 10, the Vaal version, or nothing. Level and quality go up or down with chance 1/2. Because the wiki states the four effects are equally likely, $|A|/|S|$ works on $S = \{\text{level}, \text{quality}, \text{Vaal}, \text{none}\}$ and not on the finer list {+1 level, −1 level, +quality, −quality, Vaal, none}.
 
 ```quiz
 [
-  {"q": "How many equally likely outcomes are in $S$ for four coins?", "type": "numeric", "answer": 16, "tolerance": 0, "explain": "Each coin doubles the count: $2^4 = 16$ strings, from HHHH to TTTT."},
-  {"q": "Compute $P(X = 2)$. (4 decimals)", "type": "numeric", "answer": 0.375, "tolerance": 6e-05, "explain": "HHTT, HTHT, HTTH, THHT, THTH, TTHH: $|A| = 6$, so $P(X = 2) = 6/16 = 0.3750$."},
-  {"q": "Compute $P(X = 3)$. (4 decimals)", "type": "numeric", "answer": 0.25, "tolerance": 6e-05, "explain": "The single tail can be any of the four coins: HHHT, HHTH, HTHH, THHH. $4/16 = 0.2500$."},
-  {"q": "Which is more likely with four coins?", "options": ["$X = 2$", "$X = 3$", "they are equally likely", "$X = 4$"], "answer": 0, "explain": "6 outcomes against 4: $0.375 > 0.25$. With three coins $X = 1$ and $X = 2$ tied; with four they do not."},
-  {"q": "Spinner, two spins: $P(\\text{same colour both times})$? (4 decimals)", "type": "numeric", "answer": 0.3333, "tolerance": 6e-05, "explain": "$S$ = {RR, RB, RG, BR, BB, BG, GR, GB, GG}, 9 equally likely outcomes; RR, BB, GG match: $3/9 = 0.3333$."},
-  {"q": "What is the name of the set {RR, RB, RG, BR, BB, BG, GR, GB, GG}?", "type": "text", "answer": ["sample space", "the sample space", "S"], "explain": "The set of all possible outcomes of the random experiment is its sample space $S$; any subset of it, such as {RR, BB, GG}, is an event."}
+  {"q": "Counting the finer six-outcome list as $S$ gives $P(+1 \\text{ level}) = 1/6$. What is the true $P(+1 \\text{ level})$? (4 decimals)", "type": "numeric", "answer": 0.125, "tolerance": 6e-05, "explain": "Level is one of the four equally likely effects, $1/4$, and then up is one of two equally likely directions: $\\frac{1}{4} \\times \\frac{1}{2} = \\frac{1}{8} = 0.1250$, the wiki's own figure. On the six-list the four signed rows carry $1/8$ each and Vaal and none carry $1/4$ each: $4 \\times \\frac18 + 2 \\times \\frac14 = 1$. They are not equal, so $|A|/|S| = 1/6$ is wrong there."}
+]
+```
+
+On the four effects, $A$ = "the gem changes" = {level, quality, Vaal} has $P(A) = 3/4 = 0.7500$.
+
+A MapleStory Classic Chaos scroll, which adds a stat to an item on success, has three outcomes: success, fail and kept, fail and destroyed. meowdb's copy of the item text gives success 10 % [Classic, Chaos scroll item text since Closed Online Test 2 (meowdb), checked 2026-10-27], and a failure destroys the item 50 % of the time. So $P(\text{success}) = 0.10$, not 1/3: the three outcomes are not equally likely.
+
+## A Vaal Orb's quality roll, a Chaos scroll's destroy chance, two PoE2 gems
+
+In PoE2 a Vaal Orb on a skill gem gives one of 4 outcomes [PoE2, 0.5.5e Forbidden Rites, Vaal Orb on a skill gem (poe2wiki), checked 2026-10-27]: no change, one level up or down, a socket added or removed, or a quality change. The poe2wiki says they "seem to be all equally likely": an assumption, not a published rate.
+
+```quiz
+[
+  {"q": "PoE1 Vaal Orb on a skill gem: $P(\\text{the gem's quality changes, up or down})$? (4 decimals)", "type": "numeric", "answer": 0.25, "tolerance": 6e-05, "explain": "Quality is one of the four equal-weight effects: $|A|/|S| = 1/4 = 0.2500$. Up and down are halves of that one effect, $1/8 + 1/8 = 1/4$."},
+  {"q": "PoE1 Vaal Orb on a skill gem: $P(\\text{the level or the quality changes})$? (4 decimals)", "type": "numeric", "answer": 0.5, "tolerance": 6e-05, "explain": "$A$ = {level, quality} on the four-effect $S$: $|A|/|S| = 2/4 = 0.5000$."},
+  {"q": "Classic Chaos scroll, one use: $P(\\text{fail and the item is destroyed})$? (4 decimals)", "type": "numeric", "answer": 0.45, "tolerance": 6e-05, "explain": "Computed from the item text: the use fails with $1 - 0.10 = 0.90$, and half of failures destroy, so $0.90 \\times 0.50 = 0.4500$. Fail and kept is also $0.4500$; with success, $0.10 + 0.45 + 0.45 = 1$."},
+  {"q": "The Classic Chaos scroll has $|S| = 3$ outcomes, so $P(\\text{success}) = 1/3$.", "type": "tf", "answer": false, "explain": "$|A|/|S|$ needs equally likely outcomes. The item text gives success 0.10, and each failure branch is 0.45: three outcomes, three different chances."},
+  {"q": "Two PoE2 skill gems each take one Vaal Orb. How many outcomes, as (first gem, second gem) pairs, are in $S$?", "type": "numeric", "answer": 16, "tolerance": 0, "explain": "Each gem has 4 outcomes, so $4 \\times 4 = 16$ ordered pairs, from (no change, no change) to (quality, quality). Listing $S$ needs no probabilities at all."},
+  {"q": "The poe2wiki publishes $1/4$ as the probability of each PoE2 gem corruption outcome.", "type": "tf", "answer": false, "explain": "It says the four outcomes seem to be all equally likely. That is the wiki's assumption, not a published rate, so $1/4$ there is a model, unlike the PoE1 wiki's stated equal weights."}
 ]
 ```
 
