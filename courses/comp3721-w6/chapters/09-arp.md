@@ -213,7 +213,7 @@ On an Ethernet LAN running IPv4, host P (N5, L5) needs the link-layer address of
       "L2, N2, L1, N1"
     ],
     "answer": 0,
-    "explain": "The request carries the sender's own L1 and N1, all 0s for the unknown destination hardware address, and the target IP address N2. The fourth option is the reply, where B is the source."
+    "explain": "The request carries the sender's own L1 and N1, all 0s for the unknown destination hardware address, and the target IP address N2. L2, N2, L1, N1 is the reply, where B is the source."
   },
   {
     "q": "The frame carrying an ARP request has the broadcast address as its destination and the requester's address as its source.",

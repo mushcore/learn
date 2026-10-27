@@ -96,6 +96,7 @@ Our generalization of Example 2 for $n$ inputs at rate $R$ bps with a unit of $u
 | frame rate | $R / u$ frames/s | $100\,000 / 2 = 50\,000$ |
 | frame duration | $1 / \text{frame rate} = u / R$ s | $20$ μs |
 | link bit rate | $n \times R$ bps | $400\,000$ |
+| link bit rate with $f$ framing bits per frame | $\text{frame rate} \times (n \times u + f)$ | $50\,000 \times 8 = 400\,000$ (no framing bits) |
 | bit duration on the link | $1 / (n R)$ s | $2.5$ μs |
 | bits per frame | $n \times u$ | $8$ |
 | slot duration | $\text{frame duration} / n$ | $5$ μs |

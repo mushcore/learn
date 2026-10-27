@@ -13,7 +13,7 @@ The slide asks why synchronous TDM is not efficient. Its answer: *If a source do
 
 ## Three strategies for unequal input rates
 
-Slide wording: *How to handle a disparity in the input data rates? Three strategies, or a combination of them, can be used:* **multilevel multiplexing**, **multiple-slot allocation**, **pulse stuffing**. The first two apply when one rate is a multiple of the others; the third when it is not.
+Slide wording: *How to handle a disparity in the input data rates? Three strategies, or a combination of them, can be used:* **multilevel multiplexing**, **multiple-slot allocation**, **pulse stuffing**.
 
 ## Multilevel multiplexing: pre-multiplex the slow lines
 
@@ -22,8 +22,6 @@ Slide wording: *How to handle a disparity in the input data rates? Three strateg
 The figure: two 20 kbps lines enter a small MUX whose output is 40 kbps. That 40 kbps line and three 40 kbps lines enter the main MUX:
 
 $$20 + 20 = 40 \qquad 4 \times 40 = \mathbf{160\ kbps}$$
-
-The first level turns two slow lines into one line at the common rate, so the second level sees four equal 40 kbps inputs.
 
 ## Multiple-slot allocation: demultiplex the fast line
 
@@ -35,6 +33,8 @@ $$50 = 2 \times 25 \qquad 5 \times 25 = \mathbf{125\ kbps}$$
 
 The frame has 5 slots and, in the slide's words, *the input with a 50-kHz data rate has two slots in each frame*. The slide says kHz; the figure says 50 kbps, and kbps is the rate meant. Two slots in each frame, not two frames.
 
+With 1-bit slots each frame carries one bit per slot, so the frame rate is the per-slot rate: 25 000 frames/s in the slide figure, a 40 μs frame, and the 50 kbps line sends 2 bits per frame.
+
 ## Pulse stuffing: pad the slow line up to the dominant rate
 
 Slide wording: *Pulse stuffing or bit padding or bit stuffing. Used when the bit rates of sources are not integer multiples of each other. Makes the highest input data rate the dominant data rate and then adds dummy bits to the input lines with lower rates → their rates are increased.*
@@ -43,7 +43,7 @@ The figure: 50 kbps, 50 kbps and 46 kbps. 46 is not a multiple of 50, so a *Puls
 
 $$46 \to 50 \qquad 3 \times 50 = \mathbf{150\ kbps}$$
 
-The dummy bits carry no data. The highest input rate is the dominant rate, so the slower lines are raised and the fastest line is never slowed.
+The dummy bits carry no data.
 
 ## Which strategy, from the input rates
 
@@ -75,18 +75,18 @@ Slide wording: *Synchronization between the multiplexer and demultiplexer is a m
 
 *Framing bits: One or more synchronization bits that are usually added to the beginning of each frame.* They *follow a pattern (e.g., 1 0 1 …) frame to frame → Allow the demultiplexer to synchronize with the incoming stream so that it can separate the time slots accurately.*
 
-The figure adds one framing bit in front of the A, B, C frames: Frame 1 = 1 | C1 _ A1, Frame 2 = 0 | _ B2 A2, Frame 3 = 1 | C3 B3 A3. The framing bits read 1 0 1 across the frames, and the blank slots are empty slots from a silent input, the inefficiency from the top of this lesson drawn in.
+The figure adds one framing bit in front of the A, B, C frames: Frame 1 = 1 | C1 _ A1, Frame 2 = 0 | _ B2 A2, Frame 3 = 1 | C3 B3 A3. The framing bits read 1 0 1 across the frames, and the blank slots are empty slots from a silent input.
 
 ### The slide-45 frames with framing bits and empty slots
 
-Each frame starts with its framing bit, and a line with no data leaves its slot empty; the empty slot still crosses the link.
+Each frame starts with its framing bit; the empty slot still crosses the link.
 
 ```widget
 tdm-play
 { "preset": "Empty slots and framing bits (slide 45)" }
 ```
 
-A framing bit is overhead: a frame of $n$ slots plus one framing bit carries $n \times \text{unit} + 1$ bits, so the link rate rises by one bit per frame.
+A framing bit is overhead: a frame of $n$ slots plus one framing bit carries $n \times \text{unit} + 1$ bits, so the link rate rises by one bit per frame. The frame still lasts T, so with a framing bit each slot is a little shorter than T/n.
 
 ## Pick the strategy and the link rate for three new input sets
 
@@ -115,6 +115,14 @@ Raise or split the inputs until every slot carries the same rate, then multiply 
     "tolerance": 0.01,
     "unit": "slots",
     "explain": "$120 / 40 = 3$: a demultiplexer splits it into three 40 kbps lines, so it has 3 slots of the 6 in each frame and the link runs at $6 \\times 40 = 240$ kbps."
+  },
+  {
+    "q": "A 60 kbps line and a 120 kbps line are multiplexed with multiple-slot allocation and 1-bit slots. What is the frame rate, in frames/s?",
+    "type": "numeric",
+    "answer": 60000,
+    "tolerance": 0,
+    "unit": "frames/s",
+    "explain": "$120 / 60 = 2$, so the 120 kbps line is split into two 60 kbps slots and each frame has $1 + 2 = 3$ slots. With 1-bit slots each frame carries one bit per slot, so the frame rate is the per-slot rate: $60000$ frames/s, a $1/60000$ s $= 16.67$ μs frame, and the link runs at $3 \\times 60 = 180$ kbps."
   },
   {
     "q": "Inputs of 64, 64 and 61 kbps are multiplexed with pulse stuffing. What is the output rate, in kbps?",

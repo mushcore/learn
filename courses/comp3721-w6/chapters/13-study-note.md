@@ -43,7 +43,9 @@ $$B_{link} = n \times B_{channel} + (n - 1) \times G$$
 
 $$\text{frame rate} = \frac{\text{input bit rate}}{\text{bits per unit}} = \text{input unit rate} \qquad \text{frame duration} = \frac{1}{\text{frame rate}} = T$$
 
-$$\text{link bit rate} = n \times \text{input bit rate} \qquad \text{slot} = \frac{T}{n} \qquad \text{bit duration} = \frac{1}{\text{link bit rate}} \qquad \text{bits per frame} = n \times \text{bits per unit}$$
+$$\text{link bit rate} = n \times \text{input bit rate} \qquad \text{slot} = \frac{T}{n} \qquad \text{bit duration} = \frac{1}{\text{link bit rate}} \qquad \text{bits per frame} = n \times \text{bits per unit}\ (+\ \text{framing bits})$$
+
+$$\text{link bit rate} = \text{frame rate} \times \text{bits per frame} \quad \text{(the framing bit counts: E06 2, } 250 \times 33 = 8250\ \text{bps)}$$
 
 | Worked number | Result |
 |---|---|
@@ -53,6 +55,8 @@ $$\text{link bit rate} = n \times \text{input bit rate} \qquad \text{slot} = \fr
 | Example 2, bit rate of the shared channel | $4 \times 100 = 400$ kbps |
 | Example 2, bit duration | $1 / 400\ \text{kbps} = 2.5$ μs; frame = 8 bits = 8 × 2.5 μs |
 | Slide figure: 4 × 1 Mbps, 1-bit slots | 4 Mbps, 0.25 μs, 1 000 000 frames/s |
+| E06 2: 4 × 250 chars/s, 8-bit chars, 1 framing bit | 2 kbps per source, 250 frames/s, 4 ms, 33 bits, 8250 bps |
+| E06 3: 100 + 200 kbps, multiple-slot | 1 + 2 slots, 100 000 frames/s, 10 μs, 300 kbps |
 
 Units: Hz for a bandwidth, bps for a bit rate, frames/s for a frame rate, s for a duration.
 

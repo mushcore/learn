@@ -1,8 +1,8 @@
 {
   "title": "COMP 3721 · Week 6",
   "subtitle": "Bandwidth utilization (FDM, WDM, TDM) and the data-link layer (services, MAC addresses, ARP), preparing for Quiz 6",
-  "description": "Lecture 06a: bandwidth utilization, multiplexing one link into n channels, FDM with carriers and guard bands and the 20 to 32 kHz example, WDM on fibre, synchronous TDM with units, slots and frames, the 1 Mbps × 4 example, empty slots, multilevel multiplexing, multiple-slot allocation, pulse stuffing and framing bits, with both slide examples worked. Lecture 06b: node-to-node communication, framing and the frame, the four services and two sublayers, why link-layer addresses exist and change at every hop, 48-bit MAC addresses, the layer-2 switch, ARP's broadcast request and unicast reply with the packet format, and Alice's datagram to Bob through R1 and R2 frame by frame. A live widget for each idea, Mock Quiz 6 and the Week 6 study note.",
-  "intro": ":::quiz Quiz 6 scope\nQuiz 5 covers Lectures 05a and 05b, so Quiz 6 is expected to cover Lectures 06a and 06b, all of it in this module. The calculations are FDM link bandwidth with guard bands (n channels, n − 1 guard bands) and synchronous TDM rates (frame rate = input unit rate, link bit rate = n × input rate, frame duration, bit duration). Write Hz for a bandwidth, bps for a bit rate, frames/s for a frame rate and seconds for a duration. The data-link half is definitions and the order of the addresses in a frame. One A4 or letter page of notes, single-sided and preferably hand-written, is allowed; the last lesson is the Week 6 block of that page.\n:::",
+  "description": "Lecture 06a: bandwidth utilization, multiplexing one link into n channels, FDM with carriers and guard bands and the 20 to 32 kHz example, WDM on fibre, synchronous TDM with units, slots and frames, the 1 Mbps × 4 example, empty slots, multilevel multiplexing, multiple-slot allocation, pulse stuffing and framing bits, with both slide examples worked. Lecture 06b: node-to-node communication, framing and the frame, the four services and two sublayers, why link-layer addresses exist and change at every hop, 48-bit MAC addresses, the layer-2 switch, ARP's broadcast request and unicast reply with the packet format, and Alice's datagram to Bob through R1 and R2 frame by frame. A live widget for each idea, E06 worked (the slide-35 figure, character units with a framing bit, multiple-slot allocation for 100 and 200 kbps), Mock Quiz 6 and the Week 6 study note.",
+  "intro": ":::quiz Quiz 6 scope\nQuiz 5 covers Lectures 05a and 05b, so Quiz 6 is expected to cover Lectures 06a and 06b, all of it in this module. The calculations are FDM link bandwidth with guard bands (n channels, n − 1 guard bands) and synchronous TDM rates (frame rate = input unit rate, link bit rate = n × input rate, or frame rate × bits per frame when framing bits are added, frame duration, bit duration). Write Hz for a bandwidth, bps for a bit rate, frames/s for a frame rate and seconds for a duration. The data-link half is definitions and the order of the addresses in a frame. One A4 or letter page of notes, single-sided and preferably hand-written, is allowed; the last lesson is the Week 6 block of that page.\n:::",
   "plan": {
     "title": "If you only have tonight",
     "steps": [
@@ -10,6 +10,7 @@
       { "lesson": "fdm", "note": "n channels need n − 1 guard bands; redo Example 1 (540 kHz) and the 20-32 kHz picture" },
       { "lesson": "synchronous-tdm", "note": "T, T/n, n times faster; frame rate = input unit rate; Example 2 by hand" },
       { "lesson": "tdm-rate-management", "note": "multiple of others → multilevel or multiple-slot; not a multiple → pulse stuffing" },
+      { "lesson": "e06-worked", "note": "the three E06 TDM exercises cold; framing bit counts in the link rate, 100 + 200 kbps is multiple-slot" },
       { "lesson": "link-layer-addressing", "note": "IP source-destination, link-layer destination-source; which L changes at each hop" },
       { "lesson": "arp", "note": "request broadcast, reply unicast; operation 1 and 2; empty destination hardware address" },
       { "lesson": "alice-to-bob", "note": "write the three frames yourself before stepping the widget" },
@@ -41,8 +42,9 @@
     {
       "title": "3. Quiz prep",
       "lessons": [
-        { "id": "mock-quiz-6", "title": "Mock Quiz 6 (Week 6)", "file": "chapters/11-mock-quiz-6.md" },
-        { "id": "study-note", "title": "Your one-page study note (Week 6)", "file": "chapters/12-study-note.md" }
+        { "id": "e06-worked", "title": "E06 worked, and the TDM rates with framing bits and unequal inputs", "file": "chapters/11-e06-worked.md" },
+        { "id": "mock-quiz-6", "title": "Mock Quiz 6 (Week 6)", "file": "chapters/12-mock-quiz-6.md" },
+        { "id": "study-note", "title": "Your one-page study note (Week 6)", "file": "chapters/13-study-note.md" }
       ]
     }
   ]

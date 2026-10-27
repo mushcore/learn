@@ -121,6 +121,28 @@ The lab quizzes follow the lectures one week behind, so Quiz 6 is expected to co
     "explain": "Frame duration = 1 ÷ 1000 = 1 ms = T, the duration of one 8-bit input unit. Slot duration = T/n = 1 ms ÷ 5 = 200 μs. Check: bit duration on the link is 1 ÷ 40 kbps = 25 μs and a slot holds 8 bits, 8 × 25 = 200 μs."
   },
   {
+    "q": "Five sources each create 400 characters per second (8-bit characters); one character per slot and 1 framing bit per frame. What is the data rate of the link, in bps?",
+    "type": "numeric",
+    "answer": 16400,
+    "tolerance": 0,
+    "unit": "bps",
+    "explain": "Frame rate = character rate = 400 frames/s. Bits per frame = 5 × 8 + 1 = 41. Link rate = frame rate × bits per frame = 400 × 41 = 16 400 bps. Without the framing bit it would be 5 × 3200 = 16 000 bps; the framing bits add 400 bps, as in E06 exercise 2 (250 × 33 = 8250 bps)."
+  },
+  {
+    "q": "A 150 kbps channel and a 300 kbps channel are multiplexed with synchronous TDM using 1-bit slots and multiple-slot allocation. What is the frame rate, in frames/s?",
+    "type": "numeric",
+    "answer": 150000,
+    "tolerance": 0,
+    "unit": "frames/s",
+    "explain": "300 = 2 × 150, so the 300 kbps channel takes two 150 kbps slots and each frame has 1 + 2 = 3 slots. With 1-bit slots the frame rate is the per-slot rate, 150 000 frames/s; the frame lasts 1 ÷ 150 000 = 6.67 μs and the link runs at 3 × 150 = 450 kbps."
+  },
+  {
+    "q": "For that 150 kbps and 300 kbps pair, which data-rate management technique is used, and how many slots in each frame does each channel get?",
+    "options": ["Multiple-slot allocation: 1 slot for the 150 kbps channel, 2 slots for the 300 kbps channel", "Multilevel multiplexing: the two channels are first multiplexed into one 450 kbps line", "Pulse stuffing: the 150 kbps channel is padded to 300 kbps, 1 slot each", "Multiple-slot allocation: 2 slots for the 150 kbps channel, 1 slot for the 300 kbps channel"],
+    "answer": 0,
+    "explain": "300 is an integer multiple of 150 and there is no second 150 kbps line to pre-multiplex, so the 300 kbps channel is demultiplexed into two 150 kbps lines: **multiple-slot allocation**, 1 slot for the 150 kbps channel and 2 for the 300 kbps channel. Pulse stuffing is for rates that are not integer multiples, and padding 150 up to 300 would waste 150 kbps."
+  },
+  {
     "type": "match",
     "q": "Match each data-rate management strategy to when the slide uses it.",
     "pairs": [

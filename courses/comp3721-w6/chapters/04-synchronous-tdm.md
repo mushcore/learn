@@ -41,6 +41,8 @@ Slide wording: *In synchronous TDM, the data rate of the link is n times faster,
 
 "Input rate" means the rate at which units arrive on one line. With 1-bit units the frame rate equals the input bit rate; with 2-bit units, units and frames both arrive at half the bit rate.
 
+A source quoted in characters per second gives the unit rate directly: 250 characters/s is 250 units/s, a unit lasts 1/250 s = 4 ms, and the bit rate is 250 × 8 = 2000 bps.
+
 ## Slide example: four 1 Mbps lines
 
 Four inputs at 1 Mbps send one bit per unit; the rightmost bit of each line is sent first:

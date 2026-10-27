@@ -326,23 +326,29 @@ function tdmFrames(box, cfg) {
     svg.append(svgEl("text", { x: 400, y: yo - 22, "font-size": 10.5, fill: "var(--ink-dim)" }, `${slots} slots per frame: ${framing ? "framing bit, " : ""}line ${n} … line 1`));
     counter.textContent = `frame ${step + 1} of ${K} shown`;
     prev.disabled = step === 0; next.disabled = step === K - 1;
-    caption.innerHTML = `Frame ${step + 1} = [${frames[step]}]: unit ${step + 1} of every line${framing ? `, after the framing bit ${step % 2 === 0 ? 1 : 0}` : ""}, written line ${n} to line 1 from left to right as on the slide. The frame lasts T, each slot T/${n}.`;
+    caption.innerHTML = `Frame ${step + 1} = [${frames[step]}]: unit ${step + 1} of every line${framing ? `, after the framing bit ${step % 2 === 0 ? 1 : 0}` : ""}, written line ${n} to line 1 from left to right as on the slide. The frame lasts T, ${framing ? `and with the framing bit each slot is a little shorter than T/${n}` : `each slot T/${n}`}.`;
     list.innerHTML = "";
     list.append(el("span", "stat-label", "frames"));
     frames.forEach((f, j) => { const s = el("span", "sorted-val" + (j === step ? " mid" : ""), f); if (j > step) s.style.opacity = "0.5"; list.append(s); });
     list.append(el("span", "stat-label", "…"));
     const unitWord = bits ? `${slot} bit${slot > 1 ? "s" : ""}` : "1 unit";
     if (rate > 0) {
-      const T = slot / rate, frameRate = rate / slot, linkRate = n * rate, bitDur = 1 / linkRate;
+      // The framing bit is part of the frame: the link carries frame rate × bits per frame (E06 exercise 2).
+      const T = slot / rate, frameRate = rate / slot, perFrame = n * slot + (framing ? 1 : 0), linkRate = frameRate * perFrame, bitDur = 1 / linkRate;
       const tu = bestUnit(T, TIME_UNITS), dur = (v) => `${num(v / tu[1], 4)} ${tu[0]}`; // every duration in T's unit, as on the slides (0.25 μs, not 250 ns)
       grid(out, [
         ["Input unit duration T", dur(T), `${unitWord} ÷ ${withUnit(rate, RATE_UNITS, 3)}`],
-        ["Slot duration T/n", dur(T / n), `T ÷ ${n}`],
+        framing
+          ? ["Slot duration", dur(slot * bitDur), `${slot} × bit duration on the link, a little shorter than T/${n} = ${dur(T / n)}`]
+          : ["Slot duration T/n", dur(T / n), `T ÷ ${n}`],
+        ...(framing ? [["Framing-bit duration", dur(bitDur), "1 bit on the link, at the beginning of each frame"]] : []),
         ["Frame rate", `${num(frameRate, 0)} frames/s`, slot === 1 ? "= input unit rate = the input bit rate" : `= input unit rate = ${withUnit(rate, RATE_UNITS, 3)} ÷ ${slot}`],
         ["Frame duration", dur(T), "= T, the input unit duration (1 ÷ frame rate)"],
-        ["Link bit rate", withUnit(linkRate, RATE_UNITS, 3), `n × input rate = ${n} × ${withUnit(rate, RATE_UNITS, 3)}`],
+        framing
+          ? ["Link bit rate", withUnit(linkRate, RATE_UNITS, 3), `frame rate × bits per frame = ${num(frameRate, 0)} × ${perFrame} = ${num(linkRate, 0)} bps`]
+          : ["Link bit rate", withUnit(linkRate, RATE_UNITS, 3), `n × input rate = ${n} × ${withUnit(rate, RATE_UNITS, 3)}`],
         ["Bit duration on the link", dur(bitDur), "1 ÷ link bit rate"],
-        ["Bits per frame", String(n * slot + (framing ? 1 : 0)), framing ? `${n} × ${slot} + 1 framing bit` : `n × unit size = ${n} × ${slot}`],
+        ["Bits per frame", String(perFrame), framing ? `${n} × ${slot} + 1 framing bit` : `n × unit size = ${n} × ${slot}`],
       ]);
     } else {
       grid(out, [
@@ -355,7 +361,7 @@ function tdmFrames(box, cfg) {
       ]);
     }
     note.textContent = (framing
-      ? "Framing bits: one synchronization bit at the beginning of each frame, following the pattern 1 0 1 … frame to frame, so the demultiplexer can separate the time slots. The slides' link rate counts the data slots only. "
+      ? "Framing bits: one synchronization bit at the beginning of each frame, following the pattern 1 0 1 … frame to frame, so the demultiplexer can separate the time slots. The framing bit is part of the frame, so the link carries frame rate × bits per frame (E06 exercise 2: 250 × 33 = 8250 bps). "
       : "") + (silent.some(Boolean)
       ? "A silent line leaves its slot empty in every frame: synchronous TDM is not efficient, which statistical TDM fixes by removing the empty slots. "
       : "") + "Each input unit becomes one output slot; the duration of an output slot is n times shorter than the input unit, and the frame rate is always the same as any input rate.";
@@ -364,7 +370,13 @@ function tdmFrames(box, cfg) {
   next.addEventListener("click", () => { step += 1; draw(); });
   reset.addEventListener("click", () => { step = 0; draw(); });
   Rf.on(draw);
-  apply({ ...TDM_PRESETS["1 Mbps × 4 (slide 35)"], ...cfg });
+  // A cfg that sets a unit size but no streams gets generated streams long enough for that unit
+  // (the default preset's 5-bit streams hold no 8-bit unit).
+  const base = { ...TDM_PRESETS["1 Mbps × 4 (slide 35)"] };
+  if (!Array.isArray(cfg.streams) && SLOT_SIZES.includes(+cfg.slot) && +cfg.slot > 1) {
+    base.streams = Array.from({ length: clamp(Math.round(+cfg.n || 4), 2, 6) }, (_, k) => genStream(k, 4 * cfg.slot));
+  }
+  apply({ ...base, ...cfg });
 }
 
 // ---------- widget: tdm-play ----------
@@ -448,7 +460,16 @@ function tdmPlay(box, cfg) {
   }
   function times() {
     const T = rate > 0 ? (bits ? slot : 1) / rate : 0, tu = bestUnit(T, TIME_UNITS), dur = (v) => `${num(v / tu[1], 4)} ${tu[0]}`;
-    return { T, dur, Tstr: T ? `T = ${dur(T)}` : "T", slotStr: T ? `T/${n} = ${dur(T / n)}` : `T/${n}`, word: bits ? (slot === 1 ? "bit" : `${slot}-bit unit`) : "unit" };
+    // With a framing bit the frame still lasts T but holds n × unit + 1 bits, so each slot is a little shorter than T/n.
+    const perFrame = n * (bits ? slot : 1) + 1, slotT = framing && T ? (T * (bits ? slot : 1)) / perFrame : T / n;
+    const slotStr = !T ? `T/${n}` : framing ? `${dur(slotT)}, a little shorter than T/${n}` : `T/${n} = ${dur(T / n)}`;
+    return { T, dur, Tstr: T ? `T = ${dur(T)}` : "T", slotStr, word: bits ? (slot === 1 ? "bit" : `${slot}-bit unit`) : "unit" };
+  }
+  /** The link bit rate: n × input rate, or frame rate × bits per frame once the framing bit is counted. */
+  function linkStr(rateStr) {
+    if (!framing) return `${n} × ${rateStr} = ${withUnit(n * rate, RATE_UNITS, 3)}`;
+    const fr = rate / (bits ? slot : 1), per = n * (bits ? slot : 1) + 1;
+    return `${num(fr, 0)} frames/s × ${per} bits = ${withUnit(fr * per, RATE_UNITS, 3)}`;
   }
   /** The question asked before frame j: its contents, or (frames 2 and 4) the slot or frame duration. */
   function question(j) {
@@ -529,7 +550,7 @@ function tdmPlay(box, cfg) {
     const rateStr = rate > 0 ? withUnit(rate, RATE_UNITS, 3) : "";
     svg.append(svgEl("text", { x: 8, y: 14, ...dim }, `${n} input lines${rateStr ? `, ${rateStr} each` : ""}`));
     svg.append(svgEl("text", { x: 8, y: 28, ...dim }, `one ${tm.word} every ${tm.Tstr}`));
-    svg.append(svgEl("text", { x: 320, y: 14, "text-anchor": "middle", "font-size": 10.5, fill: "var(--ink)", "font-weight": "600" }, rateStr ? `link: ${n} × ${rateStr} = ${withUnit(n * rate, RATE_UNITS, 3)}` : `link: ${n} times the data rate of one line`));
+    svg.append(svgEl("text", { x: 320, y: 14, "text-anchor": "middle", "font-size": 10.5, fill: "var(--ink)", "font-weight": "600" }, rateStr ? `link: ${linkStr(rateStr)}` : `link: ${n} times the data rate of one line`));
     svg.append(svgEl("text", { x: 632, y: 14, "text-anchor": "end", ...dim }, `${n} output lines`));
     svg.append(svgEl("text", { x: 632, y: 28, "text-anchor": "end", ...dim }, `one ${tm.word} every ${tm.Tstr}`));
     svg.append(svgEl("line", { x1: 214, y1: mid, x2: 426, y2: mid, stroke: "var(--rule-strong)", "stroke-width": 2 }));
@@ -600,7 +621,7 @@ function tdmPlay(box, cfg) {
           + (framing ? ` The framing bit ${fbit(j)} is added at the beginning of the frame.` : "");
       } else if (f < PB) {
         text = `Frame ${j + 1} = [${frameText(j)}] moves down the link. The frame lasts ${tm.Tstr}, the same as one input unit, so the data rate of the link must be n = ${n} times the data rate of a connection`
-          + (rateStr ? `: ${n} × ${rateStr} = ${withUnit(n * rate, RATE_UNITS, 3)}.` : ".");
+          + (framing ? `, plus the framing bit${rateStr ? `: ${linkStr(rateStr)}.` : "."}` : rateStr ? `: ${linkStr(rateStr)}.` : ".");
       } else {
         text = `The demultiplexer hands each slot of frame ${j + 1} = [${frameText(j)}] back to its line, line 1 first.${gapText}`
           + (framing ? " The framing bits follow the pattern 1 0 1 … frame to frame, so the demultiplexer can separate the time slots accurately." : "");
@@ -614,7 +635,7 @@ function tdmPlay(box, cfg) {
     answered = 0; asked = 0; firstTry = 0; missed = false; wrong = null; askKey = null;
     note.textContent = "If the duration of the input unit is T, the duration of each slot is T/n and the duration of each frame is T. The data rate of the output link must be n times the data rate of a connection to guarantee the flow of data."
       + (anyEmpty() ? " If a source does not have data to send, the corresponding slot in the output frame is empty (dashed box)." : "")
-      + (framing ? " Framing bits are added to the beginning of each frame and follow the pattern 1 0 1 … frame to frame; the timing shown counts the data slots only." : "");
+      + (framing ? " Framing bits are added to the beginning of each frame and follow the pattern 1 0 1 … frame to frame. The framing bit is part of the frame, so the link carries frame rate × bits per frame (E06 exercise 2: 250 × 33 = 8250 bps)." : "");
     if (pnote) note.textContent = pnote + " " + note.textContent;
     pb.reset(K);
   }

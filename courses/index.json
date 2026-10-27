@@ -134,7 +134,7 @@
           "id": "comp3721-w6",
           "title": "Week 6",
           "subtitle": "bandwidth utilization: FDM, WDM, TDM; the data-link layer, MAC addresses and ARP",
-          "description": "Lectures 06a and 06b: multiplexing a link into channels, FDM with guard bands and the three-voice-channel example, WDM, synchronous TDM frames, slots and rates with both slide examples, multilevel multiplexing, multiple-slot allocation and pulse stuffing, framing bits; the data-link layer's services and sublayers, link-layer addresses that change at every hop, ARP request and reply, and the Alice-to-Bob walk through two routers. No E06 is posted. Expected scope of Quiz 6."
+          "description": "Lectures 06a and 06b: multiplexing a link into channels, FDM with guard bands and the three-voice-channel example, WDM, synchronous TDM frames, slots and rates with both slide examples, multilevel multiplexing, multiple-slot allocation and pulse stuffing, framing bits; the data-link layer's services and sublayers, link-layer addresses that change at every hop, ARP request and reply, and the Alice-to-Bob walk through two routers, with E06 worked. Expected scope of Quiz 6."
         },
         {
           "id": "comp3721-w7",
