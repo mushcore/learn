@@ -134,7 +134,7 @@ The items run across all seven weeks in no order. Some carry a trap on purpose: 
     "q": "A bandpass analog signal has a bandwidth of 30 kHz. What is its minimum sampling rate?",
     "options": ["It cannot be found from the bandwidth alone", "60 000 samples/s", "30 000 samples/s", "15 000 samples/s"],
     "answer": 0,
-    "explain": "*We cannot find the minimum sampling rate because we do not know the maximum frequency of the signal.* A bandpass signal's bandwidth is less than its highest frequency: 30 kHz could be 0 to 30 kHz or 470 to 500 kHz."
+    "explain": "*We cannot find the minimum sampling rate because we do not know the maximum frequency of the signal.* A bandpass signal's bandwidth is less than its highest frequency: 30 kHz could be 20 to 50 kHz or 470 to 500 kHz, and the second needs a sampling rate ten times higher."
   },
   {
     "q": "A network of 11 devices is wired as a full mesh. How many links does it need?",

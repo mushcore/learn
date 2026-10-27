@@ -38,14 +38,14 @@ Review items 4 and 9 ask for differences: Nyquist against Shannon, digital-to-an
 | Inputs | bandwidth in Hz, number of signal levels L | bandwidth in Hz, SNR as a ratio (never dB) |
 | Gives | the theoretical maximum bit rate | the theoretical highest data rate |
 | Used for | *The Nyquist formula tells us how many signal levels we need.* | *The Shannon capacity gives us the upper limit.* |
-| The catch on the slide | *increasing the levels of a signal may reduce the reliability of the system* | *no matter how many levels we have, we cannot achieve a data rate higher than the capacity of the channel* |
-| Not a power of 2 | *we need to either increase the number of levels or reduce the bit rate* | SNR almost zero: capacity 0 regardless of the bandwidth |
+| The catch on the slide | *Increasing the levels of a signal may reduce the reliability of the system.* | *No matter how many levels we have, we cannot achieve a data rate higher than the capacity of the channel.* |
+| Not a power of 2 | increase the number of levels or reduce the bit rate | SNR almost zero: capacity 0 regardless of the bandwidth |
 
 Lesson: [Nyquist bit rate](#/comp3721-w3/nyquist), [Shannon capacity](#/comp3721-w3/shannon).
 
 ## 2. The three formulas that start with 2
 
-The three questions below give the same 20 kHz. Only the unit asked for tells you which formula applies.
+The first three of the four questions below give the same 20 kHz, and only the unit asked for tells you which formula applies. The fourth asks you to set the three side by side.
 
 ```quiz
 [
@@ -177,7 +177,7 @@ Lesson: [Data and signal elements](#/comp3721-w4/line-coding-elements), [data ra
 
 | | Unipolar | Polar | Bipolar |
 |---|---|---|---|
-| Slide wording | *all the signal levels are on one side of the time axis, either above or below* | *the voltages are on both sides of the time axis* | three voltage levels: positive, negative, zero |
+| Slide wording | *all the signal levels on one side of the time axis, either above or below* | *voltages on both sides of the time axis* | three voltage levels: positive, negative, zero |
 | Levels | positive, zero | positive, negative | positive, negative, zero |
 | Techniques | NRZ | NRZ-L, NRZ-I, RZ, Manchester, differential Manchester | AMI |
 | Rule on the slide | 1 positive, 0 zero | NRZ-L: 0 positive, 1 negative; NRZ-I: 1 change, 0 no change | AMI: 0 zero, 1 alternates |
