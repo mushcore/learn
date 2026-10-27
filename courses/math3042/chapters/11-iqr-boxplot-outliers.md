@@ -1,9 +1,10 @@
 ---
 title: IQR, boxplots & outliers
-minutes: 18
+minutes: 22
 ---
+<!-- facts: classic.monster.training-hp, poe1.data.divine-chaos-allflame -->
 
-Quartiles are position markers. The **interquartile range** turns them into a measure of variation, and the **boxplot** turns the whole five-number summary into a picture.
+A boss among field monsters has far more HP than anything around it, and the fences built from the quartiles decide whether it is an outlier. Quartiles are position markers. The **interquartile range** turns them into a measure of variation, and the **boxplot** turns the whole five-number summary into a picture.
 
 ## IQR: the range of the middle 50%
 
@@ -69,32 +70,61 @@ boxplot
 { "data": "1.02 3.56 3.5 3.45 4.5 13.6 4.5 2.3 3.5 2.6 3.31 3.1", "note": "Site B drainage rate (litre / m^2 s), n = 12" }
 ```
 
-## The fences stay put while the maximum moves
+## Twelve Classic training monsters: which HP values pass the fences?
 
-The upper fence is built from $Q_1$ and $Q_3$, which barely move when the largest point moves, so the point crosses a fence that stays put.
-
-```widget
-drag-data
-{ "data": "2.3 2.6 3.1 3.31 3.45 3.5 3.5 3.56 4.5 4.5 5.2", "title": "The rightmost point and the upper fence", "claims": [
-  { "when": "max>uf", "text": "The maximum is beyond the upper fence: it's an outlier by the 1.5·IQR rule." },
-  { "when": "max<=uf && max>=lf", "text": "Every value is within the fences: no outliers right now." },
-  { "when": "min<lf", "text": "The minimum is beyond the lower fence: it's an outlier too." },
-  { "when": "range>iqr", "text": "The full range is wider than the IQR — the middle 50% is tighter than the whole spread." }
-]}
-```
-
-## Fences and outliers for twelve delivery times
-
-Twelve delivery times in minutes: 18, 22, 25, 21, 19, 24, 47, 23, 20, 26, 14, 22.
+meowdb's monster table gives the HP of twelve common Victoria Island training monsters in MapleStory Classic [Classic, Classic World Grand Launch build, meowdb monster table, checked 2026-10-27]: Snail 45, Slime 115, Orange Mushroom 142, Ribbon Pig 172, Green Mushroom 233, Horny Mushroom 403, Wild Boar 510, Fire Boar 842, Jr. Wraith 982, Lupin 1336, Drake 3218, and Mano, a boss, 7420. A boss placed among field monsters is the kind of value fences exist to flag, and the fences come from $Q_1$ and $Q_3$, which one huge value cannot drag.
 
 ```quiz
 [
-  {"q": "Find $Q_1$ by the hand method.", "type": "numeric", "answer": 19.5, "tolerance": 0, "explain": "Sorted: 14, 18, 19, 20, 21, 22 | 22, 23, 24, 25, 26, 47. Lower half 14, 18, 19, 20, 21, 22; its median is $(19 + 20)/2 = 19.5$."},
-  {"q": "Find $Q_3$ by the hand method.", "type": "numeric", "answer": 24.5, "tolerance": 0, "explain": "Upper half 22, 23, 24, 25, 26, 47; its median is $(24 + 25)/2 = 24.5$."},
-  {"q": "Compute the upper fence.", "type": "numeric", "answer": 32.0, "tolerance": 0, "explain": "$IQR = 24.5 - 19.5 = 5$. Upper fence $= Q_3 + 1.5 \\times IQR = 24.5 + 7.5 = 32$."},
-  {"q": "Compute the lower fence.", "type": "numeric", "answer": 12.0, "tolerance": 0, "explain": "$Q_1 - 1.5 \\times IQR = 19.5 - 7.5 = 12$. The minimum 14 is inside it, so there is no low outlier."},
-  {"q": "Only 47 is beyond a fence. Where does the boxplot's upper whisker end?", "type": "numeric", "answer": 26, "tolerance": 0, "unit": "min", "explain": "47 > 32 is drawn as its own circle; the whisker stops at the largest value still inside the fence, 26."},
-  {"type": "fill", "q": "The same check in R. Fill the blank in the fence rule.", "code": "times <- c(18, 22, 25, 21, 19, 24, 47, 23, 20, 26, 14, 22)\nQ1 <- quantile(times, 0.25)   # 19.75\nQ3 <- quantile(times, 0.75)   # 24.25\nupper.fence <- Q3 + ___*(Q3 - Q1)\nsum(times > upper.fence)\n## [1] 1", "answer": ["1.5"], "explain": "R's quartiles (19.75, 24.25) differ slightly from the hand ones, so its upper fence is $24.25 + 1.5(4.5) = 31$; the verdict is the same, one outlier (47)."}
+  {"q": "Use the hand method on the twelve HP values. What is the upper fence?", "type": "numeric", "answer": 2662, "tolerance": 0, "unit": "HP", "explain": "Sorted halves: 45, 115, 142, 172, 233, 403 | 510, 842, 982, 1336, 3218, 7420. $Q_1 = (142 + 172)/2 = 157$, $Q_3 = (982 + 1336)/2 = 1159$, $IQR = 1159 - 157 = 1002$. Upper fence $= 1159 + 1.5(1002) = 1159 + 1503 = 2662$."},
+  {"q": "Which monsters are outliers by the fence rule? Select all.", "options": ["Mano (7420)", "Drake (3218)", "Lupin (1336)", "Snail (45)"], "answer": [0, 1], "explain": "Upper fence 2662: Mano 7420 and Drake 3218 are above it, Lupin 1336 is inside. Lower fence $157 - 1503 = -1346$, so no HP can sit below it and Snail is inside."},
+  {"q": "Where does the boxplot's upper whisker end?", "type": "numeric", "answer": 1336, "tolerance": 0, "unit": "HP", "explain": "Drake and Mano are drawn as their own circles; the whisker stops at the largest value still inside the fence, Lupin's 1336."}
+]
+```
+
+Sorted and split: 45, 115, 142, 172, 233, 403 | 510, 842, 982, 1336, 3218, 7420.
+
+$Q_1 = \dfrac{142 + 172}{2} = 157$, $Q_3 = \dfrac{982 + 1336}{2} = 1159$, $IQR = 1159 - 157 = 1002$
+
+$\text{upper fence} = 1159 + 1.5(1002) = 2662$, $\text{lower fence} = 157 - 1503 = -1346$
+
+Mano at 7420 is past the upper fence, and so is Drake at 3218, an ordinary Lv 50 monster. The fence flags values far from the middle half; it does not know which monster is a boss. The upper whisker stops at Lupin, 1336.
+
+### The training monsters' boxplot
+
+The widget marks outliers with R's quartiles, 164.5 and 1070.5, so its upper fence is 2429.5 instead of 2662; the same two monsters fall past it.
+
+```widget
+boxplot
+{ "data": "45 115 142 172 233 403 510 842 982 1336 3218 7420", "note": "HP of 12 MapleStory Classic training monsters (meowdb monster table, Grand Launch build). Hand fences: Q1 = 157, Q3 = 1159, upper fence 2662." }
+```
+
+### Mano moves, the fence stays put
+
+R's $Q_3$ for twelve values uses only the 9th and 10th, 982 and 1336, so dragging Mano anywhere above 1336 leaves the upper fence at 2429.5. Drag Drake inside the fence as well and the outlier claim turns false.
+
+```widget
+drag-data
+{ "data": "45 115 142 172 233 403 510 842 982 1336 3218 7420", "title": "Twelve training monsters' HP: drag Mano and Drake toward the field", "claims": [
+  { "when": "max>uf", "text": "The largest HP is beyond the upper fence: an outlier by the 1.5·IQR rule." },
+  { "when": "max<=uf && min>=lf", "text": "Every HP is within the fences: no outliers right now." },
+  { "when": "min<lf", "text": "The smallest HP is beyond the lower fence: an outlier too." },
+  { "when": "range>iqr", "text": "The full range is wider than the IQR: the middle 50% is tighter than the whole spread." }
+]}
+```
+
+## Fences on the first and last 30 days of Allflame Divine prices
+
+poe.ninja's daily price of a Divine Orb, PoE1's high-value currency, in Chaos Orbs runs from 75.9 chaos on the Allflame league's first day [PoE1, 3.29 Allflame, poe.ninja daily Divine price, checked 2026-10-27]. Are the cheap league-start days outliers, and is a one-day dip near the end?
+
+```quiz
+[
+  {"q": "The first 30 days of Allflame, sorted (chaos): 75.9, 83.5, 90.0, 107.0, 117.1, 117.4, 121.8, 123.0, 155.0, 163.4, 170.0, 171.8, 172.1, 172.7, 180.6, 189.5, 190.0, 193.0, 193.0, 193.0, 193.3, 193.3, 193.5, 193.6, 195.3, 197.4, 199.0, 199.6, 201.0, 208.2. Find $Q_1$ by the hand method.", "type": "numeric", "answer": 123.0, "tolerance": 0, "unit": "chaos", "explain": "$n = 30$: the lower half is the first 15 values, and its median is the 8th value, 123.0."},
+  {"q": "Same 30 days. Find $Q_3$ by the hand method.", "type": "numeric", "answer": 193.5, "tolerance": 0, "unit": "chaos", "explain": "The upper half is values 16 to 30; its median is the 8th of those, the 23rd overall, 193.5."},
+  {"q": "Same 30 days. Compute the lower fence.", "type": "numeric", "answer": 17.25, "tolerance": 0.01, "unit": "chaos", "explain": "$IQR = 193.5 - 123.0 = 70.5$. Lower fence $= 123.0 - 1.5(70.5) = 123.0 - 105.75 = 17.25$."},
+  {"q": "The day-1 price, 75.9 chaos, is an outlier in the first 30 days.", "type": "tf", "answer": false, "explain": "75.9 is above the lower fence 17.25. Eight of the 30 days sit at 123.0 or below, and $Q_1$ is the 8th value, 123.0: the cheap stretch fills more than a quarter of the window, so it sets $Q_1$ and cannot be flagged. One isolated low day can be, as the last 30 days show. Start the window one day later (days 2 to 31) and 83.5 and 90.0 fall below that window's lower fence of 97.25. The day-1 point also rests on only 2 poe.ninja data points."},
+  {"q": "The last 30 days to 2026-10-27, sorted: 163.8, 265.0, 265.0, 270.0, 300.0, 300.0, 300.0, 305.0, 315.6, 316.5, 316.5, 319.0, 320.0, 324.0, 326.0, 350.0, 350.0, 355.0, 357.0, 360.0, 364.0, 364.5, 366.0, 368.5, 369.0, 370.0, 370.0, 370.0, 377.2, 379.0. Compute the hand-method lower fence.", "type": "numeric", "answer": 213.5, "tolerance": 0.01, "unit": "chaos", "explain": "$Q_1$ is the 8th value, 305.0; $Q_3$ is the 23rd, 366.0. $IQR = 61.0$. Lower fence $= 305.0 - 1.5(61.0) = 305.0 - 91.5 = 213.5$. The one-day dip to 163.8, a receive-side-only reading (see the z-scores lesson), is below it: an outlier."},
+  {"type": "fill", "q": "The last-30-days check in R. Fill the blank in the fence rule.", "code": "# last30 holds the 30 prices above\nQ1 <- quantile(last30, 0.25)   # 307.65\nQ3 <- quantile(last30, 0.75)   # 365.625\nsum(last30 < Q1 - ___*(Q3 - Q1))\n## [1] 1", "answer": ["1.5"], "explain": "R's quartiles differ from the hand ones, so its lower fence is $307.65 - 1.5(57.975) = 220.6875$; the verdict is the same, one outlier (163.8)."}
 ]
 ```
 

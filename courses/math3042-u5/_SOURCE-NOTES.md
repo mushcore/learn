@@ -94,3 +94,13 @@ Source file (Learning Hub export, 2026-10-12, 11:33 AM): `MATH_3042_Lecture_Unit
 - The course's Z table layout (left-tail cumulative vs centre-area) is assumed left-tail. If the posted table is the "area from 0 to z" kind, every table step changes form (0.4032 would be read directly for (a)); keep the R values as the anchor and say which table convention is used.
 - Whether the lecture derives the uniform μ and σ formulas; they are given here as standard results.
 - Whether (c) of the printers example and the bit-error threshold get an in-class answer differing from ours; label ours.
+
+## Game facts used
+- 01-continuous-random-variables.md: classic.formula.damage-roll, poe1.damage.uniform-roll
+- 02-uniform.md: classic.formula.damage-roll
+- 04-normal-distribution.md: poe1.damage.uniform-roll
+- 05-standard-normal-z-table.md: none; no bank quantity is measured or published as normal
+- 06-normal-applications.md: none; no bank quantity is measured or published as normal
+- 07-exponential.md: none; U4 Poisson has no bank rate, so there is no game waiting time
+- 08-exponential-memoryless.md: none; U4 Poisson has no bank rate, so there is no game waiting time
+- 09-continuous-in-r.md: classic.formula.damage-roll

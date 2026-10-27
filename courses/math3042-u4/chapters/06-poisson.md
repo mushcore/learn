@@ -2,6 +2,7 @@
 title: Poisson: counts per interval
 minutes: 18
 ---
+<!-- facts: none; no bank entry gives a measured count per time interval, and fixed respawn timers are not Poisson -->
 
 Requests at a web server, jobs at a CPU, bit errors on a line: there is no fixed number of trials and no probability per trial, only a rate. The Poisson distribution gives the probability of $x$ events in an interval from one number, the mean $\lambda$.
 

@@ -1,9 +1,10 @@
 ---
 title: Relative frequency and the law of large numbers
-minutes: 18
+minutes: 20
 ---
+<!-- facts: poe1.fusing.six-link-measured -->
 
-Counting outcomes gives a probability only when the outcomes are equally likely and you can list them. The other route is to run the experiment many times and count how often the event happens. The two routes agree in the limit, and that agreement is the law of large numbers.
+Nobody can list equally likely outcomes for a six-link, yet players quote its chance: someone ran the experiment many times and counted. That is the second route to a probability, and the law of large numbers says it agrees with counting outcomes in the limit.
 
 ## The relative frequency definition
 
@@ -14,6 +15,18 @@ $$P(A) \approx \frac{x}{n}$$
 The filled notes label the fraction *x (# success)* over *n (# trials)* and call it the *relative freq definition*.
 
 **The law of large numbers**: if you perform the random experiment enough times, $x/n$ must approach the exact classical probability $P(A)$. For a small $n$ the fraction wanders; as $n$ grows it settles.
+
+## The PoE1 six-link chance is a relative frequency
+
+An Orb of Fusing, the currency that rerolls the links between an item's sockets, has no published six-link probability. A 2017 test used n = 100 000 Fusings on a six-socket item of 20 % quality and found the chance about 0.1 %, 1 in 1000 [PoE1, 3.0-era test still cited at 3.29 (poewiki), checked 2026-10-27]. GGG's own figure, "very close to 1/1500", predates the change that made each 1 % of quality improve the result by 1 %, so the usable number is this measured one. The test's count of six-links is not reported, only the rate and n.
+
+```quiz
+[
+  {"q": "From the test, the relative-frequency estimate of $P(\\text{six-link})$ for one Fusing on that item? (4 decimals)", "type": "numeric", "answer": 0.001, "tolerance": 6e-05, "explain": "$P(A) \\approx x/n$, and the test reports $x/n$ as about 1 in 1000: $0.0010$."}
+]
+```
+
+$P(\text{six-link}) \approx x/n \approx 1/1000 = 0.0010$. There is no list of equally likely link outcomes to count, so the classical definition has nothing to work on; repetition is the only route, and n = 100 000 is large enough for $x/n$ to have settled. The figure is from 2017 on a 20 %-quality item, and 3.29 reworked sockets, so today's rate may differ.
 
 ## Boxcars, both ways
 
@@ -61,17 +74,17 @@ The notes' phrase is exact: the relative frequency **must** approach $P(A)$, but
 Classical: count outcomes, exact, needs equally likely outcomes you can list. Relative frequency: run trials, approximate, works for any experiment you can repeat. Lab 4 lives entirely in the second world; the pencil part of the quiz in the first.
 :::
 
-## A sum of 10 from two dice, two ways
+## Reading the six-link test as x/n
 
-A simulation rolled two dice 2000 times and saw a sum of 10 on 171 of them.
+The test's 1 in 1000 over n = 100 000 Fusings, and GGG's older 1/1500, are the two numbers to judge.
 
 ```quiz
 [
-  {"q": "Relative-frequency estimate of $P(\\text{sum} = 10)$? (4 decimals)", "type": "numeric", "answer": 0.0855, "tolerance": 6e-05, "explain": "$P(A) \\approx x/n = 171/2000 = 0.0855$."},
-  {"q": "Classical $P(\\text{sum} = 10)$? (4 decimals)", "type": "numeric", "answer": 0.0833, "tolerance": 6e-05, "explain": "(4, 6), (5, 5), (6, 4): 3 of the 36 equally likely outcomes, $3/36 = 0.0833$."},
-  {"q": "How many sums of 10 would the classical probability predict in 2000 rolls? (1 decimal)", "type": "numeric", "answer": 166.7, "tolerance": 0.06, "explain": "$2000 \\times 3/36 = 166.7$. The 171 observed is close, as the law of large numbers says it should be for large $n$."},
-  {"q": "A second run of only 20 rolls would give a relative frequency closer to 0.0833 than this run did.", "type": "tf", "answer": false, "explain": "Fewer trials means more wander: 20 rolls can only give 0, 0.05, 0.10, …, so it will usually miss by more. $x/n$ settles only as $n$ grows."},
-  {"type": "fill", "q": "Edit the notes' boxcars loop to count sums of 10.", "code": "n.trials <- 2000\nX.success <- 0\nfor (i.trial in 1:n.trials){\n    dice <- sample(c(1,2,3,4,5,6), 2, replace=TRUE)\n    success <- (dice[1] + dice[2]) == ___\n    X.success <- X.success + success\n}\nprob.A <- X.success / ___", "answer": ["10", "n.trials"], "explain": "The event is a sum of 10, so compare the sum with 10; the estimate is successes over trials, `X.success / n.trials`, about 0.0855 in the run above."}
+  {"q": "GGG's older figure, 1/1500, as a probability? (4 decimals)", "type": "numeric", "answer": 0.0007, "tolerance": 6e-05, "explain": "$1/1500 = 0.000667$, which rounds to $0.0007$, against the test's $0.0010$."},
+  {"q": "Why does the lesson use the test's 1 in 1000 rather than GGG's 1/1500?", "options": ["GGG's figure predates the change that made item quality improve the result", "1/1500 is a classical probability and 1 in 1000 is not", "the test counted every Fusing ever used", "larger probabilities are always more accurate"], "answer": 0, "explain": "Each 1 % of quality now improves the result by 1 %, and the test used a 20 %-quality item; GGG's statement came before that change. Neither figure is classical: no one listed equally likely outcomes."},
+  {"q": "With n = 100 000 Fusings, the test's 1 in 1000 is the classical probability of a six-link.", "type": "tf", "answer": false, "explain": "However large $n$ is, $x/n$ is a relative frequency, an estimate of $P(A)$. The classical definition needs a list of equally likely outcomes, which nobody has for links."},
+  {"q": "A player Fuses 10 times with no six-link, so for them $x/n = 0/10 = 0$. This shows the six-link chance is 0.", "type": "tf", "answer": false, "explain": "Ten trials of an event near $0.001$ will almost always show no success, the same as ten trials of boxcars. The law of large numbers needs a large $n$."},
+  {"q": "Which definition of probability does the six-link figure use?", "type": "text", "answer": ["relative frequency", "relative-frequency", "the relative frequency definition", "relative freq"], "explain": "Successes over trials, $x/n$, from repeating the experiment: the relative frequency definition."}
 ]
 ```
 

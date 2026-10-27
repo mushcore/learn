@@ -2,6 +2,7 @@
 title: Standardizing: IQ, cosmic radiation, Gaussian noise
 minutes: 25
 ---
+<!-- facts: none; no bank quantity is measured or published as normal -->
 
 The Z table covers one curve, with $\mu = 0$ and $\sigma = 1$. IQ has $\mu = 100$ and $\sigma = 15$; radiation dose has $\mu = 4.35$ and $\sigma = 0.5$. One conversion, $Z = (X - \mu)/\sigma$, turns any normal question into a Z-table question, and the reverse conversion $x = \mu + z\sigma$ turns a percentile back into real units.
 

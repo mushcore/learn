@@ -1,7 +1,8 @@
 ---
 title: favstats, model formulas, percentiles, Z-scores
-minutes: 22
+minutes: 24
 ---
+<!-- facts: poe1.data.divine-chaos-allflame, poe1.data.divine-chaos-mirage, poe1.data.divine-chaos-keepers -->
 
 Lab 2 applies Unit 1's statistics to a real data frame, one group at a time.
 
@@ -445,18 +446,18 @@ p3 # too low
 
 Chebyshev holds, as it must; the empirical rule misses at $k = 1$ and $3$: **the empirical rule does not hold for `Days`, since it is not a normally distributed variable. It cannot be, since it is significantly skewed, as shown by $Sk$ earlier.**
 
-## favstats, fences and Z-scores for gym visits
+## favstats, fences and Z-scores for three leagues' Divine prices
 
-Sixteen gym members logged visits in one month, eight on each plan: Basic 4, 6, 2, 8, 5, 3, 7, 12 and Premium 10, 14, 9, 16, 11, 25, 13, 12.
+poe.ninja's daily price of a Divine Orb, a high-value currency item, in Chaos Orbs covers all of Keepers (123 days) and Mirage (137) and the first 96 days of Allflame [PoE1, 3.27 Keepers, 3.28 Mirage and 3.29 Allflame Divine price series from poe.ninja, checked 2026-10-27]. `divine` stacks the three price columns unedited, one row per league-day, with `league` as the factor.
 
 ```quiz
 [
-  {"type": "fill", "q": "Fill the blank to get one row of statistics per plan.", "code": "gym <- data.frame(Visits = c(4, 6, 2, 8, 5, 3, 7, 12, 10, 14, 9, 16, 11, 25, 13, 12),\n                  Plan = rep(c(\"Basic\", \"Premium\"), each = 8))\nfavstats(Visits ~ ___, data=gym)\n##      Plan min    Q1 median    Q3 max   mean       sd n missing\n## 1   Basic   2  3.75    5.5  7.25  12  5.875 3.181981 8       0\n## 2 Premium   9 10.75   12.5 14.50  25 13.750 5.063878 8       0", "answer": ["Plan"], "explain": "`Y ~ G` gives the statistics of Y separately for each level of G. mosaic's quartiles are R's: Basic sorted 2, 3, 4, 5, 6, 7, 8, 12 gives $Q_1 = 3 + 0.75(4 - 3) = 3.75$ and $Q_3 = 7 + 0.25(8 - 7) = 7.25$."},
-  {"q": "From the Basic row, compute Pearson's $Sk$. (2 decimals)", "type": "numeric", "answer": 0.35, "tolerance": 0.006, "explain": "$Sk = 3(\\bar{X} - Q_2)/s = 3(5.875 - 5.5)/3.181981 = 1.125/3.181981 = 0.3536$: mildly skewed right."},
-  {"q": "From the Premium row, compute the upper fence. (3 decimals)", "type": "numeric", "answer": 20.125, "tolerance": 0.0006, "explain": "$IQR = 14.5 - 10.75 = 3.75$; upper fence $= 14.5 + 1.5(3.75) = 20.125$. The 25 visits are beyond it: one outlier."},
-  {"type": "fill", "q": "Fill the blank so `quantile()` gives the 90th percentile of all sixteen members.", "code": "quantile(~Visits, probs=___, data=gym)\n## 90%\n## 15", "answer": ["0.9", ".9", "0.90"], "explain": "`probs=` takes the percentage as a decimal. Sorted, R's type-7 rule puts $P_{90}$ at position $1 + 0.9(15) = 14.5$, halfway between the 14th and 15th values (14 and 16): 15."},
-  {"q": "`round(100*percent_rank(gym$Visits))` starts with the member who made 4 visits. What number is printed for that member?", "type": "numeric", "answer": 13, "tolerance": 0, "explain": "2 of the other 15 members made fewer than 4 visits (2 and 3): $2/15 = 0.1333$, which rounds to 13."},
-  {"q": "Compute the Z-score that `scale(gym$Visits)` gives the 25 visits. (2 decimals)", "type": "numeric", "answer": 2.63, "tolerance": 0.006, "explain": "All sixteen values: $\\bar{X} = 157/16 = 9.8125$, $s = 5.7645$. $Z = (25 - 9.8125)/5.7645 = 2.6347$: more than 2, so unusual as well as an outlier."}
+  {"type": "fill", "q": "Fill the blank to get one row of statistics per league.", "code": "af <- read.csv(\"poe1-ninja-divine-chaos-allflame.csv\")\nke <- read.csv(\"poe1-ninja-divine-chaos-keepers.csv\")\nmi <- read.csv(\"poe1-ninja-divine-chaos-mirage.csv\")\ndivine <- data.frame(price = c(af$receive_value_chaos, ke$receive_value_chaos, mi$receive_value_chaos),\n                     league = rep(c(\"Allflame\", \"Keepers\", \"Mirage\"), times = c(96, 123, 137)))\nfavstats(price ~ ___, data=divine)\n##     league   min     Q1 median    Q3   max     mean        sd   n missing\n## 1 Allflame 75.90 193.30    300 350.0 400.0 268.9917  89.49155  96       0\n## 2  Keepers 44.85 142.15    150 176.5 271.3 157.7333  37.52127 123       0\n## 3   Mirage 36.30 274.70    368 500.0 612.0 379.6226 140.83837 137       0", "answer": ["league"], "explain": "`Y ~ G` gives the statistics of Y separately for each level of G: price in terms of league. The three rows come out in alphabetical order, Allflame, Keepers, Mirage, and n = 96 + 123 + 137 = 356 rows in all."},
+  {"q": "From the Allflame row, compute Pearson's $Sk$. (2 decimals)", "type": "numeric", "answer": -1.04, "tolerance": 0.006, "explain": "$Sk = 3(\\bar{X} - Q_2)/s = 3(268.9917 - 300)/89.49155 = -93.0249/89.49155 = -1.0395$: highly skewed left. The cheap first weeks of the league pull the mean below the median."},
+  {"q": "From the Keepers row, compute the upper fence. (3 decimals)", "type": "numeric", "answer": 228.025, "tolerance": 0.001, "explain": "$IQR = 176.5 - 142.15 = 34.35$; upper fence $= 176.5 + 1.5(34.35) = 176.5 + 51.525 = 228.025$ chaos. Keepers' maximum 271.3 is beyond it, so the box plot shows outliers on the right; the lower fence is $142.15 - 51.525 = 90.625$, above the minimum 44.85."},
+  {"q": "Keepers' first day was priced at 44.85 chaos. Compute its Z-score within the Keepers league, as `scale()` on that league would. (2 decimals)", "type": "numeric", "answer": -3.01, "tolerance": 0.006, "explain": "$Z = (X - \\bar{X})/s = (44.85 - 157.7333)/37.52127 = -112.8833/37.52127 = -3.0085$: more than 3 sd below the Keepers mean, so unusual."},
+  {"q": "`CV <- sd(price~league, data=divine)/mean(price~league, data=divine)`, then `names(which.min(CV))`. Which league is printed?", "type": "text", "answer": ["Keepers"], "explain": "$CV = s/\\bar{X}$: Allflame $89.49155/268.9917 = 0.333$, Keepers $37.52127/157.7333 = 0.238$, Mirage $140.83837/379.6226 = 0.371$. The smallest is Keepers, the most consistent league relative to its own price level."},
+  {"q": "Side-by-side box plots of price by league: write the full mosaic command on paper, then type the name of the function you used.", "type": "text", "answer": ["bwplot", "boxplot"], "explain": "`library(mosaic)` then `bwplot(price ~ league, data=divine, main=paste0(\"Divine price by league (n = \", nrow(divine), \")\"))`. Base R's `boxplot(price ~ league, data=divine)` draws the same boxes."}
 ]
 ```
 

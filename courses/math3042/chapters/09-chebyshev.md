@@ -1,9 +1,10 @@
 ---
 title: Chebyshev's rule
-minutes: 12
+minutes: 18
 ---
+<!-- facts: classic.data.monsters -->
 
-The empirical rule (68-95-99.7) has one condition attached: the data must be **approximately normal** (bell-shaped, symmetric). When the shape is unknown, skewed, or definitely not normal, **Chebyshev's rule** applies instead.
+The empirical rule (68-95-99.7) has one condition attached: the data must be **approximately normal** (bell-shaped, symmetric). When the shape is unknown, skewed, or definitely not normal, as with the MapleStory Classic monster HP list where the empirical rule failed, **Chebyshev's rule** applies instead.
 
 ## The rule
 
@@ -36,6 +37,25 @@ At $k=1$, Chebyshev guarantees nothing, and the bound is *tight*: a data set wit
 - Data is **roughly bell-shaped / normal** — use the empirical rule (68-95-99.7). It's more precise.
 - Data's shape is **unknown, skewed, or you can't assume normal** — use Chebyshev. It's weaker but always valid.
 
+## Classic World monster HP: the bound that still holds
+
+meowdb's monster table for MapleStory Classic World, Nexon's separate classic-era server, gives HP for 92 monsters [Classic, Classic World Grand Launch monster table, checked 2026-10-27]. Without the 5 rows that give 0 EXP (test mobs and a training dummy), 87 remain, with $\bar{X}$ = 8 614.07 HP and $s$ = 36 751.8 HP. The median is 1 001 and Jr. Balrog has 325 400, so the list is heavily right-skewed. That non-bell shape is exactly where the empirical rule failed and "at least" is the only promise left.
+
+```quiz
+[
+  {"q": "Classic monster HP, 87 values. Chebyshev guarantees at least what percentage within $\\bar{X} \\pm 2s$?", "type": "numeric", "answer": 75, "tolerance": 0.05, "unit": "%", "explain": "$k = 2$: $1 - 1/k^2 = 1 - 1/4 = 0.75 = 75\\%$. The bound uses only $k$; it does not care that HP is skewed."},
+  {"q": "85 of the 87 HP values actually fall inside $\\bar{X} \\pm 2s$ (−64 900 to 82 100 HP). What percentage is that? (1 decimal)", "type": "numeric", "answer": 97.7, "tolerance": 0.05, "unit": "%", "explain": "$85/87 = 0.9770 = 97.7\\%$, at least 75% as promised. Only Rotten Mushmom (86 400) and Jr. Balrog (325 400) are outside."}
+]
+```
+
+| $k$ | Interval (HP) | Inside | Observed | Chebyshev: at least | Empirical rule says |
+|---|---|---|---|---|---|
+| 1.5 | −46 500 to 63 700 | 84 | 96.6% | 55.6% | (no band) |
+| 2 | −64 900 to 82 100 | 85 | 97.7% | 75% | 95% |
+| 3 | −102 000 to 119 000 | 86 | 98.9% | 88.9% | 99.7% |
+
+At every $k$ the observed share clears Chebyshev's bound, so the bound is true here, as it must be for any list. The empirical rule's 99.7% at $k = 3$ is not: Jr. Balrog sits outside, leaving 1.1% beyond $\pm 3s$. Chebyshev is also far from tight on this list, 98.9% against a promise of 88.9%; "at least" is a floor, not an estimate.
+
 ## Worked example: moisture content
 
 Pencil problem: moisture content has $\mu = 18$, $\sigma = 0.5$, and the shape is **not assumed normal**, so Chebyshev applies.
@@ -48,17 +68,17 @@ $1 - \frac{1}{k^2} = 1 - \frac{1}{4} = 0.75 = \mathbf{75\%}$
 
 At least 75% of moisture readings fall between 17 and 19, whatever the true shape of the distribution.
 
-## Chebyshev bounds for café wait times
+## Chebyshev bounds for Classic monster EXP
 
-Wait times at a café have $\mu = 12$ min and $\sigma = 2$ min; the shape is unknown.
+The same 87 monsters give EXP per kill with $\bar{X} = 165.839$ and $s = 356.411$; the median is 69, so EXP is right-skewed too. No bell is assumed.
 
 ```quiz
 [
-  {"q": "For the interval 7 to 17 minutes, what is $k$?", "type": "numeric", "answer": 2.5, "tolerance": 0, "explain": "Both ends are 5 minutes from the mean: $k = 5/\\sigma = 5/2 = 2.5$."},
-  {"q": "At least what percentage of waits fall between 7 and 17 minutes?", "type": "numeric", "answer": 84, "tolerance": 0.05, "unit": "%", "explain": "$1 - 1/k^2 = 1 - 1/2.5^2 = 1 - 1/6.25 = 1 - 0.16 = 0.84 = 84\\%$."},
-  {"q": "Which two words go in front of that 84%?", "type": "text", "answer": ["at least", "at-least"], "explain": "Chebyshev is a guaranteed lower bound for any shape: at least 84%. The empirical rule would say \"approximately\", and only for normal data."},
-  {"q": "At most what percentage of waits fall outside 7 to 17 minutes?", "type": "numeric", "answer": 16, "tolerance": 0.05, "unit": "%", "explain": "If at least 84% are inside, at most $100 - 84 = 16\\%$ are outside ($1/k^2 = 0.16$)."},
-  {"q": "At least what percentage fall between 4 and 20 minutes? (2 decimals)", "type": "numeric", "answer": 93.75, "tolerance": 0.006, "unit": "%", "explain": "Distance 8 from the mean, $k = 8/2 = 4$: $1 - 1/16 = 0.9375 = 93.75\\%$."}
+  {"q": "Upper end of $\\bar{X} \\pm 2.5s$ for monster EXP? (1 decimal)", "type": "numeric", "answer": 1056.9, "tolerance": 0.05, "unit": "EXP", "explain": "$2.5s = 2.5(356.411) = 891.03$, so $\\bar{X} + 2.5s = 165.839 + 891.03 = 1056.9$ EXP. The lower end, $165.839 - 891.03 = -725.2$, is below zero, as with HP."},
+  {"q": "At least what percentage of the 87 monsters give EXP within $\\bar{X} \\pm 2.5s$?", "type": "numeric", "answer": 84, "tolerance": 0.05, "unit": "%", "explain": "$1 - 1/k^2 = 1 - 1/2.5^2 = 1 - 1/6.25 = 1 - 0.16 = 0.84 = 84\\%$."},
+  {"q": "Which two words go in front of that 84%?", "type": "text", "answer": ["at least", "At least", "at-least"], "explain": "Chebyshev is a guaranteed lower bound for any shape: at least 84%. The empirical rule would say \"approximately\", and only for normal data."},
+  {"q": "At most what percentage of the monsters give EXP outside $\\bar{X} \\pm 2.5s$?", "type": "numeric", "answer": 16, "tolerance": 0.05, "unit": "%", "explain": "If at least 84% are inside, at most $100 - 84 = 16\\%$ are outside ($1/k^2 = 1/6.25 = 0.16$)."},
+  {"q": "Only King Slime (2 400 EXP) and Jr. Balrog (2 188 EXP) lie outside $\\bar{X} \\pm 2.5s$. What percentage is inside? (1 decimal)", "type": "numeric", "answer": 97.7, "tolerance": 0.05, "unit": "%", "explain": "$85/87 = 0.9770 = 97.7\\%$, comfortably above the guaranteed 84%."}
 ]
 ```
 

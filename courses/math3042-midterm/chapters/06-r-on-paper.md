@@ -1,9 +1,10 @@
 ---
 title: "R on paper: the d, p, q, r families, inequalities, simulation functions"
-minutes: 20
+minutes: 24
 ---
+<!-- facts: classic.scroll.tiers, gms.starforce.rates-0-14, gms.starforce.star-catch, poe1.ladder.hc-dead-by-rank -->
 
-The R sheet names a few distribution functions but never their arguments, and the exam asks for runnable lines written by hand. This lesson fixes the signatures, the inequality-to-function table and the shape of a simulation function from Labs 6 and 7.
+The R sheet names a few distribution functions but never their arguments, and the exam asks for runnable lines written by hand. This lesson fixes the signatures, the inequality-to-function table and the shape of a simulation function from Labs 6 and 7, and writes the calls for Unit 4's scroll, Star Force and ladder examples.
 
 ## d is P(X = x), p is P(X ≤ q), q is a quantile, r is a random draw
 
@@ -49,6 +50,44 @@ Answer the four questions for a story and the widget names the distribution with
 ```widget
 dist-picker
 { "scenarios": "practice" }
+```
+
+## Seven scrolls, taps to 14→15, twenty ladder picks: one call each
+
+In MapleStory Classic an Intermediate scroll succeeds 60 % [Classic, Classic World Intermediate scroll, checked 2026-10-27] by meowdb's copy of the in-game item text; 7 uses on one item are binomial, because n is fixed and each use passes at the same rate whatever the last one did. Star Force, the GMS enhancement that adds stars to gear, succeeds 30 % at 14→15 on the wiki's table [GMS, the wiki's Star Force table 14→15, checked 2026-10-27], without the Star Catch bonus that v.271 builds in; below 15 stars a failed tap keeps the star on a non-Superior item, so the taps to the first success are geometric. On the PoE1 Hardcore Allflame ladder 69 of the characters ranked 1–200 were dead [PoE1, 3.29 Hardcore Allflame ladder, checked 2026-10-27]; 20 picks from that fixed list, nobody twice, are hypergeometric.
+
+```quiz
+[
+  { "q": "Seven Intermediate scrolls at p = 0.6, X = the number that succeed. P(at most 4 succeed).", "type": "fill", "code": "pbinom(___, 7, 0.6)", "answer": ["4"], "explain": "`p` includes its argument, so X ≤ 4 is `pbinom(4, 7, 0.6)` = 0.580096, which rounds to 0.5801. It is the complement of Unit 4's P(X ≥ 5) = 0.4199." },
+  { "q": "Taps to the first 14→15 success, p = 0.30. P(the first success is on the 4th tap).", "type": "fill", "code": "dgeom(___, 0.30)", "answer": ["3", "4-1", "4 - 1"], "explain": "The course counts taps (trials); R counts failures before the success. Tap 4 is 3 failures, then the success: `dgeom(3, 0.30)` = 0.7³ × 0.3 = 0.343 × 0.3 = 0.1029." },
+  { "q": "Same taps. P(the first success comes within the first 5 taps) = P(X ≤ 5)? (4 decimals)", "type": "numeric", "answer": 0.8319, "tolerance": 0.0001, "explain": "Within 5 taps is the complement of 5 failures in a row: 1 − q⁵ = 1 − 0.7⁵ = 1 − 0.16807 = 0.83193, so 0.8319. In R, `pgeom(5-1, 0.30)` = `pgeom(4, 0.30)`: R counts failures, so 5 taps is at most 4 failures." },
+  { "q": "Twenty of the Hardcore Allflame top 200 (69 dead), nobody picked twice, X = the number dead. P(at most 5 dead).", "type": "fill", "code": "phyper(5, 69, ___, 20)", "answer": ["131", "200-69", "200 - 69"], "explain": "Slots: x = 5, successes in the population 69 dead, failures in the population 200 − 69 = 131 alive, sample size 20. `phyper(5, 69, 131, 20)` = 0.2477983, so 0.2478." },
+  { "q": "Simulate 1000 values of X = taps to the first 14→15 success, in the course's trial count. Write the full command on paper, then type the name of the function you used.", "type": "text", "answer": ["rgeom"], "explain": "`rgeom(1000, 0.30) + 1`: m = 1000 draws, p = 0.30. `rgeom` returns failures before the first success, so the `+ 1` turns each into a tap count starting at 1. Their mean settles near 1/p = 3.33 taps." }
+]
+```
+
+```r
+pbinom(4, 7, 0.6)          # at most 4 of 7 scrolls succeed
+dgeom(4-1, 0.30)           # first 14->15 success on tap 4
+pgeom(5-1, 0.30)           # first success within 5 taps
+phyper(5, 69, 131, 20)     # at most 5 dead in 20 picks
+```
+```text
+[1] 0.580096
+[1] 0.1029
+[1] 0.83193
+[1] 0.2477983
+```
+
+The course counts taps, R counts failures before the first success: tap 4 is `dgeom(4-1, 0.30)`, within 5 taps is `pgeom(5-1, 0.30)`, and `rgeom(1000, 0.30) + 1` simulates 1000 tap counts.
+
+### Seven Intermediate scrolls: the bars pbinom adds
+
+The shaded bars are $P(0)$ to $P(4)$; their sum is the `pbinom(4, 7, 0.6)` line above.
+
+```widget
+binomial-calc
+{ "n": 7, "p": 0.6, "x": 4, "op": "le", "title": "7 Intermediate scrolls at p = 0.6: P(X ≤ 4) = pbinom(4, 7, 0.6) = 0.5801" }
 ```
 
 ## An inequality becomes a p-function

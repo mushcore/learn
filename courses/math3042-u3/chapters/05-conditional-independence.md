@@ -1,9 +1,10 @@
 ---
 title: Conditional probability, independence, the multiplication rule
-minutes: 25
+minutes: 30
 ---
+<!-- facts: poe1.ladder.hc-dead-by-rank, poe1.ladder.class-counts, classic.scroll.chaos-outcomes -->
 
-"What is the probability a student uses an iPhone?" and "what is the probability a student uses an iPhone, given that they are right-handed?" are different questions with different sample spaces. Conditional probability is the second kind, and comparing the two answers is the test for independence.
+"What share of ladder characters are flagged dead?" and "what share are dead, given a rank in the top 200?" are different questions with different sample spaces. Conditional probability is the second kind, and comparing the two answers is the test for independence.
 
 ## Conditional probability
 
@@ -58,6 +59,41 @@ The notes prove an equivalent test: $A$ and $B$ are independent exactly when $P(
 Mutually exclusive events with positive probabilities are always **dependent**: if $A$ happened, $B$ certainly did not, so $P(B \mid A) = 0 \ne P(B)$. Independence means the overlap is exactly $P(A)P(B)$, never zero.
 :::
 
+## Dead or alive by rank band on the Hardcore Allflame ladder
+
+PoE1's Hardcore ladder (Hardcore, the league whose ladder flags each dead character) gives 504 dead among 800 characters on four 200-rank pages [PoE1, 3.29 Allflame, Hardcore Allflame ladder pulled 2026-10-27, checked 2026-10-27]:
+
+| Rank band | Dead | Alive | Total |
+|---|---|---|---|
+| 1-200 | 69 | 131 | 200 |
+| 3001-3200 | 120 | 80 | 200 |
+| 7401-7600 | 158 | 42 | 200 |
+| 14801-15000 | 157 | 43 | 200 |
+| Total | 504 | 296 | 800 |
+
+These are counts on 800 real characters, so every conditional is a count restricted to one row or column. Pick one at random.
+
+```quiz
+[
+  {"q": "$P(\\text{dead} \\mid \\text{rank 1-200})$? (4 decimals)", "type": "numeric", "answer": 0.345, "tolerance": 0.0001, "explain": "Restrict to the 1-200 row: the cell over the **row** total, $69/200 = 0.3450$."},
+  {"q": "$P(\\text{rank 1-200} \\mid \\text{dead})$? (4 decimals)", "type": "numeric", "answer": 0.1369, "tolerance": 0.0001, "explain": "Restrict to the Dead column: the same cell over the **column** total, $69/504 = 0.1369$."},
+  {"q": "Are \"rank 1-200\" and \"dead\" independent or dependent?", "type": "text", "answer": ["dependent", "Dependent", "not independent"], "explain": "$P(\\text{1-200} \\cap \\text{dead}) = 69/800 = 0.08625$ against $P(\\text{1-200}) \\cdot P(\\text{dead}) = 0.25 \\times 0.63 = 0.1575$: not equal, so dependent. Equivalently $P(\\text{dead} \\mid \\text{1-200}) = 0.3450 \\ne P(\\text{dead}) = 0.6300$."}
+]
+```
+
+- $P(\text{dead}) = 504/800 = 0.6300$.
+- One cell, two totals: $69/200 = 0.3450$ and $69/504 = 0.1369$.
+- Check: $0.25 \times 0.63 = 0.1575 \ne 69/800 = 0.08625$, so **dependent**; the dead share climbs from 0.345 in the top band to 0.785 in the bottom one.
+
+### The ladder table, one cell selected
+
+Click a band to see its dead share.
+
+```widget
+two-way
+{ "rows": ["1-200", "3001-3200", "7401-7600", "14801-15000"], "cols": ["Dead", "Alive"], "data": [[69, 131], [120, 80], [158, 42], [157, 43]], "select": "cell", "r": 0, "c": 0, "title": "Hardcore Allflame ladder, 800 sampled characters: rank band by dead flag" }
+```
+
 ## The multiplication rule (AND)
 
 $$P(A \cap B) = P(A) \cdot P(B) \quad \text{if independent}, \qquad P(A \cap B) = P(A) \cdot P(B \mid A) \quad \text{if dependent}$$
@@ -78,18 +114,18 @@ $$P(B \mid A) = \frac{P(A \cap B)}{P(A)}$$
 
 This is the form Bayes' rule (next lesson) is built from.
 
-## Conditionals from a coffee-and-year table
+## Ascendancy by league, and a Chaos scroll's failures
 
-A survey of 130 students: Year 1 drinks Coffee 28, Tea 14, Neither 18 (row total 60); Year 2 drinks Coffee 44, Tea 6, Neither 20 (row total 70); column totals Coffee 72, Tea 20, Neither 38.
+The same pull counts ascendancies (the subclass a character picks) in 1400 characters, 600 softcore and 800 Hardcore: Deadeye 55 and 1, Luminary 49 and 162 [PoE1, 3.29 Allflame, ladder pages pulled 2026-10-27, checked 2026-10-27]. A Classic Chaos scroll (the 10 % tier whose failures can destroy the item) succeeds 10 % of the time, and a failure destroys the item 50 % of the time [Classic, meowdb's copy of the in-game item text, unchanged since Closed Online Test 2, checked 2026-10-27].
 
 ```quiz
 [
-  {"q": "Pick a student at random. $P(\\text{Coffee})$? (4 decimals)", "type": "numeric", "answer": 0.5538, "tolerance": 6e-05, "explain": "Column total over grand total: $72/130 = 0.5538$."},
-  {"q": "$P(\\text{Coffee} \\mid \\text{Year 2})$? (4 decimals)", "type": "numeric", "answer": 0.6286, "tolerance": 6e-05, "explain": "Restrict to the Year 2 row: $44/70 = 0.6286$."},
-  {"q": "$P(\\text{Year 2} \\mid \\text{Coffee})$? (4 decimals)", "type": "numeric", "answer": 0.6111, "tolerance": 6e-05, "explain": "Restrict to the Coffee column: the same cell over the column total, $44/72 = 0.6111$."},
-  {"q": "Compute $P(\\text{Year 2}) \\cdot P(\\text{Coffee})$ for the independence check. (4 decimals)", "type": "numeric", "answer": 0.2982, "tolerance": 6e-05, "explain": "$(70/130)(72/130) = 0.5385 \\times 0.5538 = 0.2982$, against $P(\\text{Year 2} \\cap \\text{Coffee}) = 44/130 = 0.3385$."},
-  {"q": "Are \"Year 2\" and \"Coffee\" independent or dependent?", "type": "text", "answer": ["dependent", "not independent"], "explain": "$0.2982 \\ne 0.3385$, so dependent. Equivalently $P(\\text{Coffee} \\mid \\text{Year 2}) = 0.6286 \\ne P(\\text{Coffee}) = 0.5538$."},
-  {"q": "Two cards drawn without replacement. $P(\\text{both hearts})$? (4 decimals)", "type": "numeric", "answer": 0.0588, "tolerance": 6e-05, "explain": "AND rule, dependent: $P(H_1) \\times P(H_2 \\mid H_1) = (13/52)(12/51) = 156/2652 = 0.0588$. With replacement it would be $(1/4)^2 = 0.0625$."}
+  {"q": "Pick one of the 1400 characters at random. $P(\\text{Hardcore} \\mid \\text{Deadeye})$? (4 decimals)", "type": "numeric", "answer": 0.0179, "tolerance": 0.0001, "explain": "Restrict to the 56 Deadeyes ($55 + 1$): $1/56 = 0.0179$."},
+  {"q": "$P(\\text{Luminary} \\mid \\text{Hardcore})$? (4 decimals)", "type": "numeric", "answer": 0.2025, "tolerance": 0.0001, "explain": "Restrict to the 800 Hardcore characters: $162/800 = 0.2025$."},
+  {"q": "Compute $P(\\text{Luminary}) \\cdot P(\\text{Hardcore})$ for the independence check. (4 decimals)", "type": "numeric", "answer": 0.0861, "tolerance": 0.0001, "explain": "$P(\\text{Luminary}) = (49 + 162)/1400 = 211/1400 = 0.150714$ and $P(\\text{Hardcore}) = 800/1400 = 0.571429$; the product is $0.0861$, against $P(\\text{Luminary} \\cap \\text{Hardcore}) = 162/1400 = 0.1157$."},
+  {"q": "Are \"Luminary\" and \"Hardcore\" independent or dependent in these 1400 characters?", "type": "text", "answer": ["dependent", "Dependent", "not independent"], "explain": "$0.0861 \\ne 0.1157$, so dependent. Equivalently $P(\\text{Luminary} \\mid \\text{Hardcore}) = 0.2025 \\ne P(\\text{Luminary}) = 0.1507$. The 800/1400 split is set by which pages were pulled, so the verdict describes this sample."},
+  {"q": "One Chaos scroll use. $P(\\text{fails and destroys the item})$? (4 decimals)", "type": "numeric", "answer": 0.45, "tolerance": 0.0001, "explain": "AND rule, dependent form: $P(\\text{fail}) \\times P(\\text{destroyed} \\mid \\text{fail}) = 0.90 \\times 0.50 = 0.4500$."},
+  {"q": "The item survived one Chaos scroll use. $P(\\text{the scroll succeeded} \\mid \\text{survived})$? (4 decimals)", "type": "numeric", "answer": 0.1818, "tolerance": 0.0001, "explain": "$P(\\text{survived}) = 1 - 0.45 = 0.55$ (success 0.10 plus failed-and-kept 0.45). Success implies survived, so $P(\\text{success} \\cap \\text{survived}) = 0.10$ and $P(\\text{success} \\mid \\text{survived}) = 0.10/0.55 = 0.1818$."}
 ]
 ```
 

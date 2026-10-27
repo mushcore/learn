@@ -148,6 +148,7 @@ const isOl = (l) => /^\s*\d+\.\s+/.test(l);
 const isTable = (l) => /^\s*\|.*\|\s*$/.test(l);
 const isQuote = (l) => /^>\s?/.test(l);
 const isHr = (l) => /^---+$/.test(l.trim());
+const isComment = (l) => /^<!--.*-->\s*$/.test(l);
 const isCallout = (l) => /^:::\s*(\w+)/.test(l);
 
 function renderTextBlock(md) {
@@ -157,6 +158,7 @@ function renderTextBlock(md) {
   while (i < lines.length) {
     const line = lines[i];
     if (!line.trim()) { i++; continue; }
+    if (isComment(line)) { i++; continue; }
     if (isHr(line)) { html.push("<hr/>"); i++; continue; }
 
     const co = line.match(/^:::\s*(\w+)\s*(.*)$/);
@@ -211,7 +213,7 @@ function renderTextBlock(md) {
 
     const buf = [line];
     i++;
-    while (i < lines.length && lines[i].trim() && !isHeading(lines[i]) && !isUl(lines[i]) && !isOl(lines[i]) && !isTable(lines[i]) && !isQuote(lines[i]) && !isHr(lines[i]) && !isCallout(lines[i])) {
+    while (i < lines.length && lines[i].trim() && !isHeading(lines[i]) && !isUl(lines[i]) && !isOl(lines[i]) && !isTable(lines[i]) && !isQuote(lines[i]) && !isHr(lines[i]) && !isCallout(lines[i]) && !isComment(lines[i])) {
       buf.push(lines[i++]);
     }
     html.push(`<p>${inline(buf.join(" "))}</p>`);

@@ -1,5 +1,5 @@
 import { renderLesson, parseFrontMatter, setInlineLang } from "./markdown.js";
-import { setCourse, loadProgress, markLessonDone, resetCourse, loadReview, reviewCount } from "./progress.js";
+import { setCourse, loadProgress, markLessonDone, resetCourse, loadReview, reviewCount, runMigrations } from "./progress.js";
 import { mountQuiz } from "./quiz.js";
 import "./q-fill.js";
 import "./q-shade.js";
@@ -369,6 +369,7 @@ async function route() {
   }
 }
 window.addEventListener("hashchange", route);
+runMigrations();
 route();
 
 // Alt+←/→ move between lessons; Escape closes the lesson list on small screens.

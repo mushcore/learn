@@ -1,0 +1,53 @@
+id,name,value_divine,volume_divine,max_volume_currency,max_volume_rate,change_7d_pct
+alch,Orb of Alchemy,0.004686,59.0,divine,213.4,3.78
+exalted,Exalted Orb,0.001531,659.7,divine,653.3,4.73
+ancient-infuser,Ancient Infuser,0.2914,22.05,chaos,0.3307,-8.74
+chaos,Chaos Orb,0.09636,44792,divine,10.38,-6.5
+divine,Divine Orb,1,44792,chaos,0.09636,6.96
+annul,Orb of Annulment,0.2544,3970,divine,3.93,-42.88
+architects-orb,Architect's Orb,8.29,2942,divine,0.1207,-5.32
+artificers,Artificer's Orb,0.001526,0.5714,exalted,1.0,48.46
+aug,Orb of Augmentation,0.003731,26.83,divine,268.0,-42.05
+bauble,Glassblower's Bauble,0.003652,1.55,exalted,0.4192,-13.74
+chance,Orb of Chance,0.01241,7.0,divine,80.57,15.27
+core-destabiliser,Core Destabiliser,1.08,232.3,divine,0.9218,-6.04
+crystallised-corruption,Crystallised Corruption,8.19,1932,divine,0.122,-6.75
+etcher,Arcanist's Etcher,0.018,35.0,divine,55.54,-8.9
+fracturing-orb,Fracturing Orb,8.41,4999,divine,0.1189,-27.25
+greater-regal-orb,Greater Regal Orb,0.01859,23.33,divine,53.8,63.78
+kopecs-orb-of-sacrifice,Kopec's Orb of Sacrifice,0.3684,1.17,divine,2.71,-26.32
+lesser-jewellers-orb,Lesser Jeweller's Orb,0.0002031,0.04056,exalted,7.53,59.82
+perfect-chaos-orb,Perfect Chaos Orb,7.23,8769,divine,0.1384,-3.36
+perfect-exalted-orb,Perfect Exalted Orb,2.16,5969,divine,0.4637,-26.69
+perfect-jewellers-orb,Perfect Jeweller's Orb,0.307,509.0,divine,3.26,-26.62
+perfect-regal-orb,Perfect Regal Orb,0.06022,51.0,divine,16.6,0.23
+regal,Regal Orb,0.001507,3.76,exalted,1.02,33.41
+scrap,Armourer's Scrap,0.0122,129.0,divine,81.99,-32.54
+vaal-arcanists-infuser,Vaal Arcanist's Infuser,0.02569,2.17,divine,38.92,-36.42
+vaal-armourers-infuser,Vaal Armourer's Infuser,1.62,1569,divine,0.616,-16.57
+vaal-blacksmiths-infuser,Vaal Blacksmith's Infuser,0.2052,82.17,divine,4.87,-11.52
+vaal-cultivation-orb,Vaal Cultivation Orb,5.27,1697,divine,0.1898,12.52
+cryptic-key,Cryptic Key,0.2018,56.67,divine,4.96,-8.04
+hinekoras-lock,Hinekora's Lock,2083,37837,divine,0.0004801,13.18
+artificers-shard,Artificer's Shard,0.001503,0.0273,exalted,1.02,390.8
+chance-shard,Chance Shard,0.0007653,0.002041,exalted,2,-57.95
+gcp,Gemcutter's Prism,0.03227,114.5,divine,30.99,-30.55
+greater-chaos-orb,Greater Chaos Orb,0.2848,2422,divine,3.51,-7.87
+greater-exalted-orb,Greater Exalted Orb,0.02095,105.7,divine,47.72,-14.74
+greater-jewellers-orb,Greater Jeweller's Orb,0.01247,4.5,divine,80.19,-28.02
+greater-orb-of-augmentation,Greater Orb of Augmentation,0.005171,8.33,divine,193.4,5.53
+greater-orb-of-transmutation,Greater Orb of Transmutation,0.001728,3.21,chaos,55.75,-2.46
+kamasas-orb-of-sacrifice,Kamasa's Orb of Sacrifice,0.1652,0.9636,chaos,0.5833,-21.5
+mirror,Mirror of Kalandra,6310,112520,divine,0.0001585,17.43
+orb-of-extraction,Orb of Extraction,1.17,47.33,divine,0.8556,-47.09
+perfect-orb-of-augmentation,Perfect Orb of Augmentation,0.308,1926,divine,3.25,18.6
+perfect-orb-of-transmutation,Perfect Orb of Transmutation,0.02376,14.5,divine,42.08,17.08
+regal-shard,Regal Shard,0.0005102,0.0007653,exalted,3,14.29
+transmutation-shard,Transmutation Shard,0.1531,0.1531,exalted,0.01,704.8
+transmute,Orb of Transmutation,0.003189,9.67,divine,313.6,12.42
+vaal-catalysing-infuser,Vaal Catalysing Infuser,4.87,1342,divine,0.2052,4.98
+vaal,Vaal Orb,0.01479,1062,divine,67.62,-4.75
+whetstone,Blacksmith's Whetstone,0.009065,24.17,divine,110.3,-4.18
+wisdom,Scroll of Wisdom,2.078e-05,0.0727,exalted,73.65,-41.93
+yaomacs-orb-of-sacrifice,Yaomac's Orb of Sacrifice,0.01655,0.08826,exalted,0.09249,-54.33
+yuguls-orb-of-sacrifice,Yugul's Orb of Sacrifice,0.007758,0.0375,exalted,0.1973,-27.59

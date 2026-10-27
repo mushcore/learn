@@ -2,6 +2,7 @@
 title: Lab 5: conditional probability from the SFU weather data
 minutes: 30
 ---
+<!-- facts: poe1.ladder.hc-dead-by-rank -->
 
 Lab 5 asks four questions of 58 years of daily SFU weather (1965–2022): are Mondays wetter, which season is wettest, do cold or warm days change the chance of precipitation, and does the season change that? Packages: `dplyr`, `mosaic`.
 
@@ -288,26 +289,34 @@ barplot(pct, col="lightblue", ylim=c(0,100),
 
 **December** has the greatest probability of precipitation given a warm day, 78.2% (390 of 499 warm December days); July's 5.7% is the lowest.
 
-## Wind segments against precipitation
+## Dead characters by rank band on the Hardcore ladder
 
-Suppose days are segmented by wind speed instead of temperature, and `tab4 <- table(Weather[c("Wind.Seg", "has.Precip")])` prints the table below.
+The 3.29 Hardcore Allflame ladder flags each character dead or alive. Four 200-character pages of it, ranks 1-200, 3001-3200, 7401-7600 and 14801-15000, hold 69, 120, 158 and 157 dead characters [PoE1, 3.29 Hardcore Allflame ladder, checked 2026-10-27]. Suppose `hc` holds those 800 characters, one row each, with the page in `band` and the ladder's `dead` flag as TRUE or FALSE. These are real counts in a two-way table, so P(dead | band) is a row proportion exactly as in Task 8, and the universe is these 800 sampled characters, not the whole ladder.
 
-```text
-        has.Precip
-Wind.Seg FALSE TRUE
-  Breezy  1800 2000
-  Calm    2100 1500
-  Windy    900 1700
+```r
+hc$band <- factor(hc$band, levels=c("1-200", "3001-3200", "7401-7600", "14801-15000"))
+tab5 <- table(hc[c("band", "dead")])
+tab5
 ```
+```text
+             dead
+band          FALSE TRUE
+  1-200         131   69
+  3001-3200      80  120
+  7401-7600      42  158
+  14801-15000    43  157
+```
+
+The `factor` line plays the part of `months`: as text, "14801-15000" would sort second.
 
 ```quiz
 [
-  {"q": "From tab4, P(Precip > 0 | Windy) = ? (4 decimals)", "type": "numeric", "answer": 0.6538, "tolerance": 6e-05, "explain": "Condition on the Windy row: its wet cell over its row total, 1700/(900 + 1700) = 1700/2600 = 0.6538."},
-  {"type": "fill", "q": "Complete the R line for P(Precip > 0 | Windy).", "code": "tab4[\"Windy\",\"TRUE\"]/sum(tab4[___,])", "answer": ["\"Windy\"", "'Windy'"], "explain": "The denominator is the Windy row total, so the row index is the string \"Windy\" and the column index is left empty. tab4[ ,\"TRUE\"] would be the whole wet column instead."},
-  {"q": "P(Precip > 0) over all days = ? (4 decimals)", "type": "numeric", "answer": 0.52, "tolerance": 6e-05, "explain": "The wet column over the grand total: (2000 + 1500 + 1700)/10 000 = 5200/10 000 = 0.5200. In R, sum(tab4[ ,\"TRUE\"])/sum(tab4)."},
-  {"q": "Precipitation is independent of the wind segment in this table.", "type": "tf", "answer": false, "explain": "Independence needs P(Precip | Windy) = P(Precip). Here 0.6538 is well above 0.5200, so windy days are wetter: dependent."},
-  {"q": "P(Windy | Precip > 0) = ? (4 decimals)", "type": "numeric", "answer": 0.3269, "tolerance": 6e-05, "explain": "Bayes with P(Calm, Breezy, Windy) = 0.36, 0.38, 0.26 and P(Precip | segment) = 0.4167, 0.5263, 0.6538: 0.26 × 0.6538 / (0.36 × 0.4167 + 0.38 × 0.5263 + 0.26 × 0.6538) = 0.17/0.52 = 0.3269. The table check: 1700/5200 = 0.3269."},
-  {"type": "fill", "q": "Complete the segmenting line: Calm below 10 km/h, Breezy from 10 up to and including 25 km/h, Windy above 25.", "code": "Weather$Wind.Seg <- with(Weather, ifelse(Wind.kmh < 10, \"Calm\", ifelse(Wind.kmh ___ 25, \"Breezy\", \"Windy\")))", "answer": ["<="], "explain": "The inner ifelse only sees days with Wind.kmh ≥ 10; \"up to and including 25\" is <= 25, and everything left (above 25) falls to \"Windy\". Task 4's Mid segment used <= 0.4307 the same way."}
+  {"q": "From tab5, P(dead | ranks 1-200) = ? (4 decimals)", "type": "numeric", "answer": 0.345, "tolerance": 0.0001, "explain": "Condition on the 1-200 row: its dead cell over its row total, 69/(131 + 69) = 69/200 = 0.3450."},
+  {"type": "fill", "q": "Complete the R line for P(dead | ranks 1-200).", "code": "tab5[\"1-200\",\"TRUE\"]/sum(tab5[___,])", "answer": ["\"1-200\"", "'1-200'"], "explain": "The denominator is the 1-200 row total, so the row index is the string \"1-200\" and the column index is left empty. tab5[ ,\"TRUE\"] would be the whole dead column instead."},
+  {"q": "Which call prints each band's share dead and alive, every row summing to 1?", "options": ["`prop.table(tab5, 1)`", "`prop.table(tab5)`", "`prop.table(tab5, 2)`", "`table(hc$dead)/800`"], "answer": 0, "explain": "The margin 1 divides each cell by its row total: dead shares 0.345, 0.600, 0.790 and 0.785 down the bands. prop.table(tab5) divides by the grand total 800 (joint probabilities), margin 2 by the column totals, and table(hc$dead)/800 drops the bands."},
+  {"q": "P(dead) over all 800 sampled characters = ? (4 decimals)", "type": "numeric", "answer": 0.63, "tolerance": 0.0001, "explain": "The dead column over the grand total: (69 + 120 + 158 + 157)/800 = 504/800 = 0.6300. In R, sum(tab5[ ,\"TRUE\"])/sum(tab5)."},
+  {"q": "In these 800 characters, being dead is independent of the rank band.", "type": "tf", "answer": false, "explain": "Independence needs P(dead | band) = P(dead) for every band. P(dead | 1-200) = 0.3450 is far below P(dead) = 0.6300, so the top page dies much less: dependent."},
+  {"q": "P(ranks 1-200 | dead) = ? (4 decimals)", "type": "numeric", "answer": 0.1369, "tolerance": 0.0001, "explain": "Now the condition is the dead column: 69/(69 + 120 + 158 + 157) = 69/504 = 0.1369. Same cell as P(dead | 1-200), different total; in R, tab5[\"1-200\",\"TRUE\"]/sum(tab5[ ,\"TRUE\"])."}
 ]
 ```
 

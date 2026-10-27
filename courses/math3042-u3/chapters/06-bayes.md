@@ -1,9 +1,10 @@
 ---
 title: Bayes' rule on a tree diagram
-minutes: 25
+minutes: 30
 ---
+<!-- facts: poe1.ladder.hc-dead-by-rank, classic.cashshop.mfc-rates, classic.cashshop.founders-mfc-rates -->
 
-You know how often each group produces an outcome ($P(B \mid A_i)$: 5% of women are left-handed) and you observe the outcome; Bayes' rule, named after Thomas Bayes (1702 to 1761), turns that around into the probability of the group given the outcome ($P(A_i \mid B)$: a left-handed student is a woman with what probability?). A tree diagram makes it arithmetic.
+You know each ladder rank band's dead share, $P(B \mid A_i)$, and you see a dead character; Bayes' rule, named after Thomas Bayes (1702 to 1761), turns that around into $P(A_i \mid B)$, the chance it came from each band. A tree diagram makes it arithmetic.
 
 ## Sex and handedness
 
@@ -84,18 +85,45 @@ bayes-flow-play
 (a) asks for $P(B)$: multiply along each path and **add**. (b) asks for $P(A_i \mid B)$: one path **divided** by that sum. Read which is which before touching the calculator: "randomly select a CPU" is (a); "randomly select a defective unit" restricts the sample space to $B$ and is (b).
 :::
 
-## Bayes for a screening test and three factory shifts
+## Which rank band a dead Hardcore character came from
 
-A condition affects 2% of people; a screening test is positive for 95% of people with it and for 8% of people without it. A factory makes 50% of its parts on the day shift (2% defective), 30% on the evening shift (3%) and 20% on the night shift (5%).
+The universe is **these 800 sampled characters, 200 from each of four pages** of PoE1's Hardcore Allflame ladder (Hardcore, the league that flags dead characters) [PoE1, 3.29 Allflame, Hardcore Allflame ladder pulled 2026-10-27, checked 2026-10-27]. One of them is picked at random and is dead: which page?
+
+| Rank band $A_i$ | $P(A_i)$ in the sample | $P(\text{dead} \mid A_i)$ |
+|---|---|---|
+| 1-200 | 200/800 = 0.25 | 69/200 = 0.345 |
+| 3001-3200 | 0.25 | 120/200 = 0.600 |
+| 7401-7600 | 0.25 | 158/200 = 0.790 |
+| 14801-15000 | 0.25 | 157/200 = 0.785 |
+
+Inside these 800 the pages are exhaustive and mutually exclusive, with known counts and dead rates: the CPU tree's shape. The prior 0.25 is 200 of these 800, not a share of the 15 000-character ladder, on which the four pages are not exhaustive.
 
 ```quiz
 [
-  {"q": "Screening: $P(\\text{positive})$ for a random person? (4 decimals)", "type": "numeric", "answer": 0.0974, "tolerance": 6e-05, "explain": "Add the two paths that end in positive: $0.02 \\times 0.95 + 0.98 \\times 0.08 = 0.0190 + 0.0784 = 0.0974$."},
-  {"q": "$P(\\text{condition} \\mid \\text{positive})$? (4 decimals)", "type": "numeric", "answer": 0.1951, "tolerance": 6e-05, "explain": "One path over the total: $0.0190/0.0974 = 0.1951$. In words: only about 19.5% of people who test positive have the condition."},
-  {"q": "Which sentence states $P(\\text{condition} \\mid \\text{positive})$ correctly?", "options": ["About 19.5% of people who test positive have the condition", "About 19.5% of people with the condition test positive", "95% of people who test positive have the condition", "About 19.5% of all people test positive"], "answer": 0, "explain": "The condition after the bar is the group you are talking about: among positives. \"95% of people with the condition test positive\" is the other direction, $P(+ \\mid \\text{condition})$."},
-  {"q": "Factory: $P(\\text{defective})$ for a random part? (4 decimals)", "type": "numeric", "answer": 0.029, "tolerance": 6e-05, "explain": "$0.5(0.02) + 0.3(0.03) + 0.2(0.05) = 0.0100 + 0.0090 + 0.0100 = 0.0290$ (law of total probability)."},
-  {"q": "A part is found defective. $P(\\text{night shift} \\mid \\text{defective})$? (4 decimals)", "type": "numeric", "answer": 0.3448, "tolerance": 6e-05, "explain": "$0.0100/0.0290 = 0.3448$: 34.5% of defective parts come from the night shift, which makes only 20% of the parts."},
-  {"q": "Out of 10 000 parts, how many are defective night-shift parts?", "type": "numeric", "answer": 100, "tolerance": 0, "explain": "2000 night-shift parts × 5% = 100, out of 290 defective parts in all (100 day, 90 evening, 100 night)."}
+  {"q": "$P(\\text{dead})$ for a random one of the 800? (4 decimals)", "type": "numeric", "answer": 0.63, "tolerance": 0.0001, "explain": "Add the four paths: $0.25(0.345) + 0.25(0.600) + 0.25(0.790) + 0.25(0.785) = 0.08625 + 0.15 + 0.1975 + 0.19625 = 0.6300$."},
+  {"q": "$P(\\text{14801-15000} \\mid \\text{dead})$? (4 decimals)", "type": "numeric", "answer": 0.3115, "tolerance": 0.0001, "explain": "One path over the total: $0.19625/0.63 = 0.3115$. Counts: 157 of the 504 dead, $157/504 = 0.3115$."},
+  {"q": "$P(\\text{1-200} \\mid \\text{dead})$? (4 decimals)", "type": "numeric", "answer": 0.1369, "tolerance": 0.0001, "explain": "$0.08625/0.63 = 0.1369$, or $69/504$."}
+]
+```
+
+$$P(\text{dead}) = 0.25 \times 0.345 + 0.25 \times 0.600 + 0.25 \times 0.790 + 0.25 \times 0.785 = 0.6300$$
+
+$$P(\text{14801-15000} \mid \text{dead}) = \frac{0.25 \times 0.785}{0.6300} = \frac{0.19625}{0.6300} = 0.3115$$
+
+Conclusion sentence: *31.15% of the dead characters in this sample are from ranks 14801-15000.* The posteriors 0.1369, 0.2381, 0.3135 and 0.3115 add to 1; in counts, 157 of the 504 dead.
+
+## Which Mystery Fashion Crate gave a 1.00 % item
+
+The Classic Mystery Fashion Crate (a Cash Shop box giving one of 50 cosmetic items) had two versions at Nexon's published rates: Founder's, 16 items at 1.00 % and 2 at 3.00 % [Classic, Founder's Access Cash Shop rate page, checked 2026-10-27]; Grand Launch, 15 at 1.00 %, 4 at 3.00 % and 1 at 1.50 % [Classic, Grand Launch Cash Shop rate page, checked 2026-10-27]. One crate is picked at random, each equally likely, and opened.
+
+```quiz
+[
+  {"q": "$P(\\text{a 1.00 \\% item})$? (4 decimals)", "type": "numeric", "answer": 0.155, "tolerance": 0.0001, "explain": "$P(\\text{1.00 \\%} \\mid \\text{Founder's}) = 16 \\times 0.01 = 0.16$ and $P(\\text{1.00 \\%} \\mid \\text{Grand Launch}) = 15 \\times 0.01 = 0.15$. Law of total probability: $0.5(0.16) + 0.5(0.15) = 0.08 + 0.075 = 0.1550$."},
+  {"q": "A 1.00 % item came out. $P(\\text{Founder's} \\mid \\text{1.00 \\% item})$? (4 decimals)", "type": "numeric", "answer": 0.5161, "tolerance": 0.0001, "explain": "One path over the total: $0.08/0.155 = 0.5161$."},
+  {"q": "Which sentence states $P(\\text{Founder's} \\mid \\text{1.00 \\% item}) = 0.5161$ correctly?", "options": ["About 51.6% of the 1.00 % items from these two equally likely crates come from the Founder's crate", "About 51.6% of Founder's crates give a 1.00 % item", "The Founder's crate gives a 1.00 % item 16% of the time", "About 51.6% of all crates opened are Founder's"], "answer": 0, "explain": "The condition after the bar is the group you talk about: among 1.00 % items. \"16% of Founder's crates give a 1.00 % item\" is the other direction, $P(\\text{1.00 \\%} \\mid \\text{Founder's})$."},
+  {"q": "A 3.00 % item came out. $P(\\text{Grand Launch} \\mid \\text{3.00 \\% item})$? (4 decimals)", "type": "numeric", "answer": 0.6667, "tolerance": 0.0001, "explain": "$P(\\text{3.00 \\%} \\mid \\text{Founder's}) = 2 \\times 0.03 = 0.06$, $P(\\text{3.00 \\%} \\mid \\text{Grand Launch}) = 4 \\times 0.03 = 0.12$. Total $0.5(0.06) + 0.5(0.12) = 0.09$; posterior $0.06/0.09 = 0.6667$."},
+  {"q": "The 1.50 % item came out. $P(\\text{Grand Launch} \\mid \\text{1.50 \\% item})$?", "type": "numeric", "answer": 1, "tolerance": 0.0001, "explain": "The Founder's crate has no 1.50 % item, so its path is $0.5 \\times 0 = 0$. Posterior $0.5(0.015)/(0 + 0.5(0.015)) = 1$."},
+  {"q": "Out of 1000 crates, 500 of each, how many give a 1.00 % item?", "type": "numeric", "answer": 155, "tolerance": 0, "explain": "$500 \\times 0.16 = 80$ Founder's plus $500 \\times 0.15 = 75$ Grand Launch: 155, and $80/155 = 0.5161$ again."}
 ]
 ```
 

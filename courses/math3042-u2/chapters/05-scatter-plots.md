@@ -1,7 +1,8 @@
 ---
 title: Scatter plots
-minutes: 9
+minutes: 11
 ---
+<!-- facts: classic.data.monsters -->
 
 Every chart so far pictured **one** variable. The last chart in the notes pictures **two**: *"When we measure two or more numerical variables for each individual/unit, then it is possible to create a scatter plot."*
 
@@ -96,17 +97,17 @@ scatter-corr
 { "preset": "mtcars: wt vs mpg (Unit 2)", "title": "mtcars: fuel efficiency versus weight (drag the points)" }
 ```
 
-## A scatter plot of apartment rent against size
+## A scatter plot of Classic monster EXP against level
 
-Six apartments: size (m²) 45, 60, 52, 75, 68, 90 and monthly rent in dollars 1650, 2150, 1750, 2450, 2400, 2850, in a data frame `apts` with columns `size` and `rent`.
+meowdb's Classic monster table gives each monster a level and the EXP, experience points, one kill pays; without the 5 zero-EXP test rows it holds 87 monsters, in a data frame `mon` [Classic, meowdb monster table, Grand Launch build, checked 2026-10-27]. Six field monsters as (level, EXP): Snail (1, 2), Ribbon Pig (10, 19), Stirge (20, 37), Iron Hog (28, 52), Drake (50, 133), Taurospear (75, 429).
 
 ```quiz
 [
-  {"q": "Rent is explained by size. Which variable goes on the horizontal axis?", "options": ["size", "rent", "either; it makes no difference to the picture", "neither; use a bar chart"], "answer": 0, "explain": "Y (rent) is the response on the vertical axis; X (size) is horizontal. The formula is `rent ~ size`."},
-  {"q": "The points rise from left to right. What sign does $r$ have?", "type": "text", "answer": ["positive", "+", "plus"], "explain": "An upward trend means larger X goes with larger Y, so $r > 0$."},
-  {"q": "Compute `cor(apts$size, apts$rent)`. (3 decimals)", "type": "numeric", "answer": 0.985, "tolerance": 0.0015, "explain": "Using the Unit 1 formula on the six pairs, $r = 0.9846$: a very strong positive linear relationship."},
-  {"q": "The regression line is rent = 27.45 · size + 424.3. Predict the rent of an 80 m² apartment. (nearest dollar)", "type": "numeric", "answer": 2620, "tolerance": 1, "unit": "dollars", "explain": "$27.45 \\times 80 + 424.3 = 2196.0 + 424.3 = 2620.3 \\approx 2620$."},
-  {"type": "fill", "q": "Fill the two blanks to draw the points with a regression line in lattice.", "code": "xyplot(___ ~ size, data=apts, pch=19,\n       main=paste0(\"Rent versus Size for n = \", nrow(apts), \" apartments\"),\n       type=c(\"p\", \"___\"))", "answer": ["rent", "r"], "explain": "Left of `~` is Y, so `rent ~ size`. `type=c(\"p\", \"r\")` draws the data points (p) and a regression line (r)."}
+  {"q": "EXP is explained by level. Which variable goes on the horizontal axis?", "options": ["level", "EXP", "either; it makes no difference to the picture", "neither; use a bar chart"], "answer": 0, "explain": "The explanatory variable is $X$, on the horizontal axis: level. EXP is $Y$, so the formula is `exp ~ level`."},
+  {"q": "The six points rise from left to right. What sign does $r$ have?", "type": "text", "answer": ["positive", "+", "plus"], "explain": "An upward trend means a higher level goes with more EXP, so $r > 0$."},
+  {"q": "Compute $r$ for the six monsters. (3 decimals)", "type": "numeric", "answer": 0.928, "tolerance": 0.0015, "explain": "$n = 6$, $\\sum x = 184$, $\\sum y = 672$, $\\sum xy = 41\\,213$, $\\sum x^2 = 9410$, $\\sum y^2 = 206\\,168$. $r = \\dfrac{6(41\\,213) - 184(672)}{\\sqrt{(6(9410) - 184^2)(6(206\\,168) - 672^2)}} = \\dfrac{123\\,630}{\\sqrt{22\\,604 \\times 785\\,424}} = 0.9279$: strong and positive, though Taurospear's 429 bends the dots upward rather than along a line."},
+  {"q": "For all 87 monsters, `cor(mon$level, mon$exp)` prints `[1] 0.4085217`, far weaker than the six. Which explains it?", "options": ["A few bosses sit far above the trend, such as King Slime (Lv 32, 2400 EXP) and Jr. Balrog (Lv 80, 2188 EXP)", "EXP falls as level rises", "r cannot exceed 0.5 for more than 50 points", "level is a categorical variable"], "answer": 0, "explain": "A scatter plot shows the field monsters on a rising curve and a handful of bosses high above it. Those few points far off any line pull $r$ down to 0.41; the trend is still positive."},
+  {"type": "fill", "q": "Fill the blank so lattice draws the points and a regression line.", "code": "xyplot(exp ~ level, data=mon, pch=19,\n       main=paste0(\"EXP versus level for n = \", nrow(mon), \" monsters\"),\n       type=c(\"p\", ___))", "answer": ["\"r\"", "'r'"], "explain": "`type = c(\"p\", \"r\")` means data points (\"p\") and a regression line (\"r\")."}
 ]
 ```
 

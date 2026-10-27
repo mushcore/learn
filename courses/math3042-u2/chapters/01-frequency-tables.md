@@ -1,9 +1,10 @@
 ---
 title: Frequency tables, pie charts, bar charts
-minutes: 12
+minutes: 15
 ---
+<!-- facts: poe2.data.ascendancy-counts-forbidden-rites, poe1.ladder.class-counts -->
 
-Unit 1 summarized data with **numbers**: $\bar{X}$, $s$, quartiles, $\hat{p}$. Unit 2 summarizes the same data with **pictures**, starting with categorical data, where the only summary is a count per category and the two charts that display those counts.
+poe.ninja's PoE2 build ladder tracks 124 117 characters [PoE2, 0.5.5e Forbidden Rites build ladder, checked 2026-10-27], and the only summary of their base class is a count per class. Unit 1 summarized data with **numbers**; Unit 2 summarizes it with **pictures**, starting with categorical data: a count per category and the two charts that display those counts.
 
 ## The data set for the whole unit
 
@@ -95,6 +96,40 @@ Both charts are drawn from the same frequency table.
 cat-charts
 ```
 
+## 124 117 PoE2 characters by base class
+
+Each character counts once under its ascendancy, the specialization picked inside one of eight base classes. Summed per base class, the counts make one categorical variable with real counts that sum to $n = 124\,117$ tracked characters, not every player.
+
+```quiz
+[
+  {"q": "Mercenary holds 44 833 of the 124 117 characters. Its relative frequency $\\hat{p}$ = ? (4 decimals)", "type": "numeric", "answer": 0.3612, "tolerance": 0.0001, "explain": "$\\hat{p} = 44\\,833/124\\,117 = 0.3612$, or 36.12 % of the ladder."},
+  {"q": "How many degrees of `pie()`'s circle does the Mercenary slice take? (1 decimal)", "type": "numeric", "answer": 130.0, "tolerance": 0.06, "unit": "°", "explain": "Angle = relative frequency × 360°: $0.36122 \\times 360° = 130.0°$."}
+]
+```
+
+| Base class | Frequency | Relative frequency | Percent | Pie angle |
+|---|---|---|---|---|
+| Druid | 10 771 | 0.0868 | 8.68 % | 31.2° |
+| Huntress | 11 400 | 0.0918 | 9.18 % | 33.1° |
+| Mercenary | 44 833 | 0.3612 | 36.12 % | 130.0° |
+| Monk | 15 356 | 0.1237 | 12.37 % | 44.5° |
+| Ranger | 9 009 | 0.0726 | 7.26 % | 26.1° |
+| Sorceress | 14 616 | 0.1178 | 11.78 % | 42.4° |
+| Warrior | 5 340 | 0.0430 | 4.30 % | 15.5° |
+| Witch | 12 792 | 0.1031 | 10.31 % | 37.1° |
+| total | 124 117 | 1.0000 | 100.00 % | 360° |
+
+Mercenary is the modal base class. poe.ninja publishes counts, not rows, so the table is typed as a named vector in `table()`'s alphabetical order:
+
+```r
+base.tab <- c(Druid=10771, Huntress=11400, Mercenary=44833, Monk=15356,
+              Ranger=9009, Sorceress=14616, Warrior=5340, Witch=12792)
+pie(base.tab, main="PoE2 base classes (n = 124117)")
+barplot(base.tab, col="lightgreen", ylab="Frequency")
+```
+
+The pie shows Mercenary as over a third of the circle; only the bars settle Monk against Sorceress, whose slices differ by 2.1°.
+
 ## Dressing up a bar chart (from the demo notebook)
 
 The demo notebook's extra `barplot()` arguments, to recognize rather than memorize:
@@ -119,18 +154,18 @@ barplot(freq.tab,  col=c("black","lightblue","brown","lightgreen","white"),
 A pie chart can be drawn straight from percentages when a question gives those instead of counts (Lab 3 does it with `pie(percents, labels)`).
 :::
 
-## A frequency table of favourite languages
+## Count the ascendancies of 800 Hardcore ladder characters
 
-A CST cohort named its favourite programming language: Python 48, Java 21, C++ 33, JavaScript 27, Rust 6. The raw answers are in `cohort$Lang`, and `freq.tab <- table(cohort$Lang)`.
+Four pages of the PoE1 Hardcore Allflame ladder hold 800 characters, one row each in `hc`; the largest of 21 ascendancy counts are Luminary 162, Chieftain 110 and Elementalist 109 [PoE1, 3.29 Hardcore Allflame ladder, checked 2026-10-27]. `hc.tab <- table(hc$ascendancy)`, and `top3` is the table for those three only.
 
 ```quiz
 [
-  {"q": "How many students are in the sample?", "type": "numeric", "answer": 135, "tolerance": 0, "explain": "The frequencies add to $n$: $48 + 21 + 33 + 27 + 6 = 135$."},
-  {"q": "Compute $\\hat{p}$ for Python. (4 decimals)", "type": "numeric", "answer": 0.3556, "tolerance": 6e-05, "explain": "$\\hat{p} = 48/135 = 0.3556$, about 35.6% of the cohort."},
-  {"q": "What is the modal language?", "type": "text", "answer": ["Python"], "explain": "Python has the largest frequency, 48. The mode is the category, not the count."},
-  {"q": "What does `freq.tab[[2]]` print?", "options": ["`[1] 21`", "`[1] 48`", "`Java` above `21`", "`[1] 33`"], "answer": 0, "explain": "`table()` lists the categories alphabetically: C++ (1), Java (2), JavaScript (3), Python (4), Rust (5). Position 2 is Java, and double brackets drop the name, so R prints `[1] 21`."},
-  {"q": "In `pie(freq.tab)`, how many degrees of the circle does the C++ slice take? (1 decimal)", "type": "numeric", "answer": 88.0, "tolerance": 0.06, "unit": "°", "explain": "A slice's angle is its relative frequency of 360°: $33/135 = 0.2444$, and $0.2444 \\times 360° = 88.0°$."},
-  {"type": "fill", "q": "Fill the blank so the title's $n$ is computed from the data frame, not typed.", "code": "barplot(freq.tab, col=\"lightgreen\", xlab=\"Language\", ylab=\"Frequency\",\n        main=paste0(\"Favourite Language (n = \", ___(cohort), \")\"))", "answer": ["nrow"], "explain": "`nrow(cohort)` counts the rows, one per student, so the title reads n = 135 and stays right if the data changes."}
+  {"q": "Compute $\\hat{p}$ for Luminary in these 800 characters. (4 decimals)", "type": "numeric", "answer": 0.2025, "tolerance": 0.0001, "explain": "$\\hat{p} = 162/800 = 0.2025$, about 20.3 % of the sampled characters."},
+  {"q": "What is the modal ascendancy?", "type": "text", "answer": ["Luminary"], "explain": "Luminary has the largest frequency, 162. The mode is the category, not the count."},
+  {"q": "In `pie(hc.tab)`, how many degrees does the Chieftain slice take? (1 decimal)", "type": "numeric", "answer": 49.5, "tolerance": 0.06, "unit": "°", "explain": "Relative frequency × 360°: $110/800 = 0.1375$, and $0.1375 \\times 360° = 49.5°$."},
+  {"q": "Chieftain (110) and Elementalist (109) differ by one character. Which chart shows which one is larger?", "options": ["The bar chart", "The pie chart", "Both equally", "Neither"], "answer": 0, "explain": "The bars share one Frequency axis, so 110 against 109 is read off the heights. The two slices are 49.5° and 49.1°, which the eye cannot separate: a pie shows fraction of the whole, a bar chart compares."},
+  {"q": "`top3` holds the Chieftain, Elementalist and Luminary counts. What does `top3[[2]]` print?", "options": ["`[1] 109`", "`[1] 110`", "`Elementalist` above `109`", "`[1] 162`"], "answer": 0, "explain": "`table()` lists the categories alphabetically: Chieftain (1), Elementalist (2), Luminary (3). Position 2 is Elementalist, and double brackets drop the name, so R prints `[1] 109`."},
+  {"type": "fill", "q": "Fill the blank so the title's $n$ is computed from the data frame, not typed.", "code": "barplot(hc.tab, col=\"lightgreen\", ylab=\"Frequency\",\n        main=paste0(\"Hardcore ascendancies (n = \", ___(hc), \")\"))", "answer": ["nrow"], "explain": "`nrow(hc)` counts the rows, one per character, so the title reads n = 800 and stays right if the data changes."}
 ]
 ```
 

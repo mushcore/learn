@@ -1,9 +1,10 @@
 ---
 title: Histograms: the class recipe
-minutes: 20
+minutes: 24
 ---
+<!-- facts: poe1.data.divine-chaos-mirage, classic.data.monsters -->
 
-Histograms are **"most common and important"** (the instructor's margin note): a bar chart for numerical data that groups values into equal-width classes and gives every possible $X$ value a place on the axis.
+Histograms are **"most common and important"** (the instructor's margin note): a bar chart for numerical data that groups values into equal-width classes and gives every possible $X$ value a place on the axis. A league of daily Divine Orb prices is that kind of list.
 
 ## Three steps
 
@@ -128,18 +129,55 @@ hist-builder
 { "preset": "Old Faithful eruptions (n = 272)", "width": 2, "title": "Width 2.000: too few classes" }
 ```
 
-## Choose classes for 150 fish lengths
+## The recipe on 137 days of Mirage Divine prices
 
-A sample of $n = 150$ fish lengths, measured in cm to one decimal, runs from a minimum of 12.4 to a maximum of 47.9.
+poe.ninja recorded a Divine Orb price in Chaos Orbs, PoE1's base currency, for each of the 137 days of the Mirage league, from 36.3 to 612.0 chaos [PoE1, 3.28 Mirage Divine price series from poe.ninja, checked 2026-10-27]. A real $n$ and a real range give the recipe's $\sqrt{n}$ and width with nothing invented.
 
 ```quiz
 [
-  {"q": "Initial number of classes $\\sqrt{n}$? (1 decimal)", "type": "numeric", "answer": 12.2, "tolerance": 0.06, "explain": "$\\sqrt{150} = 12.247 \\approx 12.2$."},
-  {"q": "Ideal class width $R/\\sqrt{n}$? (2 decimals)", "type": "numeric", "answer": 2.91, "tolerance": 0.015, "explain": "$R = 47.9 - 12.4 = 35.5$, and $35.5/12.2 = 2.91$ (with the unrounded $\\sqrt{n}$, 2.90)."},
-  {"q": "Which actual class width fits the recipe?", "options": ["3.0", "2.90", "2.898", "35.5"], "answer": 0, "explain": "The width must have the data's precision (one decimal) and be a nice number: 2.90 rounds to the nice 3.0."},
-  {"q": "Start the first class at 12.0 (the minimum rounded down) with width 3.0. What is its upper class limit?", "type": "numeric", "answer": 14.9, "tolerance": 0.0001, "explain": "The next lower limit is 15.0; the upper limit is one unit of precision (0.1) below it: 14.9."},
-  {"q": "With `breaks=seq(12, 48, by=3)` and `right=FALSE`, a length of exactly 24.0 is counted in which class?", "options": ["24.0 to 26.9", "21.0 to 23.9", "both", "neither"], "answer": 0, "explain": "right=FALSE makes each class [lower, next lower): 21 ≤ X < 24 excludes 24.0, which starts the class 24.0 to 26.9."},
-  {"type": "fill", "q": "Fill the last break so the classes run past the maximum 47.9.", "code": "hist(lengths, breaks=seq(12, ___, by=3), right=FALSE,\n     xlab=\"Length (cm)\", ylab=\"Frequency\",\n     main=paste0(\"Fish lengths (n = \", length(lengths), \")\"))", "answer": ["48"], "explain": "Boundaries 12, 15, …, 45, 48: the class [45, 48) holds the maximum 47.9, so the sequence must reach 48. That makes $(48 - 12)/3 = 12$ classes, close to $\\sqrt{n} = 12.2$."}
+  {"q": "Mirage: $n = 137$, min 36.3, max 612.0. Initial number of classes $\\sqrt{n}$? (1 decimal)", "type": "numeric", "answer": 11.7, "tolerance": 0.05, "explain": "$\\sqrt{137} = 11.70$."},
+  {"q": "Ideal class width $R/\\sqrt{n}$, using $\\sqrt{n} = 11.7$? (2 decimals)", "type": "numeric", "answer": 49.21, "tolerance": 0.03, "explain": "$R = 612.0 - 36.3 = 575.7$ chaos, and $575.7/11.7 = 49.21$ (49.19 with the unrounded $\\sqrt{137}$)."}
+]
+```
+
+$$\sqrt{137} = 11.7, \qquad \frac{R}{\sqrt{n}} = \frac{612.0 - 36.3}{11.7} = \frac{575.7}{11.7} = 49.2$$
+
+Prices carry one decimal; the nice number near 49.2 is a width of 50.0. The first lower limit is the minimum rounded down, 30.0, so the classes run 30.0–79.9, 80.0–129.9, …, 580.0–629.9: twelve, close to 11.7. Their frequencies are 1, 3, 8, 5, 18, 26, 13, 10, 7, 19, 14, 13, summing to 137. Four days at exactly 280.0 count in 280.0–329.9: `right = FALSE` keeps a lower limit in its own class.
+
+```r
+mirage <- read.csv("poe1-ninja-divine-chaos-mirage.csv")
+hist(mirage$receive_value_chaos,
+     breaks=seq(30, 630, by=50), right=FALSE,
+     xlab="Divine Orb price (chaos)", ylab="Frequency",
+     main=paste0("Mirage Divine prices (n = ", nrow(mirage), ")"))
+```
+
+Two humps, 280.0–329.9 and 480.0–529.9, and a thin left tail: three of the four days below 130 chaos are the league's first three.
+
+### The 12 Mirage classes, built and tallied
+
+```widget
+hist-builder
+{ "data": "36.3 86.2 97.9 145.0 169.1 171.4 175.0 175.8 180.0 191.0 199.0 242.4 240.0 245.2 250.0 250.0 253.0 254.0 250.8 250.0 253.0 252.5 260.0 260.5 265.0 268.6 274.7 280.0 284.0 284.5 295.0 280.0 307.0 310.0 300.0 300.5 306.5 305.5 310.0 302.5 303.8 320.0 325.2 320.0 235.0 312.0 327.2 312.0 323.0 321.3 301.0 325.0 330.0 331.3 338.3 350.0 358.0 370.0 367.0 368.0 375.0 374.0 368.5 379.0 352.0 384.4 389.0 397.0 400.0 420.0 412.0 400.0 412.0 404.0 400.0 436.0 459.0 460.0 470.0 479.0 486.0 500.0 500.0 514.7 549.1 551.4 569.0 600.0 562.0 584.7 600.0 612.0 600.0 598.0 593.5 593.0 589.8 582.0 580.0 580.0 553.0 560.0 540.0 542.0 540.0 536.0 433.2 542.5 512.0 545.0 495.5 140.0 175.0 500.0 120.0 172.0 208.0 280.0 208.0 244.0 280.0 460.0 500.0 500.0 500.0 500.0 500.0 518.0 495.0 497.0 515.0 515.0 510.0 515.0 571.0 600.0 570.0", "width": 50, "start": 30, "label": "Divine Orb price (chaos)", "title": "Mirage: 137 daily Divine prices, width 50.0 from 30.0" }
+```
+
+```widget
+hist-tally-play
+{ "data": "36.3 86.2 97.9 145.0 169.1 171.4 175.0 175.8 180.0 191.0 199.0 242.4 240.0 245.2 250.0 250.0 253.0 254.0 250.8 250.0 253.0 252.5 260.0 260.5 265.0 268.6 274.7 280.0 284.0 284.5 295.0 280.0 307.0 310.0 300.0 300.5 306.5 305.5 310.0 302.5 303.8 320.0 325.2 320.0 235.0 312.0 327.2 312.0 323.0 321.3 301.0 325.0 330.0 331.3 338.3 350.0 358.0 370.0 367.0 368.0 375.0 374.0 368.5 379.0 352.0 384.4 389.0 397.0 400.0 420.0 412.0 400.0 412.0 404.0 400.0 436.0 459.0 460.0 470.0 479.0 486.0 500.0 500.0 514.7 549.1 551.4 569.0 600.0 562.0 584.7 600.0 612.0 600.0 598.0 593.5 593.0 589.8 582.0 580.0 580.0 553.0 560.0 540.0 542.0 540.0 536.0 433.2 542.5 512.0 545.0 495.5 140.0 175.0 500.0 120.0 172.0 208.0 280.0 208.0 244.0 280.0 460.0 500.0 500.0 500.0 500.0 500.0 518.0 495.0 497.0 515.0 515.0 510.0 515.0 571.0 600.0 570.0", "width": 50, "start": 30, "label": "Divine Orb price (chaos)" }
+```
+
+## Choose classes for 87 Classic monster levels
+
+meowdb's Classic monster table lists 92 monsters; dropping the 5 with 0 EXP (four Lv 200 test mobs and the training dummy) leaves 87, with whole-number levels from 1 to 80 [Classic, meowdb monster table, Grand Launch build, checked 2026-10-27]. Eight of them are exactly Lv 30.
+
+```quiz
+[
+  {"q": "Initial number of classes $\\sqrt{n}$? (1 decimal)", "type": "numeric", "answer": 9.3, "tolerance": 0.05, "explain": "$\\sqrt{87} = 9.327 \\approx 9.3$."},
+  {"q": "Ideal class width $R/\\sqrt{n}$, using $\\sqrt{n} = 9.3$? (2 decimals)", "type": "numeric", "answer": 8.49, "tolerance": 0.03, "explain": "$R = 80 - 1 = 79$ levels, and $79/9.3 = 8.49$ (8.47 with the unrounded $\\sqrt{87}$)."},
+  {"q": "Which actual class width fits the recipe?", "options": ["10", "8.49", "8.5", "79"], "answer": 0, "explain": "Levels are whole numbers, so the width is a whole number, and 10 is the nice number near 8.49. From a first lower limit of 1 that gives 8 classes, 1–10 up to 71–80, close to $\\sqrt{n} = 9.3$."},
+  {"q": "Start the first class at the minimum, 1, with width 10. What is its upper class limit?", "type": "numeric", "answer": 10, "tolerance": 0, "explain": "The next lower limit is 11; the upper limit is one unit of precision (1 level) below it: 10."},
+  {"q": "With `breaks=seq(1, 81, by=10)` and `right=FALSE`, the eight Lv 30 monsters are counted in which class?", "options": ["21 to 30", "31 to 40", "half in each", "neither"], "answer": 0, "explain": "The classes are [21, 31) and [31, 41); 30 is below 31, so all eight count in 21–30. With a first lower limit of 0 instead, the break at 30 would move all eight up into 30–39."},
+  {"type": "fill", "q": "Fill the last break so the classes run past the maximum level 80.", "code": "hist(lv, breaks=seq(1, ___, by=10), right=FALSE,\n     xlab=\"Level\", ylab=\"Frequency\",\n     main=paste0(\"Classic monster levels (n = \", length(lv), \")\"))", "answer": ["81"], "explain": "Boundaries 1, 11, …, 71, 81: the class [71, 81) holds the maximum 80, so the sequence must reach 81. That makes $(81 - 1)/10 = 8$ classes."}
 ]
 ```
 

@@ -1,7 +1,8 @@
 ---
 title: Continuous random variables: why P(X = x) = 0
-minutes: 12
+minutes: 15
 ---
+<!-- facts: classic.formula.damage-roll, poe1.damage.uniform-roll -->
 
 Unit 4's random variables counted things: heads, defective chips, requests per minute. This unit's variables measure things, and a measured variable has so many possible values that no single one of them can carry any probability. Probability has to become area.
 
@@ -47,6 +48,26 @@ $$P(X \le b) = P(X < b), \qquad P(a \le X \le b) = P(a < X < b)$$
 
 This is the opposite of Unit 4. For a binomial $X$, $P(X \le 4)$ includes the bar at 4 and $P(X < 4) = P(X \le 3)$ does not; the two differ by $P(X = 4)$, which is not zero. For a continuous $X$ the "bar" at 4 has no width, so "at most 4 minutes" and "less than 4 minutes" are the same question.
 
+## Classic's multiplier B at one exact value
+
+In MapleStory Classic, meowdb's reconstructed damage formula draws a base multiplier B as `uniform(0.8, 1.0)` on every hit [Classic, meowdb's Classic World formulas page, no version shown, checked 2026-10-27]. B is drawn from an interval, not from a list, so it is continuous like the weight: any single value of B is an interval of width zero.
+
+```quiz
+[
+  {"q": "P(B = 0.9) = ?", "type": "numeric", "answer": 0, "tolerance": 0.0001, "explain": "0.9 exactly is an interval from 0.9 to 0.9, width zero, so its area is 0."},
+  {"q": "B's flat density puts half its area below the midpoint: P(B ≤ 0.9) = 0.5. P(B < 0.9) = ?", "type": "numeric", "answer": 0.5, "tolerance": 0.0001, "explain": "Dropping the single point 0.9 removes zero area: P(B < 0.9) = P(B ≤ 0.9) = 0.5."}
+]
+```
+
+$P(B = 0.9) = \mathbf{0}$, and so $P(B < 0.9) = P(B \le 0.9) = \mathbf{0.5}$. A hit still gets some multiplier; every particular one has probability 0.
+
+### B's bounds brought together at 0.9
+
+```widget
+pdf-area
+{ "dist": "uniform", "a": 0.8, "b": 1.0, "lo": 0.85, "hi": 0.95, "showCdf": false, "title": "Classic base multiplier B, uniform on [0.8, 1.0]: bring the bounds together at 0.9" }
+```
+
 ## The three distributions in this unit
 
 Slide wording: "In this course, we will consider the following continuous probability distributions: Uniform, Normal, Exponential."
@@ -55,17 +76,17 @@ Slide wording: "In this course, we will consider the following continuous probab
 - **Normal**: the bell curve, with $\mu$ and $\sigma$ as its parameters. Heights, IQ, measurement noise.
 - **Exponential**: a right-skewed density starting at 0; the waiting time in a memoryless system. Time between web requests.
 
-## Endpoints for a sprint time and a goal count
+## Endpoints for B and for a PoE1 Fireball hit
 
-X = a sprinter's 100 m time in seconds, a continuous variable with P(X ≤ 11.2) = 0.64.
+B is uniform on [0.8, 1.0] with P(B ≤ 0.95) = 0.75. A PoE1 level 20 Fireball's hit damage D is a whole number rolled uniformly from 1095 to 1643 [PoE1, 3.29 Allflame, poewiki Luck page, checked 2026-10-27].
 
 ```quiz
 [
-  {"q": "P(X < 11.2) = ? (2 decimals)", "type": "numeric", "answer": 0.64, "tolerance": 0.006, "explain": "For a continuous X the single point 11.2 has probability 0, so excluding it changes nothing: P(X < 11.2) = P(X ≤ 11.2) = 0.64."},
-  {"q": "P(X = 11.2) = ?", "type": "numeric", "answer": 0, "tolerance": 0.0001, "explain": "An exact value is an interval of width zero, so its area under the density is 0. A stopwatch reading of 11.2 is really an interval such as 11.15 to 11.25."},
-  {"q": "Write P(X ≥ 11.2) as one subtraction with the number in, no spaces.", "type": "text", "answer": ["1-0.64", "1-.64", "1-0.6400"], "explain": "X ≥ 11.2 is the complement of X < 11.2, which has the same probability as X ≤ 11.2: 1 − 0.64 = 0.36."},
-  {"q": "Y = the number of goals in a hockey game. Is Y discrete or continuous?", "type": "text", "answer": ["discrete"], "explain": "Goals are counted, 0, 1, 2, …: a countable set of values, so Y is discrete and its single values carry probability."},
-  {"q": "For the goal count Y, P(Y ≤ 4) = 0.80 and P(Y = 4) = 0.12. P(Y < 4) = ? (2 decimals)", "type": "numeric", "answer": 0.68, "tolerance": 0.006, "explain": "For a discrete variable the bar at 4 has probability, so dropping it matters: P(Y < 4) = P(Y ≤ 4) − P(Y = 4) = 0.80 − 0.12 = 0.68. Only a continuous variable lets ≤ and < give the same answer."}
+  {"q": "P(B < 0.95) = ? (2 decimals)", "type": "numeric", "answer": 0.75, "tolerance": 0.006, "explain": "For a continuous B the single point 0.95 has probability 0, so excluding it changes nothing: P(B < 0.95) = P(B ≤ 0.95) = 0.75."},
+  {"q": "P(B = 0.95) = ?", "type": "numeric", "answer": 0, "tolerance": 0.0001, "explain": "An exact value is an interval of width zero, so its area under the density is 0."},
+  {"q": "Write P(B ≥ 0.95) as one subtraction with the number in, no spaces.", "type": "text", "answer": ["1-0.75", "1-.75", "1-0.7500"], "explain": "B ≥ 0.95 is the complement of B < 0.95, which has the same probability as B ≤ 0.95: 1 − 0.75 = 0.25."},
+  {"q": "Is the Fireball hit damage D discrete or continuous?", "type": "text", "answer": ["discrete"], "explain": "D is a whole number from 1095 to 1643: 549 values that can be listed, so D is discrete and each single value carries probability 1/549 = 0.0018."},
+  {"q": "For D, P(D ≤ 1369) = 275/549 = 0.5009 and P(D = 1369) = 1/549 = 0.0018. P(D < 1369) = ? (4 decimals)", "type": "numeric", "answer": 0.4991, "tolerance": 0.0001, "explain": "For a discrete variable the bar at 1369 has probability, so dropping it matters: P(D < 1369) = 274/549 = 0.5009 − 0.0018 = 0.4991. Only a continuous variable lets ≤ and < give the same answer."}
 ]
 ```
 

@@ -2,6 +2,7 @@
 title: Percentiles and the memoryless property: the bank teller
 minutes: 20
 ---
+<!-- facts: none; U4 Poisson has no bank rate, so there is no game waiting time -->
 
 Two questions remain for an exponential variable: which wait is longer than 95 % of waits (a percentile, read backwards from $F$), and what the time already spent tells you about the time still to come (nothing, which is what memoryless means).
 

@@ -1,13 +1,37 @@
 ---
 title: Geometric: trials until the first success
-minutes: 18
+minutes: 22
 ---
+<!-- facts: gms.starforce.rates-0-14, gms.starforce.star-catch, classic.cashshop.mfc-rates, classic.cashshop.mfc-price, gms.box.divine-wishing-bell, poe1.fusing.six-link-measured -->
 
-The binomial counts successes in a fixed number of trials. The geometric distribution turns the question around: keep running the same trials and count how many it takes to reach the first success.
+Star Force, the enhancement that adds stars to gear, fails a 14→15 tap more often than it lands, so the player taps until it does. The geometric distribution counts those taps: the binomial's trials, with the trial count as the variable.
 
 ## X = the number of trials it takes to obtain the first "success"
 
 Slide wording: the Geometric Distribution is *based on the same assumptions as the binomial distribution: $n$ trials each with probability of success $p$*. What changes is the variable: $X$ = *the number of trials it takes to obtain the first "success"*. Its possible values are 1, 2, 3, … with no upper limit, because there is no fixed $n$: the trials stop when the first success arrives. A binomial $X$ runs from 0 to $n$; a geometric $X$ starts at 1 (the first trial can itself be the success) and is unbounded.
+
+## Taps until the first 14→15 success
+
+A 14→15 tap succeeds 30 % [GMS, the wiki's Star Force table 14→15, checked 2026-10-27] of the time. Below 15 stars on a non-Superior item every tap has that same p, a failure keeps the star and nothing is destroyed, so X = the number of taps to the first success is geometric. From 15 stars up a tap can also destroy the item, a third outcome, and the count stops being geometric. The wiki's table leaves out the Star Catch bonus that v.271 builds into every tap, so live success is slightly higher.
+
+```quiz
+[
+  {"q": "A 14→15 tap succeeds with p = 0.30. P(the first success is on the 3rd tap) = ? (4 decimals)", "type": "numeric", "answer": 0.147, "tolerance": 0.0001, "explain": "Fail, fail, succeed: q · q · p = 0.70 × 0.70 × 0.30 = 0.49 × 0.30 = 0.1470."}
+]
+```
+
+Two failed taps, each with $q = 0.70$, then the success with $p = 0.30$:
+
+$$P(3) = 0.70 \times 0.70 \times 0.30 = 0.1470, \qquad \mu = \frac{1}{0.30} = 3.33 \text{ taps}, \qquad \sigma = \sqrt{\frac{0.70}{0.30^2}} = 2.79$$
+
+In R, `dgeom(2, 0.3)`: R counts failures before the first success, so the 3rd tap is $x - 1 = 2$ failures.
+
+### Fourteen-to-fifteen taps as boxes and bars
+
+```widget
+geometric-calc
+{ "p": 0.3, "x": 3, "presets": false, "title": "Taps from 14 to 15 stars: p = 0.30, the first success on tap 3" }
+```
 
 ## The help line: P(3)
 
@@ -118,18 +142,18 @@ geometric-calc
 { "p": 0.05, "x": 15, "preset": "expert shot misses (p = 0.05)", "title": "Practice Problem 23: fourteen hits, then the first miss" }
 ```
 
-## Cold calls until the first sale
+## Crates, bells and Fusings until the first prize
 
-Each cold call a salesperson makes ends in a sale with probability 0.35, independently of the other calls. X = the number of calls up to and including the first sale.
+A Mystery Fashion Crate (a Classic cash-shop box) and a Divine Wishing Bell (a GMS reward box) each give one reward from a published rate table, and an Orb of Fusing rerolls an item's socket links with the same measured chance each time, so every try has the same p and X counts tries up to the first prize.
 
 ```quiz
 [
-  {"q": "Name the distribution of X (one word).", "type": "text", "answer": ["geometric", "geometric distribution"], "explain": "X counts the trials it takes to get the first success, with the same p = 0.35 on every independent call: geometric, possible values 1, 2, 3, …. There is no fixed n, so it is not binomial."},
-  {"q": "P(X = 4), the first sale on the 4th call = ? (4 decimals)", "type": "numeric", "answer": 0.0961, "tolerance": 6e-05, "explain": "Three failures then a success: q³ · p = 0.65³ × 0.35 = 0.274625 × 0.35 = 0.0961."},
-  {"type": "fill", "q": "Complete the R call for P(X = 4).", "code": "dgeom(___, 0.35)", "answer": ["3"], "explain": "R counts the failures before the first success, so the lecture's X = 4 is R's 4 − 1 = 3: dgeom(3, 0.35) = 0.0961188. dgeom(4, 0.35) would be the first sale on the 5th call."},
-  {"q": "E[X], the expected number of calls = ? (2 decimals)", "type": "numeric", "answer": 2.86, "tolerance": 0.006, "explain": "μ = 1/p = 1/0.35 = 2.8571 ≈ 2.86 calls."},
-  {"q": "σ = ? (2 decimals)", "type": "numeric", "answer": 2.3, "tolerance": 0.006, "explain": "σ² = (1 − p)/p² = 0.65/0.1225 = 5.3061; σ = 2.3035 ≈ 2.30."},
-  {"q": "P(X ≥ 5), no sale in the first 4 calls = ? (4 decimals)", "type": "numeric", "answer": 0.1785, "tolerance": 6e-05, "explain": "X ≥ 5 means the first 4 calls all fail: q⁴ = 0.65⁴ = 0.1785. The long way, 1 − P(1) − P(2) − P(3) − P(4), gives the same; in R, 1 − pgeom(3, 0.35)."}
+  {"q": "Camping Boots come out of a Mystery Fashion Crate at 3.00 % [Classic, Grand Launch Cash Shop crate rates, checked 2026-10-27]. X = crates opened until the first Camping Boots. P(X = 10) = ? (4 decimals)", "type": "numeric", "answer": 0.0228, "tolerance": 0.0001, "explain": "Geometric with p = 0.03, q = 0.97. Nine misses, then the boots: q⁹ · p = 0.97⁹ × 0.03 = 0.760231 × 0.03 = 0.0228."},
+  {"type": "fill", "q": "Complete the R call for the same P(X = 10), first Camping Boots on the 10th crate.", "code": "dgeom(___, 0.03)", "answer": ["9"], "explain": "R counts the failures before the first success, so the lecture's X = 10 is R's 10 − 1 = 9: dgeom(9, 0.03) = 0.02280693."},
+  {"q": "A crate costs 3,500 NX [Classic, Grand Launch Cash Shop price, checked 2026-10-27] bought one at a time. Expected NX spent to get the first Camping Boots = ? (to the NX)", "type": "numeric", "answer": 116667, "tolerance": 1, "explain": "E[X] = 1/p = 1/0.03 = 33.3333 crates. Each crate costs 3,500 NX, so the expected spend is 3,500 × 33.3333 = 116,667 NX."},
+  {"q": "A Divine Wishing Bell gives a 100% 17-Star Enhancement (Lv. 150) at 0.50 % and a 100% 17-Star Enhancement (Lv. 160) at 0.20 % [GMS, Divine Wishing Bell rates post 2026-01-20, checked 2026-10-27]. p = P(one bell gives either 17-Star Enhancement) = ? (4 decimals)", "type": "numeric", "answer": 0.007, "tolerance": 0.0001, "explain": "One bell gives exactly one reward, so the two rows are mutually exclusive and add: 0.0050 + 0.0020 = 0.0070."},
+  {"q": "With p = 0.007 per bell, P(no 17-Star Enhancement in the first 100 bells) = P(X ≥ 101) = ? (4 decimals)", "type": "numeric", "answer": 0.4954, "tolerance": 0.0001, "explain": "X ≥ 101 means the first 100 bells all miss: q¹⁰⁰ = 0.993¹⁰⁰ = 0.4954. In R, 1 - pgeom(99, 0.007): 100 − 1 = 99 failures, since R counts failures. About half of players who open 100 bells still have none."},
+  {"q": "A 2017 test on a 20 %-quality item measured a six-link chance of about 1 in 1000 per Orb of Fusing [PoE1, 2017 test cited by the wiki at 3.29, n = 100 000 Fusings, checked 2026-10-27]. Taking p = 0.001, P(six-linked within 1500 Fusings) = P(X ≤ 1500) = ? (4 decimals)", "type": "numeric", "answer": 0.777, "tolerance": 0.0001, "explain": "P(X ≤ x) = 1 − q^x = 1 − 0.999¹⁵⁰⁰ = 1 − 0.2230 = 0.7770, the wiki's \"about a 77% chance\". In R, pgeom(1499, 0.001). The test predates the 3.29 socket rework, so treat it as the 2017 rate."}
 ]
 ```
 

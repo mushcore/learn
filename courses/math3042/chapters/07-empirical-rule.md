@@ -1,9 +1,10 @@
 ---
 title: 68–95–99.7 rule
-minutes: 15
+minutes: 20
 ---
+<!-- facts: classic.data.monsters, gms.data.ranking-level-hero-2026-10-27 -->
 
-If $X$ follows a **normal distribution**, you don't need to integrate anything to know roughly what fraction of values fall near the mean. The **empirical rule** gives you three fixed percentages, built entirely from $\mu$ and $\sigma$ (or $\bar{X}$ and $s$ for a sample).
+If $X$ follows a **normal distribution**, the **empirical rule** gives three fixed percentages for the share of values near the mean, built entirely from $\mu$ and $\sigma$ (or $\bar{X}$ and $s$ for a sample). If $X$ is not bell-shaped, those percentages can be far off, and a skewed MapleStory Classic monster list shows by how much.
 
 ## The three bands
 
@@ -46,6 +47,27 @@ Because the normal curve is symmetric, you can split each band's *leftover* prob
 Every band question is adding and subtracting slices of 68/95/99.7 on a curve symmetric about $\mu$. The eight slices from $\mu-3\sigma$ to $\mu+3\sigma$ are 0.15, 2.35, 13.5, 34, 34, 13.5, 2.35, 0.15 percent, and they sum to 100.
 :::
 
+## Classic World monster HP: the rule fails on a skewed list
+
+meowdb's monster table for MapleStory Classic World, Nexon's separate classic-era server, lists 92 monsters with their HP [Classic, Classic World Grand Launch monster table, checked 2026-10-27]. Drop the 5 rows that give 0 EXP (four Lv 200 "Super" test mobs and the Lv 30 Straw Training Dummy) and 87 monsters remain. Most have a few hundred to a few thousand HP, with median 1 001, but bosses and high-level monsters run from Mano's 7 420 up to Jr. Balrog's 325 400. The rule assumes a bell and this list is heavily right-skewed, so the rule should fail here.
+
+The 87 values have $\bar{X}$ = 8 610 HP and $s$ = 36 800 HP (unrounded 8 614.07 and 36 751.8).
+
+```quiz
+[
+  {"q": "Classic World monster HP, 87 monsters: $\\bar{X} = 8614.07$, $s = 36751.8$. Lower end of $\\bar{X} \\pm s$? (3 significant digits)", "type": "numeric", "answer": -28100, "tolerance": 50, "unit": "HP", "explain": "$\\bar{X} - s = 8614.07 - 36751.8 = -28137.7$, or −28 100 HP to 3 significant digits. A negative HP: no monster can sit at or below it, so nothing lies below the band, where a bell would put 16% of values."},
+  {"q": "83 of the 87 HP values fall inside $\\bar{X} \\pm s$ (−28 100 to 45 400 HP). What percentage is that? (1 decimal)", "type": "numeric", "answer": 95.4, "tolerance": 0.05, "unit": "%", "explain": "$83/87 = 0.9540 = 95.4\\%$. The rule says about 68%. Only the four biggest monsters (Shade 47 000, Zombie Mushmom 66 640, Rotten Mushmom 86 400, Jr. Balrog 325 400) are outside: the few huge values inflate $s$ until one $s$ covers nearly the whole list."}
+]
+```
+
+| Band | Interval (HP) | Monsters inside | Share | Rule says |
+|---|---|---|---|---|
+| $\bar{X} \pm s$ | −28 100 to 45 400 | 83 | 95.4% | 68% |
+| $\bar{X} \pm 2s$ | −64 900 to 82 100 | 85 | 97.7% | 95% |
+| $\bar{X} \pm 3s$ | −102 000 to 119 000 | 86 | 98.9% | 99.7% |
+
+Three things break. Every lower end is negative, so nothing lies below any band: there is no lower tail at all. The one-$s$ band holds 95.4%, not 68%. And the three-$s$ band still misses Jr. Balrog, 8.62 standard deviations above the mean: 1.1% of the list sits outside $\bar{X} \pm 3s$ where a bell leaves 0.3%. The rule is not roughly right here; it is the wrong tool. A mean of 8 610 against a median of 1 001 is the warning to check before using it, and Chebyshev's rule (next lesson) is the bound that still holds.
+
 ## Lab 1 pencil problem 5: moisture content
 
 Moisture content is normal with $\mu = 18$, $\sigma = 0.5$.
@@ -68,17 +90,17 @@ $6280.683 - 3(139.7298) = 5861.493$ to $6280.683 + 3(139.7298) = 6699.873$
 
 By the empirical rule, 99.7% of values (assuming approximate normality) fall inside that interval, so the chance of a value falling **outside** $\pm 3s$ is $100\% - 99.7\% = 0.3\%$.
 
-## The 68-95-99.7 rule for battery life
+## The rule against the top 500 Heroes' levels
 
-Battery life of a phone model is normal with $\mu = 40$ hours and $\sigma = 3$ hours.
+Nexon's North America ranking lists the top 500 Heroes, a MapleStory warrior job, at levels 293 to 300 [GMS, v.271 Hero ranking, checked 2026-10-27]: 85 at 293, 102 at 294, 200 at 295, 59 at 296, 24 at 297, 13 at 298, 11 at 299 and 6 at 300. From those counts $\bar{X} = 294.896$ and $s = 1.43991$. The list piles up at 295 but stops at 293, because rank 501 is cut off.
 
 ```quiz
 [
-  {"q": "Upper end of the interval holding 99.7% of battery lives?", "type": "numeric", "answer": 49, "tolerance": 0, "unit": "h", "explain": "$\\mu + 3\\sigma = 40 + 3(3) = 49$ hours (the interval is 31 to 49)."},
-  {"q": "What percentage of batteries last more than 46 hours?", "type": "numeric", "answer": 2.5, "tolerance": 0.05, "unit": "%", "explain": "$46 = 40 + 2(3) = \\mu + 2\\sigma$. 95% is inside $\\mu \\pm 2\\sigma$, so 5% is outside, split evenly: 2.5% above 46."},
-  {"q": "What percentage of batteries last less than 37 hours?", "type": "numeric", "answer": 16, "tolerance": 0.5, "unit": "%", "explain": "$37 = \\mu - \\sigma$. Below the mean is 50%; between $\\mu - \\sigma$ and $\\mu$ is half of 68% = 34%; so $50 - 34 = 16\\%$."},
-  {"q": "What percentage last between 34 and 43 hours?", "type": "numeric", "answer": 81.5, "tolerance": 0.3, "unit": "%", "explain": "34 is $\\mu - 2\\sigma$ and 43 is $\\mu + \\sigma$. From $\\mu - 2\\sigma$ to $\\mu$: half of 95% = 47.5%. From $\\mu$ to $\\mu + \\sigma$: half of 68% = 34%. Total $47.5 + 34 = 81.5\\%$."},
-  {"type": "shade", "q": "Shade the batteries lasting between 34 and 43 hours.", "mu": 40, "sigma": 3, "answer": 81.5, "tolerance": 1, "lo": -2, "hi": 1, "explain": "Drag the handles to $-2\\sigma$ (34) and $+1\\sigma$ (43). The rule gives $47.5 + 34 = 81.5\\%$; the exact normal area is 81.86%."}
+  {"q": "Top 500 Heroes: $\\bar{X} = 294.896$, $s = 1.43991$. Upper end of $\\bar{X} \\pm s$? (2 decimals, because the band ends fall between whole levels)", "type": "numeric", "answer": 296.34, "tolerance": 0.005, "explain": "$\\bar{X} + s = 294.896 + 1.43991 = 296.336 \\approx 296.34$. The lower end is $294.896 - 1.43991 = 293.456$, so the band holds levels 294, 295 and 296. Rounding to 3 significant digits would turn 293.456 into 293 and wrongly put level 293 inside; at $2s$ the same happens to 297.776 and level 298."},
+  {"q": "What percentage of the 500 Heroes sit inside $\\bar{X} \\pm s$? (1 decimal)", "type": "numeric", "answer": 72.2, "tolerance": 0.05, "unit": "%", "explain": "Levels 294 to 296: $102 + 200 + 59 = 361$ Heroes, and $361/500 = 72.2\\%$. The rule says about 68%: close."},
+  {"q": "What percentage sit inside $\\bar{X} \\pm 2s$? (1 decimal)", "type": "numeric", "answer": 94.0, "tolerance": 0.05, "unit": "%", "explain": "$2s = 2.87982$, so the band is $292.016$ to $297.776$: levels 293 to 297. $85 + 102 + 200 + 59 + 24 = 470$, and $470/500 = 94.0\\%$ against the rule's 95%."},
+  {"q": "What percentage sit inside $\\bar{X} \\pm 3s$? (1 decimal)", "type": "numeric", "answer": 98.8, "tolerance": 0.05, "unit": "%", "explain": "$3s = 4.31973$, so the band is $290.576$ to $299.216$: levels 293 to 299, $500 - 6 = 494$ Heroes, $494/500 = 98.8\\%$ against the rule's 99.7%. The six level-300 Heroes are the ones outside."},
+  {"q": "Every Hero outside $\\bar{X} \\pm 2s$ is above the mean.", "type": "tf", "answer": true, "explain": "The lower end, 292.016, is below the lowest level on the list (293), so nobody falls out the bottom. The 30 Heroes outside ($13 + 11 + 6$ at levels 298 to 300) are all on the high side. A bell splits the outside 5% evenly between two tails; a list cut off at rank 500 has no lower tail, so the rule fits only roughly."}
 ]
 ```
 

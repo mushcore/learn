@@ -2,6 +2,7 @@
 title: The standard normal distribution and the Z table
 minutes: 20
 ---
+<!-- facts: none; no bank quantity is measured or published as normal -->
 
 There is no formula for the area under a normal curve, so the areas were computed once and printed in a table. One table is enough, for one particular normal curve: the standard normal, with $\mu = 0$ and $\sigma = 1$. This lesson is how to read that table forwards, for an area, and backwards, for a $z$.
 

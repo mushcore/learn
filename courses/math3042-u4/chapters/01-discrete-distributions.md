@@ -1,9 +1,10 @@
 ---
 title: Discrete random variables, their distributions, mean and standard deviation
-minutes: 22
+minutes: 25
 ---
+<!-- facts: poe1.chaos.affix-count, gms.scroll.chaos-outcomes, gms.box.lucky-jewel-box, poe1.sockets.count-weights -->
 
-A probability distribution lists a random variable's values with their probabilities, and its mean and standard deviation summarize that list the way $\bar{X}$ and $s$ summarize a data set.
+How many affixes does one Chaos Orb leave, on average? A probability distribution lists the values with their probabilities, and its mean and standard deviation summarize the list the way $\bar{X}$ and $s$ summarize a data set.
 
 ## A discrete random variable has countably many values
 
@@ -61,6 +62,40 @@ $$\mu = \sum_x [x \cdot P(x)] = x_1 P(x_1) + x_2 P(x_2) + \cdots$$
 $$\sigma^2 = \sum_x [(x - \mu)^2 \cdot P(x)], \qquad \sigma = \sqrt{\sum_x (x - \mu)^2 \, P(x)}$$
 
 Take the square root once, of the whole sum, never term by term.
+
+## One Chaos Orb leaves 4, 5 or 6 affixes
+
+A Chaos Orb, the PoE1 currency that rerolls every modifier on a rare item, leaves 4, 5 or 6 affixes at 8:3:1, the wiki gives [PoE1, 3.29 Allflame Chaos Orb, checked 2026-10-27]. X = the affix count then has $P(4) = \frac{8}{12}$, $P(5) = \frac{3}{12}$, $P(6) = \frac{1}{12}$. One Chaos Orb produces exactly one affix count from a published weight table summing to $\frac{12}{12} = 1$, so the table is a discrete distribution.
+
+```quiz
+[
+  {"q": "X = affixes after one Chaos Orb, P(4) = 8/12, P(5) = 3/12, P(6) = 1/12. The expected number of affixes μ = E[X] = ? (2 decimals)", "type": "numeric", "answer": 4.42, "tolerance": 0.05, "explain": "μ = Σ x P(x) = 4(8/12) + 5(3/12) + 6(1/12) = (32 + 15 + 6)/12 = 53/12 = 4.4167 ≈ 4.42 affixes."},
+  {"q": "Same table. σ = ? (2 decimals)", "type": "numeric", "answer": 0.64, "tolerance": 0.05, "explain": "With μ = 4.4167: σ² = (4 − 4.4167)²(8/12) + (5 − 4.4167)²(3/12) + (6 − 4.4167)²(1/12) = 0.1157 + 0.0851 + 0.2089 = 0.4097; σ = √0.4097 = 0.6401 ≈ 0.64. One square root, of the whole sum."}
+]
+```
+
+$$\mu = 4 \cdot \tfrac{8}{12} + 5 \cdot \tfrac{3}{12} + 6 \cdot \tfrac{1}{12} = \tfrac{32 + 15 + 6}{12} = \tfrac{53}{12} = 4.42$$
+
+$$\sigma^2 = (4 - 4.4167)^2 \tfrac{8}{12} + (5 - 4.4167)^2 \tfrac{3}{12} + (6 - 4.4167)^2 \tfrac{1}{12} = 0.1157 + 0.0851 + 0.2089 = 0.4097, \qquad \sigma = \sqrt{0.4097} = 0.64$$
+
+```r
+X.vals <- c(4, 5, 6)
+p.vals <- c(8, 3, 1) / 12
+mu <- sum( X.vals * p.vals )
+sig = sqrt( sum((X.vals - mu)^2 * p.vals) )
+c(mu, sig)
+```
+
+```text
+[1] 4.4166667 0.6400955
+```
+
+### The Chaos Orb table: the sum check, the bars, and μ and σ term by term
+
+```widget
+pmf-table
+{ "rows": [[4, "8/12"], [5, "3/12"], [6, "1/12"]], "xlab": "X = affixes after one Chaos Orb", "simulate": true, "presets": false, "title": "One Chaos Orb: 4, 5 or 6 affixes at 8:3:1, with μ = 4.42 and σ = 0.64" }
+```
 
 ## Number of children: μ and σ
 
@@ -168,18 +203,16 @@ pmf-table
 { "preset": "minimum of three dice", "simulate": true, "title": "Minimum of three dice: the exact 216-cell table beside a simulation" }
 ```
 
-## μ and σ for solder defects on a circuit board
-
-X = the number of solder defects on a board, never more than 3: P(0) = 0.50, P(1) = 0.25 and P(2) = 0.15; the record for P(3) was lost.
+## μ for a Chaos Scroll, a Lucky Jewel Box and a socket roll
 
 ```quiz
 [
-  {"q": "Defects on a board: the possible values 0, 1, 2, 3 can be listed. Is X a discrete or a continuous random variable?", "type": "text", "answer": ["discrete"], "explain": "X counts defects, so its values can be listed, 0, 1, 2, 3: a finite number of values makes it discrete. A measured quantity such as the board's thickness would be continuous."},
-  {"q": "P(3) = ? (2 decimals)", "type": "numeric", "answer": 0.1, "tolerance": 0.006, "explain": "The probabilities of all the possible values add to 1: P(3) = 1 − (0.50 + 0.25 + 0.15) = 1 − 0.90 = 0.10. It is also between 0 and 1, so the table is a valid distribution."},
-  {"q": "The expected number of defects μ = E[X] = ? (2 decimals)", "type": "numeric", "answer": 0.85, "tolerance": 0.006, "explain": "μ = Σ x P(x) = 0(0.50) + 1(0.25) + 2(0.15) + 3(0.10) = 0 + 0.25 + 0.30 + 0.30 = 0.85."},
-  {"q": "The standard deviation σ = ? (2 decimals)", "type": "numeric", "answer": 1.01, "tolerance": 0.006, "explain": "σ² = (0 − 0.85)²(0.50) + (1 − 0.85)²(0.25) + (2 − 0.85)²(0.15) + (3 − 0.85)²(0.10) = 0.3613 + 0.0056 + 0.1984 + 0.4622 = 1.0275; σ = √1.0275 = 1.0137 ≈ 1.01. One square root, of the whole sum."},
-  {"q": "P(X ≥ 2), a board with at least 2 defects = ? (4 decimals)", "type": "numeric", "answer": 0.25, "tolerance": 6e-05, "explain": "At least 2 means 2 or 3: P(2) + P(3) = 0.15 + 0.10 = 0.2500."},
-  {"type": "fill", "q": "Complete the demo-notebook lines for μ and σ of the defect table (`X.vals <- c(0,1,2,3)`, `p.vals <- c(0.50, 0.25, 0.15, 0.10)`).", "code": "mu <- sum( X.vals * ___ )\nsig <- sqrt( sum((X.vals - ___)^2 * p.vals) )\nc(mu, sig)", "answer": ["p.vals", "mu"], "explain": "μ is the sum of x · P(x), so the first blank multiplies by `p.vals`; σ squares the distances from `mu` and roots the whole sum. `c(mu, sig)` prints 0.85 and 1.013657."}
+  {"q": "A successful Chaos Scroll, the GMS scroll that moves each stat by a random amount, changes one stat by X with the wiki's table P(−5) = 4.94 %, P(−4) = 2.97 %, P(−3) = 3.65 %, P(−2) = 8.0 %, P(−1) = 13.7 %, P(0) = 18.38 %, P(+1) = 19.31 %, P(+2) = 15.87 %, P(+3) = 10.21 %, P(+4) = 1.98 %, P(+5) = 0.99 % [GMS, v.271 Chaos Scroll, checked 2026-10-27]. P(the stat goes down) = ? (4 decimals)", "type": "numeric", "answer": 0.3326, "tolerance": 0.0001, "explain": "Down means X < 0: P(−5) + P(−4) + P(−3) + P(−2) + P(−1) = 0.0494 + 0.0297 + 0.0365 + 0.0800 + 0.1370 = 0.3326. The eleven rows sum to 1.0000, so the table is a distribution."},
+  {"q": "Same Chaos Scroll table. μ = E[X] = ? (2 decimals)", "type": "numeric", "answer": 0.17, "tolerance": 0.05, "explain": "μ = Σ x P(x). Negative side: −5(0.0494) − 4(0.0297) − 3(0.0365) − 2(0.0800) − 1(0.1370) = −0.2470 − 0.1188 − 0.1095 − 0.1600 − 0.1370 = −0.7723. Positive side: 1(0.1931) + 2(0.1587) + 3(0.1021) + 4(0.0198) + 5(0.0099) = 0.1931 + 0.3174 + 0.3063 + 0.0792 + 0.0495 = 0.9455. μ = −0.7723 + 0.9455 = 0.1732 ≈ 0.17: on average a stat rises by under a fifth of a point."},
+  {"q": "Each Lucky Jewel Box also rolls a Sol Erda Fragment bonus of 3, 5, 15, 20, 35, 40, 45 or 50 fragments with probabilities 0.45, 0.25, 0.10, 0.07, 0.06, 0.04, 0.02, 0.01, Nexon's published rates (2022 post) [GMS, Lucky Jewel Box 2022 rate post, checked 2026-10-27]. Expected fragments per box E[X] = ? (3 significant digits)", "type": "numeric", "answer": 10.6, "tolerance": 0.05, "explain": "E[X] = 3(0.45) + 5(0.25) + 15(0.10) + 20(0.07) + 35(0.06) + 40(0.04) + 45(0.02) + 50(0.01) = 1.35 + 1.25 + 1.50 + 1.40 + 2.10 + 1.60 + 0.90 + 0.50 = 10.6 fragments. No box gives 10.6; 70 % of boxes give 3 or 5, and the rare big rolls pull the mean up."},
+  {"type": "fill", "q": "Complete the demo-notebook line for the Sol Erda mean (`X.vals <- c(3, 5, 15, 20, 35, 40, 45, 50)`, `p.vals <- c(0.45, 0.25, 0.10, 0.07, 0.06, 0.04, 0.02, 0.01)`).", "code": "mu <- sum( X.vals * ___ )", "answer": ["p.vals"], "explain": "μ = Σ x P(x), so each value is multiplied by its probability and the products are summed. R prints [1] 10.6."},
+  {"q": "On a PoE1 item that can hold six sockets, at item level 50 or higher, the wiki gives socket-count weights 50, 120, 100, 30, 5 and 1 for 1 to 6 sockets [PoE1, 3.29 Allflame item sockets, checked 2026-10-27]. P(6 sockets) = ? (4 decimals)", "type": "numeric", "answer": 0.0033, "tolerance": 0.0001, "explain": "Weights become probabilities by dividing by their total: 50 + 120 + 100 + 30 + 5 + 1 = 306, so P(6) = 1/306 = 0.0033."},
+  {"q": "Same item. The expected number of sockets μ = ? (2 decimals)", "type": "numeric", "answer": 2.42, "tolerance": 0.05, "explain": "μ = Σ x P(x) = (1·50 + 2·120 + 3·100 + 4·30 + 5·5 + 6·1)/306 = (50 + 240 + 300 + 120 + 25 + 6)/306 = 741/306 = 2.4216 ≈ 2.42 sockets."}
 ]
 ```
 

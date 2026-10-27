@@ -1,9 +1,10 @@
 ---
 title: Linear correlation r
-minutes: 15
+minutes: 19
 ---
+<!-- facts: classic.data.monsters -->
 
-So far every measure has described a single variable. Very often two numerical variables are measured on the same individual — height and weight, study hours and exam score, resistance and failure time. **Correlation** measures how strongly two variables move together, and specifically how strongly they move together in a **straight line**.
+Higher-level monsters give more EXP per kill; correlation puts a number on how close that trend is to a straight line. So far every measure has described a single variable. Very often two numerical variables are measured on the same individual — height and weight, study hours and exam score, resistance and failure time. **Correlation** measures how strongly two variables move together, and specifically how strongly they move together in a **straight line**.
 
 ## Pearson's correlation coefficient
 
@@ -59,6 +60,22 @@ $= \dfrac{190884 - 184059}{\sqrt{216900 - 210681} \cdot \sqrt{171612 - 160801}} 
 
 $r = 0.8324$ is close to 1, so resistance and failure time have a **strong positive linear correlation**: higher resistance tends to go with a longer time to failure.
 
+## Monster level and EXP: the first ten levels of MapleStory Classic
+
+meowdb's monster table for MapleStory Classic, with the five zero-EXP test mobs dropped, lists ten monsters from level 1 to 10 [Classic, Classic World Grand Launch build, meowdb monster table, checked 2026-10-27]; $x$ = level, $y$ = EXP per kill. EXP rises with level across a real monster list, a straight-line trend that $r$ is built to measure.
+
+The (level, EXP) pairs: (1, 1) Tutorial Jr. Sentinel, (1, 2) Snail, (2, 4), (3, 6), (4, 8), (5, 10), (6, 12), (7, 13), (8, 15) Orange Mushroom and (10, 19) Ribbon Pig.
+
+```quiz
+[
+  {"q": "Ten Classic monsters, level 1 to 10: Σx = 47, Σy = 90, Σxy = 584, Σx² = 305, Σy² = 1120, n = 10. Compute r (4 decimals).", "type": "numeric", "answer": 0.9971, "tolerance": 0.0002, "explain": "Numerator $= 10(584) - 47(90) = 5840 - 4230 = 1610$. Denominator $= \\sqrt{10(305) - 47^2} \\cdot \\sqrt{10(1120) - 90^2} = \\sqrt{841} \\cdot \\sqrt{3100} = 29 \\times 55.6776 = 1614.65$. $r = 1610/1614.65 = 0.9971$."}
+]
+```
+
+$r = \dfrac{10(584) - (47)(90)}{\sqrt{10(305) - 47^2} \cdot \sqrt{10(1120) - 90^2}} = \dfrac{1610}{\sqrt{841} \cdot \sqrt{3100}} = \dfrac{1610}{29 \times 55.678} \approx \mathbf{0.9971}$
+
+$r = 0.9971$ is very close to 1: a strong positive linear correlation. Each level adds about 2 EXP, so the ten points sit almost on one line.
+
 ## Properties of r
 
 - $-1 \le r \le 1$ always.
@@ -88,18 +105,17 @@ The **"Curved (r≈0 but related!)"** preset traces a perfect parabola ($y = x^2
 
 Even a strong $r$ never tells you that one variable causes the other. Ice cream consumption and boating accidents are positively correlated across the months of the year, but eating ice cream does not cause boating accidents: both rise and fall with a hidden third factor (warm weather, more people out on boats and buying ice cream). Always ask whether a third variable could explain a correlation before claiming causation.
 
-## Compute r for study hours and exam scores
+## Compute r for the whole Classic monster table, bosses in and out
 
-Six students: hours studied $x$ = 2, 4, 5, 6, 8, 9 and exam score $y$ = 55, 62, 66, 70, 74, 85.
+All 87 rows run from level 1 to Jr. Balrog, a level 80 boss worth 2188 EXP. Ids from 700000 up are the 8 bosses and 11 quest and test copies; the other 68 rows are field monsters.
 
 ```quiz
 [
-  {"q": "Compute $\\sum xy$.", "type": "numeric", "answer": 2465, "tolerance": 0, "explain": "$2(55) + 4(62) + 5(66) + 6(70) + 8(74) + 9(85) = 110 + 248 + 330 + 420 + 592 + 765 = 2465$."},
-  {"q": "Compute the numerator $n\\sum xy - (\\sum x)(\\sum y)$.", "type": "numeric", "answer": 782, "tolerance": 0, "explain": "$\\sum x = 34$, $\\sum y = 412$: $6(2465) - (34)(412) = 14790 - 14008 = 782$."},
-  {"q": "Compute $r$. (4 decimals)", "type": "numeric", "answer": 0.9757, "tolerance": 0.0002, "explain": "$\\sum x^2 = 226$, $\\sum y^2 = 28826$. $n\\sum x^2 - (\\sum x)^2 = 1356 - 1156 = 200$; $n\\sum y^2 - (\\sum y)^2 = 172956 - 169744 = 3212$. $r = 782/(\\sqrt{200} \\cdot \\sqrt{3212}) = 782/(14.142 \\times 56.675) = 0.9757$."},
-  {"q": "What does this $r$ say?", "options": ["Strong positive linear correlation", "Strong negative linear correlation", "No linear correlation", "Studying causes higher scores"], "answer": 0, "explain": "$r = 0.9757$ is close to 1: a strong positive linear relationship. It says nothing about cause."},
-  {"q": "Which symbol would name the same measure for every student in the course (the population)?", "type": "text", "answer": ["ρ", "rho"], "explain": "The sample statistic is $r$; the population parameter is $\\rho$ (rho)."},
-  {"type": "fill", "q": "Fill the blank so R prints $r$.", "code": "hours <- c(2, 4, 5, 6, 8, 9)\nscore <- c(55, 62, 66, 70, 74, 85)\ncor(hours, ___)\n## [1] 0.9756723", "answer": ["score"], "explain": "`cor(X, Y)` takes the two paired vectors; swapping them gives the same $r$."}
+  {"q": "All 87 monsters, $x$ = level, $y$ = EXP: $n\\sum xy - (\\sum x)(\\sum y) = 20063192$, $n\\sum x^2 - (\\sum x)^2 = 2537762$, $n\\sum y^2 - (\\sum y)^2 = 950427128$. Compute $r$. (4 decimals)", "type": "numeric", "answer": 0.4085, "tolerance": 0.0002, "explain": "$r = 20063192/(\\sqrt{2537762} \\cdot \\sqrt{950427128}) = 20063192/(1593.035 \\times 30828.998) = 0.4085$. The pieces come from $n = 87$, $\\sum x = 3004$, $\\sum y = 14428$, $\\sum xy = 728792$, $\\sum x^2 = 132894$, $\\sum y^2 = 13317176$."},
+  {"q": "The 68 field monsters: $n = 68$, $\\sum x = 2319$, $\\sum y = 6386$, $\\sum xy = 320334$, $\\sum x^2 = 104209$, $\\sum y^2 = 1114500$. Compute the numerator $n\\sum xy - (\\sum x)(\\sum y)$.", "type": "numeric", "answer": 6973578, "tolerance": 0, "explain": "$68(320334) - (2319)(6386) = 21782712 - 14809134 = 6973578$."},
+  {"q": "Same 68 field monsters. Compute $r$. (4 decimals)", "type": "numeric", "answer": 0.9018, "tolerance": 0.0002, "explain": "$n\\sum x^2 - (\\sum x)^2 = 7086212 - 5377761 = 1708451$; $n\\sum y^2 - (\\sum y)^2 = 75786000 - 40780996 = 35005004$. $r = 6973578/(\\sqrt{1708451} \\cdot \\sqrt{35005004}) = 6973578/(1307.077 \\times 5916.503) = 0.9018$."},
+  {"q": "Why does $r$ fall from 0.9018 for the field monsters to 0.4085 with the bosses added?", "options": ["A few bosses sit far above the field monsters' line, and r only measures how close the points are to one line", "Level and EXP stop being related once bosses are included", "r changes because the bosses' EXP is in different units", "Adding rows always lowers r"], "answer": 0, "explain": "Jr. Balrog's 2188 EXP at level 80, King Slime's 2400 at level 32 and the other bosses are far off the line the field monsters follow. $r$ measures closeness to one straight line, so a few points far off it pull $r$ down. EXP still rises with level."},
+  {"type": "fill", "q": "Fill the blank so R prints $r$ for the field monsters, stored in a data frame `field`.", "code": "cor(field$level, field$___)\n## [1] 0.9017566", "answer": ["exp"], "explain": "`cor(X, Y)` takes the two paired columns, here `level` and `exp`; swapping them gives the same $r$."}
 ]
 ```
 

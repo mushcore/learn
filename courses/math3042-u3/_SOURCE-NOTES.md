@@ -145,3 +145,12 @@ Also in the same export, used by this module's update:
 - `MATH_3042_Quiz_03_V1 (Solutions).pdf` and `Quiz_03_V1_Part_2 (Solutions)`: **Quiz 3 was Unit 2 + Lab 3** (hand stem plot of 30 weights, histogram class recipe from a `favstats` printout, pie with computed n and % labels, `histogram()` edits, `barplot(table(Year))`), so the "Expected Quiz 3 shape" line above is superseded: the pattern is Part 1 pencil on the previous unit, Part 2 RStudio on the previous lab, which puts Unit 3 in Quiz 4 Part 1 and Quiz 5 (assumption). Those five questions are in `math3042-u2`'s mock quiz.
 - `Quiz_4_Part_2_V1_Solutions.pdf` / `V3`: a Lab 4 simulation quiz (Alice/Bob checkers, 13 games at 0.6: 0.77156, mean 7.80, sd 1.77, $Z(3) = -2.72$, tail 0.0081, unusual by $|Z| > 2$ or tail $< 0.025$; pity rule 0.49895; Chad/Deb blackjack 54.62%, mean 13.10, sd 4.46, $Z(5) = -1.82$ not unusual, hit-on-18 rule 51.73%). Taught in lesson 08 and quizzed in the mock.
 - `Unit_03_Practice_Problems.pdf`: the 28 pencil problems Lab 4 said were "posted separately", with an answer key; all 28 verified by computation and worked in lesson 12. The text extraction of problem 13's table misplaces the 1 and the 6; the PDF reads Union 41, 12, 4, 1 and Non-Union 16, 9, 11, 6.
+
+## Game facts used
+- 01-probability-sample-space.md: poe1.vaal.gem-outcomes, classic.scroll.chaos-outcomes, poe2.corruption.outcomes-gems
+- 02-relative-frequency-lln.md: poe1.fusing.six-link-measured
+- 03-counting.md: classic.server.identity, classic.jobs.second-job-paths, poe2.classes.ascendancy-structure, poe2.gems.support-sockets
+- 04-complement-addition.md: gms.box.divine-wishing-bell, poe1.fusing.six-link-measured, poe2.damage.lucky-binary, poe2.ninja.main-skill-shares
+- 05-conditional-independence.md: poe1.ladder.hc-dead-by-rank, poe1.ladder.class-counts, classic.scroll.chaos-outcomes
+- 06-bayes.md: poe1.ladder.hc-dead-by-rank, classic.cashshop.mfc-rates, classic.cashshop.founders-mfc-rates
+- 08-lab4-simulations.md: gms.starforce.rates-15-plus, gms.starforce.star-catch, classic.scroll.chaos-outcomes

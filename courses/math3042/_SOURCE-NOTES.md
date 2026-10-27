@@ -72,3 +72,17 @@ Source files: `D:/BCIT/MATH3042/MATH_3042_Lecture_Unit_01.pdf` (readable text), 
 5. Moisture μ=18, σ=0.5: (a) Chebyshev 17–19 (k=2) ≥ 75%; (b) Empirical 95%; (c) > 19.5 (3σ) → 0.15%; (d) 18–18.5 → 34%; (e) < 19 → 97.5%.
 6. Body temp μ=98.20, σ=0.62: 101.00 unusual, 96.90 unusual, 96.98 usual (usual range 96.96–99.44).
 7. Sites: A mean 4.39, sd 2.5836, CV 58.85%; B mean 4.078, CV 77.04% → Site A higher & more consistent. B: mean±3s = −5.35 to 13.50; max 13.6 is beyond +3s → could be discounted. Removing min from A: mean 4.39→4.888 (increases), sd 2.5836→2.5463 (decreases).
+
+## Game facts used
+- 03-mean.md: poe1.data.divine-chaos-allflame, gms.data.ranking-level-hero-2026-10-27
+- 04-median-mode.md: poe1.ladder.ruthless-levels, classic.monster.training-hp, gms.data.ranking-level-hero-2026-10-27
+- 05-range-sd.md: poe1.data.divine-chaos-allflame
+- 06-cv.md: poe1.data.divine-chaos-mirage, poe1.data.divine-chaos-keepers
+- 07-empirical-rule.md: classic.data.monsters, gms.data.ranking-level-hero-2026-10-27
+- 08-z-scores.md: gms.data.ranking-level-hero-2026-10-27, poe1.data.divine-chaos-allflame
+- 09-chebyshev.md: classic.data.monsters
+- 10-quartiles-percentiles.md: classic.monster.training-hp, poe1.ladder.ruthless-levels
+- 11-iqr-boxplot-outliers.md: classic.monster.training-hp, poe1.data.divine-chaos-allflame
+- 12-skewness.md: poe1.data.divine-chaos-allflame, classic.data.monsters
+- 13-correlation.md: classic.data.monsters
+- 14-r-essentials.md: gms.data.ranking-overall-legendary-2026-10-27

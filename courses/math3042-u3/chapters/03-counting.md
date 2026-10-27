@@ -1,9 +1,10 @@
 ---
 title: The counting rule, permutations and combinations
-minutes: 28
+minutes: 30
 ---
+<!-- facts: classic.server.identity, classic.jobs.second-job-paths, poe2.classes.ascendancy-structure, poe2.gems.support-sockets -->
 
-Classical probability is a ratio of two counts, and for anything bigger than three coins the counts are too large to list. Section 3.2 gives three counting tools and one decision: does order matter, and may an item be chosen twice?
+Classical probability is a ratio of two counts, and even the job choices on one MapleStory Classic account are too many to list. Section 3.2 gives three counting tools and one decision: does order matter, and may an item be chosen twice?
 
 ## The fundamental counting rule
 
@@ -73,18 +74,39 @@ All of these are presets in the calculator above. Decide P, C or $n^r$ for each 
 
 On the calculator: $C(52, 4)$ is `52  2nd F  nCr  4`; `nPr` gives permutations and `n!` factorials. In R: `factorial(4)`, `choose(52, 4) * factorial(4)` for $P(52, 4)$, `choose(52, 4)` for $C(52, 4)$.
 
-## Count plates, officers, teams and hands
+## Three Classic characters, ten 2nd-job paths
 
-Decide for each count whether repeats are allowed and whether order matters.
+A MapleStory Classic account holds up to 3 characters, and at Lv. 30 each takes one of 10 2nd-job paths [Classic, Grand Launch Release Notes 2026-10-20 (Nexon), checked 2026-10-27]: 3 each for Warrior and Magician, 2 each for Bowman and Thief. Both counts are Nexon's, so all three ways of choosing are sourced: with repeats, in order without repeats, and as a set.
 
 ```quiz
 [
-  {"q": "A licence plate is 3 letters followed by 3 digits, repeats allowed. How many plates are possible?", "type": "numeric", "answer": 17576000, "tolerance": 0, "explain": "Counting rule: $26 \\times 26 \\times 26 \\times 10 \\times 10 \\times 10 = 17576000$, i.e. 17 576 000 plates."},
-  {"q": "A club of 12 elects a president, a vice-president and a treasurer (three different people). How many outcomes?", "type": "numeric", "answer": 1320, "tolerance": 0, "explain": "The offices are distinct positions, so order matters: $P(12, 3) = 12 \\times 11 \\times 10 = 1320$."},
-  {"q": "A 4-person project team is chosen from 15 students. How many teams?", "type": "numeric", "answer": 1365, "tolerance": 0, "explain": "A team has no order: $C(15, 4) = (15 \\times 14 \\times 13 \\times 12)/(4 \\times 3 \\times 2 \\times 1) = 32760/24 = 1365$."},
-  {"q": "Four cards are dealt. $P(\\text{all four are face cards})$? (6 decimals)", "type": "numeric", "answer": 0.001828, "tolerance": 3e-06, "explain": "Hands over hands: $C(12, 4)/C(52, 4) = 495/270725 = 0.001828$ (12 face cards: J, Q, K in each suit)."},
-  {"q": "How many ways can 6 guests sit in a row of 6 chairs?", "options": ["$6! = 720$", "$C(6, 6) = 1$", "$6^6 = 46656$", "$P(6, 1) = 6$"], "answer": 0, "explain": "All 6 people in order, nobody twice: $6! = 6 \\times 5 \\times 4 \\times 3 \\times 2 \\times 1 = 720$."},
-  {"type": "fill", "q": "Fill the blank so R prints the face-card probability.", "code": "choose(12, 4) / choose(52, ___)\n## [1] 0.001828424", "answer": ["4"], "explain": "Both counts are hands of 4: $C(12, 4)$ favourable over $C(52, 4)$ total, the same kind of count above and below the line."}
+  {"q": "Each of the 3 characters takes a path, repeats allowed. How many assignments (character 1, 2, 3)?", "type": "numeric", "answer": 1000, "tolerance": 0, "explain": "Counting rule, 10 choices per slot: $10 \\times 10 \\times 10 = 10^3 = 1000$."},
+  {"q": "All three paths different, in character-slot order. How many?", "type": "numeric", "answer": 720, "tolerance": 0, "explain": "The set shrinks by one per slot: $P(10, 3) = 10 \\times 9 \\times 8 = 720$."},
+  {"q": "Which 3 different paths the account covers, order ignored. How many sets?", "type": "numeric", "answer": 120, "tolerance": 0, "explain": "$C(10, 3) = P(10, 3)/3! = 720/6 = 120$."}
+]
+```
+
+Each set of 3 paths appears $3! = 6$ times among the 720 sequences, which is the ÷ r!.
+
+### P(10, 3) and C(10, 3) for one account
+
+```widget
+counting-calc
+{ "n": 10, "r": 3, "kind": "perm", "presets": false }
+```
+
+## Count PoE2 ascendancies, gem sockets and Classic job sets
+
+PoE2 has 8 playable classes and 22 regular ascendancies [PoE2, 0.5.5e Forbidden Rites, Character class (poe2wiki), checked 2026-10-27]: six classes offer 3 each and the Ranger and Druid 2 each. A PoE2 skill gem has 2 to 5 support sockets [PoE2, 0.5.5e Forbidden Rites, Gem socket (poe2wiki), checked 2026-10-27].
+
+```quiz
+[
+  {"q": "A new PoE2 character picks a class, then one of that class's ascendancies. How many (class, ascendancy) outcomes are there?", "type": "numeric", "answer": 22, "tolerance": 0, "explain": "The classes do not all offer the same number, so the product rule does not apply; the groups are disjoint, so add them: $6 \\times 3 + 2 \\times 2 = 18 + 4 = 22$."},
+  {"q": "Two PoE2 characters, first and second, must have different ascendancies. How many ordered pairs?", "type": "numeric", "answer": 462, "tolerance": 0, "explain": "Order matters, no repeats: $P(22, 2) = 22 \\times 21 = 462$."},
+  {"q": "The same two characters, but only the pair of ascendancies counts, not which came first. How many pairs?", "type": "numeric", "answer": 231, "tolerance": 0, "explain": "$C(22, 2) = P(22, 2)/2! = 462/2 = 231$."},
+  {"q": "Three PoE2 skill gems each sit at one support-socket count from 2 to 5. How many (gem 1, gem 2, gem 3) socket configurations?", "type": "numeric", "answer": 64, "tolerance": 0, "explain": "2, 3, 4 or 5 is 4 choices per gem, repeats allowed: $4^3 = 64$."},
+  {"q": "A Classic account's 3 characters cover 3 different 2nd-job paths. Suppose every set of 3 paths is equally likely. $P(\\text{all three paths belong to the same 1st job})$? (4 decimals)", "type": "numeric", "answer": 0.0167, "tolerance": 6e-05, "explain": "Sets over sets. Only Warrior and Magician have 3 paths: $C(3, 3) + C(3, 3) = 2$ favourable sets; Bowman and Thief have $C(2, 3) = 0$. Total $C(10, 3) = 120$. $P = 2/120 = 0.0167$."},
+  {"type": "fill", "q": "Fill the blank so R prints the number of 3-path sets for a Classic account.", "code": "choose(10, ___)\n## [1] 120", "answer": ["3"], "explain": "$C(10, 3)$: 10 paths, 3 characters, order ignored. `choose(10, 3) * factorial(3)` would give $P(10, 3) = 720$."}
 ]
 ```
 

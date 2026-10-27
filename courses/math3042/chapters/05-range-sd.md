@@ -1,9 +1,10 @@
 ---
 title: Range & standard deviation
-minutes: 18
+minutes: 20
 ---
+<!-- facts: poe1.data.divine-chaos-allflame -->
 
-A **measure of variation** quantifies how spread out the values of $X$ are. Two numbers from the notes: the range (crude) and the standard deviation (the important one).
+How far does a Divine Orb's daily price stray in a quiet week, and what does one bad day do to that number? A **measure of variation** quantifies how spread out the values of $X$ are. Two numbers from the notes: the range (crude) and the standard deviation (the important one).
 
 ## Range
 
@@ -64,6 +65,34 @@ In R: `sd(c(5.0, 4.5, 6.0, 7.0, 5.2))` → `0.9788`. R's `sd` **always** compute
 In STAT mode, read $\bar{x}$, $s$ (often labelled $s_x$ or $\sigma_{n-1}$) and $\sigma$ (labelled $\sigma_n$).
 :::
 
+## Seven days of Allflame Divine prices, by hand
+
+poe.ninja's daily price of a Divine Orb, PoE1's high-value currency, in chaos orbs for 15 to 21 September 2026 reads 346.0, 337.0, 324.0, 345.0, 343.0, 343.0 and 342.0 chaos [PoE1, 3.29 Allflame, poe.ninja daily Divine price, checked 2026-10-27]. A trader holding Divines that week wants to know how far a typical day strayed from the week's level, which is what $s$ measures, in chaos.
+
+```quiz
+[
+  {"q": "What is the range $R$ of the seven prices?", "type": "numeric", "answer": 22, "tolerance": 0, "unit": "chaos", "explain": "$R = 346.0 - 324.0 = 22.0$ chaos."},
+  {"q": "Compute the sample standard deviation $s$ of the seven prices before reading the working. (3 significant digits)", "type": "numeric", "answer": 7.62, "tolerance": 0.005, "unit": "chaos", "explain": "$\\bar{X} = 2380.0/7 = 340.0$. Deviations $6, -3, -16, 5, 3, 3, 2$; squares $36 + 9 + 256 + 25 + 9 + 9 + 4 = 348$. $s = \\sqrt{348/6} = \\sqrt{58} = 7.6158$ chaos."}
+]
+```
+
+1. Range: $R = 346.0 - 324.0 = 22.0$ chaos.
+2. Mean: $\bar{X} = \dfrac{346.0 + 337.0 + 324.0 + 345.0 + 343.0 + 343.0 + 342.0}{7} = \dfrac{2380.0}{7} = 340.0$
+3. Deviations: $6, -3, -16, 5, 3, 3, 2$; squared: $36 + 9 + 256 + 25 + 9 + 9 + 4 = 348$
+4. Divide by $n - 1 = 6$: $348/6 = 58$
+5. Square root: $s = \sqrt{58} = 7.6158 \approx \mathbf{7.62}$ chaos
+
+The single 324.0 day supplies 256 of the 348, so it dominates both $R$ and $s$. Treated as the whole population, the same week gives $\sigma = \sqrt{348/7} = 7.051$ chaos.
+
+### One bar per day
+
+The 324.0 bar towers over the other six.
+
+```widget
+stat-bars
+{ "data": "346.0 337.0 324.0 345.0 343.0 343.0 342.0", "tag": "gdev", "title": "Allflame Divine price, 15 to 21 September 2026: squared deviations from 340.0" }
+```
+
 ## Grouped data
 
 When you only have a frequency table, use class marks $X_i$ and frequencies $f_i$:
@@ -77,18 +106,18 @@ grouped-mean
 { "rows": [[10.00, 40], [10.01, 75], [10.02, 100], [10.03, 90], [10.04, 45]], "title": "Steel rod diameters (Lab 1, pencil problem 2)" }
 ```
 
-## Compute s, σ and R for five quiz scores
+## Five Allflame days ending on poe.ninja's 204.0 reading
 
-Five quiz scores out of 20: 12, 15, 9, 14, 10.
+Shift the window: the Allflame Divine prices for 18 to 22 September 2026 are 345.0, 343.0, 343.0, 342.0 and 204.0 chaos [PoE1, 3.29 Allflame, poe.ninja daily Divine price, checked 2026-10-27]. The 204.0 is a one-day drop in poe.ninja's recorded series, between readings of 342.0 and 360.0, not a lasting price change; the formulas still take it as one of the five values.
 
 ```quiz
 [
-  {"q": "Compute $\\bar{X}$.", "type": "numeric", "answer": 12, "tolerance": 0, "explain": "$\\sum X = 12 + 15 + 9 + 14 + 10 = 60$, $n = 5$, $\\bar{X} = 60/5 = 12$."},
-  {"q": "Compute $\\sum (X - \\bar{X})^2$.", "type": "numeric", "answer": 26, "tolerance": 0, "explain": "Deviations: $0, 3, -3, 2, -2$. Squared: $0 + 9 + 9 + 4 + 4 = 26$."},
-  {"q": "Compute the sample standard deviation $s$. (3 decimals)", "type": "numeric", "answer": 2.55, "tolerance": 0.002, "explain": "Divide by $n - 1 = 4$: $26/4 = 6.5$, then $s = \\sqrt{6.5} = 2.5495$."},
-  {"q": "Treat the five scores as the whole population. Compute $\\sigma$. (3 decimals)", "type": "numeric", "answer": 2.28, "tolerance": 0.002, "explain": "Divide by $N = 5$ instead: $26/5 = 5.2$, $\\sigma = \\sqrt{5.2} = 2.2804$, smaller than $s$."},
-  {"q": "What is the range $R$?", "type": "numeric", "answer": 6, "tolerance": 0, "explain": "$R = \\max - \\min = 15 - 9 = 6$. It uses only two of the five values."},
-  {"type": "fill", "q": "Fill the blank with the R function that prints $s$.", "code": "___(c(12, 15, 9, 14, 10))\n## [1] 2.54951", "answer": ["sd"], "explain": "`sd()` always divides by $n - 1$: $\\sqrt{26/4} = 2.54951$."}
+  {"q": "Compute $\\bar{X}$. (1 decimal)", "type": "numeric", "answer": 315.4, "tolerance": 0.05, "unit": "chaos", "explain": "$\\sum X = 345.0 + 343.0 + 343.0 + 342.0 + 204.0 = 1577.0$, $n = 5$, $\\bar{X} = 1577.0/5 = 315.4$ chaos."},
+  {"q": "Compute $\\sum (X - \\bar{X})^2$. (1 decimal)", "type": "numeric", "answer": 15517.2, "tolerance": 0.05, "explain": "Deviations: $29.6, 27.6, 27.6, 26.6, -111.4$. Squared: $876.16 + 761.76 + 761.76 + 707.56 + 12409.96 = 15517.2$."},
+  {"q": "Compute the sample standard deviation $s$. (2 decimals)", "type": "numeric", "answer": 62.28, "tolerance": 0.05, "unit": "chaos", "explain": "$15517.2/(5 - 1) = 3879.3$, $s = \\sqrt{3879.3} = 62.284$ chaos, about eight times the 7.62 of the 15 to 21 September week."},
+  {"q": "Treat the five days as the whole population. Compute $\\sigma$. (2 decimals)", "type": "numeric", "answer": 55.71, "tolerance": 0.05, "unit": "chaos", "explain": "Divide by $N = 5$: $15517.2/5 = 3103.44$, $\\sigma = \\sqrt{3103.44} = 55.709$ chaos, smaller than $s$."},
+  {"q": "What is the range $R$?", "type": "numeric", "answer": 141, "tolerance": 0, "unit": "chaos", "explain": "$R = 345.0 - 204.0 = 141.0$ chaos. One day moved it from 22.0 to 141.0, since $R$ uses only the two extremes."},
+  {"type": "fill", "q": "Fill the blank with the R function that prints $s$.", "code": "___(c(345.0, 343.0, 343.0, 342.0, 204.0))\n## [1] 62.28403", "answer": ["sd"], "explain": "`sd()` always divides by $n - 1$: $\\sqrt{15517.2/4} = 62.28403$."}
 ]
 ```
 

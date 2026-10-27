@@ -2,6 +2,7 @@
 title: The exponential distribution: waiting between requests
 minutes: 18
 ---
+<!-- facts: none; U4 Poisson has no bank rate, so there is no game waiting time -->
 
 How long until the next http request reaches your server? The exponential distribution is the continuous model for that kind of waiting time, and one number, the average wait $\beta$, fixes everything about it.
 

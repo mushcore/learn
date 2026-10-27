@@ -1,9 +1,10 @@
 ---
 title: The normal distribution: shape, μ and σ
-minutes: 15
+minutes: 20
 ---
+<!-- facts: poe1.damage.uniform-roll -->
 
-Unit 1 used the bell curve as a picture behind the empirical rule and Z-scores. This lesson makes it a distribution: a density with a formula, two parameters, and a shape you can read $\mu$ and $\sigma$ off by eye.
+Unit 1 used the bell curve as a picture behind the empirical rule and Z-scores. This lesson makes it a distribution: a density with a formula, two parameters, and a shape you can read $\mu$ and $\sigma$ off by eye. A sum of flat damage rolls in Path of Exile shows where the bell comes from, checked against the exact answer rather than assumed.
 
 ## The most important distribution
 
@@ -64,18 +65,52 @@ Slide wording: "It is challenging to compute areas from the pdf $f(x)$ since the
 
 Property 3 of the last lesson still holds, $P(a \le X \le b) = F(b) - F(a)$, but there is no formula for $F$. Its values were computed numerically once and printed as the Z table; R's `pnorm` computes the same numbers. The empirical rule is three entries of that table: the areas inside $\mu \pm \sigma$, $\mu \pm 2\sigma$ and $\mu \pm 3\sigma$ are 0.6827, 0.9545 and 0.9973, rounded in Unit 1 to 68 %, 95 % and 99.7 %.
 
-## Bolt lengths with μ = 50 mm and σ² = 6.25
+## Ten PoE1 Fireball hits add up to a near-bell
 
-Bolt lengths are normal with μ = 50 mm and variance σ² = 6.25 mm², the way the p. 78 legend labels its curves.
+The PoE1 wiki's Luck page works through a level 20 Fireball, a fire spell, whose hit damage is a whole number rolled uniformly from 1095 to 1643, average 1369 [PoE1, 3.29 Allflame, poewiki Luck page, checked 2026-10-27]. Its Damage page adds that the number is rolled per hit, not per skill use, so ten hits are ten separate uniform rolls and S, their total, is a sum of ten independent flat draws. No single hit is normal; the question is how close the sum comes to a bell.
 
 ```quiz
 [
-  {"q": "σ = ? (mm)", "type": "numeric", "answer": 2.5, "tolerance": 0.006, "unit": "mm", "explain": "The legend-style label is the variance; σ = √6.25 = 2.5 mm."},
-  {"q": "The inflection point above the mean is at x = ? (mm)", "type": "numeric", "answer": 52.5, "tolerance": 0.006, "unit": "mm", "explain": "The inflection points sit one σ from the centre: 50 ± 2.5, so 47.5 mm and 52.5 mm."},
-  {"q": "Write the peak height f(50) = 1/(σ√(2π)) with the number in, no spaces, using `sqrt(...)`, `pi` and `*`.", "type": "text", "answer": ["1/(2.5*sqrt(2*pi))", "1/(2.5*sqrt(2pi))", "1/(sqrt(2*pi)*2.5)", "1/2.5/sqrt(2*pi)"], "explain": "At x = μ the exponent is 0 and e⁰ = 1, leaving 1/(σ√(2π)) = 1/(2.5 × 2.5066) = 0.1596."},
-  {"q": "Peak height f(50) = ? (4 decimals)", "type": "numeric", "answer": 0.1596, "tolerance": 6e-05, "explain": "1/(2.5√(2π)) = 1/6.2666 = 0.1596, lower than the σ = 1 peak 0.3989 because the wider curve must keep area 1."},
-  {"type": "shade", "q": "Shade the bolts longer than the upper inflection point, 52.5 mm. What percentage is it?", "mu": 50, "sigma": 2.5, "answer": 15.87, "tolerance": 1, "region": "above", "lo": 1, "explain": "52.5 is μ + σ. The band μ ± σ holds 68.27 %, leaving 31.73 % in two equal tails: 15.87 % above 52.5 mm."},
-  {"type": "fill", "q": "Complete the R line for the area between the two inflection points.", "code": "pnorm(52.5, 50, ___) - pnorm(47.5, 50, 2.5)", "answer": ["2.5"], "explain": "pnorm takes σ, not the variance: pnorm(52.5, 50, 2.5) − pnorm(47.5, 50, 2.5) = 0.6826895, the 68 % of the empirical rule. Typing 6.25 would make the curve far too wide."}
+  {"q": "The mean of S, the total of 10 Fireball hits, μ = ?", "type": "numeric", "answer": 13690, "tolerance": 0.5, "explain": "Means add: one hit averages (1095 + 1643)/2 = 1369, the wiki's own figure, so 10 hits average 10 × 1369 = 13 690."},
+  {"q": "σ of one hit, by σ = (b − a)/√12 (2 decimals)", "type": "numeric", "answer": 158.19, "tolerance": 0.05, "explain": "(1643 − 1095)/√12 = 548/3.4641 = 158.19."},
+  {"q": "σ of S (nearest whole number)", "type": "numeric", "answer": 500.25, "tolerance": 1.2, "explain": "For independent rolls the variances add: σ² = 10 × 548²/12 = 250 253, so σ = √250 253 = 500.25, about 500. (With the integer correction, 158.48 per hit, it is 501.17.)"}
+]
+```
+
+Means add, so $\mu_S = 10 \times 1369 = 13690$. One hit has $\sigma = \frac{1643 - 1095}{\sqrt{12}} = \frac{548}{3.4641} = 158.19$, or 158.48 counting the 549 whole numbers exactly, 0.2 % more. For independent rolls the variances add, so $\sigma_S^2 = 10 \times \frac{548^2}{12} = 250253$ and $\sigma_S = \sqrt{250253} = 500.25$.
+
+The exact distribution of S counts all $549^{10}$ equally likely ways ten hits can roll, computed in Python. Beside it is the normal curve with the same $\mu$ and $\sigma$, $N(13690, 500.25^2)$:
+
+| total s | where | exact $P(S \le s)$ | normal approximation |
+|---|---|---|---|
+| 13 190 | about $\mu - \sigma$ | 0.1620 | 0.1588 |
+| 13 690 | $\mu$ | 0.5004 | 0.5000 |
+| 14 000 | | 0.7295 | 0.7323 |
+| 14 190 | about $\mu + \sigma$ | 0.8385 | 0.8412 |
+| 14 690 | about $\mu + 2\sigma$ | 0.9776 | 0.9772 |
+
+The columns agree to within 0.004: ten flat rolls already sum to a near-bell, symmetric about 13 690 with its inflection points near 13 190 and 14 190. Exactly 67.70 % of totals fall within one $\sigma$ of the mean, against the normal's 68.27 %. That is a checked fact about this sum, not a claim that any other game number is normal.
+
+### The normal approximation to ten Fireball hits
+
+```widget
+normal-curve
+{ "mu": 13690, "sigma": 500.25, "x": 14000, "title": "Normal approximation N(13690, 500.25²) to the total of 10 Fireball hits" }
+```
+
+The widget's 73.23 % below 14 000 is the normal curve's area; the exact share of totals at or below 14 000 is 72.95 %.
+
+## Twenty PoE1 Spark hits and their approximating bell
+
+The same wiki page's level 20 Spark, a lightning spell, rolls each hit uniformly from 63 to 1198, average 630.5 [PoE1, 3.29 Allflame, poewiki Luck page, checked 2026-10-27]. T is the total of 20 Spark hits, each rolled separately.
+
+```quiz
+[
+  {"q": "σ of one Spark hit, by (b − a)/√12 (2 decimals)", "type": "numeric", "answer": 327.65, "tolerance": 0.05, "explain": "(1198 − 63)/√12 = 1135/3.4641 = 327.65."},
+  {"q": "The mean of T, μ = ?", "type": "numeric", "answer": 12610, "tolerance": 0.5, "explain": "Means add: 20 × 630.5 = 12 610."},
+  {"q": "σ of T (nearest whole number)", "type": "numeric", "answer": 1465.28, "tolerance": 1.5, "explain": "Variances add for independent hits: σ² = 20 × 1135²/12 = 2 147 042, so σ = √2 147 042 = 1465.28, about 1465."},
+  {"q": "σ of T is 20 × 327.65 = 6553.", "type": "tf", "answer": false, "explain": "It is the variances that add, not the standard deviations: σ = √(20 × 1135²/12) = 1465.28. Twenty hits spread out less than 20 times one hit's σ, because high and low rolls partly cancel."},
+  {"q": "The approximating normal curve N(12610, 1465.28²) has its upper inflection point at x = ? (nearest whole number)", "type": "numeric", "answer": 14075.28, "tolerance": 1.5, "explain": "Inflection points sit one σ from the centre: 12 610 + 1465.28 = 14 075.28, about 14 075."}
 ]
 ```
 
