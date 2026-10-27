@@ -4,7 +4,7 @@ minutes: 20
 ---
 <!-- facts: poe1.vaal.gem-outcomes, classic.scroll.chaos-outcomes, poe2.corruption.outcomes-gems -->
 
-A Vaal Orb on a gem and a Chaos scroll on an item are random experiments: you know the list of outcomes, not which one you get. This lesson names that list and says when counting it gives a probability.
+A Vaal Orb on a gem and a Chaos scroll on an item are random experiments: you know the list of outcomes, not which one you get. This lesson names that list and says when counting it gives a probability. Units 1 and 2 described samples. From here on the sample is treated as the outcome of a random process, because a sample statistic like $\bar{X}$ is itself a random variable, and inferential statistics will need to say how close $\bar{X}$ is, with a certain probability, to the population mean $\mu$.
 
 ## What "64% chance of rain" means
 
