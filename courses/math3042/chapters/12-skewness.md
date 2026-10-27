@@ -1,9 +1,10 @@
 ---
 title: Skewness
-minutes: 12
+minutes: 16
 ---
+<!-- facts: poe1.data.divine-chaos-allflame, classic.data.monsters -->
 
-Every measure so far has been about centre (mean, median), variation (range, SD, IQR), or position (Z-scores, percentiles). **Skewness** measures none of those: it tells you how **non-symmetrical** the distribution is.
+A Divine Orb that opens a league cheap and settles high, and a monster list where a few bosses dwarf the field, are lopsided in opposite directions. Every measure so far has been about centre (mean, median), variation (range, SD, IQR), or position (Z-scores, percentiles). **Skewness** measures none of those: it tells you how **non-symmetrical** the distribution is.
 
 ## Where mean and median disagree
 
@@ -30,6 +31,33 @@ Anything between $-1$ and $+1$ is only mildly skewed (or symmetric, near 0).
 :::quiz Sign direction
 "Mean 50, median 55": the mean is below the median, so the distribution is skewed **left**, even though nothing in the numbers says "left" directly.
 :::
+
+## Allflame Divine prices skew left, Classic monster HP skews right
+
+poe.ninja's daily price of a Divine Orb, PoE1's high-value currency, climbs over the first 30 days of the Allflame league from 75.9 to about 193 chaos [PoE1, 3.29 Allflame, poe.ninja daily Divine price, checked 2026-10-27]. meowdb's monster table for MapleStory Classic, with the five zero-EXP test mobs dropped, lists 25 monsters from level 41 to 60 [Classic, Classic World Grand Launch build, meowdb monster table, checked 2026-10-27]: 22 field monsters between 1278 and 5428 HP and three bosses, Shade 47000, Zombie Mushmom 66640 and Rotten Mushmom 86400. A price that starts low and settles high has its tail on the left; a list where a few bosses dwarf the field has its tail on the right.
+
+```quiz
+[
+  {"q": "Divine Orb, first 30 Allflame days: $\\bar{X} = 165.133$, $Q_2 = 185.05$, $s = 40.077$ chaos. Compute Pearson's $Sk$. (2 decimals)", "type": "numeric", "answer": -1.49, "tolerance": 0.006, "explain": "$Sk = 3(165.133 - 185.05)/40.077 = 3(-19.917)/40.077 = -1.49$. Below $-1$: highly skewed left."},
+  {"q": "Monster HP, levels 41 to 60: $\\bar{X} = 10748.04$, $Q_2 = 2998$, $s = 21861.0$. Compute Pearson's $Sk$. (2 decimals)", "type": "numeric", "answer": 1.06, "tolerance": 0.006, "explain": "$Sk = 3(10748.04 - 2998)/21861.0 = 3(7750.04)/21861.0 = 1.06$. Above $+1$: highly skewed right."}
+]
+```
+
+Divine prices: $Sk = 3 \cdot \dfrac{165.133 - 185.05}{40.077} = -1.49$, highly skewed left. The eight cheapest days, 75.9 to 123.0, drag the mean about 20 chaos below the median.
+
+Monster HP: $Sk = 3 \cdot \dfrac{10748.04 - 2998}{21861.0} = 1.06$, highly skewed right. The three bosses pull the mean to more than three times the median, which is the HP of a field monster.
+
+### The two data sets in the calculator
+
+```widget
+stat-calc
+{ "data": "75.9 83.5 90 107 117.1 117.4 121.8 123 163.4 170 155 172.1 171.8 172.7 180.6 199 208.2 201 199.6 197.4 190 189.5 193 193.3 193.5 193.3 193.6 193 195.3 193", "title": "Allflame Divine Orb price (chaos), first 30 days, poe.ninja" }
+```
+
+```widget
+stat-calc
+{ "data": "1774 1278 2069 2134 2595 2163 2671 2285 2513 2350 47000 2899 3218 2682 3136 3924 2998 66640 5134 3520 3872 5428 4834 5184 86400", "title": "MapleStory Classic monster HP, levels 41 to 60, meowdb (n = 25)" }
+```
 
 ## Worked example: cat bodyweights
 
@@ -67,9 +95,11 @@ skewness
 
 ## Sk as one point moves into a tail
 
+Twelve settled Allflame days, 47 to 36 days before 2026-10-27, sit between 324.0 and 350.0 chaos with $Sk = -0.86$. Drag one price down toward 204.0, the price 35 days before, and watch $s$ grow with the tail.
+
 ```widget
 drag-data
-{ "data": "4 5 5 6 6 6 7 7 8", "title": "One point moving out into a tail", "claims": [
+{ "data": "338 341.5 342.2 350 328 346 337 324 345 343 343 342", "title": "Twelve settled Allflame Divine prices (chaos): drag one into a tail", "claims": [
   { "when": "sk>1", "text": "Sk > 1: highly skewed right — the tail you built is on the right." },
   { "when": "sk<-1", "text": "Sk < -1: highly skewed left — the tail you built is on the left." },
   { "when": "sk>0 && sk<=1", "text": "0 < Sk ≤ 1: mildly skewed right." },
@@ -88,18 +118,18 @@ drag-data
 | Highly skewed left | — | $Sk < -1$ |
 | Highly skewed right | — | $Sk > +1$ |
 
-## Pearson's Sk for three new distributions
+## Pearson's Sk for the whole Allflame series and the whole monster table
 
-House prices (in thousands of dollars) have mean 640, median 585 and $s = 150$; exam scores have mean 68, median 72 and $s = 10$. A small sample reads 2, 3, 3, 4, 5, 12.
+The full Allflame series runs 96 days, and the monster table has 87 rows after the five zero-EXP test mobs are dropped, from level 1 up to Jr. Balrog, a level 80 boss with 325400 HP. The last item takes the final 5 Allflame days: 300.0, 265.0, 265.0, 300.0, 270.0 chaos.
 
 ```quiz
 [
-  {"q": "House prices: compute $Sk$. (2 decimals)", "type": "numeric", "answer": 1.1, "tolerance": 0.006, "explain": "$Sk = 3(\\bar{X} - Q_2)/s = 3(640 - 585)/150 = 165/150 = 1.10$."},
-  {"q": "How are the house prices skewed?", "options": ["Highly skewed right", "Mildly skewed right", "Highly skewed left", "Symmetric"], "answer": 0, "explain": "$Sk = 1.10 > 1$: highly skewed right. A few expensive houses pull the mean above the median."},
-  {"q": "Exam scores: compute $Sk$. (2 decimals)", "type": "numeric", "answer": -1.2, "tolerance": 0.006, "explain": "$Sk = 3(68 - 72)/10 = -12/10 = -1.20$."},
-  {"q": "Which way are the exam scores skewed (one word)?", "type": "text", "answer": ["left", "skewed left", "negatively", "negative"], "explain": "Mean below median gives $Sk < 0$: skewed left, and highly so since $-1.20 < -1$."},
-  {"q": "Sample 2, 3, 3, 4, 5, 12: compute $Sk$. (2 decimals)", "type": "numeric", "answer": 1.09, "tolerance": 0.006, "explain": "$\\bar{X} = 29/6 = 4.8333$, $Q_2 = (3 + 4)/2 = 3.5$, $\\sum(X - \\bar{X})^2 = 66.8333$ so $s = \\sqrt{66.8333/5} = 3.6560$. $Sk = 3(4.8333 - 3.5)/3.6560 = 1.0941$: just over 1, so highly skewed right, all from the one value 12."},
-  {"type": "fill", "q": "Fill the blank in Pearson's formula for the small sample.", "code": "x <- c(2, 3, 3, 4, 5, 12)\n3*(mean(x) - ___(x))/sd(x)\n## [1] 1.094078", "answer": ["median"], "explain": "$Sk = 3(\\bar{X} - Q_2)/s$ uses the median, not the mode. `sd()` divides by $n - 1$."}
+  {"q": "Divine Orb, all 96 Allflame days: $\\bar{X} = 268.99$, $Q_2 = 300.0$, $s = 89.49$ chaos. Compute $Sk$. (2 decimals)", "type": "numeric", "answer": -1.04, "tolerance": 0.006, "explain": "$Sk = 3(268.99 - 300.0)/89.49 = 3(-31.01)/89.49 = -1.04$."},
+  {"q": "How is the 96-day Divine series skewed?", "options": ["Highly skewed left", "Mildly skewed left", "Highly skewed right", "Symmetric"], "answer": 0, "explain": "$Sk = -1.04 < -1$: highly skewed left. The cheap league-start weeks are the left tail."},
+  {"q": "Classic monster HP, all 87 rows: $\\bar{X} = 8614.07$, $Q_2 = 1001$, $s = 36751.80$. Compute $Sk$. (2 decimals)", "type": "numeric", "answer": 0.62, "tolerance": 0.006, "explain": "$Sk = 3(8614.07 - 1001)/36751.80 = 3(7613.07)/36751.80 = 0.62$."},
+  {"q": "The 87-row HP table is highly skewed right, because Jr. Balrog's 325400 HP is over 300 times the median.", "type": "tf", "answer": false, "explain": "$Sk = 0.62$, between 0 and 1: only mildly skewed right by Pearson's rule. The same huge values that pull the mean up also blow up $s$ in the denominator, so $Sk$ stays below 1. Read the sign and the threshold, not the size of the biggest value."},
+  {"q": "Classic monster EXP per kill, all 87 rows: $\\bar{X} = 165.84$, $Q_2 = 69$, $s = 356.41$. Compute $Sk$. (2 decimals)", "type": "numeric", "answer": 0.82, "tolerance": 0.006, "explain": "$Sk = 3(165.84 - 69)/356.41 = 3(96.84)/356.41 = 0.82$: mildly skewed right."},
+  {"type": "fill", "q": "The final 5 Allflame days in R. Fill the blank in Pearson's formula.", "code": "x <- c(300.0, 265.0, 265.0, 300.0, 270.0)\n3*(mean(x) - ___(x))/sd(x)\n## [1] 1.632993", "answer": ["median"], "explain": "$\\bar{X} = 1400/5 = 280$, $Q_2 = 270$, $\\sum(X - \\bar{X})^2 = 400 + 225 + 225 + 400 + 100 = 1350$, $s = \\sqrt{1350/4} = 18.3712$. $Sk = 3(280 - 270)/18.3712 = 1.633$: these five days alone skew right."}
 ]
 ```
 

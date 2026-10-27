@@ -1,9 +1,10 @@
 ---
 title: Median & mode
-minutes: 15
+minutes: 18
 ---
+<!-- facts: poe1.ladder.ruthless-levels, classic.monster.training-hp, gms.data.ranking-level-hero-2026-10-27 -->
 
-The mean isn't the only way to describe a "typical" value. The **median** and **mode** each answer the question differently, and each has a situation where it beats the mean outright.
+The top 200 of a PoE1 ladder are mostly level 92 with a tail to 99, and one boss outweighs eleven field monsters: which value is "typical"? The **median** and **mode** each answer the question differently, and each has a situation where it beats the mean outright.
 
 ## Median: the middle value
 
@@ -65,10 +66,50 @@ Example from the notes: `survey$Pulse` has mode `80`, occurring 18 times — mor
 
 In R: `as.double(names(which.max(table(survey$Pulse))))` → `80`.
 
+## Ruthless ladder ranks 1-200: three centres from one level table
+
+The official PoE1 ladder for Ruthless Allflame, the harsher-loot variant of the league, listed these levels for ranks 1-200 on 27 October 2026 [PoE1, 3.29 Allflame Ruthless ladder, checked 2026-10-27]:
+
+| Level | 92 | 93 | 94 | 95 | 96 | 97 | 99 |
+|---|---|---|---|---|---|---|---|
+| Characters | 88 | 53 | 29 | 15 | 7 | 7 | 1 |
+
+Most sit at 92 with a thin tail to 99, a right-skewed table, so the three centres land in different places.
+
+```quiz
+[
+  {"q": "What is the mode of the 200 levels?", "type": "numeric", "answer": 92, "tolerance": 0, "explain": "Level 92 has the largest count, 88, so the mode is 92."},
+  {"q": "What is the median $Q_2$ of the 200 levels?", "type": "numeric", "answer": 93, "tolerance": 0, "explain": "$n = 200$ is even, so average the 100th and 101st sorted values. Counting up: 88 characters reach position 88, then $88 + 53 = 141$, so positions 89 to 141 are all 93. Both middle values are 93: $Q_2 = (93 + 93)/2 = 93$."},
+  {"q": "The 200 levels sum to 18626. Compute $\\bar{X}$. (2 decimals)", "type": "numeric", "answer": 93.13, "tolerance": 0.005, "explain": "$\\bar{X} = 18626/200 = 93.13$."}
+]
+```
+
+1. Mode: 92, with 88 characters.
+2. Median: $n = 200$, so average the 100th and 101st values. Cumulative counts are 88 at level 92 and $88 + 53 = 141$ at 93, so both middle positions are 93 and $Q_2 = 93$.
+3. Mean: $\sum X = 92(88) + 93(53) + 94(29) + 95(15) + 96(7) + 97(7) + 99(1) = 18626$, and $\bar{X} = 18626/200 = 93.13$.
+
+Mode $<$ median $<$ mean: the seven characters at 97 and the one at 99 pull the mean up, while the median only sees that they sit above the middle.
+
+### Every 8th rank in the calculator
+
+It holds every 8th rank (8, 16, ..., 200): 25 levels, mode 92, median 93, mean 93.04.
+
 ```widget
 stat-calc
-{ "data": "60 62 64 68 70 72 75 78 80 80 80 80 80 82 84 88 90 92", "title": "Pulse-style data with a clear mode (80)" }
+{ "data": "92 92 92 92 92 92 92 92 92 92 92 93 93 93 93 93 93 93 94 94 94 94 95 95 97", "title": "Ruthless Allflame levels, every 8th rank from 1-200" }
 ```
+
+## Twelve Classic training monsters: one boss
+
+meowdb's monster table for MapleStory Classic lists these HP values for twelve Victoria Island training monsters, sorted: 45, 115, 142, 172, 233, 403, 510, 842, 982, 1336, 3218 and 7420, the last being Mano, a field boss [Classic, Classic World Grand Launch build, meowdb monster table, checked 2026-10-27].
+
+```quiz
+[
+  {"q": "Compute the median HP of the twelve monsters.", "type": "numeric", "answer": 456.5, "tolerance": 0, "explain": "$n = 12$ is even, so average the 6th and 7th values: $(403 + 510)/2 = 456.5$ HP, a value no monster has."}
+]
+```
+
+$n = 12$, so $Q_2 = (403 + 510)/2 = 456.5$ HP. The mean is $15418/12 = 1284.83$ HP, above nine of the twelve monsters, because Mano's 7420 alone is almost half the sum. There is no mode: no HP value repeats.
 
 ## Why bother with the median at all?
 
@@ -88,18 +129,18 @@ drag-data
 ]}
 ```
 
-## Medians and modes of four new samples
+## Medians and modes of three more game lists
 
-Sort each data set before locating its middle.
+Nexon's North America ranking of the top 500 Heroes, counted by level from 293 up, reads 293: 85, 294: 102, 295: 200, 296: 59, 297: 24, 298: 13, 299: 11, 300: 6 [GMS, v.271 Hero job ranking, checked 2026-10-27]. Ruthless Allflame ranks 4601-4800 read 17: 66, 18: 96, 19: 38 [PoE1, 3.29 Allflame Ruthless ladder, checked 2026-10-27]. Drop Mano from the twelve Classic monsters and eleven HP values remain.
 
 ```quiz
 [
-  {"q": "Find $Q_2$ for 41, 37, 52, 29, 46, 33, 58.", "type": "numeric", "answer": 41, "tolerance": 0, "explain": "Sorted: 29, 33, 37, **41**, 46, 52, 58. $n = 7$ is odd, so the median is the 4th value, 41."},
-  {"q": "Find $\\tilde{X}$ for 6.2, 4.8, 7.5, 5.1, 9.0, 6.6, 5.9, 8.3.", "type": "numeric", "answer": 6.4, "tolerance": 0.001, "explain": "Sorted: 4.8, 5.1, 5.9, **6.2, 6.6**, 7.5, 8.3, 9.0. $n = 8$ is even, so average the 4th and 5th values: $(6.2 + 6.6)/2 = 6.4$, a number that is not in the data."},
-  {"q": "Shoe sizes 9, 10, 8, 10, 11, 9, 10, 12, 10. What is the mode?", "type": "numeric", "answer": 10, "tolerance": 0, "explain": "Tally: 8 once, 9 twice, 10 four times, 11 once, 12 once. 10 occurs most often, so the mode is 10."},
-  {"q": "For 12, 14, 15, 15, 16, 61, compute the mean $\\bar{X}$. (2 decimals)", "type": "numeric", "answer": 22.17, "tolerance": 0.006, "explain": "$\\sum X = 12 + 14 + 15 + 15 + 16 + 61 = 133$, $n = 6$, so $\\bar{X} = 133/6 = 22.17$. The single 61 drags it above five of the six values."},
-  {"q": "Same data, 12, 14, 15, 15, 16, 61. What is $Q_2$, the better typical value here?", "type": "numeric", "answer": 15.0, "tolerance": 0, "explain": "Already sorted, $n = 6$: average the 3rd and 4th values, $(15 + 15)/2 = 15$. The median ignores how far out 61 is, so it stays with the bulk of the data while the mean (22.17) does not."},
-  {"type": "fill", "q": "Fill the blank with what R prints.", "code": "median(c(6.2, 4.8, 7.5, 5.1, 9.0, 6.6, 5.9, 8.3))\n## [1] ___", "answer": ["6.4"], "explain": "`median()` sorts first, then averages the two middle values of an even-sized vector: $(6.2 + 6.6)/2 = 6.4$."}
+  {"q": "Top 500 Heroes: what is the mode level?", "type": "numeric", "answer": 295, "tolerance": 0, "explain": "Level 295 has the largest count, 200 of the 500 Heroes, so the mode is 295."},
+  {"q": "Top 500 Heroes: what is the median level $Q_2$?", "type": "numeric", "answer": 295, "tolerance": 0, "explain": "$n = 500$ is even, so average the 250th and 251st values. Cumulative counts from the bottom: 85 at 293, $85 + 102 = 187$ at 294, $187 + 200 = 387$ at 295. Positions 188 to 387 are 295, so $Q_2 = (295 + 295)/2 = 295$. Here mode and median agree; the mean, 294.896, is pulled below them by the 187 Heroes at 293 and 294."},
+  {"q": "Ruthless ranks 4601-4800: what is the median level?", "type": "numeric", "answer": 18, "tolerance": 0, "explain": "$n = 200$: average the 100th and 101st values. Cumulative counts: 66 at 17, $66 + 96 = 162$ at 18, so positions 67 to 162 are 18 and $Q_2 = 18$."},
+  {"q": "Without Mano, the HP values are 45, 115, 142, 172, 233, 403, 510, 842, 982, 1336, 3218. What is the median?", "type": "numeric", "answer": 403, "tolerance": 0, "explain": "$n = 11$ is odd, so the median is the 6th sorted value: 403 HP. Removing the boss moved the median from 456.5 to 403, a small step."},
+  {"q": "Same eleven monsters: compute $\\bar{X}$. (2 decimals)", "type": "numeric", "answer": 727.09, "tolerance": 0.005, "explain": "$\\sum X = 15418 - 7420 = 7998$, so $\\bar{X} = 7998/11 = 727.09$ HP. Removing Mano dropped the mean by 557.74 HP while the median moved only 53.5."},
+  {"type": "fill", "q": "Fill the blank with what R prints.", "code": "hp <- c(45, 115, 142, 172, 233, 403, 510, 842, 982, 1336, 3218, 7420)\nmedian(hp)\n## [1] ___", "answer": ["456.5"], "explain": "`median()` sorts, then averages the 6th and 7th of the twelve values: $(403 + 510)/2 = 456.5$."}
 ]
 ```
 

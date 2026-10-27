@@ -1,9 +1,10 @@
 ---
 title: Quartiles & percentiles
-minutes: 16
+minutes: 20
 ---
+<!-- facts: classic.monster.training-hp, poe1.ladder.ruthless-levels -->
 
-Range and standard deviation tell you how spread out $X$ is. A **measure of position** tells you where a particular value sits relative to the rest of the data. Quartiles and percentiles are both measures of position.
+Range and standard deviation tell you how spread out $X$ is. A **measure of position** tells you where a particular value sits relative to the rest of the data: where a Classic training monster's HP sits among its neighbours, or what share of a ladder is below level 95. Quartiles and percentiles are both measures of position.
 
 ## Quartiles
 
@@ -32,6 +33,28 @@ The boxplot below puts the hand quartiles for the odd example beside R's: R's `q
 ```widget
 boxplot
 { "data": "19 19 20 22 23 25 50", "note": "The odd n = 7 median example: hand method vs R" }
+```
+
+## Twelve Classic training monsters: quartiles by hand
+
+meowdb's monster table lists HP for twelve common Victoria Island training monsters in MapleStory Classic World, Nexon's separate classic-era server [Classic, Classic World Grand Launch training monsters, checked 2026-10-27]. Sorted: 45 (Snail), 115, 142, 172, 233, 403, 510, 842, 982, 1 336, 3 218, 7 420 (Mano, a boss). Twelve values is a small sorted list with even $n$, the hand method's case: split into two halves of six, with nothing excluded.
+
+```quiz
+[
+  {"q": "The 12 training monsters' HP, sorted: 45, 115, 142, 172, 233, 403, 510, 842, 982, 1336, 3218, 7420. $Q_1$ by the hand method?", "type": "numeric", "answer": 157, "tolerance": 0, "unit": "HP", "explain": "$n = 12$ is even, so nothing is excluded. Lower half: 45, 115, 142, 172, 233, 403; its median is $(142 + 172)/2 = 157$."},
+  {"q": "Same list. $Q_3$ by the hand method?", "type": "numeric", "answer": 1159, "tolerance": 0, "unit": "HP", "explain": "Upper half: 510, 842, 982, 1336, 3218, 7420; its median is $(982 + 1336)/2 = 1159$."}
+]
+```
+
+$Q_2 = \frac{403 + 510}{2} = 456.5$. Lower half 45, 115, 142, 172, 233, 403 gives $Q_1 = \frac{142 + 172}{2} = \mathbf{157}$; upper half 510, 842, 982, 1 336, 3 218, 7 420 gives $Q_3 = \frac{982 + 1336}{2} = \mathbf{1159}$. Half the monsters sit between 157 and 1 159 HP, and Mano's 7 420 does not move any quartile.
+
+### Hand quartiles and R's for the twelve monsters
+
+The boxplot shows both methods on the same twelve values: R's `quantile()` interpolates to $Q_1 = 164.5$ and $Q_3 = 1070.5$, against the hand method's 157 and 1 159.
+
+```widget
+boxplot
+{ "data": "45 115 142 172 233 403 510 842 982 1336 3218 7420", "note": "HP of 12 Classic World training monsters (meowdb, Grand Launch build): hand method vs R" }
 ```
 
 ## A large example: faithful eruptions
@@ -78,18 +101,18 @@ boxplot
 { "data": "1.800 1.950 2.283 2.883 3.333 3.600 3.600 4.350 4.533 4.700", "note": "First 10 faithful eruption durations (minutes)" }
 ```
 
-## Hand quartiles for two new data sets
+## Quartiles without the boss, and a percentile on the Ruthless ladder
 
-Data set A ($n = 9$): 14, 22, 9, 17, 30, 11, 25, 19, 13. Data set B ($n = 10$): 3.1, 4.5, 2.8, 5.0, 3.9, 4.2, 6.1, 3.3, 4.8, 5.6.
+Drop Mano and eleven field monsters remain: 45, 115, 142, 172, 233, 403, 510, 842, 982, 1 336, 3 218 HP. Then take the Ruthless Allflame ladder, PoE1's harder ruleset, where ranks 1 to 200 on 2026-10-27 have levels 92: 88 characters, 93: 53, 94: 29, 95: 15, 96: 7, 97: 7, 99: 1 [PoE1, 3.29 Allflame Ruthless ladder, checked 2026-10-27].
 
 ```quiz
 [
-  {"q": "Data set A: find $Q_2$.", "type": "numeric", "answer": 17, "tolerance": 0, "explain": "Sorted: 9, 11, 13, 14, **17**, 19, 22, 25, 30. The 5th of 9 values is 17."},
-  {"q": "Data set A: find $Q_1$ by the hand method.", "type": "numeric", "answer": 12, "tolerance": 0, "explain": "$n$ is odd, so leave out the median 17. Lower half 9, 11, 13, 14; its median is $(11 + 13)/2 = 12$."},
-  {"q": "Data set A: find $Q_3$ by the hand method.", "type": "numeric", "answer": 23.5, "tolerance": 0, "explain": "Upper half (17 excluded) 19, 22, 25, 30; its median is $(22 + 25)/2 = 23.5$."},
-  {"q": "Data set B: find $Q_1$ by the hand method.", "type": "numeric", "answer": 3.3, "tolerance": 0.001, "explain": "Sorted: 2.8, 3.1, 3.3, 3.9, 4.2 | 4.5, 4.8, 5.0, 5.6, 6.1 ($Q_2 = (4.2 + 4.5)/2 = 4.35$). $n$ is even, nothing is excluded; the lower half's middle value is 3.3."},
-  {"q": "Which symbol names the value with 75% of the data below it? (either name)", "type": "text", "answer": ["Q3", "Q_3", "P75", "P_75", "Q₃", "P₇₅"], "explain": "The third quartile $Q_3$, which is also the 75th percentile $P_{75}$."},
-  {"type": "fill", "q": "Data set A in R. Fill the blank so `quantile()` returns $P_{75}$.", "code": "A <- c(14, 22, 9, 17, 30, 11, 25, 19, 13)\nquantile(A, ___)\n## 75%\n##  22", "answer": ["0.75", ".75"], "explain": "Give the percentage as a decimal: 0.75. R interpolates differently from the hand method (22 against the hand $Q_3 = 23.5$; for $P_{25}$ it gives 13 against 12). Slight disagreement is OK."}
+  {"q": "The 11 field monsters (Mano dropped): $Q_1$ by the hand method?", "type": "numeric", "answer": 142, "tolerance": 0, "unit": "HP", "explain": "$n = 11$ is odd: the median is the 6th value, 403, and it is left out of both halves. Lower half 45, 115, 142, 172, 233; its median is 142."},
+  {"q": "Same 11 field monsters: $Q_3$ by the hand method?", "type": "numeric", "answer": 982, "tolerance": 0, "unit": "HP", "explain": "Upper half (403 excluded): 510, 842, 982, 1336, 3218; its median is 982."},
+  {"q": "Ruthless ranks 1 to 200: $Q_1$ by the hand method (average of the 50th and 51st sorted levels)?", "type": "numeric", "answer": 92, "tolerance": 0, "explain": "Sorted, positions 1 to 88 are level 92, so the 50th and 51st are both 92: $Q_1 = (92 + 92)/2 = 92$."},
+  {"q": "Ruthless ranks 1 to 200: $Q_3$ by the hand method (average of the 150th and 151st)?", "type": "numeric", "answer": 94, "tolerance": 0, "explain": "Cumulative counts: level 92 ends at position 88, 93 at $88 + 53 = 141$, 94 at $141 + 29 = 170$. Positions 150 and 151 are both 94, so $Q_3 = 94$. ($Q_2$, the 100th and 101st, is 93.)"},
+  {"q": "What percentage of ranks 1 to 200 are below level 95?", "type": "numeric", "answer": 85, "tolerance": 0, "unit": "%", "explain": "$88 + 53 + 29 = 170$ characters are below 95, and $170/200 = 0.85 = 85\\%$. Level 95 covers positions 171 to 185, so it sits around $P_{85}$ to $P_{92}$."},
+  {"type": "fill", "q": "The Ruthless levels in R. Fill the blank so `quantile()` returns $P_{90}$.", "code": "lvl <- rep(c(92, 93, 94, 95, 96, 97, 99), c(88, 53, 29, 15, 7, 7, 1))\nquantile(lvl, ___)\n## 90%\n##  95", "answer": ["0.9", "0.90", ".9"], "explain": "Give the percentage as a decimal: 0.9. 90% of 200 is 180; the 180th and 181st sorted levels are both 95 (level 95 covers positions 171 to 185), so the hand method and R agree on $P_{90} = 95$."}
 ]
 ```
 

@@ -1,9 +1,10 @@
 ---
 title: R from Lab 1
-minutes: 18
+minutes: 21
 ---
+<!-- facts: gms.data.ranking-overall-legendary-2026-10-27 -->
 
-The R mechanics from **Lab 1** (`Lab_01_Notebook.Solutions.pdf`, `demo_notebook_Unit_01.Rmd`) and what each one returns.
+The R mechanics from **Lab 1** (`Lab_01_Notebook.Solutions.pdf`, `demo_notebook_Unit_01.Rmd`) and what each one returns. The same calls then run on Nexon's ranking of the top 500 GMS characters.
 
 ## R Notebooks
 
@@ -256,6 +257,49 @@ cor(circuit.df$Resistance, circuit.df$Fail.time)
 [1] 0.8324
 ```
 
+## The GMS top 500 as a data frame
+
+Nexon's North America overall ranking lists the level, job and world of the top 500 GMS characters [GMS, v.271 overall ranking 2026-10-27, checked 2026-10-27]. It is a real rows-and-columns table with a categorical column, `job_name`, and numeric ones, the shape `subset()` and `table()` work on. `read.csv()` reads `job_name` as text, so `==` and `%in%` compare it directly.
+
+```r
+top500 <- read.csv("gms-ranking-overall-legendary-2026-10-27.csv")
+head(top500, 3)
+table(top500$level)
+```
+```text
+  rank level exp    job_name world_id
+1    1   300   0      Bishop       19
+2    2   300   0    Shadower        1
+3    3   300   0 Battle Mage        1
+
+297 298 299 300 
+ 74 199 101 126 
+```
+
+```quiz
+[
+  {"q": "From the table, what does `nrow(subset(top500, level == 300))` print?", "type": "numeric", "answer": 126, "tolerance": 0, "explain": "`subset()` keeps the rows where `level == 300` is TRUE; the table already counted them: 126."},
+  {"q": "What does `sum(top500$level >= 299)` print?", "type": "numeric", "answer": 227, "tolerance": 0, "explain": "The logical vector is TRUE for levels 299 and 300; `sum()` counts the TRUEs: $101 + 126 = 227$."}
+]
+```
+
+`table(top500$job_name)` lists all 51 jobs; the counts below come from `==`, `%in%` and the numeric column.
+
+```r
+sum(top500$job_name == "Night Lord")
+nrow(subset(top500, job_name %in% c("Night Lord", "Shadower")))
+nrow(subset(top500, level == 300 & job_name == "Night Lord"))
+mean(top500$level)
+sd(top500$level)
+```
+```text
+[1] 61
+[1] 94
+[1] 21
+[1] 298.558
+[1] 1.024077
+```
+
 ## Plots: boxplot() and hist()
 
 `boxplot(extra ~ group, data=sleep)` uses a **model formula**: `extra ~ group` means "plot `extra` grouped by `group`" (read the `~` as "explained by" / "grouped by").
@@ -285,18 +329,17 @@ library(mosaicData)
 
 `require()` returns `TRUE`/`FALSE` instead of erroring like a bare `library()` call would if the package were missing, so it can drive an `if`.
 
-## Predict R's output for new vectors
+## Predict R's output on the GMS top 500
 
-Each item runs one Lab 1 function on a new vector.
+`counts <- c(74, 199, 101, 126)` holds the level table above, levels 297 to 300 in order; `top500` is the data frame.
 
 ```quiz
 [
-  {"type": "fill", "q": "Fill the blank so ties share the lowest rank.", "code": "rank(c(14, 9, 21, 9, 30, 14), ties.method=\"___\")\n## [1] 3 1 5 1 6 3", "answer": ["min"], "explain": "Sorted: 9, 9, 14, 14, 21, 30. The two 9s share rank 1, the two 14s share rank 3 (ranks 1 and 2 are used up), then 21 is 5 and 30 is 6."},
-  {"type": "fill", "q": "Fill the comparison so `sum()` counts the values above 10.", "code": "x <- c(7, 15, 3, 22, 18, 9)\nsum(x ___ 10)\n## [1] 3", "answer": [">"], "explain": "`x > 10` is FALSE TRUE FALSE TRUE TRUE FALSE; `sum()` counts the TRUEs: 15, 22, 18 make 3."},
-  {"type": "fill", "q": "Fill the two positions that pick out 15 and 22.", "code": "x <- c(7, 15, 3, 22, 18, 9)\nx[c(___, ___)]\n## [1] 15 22", "answer": ["2", "4"], "explain": "R counts from 1: position 2 holds 15 and position 4 holds 22."},
-  {"q": "`scores <- c(71, 85, 64, 90, 78)`. What does `sd(scores)` print? (4 decimals)", "type": "numeric", "answer": 10.4547, "tolerance": 0.0001, "explain": "$\\bar{X} = 388/5 = 77.6$; $\\sum(X - \\bar{X})^2 = 437.2$; `sd` divides by $n - 1 = 4$: $\\sqrt{437.2/4} = 10.4547$ (R prints 10.45466)."},
-  {"q": "Same `scores`. What does `IQR(scores)` print?", "type": "numeric", "answer": 14.0, "tolerance": 0, "explain": "Sorted 64, 71, 78, 85, 90. With $n = 5$, R's quartiles land exactly on the 2nd and 4th values: $Q_1 = 71$, $Q_3 = 85$, so $IQR = 14$."},
-  {"q": "`hist(x, breaks=seq(60, 100, by=10), right=FALSE)`. A value of exactly 80 is counted in which class?", "options": ["[80, 90)", "[70, 80)", "both", "neither"], "answer": 0, "explain": "right=FALSE closes each class on the left and opens it on the right, so 80 starts the class [80, 90) and is excluded from [70, 80)."}
+  {"type": "fill", "q": "Fill the comparison so `sum()` counts the levels held by more than 100 characters.", "code": "counts <- c(74, 199, 101, 126)\nsum(counts ___ 100)\n## [1] 3", "answer": [">"], "explain": "`counts > 100` is FALSE TRUE TRUE TRUE; `sum()` counts the TRUEs: 199, 101 and 126 make 3."},
+  {"type": "fill", "q": "Fill the position that picks out the number of level 298 characters.", "code": "counts[___]\n## [1] 199", "answer": ["2"], "explain": "R counts from 1: level 297 is position 1, so level 298's count, 199, is position 2."},
+  {"q": "What does `sd(counts)` print? (4 decimals)", "type": "numeric", "answer": 53.7091, "tolerance": 0.0001, "explain": "$\\bar{X} = 500/4 = 125$; deviations $-51, 74, -24, 1$; $\\sum(X - \\bar{X})^2 = 2601 + 5476 + 576 + 1 = 8654$; `sd` divides by $n - 1 = 3$: $\\sqrt{8654/3} = 53.7091$ (R prints 53.70909)."},
+  {"type": "fill", "q": "Fill the operator that tests membership in a set of jobs.", "code": "sum(top500$job_name ___ c(\"Bishop\", \"Hero\", \"Shadower\"))\n## [1] 100", "answer": ["%in%"], "explain": "`%in%` gives TRUE for each row whose job is any of the three: 30 Bishops, 37 Heroes and 33 Shadowers make 100."},
+  {"q": "`rank(counts, ties.method=\"min\")` prints which vector?", "options": ["1 4 2 3", "4 1 3 2", "1 2 3 4", "74 199 101 126"], "answer": 0, "explain": "Sorted: 74, 101, 126, 199. So 74 is rank 1, 199 is rank 4, 101 is rank 2 and 126 is rank 3, printed in the original order: 1 4 2 3."}
 ]
 ```
 

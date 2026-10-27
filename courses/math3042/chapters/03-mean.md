@@ -1,9 +1,10 @@
 ---
 title: Mean (raw & grouped)
-minutes: 15
+minutes: 18
 ---
+<!-- facts: poe1.data.divine-chaos-allflame, gms.data.ranking-level-hero-2026-10-27 -->
 
-A **measure of centre** answers one question: what is a "typical" value of $X$? The mean is the one everyone already knows how to compute; the details that matter are which symbol is which, and what to do when the data arrives already grouped into a frequency table.
+What did a Divine Orb typically cost over the last ten days of Allflame, and what level is a typical top-500 Hero? A **measure of centre** answers that question for any variable $X$; the details that matter are which symbol is which, and what to do when the data arrives already grouped into a frequency table.
 
 ## Sample mean vs population mean
 
@@ -34,6 +35,29 @@ stat-calc
 { "data": "22 19 20 22 35 19 21 23", "title": "Ages example" }
 ```
 
+## Ten days of Divine Orb prices in Allflame
+
+A Divine Orb is PoE1's high-value currency; poe.ninja records its price once a day in chaos orbs, the everyday currency. The last ten days of its Allflame series, 18 to 27 October 2026, read 319.0, 316.5, 316.5, 305.0, 300.0, 300.0, 265.0, 265.0, 300.0 and 270.0 chaos [PoE1, 3.29 Allflame, poe.ninja daily Divine price, checked 2026-10-27]. Each day contributes one value, so the mean of the window is $\sum X / n$ with $n = 10$.
+
+```quiz
+[
+  {"q": "Compute $\\bar{X}$ for the ten Divine prices before reading the working. (1 decimal)", "type": "numeric", "answer": 295.7, "tolerance": 0.05, "unit": "chaos", "explain": "$\\sum X = 319.0 + 316.5 + 316.5 + 305.0 + 300.0 + 300.0 + 265.0 + 265.0 + 300.0 + 270.0 = 2957.0$, $n = 10$, so $\\bar{X} = 2957.0/10 = 295.7$ chaos."}
+]
+```
+
+1. Sum: $319.0 + 316.5 + 316.5 + 305.0 + 300.0 + 300.0 + 265.0 + 265.0 + 300.0 + 270.0 = 2957.0$
+2. Count: $n = 10$
+3. Mean: $\bar{X} = \dfrac{2957.0}{10} = \mathbf{295.7}$ chaos
+
+The window is ten days cut from a 96-day series, so 295.7 is a sample mean $\bar{X}$.
+
+### The ten prices in the calculator
+
+```widget
+stat-calc
+{ "data": "319.0 316.5 316.5 305.0 300.0 300.0 265.0 265.0 300.0 270.0", "title": "Allflame Divine price in chaos, 18 to 27 October 2026" }
+```
+
 ## Grouped data
 
 Sometimes you don't get the raw values — you get a **frequency table**: how many observations ($f_i$) fell into each group ($i$), where each group is represented by its **class mark** $X_i$ (the midpoint of that group's interval). The grouped mean formula:
@@ -61,24 +85,54 @@ grouped-mean
 
 The **raw** (ungrouped) mean of the actual `faithful$eruptions` data is `3.488`; the grouped calculation gives `3.498`. Grouping throws away information: every observation inside a class is replaced by that class's midpoint before you average, so an eruption of 1.90 minutes and one of 1.60 minutes both count as `1.75` if they share a bin. The grouped mean is an **approximation** of the true mean, not a recomputation of it.
 
+## The top 500 Heroes: a grouped mean that is exact
+
+Nexon's North America job ranking lists the top 500 characters of the Hero job, at levels 293 to 300 [GMS, v.271 Hero job ranking, checked 2026-10-27]. Counted by level, that list is a frequency table:
+
+| Level $X_i$ | 300 | 299 | 298 | 297 | 296 | 295 | 294 | 293 |
+|---|---|---|---|---|---|---|---|---|
+| Heroes $f_i$ | 6 | 11 | 13 | 24 | 59 | 200 | 102 | 85 |
+
+A level is a whole number, so every Hero in a column is exactly at its $X_i$: here $\sum f_i X_i / \sum f_i$ is the raw mean, not an approximation like Old Faithful's 3.498.
+
+```quiz
+[
+  {"q": "Compute $\\sum f_i X_i$ for the Hero table.", "type": "numeric", "answer": 147448, "tolerance": 0, "explain": "$300(6) + 299(11) + 298(13) + 297(24) + 296(59) + 295(200) + 294(102) + 293(85) = 1800 + 3289 + 3874 + 7128 + 17464 + 59000 + 29988 + 24905 = 147448$."},
+  {"q": "Compute the mean level of the 500 Heroes. (3 decimals)", "type": "numeric", "answer": 294.896, "tolerance": 0.001, "explain": "$\\sum f_i = 6 + 11 + 13 + 24 + 59 + 200 + 102 + 85 = 500$, so $\\bar{X} = 147448/500 = 294.896$. Averaging all 500 levels one by one gives the same 294.896."}
+]
+```
+
+1. $\sum f_i = 6 + 11 + 13 + 24 + 59 + 200 + 102 + 85 = 500$
+2. $\sum f_i X_i = 1800 + 3289 + 3874 + 7128 + 17464 + 59000 + 29988 + 24905 = 147448$
+3. $\bar{X} = \dfrac{147448}{500} = \mathbf{294.896}$
+
+The mean sits below 295, the level 200 of the 500 Heroes share, because 187 Heroes at 293 and 294 outweigh the 113 above 295.
+
+### The Hero table in the grouped-mean widget
+
+```widget
+grouped-mean
+{ "rows": [[300, 6], [299, 11], [298, 13], [297, 24], [296, 59], [295, 200], [294, 102], [293, 85]], "title": "Top 500 Heroes by level, GMS North America, 2026-10-27" }
+```
+
 ## Another grouped example: steel rods
 
 Lab 1's pencil problem 2: rod diameters given as a frequency table (diameter : count) — $10.00\text{mm}\!:\!40$, $10.01\!:\!75$, $10.02\!:\!100$, $10.03\!:\!90$, $10.04\!:\!45$. Here the diameters themselves are the class marks and $\sum f_i = 350$. Working the formula through gives
 
 $$\bar{X} = 10.02071 \text{ mm}$$
 
-## Means of commute times and screen time
+## The ten days before, and the top 100 Heroes
 
-Nine commute times in minutes: 34, 18, 27, 45, 22, 31, 19, 40, 26. A second sample gives daily screen time only as a frequency table, with class marks 1, 3, 5, 7, 9 hours and frequencies 6, 14, 19, 8, 3.
+The ten Allflame Divine prices before the window above, 8 to 17 October 2026, are 368.5, 350.0, 326.0, 350.0, 357.0, 355.0, 360.0, 320.0, 315.6 and 324.0 chaos [PoE1, 3.29 Allflame, poe.ninja daily Divine price, checked 2026-10-27]. The top 100 of the Hero ranking, counted by level, are 300: 6, 299: 11, 298: 13, 297: 24 and 296: 46, and the full ranking holds 227,326 Heroes [GMS, v.271 Hero job ranking, checked 2026-10-27].
 
 ```quiz
 [
-  {"q": "Commute times: what is $\\sum X$?", "type": "numeric", "answer": 262, "tolerance": 0, "explain": "$34 + 18 + 27 + 45 + 22 + 31 + 19 + 40 + 26 = 262$."},
-  {"q": "Compute the sample mean $\\bar{X}$ of the commute times. (2 decimals)", "type": "numeric", "answer": 29.11, "tolerance": 0.006, "unit": "min", "explain": "$\\bar{X} = \\sum X / n = 262/9 = 29.1111 \\approx 29.11$ minutes."},
-  {"q": "The nine commuters are a sample. Which symbol names their mean?", "type": "text", "answer": ["X̄", "x̄", "x bar", "X bar", "x-bar", "xbar", "\\bar{X}"], "explain": "A sample mean is the statistic $\\bar{X}$ (read X-bar); $\\mu$ is reserved for the mean of a whole population."},
-  {"q": "Screen time table: compute $\\sum f_i X_i$.", "type": "numeric", "answer": 226, "tolerance": 0, "explain": "$6(1) + 14(3) + 19(5) + 8(7) + 3(9) = 6 + 42 + 95 + 56 + 27 = 226$."},
-  {"q": "Compute the grouped mean screen time. (2 decimals)", "type": "numeric", "answer": 4.52, "tolerance": 0.006, "unit": "h", "explain": "$\\sum f_i = 6 + 14 + 19 + 8 + 3 = 50$, so $\\bar{X} = 226/50 = 4.52$ hours. Every student in a class is counted at its class mark."},
-  {"type": "fill", "q": "Fill the blank so R prints the commute-time mean.", "code": "times <- c(34, 18, 27, 45, 22, 31, 19, 40, 26)\n___(times)\n## [1] 29.11111", "answer": ["mean"], "explain": "`mean(times)` is $\\sum X / n = 262/9$, printed to 7 significant digits as 29.11111."}
+  {"q": "Divine prices, 8 to 17 October: what is $\\sum X$? (1 decimal)", "type": "numeric", "answer": 3426.1, "tolerance": 0.05, "unit": "chaos", "explain": "$368.5 + 350.0 + 326.0 + 350.0 + 357.0 + 355.0 + 360.0 + 320.0 + 315.6 + 324.0 = 3426.1$."},
+  {"q": "Compute $\\bar{X}$ for those ten prices. (2 decimals)", "type": "numeric", "answer": 342.61, "tolerance": 0.05, "unit": "chaos", "explain": "$\\bar{X} = \\sum X / n = 3426.1/10 = 342.61$ chaos, about 47 chaos above the 295.7 of the following ten days."},
+  {"q": "Top 100 Heroes: compute $\\sum f_i X_i$.", "type": "numeric", "answer": 29707, "tolerance": 0, "explain": "$300(6) + 299(11) + 298(13) + 297(24) + 296(46) = 1800 + 3289 + 3874 + 7128 + 13616 = 29707$."},
+  {"q": "Compute the mean level of the top 100 Heroes. (2 decimals)", "type": "numeric", "answer": 297.07, "tolerance": 0.005, "explain": "$\\sum f_i = 6 + 11 + 13 + 24 + 46 = 100$, so $\\bar{X} = 29707/100 = 297.07$. Levels are exact values, so this grouped mean is also the raw mean."},
+  {"q": "Treat the 500 listed Heroes as drawn from all 227,326 ranked Heroes. Which symbol names 294.896?", "type": "text", "answer": ["X̄", "x̄", "x bar", "X bar", "x-bar", "xbar", "\\bar{X}"], "explain": "500 of 227,326 is a sample, so its mean is the statistic $\\bar{X}$; $\\mu$ would be the mean level of all 227,326. (The top 500 is not a random sample, so it overstates $\\mu$, but the symbol rule is about scope.)"},
+  {"type": "fill", "q": "Fill the blank so R prints the mean of the 8 to 17 October prices.", "code": "price <- c(368.5, 350.0, 326.0, 350.0, 357.0, 355.0, 360.0, 320.0, 315.6, 324.0)\n___(price)\n## [1] 342.61", "answer": ["mean"], "explain": "`mean(price)` is $\\sum X / n = 3426.1/10 = 342.61$."}
 ]
 ```
 

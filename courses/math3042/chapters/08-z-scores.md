@@ -1,9 +1,10 @@
 ---
 title: Z-scores & unusual values
-minutes: 16
+minutes: 20
 ---
+<!-- facts: gms.data.ranking-level-hero-2026-10-27, poe1.data.divine-chaos-allflame -->
 
-The empirical rule tells you percentages for whole bands ($\mu \pm \sigma$, $\mu \pm 2\sigma$, ...). A **Z-score** tells you the same thing for a single, specific value: it converts $X$ into "how many standard deviations from the mean."
+Is a level-300 Hero unusual among the top 500, or a Divine Orb price unusual for its month? A **Z-score** answers for a single, specific value: it converts $X$ into "how many standard deviations from the mean," the per-value version of the empirical rule's bands.
 
 ## The formula
 
@@ -88,6 +89,20 @@ normal-curve
 { "mu": 178.4, "sigma": 7.6, "x": 203, "title": "Men's height — LeBron at Z = 3.24" }
 ```
 
+## A level-300 Hero against the top 500
+
+Nexon's North America ranking lists the top 500 Heroes, a MapleStory warrior job, at levels 293 to 300 [GMS, v.271 Hero ranking, checked 2026-10-27]: 85 at 293, 102 at 294, 200 at 295, 59 at 296, 24 at 297, 13 at 298, 11 at 299 and 6 at 300. The 500 are a sample cut from 227 326 ranked Heroes, so use $\bar{X}$ and $s$: from the counts, $\bar{X} = 294.896$ and $s = 1.43991$. A Z-score only measures how far 300 sits from this list's own mean in this list's own $s$, so it needs no bell; turning that Z into a percentage would.
+
+```quiz
+[
+  {"q": "Top 500 Heroes: $\\bar{X} = 294.896$, $s = 1.43991$. Z-score of a level-300 Hero? (2 decimals)", "type": "numeric", "answer": 3.54, "tolerance": 0.01, "explain": "$Z = (X - \\bar{X})/s = (300 - 294.896)/1.43991 = 5.104/1.43991 = 3.54$. That is above +2, so a level-300 Hero is unusual even within the top 500."}
+]
+```
+
+$Z = \dfrac{300 - 294.896}{1.43991} = \dfrac{5.104}{1.43991} = \mathbf{3.54}$
+
+$3.54 > 2$, so level 300 is **unusual** even here. The high cutoff is $\bar{X} + 2s = 294.896 + 2.880 = 297.78$, so all 30 Heroes at levels 298 to 300 are unusual. The lowest level, 293, gives $Z = (293 - 294.896)/1.43991 = -1.32$: usual. Nobody on the list is unusually low, because it stops at rank 500. Z still works on this lopsided list; it just reports the lopsidedness.
+
 ## Pencil problem: body temperature
 
 $\mu = 98.20$, $\sigma = 0.62$. The "usual" range is $\mu \pm 2\sigma = 98.20 \pm 1.24$, i.e. **96.96 to 99.44**.
@@ -96,18 +111,17 @@ $\mu = 98.20$, $\sigma = 0.62$. The "usual" range is $\mu \pm 2\sigma = 98.20 \p
 - $96.90$: below 96.96 → **unusual**.
 - $96.98$: inside 96.96–99.44 → **usual** (just barely).
 
-## Z-scores on a midterm
+## Z-scores for a month of Allflame Divine prices
 
-Midterm scores are normal with $\mu = 72$ and $\sigma = 8$.
+The Divine Orb is PoE1's high-value currency, priced in Chaos Orbs. Take poe.ninja's daily Divine price for the last 30 days of the Allflame league, 2026-09-28 to 2026-10-27 [PoE1, 3.29 Allflame Divine price, checked 2026-10-27]: $\bar{X} = 329.22$ chaos and $s = 46.5915$ chaos. The window opens on a 163.8-chaos day, today's price is 270.0, and the window's high is 379.0.
 
 ```quiz
 [
-  {"q": "Compute $Z$ for a score of 90. (2 decimals)", "type": "numeric", "answer": 2.25, "tolerance": 0.006, "explain": "$Z = (X - \\mu)/\\sigma = (90 - 72)/8 = 18/8 = 2.25$."},
-  {"q": "Is a score of 90 usual or unusual?", "type": "text", "answer": ["unusual", "it is unusual"], "explain": "$Z = 2.25 > 2$, so 90 is unusual: more than two standard deviations above the mean."},
-  {"q": "Compute $Z$ for a score of 60. (2 decimals)", "type": "numeric", "answer": -1.5, "tolerance": 0.006, "explain": "$Z = (60 - 72)/8 = -12/8 = -1.50$: one and a half standard deviations below the mean, usual."},
-  {"q": "Which score has $Z = -2.5$?", "type": "numeric", "answer": 52, "tolerance": 0, "explain": "$X = \\mu + Z\\sigma = 72 + (-2.5)(8) = 72 - 20 = 52$."},
-  {"q": "Above which score is a result unusually high?", "type": "numeric", "answer": 88, "tolerance": 0, "explain": "Unusual means $Z > 2$: $X = \\mu + 2\\sigma = 72 + 16 = 88$. The low cutoff is $72 - 16 = 56$."},
-  {"type": "shade", "q": "Shade the scores above 88.", "mu": 72, "sigma": 8, "answer": 2.5, "tolerance": 1, "region": "above", "lo": 2, "explain": "88 is $Z = 2$. Outside $\\pm 2\\sigma$ is 5%, half of it above: 2.5% (exact normal area 2.28%)."}
+  {"q": "Allflame Divine, last 30 days: $\\bar{X} = 329.22$, $s = 46.5915$ chaos. Z-score of the 163.8-chaos day? (2 decimals)", "type": "numeric", "answer": -3.55, "tolerance": 0.01, "explain": "$Z = (X - \\bar{X})/s = (163.8 - 329.22)/46.5915 = -165.42/46.5915 = -3.55$: three and a half standard deviations below the window's mean."},
+  {"q": "Is the 163.8-chaos day usual or unusual for this window?", "type": "text", "answer": ["unusual", "Unusual", "it is unusual"], "explain": "$Z = -3.55 < -2$, so it is unusual: far below every other day in the window, which runs 265.0 to 379.0."},
+  {"q": "Z-score of today's price, 270.0 chaos? (2 decimals)", "type": "numeric", "answer": -1.27, "tolerance": 0.01, "explain": "$Z = (270.0 - 329.22)/46.5915 = -59.22/46.5915 = -1.27$: below the mean but inside $-2 < Z < 2$, so usual."},
+  {"q": "Above what price is a day unusually high for this window? (chaos, 1 decimal)", "type": "numeric", "answer": 422.4, "tolerance": 0.05, "unit": "chaos", "explain": "Unusual means $Z > 2$: $X = \\bar{X} + 2s = 329.22 + 2(46.5915) = 329.22 + 93.183 = 422.4$ chaos. The window's high of 379.0 is below it, so no day is unusually high. The low cutoff is $329.22 - 93.183 = 236.0$ chaos."},
+  {"q": "Which price has $Z = -1.5$ in this window? (chaos, 1 decimal)", "type": "numeric", "answer": 259.3, "tolerance": 0.05, "unit": "chaos", "explain": "$X = \\bar{X} + Zs = 329.22 + (-1.5)(46.5915) = 329.22 - 69.887 = 259.3$ chaos."}
 ]
 ```
 
