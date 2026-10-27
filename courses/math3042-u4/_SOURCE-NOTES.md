@@ -166,3 +166,13 @@ Full transcription in `../GAP.md` §b2. Shape: two questions; Q1 (a) one `sample
 The fully hand-filled Unit 4 notes (pp. 55–73, dated Oct 4, 2026) were posted on Oct 26. They agree with every number this module computed from the blank notes: 0.0123, 0.0465, 0.0506, 12.5 / 3.1, 20 / 4.2, 0.0399, 0.2539, 0.5189, 4.4 / 1.5, 0.1406, 4 / 3.5, 0.4219, λ = 30, 0.0134, 0.0353.
 
 **One slip, p. 73** (histogram for λ = 30): the table shows "20 | 0.0353", which is P(X ≤ 20). P(X = 20) = 0.0134 (checker: 0.0134112). The lessons teach 0.0134 for P(X = 20) and 0.0353 for the cumulative tail. Full transcription in `../math3042-midterm/_SOURCE-NOTES.md` §5.
+
+## Game facts used
+- 01-discrete-distributions.md: poe1.chaos.affix-count, gms.scroll.chaos-outcomes, gms.box.lucky-jewel-box, poe1.sockets.count-weights
+- 02-binomial.md: classic.scroll.tiers, gms.starforce.rates-0-14, gms.starforce.star-catch, poe1.vaal.gem-outcomes
+- 03-binomial-mean-variance.md: gms.starforce.rates-15-plus, gms.starforce.star-catch, classic.scroll.tiers
+- 04-hypergeometric.md: poe1.ladder.hc-dead-by-rank, gms.data.ranking-overall-legendary-2026-10-27
+- 05-geometric.md: gms.starforce.rates-0-14, gms.starforce.star-catch, classic.cashshop.mfc-rates, classic.cashshop.mfc-price, gms.box.divine-wishing-bell, poe1.fusing.six-link-measured
+- 06-poisson.md: none; no bank entry gives a measured count per time interval, and fixed respawn timers are not Poisson
+- 07-choosing-distribution.md: classic.scroll.tiers, poe1.ladder.hc-dead-by-rank, gms.starforce.rates-0-14, gms.starforce.star-catch, poe1.chaos.affix-count
+- 08-lab5-conditional-r.md: poe1.ladder.hc-dead-by-rank

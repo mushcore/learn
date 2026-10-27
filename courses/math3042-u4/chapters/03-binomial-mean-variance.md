@@ -1,9 +1,10 @@
 ---
 title: Binomial mean and variance; is a count unusual?
-minutes: 18
+minutes: 22
 ---
+<!-- facts: gms.starforce.rates-15-plus, gms.starforce.star-catch, classic.scroll.tiers -->
 
-Summing $x \cdot P(x)$ over 51 bars to find the shoppers' mean is possible but pointless: for a binomial variable the parameters collapse to $\mu = np$ and $\sigma = \sqrt{npq}$. With $\mu$ and $\sigma$ in hand, a Z-score says whether an observed count is unusual.
+Tap forty items once each at 15 stars: how many successes should you expect, and when is a count unusual? For a binomial variable the parameters collapse to $\mu = np$ and $\sigma = \sqrt{npq}$, and a Z-score says whether an observed count is unusual.
 
 ## The shortcut formulas
 
@@ -65,6 +66,47 @@ $$Z = \frac{x - \mu}{\sigma}$$
 
 $|Z| > 2$ is **unusual**; $Z < -2$ is *unusually low*, $Z > 2$ *unusually high*. A value between $-2$ and $2$ is within the range chance alone produces, even when it is on the low side of $\mu$. Quiz 4 Part 2 also accepted the tail probability as the test: the count is unusual when $P(X \le x)$ (or $P(X \ge x)$ on the high side) is below 0.025. Both tests are taught; they agree in every example of this unit.
 
+## Forty items tapped once at 15→16
+
+Star Force, the GMS enhancement that adds stars to gear, succeeds 30 % at 15→16, with 67.90 % maintain and 2.10 % destroy [GMS, v.264 Star Force 15→16, checked 2026-10-27]: Nexon's v.264 published rates, without the Star Catch bonus that v.271 builds in. Tap each of 40 items once at 15 stars and let X = the number of successes. One tap per item keeps p fixed and the items independent, and X counts successes only, so maintain and destroy are both just "not a success": X is binomial with $n = 40$, $p = 0.30$.
+
+```quiz
+[
+  {"q": "40 items, one tap each at 15→16, p = 0.30. The mean number of successes μ = ? (1 decimal)", "type": "numeric", "answer": 12.0, "tolerance": 0.05, "explain": "μ = np = 40 × 0.30 = 12.0 successes."},
+  {"q": "Same 40 taps. σ = ? (2 decimals)", "type": "numeric", "answer": 2.9, "tolerance": 0.05, "explain": "σ = √(npq) = √(40 × 0.30 × 0.70) = √8.4 = 2.8983 ≈ 2.90. q = 0.70 is maintain plus destroy, 0.6790 + 0.0210."},
+  {"q": "The 40 taps give 19 successes. Z = ? (2 decimals)", "type": "numeric", "answer": 2.42, "tolerance": 0.01, "explain": "Z = (x − μ)/σ = (19 − 12)/2.8983 = 2.42 (2.41 with σ rounded to 2.90; either is accepted). Above 2: unusually high."}
+]
+```
+
+$$\mu = 40(0.30) = 12, \qquad \sigma = \sqrt{40(0.30)(0.70)} = \sqrt{8.4} = 2.90, \qquad Z = \frac{19 - 12}{2.90} = 2.41$$
+
+$Z > 2$: 19 successes is **unusually high** for a 30 % rate. The tail agrees: $P(X \ge 19) = 0.0148$, below 0.025.
+
+```r
+n <- 40
+p <- 0.3
+q <- 1 - p
+mu <- n*p
+sig <- sqrt(n*p*q)
+c(mu, sig)
+Z <- (19 - mu)/sig
+Z
+1 - pbinom(18, 40, 0.3)
+```
+
+```text
+[1] 12.000000  2.898275
+[1] 2.415229
+[1] 0.01477705
+```
+
+### Forty taps at 30 %: μ and σ under the bars, and the right tail from 19
+
+```widget
+binomial-calc
+{ "n": 40, "p": 0.3, "x": 19, "op": "ge", "title": "40 taps at 15→16, p = 0.30: μ = 12, σ = 2.90, and Z for 19 successes" }
+```
+
 ## Laser printers: is 14 repairs unusually low?
 
 *For a certain model of laser printer, the probability of a unit needing repairs in the first year is 10%. In an attempt to reduce this rate, modifications were made to the printer design and a year later a study of 200 randomly selected modified laser printers was conducted.*
@@ -122,18 +164,18 @@ pbinom(14, 200, 0.1)
 [1] 0.09294618
 ```
 
-## Escalated calls: μ, σ and an unusual day
+## Fifty Greater scrolls and thirty Intermediate scrolls: unusual counts?
 
-15 % of a call centre's calls are escalated to a supervisor, independently of each other. One day 160 calls come in and 35 of them are escalated.
+In MapleStory Classic a Greater scroll succeeds 10 % of the time and an Intermediate scroll 60 %, by meowdb's copy of the in-game item text [Classic, Classic World scroll tiers, checked 2026-10-27]. Each use has the same fixed rate and uses are independent.
 
 ```quiz
 [
-  {"q": "X = the number of the 160 calls that are escalated. Name its distribution (one word).", "type": "text", "answer": ["binomial", "binomial distribution"], "explain": "Fixed n = 160 calls, each escalated or not, the same p = 0.15, calls independent: binomial with n = 160, p = 0.15."},
-  {"q": "μ = ? (1 decimal)", "type": "numeric", "answer": 24.0, "tolerance": 0.06, "explain": "μ = np = 160 × 0.15 = 24.0 escalations."},
-  {"q": "σ = ? (2 decimals)", "type": "numeric", "answer": 4.52, "tolerance": 0.006, "explain": "σ = √(npq) = √(160 × 0.15 × 0.85) = √20.4 = 4.5166 ≈ 4.52. The square root goes over npq; σ is not npq."},
-  {"q": "Z for the 35 escalations = ? (2 decimals)", "type": "numeric", "answer": 2.44, "tolerance": 0.01, "explain": "Z = (x − μ)/σ = (35 − 24)/4.52 = 11/4.52 = 2.43; with the unrounded σ = 4.5166 it is 2.44. Either is accepted."},
-  {"q": "Is 35 escalations unusual?", "options": ["Yes, unusually high: Z is above 2", "No, because 35 is within 2 of μ = 24", "Yes, unusually low", "No, because any count below n is possible"], "answer": 0, "explain": "Z = 2.44 > 2, so 35 is unusually high. The tail test agrees: P(X ≥ 35) = 0.0128, below 0.025. The 2 in the rule counts standard deviations, not escalations."},
-  {"type": "fill", "q": "Complete the R line for the high-side tail P(X ≥ 35).", "code": "1 - pbinom(___, 160, 0.15)", "answer": ["34"], "explain": "pbinom(34, …) is P(X ≤ 34), so 1 − pbinom(34, 160, 0.15) = P(X ≥ 35) = 0.0128409. Using 35 would drop the X = 35 bar from the tail."}
+  {"q": "50 Greater scrolls are used, p = 0.10 each, and X = the number that succeed. μ = ? (1 decimal)", "type": "numeric", "answer": 5.0, "tolerance": 0.05, "explain": "X is binomial with n = 50, p = 0.10: μ = np = 50 × 0.10 = 5.0 successes."},
+  {"q": "Same 50 Greater scrolls. σ = ? (2 decimals)", "type": "numeric", "answer": 2.12, "tolerance": 0.05, "explain": "σ = √(npq) = √(50 × 0.10 × 0.90) = √4.5 = 2.1213 ≈ 2.12. The variance is 4.5; σ is its square root."},
+  {"q": "The 50 Greater scrolls give 11 successes. Z = ? (2 decimals)", "type": "numeric", "answer": 2.83, "tolerance": 0.01, "explain": "Z = (x − μ)/σ = (11 − 5)/2.1213 = 2.83. Above 2: 11 successes is unusually high for a 10 % scroll."},
+  {"type": "fill", "q": "Complete the R line for the high-side tail P(X ≥ 11) on the 50 Greater scrolls.", "code": "1 - pbinom(___, 50, 0.1)", "answer": ["10"], "explain": "pbinom(10, …) is P(X ≤ 10), so 1 − pbinom(10, 50, 0.1) = P(X ≥ 11) = 0.009354602, below 0.025. Using 11 would drop the X = 11 bar from the tail."},
+  {"q": "30 Intermediate scrolls, p = 0.60 each. σ = ? (2 decimals)", "type": "numeric", "answer": 2.68, "tolerance": 0.05, "explain": "μ = 30 × 0.60 = 18; σ = √(30 × 0.60 × 0.40) = √7.2 = 2.6833 ≈ 2.68."},
+  {"q": "13 successes from 30 Intermediate scrolls is unusually low.", "type": "tf", "answer": false, "explain": "Z = (13 − 18)/2.6833 = −1.86, not beyond −2: low, but within what a 60 % rate produces by chance. The tail agrees: P(X ≤ 13) = 0.0481, above 0.025."}
 ]
 ```
 

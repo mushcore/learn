@@ -1,7 +1,8 @@
 ---
 title: Which distribution, and the R function for each
-minutes: 20
+minutes: 22
 ---
+<!-- facts: classic.scroll.tiers, poe1.ladder.hc-dead-by-rank, gms.starforce.rates-0-14, gms.starforce.star-catch, poe1.chaos.affix-count -->
 
 A problem never says "this is hypergeometric": it describes cards, printers or a help line. Four questions about the story name the distribution, and one R pattern then computes any of them.
 
@@ -109,18 +110,18 @@ dist-picker
 
 Practice Problem 23 (the first miss on the 15th shot) is geometric with success = miss, $p = 0.05$: $0.95^{14}(0.05) = 0.0244$. Practice Problem 25 (ten 4-choice questions guessed, none right) is binomial with $n = 10$, $p = 0.25$, $x = 0$: $0.75^{10} = 0.0563$, which is `dbinom(0, 10, 0.25)`.
 
-## Name the distribution for four new stories
+## Name the distribution: scrolls, a ladder draw, Star Force taps, a Chaos Orb and an intersection
 
-Each item below is a new story; ask the four questions before computing anything.
+Four of these stories are this unit's game examples, each with the structure its own lesson checked, so the four questions land on the same answers. Ask them before computing anything.
 
 ```quiz
 [
-  {"q": "A technician takes 4 resistors, without putting any back, from a box of 25 in which 5 are out of tolerance. X = the number out of tolerance. Name the distribution (one word).", "type": "text", "answer": ["hypergeometric", "hypergeometric distribution"], "explain": "A fixed sample drawn without replacement from a finite population: hypergeometric with N = 25, K = 5, n = 4. The sample is 4/25 = 16 % of the box, above 5 %, so the binomial is not a stand-in."},
-  {"q": "Same resistors (N = 25, K = 5, n = 4). P(X = 1) = ? (4 decimals)", "type": "numeric", "answer": 0.4506, "tolerance": 6e-05, "explain": "C(5, 1) · C(20, 3)/C(25, 4) = 5 × 1140/12 650 = 5700/12 650 = 0.4506. In R, dhyper(1, 5, 20, 4)."},
+  {"q": "Ranks 1-200 of the Hardcore Allflame ladder hold 69 characters flagged dead out of 200 [PoE1, 3.29 Hardcore Allflame ladder, checked 2026-10-27]. Pick 20 of those 200 characters at random, no character twice. X = the number of dead characters picked. Name the distribution (one word).", "type": "text", "answer": ["hypergeometric", "hypergeometric distribution"], "explain": "A fixed sample drawn without replacement from a finite list: hypergeometric with N = 200, K = 69, n = 20. The sample is 20/200 = 10 % of the list, above 5 %, so the binomial is not a stand-in. P(X = 7) = C(69, 7) · C(131, 13)/C(200, 20) = 0.1942, which is dhyper(7, 69, 131, 20)."},
   {"q": "An intersection averages 0.8 accidents per month, at random. X = the number of accidents in a year. Name the distribution (one word).", "type": "text", "answer": ["poisson", "poisson distribution"], "explain": "A count of random, independent events over an interval with a known mean rate: Poisson."},
-  {"q": "Same intersection: λ for one year = ?", "type": "numeric", "answer": 9.600000000000001, "tolerance": 0.001, "explain": "Rescale to the interval: 0.8 per month × 12 months = 9.6 accidents per year. P(X = 10) would be dpois(10, 9.6)."},
-  {"q": "A gamer opens loot boxes until the first rare item; each box holds one with probability 0.1. X = the number of boxes opened. P(X ≤ 3) = ? (4 decimals)", "type": "numeric", "answer": 0.271, "tolerance": 6e-05, "explain": "Geometric with p = 0.1 (no fixed n; X counts trials to the first success). X ≤ 3 is the complement of three misses: 1 − 0.9³ = 1 − 0.729 = 0.2710. In R, pgeom(2, 0.1), with R's failures counted (3 − 1 = 2)."},
-  {"type": "fill", "q": "A student guesses all 15 questions of a true/false quiz. Complete the R call for P(at most 10 right).", "code": "pbinom(___, 15, 0.5)", "answer": ["10"], "explain": "Binomial with n = 15, p = 0.5 (fixed n, right or wrong, same p, independent guesses). pbinom(x, n, p) is the cumulative P(X ≤ x), so x = 10: 0.9407654."}
+  {"q": "Same intersection: λ for one year = ?", "type": "numeric", "answer": 9.6, "tolerance": 0.001, "explain": "Rescale to the interval: 0.8 per month × 12 months = 9.6 accidents per year. P(X = 10) would be dpois(10, 9.6)."},
+  {"q": "Star Force, the enhancement that adds stars to gear, succeeds on a 14→15 tap 30 % of the time [GMS, the wiki's Star Force table 14→15, checked 2026-10-27]; on a non-Superior item a failure keeps the star and nothing is destroyed. X = the number of taps until the first success. P(X ≤ 3) = ? (4 decimals)", "type": "numeric", "answer": 0.657, "tolerance": 0.0001, "explain": "Geometric with p = 0.30: no fixed n, the same p every tap, and X counts taps to the first success. X ≤ 3 is the complement of three failed taps: 1 − 0.70³ = 1 − 0.343 = 0.6570. In R, pgeom(2, 0.3), since R counts failures (3 − 1 = 2). The wiki's table leaves out the Star Catch bonus that v.271 builds in, so live success is slightly higher."},
+  {"type": "fill", "q": "A Classic Intermediate scroll succeeds 60 % of the time [Classic, meowdb's item text, checked 2026-10-27]. A player uses one on each of 5 items. X = the number that succeed. Complete the R call for P(X = 4).", "code": "dbinom(4, ___, 0.6)", "answer": ["5"], "explain": "Binomial: a fixed n = 5 uses, each a success or a failure with the same p = 0.6, independent of each other. dbinom(x, n, p) takes the count, then the trials: dbinom(4, 5, 0.6) = C(5, 4) × 0.6⁴ × 0.4 = 5 × 0.1296 × 0.4 = 0.2592."},
+  {"q": "A Chaos Orb rerolls every modifier on a rare item, and the result has 4, 5 or 6 affixes in the ratio 8:3:1 [PoE1, 3.29 Allflame Chaos Orb, checked 2026-10-27]. X = the affix count after one Chaos Orb. Which distribution does X have?", "options": ["binomial", "geometric", "Poisson", "none of the four: build the table from the weights"], "answer": 3, "explain": "One Chaos Orb is one draw from a weight table: no n trials, no waiting for a first success, no interval. So build the table, P(4) = 8/12, P(5) = 3/12, P(6) = 1/12, and use the general definition: μ = Σ x P(x) = (4 × 8 + 5 × 3 + 6 × 1)/12 = 53/12 = 4.42 affixes."}
 ]
 ```
 

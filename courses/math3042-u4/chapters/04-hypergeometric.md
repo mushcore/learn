@@ -1,10 +1,10 @@
 ---
 title: Hypergeometric: sampling without replacement, and the 5% rule
-minutes: 24
+minutes: 27
 ---
-<!-- facts: none; renderer test -->
+<!-- facts: poe1.ladder.hc-dead-by-rank, gms.data.ranking-overall-legendary-2026-10-27 -->
 
-Sampling without replacement changes $p$ after every draw, so the binomial formula is wrong. The hypergeometric distribution is the exact formula, and the 5 % rule says when the binomial is close enough anyway.
+Pick 20 characters from the top of a ladder and count the dead: every pick changes $p$ for the next, so the binomial formula is wrong. The hypergeometric distribution is the exact formula, and the 5 % rule says when the binomial is close enough.
 
 ## Binomial versus hypergeometric
 
@@ -108,6 +108,38 @@ dbinom(2, 5, K/N)
 
 *If the sample size $n$ is 5 % or less of the total population $N$, then probabilities calculated using Hypergeometric and Binomial distributions are practically the same.*
 
+## Twenty characters from the Hardcore Allflame top 200
+
+On Hardcore Allflame, the PoE1 ladder where a character that dies is flagged dead, 69 of the characters ranked 1–200 were dead when the official ladder API was read [PoE1, 3.29 Hardcore Allflame ladder, checked 2026-10-27]. Pick 20 of those 200 at random, nobody twice; X = the number dead. This is a fixed list of $N = 200$ with $K = 69$ dead, drawn without replacement, so $p$ changes after each draw: 69/200, then 68/199 after a dead pick. A Star Force tap or a scroll use keeps its rate however many came before: that is why those were binomial.
+
+```quiz
+[
+  {"q": "N = 200 characters, K = 69 dead, a sample of n = 20 without replacement. P(exactly 7 dead) = ? (4 decimals)", "type": "numeric", "answer": 0.1942, "tolerance": 0.0001, "explain": "C(69, 7) · C(131, 13) / C(200, 20) = 1 078 897 248 × 2.9041 × 10¹⁷ / 1.6136 × 10²⁷ = 3.1333 × 10²⁶ / 1.6136 × 10²⁷ = 0.1942. The failures slot is N − K = 131 alive characters, of which n − x = 13 are picked."},
+  {"q": "Same draw. The 5 % rule lets the binomial with p = 69/200 stand in.", "type": "tf", "answer": false, "explain": "n/N = 20/200 = 10 %, above 5 %. The binomial gives 0.1842 for X = 7 against the exact 0.1942."}
+]
+```
+
+$$P(X = 7) = \frac{C(69, 7) \cdot C(131, 13)}{C(200, 20)} = \frac{3.1333 \times 10^{26}}{1.6136 \times 10^{27}} = 0.1942$$
+
+$\mu = 20 \cdot \frac{69}{200} = 6.9$ and $\sigma = 2.02$, against the binomial's 2.13.
+
+```r
+dhyper(7, 69, 131, 20)
+dbinom(7, 20, 69/200)
+```
+
+```text
+[1] 0.1941807
+[1] 0.1841978
+```
+
+### Twenty picks from 200: hypergeometric beside binomial
+
+```widget
+hyper-vs-binom
+{ "N": 200, "K": 69, "n": 20, "x": 7, "zx": 12, "presets": false, "title": "20 of the Hardcore Allflame top 200 (69 dead): n/N = 10 %, so the binomial overstates the spread" }
+```
+
 ## Mac users: N = 90, K = 40, n = 10
 
 *Suppose a class of 90 students has 40 Apple Mac users. To conduct a market research survey, you randomly select a sample of 10 students. Let $X$ = the number of Apple Mac users in the sample.* Without replacement, *$X$ is a hypergeometric variable with parameters* $N = 90$, $K = 40$, $n = 10$. $n/N = 10/90 = 11\%$ fails the 5 % rule, so the binomial will not do.
@@ -182,18 +214,18 @@ Z
 
 `phyper(4, K, N-K, n)` is the cumulative $P(X \le 4)$ in one call.
 
-## Engineering students on a committee of 6
+## Night Lords among 20 of the GMS top 500
 
-A club has 30 members, 12 of them engineering students, and a committee of 6 is picked at random with nobody picked twice. X = the number of engineering students on the committee.
+Nexon's North America overall ranking lists 61 Night Lords, a GMS thief job, among its top 500 characters [GMS, v.271 overall ranking 2026-10-27, checked 2026-10-27]. Pick 20 of the 500 at random without replacement; X = the number of Night Lords.
 
 ```quiz
 [
-  {"q": "Name the distribution of X (one word).", "type": "text", "answer": ["hypergeometric", "hypergeometric distribution"], "explain": "Sampling without replacement from a finite population: N = 30, K = 12 successes, n = 6. The sample is 6/30 = 20 % of the club, far above 5 %, so the binomial is not a stand-in."},
-  {"q": "P(X = 3) = ? (4 decimals)", "type": "numeric", "answer": 0.3023, "tolerance": 6e-05, "explain": "C(12, 3) · C(18, 3) / C(30, 6) = 220 × 816 / 593 775 = 179 520 / 593 775 = 0.3023."},
-  {"type": "fill", "q": "Complete the R call for P(X = 3).", "code": "dhyper(3, ___, ___, 6)", "answer": ["12", "18"], "explain": "dhyper(x, K, N − K, n): the successes K = 12, then the failures N − K = 30 − 12 = 18, then the sample size. It returns 0.3023367."},
-  {"q": "μ = ? (2 decimals)", "type": "numeric", "answer": 2.4, "tolerance": 0.006, "explain": "μ = n · K/N = 6 × 12/30 = 2.40 engineering students."},
-  {"q": "σ = ? (2 decimals)", "type": "numeric", "answer": 1.09, "tolerance": 0.006, "explain": "σ² = n · (K/N) · ((N − K)/N) · ((N − n)/(N − 1)) = 6 × 0.4 × 0.6 × 24/29 = 1.1917; σ = 1.0917 ≈ 1.09. Without the correction factor 24/29 the binomial σ would be 1.20."},
-  {"q": "P(at most 1 engineering student) = ? (4 decimals)", "type": "numeric", "answer": 0.2044, "tolerance": 6e-05, "explain": "P(0) + P(1) = C(18, 6)/C(30, 6) + C(12, 1) C(18, 5)/C(30, 6) = 18 564/593 775 + 12 × 8568/593 775 = 0.0313 + 0.1732 = 0.2044. In R, phyper(1, 12, 18, 6)."}
+  {"q": "20 picked from the 500. Does the 5 % rule hold?", "options": ["Yes: n/N = 20/500 = 4 %, so the binomial with p = 61/500 is a fair stand-in", "No: n/N = 20/500 = 4 % is above 5 %", "No: n/N = 61/500 = 12.2 %", "No: the rule needs sampling with replacement"], "answer": 0, "explain": "The rule compares the sample size with the population: n/N = 20/500 = 0.04 = 4 %, at most 5 %. 61/500 is p, not n/N."},
+  {"q": "P(X = 2) by the hypergeometric formula = ? (4 decimals)", "type": "numeric", "answer": 0.2761, "tolerance": 0.0001, "explain": "N = 500, K = 61, n = 20: C(61, 2) · C(439, 18) / C(500, 20) = 1830 × 4.0235 × 10³¹ / 2.6672 × 10³⁵ = 0.2761."},
+  {"type": "fill", "q": "Complete the R call for P(X = 2) Night Lords in the 20.", "code": "dhyper(2, 61, ___, 20)", "answer": ["439"], "explain": "dhyper(x, K, N − K, n): the successes K = 61, then the failures N − K = 500 − 61 = 439, then the sample size 20. It returns 0.2760602."},
+  {"q": "P(X = 2) by the binomial stand-in, p = 61/500 = 0.122 = ? (4 decimals)", "type": "numeric", "answer": 0.2719, "tolerance": 0.0001, "explain": "C(20, 2) · 0.122² · 0.878¹⁸ = 190 × 0.014884 × 0.096139 = 0.2719, within 0.005 of the exact 0.2761 because n/N is only 4 %. In R, dbinom(2, 20, 61/500)."},
+  {"q": "μ = expected Night Lords among the 20 = ? (2 decimals)", "type": "numeric", "answer": 2.44, "tolerance": 0.05, "explain": "μ = n · K/N = 20 × 61/500 = 2.44, the same as the binomial's np."},
+  {"q": "Picking 50 of the 500 instead of 20, the 5 % rule still holds.", "type": "tf", "answer": false, "explain": "n/N = 50/500 = 10 %, above 5 %. For X = 5 the hypergeometric gives 0.1694 and the binomial 0.1641."}
 ]
 ```
 

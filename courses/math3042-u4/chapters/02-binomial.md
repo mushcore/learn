@@ -1,9 +1,10 @@
 ---
 title: Binomial experiments and the binomial formula
-minutes: 24
+minutes: 27
 ---
+<!-- facts: classic.scroll.tiers, gms.starforce.rates-0-14, gms.starforce.star-catch, poe1.vaal.gem-outcomes -->
 
-The family-size and dice examples forced us to build the whole table before finding anything. *There are some random experiments that are so commonly used that statisticians have developed exact formulas dealing with them*: the Binomial, Geometric, Hypergeometric and Poisson distributions. The binomial comes first: it counts successes in a fixed number of independent trials.
+How many of the scrolls you pass on an item will succeed? *There are some random experiments that are so commonly used that statisticians have developed exact formulas dealing with them*: the Binomial, Geometric, Hypergeometric and Poisson distributions. The binomial comes first: it counts successes in a fixed number of independent trials.
 
 ## A trial has two outcomes; X counts the successes
 
@@ -53,6 +54,38 @@ binomial-calc
 $$P(x) = nCx \cdot p^x \cdot q^{n-x}, \qquad nCx = \frac{n!}{(n-x)!\,x!}, \qquad q = 1 - p$$
 
 Read it as three factors: $nCx$ counts which $x$ of the $n$ trials are the successes; $p^x$ is the probability those $x$ trials succeed; $q^{n-x}$ is the probability the other $n - x$ trials fail. The exponent on $q$ is $n - x$, the number of failures. On the calculator $nCx$ is `n  2ndF  nCr  x`; in R it is `choose(n, x)`.
+
+## Seven Intermediate scrolls at 60 % each
+
+In MapleStory Classic an Intermediate scroll, the second of the four scroll tiers, succeeds 60 % of the time, by meowdb's copy of the in-game item text [Classic, Classic World Intermediate scroll, checked 2026-10-27]. You plan to use 7 of them on one item, and X = the number that succeed. Each use passes with the same fixed 60 %, one use does not change the next, and n = 7 is fixed in advance, so X is binomial with $n = 7$, $p = 0.6$.
+
+```quiz
+[
+  {"q": "7 Intermediate scrolls, each succeeding with p = 0.6. P(exactly 5 succeed) = ? (4 decimals)", "type": "numeric", "answer": 0.2613, "tolerance": 0.0001, "explain": "C(7, 5) · 0.6⁵ · 0.4² = 21 × 0.07776 × 0.16 = 0.2613. The q exponent is the number of failed scrolls, 7 − 5 = 2."},
+  {"q": "Same 7 scrolls. P(at least 5 succeed) = ? (4 decimals)", "type": "numeric", "answer": 0.4199, "tolerance": 0.0001, "explain": "At least 5 means 5, 6 or 7: P(5) + P(6) + P(7) = 0.2613 + 7 × 0.6⁶ × 0.4 + 0.6⁷ = 0.2613 + 0.1306 + 0.0280 = 0.4199. In R, 1 - pbinom(4, 7, 0.6)."}
+]
+```
+
+$$P(X = 5) = C(7, 5) \cdot 0.6^5 \cdot 0.4^2 = 21 \times 0.07776 \times 0.16 = 0.2613$$
+
+$$P(X \ge 5) = P(5) + P(6) + P(7) = 0.2613 + 0.1306 + 0.0280 = 0.4199$$
+
+```r
+dbinom(5, 7, 0.6)
+1 - pbinom(4, 7, 0.6)
+```
+
+```text
+[1] 0.2612736
+[1] 0.419904
+```
+
+### Seven scroll uses: the eight bars and P(X ≥ 5)
+
+```widget
+binomial-calc
+{ "n": 7, "p": 0.6, "x": 5, "op": "ge", "conditions": true, "presets": false, "title": "7 Intermediate scrolls at p = 0.6: the four conditions and P(X ≥ 5) = 0.4199" }
+```
 
 ## P(X = 6) for the shoppers
 
@@ -175,17 +208,18 @@ dbinom(1, 5, 4/52)
 "At least 2" is $1 - P(0) - P(1)$, not $1 - P(2)$. The failure factor is $q^{n - x}$: for 2 jacks in 5 cards it is $(48/52)^3$, three failures, not $(48/52)^2$.
 :::
 
-## Defective bulbs in a box of 12
+## Six items tapped once at 12→13, and Vaal Orbs on ten gems
 
-Each LED bulb off a line is defective with probability 0.08, independently of the others. An inspector tests a box of 12 and X counts the defective bulbs.
+Star Force, the GMS enhancement that adds stars to gear, succeeds 40 % at 12→13 on the wiki's table [GMS, Star Force 12→13 wiki table, checked 2026-10-27], without the Star Catching bonus that v.271 builds in; below 15 stars a non-Superior item keeps its star when a tap fails. A Vaal Orb on a PoE1 skill gem adds one level with probability 1/8, the wiki gives [PoE1, 3.29 Allflame Vaal Orb on a gem, checked 2026-10-27].
 
 ```quiz
 [
-  {"q": "Name the distribution of X (one word).", "type": "text", "answer": ["binomial", "binomial distribution"], "explain": "All four conditions hold: fixed n = 12 bulbs, each defective or not, the same p = 0.08 for every bulb, and bulbs independent. X counts successes (here a success is a defective bulb), so X is binomial with n = 12, p = 0.08."},
-  {"q": "P(X = 2) = ? (4 decimals)", "type": "numeric", "answer": 0.1835, "tolerance": 6e-05, "explain": "C(12, 2) · 0.08² · 0.92¹⁰ = 66 × 0.0064 × 0.434388 = 0.1835. The q exponent is the number of good bulbs, 12 − 2 = 10."},
-  {"type": "fill", "q": "Complete the R call for P(X = 2).", "code": "dbinom(___, ___, 0.08)", "answer": ["2", "12"], "explain": "dbinom(x, n, p): the count x = 2 first, then the trials n = 12, then p. It returns 0.1834857."},
-  {"q": "P(at least 2 defective bulbs) = ? (4 decimals)", "type": "numeric", "answer": 0.2487, "tolerance": 6e-05, "explain": "Complement of {0, 1}: P(0) = 0.92¹² = 0.3677; P(1) = 12 × 0.08 × 0.92¹¹ = 0.3837; 1 − 0.3677 − 0.3837 = 0.2487."},
-  {"type": "fill", "q": "Complete the R line for P(at least 2 defective bulbs).", "code": "1 - pbinom(___, 12, 0.08)", "answer": ["1"], "explain": "pbinom(1, 12, 0.08) is P(X ≤ 1) = P(0) + P(1), and at least 2 is its complement: 1 − pbinom(1, 12, 0.08) = 0.2486817. pbinom(2, …) would also remove the X = 2 bar."}
+  {"q": "Six different non-Superior items are each tapped once at 12→13 (p = 0.40), and X = the number of successes. Name the distribution of X (one word).", "type": "text", "answer": ["binomial", "binomial distribution", "Binomial"], "explain": "Fixed n = 6 taps, each a success or not, the same p = 0.40 on every item, and one item's tap does not affect another's: binomial with n = 6, p = 0.4."},
+  {"q": "Same six taps. P(X = 2) = ? (4 decimals)", "type": "numeric", "answer": 0.311, "tolerance": 0.0001, "explain": "C(6, 2) · 0.4² · 0.6⁴ = 15 × 0.16 × 0.1296 = 0.3110. The q exponent is the number of failed taps, 6 − 2 = 4."},
+  {"type": "fill", "q": "Complete the R call for P(X = 2) on the six taps.", "code": "dbinom(___, 6, 0.4)", "answer": ["2"], "explain": "dbinom(x, n, p): the count x = 2 first, then n = 6 taps, then p = 0.4. It returns 0.31104."},
+  {"q": "Same six taps. P(at least one success) = ? (4 decimals)", "type": "numeric", "answer": 0.9533, "tolerance": 0.0001, "explain": "At least one is the complement of none: 1 − P(0) = 1 − 0.6⁶ = 1 − 0.0467 = 0.9533. In R, 1 - dbinom(0, 6, 0.4)."},
+  {"q": "A Vaal Orb is used on each of 10 skill gems, and X = the number of gems that gain a level (p = 1/8 each). P(X = 2) = ? (4 decimals)", "type": "numeric", "answer": 0.2416, "tolerance": 0.0001, "explain": "C(10, 2) · (1/8)² · (7/8)⁸ = 45 × 0.015625 × 0.343609 = 0.2416. In R, dbinom(2, 10, 1/8)."},
+  {"q": "One item is tapped at 12→13 again and again until it succeeds, and X counts the taps. Which binomial condition fails?", "options": ["A fixed number of trials n", "The same p on every trial", "Independent trials", "Two outcomes per trial"], "answer": 0, "explain": "Below 15 stars a failure keeps the star, so every tap is still 0.40 and independent of the last, with two outcomes. What is missing is a fixed n: the count of taps is open-ended, which is the geometric distribution."}
 ]
 ```
 
