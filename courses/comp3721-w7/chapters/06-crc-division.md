@@ -165,10 +165,10 @@ Write the division in the slide-38 layout on paper, then type the remainder or s
     "explain": "Divide the received word as it is: 1101 ⊕ 1011 = 0110 → bring down 0 → 1100 ⊕ 1011 = 0111 → bring down 1 → 1111 ⊕ 1011 = 0100 → bring down 1 → 1001 ⊕ 1011 = 0010 → syndrome 010 (10 is accepted as the same value). Non-zero, so the dataword is discarded. (1101001 was sent; bit 6 flipped.)"
   },
   {
-    "q": "Received 1010011, divisor 1011. What is the syndrome? Type the bits without spaces.",
+    "q": "Received 1100010, divisor 1011. What is the syndrome? Type the bits without spaces.",
     "type": "text",
     "answer": ["000", "0"],
-    "explain": "1010 ⊕ 1011 = 0001 → bring down 0 → 0010 ⊕ 0000 = 0010 → bring down 1 → 0101 ⊕ 0000 = 0101 → bring down 1 → 1011 ⊕ 1011 = 0000 → syndrome 000 (0 is accepted as the same value). Zero, so dataword 1010 is accepted."
+    "explain": "1100 ⊕ 1011 = 0111 → bring down 0 → 1110 ⊕ 1011 = 0101 → bring down 1 → 1011 ⊕ 1011 = 0000 → bring down 0 → 0000 ⊕ 0000 = 0000 → syndrome 000 (0 is accepted as the same value). Zero, so dataword 1100 is accepted."
   }
 ]
 ```
