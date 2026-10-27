@@ -141,6 +141,12 @@
           "title": "Week 7",
           "subtitle": "error detection and correction; framing, flow and error control",
           "description": "Lectures 07a, 07b and the modulo-2 note: block coding, Hamming distance, parity, CRC division and syndromes, the one's-complement checksum in binary and hex, FEC, byte and bit stuffing, flow and error control, Simple and Stop-and-Wait. Item 12 of the midterm review list."
+        },
+        {
+          "id": "comp3721-midterm",
+          "title": "Midterm",
+          "subtitle": "Oct 29, 11:00, 120 minutes: the review list worked, the differences, a formula drill, a mock midterm, four cheat-sheet sides",
+          "description": "Built from the Suggested Midterm Review Topics, the Sample Quiz Questions, E01 to E06 and the weekly modules. Every review item with the lesson that teaches it and a compute-first check, the flagged differences as written responses, every calculation type mixed, a 120-minute mock in the sample-quiz shapes, and the two double-sided cheat sheets for Weeks 1 to 7."
         }
       ]
     },
