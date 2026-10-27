@@ -1,0 +1,56 @@
+{
+  "lang": "r",
+  "title": "MATH 3042 Statistics · Midterm",
+  "subtitle": "Wednesday Oct 28, 3:00 pm, SW5-1840, 90 minutes, paper and calculator: Units 1 to 4, with R commands written by hand",
+  "description": "Everything for the midterm in one place: the study order through the four unit modules, then the practice midterm worked question by question in the instructor's own rounding and wording, R on paper (the d, p, q and r families, turning an inequality into a p-function, writing a simulation function) from Labs 6 and 7, the three things the unit modules never teach (expected value in dollars, the variance shortcut on the formula sheet, Poisson across separate intervals), the sixteen Unit 4 practice problems worked, two mock midterms in the real 12-question, 46-mark format, and a one-page split of what the provided formula sheet gives you versus what you must know cold.",
+  "intro": ":::quiz Midterm facts\n**Wednesday Oct 28 2026, 3:00 pm, room SW5-1840, 90 minutes.** Paper and pencil plus a scientific calculator with statistics functions; no computer. **Units 1 to 4, everything up to the Poisson distribution** (Unit 5 is out). R is on the exam: \"write an R command that does XYZ\". Worth **30 %** of the course. A **formula sheet and an R sheet are provided**; you cannot bring your own. The practice paper is 12 questions, 46 marks: about 10 marks of R commands, about 13 of written interpretation (a histogram, a summary table, side-by-side boxplots), the rest calculation. Rounding rule on the cover: a probability to four decimal places, anything else to three significant digits.\n:::",
+  "plan": {
+    "title": "Two days to the midterm",
+    "steps": [
+      { "lesson": "midterm-format", "note": "read the study order, then work through the unit lessons it lists (about ten hours: all of day one and the start of day two)" },
+      { "lesson": "mock-midterm-a", "note": "take it cold, on paper, 90 minutes, formula sheet open, nothing else" },
+      { "lesson": "practice-descriptive", "note": "Q1, Q2, Q10: write your paragraph before you open the model answer" },
+      { "lesson": "practice-probability", "note": "Q3 to Q6: the rules, Bayes, a probability table" },
+      { "lesson": "practice-distributions", "note": "Q11, Q12: Poisson with a rescaled lambda, a card game's expected winnings" },
+      { "lesson": "practice-r", "note": "Q7 to Q9: write every command on paper first" },
+      { "lesson": "r-on-paper", "note": "the signatures the R sheet does not give you; the inequality table" },
+      { "lesson": "expected-dollars-shortcuts", "note": "money, the variance shortcut, Poisson over two intervals" },
+      { "lesson": "unit4-practice-problems", "note": "sixteen problems; do them on paper with the calculator" },
+      { "lesson": "mock-midterm-b", "note": "the topics the practice paper skipped; 90 minutes" },
+      { "lesson": "know-cold-sheet", "note": "rewrite the right-hand column from memory until it is complete" }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. The exam and the study order",
+      "lessons": [
+        { "id": "midterm-format", "title": "What the midterm looks like, and the study order through Units 1 to 4", "file": "chapters/01-midterm-format.md" }
+      ]
+    },
+    {
+      "title": "2. The practice midterm, worked",
+      "lessons": [
+        { "id": "practice-descriptive", "title": "Q1, Q2, Q10: reading a histogram, recommending from a summary table, true or false on boxplots", "file": "chapters/02-practice-descriptive.md" },
+        { "id": "practice-probability", "title": "Q3 to Q6: independent tickets, same flight without replacement, Bayes, a probability table", "file": "chapters/03-practice-probability.md" },
+        { "id": "practice-distributions", "title": "Q11, Q12: Poisson floods and the three-card game", "file": "chapters/04-practice-distributions.md" },
+        { "id": "practice-r", "title": "Q7 to Q9: quantile, filter and bwplot; rhyper, dhyper, phyper; a simulation function", "file": "chapters/05-practice-r.md" }
+      ]
+    },
+    {
+      "title": "3. What the unit modules do not teach",
+      "lessons": [
+        { "id": "r-on-paper", "title": "R on paper: the d, p, q, r families, inequalities to p-functions, simulation functions (Labs 6 and 7)", "file": "chapters/06-r-on-paper.md" },
+        { "id": "expected-dollars-shortcuts", "title": "Expected value in dollars, the variance shortcut, Poisson across separate intervals", "file": "chapters/07-expected-dollars-shortcuts.md" },
+        { "id": "unit4-practice-problems", "title": "The sixteen Unit 4 practice problems, worked", "file": "chapters/08-unit4-practice-problems.md" }
+      ]
+    },
+    {
+      "title": "4. Mock midterms and the sheet",
+      "lessons": [
+        { "id": "mock-midterm-a", "title": "Mock midterm A: the practice paper's twelve shapes with new numbers (90 minutes, 46 marks)", "file": "chapters/09-mock-midterm-a.md" },
+        { "id": "mock-midterm-b", "title": "Mock midterm B: what the practice paper skipped (90 minutes, 46 marks)", "file": "chapters/10-mock-midterm-b.md" },
+        { "id": "know-cold-sheet", "title": "The formula sheet gives you this; you must know this cold", "file": "chapters/11-know-cold-sheet.md" }
+      ]
+    }
+  ]
+}

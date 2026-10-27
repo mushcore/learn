@@ -161,3 +161,8 @@ Full transcription in `../GAP.md` §b2. Shape: two questions; Q1 (a) one `sample
 - Every number above recomputed in `../compute.py`: family μ = 0.9447 (0.94), σ = 1.0155; min of two dice 2.5278 / 1.4041; shoppers P(6) = 0.012345, μ 12.5, σ 3.0619; printers Z = −1.4142; jacks 0.039930 vs 0.046540; superdeck 0.045971; Mac P(4) = 0.253861, P(≤4) = 0.518886, μ 4.4444, σ 1.4898, Z(8) = 2.3866; geometric P(3) = 0.140625, μ 4, σ 3.4641, P(X ≥ 4) = 0.421875; Poisson P(20) = 0.013411, P(≤20) = 0.035285, Z = −1.8257.
 - Lab 5 numbers come from the CSV with the Task 1 filter applied (17 582 rows); if the instructor's solutions use a different NA rule the counts will shift slightly, the conclusions (independent of Monday; Cold wettest; Winter; Dec) will not.
 - The notes never state a numeric "unusual" rule for discrete variables beyond the Z-score; Quiz 4 Part 2 accepted both |Z| > 2 and a tail probability < 0.025. Teach both.
+
+## Filled notes (posted 2026-10-26)
+The fully hand-filled Unit 4 notes (pp. 55–73, dated Oct 4, 2026) were posted on Oct 26. They agree with every number this module computed from the blank notes: 0.0123, 0.0465, 0.0506, 12.5 / 3.1, 20 / 4.2, 0.0399, 0.2539, 0.5189, 4.4 / 1.5, 0.1406, 4 / 3.5, 0.4219, λ = 30, 0.0134, 0.0353.
+
+**One slip, p. 73** (histogram for λ = 30): the table shows "20 | 0.0353", which is P(X ≤ 20). P(X = 20) = 0.0134 (checker: 0.0134112). The lessons teach 0.0134 for P(X = 20) and 0.0353 for the cumulative tail. Full transcription in `../math3042-midterm/_SOURCE-NOTES.md` §5.

@@ -85,6 +85,12 @@
           "title": "Unit 5",
           "subtitle": "continuous probability distributions: uniform, normal, exponential",
           "description": "Continuous random variables and densities, the uniform bus wait, the normal distribution with the Z table and R, standardizing, percentiles, the Gaussian bit-error example, and the exponential waiting time with its memoryless property. Built from the (unfilled) Unit 5 notes with every example computed and checked in R; a draggable area widget, an interactive Z table, a mock quiz and a formula sheet."
+        },
+        {
+          "id": "math3042-midterm",
+          "title": "Midterm",
+          "subtitle": "Wed Oct 28, 3:00 pm, SW5-1840, 90 min, paper and calculator: Units 1 to 4, R commands on paper",
+          "description": "The study order through the four unit modules, the practice midterm worked question by question in the instructor's rounding, R on paper (the d/p/q/r families, inequalities to p-functions, simulation functions) from Labs 6 and 7, the gaps the unit modules skip (expected dollars, the variance shortcut, Poisson across intervals), the sixteen Unit 4 practice problems, two mock midterms in the real format, and the sheet of what the formula sheet gives you versus what you must know cold."
         }
       ]
     },
