@@ -1614,3 +1614,8 @@ OK   B Q12a sigma by shortcut                             computed 1.13468   qui
 OK   B Q12b insurer expected profit per policy            computed 41   quiz 41.0  tol 0.01  rejects -41.0
 OK   B Q12c premium for $25 expected profit               computed 79   quiz 79.0  tol 0.01  rejects 70.0
 ```
+
+## Game facts used
+
+- 06-r-on-paper.md: classic.scroll.tiers, gms.starforce.rates-0-14, gms.starforce.star-catch, poe1.ladder.hc-dead-by-rank
+- 07-expected-dollars-shortcuts.md: gms.starforce.rates-15-plus, gms.starforce.safeguard, gms.starforce.meso-cost, gms.starforce.star-catch, classic.scroll.tiers, classic.scroll.stat-ladders, gms.box.lucky-jewel-box

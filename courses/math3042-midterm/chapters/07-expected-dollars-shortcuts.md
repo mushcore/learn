@@ -1,9 +1,10 @@
 ---
 title: Expected value in dollars, the variance shortcut, Poisson across separate intervals
-minutes: 18
+minutes: 22
 ---
+<!-- facts: gms.starforce.rates-15-plus, gms.starforce.safeguard, gms.starforce.meso-cost, gms.starforce.star-catch, classic.scroll.tiers, classic.scroll.stat-ladders, gms.box.lucky-jewel-box -->
 
-The practice paper and the Unit 4 problems use three moves no unit lesson teaches: an expected value in dollars, the sheet's second variance formula, and probabilities over separate intervals.
+Mesos per star and fragments per box need the same three moves as the practice paper and the Unit 4 problems, and no unit lesson teaches them: an expected value in money, the sheet's second variance formula, and probabilities over separate intervals.
 
 ## X is the net amount per play
 
@@ -34,6 +35,18 @@ A 30-year-old man survives the year with probability 0.9989 and pays a premium o
 For the company, X is the payout if the client dies minus the premium it keeps either way. The man's policy: $100{,}000(0.0011) - 180 = 110 - 180 = -70$. A negative expected cost is a gain, so the sheet answers "−70 (company gains 70 dollars)". The woman's premium P must give the same −70:
 
 $$75{,}000(0.0029) - P = -70 \quad\Rightarrow\quad 217.50 - P = -70 \quad\Rightarrow\quad P = 287.50$$
+
+## Expected mesos for 15→16 stars on a Lv 150 item, Safeguard on
+
+A 15→16 Star Force tap, the GMS enhancement that adds stars to gear, succeeds 30 % [GMS, v.264 Star Force 15→16, checked 2026-10-27], Nexon's v.264 published rates, without the Star Catch bonus that v.271 builds in. Safeguard, for an extra 200 % of the base cost [GMS, v.264 Safeguard, checked 2026-10-27], turns destruction into maintain; removing that third outcome keeps the tap count geometric. Computed from the wiki's formula $1000 + L^3 \cdot 16^{2.7}/200$ [GMS, wiki Star Force cost formula, checked 2026-10-27] at L = 150, a tap costs 30,087,200 mesos, tripled to 90,261,600.
+
+```quiz
+[
+  { "q": "Safeguarded taps at 90,261,600 mesos each, p = 0.30 per tap. Expected mesos to reach 16 stars? (use 1/p exactly)", "type": "numeric", "answer": 300872000, "tolerance": 1, "unit": "mesos", "explain": "X = taps is geometric, so E(X) = 1/p = 1/0.30 = 3.33333 taps. Each tap costs the same, so E(mesos) = 90,261,600 × E(X) = 90,261,600/0.30 = 300,872,000 mesos, about 301 million. The cost per tap is computed: 1000 + 150³ × 16^2.7/200 = 1000 + 3,375,000 × 1782.88755/200 = 30,087,227 → 30,087,200, times 3 with Safeguard." }
+]
+```
+
+$$E(\text{mesos}) = 90{,}261{,}600 \times \frac{1}{0.30} = 300{,}872{,}000$$
 
 ## The variance shortcut on the formula sheet
 
@@ -72,6 +85,26 @@ pmf-table
 { "rows": [[0, "0.02"], [1, "0.23"], [2, "0.41"], [3, "0.17"], [4, "0.11"], [5, "0.06"]], "xlab": "X = spam calls per day", "title": "Practice paper Q6: Abdullah's spam calls" }
 ```
 
+## Sol Erda Fragments per Lucky Jewel Box by the shortcut
+
+A Lucky Jewel Box adds 3, 5, 15, 20, 35, 40, 45 or 50 Sol Erda Fragments at 45, 25, 10, 7, 6, 4, 2 and 1 % [GMS, Lucky Jewel Box rates, checked 2026-10-27], Nexon's published rates (2022 post): one table summing to 1, so $\sum x\,P(x)$ applies.
+
+```quiz
+[
+  { "q": "X = bonus fragments per box, the eight values and rates above. μ = ? (3 significant digits)", "type": "numeric", "answer": 10.6, "tolerance": 0.05, "unit": "fragments", "explain": "x P(x): 1.35 + 1.25 + 1.50 + 1.40 + 2.10 + 1.60 + 0.90 + 0.50 = 10.6 fragments per box." },
+  { "q": "Same box: σ² by the shortcut. (3 significant digits)", "type": "numeric", "answer": 151, "tolerance": 0.5, "explain": "x² P(x): 4.05 + 6.25 + 22.5 + 28.0 + 73.5 + 64.0 + 40.5 + 25.0 = 263.8. σ² = 263.8 − 10.6² = 263.8 − 112.36 = 151.44, so 151; σ = 12.3 fragments." }
+]
+```
+
+### The Sol Erda bonus table
+
+Its long form gives the same 151.44.
+
+```widget
+pmf-table
+{ "rows": [[3, "0.45"], [5, "0.25"], [15, "0.10"], [20, "0.07"], [35, "0.06"], [40, "0.04"], [45, "0.02"], [50, "0.01"]], "xlab": "X = bonus Sol Erda Fragments per box", "title": "Lucky Jewel Box: Sol Erda Fragment bonus (Nexon's published rates, 2022 post)", "presets": false }
+```
+
 ## Separate intervals multiply; one longer interval rescales λ
 
 Poisson counts in non-overlapping intervals are independent. "Exactly 1 in this 5 minutes and exactly 1 in the next 5" is two events, so the probabilities multiply. "2 in the 10 minutes" is one count over a longer interval, so λ is rescaled and the formula is used once.
@@ -97,13 +130,13 @@ The 100-year flood (practice problem 16) works the same way with $\lambda = 0.5$
 
 "The next event falls between a and b" is two independent pieces: none in the first a, then at least one in the next b − a. Practice paper Q11b, floods at λ = 0.5 per 10 years: $P(0)\,(1 - P(0)) = 0.606531 \times 0.393469 = 0.2387$.
 
-## A one-card game, a backup log, a 4-calls-per-hour help line
+## A Safeguarded 16→17 tap, an Intermediate Hat HP scroll, a 4-calls-per-hour help line
 
 ```quiz
 [
-  { "q": "A BCIT club game: draw one card; an ace pays you 10 dollars net, anything else costs you 1 dollar. Expected value per play? (dollars, to the cent; negative for a loss)", "type": "numeric", "answer": -0.15, "tolerance": 0.01, "unit": "dollars", "explain": "X = 10 with P = 4/52, X = −1 with P = 48/52. E(X) = 10(4/52) − 1(48/52) = 40/52 − 48/52 = −8/52 = −0.153846: an expected loss of 0.15 dollars per play." },
-  { "q": "Failed nightly backups per week: x = 0, 1, 2, 3 with P(x) = 0.50, 0.30, 0.15, 0.05. μ = ?", "type": "numeric", "answer": 0.75, "tolerance": 0.001, "explain": "μ = 0(0.50) + 1(0.30) + 2(0.15) + 3(0.05) = 0 + 0.30 + 0.30 + 0.15 = 0.75 failures per week." },
-  { "q": "Same table: σ by the shortcut. (3 significant digits)", "type": "numeric", "answer": 0.887, "tolerance": 0.001, "explain": "Σx²P(x) = 0 + 0.30 + 4(0.15) + 9(0.05) = 0.30 + 0.60 + 0.45 = 1.35. σ² = 1.35 − 0.75² = 1.35 − 0.5625 = 0.7875. The long form agrees: (0.75)²(0.50) + (0.25)²(0.30) + (1.25)²(0.15) + (2.25)²(0.05) = 0.28125 + 0.01875 + 0.234375 + 0.253125 = 0.7875. σ = √0.7875 = 0.887412, so 0.887." },
+  { "q": "The same Lv 150 item, now at 16 stars: a 16→17 tap also succeeds 30 % with Safeguard on, and the base cost is 1000 + 150³ × 17^2.7/200, rounded to the nearest 100. Expected mesos to reach 17 stars? (use 1/p exactly)", "type": "numeric", "answer": 354379000, "tolerance": 1, "unit": "mesos", "explain": "Base cost, computed: 1000 + 3,375,000 × 2099.96515/200 = 35,437,912 → 35,437,900. Safeguard triples it: 106,313,700 per tap. Taps are geometric with p = 0.30, so E = 106,313,700/0.30 = 354,379,000 mesos." },
+  { "q": "An Intermediate Hat HP scroll adds Max HP +15 [Classic, Classic World Hat HP scroll ladder, checked 2026-10-27] at a 60 % success rate [Classic, Classic World Intermediate scroll, checked 2026-10-27] by meowdb's copy of the item text, else nothing. X = HP gained from one use. μ = ?", "type": "numeric", "answer": 9, "tolerance": 0.05, "unit": "HP", "explain": "X = 15 with P = 0.6, X = 0 with P = 0.4. μ = 15(0.6) + 0(0.4) = 9 HP. A Lesser Hat HP scroll gives +10 every time [Classic, Classic World Hat HP scroll ladder, checked 2026-10-27], so it has the larger expected gain per slot." },
+  { "q": "Same scroll: σ by the shortcut. (3 significant digits)", "type": "numeric", "answer": 7.35, "tolerance": 0.005, "unit": "HP", "explain": "Σx²P(x) = 15²(0.6) + 0 = 135. σ² = 135 − 9² = 135 − 81 = 54. The long form agrees: (15 − 9)²(0.6) + (0 − 9)²(0.4) = 21.6 + 32.4 = 54. σ = √54 = 7.34847, so 7.35 HP." },
   { "q": "A help line gets 4 calls per hour. P(exactly 1 call in a 15-minute span and exactly 1 in the next 15 minutes)? (4 decimals)", "type": "numeric", "answer": 0.1353, "tolerance": 0.0001, "explain": "λ = 4 × 15/60 = 1 per span. P(1) = 1·e^(−1) = 0.367879. Independent spans: 0.367879² = e^(−2) = 0.1353." },
   { "q": "Same line: P(exactly 2 calls in a 30-minute span)? (4 decimals)", "type": "numeric", "answer": 0.2707, "tolerance": 0.0001, "explain": "One interval, so rescale: λ = 4 × 30/60 = 2. P(2) = 2²/2! · e^(−2) = 2 × 0.135335 = 0.2707. Twice the two-span answer, because 2 then 0 and 0 then 2 also count." },
   { "q": "Same line: P(the next call comes between 15 and 30 minutes from now)? (4 decimals)", "type": "numeric", "answer": 0.2325, "tolerance": 0.0001, "explain": "No call in the first 15 minutes, then at least one in the next 15, independent: P(0)(1 − P(0)) with λ = 1 per span = e^(−1)(1 − e^(−1)) = 0.367879 × 0.632121 = 0.2325." }
