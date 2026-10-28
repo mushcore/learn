@@ -1,10 +1,13 @@
 // Minimal markdown -> DOM renderer with custom fenced-block handling.
-// Fences: ```cpp run (editable runner) | ```quiz (JSON) | ```challenge (JSON)
+// Fences: ```cpp run (editable runner) | ```js run / ```html run (sandboxed iframe runner)
+//         ```diagram (JSON, SVG) | ```quiz (JSON) | ```challenge (JSON)
 //         ```widget (first line = widget name, rest = JSON config) | ```<lang> (static)
 // Inline: `code`, **bold**, *italic*, [link](url), $latex-ish$ (rendered as styled math span)
 
 import { highlight } from "./highlight.js";
 import { mountRunner } from "./runner.js";
+import { mountJsRunner, resetJsStore } from "./jsrunner.js";
+import { mountDiagram } from "./diagram.js";
 import { mountQuiz } from "./quiz.js";
 import { mountChallenge } from "./challenge.js";
 import { mountWidget } from "./widgets.js";
@@ -13,6 +16,9 @@ import { attachScrubber } from "./scrub.js";
 import { attachDiff } from "./difftoggle.js";
 import { attachGlossary } from "./glossary.js";
 import { linkMath } from "./mathlink.js";
+
+// Languages whose fences take `run`, `run pin <title>` and `pin <title>`.
+const RUNNABLE = ["cpp", "js", "html"];
 
 function escapeHtml(s) {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -224,6 +230,7 @@ function renderTextBlock(md) {
 /** Renders markdown `source` into `container`, mounting interactive blocks. */
 export function renderLesson(source, container, ctx) {
   container.innerHTML = "";
+  resetJsStore();
   // A pinned example collects the sibling nodes that follow it and docks beside them. It closes at the
   // next heading of the same or higher level as the heading it was opened under (a pin under `##`
   // stays through that section's `###` subsections; a pin under `###` ends at the next `###`).
@@ -255,27 +262,39 @@ export function renderLesson(source, container, ctx) {
   const blocks = splitBlocks(source);
   const quizBlocks = blocks.filter((b) => b.type !== "text" && b.info === "quiz");
   let quizIndex = 0, quizBase = 0;
+  // An ```output fence right after a js/html run block is the validator's copy of its console
+  // lines; showing it would give away every // predict: answer, and Run shows the real output.
+  let afterJsRun = false;
   for (const block of blocks) {
     if (block.type === "text") {
+      if (block.body.trim()) afterJsRun = false;
       const div = document.createElement("div");
       div.innerHTML = renderTextBlock(block.body);
       [...div.childNodes].forEach(emit);
       continue;
     }
     const { info, body, rest } = block;
+    const hideOutput = info === "output" && afterJsRun;
+    afterJsRun = (info === "js" || info === "html") && /^run\b/.test(rest.trim());
+    if (hideOutput) continue;
     const tmp = document.createElement("div");
     try {
       const r = rest.trim();
-      const pinMatch = info === "cpp" && /^(run\s+)?pin\b/.exec(r);
+      const pinMatch = RUNNABLE.includes(info) && /^(run\s+)?pin\b/.exec(r);
       if (pinMatch) {
         flushPin();
         const title = r.replace(/^(run\s+)?pin\s*/, "");
         let source;
-        if (pinMatch[1]) {
+        if (pinMatch[1] && info === "cpp") {
           const holder = document.createElement("div");
           const h = mountRunner(holder, body, ctx, { pinned: true, title: title || "Example — edit and run" });
           source = { el: h.el, lines: h.lines, onChange: h.editor.onChange, handle: h };
-        } else source = buildStaticPinned("cpp", body, title);
+        } else if (pinMatch[1]) {
+          // js / html: no C++ tracer or diff toggle, so the source carries no `handle`.
+          const holder = document.createElement("div");
+          const h = mountJsRunner(holder, body, ctx, { pinned: true, mode: info, title: title || "Example — edit and run" });
+          source = { el: h.el, lines: h.lines, onChange: h.editor.onChange };
+        } else source = buildStaticPinned(info, body, title);
         pin = { pinned: source, nodes: [], level: headingLevel };
         continue;
       }
@@ -294,6 +313,8 @@ export function renderLesson(source, container, ctx) {
         continue;
       }
       if (info === "cpp" && r === "run") mountRunner(tmp, body, ctx);
+      else if ((info === "js" || info === "html") && r === "run") mountJsRunner(tmp, body, ctx, { mode: info });
+      else if (info === "diagram") { flushPin(); mountDiagram(tmp, JSON.parse(body)); }
       else if (info === "quiz") {
         flushPin();
         const qs = JSON.parse(body);

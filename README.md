@@ -28,23 +28,27 @@ Open http://localhost:4321.
 - `courses/math3042-u4/` — MATH 3042 Unit 4 (discrete probability distributions: binomial, hypergeometric, geometric, Poisson) + Lab 5 conditional probability in R. Teaching examples from Path of Exile and MapleStory, sourced in `games/`.
 - `courses/math3042-u5/` — MATH 3042 Unit 5 (continuous distributions: uniform, normal, exponential). Teaching examples from Path of Exile and MapleStory, sourced in `games/`.
 - `courses/math3042-midterm/` — MATH 3042 midterm prep (Units 1 to 4, R written by hand, mocks A and B); lessons 06 and 07 use game examples sourced in `games/`.
+- `courses/comp4537-*/` — COMP 4537 Internet Software Architecture, one module per lecture (`comp4537-l1` … `-l7`) plus `comp4537-midterm`: JavaScript that runs in the page (`js run`), HTML previews, diagrams, the echo endpoints in `server.js`, and the midterm drills, mocks and cheat sheet. (In progress.)
 
 Navigation is course → module → lesson. A course (e.g. COMP 3721) is an entry in `courses/index.json` with a list of modules; a module is one week (or unit) with its own folder and id (`<course>-w<N>`), so a course grows week by week without one giant module. The home page lists courses, a course page (`#/course/<id>`) lists its modules, and a module page lists its lessons.
 
 ## Add a course
 
-1. Create `courses/<id>/course.json` (see an existing one): `lang` (`cpp`, `r` or `pseudo`; colours inline `code` in the prose, omit for none), title, subtitle, description, optional `intro` markdown, `chapters[]` each with `lessons[] = { id, title, file }`.
+1. Create `courses/<id>/course.json` (see an existing one): `lang` (`cpp`, `r`, `pseudo` or `js`; colours inline `code` in the prose, omit for none), title, subtitle, description, optional `intro` markdown, `chapters[]` each with `lessons[] = { id, title, file }`.
 2. Write lessons in `courses/<id>/chapters/*.md` following `AUTHORING.md` (front matter, fenced block types, widget catalogue).
 3. Register it as a module under its course in `courses/index.json` (`courses[].modules[] = { id, title, subtitle, description }`; add the course entry with `id`, `code`, `title`, `description` if it is the first module).
-4. Validate: `bun validate.js courses/<id>` (server must be running; it compiles every C++ block and checks quiz JSON).
+4. Validate: `bun validate.js courses/<id>` (server must be running; it compiles every C++ block, runs every DOM-free `js run` block and checks quiz and diagram JSON).
 
 ## Layout
 
 ```
 server.js            static server + POST /api/run (compile & run C++, 5 s limit, stdin supported)
-validate.js          lesson validator
+                     + /api/echo, /api/echo-nocors, /api/slow (stateless endpoints for JS lessons)
+validate.js          lesson validator (runs DOM-free js blocks under tools/js-harness.js)
+tools/js-harness.js  Bun runner that prints console output the way the page does
 index.html, app/     SPA: main.js (router/sidebar/progress), markdown.js (renderer + math),
-                     quiz.js, challenge.js, runner.js, editor.js, highlight.js,
+                     quiz.js, q-free.js, challenge.js, runner.js, jsrunner.js, jsformat.js,
+                     diagram.js, editor.js, highlight.js,
                      widgets-cpp.js, widgets-cpp2.js, widgets-stats.js, widgets-viz.js, widgets-net.js,
                      widgets-net2.js, widgets-net3.js, widgets-algo.js, widgets-oop.js, widgets-prob.js, widgets.js (registry), styles.css
 courses/             index.json + one folder per course

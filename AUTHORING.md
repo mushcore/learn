@@ -1,7 +1,7 @@
 # Lesson authoring contract
 
 Lessons are markdown files in `courses/<course>/chapters/NN-slug.md`, rendered by `app/markdown.js`.
-Validate with `bun validate.js courses/<course>/chapters/NN-slug.md` (server must be running on :4321; it compiles every C++ block).
+Validate with `bun validate.js courses/<course>/chapters/NN-slug.md` (server must be running on :4321; it compiles every C++ block and runs every DOM-free `js run` block under Bun; `--no-compile` skips both). Save lesson files with LF line endings: a CRLF file fails the front-matter check.
 
 ## Front matter (required)
 ```
@@ -47,12 +47,32 @@ int main() { ... }
    `cpp pin <title>` (no `run`) gives a read-only listing for code that cannot run alone (multi-file, or intentionally non-compiling). Never keep a separate `cpp run` copy of a pinned program — one copy only (redundancy hurts learning).
    `// predict:` asks the student to write the expected output before Run is enabled and grades the guess against real stdout (generation effect). Use it on every program whose output the prose explains.
    **Reference linking is automatic**: every inline `` `code` `` span in the section whose text occurs in the program (respecting identifier boundaries, so `ostream` does not match `iostream`) highlights the matching line(s) on hover, and vice versa, even after the student edits the code. Quote the lines you explain verbatim in backticks. `validate.js` fails a pin with fewer than 2 linkable references.
+2c. Runnable JavaScript (`app/jsrunner.js`). ```` ```js run ```` (editable, Run / Reset / Ctrl+Enter), ```` ```js run pin <title> ```` (docked beside the prose, like `cpp run pin`), ```` ```js pin <title> ```` (read-only listing, for Node code that cannot run in a browser; give its output in a ```` ```text ```` block):
+````
+```js run pin Hoisting
+// predict:
+console.log(a);
+var a = 1;
+```
+
+```output
+undefined
+```
+````
+   Each Run builds a fresh sandboxed iframe (`sandbox="allow-scripts"`, opaque origin) and runs the code as a classic `<script>`, so top-level `var` makes a `window` property and an undeclared assignment works. The console box shows `console.log/info/debug/dir/warn/error` in DevTools style (`Promise {<fulfilled>: 5}`, `[1, "a"]`, `{a: 1}`; strings bare at top level), uncaught errors as `Uncaught TypeError: …` in red, `alert(x)` as `[alert] x`. The run ends when no timer, interval, XHR or fetch is pending and nothing has been logged for 400 ms; after 6 s it stops with "(still running after 6 s)". If the program wrote into its page (`document.write`, appended nodes) the page shows under the console. Keep timer delays under 3000 ms.
+   Directives (leading comment lines, stripped before the run): `// predict: <prompt>` locks Run until a guess is typed and grades it against the console lines (empty prompt = "What will this print? Write your guess first."); `// prompt: <value>` is the return value of one `prompt()` call, one line per call, in order (no line = `null`); `// validator: skip` tells `validate.js` not to run the block (use it for a program meant to run past 6 s, such as an interval demo).
+   Every block gets `const SERVER = location.origin` (the app's own server, for the endpoints in item 7) and an in-memory `localStorage` / `sessionStorage` shared by the blocks of one lesson render and cleared by any block's Reset (a sandboxed iframe cannot use the real ones).
+   **Output blocks.** A DOM-free `js run` block (its code names none of `document window self location navigator alert prompt XMLHttpRequest fetch localStorage sessionStorage SERVER addEventListener`) must be followed (blank lines allowed) by an ```` ```output ```` block with its exact console lines; `validate.js` runs the code under Bun with the same formatter and fails on any difference, a timeout or a missing block. `Uncaught …` lines compare by error type only (Bun and Chrome word some messages differently), so a block that ends in an uncaught error is fine when its output block has the matching `Uncaught <Type>` line; `Uncaught` lines may sit anywhere (Bun reports an unhandled rejection before pending timers, Chrome after), so write them where the page prints them. The names count only in code, not inside strings or comments. The output block is never shown: the renderer drops an ```` ```output ```` fence that directly follows a `js run` / `html run` block (it would give away every `// predict:` answer; Run shows the real output). To show output to the reader, use a ```` ```text ```` block or put prose between. DOM-bound blocks are only syntax-checked: run them in the page with the `?autorun=1` hook below and copy the console lines. What-prints quiz items key to that real output.
+   `js run pin` and `js pin` get the same reference linking and the same two-reference validator rule as `cpp pin`.
+   Test hook: `#/<module>/<lesson>?autorun=1` runs every js/html block on load (for headless checks).
+2d. HTML preview. ```` ```html run ```` / ```` ```html run pin <title> ````: the code is a whole page or a fragment (wrapped in a page); Run renders it in a sandboxed preview pane beside the editor, with the same console box, shim, `SERVER` and storage. The preview stays after the 6 s cap (it is the page the student is looking at). `validate.js` checks that `<script>` and `</script>` counts match; a pin also gets the reference rule. Static listings stay ```` ```html ```` / ```` ```css ```` / ```` ```sql ```` / ```` ```json ```` (all highlighted).
 3. Challenge (graded by stdout equality, whitespace-trimmed per line):
 ````
 ```challenge
 { "prompt": "HTML allowed", "starter": "code\n", "expected": "exact stdout", "stdin": "optional", "hints": ["html", "..."], "solution": "full working code (validated by compiling)" }
 ```
 ````
+   `"lang": "js"` makes a JavaScript challenge: the editor highlights JS, Check runs the code in the sandbox (as item 2c) and compares its console lines with `expected`; an uncaught error or the 6 s cap fails it. `validate.js` runs a DOM-free `solution` under Bun and compares it with `expected`.
 4. Quiz (JSON array). Question text/options/explain support `` `code` ``, `**bold**`, `$math$`:
 ````
 ```quiz
@@ -68,7 +88,9 @@ int main() { ... }
 ````
    `code` (string) shows a code box under the question. Default numeric tolerance = 0.5% of answer.
    MCQ and select-all options are **shuffled at render time**, so file order never gives the answer away; add `"shuffle": false` to a question whose options must stay in order, and never refer to an option by position in `explain`. A lesson may hold several `quiz` blocks: the review queue indexes questions across the whole lesson, the lesson score is the sum of its blocks, and the lesson is complete once every block has been answered at 80% overall.
-   Interactive types (see `app/q-*.js`): `fill` (`code` with `___` blanks, `answer`), `reorder` (`lines`; add `"lang": "pseudo"` for pseudocode), `spotbug` (`code`, `answer` = 1-based row number(s) to click; add `"lang": "pseudo"` for pseudocode), `match` (`pairs: [[left, right], …]`), `shade` (normal-curve region), `trace` (`code`, `steps`).
+   Interactive types (see `app/q-*.js`): `fill` (`code` with `___` blanks, `answer`), `reorder` (`lines`; add `"lang": "pseudo"` for pseudocode), `spotbug` (`code`, `answer` = 1-based row number(s) to click; add `"lang": "pseudo"` for pseudocode), `match` (`pairs: [[left, right], …]`), `shade` (normal-curve region), `trace` (`code`, `steps`), `free` (below).
+   `free` is a written answer marked against a model, for the exam's short-answer questions: `{ "type": "free", "q": "Explain …", "model": "the model answer (inline markdown)", "points": ["point 1", "point 2", "point 3"], "rows": 4, "explain": "…" }`. The student writes (Reveal unlocks at 10 non-space characters), reveals the model, ticks the points the answer covered and presses Score; the item is correct when the ticks reach ⌈0.6 × points⌉. Checking the quiz before Reveal counts it as missed. `rows` (textarea height) is optional, 2–12. Write 3–5 points, each one checkable fact.
+   JavaScript what-prints items carry the program in `code` and key to the real console output of that program run in a ```` ```js run ```` block (drill lessons put it just above as a `js run pin` with `// predict:`). Run it first; promise and timer orders are never guessed.
 5. Widget (first line = name, remaining lines = optional JSON config):
 ````
 ```widget
@@ -76,6 +98,40 @@ stat-calc
 { "data": "5.0 4.5 6.0 7.0 5.2" }
 ```
 ````
+6. Diagram (`app/diagram.js`): a JSON figure drawn as inline SVG in the app's colours, scaled to the column (it shrinks on a phone, never scrolls sideways). Five types:
+   - `flow`: boxes in a row (`"dir": "tb"` for a column) joined by arrows; wraps past 820 px.
+   - `layers`: nested bands (`parent` names the enclosing band), outermost first: the box model, the n-tier stack.
+   - `tree`: `parent` links drawn top-down: a DOM tree, a JSON shape.
+   - `grid`: a table of cells by `row` and `col` (row 0 and column 0 are headers).
+   - `sequence`: lanes (`"kind": "lane"`) with numbered messages top to bottom: XHR, CORS preflight, a request.
+
+   Node fields: `id` (required, unique), `label` (wraps at 18 characters), `sub` (smaller second line), `kind` (`box` default, `pill`, `cylinder` for a database, `note`, `lane`), `parent`, `row`/`col`. Edge fields: `from`, `to`, `label`, `dashed`, `both` (arrowheads at both ends). `hi` lists node ids (or `"from>to"` edges, or message numbers in a sequence) drawn in the accent colour. `title` sits above, `caption` below. At most 40 nodes; `validate.js` rejects an unknown type, a duplicate id, an unknown `parent` and an edge naming a node that does not exist.
+````
+```diagram
+{ "type": "flow", "title": "A request for the date", "nodes": [ { "id": "b", "label": "Browser" }, { "id": "s", "label": "Web server", "sub": "Node.js" }, { "id": "d", "label": "DB server", "kind": "cylinder" } ], "edges": [ { "from": "b", "to": "s", "label": "GET /date" }, { "from": "s", "to": "d", "label": "SELECT" } ], "hi": ["s"], "caption": "The browser asks the web server, which asks the database." }
+```
+
+```diagram
+{ "type": "layers", "nodes": [ { "id": "m", "label": "margin" }, { "id": "b", "label": "border", "parent": "m" }, { "id": "p", "label": "padding", "parent": "b" }, { "id": "c", "label": "content", "parent": "p" } ], "caption": "The box model from the outside in." }
+```
+
+```diagram
+{ "type": "tree", "nodes": [ { "id": "html", "label": "html" }, { "id": "head", "label": "head", "parent": "html" }, { "id": "body", "label": "body", "parent": "html" }, { "id": "title", "label": "title", "parent": "head" }, { "id": "h1", "label": "h1", "parent": "body" }, { "id": "p", "label": "p", "parent": "body" } ], "caption": "The DOM tree of a small page." }
+```
+
+```diagram
+{ "type": "grid", "nodes": [ { "id": "c00", "label": "", "row": 0, "col": 0 }, { "id": "c01", "label": "GET", "row": 0, "col": 1 }, { "id": "c02", "label": "POST", "row": 0, "col": 2 }, { "id": "c10", "label": "Cached", "row": 1, "col": 0 }, { "id": "c11", "label": "Can be cached", "row": 1, "col": 1 }, { "id": "c12", "label": "Never cached", "row": 1, "col": 2 } ], "caption": "Part of the GET vs POST table." }
+```
+
+```diagram
+{ "type": "sequence", "nodes": [ { "id": "s", "label": "Script", "kind": "lane" }, { "id": "x", "label": "XMLHttpRequest", "kind": "lane" }, { "id": "srv", "label": "Server", "kind": "lane" } ], "edges": [ { "from": "s", "to": "x", "label": "new XMLHttpRequest()" }, { "from": "s", "to": "x", "label": "open(\"GET\", url, true)" }, { "from": "x", "to": "srv", "label": "send()" }, { "from": "srv", "to": "x", "label": "response, readyState 4" } ], "hi": ["3"], "caption": "The four XHR steps as messages." }
+```
+````
+   `validate.js` lays each diagram out and fails one wider than 880 units or with an edge label that runs into a box. Still look at a new diagram at phone width (390 px) before shipping.
+7. Endpoints for lessons (`server.js`; stateless, nothing stored or logged; bodies over 64 KB get 413). Call them as `SERVER + "/api/…"`:
+   - `/api/echo` (any path below it too, any method): answers `{ method, path, query, headers, body }` as JSON with `Access-Control-Allow-Origin: *`, `-Methods: GET, POST, PUT, DELETE, OPTIONS`, `-Headers: Content-Type, X-Requested-With`; `OPTIONS` answers 204 (a preflight succeeds). Custom request headers other than those two make the browser's preflight fail, so lessons avoid them.
+   - `/api/echo-nocors` (and below): the same JSON with no `Access-Control-*` header, so the browser blocks the sandboxed script from reading it (`xhr.status` is `0`, `onerror` fires, the console shows the CORS message). The request still reaches the server.
+   - `/api/slow?ms=N`: waits min(N, 4000) ms (default 1000), then echoes with CORS headers: for loading states and request ordering.
 
 ## Widget catalogue
 C++ (`app/widgets-cpp.js`):
@@ -293,6 +349,24 @@ Parts 4 and 5 (`app/widgets-os3.js`):
 - `thread-models` — buttons user-level / kernel-level / hybrid; user and kernel draw the slide-28 and slide-33 figures (two processes with 3 and 4 threads; the run-time system and per-process thread table in user space, or the kernel's thread table beside the process table); hybrid adds many-to-one / one-to-one / many-to-many as the slide 37/39/41 t–k diagrams. "One thread makes a blocking system call" lights the consequence in slide wording (user-level: *this will stop all the threads*; kernel-level: the kernel can run another thread from the same process or one from a different process; the hybrid consequences say "this follows from slide N"). Advantages and disadvantages lists in the slide 26–27, 31–32, 34 and 38–42 wording. cfg: `{ "model": "user" | "kernel" | "hybrid", "mapping": "many-to-one" | "one-to-one" | "many-to-many", "title": "…" }`.
 - `file-links` — buttons hard link / symbolic link / delete original / reset. `"scene": "slide"` shows slide 42's `/usr/ast` and `/usr/jim` directories (i-number + name): the hard link adds `70 note` (same i-number, count 2), the symbolic link is a new file whose contents are the path (its name and i-number are invented and marked so on screen), delete removes `70 memo` so `note` still opens i-node 70 and the symlink dangles. `"scene": "lab"` shows slides 43–46: `my_file`, `my_file_h_link`, `my_file_s_link -> my_file` with the slide's `stat` lines (shared inode, Links 2 → 1, sizes 29 / 7) and the `cat` output before and after the delete. Both scenes draw slide 45's figure. cfg: `{ "scene": "slide" | "lab", "title": "…" }`.
 
+### Web (`app/widgets-web*.js`, COMP 4537) (building)
+
+Registered in `validate.js`; the full specs are in `spec/comp4537/WIDGET-BRIEF.md` until Task 14 replaces this list with the built catalogue.
+- `event-loop-play` — call stack, microtask queue, timer queue and console as columns; one step per event shows why `1 3 2` and promise-before-timeout orders happen.
+- `promise-chain-play` — one promise's `[[PromiseState]]` / `[[PromiseResult]]` flipping on `resolve`/`reject` (later calls ignored), and a `.then` chain passing values down.
+- `xhr-play` — script, `XMLHttpRequest` and server as lifelines; the four statements step through readyState 0–4 with the request and response.
+- `cors-play` — page at origin A, browser, API server at origin B: the origin comparison, the request, the `Access-Control-Allow-Origin` check, and the blocked or delivered response.
+- `node-server-play` — the waiter-and-kitchen restaurant (non-blocking, blocking, many waiters), and an `http.createServer` request assembling its response.
+- `scope-hoist` — swap `var` / `let` / `const` in the slide programs and see hoisting, block scope, the TDZ and `window` properties.
+- `http-anatomy` — build a request from method, URL parts, headers and body, and read the raw request and response text.
+- `storage-sim` — two browsers with tabs at chosen origins; which tabs share `localStorage`, `sessionStorage` and cookies.
+- `dom-build-play` — DOM calls stepping against the tree and the rendered page: create, append, `innerHTML`, query.
+- `db-relate` — the slide's `patient` and `visit` tables: click a row to light related rows; 1:M and M:M relations.
+- `css-box` — content, padding, border and margin sliders with the total width, and `display` values side by side.
+- `arch-compare` — monolithic, n-tier and microservices as one toggled picture.
+- `sql-order` — a SELECT built in written order and executed in logical order, with the table after each clause.
+- `specificity-calc` — a selector's (ids, classes, elements) triple and which of two rules wins.
+
 ## Practice sets
 
 Every lesson that teaches a procedure (a calculation, a waveform to draw, a program to trace or write, an operation count, a probability) carries a practice set between its last teaching section and its final `quiz` block: a `##` heading that names what the student does with a new scenario ("Rate three more channels", never "Practice" or "Your turn"), at most two sentences, then one `quiz` block of 3 to 6 items (plus a `challenge` where the skill is writing C++). New numbers and new scenarios only, never the slide example or a number from the final quiz. Items mirror the course's real quiz format (COMP 3721 calculations with units and one-line answers; MATH 3042 "name the symbol, show the calculation" plus `fill` over an R call; COMP 3522 "what prints" on a new program, `spotbug`, a `challenge`; COMP 3760 counts, classes, `spotbug`/`reorder` in pseudocode). Every `explain` shows the full working. Mock quizzes, cheat sheets, formula sheets, study notes and worked-example lessons have no practice set.
@@ -312,7 +386,7 @@ Every animation is built on `app/playback.js` and follows `line-code-play` (`app
 - In the lesson it sits beside the static widget for the same idea, under its own `###` heading with one or two sentences on what to watch for.
 - Widget names end in `-play` (or name the motion, as `wave-travel`). An existing stepper gains play / pause / scrub by moving its steps onto the playback bar.
 
-Built on `app/playback.js` so far: the animations `wave-travel`, `line-code-play`, `pcm-play`, `tdm-play`, `fib-tree-play`, `find-play`, `standardize-play`, `memoryless-play`, `duplex-play`, `bit-stream-play`, `forward-play`, `harmonic-build-play`, `phase-circle-play`, `distortion-play`, `clock-drift-play`, `baseline-play`, `shift-keying-play`, `sampling-play`, `fdm-play`, `sequence-play`, `build-play`, `vector-grow-play`, `seek-play`, `stem-leaf-play`, `ogive-play`, `hist-tally-play`, `birthday-play`, `bayes-flow-play`, `perm-fill-play`, `arrivals-play`, `deal-play`, `cdf-sweep-play`, `insertion-play`, `pairs-play`, `halving-play`; and the steppers moved onto the bar `encapsulation`, `bandwidth-delay`, `tx-modes`, `hop-walk`, `arp-exchange`, `partition-stepper`, `iter-walk`, `unwind-stepper`, `copy-swap`, `cin-sim`, `getline-sim`, `lln-sim`, `sim-lab`, `loop-grid` and `mux-link` (TDM mode); and for COMP 4736 `pipeline-play`, `cache-map-play`, `clock-play`, `alarm-list-play`, `interrupt-io-play`, `process-states-play`, `context-switch-play`, `multiprog-play`, `fork-play` and `syscall-steps-play`; and for COMP 3721 Week 7 `crc-play`, `stuff-play`, `stop-wait-play` and `interleave-play`; and for COMP 3522 Week 7 `rl-rule-step` and `elision-trace`.
+Built on `app/playback.js` so far: the animations `wave-travel`, `line-code-play`, `pcm-play`, `tdm-play`, `fib-tree-play`, `find-play`, `standardize-play`, `memoryless-play`, `duplex-play`, `bit-stream-play`, `forward-play`, `harmonic-build-play`, `phase-circle-play`, `distortion-play`, `clock-drift-play`, `baseline-play`, `shift-keying-play`, `sampling-play`, `fdm-play`, `sequence-play`, `build-play`, `vector-grow-play`, `seek-play`, `stem-leaf-play`, `ogive-play`, `hist-tally-play`, `birthday-play`, `bayes-flow-play`, `perm-fill-play`, `arrivals-play`, `deal-play`, `cdf-sweep-play`, `insertion-play`, `pairs-play`, `halving-play`; and the steppers moved onto the bar `encapsulation`, `bandwidth-delay`, `tx-modes`, `hop-walk`, `arp-exchange`, `partition-stepper`, `iter-walk`, `unwind-stepper`, `copy-swap`, `cin-sim`, `getline-sim`, `lln-sim`, `sim-lab`, `loop-grid` and `mux-link` (TDM mode); and for COMP 4736 `pipeline-play`, `cache-map-play`, `clock-play`, `alarm-list-play`, `interrupt-io-play`, `process-states-play`, `context-switch-play`, `multiprog-play`, `fork-play` and `syscall-steps-play`; and for COMP 3721 Week 7 `crc-play`, `stuff-play`, `stop-wait-play` and `interleave-play`; and for COMP 3522 Week 7 `rl-rule-step` and `elision-trace`. Building for COMP 4537: `event-loop-play`, `promise-chain-play`, `xhr-play`, `cors-play`, `node-server-play` and `dom-build-play`.
 
 ## Learning design (why the format is what it is)
 - Explanation sits beside the code it explains (spatial contiguity), never above a scrolled-away block. Pin the program.
@@ -324,6 +398,7 @@ Built on `app/playback.js` so far: the animations `wave-travel`, `line-code-play
 - Boot.dev style: short sections, one idea each; **explain then let them try**; every lesson ends with a `quiz` block of 5–10 questions that mirror the real quiz format (MCQ, true/false, "which of these", "what does this print", numeric for stats).
 - Ground everything in the instructor's material (slide wording, sample code, worked numbers). Where the slides make a claim that is a likely true/false trap, call it out in a `:::quiz` callout.
 - Visual first: use a widget wherever a concept can be seen. Use `cpp run` blocks generously (C++ course) — the student learns by editing and running.
+- JavaScript courses: `js run pin` with `// predict:` on every program whose output the prose explains; Node code as `js pin` with its output in a `text` block; every teaching lesson has at least two visuals, one of them a `diagram`.
 - No emojis. No filler. Technical but friendly.
 - Concise prose (house rule since the 2026-09-25 review; the reviewer found Week 2 lessons twice the density of Week 1 for the same material):
   - One telling per fact. The code comment says what a line does; one sentence beside the code says why or gives the number. No "line by line" list that restates the comments, and no callout that restates the paragraph above it. A `:::quiz` callout exists only for a trap the prose has not already stated.

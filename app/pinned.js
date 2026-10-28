@@ -5,7 +5,7 @@
 // `cpp pin` block does the same with a read-only listing. Every inline `code` span in that prose
 // whose text occurs in the program lights up the matching line(s) on hover, and vice versa.
 // Matching respects identifier boundaries, so `ostream` does not match `iostream`.
-import { highlight } from "./highlight.js";
+import { highlightLines } from "./highlight.js";
 
 const WIDE = window.matchMedia("(min-width: 1100px)");
 const norm = (s) => s.replace(/\s+/g, " ").trim();
@@ -35,11 +35,11 @@ export function buildStaticPinned(lang, code, title) {
   head.textContent = title || "Example";
   const pre = document.createElement("pre");
   pre.className = "pinned-pre";
-  code.replace(/\s+$/, "").split("\n").forEach((text, i) => {
+  highlightLines(lang, code.replace(/\s+$/, "")).forEach((html, i) => {
     const row = document.createElement("div");
     row.className = "pl";
     row.dataset.line = String(i + 1);
-    row.innerHTML = `<span class="ln">${i + 1}</span><span class="lc">${highlight(lang, text) || " "}</span>`;
+    row.innerHTML = `<span class="ln">${i + 1}</span><span class="lc">${html || " "}</span>`;
     pre.append(row);
   });
   wrap.append(head, pre);

@@ -6,6 +6,7 @@ import "./q-shade.js";
 import "./q-spotbug.js";
 import "./q-match.js";
 import "./q-trace.js";
+import "./q-free.js";
 
 const sidebar = document.getElementById("sidebar");
 const content = document.getElementById("content");
@@ -340,7 +341,8 @@ async function renderLessonView(course, lessonId) {
 // ---------- router ----------
 async function route() {
   setNav(false);
-  const hash = location.hash.replace(/^#\/?/, "");
+  // A `?query` after the route (e.g. `?autorun=1`, the render-check hook) is not part of it.
+  const hash = location.hash.replace(/^#\/?/, "").split("?")[0];
   const [courseId, lessonId] = hash.split("/").filter(Boolean);
   current = { course: null, lessonId: null };
   try {

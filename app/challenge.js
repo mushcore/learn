@@ -1,5 +1,6 @@
 import { createEditor } from "./editor.js";
 import { runCode } from "./runner.js";
+import { runJsCapture } from "./jsrunner.js";
 import { markLessonScore } from "./progress.js";
 
 function el(tag, cls, text) {
@@ -10,8 +11,9 @@ function el(tag, cls, text) {
 }
 
 /**
- * Challenge schema: { prompt, starter, expected, hints?: string[], stdin?: string }
- * Graded by trimmed stdout equality against `expected` (whitespace-normalised).
+ * Challenge schema: { prompt, starter, expected, hints?: string[], stdin?: string, lang?: "cpp" | "js" }
+ * Graded by trimmed stdout equality against `expected` (whitespace-normalised). A `lang: "js"`
+ * challenge runs in the browser sandbox and is graded by its console lines.
  */
 export function mountChallenge(container, spec, ctx) {
   const box = el("div", "challenge-box");
@@ -27,7 +29,8 @@ export function mountChallenge(container, spec, ctx) {
   if (showBtn) head.append(showBtn);
   head.append(runBtn);
 
-  const editor = createEditor(spec.starter || "", "cpp");
+  const lang = spec.lang === "js" ? "js" : "cpp";
+  const editor = createEditor(spec.starter || "", lang);
   const output = el("div", "runner-output empty");
   const hints = el("div", "hints");
   (spec.hints || []).forEach((h, i) => {
@@ -45,8 +48,20 @@ export function mountChallenge(container, spec, ctx) {
     runBtn.disabled = true;
     runBtn.textContent = "Checking…";
     try {
-      const result = await runCode(editor.getValue(), spec.stdin || "");
       output.classList.remove("empty");
+      if (lang === "js") {
+        const { lines, error } = await runJsCapture(editor.getValue());
+        output.innerHTML = "";
+        const text = lines.join("\n");
+        const pass = !error && norm(text) === norm(spec.expected);
+        output.append(el("div", "stream-label", "your console"), el("div", "stdout-text", text || "(empty)"));
+        if (error) output.append(el("div", "stderr-text", error));
+        if (!pass) output.append(el("div", "stream-label", "expected"), el("div", "stdout-text", norm(spec.expected)));
+        output.append(el("div", `exit-line ${pass ? "pass" : "fail"}`, pass ? "Correct" : "Output does not match yet"));
+        if (pass && ctx && ctx.lessonId) { markLessonScore(ctx.lessonId, "challenge", true); if (ctx.onProgress) ctx.onProgress(); }
+        return;
+      }
+      const result = await runCode(editor.getValue(), spec.stdin || "");
       output.innerHTML = "";
       if (result.error) { output.append(el("div", "stderr-text", result.error)); return; }
       if (!result.compile.ok) {

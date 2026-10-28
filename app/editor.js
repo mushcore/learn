@@ -1,4 +1,4 @@
-import { highlight } from "./highlight.js";
+import { highlightLines } from "./highlight.js";
 
 /**
  * Minimal syntax-highlighted textarea editor. The highlight overlay is one row per line
@@ -24,8 +24,8 @@ export function createEditor(initialCode, lang = "cpp") {
     textarea.style.height = textarea.scrollHeight + 4 + hbar + "px";
   }
   function sync() {
-    const lines = textarea.value.split("\n");
-    pre.innerHTML = lines.map((l, i) => `<div class="el-line" data-line="${i + 1}">${highlight(lang, l) || " "}</div>`).join("") + "\n";
+    const lines = highlightLines(lang, textarea.value);
+    pre.innerHTML = lines.map((l, i) => `<div class="el-line" data-line="${i + 1}">${l || " "}</div>`).join("") + "\n";
     fit();
   }
   textarea.addEventListener("input", sync);

@@ -1,6 +1,7 @@
 // Static file server + C++ runner. Works under `bun server.js` or `node server.js`.
 // POST /api/run {code, stdin} -> {compiler, compile:{ok, stderr}, run:{stdout, stderr, code, timedOut}}
 // Uses a local g++/clang++ if one can be found, otherwise proxies to wandbox.org.
+// /api/echo, /api/echo-nocors, /api/slow: stateless teaching endpoints for the COMP 4537 lessons.
 
 const http = require("node:http");
 const fs = require("node:fs");
@@ -23,6 +24,7 @@ const MIME = {
   ".svg": "image/svg+xml",
   ".png": "image/png",
   ".woff2": "font/woff2",
+  ".pdf": "application/pdf",
 };
 
 // ---------- compiler discovery ----------
@@ -208,9 +210,68 @@ function readBody(req) {
   });
 }
 
-function json(res, status, obj) {
-  res.writeHead(status, { "content-type": "application/json; charset=utf-8" });
+function json(res, status, obj, extraHeaders) {
+  res.writeHead(status, { "content-type": "application/json; charset=utf-8", ...(extraHeaders || {}) });
   res.end(JSON.stringify(obj));
+}
+
+// ---------- teaching endpoints (COMP 4537) ----------
+// /api/echo[/...]         any method: echoes the request as JSON, CORS allowed for every origin.
+// /api/echo-nocors[/...]  the same JSON with no Access-Control-* header, so a cross-origin
+//                         script (every lesson sandbox is cross-origin) is blocked by the browser.
+// /api/slow?ms=N          waits min(N, 4000) ms (default 1000), then echoes with CORS headers.
+// Nothing is stored or logged. Bodies over 64 KB get 413.
+const ECHO_BODY_MAX = 64 * 1024;
+const ECHO_HEADERS = ["content-type", "origin", "accept", "x-requested-with"];
+
+function corsHeaders() {
+  return {
+    "access-control-allow-origin": "*",
+    "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
+    "access-control-allow-headers": "Content-Type, X-Requested-With",
+  };
+}
+
+/** Read at most `limit` bytes; resolves { text, tooLarge }. Drains (up to 1 MB) past the limit. */
+function readBodyCapped(req, limit) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    let size = 0;
+    req.on("data", (c) => {
+      size += c.length;
+      if (size <= limit) chunks.push(c);
+      else if (size > 1024 * 1024) req.destroy();
+    });
+    req.on("end", () => resolve({ text: Buffer.concat(chunks).toString("utf8"), tooLarge: size > limit }));
+    req.on("close", () => resolve({ text: "", tooLarge: size > limit }));
+    req.on("error", reject);
+  });
+}
+
+function echoBody(req, url, body) {
+  const headers = {};
+  for (const h of ECHO_HEADERS) if (req.headers[h] != null) headers[h] = req.headers[h];
+  return { method: req.method, path: url.pathname, query: Object.fromEntries(url.searchParams), headers, body };
+}
+
+function isUnder(pathname, base) {
+  return pathname === base || pathname.startsWith(base + "/");
+}
+
+async function handleEcho(req, res, url) {
+  const nocors = isUnder(url.pathname, "/api/echo-nocors");
+  const extra = nocors ? {} : corsHeaders();
+  if (req.method === "OPTIONS") {
+    res.writeHead(204, extra);
+    return res.end();
+  }
+  const { text, tooLarge } = await readBodyCapped(req, ECHO_BODY_MAX);
+  if (tooLarge) return json(res, 413, { error: "body too large" }, extra);
+  if (isUnder(url.pathname, "/api/slow")) {
+    const ms = Math.max(0, Math.min(Number(url.searchParams.get("ms") ?? 1000) || 0, 4000));
+    await new Promise((r) => setTimeout(r, ms));
+  }
+  return json(res, 200, echoBody(req, url, text), extra);
 }
 
 const server = http.createServer(async (req, res) => {
@@ -227,6 +288,13 @@ const server = http.createServer(async (req, res) => {
         return json(res, 200, { count: await registerVisitor(id) });
       }
       return json(res, 200, { count: await visitorCount() });
+    } catch (e) {
+      return json(res, 500, { error: String(e && e.message || e) });
+    }
+  }
+  if (isUnder(url.pathname, "/api/echo") || isUnder(url.pathname, "/api/echo-nocors") || isUnder(url.pathname, "/api/slow")) {
+    try {
+      return await handleEcho(req, res, url);
     } catch (e) {
       return json(res, 500, { error: String(e && e.message || e) });
     }
