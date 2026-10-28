@@ -324,7 +324,7 @@ New loops. Write a trace table for each before you choose.
     "q": "Which header counts down from 4 to 0, both included?",
     "options": ["`for (let i = 4; i >= 0; i--)`", "`for (let i = 4; i > 0; i--)`", "`for (let i = 4; i <= 0; i--)`", "`for (let i = 0; i <= 4; i++)`"],
     "answer": 0,
-    "explain": "Start at 4, step down, and keep going while `i >= 0`. `> 0` stops at 1; `<= 0` is false at the start; the last one counts up."
+    "explain": "Start at 4, step down, and keep going while `i >= 0`. `> 0` stops at 1; `<= 0` is false at the start; `i <= 4; i++` counts up."
   },
   {
     "q": "`codes` has nine items. Which update completes `for (let i = 0; i < codes.length; ___)` so that it logs items 0, 3 and 6?",

@@ -70,8 +70,8 @@ Thirty items on lecture 1, in the mix of the five Learning Hub quizzes that drew
     "explain": "k goes 3, 2, 1, 0 and the test still passes at 0, so one more `k--` makes it -1; then `-1 >= 0` is false."
   },
   {
-    "q": "Which is the correct order of the CSS box model, from the inside out?",
-    "options": ["content, padding, border, margin", "content, margin, border, padding", "margin, border, padding, content", "padding, content, border, margin"],
+    "q": "In the box model, which layer sits directly outside the padding?",
+    "options": ["border", "margin", "content", "outline"],
     "answer": 0,
     "explain": "Slide 177: Content, then Padding (*clears an area around the content*), Border (*goes around the padding and content*), Margin (*clears an area outside the border*)."
   },
