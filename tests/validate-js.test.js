@@ -11,3 +11,11 @@ test("bad fixture reports the four defects", () => {
   expect(out).toMatch(/js run block (threw|has a syntax error)/);
   expect(out).toContain("pin block has 0 linkable reference");
 }, 20000);
+
+test("harness console.log returns undefined, as in the browser", () => {
+  const fs = require("node:fs"), os = require("node:os"), path = require("node:path");
+  const f = path.join(os.tmpdir(), "harness-log-return.js");
+  fs.writeFileSync(f, "console.log(console.log('Hi!'));\nconst f = () => console.info('x');\nconsole.log(f());\n");
+  const r = spawnSync("bun", ["run", "tools/js-harness.js", f], { cwd: "D:/BCIT/learn", encoding: "utf8" });
+  expect(r.stdout.trim().split(/\r?\n/)).toEqual(["Hi!", "undefined", "x", "undefined"]);
+}, 20000);

@@ -221,6 +221,12 @@
       "description": "Amir Amintabar's lectures 1 to 7, one module per lecture, plus a Midterm module: JavaScript that runs in the page (scope, hoisting, the event loop, promises), HTML previews, XHR and CORS against live endpoints, Node servers, Node to MySQL, diagrams for every figure, and drills in the midterm's what-prints, short-answer and coding formats with a printable cheat sheet.",
       "modules": [
         {
+          "id": "comp4537-l1",
+          "title": "Lecture 1",
+          "subtitle": "Review: why the web is hard, OOP in JavaScript, the course coding style, DevTools and hosting, HTML, CSS, JavaScript values, scope and hoisting, functions, objects and the DOM, timers, loops and arrays",
+          "description": "Lecture 1 of Amir Amintabar's COMP 4537 Internet Software Architecture: the web-vs-desktop challenges table and the device-and-network scenarios; classes, extends and super (Vehicle and Car), composition (Car has an Engine) and the Tesla and Ferrari exercise; the course coding style (const first, then let, never var; no hard-coded user-facing strings; one task per function); the seven DevTools regions; shared, VPS, dedicated and cloud hosting, SSL and index.html; the HTML review (DOCTYPE, the DOM tree, elements and attributes, id and class, the four-part URL); the three ways to style, selectors, combinators and specificity; the box model, display, visibility, position and units; JavaScript's four output methods, six primitives, == vs === and the falsy list; var, let and const scope, hoisting and window; functions, parameters and arguments, arrow functions; objects, constructors, Date and typeof; createElement, appendChild, getElementsByTagName, events and prompt; setTimeout and the 1 3 2 event queue; and loop tracing over arrays beyond the slide for the loop quiz. Every program runs in the browser; the box model, scope, DOM and event-queue figures play step by step. Ends with a 30-item mock quiz in the shape of the Learning Hub quizzes."
+        },
+        {
           "id": "comp4537-l2",
           "title": "Lecture 2",
           "subtitle": "Architectural patterns, JSON and Web Storage: monolithic, layered and microservices, the course's API-centric architecture, JSON.stringify and JSON.parse, localStorage and sessionStorage",
@@ -249,6 +255,12 @@
           "title": "Lecture 6",
           "subtitle": "Promises: idempotent PUT vs POST vs PATCH, callbacks, the three states, the executor, the event-loop order of Examples 1 to 12, chaining with then, catch and finally, async and await",
           "description": "Lecture 6 of Amir Amintabar's course: a review of HTTP verbs (PUT replaces, PATCH updates a property, PUT is idempotent and POST is not), first-class functions and callbacks, why a function doing asynchronous work needs both a value and an outcome, then the JavaScript Promise: the boss-and-raise analogy, pending, fulfilled and rejected (fulfilled and rejected are settled), the annotated constructor with its five notes, the executor running immediately, settle-once, Promise.resolve, and the deck's Examples 1 to 12 with their log orders (synchronous code, then microtasks, then timers). Then chaining (returning a value fulfils the next promise, throwing rejects it), .catch as .then(null, f), .finally, unhandled rejections, the DevTools views of a promise before and after 5 seconds, async and await, two successive AJAX calls and callback hell, GET vs POST response size and the corrected readyState table. Event-loop and promise-chain playbacks for every example; twelve new output-order programs; a 30-item mock quiz."
+        },
+        {
+          "id": "comp4537-l7",
+          "title": "Lecture 7",
+          "subtitle": "Databases for API development: tables and keys, CRUD from Node.js to MySQL, reading SQL",
+          "description": "Lecture 7 of Amir Amintabar's COMP 4537: what a database and a DBMS are and the eight DBMS properties, relational (SQL) against NoSQL, a clinic's patient spreadsheet redesigned as Patient and Visit tables joined by Patient_ID, primary and foreign keys, 1:M, 1:1 and M:M through an associative table with a composite primary key, schema against data, the popular MySQL data types, referential integrity, AUTO_INCREMENT and CHECK. Then the part the midterm examines: a Node.js API server that connects to MySQL with the mysql module, creates its table if it does not exist, INSERTs on POST and SELECTs on GET through the (err, result) callback, serves a page on another origin with CORS headers, and follows the principle of least privilege with a SELECT-only database user (a bookstore's books table, in the shape of Lab 5). Ends with a reading reference for the lecture's SQL (WHERE operators, LIKE, IN, BETWEEN, ORDER BY, aggregates, GROUP BY and HAVING, subqueries, the cross product) and a 15-item mock quiz in the shape of Quiz 11."
         },
         {
           "id": "comp4537-midterm",

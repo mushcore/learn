@@ -16,7 +16,7 @@ const onPromise = (p, tag) => {
 const fmt = (args) => args.map((a) => inspect(serialize(a, onPromise))).join(" ");
 const out = (line) => process.stdout.write(line + "\n");
 
-for (const name of ["log", "info", "debug", "dir", "warn", "error"]) console[name] = (...args) => out(fmt(args));
+for (const name of ["log", "info", "debug", "dir", "warn", "error"]) console[name] = (...args) => { out(fmt(args)); };
 
 const uncaught = (prefix, e) => {
   const line = prefix + (e instanceof Error ? `${e.name}: ${e.message}` : fmt([e]));
