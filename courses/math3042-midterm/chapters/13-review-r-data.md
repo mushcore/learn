@@ -28,7 +28,41 @@ Do if time is short: Q7 and new variants 1 to 3. The rest are marked "if time".
 
 **`Data$col`** pulls one column out as a list of numbers: `Gestation$wt` is the 1236 birth weights. Use `$` when a function takes plain numbers, like `quantile`.
 
+```diagram
+{ "type": "grid", "title": "Ranking as a data frame: Ranking$level is one column", "nodes": [
+  { "id": "h0", "label": "", "row": 0, "col": 0 },
+  { "id": "h1", "label": "rank", "row": 0, "col": 1 },
+  { "id": "h2", "label": "level", "row": 0, "col": 2 },
+  { "id": "h3", "label": "job_name", "row": 0, "col": 3 },
+  { "id": "r1", "label": "row 1", "row": 1, "col": 0 },
+  { "id": "a1", "label": "number", "row": 1, "col": 1 },
+  { "id": "l1", "label": "number", "row": 1, "col": 2 },
+  { "id": "j1", "label": "text", "row": 1, "col": 3 },
+  { "id": "r2", "label": "row 2", "row": 2, "col": 0 },
+  { "id": "a2", "label": "number", "row": 2, "col": 1 },
+  { "id": "l2", "label": "number", "row": 2, "col": 2 },
+  { "id": "j2", "label": "text", "row": 2, "col": 3 },
+  { "id": "r3", "label": "…", "row": 3, "col": 0 },
+  { "id": "a3", "label": "…", "row": 3, "col": 1 },
+  { "id": "l3", "label": "…", "row": 3, "col": 2 },
+  { "id": "j3", "label": "…", "row": 3, "col": 3 },
+  { "id": "r4", "label": "row 500", "row": 4, "col": 0 },
+  { "id": "a4", "label": "number", "row": 4, "col": 1 },
+  { "id": "l4", "label": "number", "row": 4, "col": 2 },
+  { "id": "j4", "label": "text", "row": 4, "col": 3 }
+], "hi": ["h2", "l1", "l2", "l3", "l4"], "caption": "One row per character, one column per variable. Ranking$level takes the lit column down all 500 rows and hands quantile plain numbers." }
+```
+
 **A formula `y ~ g`** reads "y split by g": the numeric column on the left, the grouping column on the right. Functions that take a formula also take `data = Data`, and then the columns are named bare, no `$`.
+
+```diagram
+{ "type": "flow", "title": "Reading the formula y ~ g", "nodes": [
+  { "id": "y", "label": "numeric y", "sub": "wt" },
+  { "id": "t", "label": "~ split by", "sub": "~" },
+  { "id": "g", "label": "group g", "sub": "race" },
+  { "id": "d", "label": "data = df", "sub": "data = Gestation" }
+], "edges": [ { "from": "y", "to": "t" }, { "from": "t", "to": "g" }, { "from": "g", "to": "d" } ], "hi": ["y", "g"], "caption": "Left of ~ is what gets summarised, right of it is what splits the rows; data = names the frame, so wt and race need no $." }
+```
 
 **Inside `filter` and `subset`** the columns are also named bare, because the data frame is the first argument.
 
@@ -142,6 +176,14 @@ premature_babies <- filter(Gestation, gestation < 250)
 - `library(dplyr)`: "Find the package dplyr (`dplyr`) and load it (`library`)."
 - `premature_babies <- filter(Gestation, gestation < 250)`: "Take the Gestation data (`Gestation`), test each row's gestation (`gestation`) for being less than (`<`) 250 (`250`), keep the rows where that is true (`filter`), and store the result as premature_babies (`premature_babies <-`)."
 :::
+
+```diagram
+{ "type": "flow", "title": "The filter pipeline", "nodes": [
+  { "id": "l", "label": "library(dplyr)", "sub": "load the package" },
+  { "id": "f", "label": "filter(df, cond)", "sub": "gestation < 250" },
+  { "id": "r", "label": "fewer rows", "sub": "premature_babies" }
+], "edges": [ { "from": "l", "to": "f" }, { "from": "f", "to": "r", "label": "keep TRUE rows" } ], "hi": ["f"], "caption": "Same columns, fewer rows: only the rows where the condition is TRUE survive, stored under a new name with <-." }
+```
 
 ```r
 library(mosaic)
@@ -264,6 +306,11 @@ favstats(Days ~ Eth, data = quine)
 
 - "Build the formula Days by Eth (`Days ~ Eth`), look the names up in quine (`data = quine`), and print one row of statistics per group (`favstats`)."
 :::
+
+```widget
+group-stats
+{ "by": "Eth" }
+```
 
 ## New variants
 

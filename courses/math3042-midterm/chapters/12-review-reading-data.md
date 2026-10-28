@@ -13,6 +13,14 @@ Q1 (5 marks) reads a histogram: a percentage, the mean and median, and whether t
 2. Two numbers read from the figure or table, both groups' values side by side: "SD 10.8 vs 34.7".
 3. The feature by name: "bimodal", "right-skewed", "the box width (IQR)", "the median line".
 
+```diagram
+{ "type": "flow", "title": "How to answer an interpretation question", "nodes": [
+  { "id": "v", "label": "Verdict", "sub": "TRUE, No, tablet Y" },
+  { "id": "n", "label": "Two numbers", "sub": "both groups, side by side" },
+  { "id": "f", "label": "Feature name", "sub": "bimodal, IQR, median line" }
+], "edges": [ { "from": "v", "to": "n" }, { "from": "n", "to": "f" } ], "hi": ["v"], "caption": "Same three steps for Q1c, Q2 and every Q10 part: the verdict earns nothing without the numbers and the named feature behind it." }
+```
+
 Do if time is short: Q1, Q2, Q10 and new variants 1 to 3. The rest are marked "if time".
 
 ## The ideas, from zero
@@ -27,6 +35,11 @@ The tiny cases below use poe.ninja's daily price of the Divine Orb, a Path of Ex
 
 **Standard deviation (SD, $s$).** The typical distance of a value from the mean. Small SD means the values are close together: consistent, reliable. On the sheet, under Descriptive Statistics: $s = \sqrt{\sum (x - \bar{X})^2 \,/\, (n - 1)}$ for a sample, $\sigma = \sqrt{\sum (x - \mu)^2 \,/\, N}$ for a population. You will read $s$ from a table, not compute it.
 
+```widget
+drag-data
+{ "data": "265 300 270", "claims": [{ "when": "mean > median", "text": "The mean is above the median: the high value pulls it up" }, { "when": "mean < median", "text": "The mean is below the median: the low value pulls it down" }], "title": "The last three Allflame Divine prices (chaos): drag 300 further right and watch the mean follow it while the median stays at 270" }
+```
+
 **Coefficient of variation (CV).** SD as a percentage of the mean, so two groups can be compared on one scale: $CV = s/\bar{X} \times 100\%$. For $s = 10.8$, $\bar X = 133.2$: $10.8/133.2 \times 100\% = 8.11\%$. On the sheet, under Descriptive Statistics, as $CV = \dfrac{s}{\bar{X}} \times 100\%$. Smaller CV = more consistent.
 
 **Histogram shapes.** A histogram is bars over classes of the data; bar height is how many values fall in that class.
@@ -40,13 +53,61 @@ The tiny cases below use poe.ninja's daily price of the Divine Orb, a Path of Ex
 The tail drags the mean toward it; the median barely moves. Right tail: mean > median. Left tail: mean < median. Not on the sheet.
 :::
 
+```diagram
+{ "type": "grid", "title": "The four histogram shapes", "nodes": [
+  { "id": "c00", "label": "shape", "row": 0, "col": 0 },
+  { "id": "c01", "label": "what you see", "row": 0, "col": 1 },
+  { "id": "c02", "label": "mean vs median", "row": 0, "col": 2 },
+  { "id": "c10", "label": "bell-shaped", "row": 1, "col": 0 },
+  { "id": "c11", "label": "one middle peak", "row": 1, "col": 1 },
+  { "id": "c12", "label": "mean = median", "row": 1, "col": 2 },
+  { "id": "c20", "label": "right-skewed", "row": 2, "col": 0 },
+  { "id": "c21", "label": "long tail right", "row": 2, "col": 1 },
+  { "id": "c22", "label": "mean > median", "row": 2, "col": 2 },
+  { "id": "c30", "label": "left-skewed", "row": 3, "col": 0 },
+  { "id": "c31", "label": "long tail left", "row": 3, "col": 1 },
+  { "id": "c32", "label": "mean < median", "row": 3, "col": 2 },
+  { "id": "c40", "label": "bimodal", "row": 4, "col": 0 },
+  { "id": "c41", "label": "two peaks", "row": 4, "col": 1 },
+  { "id": "c42", "label": "either; rule fails", "row": 4, "col": 2 }
+], "hi": ["c12", "c22", "c32", "c42"], "caption": "Only the bell row allows the empirical rule. In the other rows the mean is pulled toward the tail or sits between the peaks, so say the shape and give both centres." }
+```
+
 **Empirical rule.** For bell-shaped data, about 68 % of values lie within 1 SD of the mean, 95 % within 2 SD, 99.7 % within 3 SD. On the sheet, under Empirical Rule, as three lines: "68 % of data values are within one standard deviation of the mean", then 95 % within two, 99.7 % within three. The trap: it holds **only** for bell shapes; skewed or bimodal data break it, and saying so is the mark.
 
 **Z-score.** How many SDs a value sits from the mean: $Z = (x - \bar X)/s$. On the sheet, under Descriptive Statistics, as $Z = \dfrac{x - \bar{X}}{s}$. A value with $|Z| > 2$ is called unusual (not on the sheet).
 
 Nexon's North America job ranking on 2026-10-27 lists the top 500 Heroes, a GMS job, with mean level 294.896 and SD 1.44. A level-300 Hero: $Z = (300 - 294.896)/1.44 = 5.104/1.44 = 3.54$, so level 300 is unusual even inside the top 500. A level-294 Hero: $Z = (294 - 294.896)/1.44 = -0.62$, ordinary. Z needs no bell shape; it only measures distance from this list's own mean in units of its own SD, which is why the same formula works on any data set.
 
+```widget
+normal-curve
+{ "mu": 294.896, "sigma": 1.44, "x": 300, "presets": { "Level-300 Hero": [294.896, 1.44, 300], "Level-294 Hero": [294.896, 1.44, 294] } }
+```
+
 **Quartiles and IQR.** $Q_1$ has 25 % of the data below it, $Q_2$ is the median, $Q_3$ has 75 % below. The interquartile range $IQR = Q_3 - Q_1$ is the spread of the middle half (remember this one). The fences $Q_1 - 1.5\,IQR$ and $Q_3 + 1.5\,IQR$ are on the sheet, under Outliers; a value outside a fence is an outlier.
+
+The hand method on real numbers: the HP of 12 common MapleStory Classic training monsters from meowdb's fan database, sorted:
+
+```diagram
+{ "type": "grid", "title": "Twelve monster HP values, sorted, split into halves", "nodes": [
+  { "id": "h0", "label": "", "row": 0, "col": 0 },
+  { "id": "h1", "label": "lower half", "row": 0, "col": 1 },
+  { "id": "h2", "label": "upper half", "row": 0, "col": 2 },
+  { "id": "r0", "label": "values", "row": 1, "col": 0 },
+  { "id": "r1", "label": "45 115 142 | 172 233 403", "row": 1, "col": 1 },
+  { "id": "r2", "label": "510 842 982 | 1336 3218 7420", "row": 1, "col": 2 },
+  { "id": "q0", "label": "quartile", "row": 2, "col": 0 },
+  { "id": "q1", "label": "Q1 = (142 + 172)/2 = 157", "row": 2, "col": 1 },
+  { "id": "q2", "label": "Q3 = (982 + 1336)/2 = 1159", "row": 2, "col": 2 }
+], "hi": ["q1", "q2"], "caption": "n = 12 is even, so the halves are 6 and 6 and Q2 = (403 + 510)/2 = 456.5 sits between them. Each quartile is the median of its half." }
+```
+
+$IQR = 1159 - 157 = 1002$. Fences: $157 - 1.5(1002) = -1346$ and $1159 + 1.5(1002) = 2662$. Drake's 3218 and Mano's 7420 are above the upper fence, so they are outliers and are drawn as dots; the upper whisker stops at Lupin's 1336, the largest value inside the fence.
+
+```widget
+boxplot
+{ "data": "45 115 142 172 233 403 510 842 982 1336 3218 7420", "note": "The twelve monster HP values. Compare the hand-method row with the numbers above, then look at where the whiskers stop and which points are drawn as dots." }
+```
 
 **Reading a boxplot.**
 
