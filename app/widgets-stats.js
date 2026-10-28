@@ -397,7 +397,7 @@ function scatterCorr(box, cfg) {
   };
   const first = cfg.preset && presets[cfg.preset] ? cfg.preset : "Circuit (lecture)";
   let pts = presets[first].x.map((x, i) => ({ x, y: presets[first].y[i] }));
-  const svg = svgEl("svg", { viewBox: "0 0 640 300", class: "curve-svg" });
+  const svg = svgEl("svg", { viewBox: "0 0 640 300", class: "curve-svg", style: "touch-action:none; user-select:none; -webkit-user-select:none" });
   const out = el("div", "stat-grid");
   const table = el("div", "stat-steps");
   box.append(btnRow(Object.keys(presets), (i, l) => { pts = presets[l].x.map((x, j) => ({ x, y: presets[l].y[j] })); draw(); }, Object.keys(presets).indexOf(first)), svg, out, table);
@@ -432,7 +432,10 @@ function scatterCorr(box, cfg) {
     pts.forEach((p, i) => {
       const c = svgEl("circle", { cx: X(p.x), cy: Y(p.y), r: 7, fill: "#58b4ff", stroke: "#0d1117", "stroke-width": 1.5, style: "cursor:grab" });
       c.addEventListener("pointerdown", (e) => {
-        c.setPointerCapture(e.pointerId);
+        // draw() rebuilds the SVG on every move; keep the listeners and the
+        // capture on svg, which survives the rebuild.
+        e.preventDefault();
+        svg.setPointerCapture(e.pointerId);
         const move = (ev) => {
           const rect = svg.getBoundingClientRect();
           const px = ((ev.clientX - rect.left) / rect.width) * W;
@@ -440,9 +443,15 @@ function scatterCorr(box, cfg) {
           p.x = Math.round(invX(px) * 10) / 10; p.y = Math.round(invY(py) * 10) / 10;
           draw(true);
         };
-        const up = () => { c.removeEventListener("pointermove", move); c.removeEventListener("pointerup", up); };
-        c.addEventListener("pointermove", move);
-        c.addEventListener("pointerup", up);
+        const up = () => {
+          svg.removeEventListener("pointermove", move);
+          svg.removeEventListener("pointerup", up);
+          svg.removeEventListener("pointercancel", up);
+          try { svg.releasePointerCapture(e.pointerId); } catch {}
+        };
+        svg.addEventListener("pointermove", move);
+        svg.addEventListener("pointerup", up);
+        svg.addEventListener("pointercancel", up);
       });
       svg.append(c);
     });
@@ -695,7 +704,7 @@ function dragData(box, cfg) {
   let data = parseNums(cfg.data || "");
   if (data.length < 2) data = [2, 4, 4, 4, 5, 5, 7, 9];
   box.append(el("p", "widget-note", "Drag a point to change its value (snaps to 0.1, or use the arrow keys on a focused point). Click or press Enter on the × above a point to remove it."));
-  const dotSvg = svgEl("svg", { class: "dotplot-svg" });
+  const dotSvg = svgEl("svg", { class: "dotplot-svg", style: "touch-action:none; user-select:none; -webkit-user-select:none" });
   const addBtn = el("button", "viz-btn dd-add", "+ add point");
   const controlRow = el("div", "dd-controls");
   controlRow.append(addBtn);
@@ -736,16 +745,25 @@ function dragData(box, cfg) {
       const removable = data.length > 2;
       const dot = svgEl("circle", { cx, cy, r: 7, fill: "#58b4ff", stroke: "#0d1117", "stroke-width": 1.5, class: "dd-dot", tabindex: "0" });
       dot.addEventListener("pointerdown", (e) => {
-        dot.setPointerCapture(e.pointerId);
+        // render() rebuilds the SVG on every move, so the listeners and the
+        // pointer capture live on dotSvg, which survives the rebuild.
+        e.preventDefault();
+        dotSvg.setPointerCapture(e.pointerId);
         const move = (ev) => {
           const rect = dotSvg.getBoundingClientRect();
           const px = ((ev.clientX - rect.left) / rect.width) * W;
           data[i] = Math.round(invX(px) * 10) / 10;
           render(true);
         };
-        const up = () => { dot.removeEventListener("pointermove", move); dot.removeEventListener("pointerup", up); };
-        dot.addEventListener("pointermove", move);
-        dot.addEventListener("pointerup", up);
+        const up = () => {
+          dotSvg.removeEventListener("pointermove", move);
+          dotSvg.removeEventListener("pointerup", up);
+          dotSvg.removeEventListener("pointercancel", up);
+          try { dotSvg.releasePointerCapture(e.pointerId); } catch {}
+        };
+        dotSvg.addEventListener("pointermove", move);
+        dotSvg.addEventListener("pointerup", up);
+        dotSvg.addEventListener("pointercancel", up);
       });
       dot.addEventListener("keydown", (e) => {
         const step = e.shiftKey ? 1 : 0.1;
