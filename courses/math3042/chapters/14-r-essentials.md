@@ -6,6 +6,64 @@ minutes: 21
 
 The R mechanics from **Lab 1** (`Lab_01_Notebook.Solutions.pdf`, `demo_notebook_Unit_01.Rmd`) and what each one returns. The same calls then run on Nexon's ranking of the top 500 GMS characters.
 
+| The question asks for | Command shape | Example |
+|---|---|---|
+| one column | `df$col` | `TenMileRace$time` |
+| how many rows meet a condition | `sum(df$col < v)` | `sum(TenMileRace$time < 3000)` |
+| the rows that meet it | `subset(df, cond)` or `df[cond, "col"]` | `subset(TenMileRace, sex == "F")` |
+| a count of rows from a subset | `nrow(subset(df, cond))` | `nrow(subset(TenMileRace, sex == "F"))` |
+| counts per category | `table(df$col)` | `table(TenMileRace$sex)` |
+| the category names | `levels(df$col)` | `levels(TenMileRace$sex)` |
+| counts without zero-count levels | `table(droplevels(df$col))` | `table(droplevels(my.subset$state))` |
+| the most common value | `names(which.max(table(x)))` | `names(which.max(table(TenMileRace$state)))` |
+| the sample sd | `sd(x)` | `sd(TenMileRace$time)` |
+| a percentile | `quantile(x, k/100)` | `quantile(TenMileRace$time, 0.9)` |
+| r | `cor(x, y)` | `cor(circuit.df$Resistance, circuit.df$Fail.time)` |
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `TenMileRace$time` | `$` picks the `time` column of the `TenMileRace` data frame. |
+| `sum(TenMileRace$time < 3000)` | `<` gives one `TRUE`/`FALSE` per row; `sum()` counts the `TRUE`s. |
+| `subset(TenMileRace, sex == "F")` | Keeps the rows where `sex` equals (`==`) `"F"`. |
+| `nrow(…)` | Counts the rows of the data frame inside. |
+| `table(TenMileRace$sex)` | Counts how many rows fall in each level of `sex`. |
+| `levels(TenMileRace$sex)` | Lists the allowed values of the factor `sex`. |
+| `table(droplevels(my.subset$state))` | `droplevels()` removes levels with no rows, so `table()` lists only the states present. |
+| `names(which.max(table(TenMileRace$state)))` | `which.max()` finds the biggest count; `names()` reads its label, the state code. |
+| `sd(TenMileRace$time)` | The sample standard deviation, dividing by n − 1. |
+| `quantile(TenMileRace$time, 0.9)` | `0.9` fills `probs`: the 90th percentile. |
+| `cor(circuit.df$Resistance, circuit.df$Fail.time)` | Pearson's r of two columns, paired row by row; they fill `x` and `y`. |
+
+**Left to right**
+
+- `TenMileRace$time`: "The time column (`time`) of the race data (`TenMileRace$`)."
+- `sum(TenMileRace$time < 3000)`: "The total (`sum`) of whether each time (`TenMileRace$time`) is less than (`<`) 3000."
+- `subset(TenMileRace, sex == "F")`: "The rows (`subset`) of the race data (`TenMileRace`) where sex equals (`==`) F (`"F"`)."
+- `nrow(subset(TenMileRace, sex == "F"))`: "The number of rows (`nrow`) in those rows (`subset(…)`)."
+- `table(TenMileRace$sex)`: "The count per level (`table`) of the sex column (`TenMileRace$sex`)."
+- `levels(TenMileRace$sex)`: "The allowed values (`levels`) of the sex column (`TenMileRace$sex`)."
+- `table(droplevels(my.subset$state))`: "The count per level (`table`), with empty levels dropped (`droplevels`), of my.subset's state column (`my.subset$state`)."
+- `names(which.max(table(TenMileRace$state)))`: "The label (`names`) of the biggest count (`which.max`) in the count per level (`table`) of the state column (`TenMileRace$state`)."
+- `sd(TenMileRace$time)`: "The sample standard deviation (`sd`) of the times (`TenMileRace$time`)."
+- `quantile(TenMileRace$time, 0.9)`: "The cut point (`quantile`) of the times (`TenMileRace$time`) with 90% below it (`0.9`)."
+- `cor(circuit.df$Resistance, circuit.df$Fail.time)`: "The correlation (`cor`) of resistance (`circuit.df$Resistance`) with failure time (`circuit.df$Fail.time`)."
+
+**Right to left**, the order R runs it
+
+- `TenMileRace$time`: "Take the race data (`TenMileRace`) and pull out its time column (`$time`)."
+- `sum(TenMileRace$time < 3000)`: "Take the times (`TenMileRace$time`), compare each with 3000 (`< 3000`), and add the TRUEs as 1s (`sum`)."
+- `subset(TenMileRace, sex == "F")`: "Inside the race data (`TenMileRace`), test each sex against F (`sex == "F"`) and keep the TRUE rows (`subset`)."
+- `nrow(subset(TenMileRace, sex == "F"))`: "Keep the rows where sex is F (`subset(…)`), then count them (`nrow`)."
+- `table(TenMileRace$sex)`: "Take the sex column (`TenMileRace$sex`) and count each level (`table`)."
+- `levels(TenMileRace$sex)`: "Take the sex column (`TenMileRace$sex`) and list its levels (`levels`)."
+- `table(droplevels(my.subset$state))`: "Take my.subset's state column (`my.subset$state`), drop the empty levels (`droplevels`), and count each level left (`table`)."
+- `names(which.max(table(TenMileRace$state)))`: "Take the state column (`TenMileRace$state`), count each level (`table`), find the biggest count (`which.max`), and read its label (`names`)."
+- `sd(TenMileRace$time)`: "Take the times (`TenMileRace$time`) and compute their sample standard deviation (`sd`)."
+- `quantile(TenMileRace$time, 0.9)`: "Take the times (`TenMileRace$time`) and find the cut point at proportion 0.9 (`quantile`)."
+- `cor(circuit.df$Resistance, circuit.df$Fail.time)`: "Take the two columns (`circuit.df$Resistance`, `circuit.df$Fail.time`), pair them row by row, and compute their correlation (`cor`)."
+:::
+
 ## R Notebooks
 
 A `.Rmd` file mixes **text chunks** (plain markdown, with LaTeX between `$...$` for formulas) and **code chunks** (fenced with ```` ```{r} ```` ... ```` ``` ````).
@@ -230,6 +288,17 @@ sum(TenMileRace$time < 3000)
 - "Take the race data's time column (`TenMileRace$time`), compare every value with 3000 (`< 3000`), then add up the TRUEs as 1s and the FALSEs as 0s (`sum`)."
 :::
 
+None of the first five runners beat 3000, so the picture uses a 5000 cutoff to show both values:
+
+```diagram
+{ "type": "grid", "nodes": [
+  { "id": "h0", "label": "row", "row": 0, "col": 0 }, { "id": "h1", "label": "1", "row": 0, "col": 1 }, { "id": "h2", "label": "2", "row": 0, "col": 2 }, { "id": "h3", "label": "3", "row": 0, "col": 3 }, { "id": "h4", "label": "4", "row": 0, "col": 4 }, { "id": "h5", "label": "5", "row": 0, "col": 5 }, { "id": "h6", "label": "…", "row": 0, "col": 6 },
+  { "id": "t0", "label": "time", "row": 1, "col": 0 }, { "id": "t1", "label": "6060", "row": 1, "col": 1 }, { "id": "t2", "label": "4515", "row": 1, "col": 2 }, { "id": "t3", "label": "5026", "row": 1, "col": 3 }, { "id": "t4", "label": "4229", "row": 1, "col": 4 }, { "id": "t5", "label": "5293", "row": 1, "col": 5 }, { "id": "t6", "label": "…", "row": 1, "col": 6 },
+  { "id": "c0", "label": "time < 5000", "row": 2, "col": 0 }, { "id": "c1", "label": "FALSE", "row": 2, "col": 1 }, { "id": "c2", "label": "TRUE", "row": 2, "col": 2 }, { "id": "c3", "label": "FALSE", "row": 2, "col": 3 }, { "id": "c4", "label": "TRUE", "row": 2, "col": 4 }, { "id": "c5", "label": "FALSE", "row": 2, "col": 5 }, { "id": "c6", "label": "…", "row": 2, "col": 6 },
+  { "id": "n0", "label": "as a number", "row": 3, "col": 0 }, { "id": "n1", "label": "0", "row": 3, "col": 1 }, { "id": "n2", "label": "1", "row": 3, "col": 2 }, { "id": "n3", "label": "0", "row": 3, "col": 3 }, { "id": "n4", "label": "1", "row": 3, "col": 4 }, { "id": "n5", "label": "0", "row": 3, "col": 5 }, { "id": "n6", "label": "…", "row": 3, "col": 6 }
+], "hi": ["c2", "c4", "n2", "n4"], "caption": "sum() adds the bottom row (here 2 for the first five rows); df[cond, ] keeps the TRUE columns, rows 2 and 4." }
+```
+
 Use the same condition inside `[rows, ]` to pull out the matching rows (the column slot `"time"` keeps only the time column; an empty slot would keep all columns):
 
 ```r
@@ -347,7 +416,7 @@ filter(TenMileRace, sex == "F", net > 10000)
 - `filter(TenMileRace, sex == "F", net > 10000)`: "Inside the race data (`TenMileRace`), check each sex against F (`sex == "F"`) and each net time against 10000 (`net > 10000`), then keep the rows where both are TRUE (`filter`)."
 :::
 
-A practical trick: US state codes are 2 characters, so a `state` value longer than 2 characters means the runner registered from outside the US. `as.character()` converts the factor to plain text first so `nchar()` can measure it:
+A practical trick: US state codes are 2 characters, so a `state` value longer than 2 characters means the runner registered from outside the US. `state` is a *factor*, R's categorical type (see "Factors" below), so `as.character()` converts it to plain text first so `nchar()` can measure it:
 
 ```r
 non.usa.runners <- subset(TenMileRace, nchar(as.character(state)) > 2)
@@ -520,6 +589,23 @@ levels(usa.runners$state)[which.max(us.state.tab)]
 - `levels(usa.runners$state)[which.max(us.state.tab)]`: "Take the state table (`us.state.tab`) and find the position of its biggest count (`which.max`); list the level names of usa.runners' state column (`levels(usa.runners$state)`), and pick the name at that position (`[ ]`)."
 :::
 
+The idiom works because `table()` lists counts in level order, so the k-th count belongs to the k-th level. The lesson 4 form gives the same answer, `"VA"`: `names(which.max(us.state.tab))`.
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `which.max(us.state.tab)` | The position of the largest count, kept with that count's label. |
+| `names(…)` | Pulls out the label, the state code, as text. |
+
+**Left to right**
+
+- `names(which.max(us.state.tab))`: "The label (`names`) of the biggest count (`which.max`) in the state table (`us.state.tab`)."
+
+**Right to left**, the order R runs it
+
+- `names(which.max(us.state.tab))`: "Take the state table (`us.state.tab`), find its biggest count (`which.max`), and read off that count's label (`names`)."
+:::
+
 ## rank()
 
 `rank()` converts values to their position when sorted; ties share a rank. `ties.method="min"` gives tied values the **lowest** rank in their tied group:
@@ -548,6 +634,14 @@ rank(c(50,200,50,400,200,700), ties.method="min")
 :::
 
 The two `50`s are both rank 1 (not 1 and 2); the next distinct value (`200`, appearing twice) gets rank 3, because ranks 1 and 2 are "used up" by the pair of `50`s.
+
+```diagram
+{ "type": "grid", "nodes": [
+  { "id": "a0", "label": "value", "row": 0, "col": 0 }, { "id": "a1", "label": "50", "row": 0, "col": 1 }, { "id": "a2", "label": "200", "row": 0, "col": 2 }, { "id": "a3", "label": "50", "row": 0, "col": 3 }, { "id": "a4", "label": "400", "row": 0, "col": 4 }, { "id": "a5", "label": "200", "row": 0, "col": 5 }, { "id": "a6", "label": "700", "row": 0, "col": 6 },
+  { "id": "b0", "label": "positions when sorted", "row": 1, "col": 0 }, { "id": "b1", "label": "1–2", "row": 1, "col": 1 }, { "id": "b2", "label": "3–4", "row": 1, "col": 2 }, { "id": "b3", "label": "1–2", "row": 1, "col": 3 }, { "id": "b4", "label": "5", "row": 1, "col": 4 }, { "id": "b5", "label": "3–4", "row": 1, "col": 5 }, { "id": "b6", "label": "6", "row": 1, "col": 6 },
+  { "id": "c0", "label": "rank, ties = min", "row": 2, "col": 0 }, { "id": "c1", "label": "1", "row": 2, "col": 1 }, { "id": "c2", "label": "3", "row": 2, "col": 2 }, { "id": "c3", "label": "1", "row": 2, "col": 3 }, { "id": "c4", "label": "5", "row": 2, "col": 4 }, { "id": "c5", "label": "3", "row": 2, "col": 5 }, { "id": "c6", "label": "6", "row": 2, "col": 6 }
+], "hi": ["c1", "c3", "c2", "c5"], "caption": "Tied values share their sorted positions and take the lowest one: the 50s share 1–2 and get 1, the 200s share 3–4 and get 3." }
+```
 
 ## Descriptive statistics functions
 

@@ -10,11 +10,32 @@ Classical probability is a ratio of two counts, and even the job choices on one 
 
 If sets $S_1, S_2, \ldots, S_k$ contain $n_1, n_2, \ldots, n_k$ elements, there are $n_1 \times n_2 \times \cdots \times n_k$ ways to choose one element from each. Roll a die five times: each roll has 6 outcomes, so $|S| = 6^5 = 7776$.
 
-**Five cards with replacement, first three red and last two Kings.** With replacement, each draw is from the full deck and the draws are independent. A standard deck has 52 cards, half red (hearts and diamonds) and half black (spades and clubs); four suits of 13 (A, 2 to 10, J, Q, K); four cards of each rank; 12 face cards (J, Q, K in each suit). So
+:::info The deck
+Every card example in this unit uses a standard 52-card deck. Each suit has 13 ranks: A, 2 to 10, J, Q, K.
+
+| suit | colour | cards | face cards (J, Q, K) |
+|---|---|---|---|
+| hearts | red | 13 | 3 |
+| diamonds | red | 13 | 3 |
+| spades | black | 13 | 3 |
+| clubs | black | 13 | 3 |
+| total | 26 red, 26 black | 52 | 12 |
+
+There are 4 cards of each rank (four Aces, four Kings …).
+:::
+
+**Five cards with replacement, first three red and last two Kings.** With replacement, each draw is from the full deck and the draws are independent. Line the draws up and count each one:
+
+| draw | 1 | 2 | 3 | 4 | 5 |
+|---|---|---|---|---|---|
+| wanted | red 26 | red 26 | red 26 | King 4 | King 4 |
+| possible | 52 | 52 | 52 | 52 | 52 |
+
+The wanted row multiplies to $|A|$ and the possible row to $|S|$:
 
 $$P(A) = \frac{|A|}{|S|} = \frac{26 \times 26 \times 26 \times 4 \times 4}{52 \times 52 \times 52 \times 52 \times 52} = \frac{281\,216}{380\,204\,032} = 0.00074$$
 
-$|A|$ and $|S|$ each by the counting rule, then one division; cancelling first gives the same $(1/2)^3 (1/13)^2 = 1/1352$.
+Each column is also one fraction: $26/52 = 1/2$ three times and $4/52 = 1/13$ twice, so cancelling first gives the same $(1/2)^3 (1/13)^2 = 1/1352$.
 
 **Five cards without replacement, all red.** Now each draw removes a card: 26 red of 52, then 25 of 51, 24 of 50, 23 of 49, 22 of 48:
 
@@ -23,6 +44,27 @@ $$P(A) = \frac{26 \times 25 \times 24 \times 23 \times 22}{52 \times 51 \times 5
 Numerator and denominator are the counting rule applied to shrinking sets. The filled notes put the with-replacement version, $26^5 / 52^5$, beside it for contrast.
 
 ## Factorials, permutations, combinations
+
+Start with three letters, A, B and C, and choose 2. In order, there are $3 \times 2 = 6$ sequences. Ignoring order, there are only 3 pairs, because each pair shows up in two orders.
+
+```diagram
+{ "type": "grid", "nodes": [
+  { "id": "h0", "label": "", "row": 0, "col": 0 },
+  { "id": "h1", "label": "one order", "row": 0, "col": 1 },
+  { "id": "h2", "label": "other order", "row": 0, "col": 2 },
+  { "id": "r1", "label": "{A, B}", "row": 1, "col": 0 },
+  { "id": "a1", "label": "AB", "row": 1, "col": 1 },
+  { "id": "b1", "label": "BA", "row": 1, "col": 2 },
+  { "id": "r2", "label": "{A, C}", "row": 2, "col": 0 },
+  { "id": "a2", "label": "AC", "row": 2, "col": 1 },
+  { "id": "b2", "label": "CA", "row": 2, "col": 2 },
+  { "id": "r3", "label": "{B, C}", "row": 3, "col": 0 },
+  { "id": "a3", "label": "BC", "row": 3, "col": 1 },
+  { "id": "b3", "label": "CB", "row": 3, "col": 2 }
+], "hi": ["r1", "r2", "r3"], "caption": "P(3, 2) = 6 cells; C(3, 2) = 3 rows; each row holds 2! = 2 orders, so C = P / 2!." }
+```
+
+The same picture holds for any $n$ and $r$:
 
 | Function | Definition | Counts |
 |---|---|---|
@@ -48,11 +90,11 @@ perm-fill-play
 
 ## Which formula
 
-| Question to ask | Answer | Use |
-|---|---|---|
-| may an item be chosen more than once (with replacement, dice, coins)? | yes | counting rule, $n^r$ |
-| order matters (a sequence, a row of seats, first/second/third)? | yes, no repeats | $P(n, r)$ |
-| order does not matter (a hand, a committee, a group)? | no repeats | $C(n, r)$ |
+| Repeats allowed? | Order matters? | Count | Example |
+|---|---|---|---|
+| yes | yes | $n^r$ | five dice |
+| no | yes | $P(n, r)$ | 9 front-row seats |
+| no | no | $C(n, r)$ | a 4-card hand |
 
 A probability is then favourable count over total count, both computed the same way: $C$ above and below the line, or $P$ above and below. Mixing them, $C$ above and $P$ below, is the error to avoid.
 
@@ -71,6 +113,20 @@ All of these are presets in the calculator above. Decide P, C or $n^r$ for each 
 - A sequence of 3 cards, all diamonds, and the probability of that.
 - A five-person committee from 20 instructors: *the committee is a combination (i.e. set) of instructors*.
 - A spade flush: five cards, all spades, no replacement.
+
+```quiz
+[
+  {"type": "match", "q": "Match each example from the list to the count it needs.", "pairs": [
+    ["the four Aces in a sequence", "$4!$"],
+    ["four cards from a deck, arranged in a sequence", "$P(52, 4)$"],
+    ["a hand of four cards", "$C(52, 4)$"],
+    ["90 students in a front row of 9 seats", "$P(90, 9)$"],
+    ["a sequence of 3 cards, all diamonds", "$P(13, 3)$"],
+    ["a five-person committee from 20 instructors", "$C(20, 5)$"],
+    ["a spade flush, five cards", "$C(13, 5)$ over $C(52, 5)$"]
+  ], "explain": "Ask the two questions of the table above. All four Aces in order is $n!$. Seats and card sequences have order and no repeats: $P$. A hand, a committee and a flush are groups with no order: $C$, above and below the line for the flush."}
+]
+```
 
 On the calculator: $C(52, 4)$ is `52  2nd F  nCr  4`; `nPr` gives permutations and `n!` factorials. In R: `factorial(4)`, `choose(52, 4) * factorial(4)` for $P(52, 4)$, `choose(52, 4)` for $C(52, 4)$.
 
@@ -117,7 +173,11 @@ counting-calc
 
 ## Count PoE2 ascendancies, gem sockets and Classic job sets
 
-PoE2 has 8 playable classes and 22 regular ascendancies [PoE2, 0.5.5e Forbidden Rites, Character class (poe2wiki), checked 2026-10-27]: six classes offer 3 each and the Ranger and Druid 2 each. A PoE2 skill gem has 2 to 5 support sockets [PoE2, 0.5.5e Forbidden Rites, Gem socket (poe2wiki), checked 2026-10-27].
+PoE2 has 8 playable classes, each with its own regular ascendancies [PoE2, 0.5.5e Forbidden Rites, Character class (poe2wiki), checked 2026-10-27]: six classes offer 3 each and the Ranger and Druid 2 each. A PoE2 skill gem has 2 to 5 support sockets [PoE2, 0.5.5e Forbidden Rites, Gem socket (poe2wiki), checked 2026-10-27].
+
+:::tip When the second choice depends on the first
+The product rule needs the same number of second choices for every first choice. When the number of second choices depends on the first, the product rule stops working: count each first choice's branches and add them.
+:::
 
 ```quiz
 [

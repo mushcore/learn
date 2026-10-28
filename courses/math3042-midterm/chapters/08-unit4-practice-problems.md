@@ -118,7 +118,18 @@ sum(x*p)
 
 ### PP5. Two 12-sided dice
 
-Two fair 12-sided dice are rolled. (a) X = the sum of the two dice: find μ and σ. (b) X = the minimum of the two dice: find μ and σ (the sheet calls this one "challenging to do by hand").
+Two fair 12-sided dice are rolled. (a) X = the sum of the two dice: find μ and σ. (b) X = the minimum of the two dice: find μ and σ (the answer sheet calls this one "challenging to do by hand").
+
+:::info Independent pieces: variances add, SDs do not
+For independent X and Y, σ²(X + Y) = σ²(X) + σ²(Y); take the square root last. Two 6-sided dice: one die has σ² = 35/12 = 2.9167, so the sum has σ² = 5.8333 and σ = 2.42, not 2 × 1.71 = 3.42.
+:::
+
+For the minimum, start with two 6-sided dice. Click X = 2 in the grid: the 9 lit cells form an L, 4 + 4 + 1. On 12-sided dice the same L holds 2(12 − k) + 1 cells.
+
+```widget
+pmf-table
+{ "preset": "minimum of two dice", "grid": true }
+```
 
 ```quiz
 [
@@ -134,7 +145,7 @@ Two fair 12-sided dice are rolled. (a) X = the sum of the two dice: find μ and 
     "type": "numeric",
     "answer": 4.88194,
     "tolerance": 0.05,
-    "explain": "One die: σ² = (12² − 1)/12 = 143/12 = 11.9167. The two dice are independent, so variances add: σ² = 143/6 = 23.8333 and σ = √23.8333 = 4.88. Adding the standard deviations instead (2 × 3.45 = 6.90) is wrong. The sheet prints 4.9."
+    "explain": "One die, by the formula sheet's shortcut: Σx²P(x) = (1² + 2² + … + 12²)/12 = 650/12 = 54.1667, so σ² = 54.1667 − 6.5² = 11.9167 = 143/12. The two dice are independent, so variances add: σ² = 143/6 = 23.8333 and σ = √23.8333 = 4.88. Adding the standard deviations instead (2 × 3.45 = 6.90) is wrong. The answer sheet prints 4.9."
   },
   {
     "q": "PP5b. Mean of the minimum of two 12-sided dice (3 significant digits).",
@@ -153,9 +164,9 @@ Two fair 12-sided dice are rolled. (a) X = the sum of the two dice: find μ and 
 ]
 ```
 
-**(a)** μ = 6.5 + 6.5 = 13; σ² = 143/12 + 143/12 = 143/6 = 23.8333, σ = 4.88 (the sheet rounds to 4.9).
+**(a)** μ = 6.5 + 6.5 = 13. One die: Σx²P(x) = (1² + 2² + … + 12²)/12 = 650/12 = 54.1667, so σ² = 54.1667 − 6.5² = 11.9167. Variances add: σ² = 11.9167 + 11.9167 = 23.8333, σ = 4.88 (the answer sheet rounds to 4.9). Adding the SDs, 3.45 + 3.45 = 6.90, is wrong.
 
-**(b)** In the 12 × 12 grid of outcomes, the minimum is k when one die shows k and the other shows k or more: 12 − k cells with the first die at k, 12 − k with the second at k, and the single cell (k, k). So P(X = k) = (2(12 − k) + 1)/144.
+**(b)** The same L as the 6 × 6 grid above: in the 12 × 12 grid of outcomes, the minimum is k when one die shows k and the other shows k or more: 12 − k cells with the first die at k, 12 − k with the second at k, and the single cell (k, k). So P(X = k) = (2(12 − k) + 1)/144.
 
 | k | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -303,23 +314,23 @@ A test has 10 multiple-choice questions with 4 choices each, and a student guess
     "type": "numeric",
     "answer": 0.0563135,
     "tolerance": 0.0001,
-    "explain": "Let X = the number of correct answers. Binomial, n = 10, p = 1/4. P(X = 0) = (0.75)¹⁰ = 0.0563 (the sheet prints 0.05631)."
+    "explain": "Let X = the number of correct answers. Binomial, n = 10, p = 1/4. P(X = 0) = (0.75)¹⁰ = 0.0563 (the answer sheet prints 0.05631)."
   },
   {
     "q": "PP3b. P(8 or more correct), 4 decimals.",
     "type": "numeric",
     "answer": 0.000415802,
     "tolerance": 0.00002,
-    "explain": "P(X ≥ 8) = P(8) + P(9) + P(10) = 45(0.25)⁸(0.75)² + 10(0.25)⁹(0.75) + (0.25)¹⁰ = 0.000386238 + 0.0000286102 + 0.000000954 = 0.000415802 → 0.0004. The sheet prints 4.158E−4, the same number to four significant digits. In R, 'at least 8' is 1 − pbinom(7, …), not pbinom(8, …)."
+    "explain": "P(X ≥ 8) = P(8) + P(9) + P(10) = 45(0.25)⁸(0.75)² + 10(0.25)⁹(0.75) + (0.25)¹⁰ = 0.000386238 + 0.0000286102 + 0.000000954 = 0.000415802 → 0.0004. The answer sheet prints 4.158E−4, the same number to four significant digits. In R, 'at least 8' is 1 − pbinom(7, …), not pbinom(8, …)."
   }
 ]
 ```
 
 (a) $P(0) = 0.75^{10} = 0.0563$. (b) At least 8 is 8, 9 or 10:
 
-$$P(X \ge 8) = 45(0.25)^8(0.75)^2 + 10(0.25)^9(0.75) + (0.25)^{10} = \frac{436}{4^{10}} = 0.000415802 \approx 0.0004$$
+$$P(X \ge 8) = C(10,8)(0.25)^8(0.75)^2 + C(10,9)(0.25)^9(0.75) + (0.25)^{10} = 45(0.25)^8(0.75)^2 + 10(0.25)^9(0.75) + (0.25)^{10} = 0.000415802 \approx 0.0004$$
 
-The sheet's 4.158E−4 is the same value in scientific notation; the cover rule gives 0.0004. Either way, scoring 8 or better by guessing is about 4 in 10,000.
+The answer sheet's 4.158E−4 is the same value in scientific notation; the cover rule gives 0.0004. Either way, scoring 8 or better by guessing is about 4 in 10,000.
 
 ```r
 dbinom(0, 10, 0.25)
@@ -349,7 +360,11 @@ dbinom(0, 10, 0.25)
 
 ## Geometric: PP6
 
-Taught in [Geometric: trials to the first success](#/math3042-u4/geometric). The course counts trials; R counts failures before the first success, so P(X = x) is `dgeom(x-1, p)` and P(X ≤ k) is `pgeom(k-1, p)`.
+Taught in [Geometric: trials to the first success](#/math3042-u4/geometric).
+
+:::warn Course counts trials, R counts failures
+The course counts trials; R counts failures before the first success, so P(X = x) is `dgeom(x-1, p)` and P(X ≤ k) is `pgeom(k-1, p)`. The chain of boxes is drawn in [R on paper](#/math3042-midterm/r-on-paper).
+:::
 
 :::info R syntax
 | Code | What it does |
@@ -380,7 +395,7 @@ Each job application has a 0.15 chance of leading to an interview, independently
     "answer": 6.66667,
     "tolerance": 0.05,
     "unit": "applications",
-    "explain": "Let X = the number of applications up to and including the first interview. Geometric with p = 0.15. μ = 1/p = 1/0.15 = 6.67 applications (the sheet prints 6.667)."
+    "explain": "Let X = the number of applications up to and including the first interview. Geometric with p = 0.15. μ = 1/p = 1/0.15 = 6.67 applications (the answer sheet prints 6.667)."
   },
   {
     "q": "PP6b. P(the fifth application is the first interview), 4 decimals.",
@@ -437,6 +452,10 @@ dgeom(4, 0.15)
 ## Hypergeometric: PP8, PP9, PP11, PP14, PP15
 
 Taught in [Hypergeometric: sampling without replacement](#/math3042-u4/hypergeometric). Every one samples without replacement from a small lot, so the three-C formula applies: $P(x) = C(K,x)\,C(N-K,n-x)/C(N,n)$. In R, `dhyper(x, K, N-K, n)` takes x, the successes in the population, the failures in the population, and the sample size.
+
+:::warn R's n is the failures
+In `dhyper` R's slot `n` holds the failures N − K; the course's sample size n goes in R's last slot, `k`.
+:::
 
 :::info R syntax
 | Code | What it does |
@@ -551,9 +570,9 @@ A sample of 3 is taken from a lot of 24 batteries, 6 of which are defective. Fin
 ]
 ```
 
-N = 24, K = 6, N − K = 18, n = 3, C(24,3) = 2024. (a) $816/2024 = 0.4032$. (b) $6 \times 153/2024 = 0.4536$. (c) $1 - 0.403162 - 0.453557 = 0.143281 \approx 0.1433$, which the direct sum $(270 + 20)/2024 = 290/2024$ confirms.
+N = 24, K = 6, N − K = 18, n = 3, C(24,3) = 2024. (a) $816/2024 = 0.4032$. (b) $6 \times 153/2024 = 0.4536$. (c) $1 - 0.403162 - 0.453557 = 0.143281 \approx 0.1433$, which the direct sum confirms: C(6,2)C(18,1) = 15 × 18 = 270 and C(6,3) = 20, so $(270 + 20)/2024 = 290/2024$.
 
-:::warn The sheet's 0.1432 is a rounding slip
+:::warn The answer sheet's 0.1432 is a rounding slip
 The answer sheet gives 0.1432, from 1 − 0.4032 − 0.4536 with the parts already rounded. The exact value is 0.143281, which rounds to 0.1433.
 :::
 
@@ -596,7 +615,7 @@ In Lotto 6/49 you pick 6 numbers from 1 to 49 and 6 winning numbers are drawn. W
     "type": "numeric",
     "answer": 0.0176504,
     "tolerance": 0.0001,
-    "explain": "Let X = the number of your 6 numbers that are among the 6 drawn. Hypergeometric: N = 49, K = 6 winning numbers, N − K = 43, n = 6 picked. P(3) = C(6,3)C(43,3)/C(49,6) = 20(12341)/13983816 = 246820/13983816 = 0.0177 (the sheet prints 0.01765)."
+    "explain": "Let X = the number of your 6 numbers that are among the 6 drawn. Hypergeometric: N = 49, K = 6 winning numbers, N − K = 43, n = 6 picked. P(3) = C(6,3)C(43,3)/C(49,6) = 20(12341)/13983816 = 246820/13983816 = 0.0177 (the answer sheet prints 0.01765)."
   },
   {
     "q": "PP11. The same probability as \"1 in …\" (3 significant digits).",
@@ -610,7 +629,7 @@ In Lotto 6/49 you pick 6 numbers from 1 to 49 and 6 winning numbers are drawn. W
 
 $$P(3) = \frac{C(6,3)\,C(43,3)}{C(49,6)} = \frac{20 \times 12\,341}{13\,983\,816} = \frac{246\,820}{13\,983\,816} = 0.0177$$
 
-That is 1 in $1/0.0176504 = 56.656$, so **1 in 56.7**. The sheet's "1 in 56.6" truncates the last digit.
+That is 1 in $1/0.0176504 = 56.656$, so **1 in 56.7**. The answer sheet's "1 in 56.6" truncates the last digit.
 
 ```r
 dhyper(3, 6, 49-6, 6)
@@ -676,8 +695,8 @@ N = 50, K = 6, N − K = 44, n = 5, C(50,5) = 2,118,760.
 | (b) $P(X \le 1)$ | $0.512568 + 814\,506/2\,118\,760 = 0.512568 + 0.384426$ | 0.8970 |
 | (c) $P(X > 2)$ | $1 - 0.896994 - 198\,660/2\,118\,760 = 1 - 0.896994 - 0.093762$ | 0.0092 |
 
-:::warn The sheet's 0.0093 is wrong in the last digit
-"More than 2" is 1 − P(X ≤ 2) = 0.00924409, which rounds to 0.0092. The sheet prints 0.0093; even its rounded parts give 1 − 0.8970 − 0.0938 = 0.0092.
+:::warn The answer sheet's 0.0093 is wrong in the last digit
+"More than 2" is 1 − P(X ≤ 2) = 0.00924409, which rounds to 0.0092. The answer sheet prints 0.0093; even its rounded parts give 1 − 0.8970 − 0.0938 = 0.0092.
 :::
 
 ```r
@@ -765,7 +784,7 @@ Richmond averages 116 homicides per year. Find the probability of 0, 1, 2, 3 and
     "type": "numeric",
     "answer": 0.727742,
     "tolerance": 0.0001,
-    "explain": "Let X = the number of homicides in one day. Poisson with λ = 116/365 = 0.317808 per day. P(0) = e^(−0.317808) = 0.7277 (the sheet prints 0.728)."
+    "explain": "Let X = the number of homicides in one day. Poisson with λ = 116/365 = 0.317808 per day. P(0) = e^(−0.317808) = 0.7277 (the answer sheet prints 0.728)."
   },
   {
     "q": "PP7. P(exactly 1), 4 decimals.",
@@ -786,14 +805,14 @@ Richmond averages 116 homicides per year. Find the probability of 0, 1, 2, 3 and
     "type": "numeric",
     "answer": 0.003893,
     "tolerance": 0.00002,
-    "explain": "P(3) = λ³e^(−λ)/3! = 0.0039 (0.00389333; sheet 0.00389)."
+    "explain": "P(3) = λ³e^(−λ)/3! = 0.0039 (0.00389333; answer sheet 0.00389)."
   },
   {
     "q": "PP7. P(exactly 4), 4 decimals.",
     "type": "numeric",
     "answer": 0.000309333,
     "tolerance": 0.00002,
-    "explain": "P(4) = λ⁴e^(−λ)/4! = 0.0003 (0.000309333; sheet 0.000309)."
+    "explain": "P(4) = λ⁴e^(−λ)/4! = 0.0003 (0.000309333; answer sheet 0.000309)."
   }
 ]
 ```
@@ -803,8 +822,8 @@ $\lambda = 116/365 = 0.317808$ homicides per day, then $P(x) = \lambda^x e^{-\la
 | x | 0 | 1 | 2 | 3 | 4 |
 |---|---|---|---|---|---|
 | P(x), cover rule | 0.7277 | 0.2313 | 0.0368 | 0.0039 | 0.0003 |
-| sheet (3 s.f.) | 0.728 | 0.231 | 0.0368 | 0.00389 | 0.000309 |
-| expected days of 365 | 265.6 | 84.4 | 13.4 | 1.4 | 0.1 |
+| answer sheet (3 s.f.) | 0.728 | 0.231 | 0.0368 | 0.00389 | 0.000309 |
+| expected days = 365 × P(x) | 265.6 | 84.4 | 13.4 | 1.4 | 0.1 |
 | actual days | 268 | 79 | not given | 1 | 0 |
 
 The model fits: 268 against 265.6 days with none, 79 against 84.4 with one. The stem's "0.294 %" for one day does not equal 1/365 = 0.274 %; it is reproduced as given.
@@ -858,7 +877,7 @@ $\lambda = 210/365 = 0.575342$ per day, $P(0) = 0.562512$, $P(1) = 0.323637$.
 
 $$P(X > 1) = 1 - 0.562512 - 0.323637 = 0.113851 \approx 0.1139$$
 
-The sheet's 0.113 is truncated; three significant digits would be 0.114. For (b), $\sigma = \sqrt{0.575342} = 0.758513$ and $Z = (2 - 0.5753)/0.7585 = 1.88$; **No**, 2 in a day is not unusual, since |Z| = 1.88 is under 2.
+The answer sheet's 0.113 is truncated; three significant digits would be 0.114. For (b), a Poisson has μ = λ and σ² = λ (formula sheet), so σ = √λ = √0.575342 = 0.7585. "Unusual" means |Z| > 2 ([z-scores](#/math3042/z-scores)): Z = (2 − 0.5753)/0.7585 = 1.88, under 2, so **No**, 2 in a day is not unusual.
 
 ```r
 1 - ppois(1, 210/365)
@@ -955,7 +974,7 @@ Customers arrive at a cafeteria at 0.3 per minute. Find the probability of (a) e
 ]
 ```
 
-(a) $\lambda = 0.3 \times 10 = 3$, $P(2) = 9e^{-3}/2 = 0.2240$. (b) $1 - e^{-3} - 3e^{-3} = 1 - 0.049787 - 0.149361 = 0.8009$. (c) $\lambda = 1.5$ per span; independent spans multiply: $(1.5e^{-1.5})^2 = 0.334695^2 = 0.1120$.
+(a) $\lambda = 0.3 \times 10 = 3$, $P(2) = 9e^{-3}/2 = 0.2240$. (b) $1 - e^{-3} - 3e^{-3} = 1 - 0.049787 - 0.149361 = 0.8009$. (c) $\lambda = 1.5$ per span; independent spans multiply: $(1.5e^{-1.5})^2 = 0.334695^2 = 0.1120$. It is half of (a) because the 10-minute count of 2 adds three splits, 2-and-0 (0.0560), 1-and-1 (0.1120) and 0-and-2 (0.0560); the splits table is in [Poisson across separate intervals](#/math3042-midterm/expected-dollars-shortcuts).
 
 ```r
 dpois(2, 3)

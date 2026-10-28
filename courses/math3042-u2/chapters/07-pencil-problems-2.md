@@ -208,7 +208,7 @@ $R = \max - \min = 6448.51 - 6023.88 = \mathbf{424.63}$.
 
 ### (a) IQR, the way the answer key computes it (R's `quantile()`)
 
-R's default quantile interpolates between sorted values. With $n = 10$, $Q_1$ is at position $1 + 0.25 \times 9 = 3.25$, a quarter of the way from the 3rd value to the 4th:
+R's default quantile interpolates between sorted values. R's position for the $p$ quantile is $1 + p(n - 1)$; the whole part says which sorted value to start from, and the decimal part says how far toward the next one. With $n = 10$, $Q_1$ is at position $1 + 0.25 \times 9 = 3.25$, a quarter of the way from the 3rd value to the 4th:
 
 $Q_1 = 6195.20 + 0.25(6231.64 - 6195.20) = 6195.20 + 0.25(36.44) = \mathbf{6204.31}$
 
@@ -334,15 +334,15 @@ Every point is "(score, percent of students **below** that score)":
 
 ### (a) Below 50
 
-The curve is at about **80%** above score 50: roughly 0.80 of the 2287 students, about 1830, scored below 50.
+At score 50 the curve's height is about **80%**: roughly 0.80 of the 2287 students, about 1830, scored below 50.
 
 ### (b) Between 30 and 40
 
-Height at 40 about 39%, at 30 about 13%: $39\% - 13\% = \mathbf{26\%}$. The answer key reads the heights as 40% and 15%, giving $40\% - 15\% = 25\%$; the readings depend on your eye, the subtraction is what matters.
+Height at 40 about 39%, height at 30 about 13%: $39\% - 13\% = \mathbf{26\%}$. The answer key reads the heights as 40% and 15%, giving $40\% - 15\% = 25\%$; the readings depend on your eye, the subtraction is what matters.
 
 ### (c) The top 25%
 
-The top 25% is everyone **above** $P_{75}$. Across from 75%, the curve crosses between 45 (60%) and 50 (80%), three quarters of the way: $P_{75} \approx 45 + 0.75 \times 5 = 48.75$. The top quarter scored from about **48.75 up to 60**, the maximum on the axis.
+The top 25% is everyone **above** $P_{75}$. Across from 75%, the curve crosses between 45 (60%) and 50 (80%). How far along: $(75 - 60)/(80 - 60) = 15/20 = 0.75$. That 0.75 comes from the heights; for $P_{70}$ it would be $10/20 = 0.5$. So $P_{75} \approx 45 + 0.75 \times 5 = 48.75$ (the method from [Reading between two table points](#/math3042-u2/cumulative-ogive)). The top quarter scored from about **48.75 up to 60**, the maximum on the axis.
 
 :::quiz Units
 Percent for (a) and (b), scores for (c). Answering a percentile question with a percentage is the classic mistake.
@@ -419,7 +419,7 @@ Percent for (a) and (b), scores for (c). Answering a percentile question with a 
     "explain": "Hand method: $Q_1 = 6195.20$, $Q_3 = 6377.58$, $IQR = 182.38$, fences 5921.63 and 6651.15. All ten prices are still inside the fences: no outliers either way."
   },
   {
-    "q": "On the ogive of 2287 test scores, the curve is at 13% above a score of 30 and at 39% above a score of 40. What proportion of students scored between 30 and 40?",
+    "q": "On the ogive of 2287 test scores, the curve's height is 13% at a score of 30 and 39% at a score of 40. What proportion of students scored between 30 and 40?",
     "type": "numeric",
     "answer": 26,
     "tolerance": 3,

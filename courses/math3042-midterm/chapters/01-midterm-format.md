@@ -38,7 +38,7 @@ The formula sheet gives every descriptive formula, the probability rules, Bayes,
 | 11 | 5 (2+3) | Poisson with a rescaled rate; the next event between 10 and 20 years | U4 |
 | 12 | 5 (1+2+2) | Cards without replacement, expected winnings, two games | U3/U4 |
 
-Ten marks are R written by hand, about thirteen are written interpretation, and the rest is calculation. There is no multiple choice; true or false appears only as "TRUE or FALSE and briefly explain".
+Ten marks are R written by hand (Q7 to Q9), about thirteen are written interpretation (Q1, Q2, Q10), and the remaining 23 are calculation. There is no multiple choice; true or false appears only as "TRUE or FALSE and briefly explain".
 
 ## Four question shapes, four ways to answer
 
@@ -52,7 +52,7 @@ Ten marks are R written by hand, about thirteen are written interpretation, and 
 | Code | What it does |
 |---|---|
 | `library(dplyr)` | Loads the dplyr package, which provides `filter`. |
-| `dhyper(9, 42, 116+154, 20)` | x = 9, m = 42 successes in the population, n = 116+154 failures (`+` adds before the call), k = 20 drawn. Returns P(X = 9). |
+| `dhyper(9, 42, 116+154, 20)` | x = 9, m = 42 successes in the population, n = 116+154 failures (`+` adds before the call), k = 20 drawn. Returns P(X = 9). R's slot named `n` holds the failures, not the sample size; the sample size goes in R's last slot, `k`. |
 | `dhyper(x, K, N-K, n)` | The template: R's slots x, m, n, k filled by the course's x, K, N−K, n. Letters alone do not run unless they hold numbers. |
 
 **Left to right**
@@ -68,7 +68,11 @@ Ten marks are R written by hand, about thirteen are written interpretation, and 
 - `dhyper(x, K, N-K, n)`: "Subtract K from N (`N-K`), take x, K and n (`x`, `K`, `n`), then compute P(X = x) (`dhyper`)."
 :::
 
-**R function.** `name <- function(n) { ... return(...) }`. The body must simulate with an r-function or `sample()`; a function that returns `n*0.045/n` computes the average and scores zero.
+:::warn R's n is not the course's n
+In `dhyper` R's `n` is the failures N − K; the course's sample size n goes in R's `k`.
+:::
+
+**R function.** `name <- function(n) { ... return(...) }`. The body must simulate with an r-function or `sample()`. A function whose body only returns the long-run proportion, such as `return(0.045)` for a 4.5 % chance, computes the average instead of simulating and scores zero (practice Q9).
 
 :::info R syntax
 | Code | What it does |
@@ -77,14 +81,17 @@ Ten marks are R written by hand, about thirteen are written interpretation, and 
 | `function(n) { … }` | Makes a function with one input, `n`; the lines inside the braces are its body. |
 | `return(...)` | Hands the result back to whoever called the function. |
 | `...` | Here just a placeholder for code you write, not R syntax. |
+| `return(0.045)` | Hands back the fixed number 0.045 every call: nothing random is drawn. |
 
 **Left to right**
 
 - `name <- function(n) { ... return(...) }`: "Store under the name name (`name <-`) a function (`function`) of one input n (`(n)`) whose body in braces (`{ }`) ends by handing back a result (`return`)."
+- `return(0.045)`: "Hand back (`return`) the number 0.045 (`0.045`)."
 
 **Right to left**, the order R runs it
 
 - `name <- function(n) { ... return(...) }`: "Build a function (`function`) with input n (`(n)`) and a body (`{ }`) that ends with `return`, then store it under the name name (`name <-`)."
+- `return(0.045)`: "Take 0.045 (`0.045`) and hand it back (`return`)."
 :::
 
 ## The study order through Units 1 to 4
@@ -179,11 +186,11 @@ Optional: [relative frequency](#/math3042-u3/relative-frequency-lln), [the 28 pr
 
 That is 33 core lessons and 595 minutes, close to ten hours by the lessons' own estimates; the optional rows add more. Then this module, in this order:
 
-1. [Mock midterm A](#/math3042-midterm/mock-midterm-a), cold, on paper, 90 minutes.
+1. [Mock midterm A](#/math3042-midterm/mock-midterm-a), cold, on paper, under exam timing.
 2. The practice paper worked: [Q1, Q2, Q10](#/math3042-midterm/practice-descriptive), [Q3 to Q6](#/math3042-midterm/practice-probability), [Q11, Q12](#/math3042-midterm/practice-distributions), [Q7 to Q9](#/math3042-midterm/practice-r).
 3. [R on paper](#/math3042-midterm/r-on-paper) and [expected dollars, the variance shortcut, Poisson over two intervals](#/math3042-midterm/expected-dollars-shortcuts).
 4. [The sixteen Unit 4 practice problems](#/math3042-midterm/unit4-practice-problems).
-5. [Mock midterm B](#/math3042-midterm/mock-midterm-b), 90 minutes.
+5. [Mock midterm B](#/math3042-midterm/mock-midterm-b), under exam timing.
 6. [The know-cold sheet](#/math3042-midterm/know-cold-sheet), rewritten from memory.
 
 :::tip Mock A comes before the practice paper
@@ -219,10 +226,9 @@ Take Mock A cold after the unit lessons and before the practice paper, so the pr
     "explain": "The Base R sheet's distributions table names the normal, Poisson, binomial and uniform d/p/q/r functions, without argument order, and its maths section lists `quantile`. It has no hypergeometric or geometric functions, no `sample()`, no `lower.tail`, no `filter` and no `bwplot`."
   },
   {
-    "q": "The Poisson distribution is the last topic on the midterm. Which unit is it in? (number)",
-    "type": "numeric",
-    "answer": 4,
-    "tolerance": 0,
+    "q": "The Poisson distribution is the last topic on the midterm. Which unit is it in?",
+    "options": ["Unit 4", "Unit 3", "Unit 5", "Unit 2"],
+    "answer": 0,
     "explain": "Unit 4, discrete probability distributions: binomial, hypergeometric, geometric, Poisson. Coverage is Units 1 to 4, everything up to Poisson; Unit 5 (continuous distributions) is out."
   },
   {

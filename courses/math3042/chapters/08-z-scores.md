@@ -28,7 +28,14 @@ $X = 178.9$: $Z = \frac{178.9 - 164.7}{7.1} = \frac{14.2}{7.1} = \mathbf{2.0}$
 
 $X = 155$ (below the mean): $Z = \frac{155 - 164.7}{7.1} = \frac{-9.7}{7.1} = \mathbf{-1.37}$; a negative $Z$ means the value sits below the mean.
 
-$Z = 2.0$ lands exactly on an empirical-rule boundary: 95% of the data sits inside $\mu \pm 2\sigma$, with a 2.5% tail on each side, so the percentage of women **below** 178.9 cm is $2.5\% + 95\% = \mathbf{97.5\%}$.
+```diagram
+{ "type": "grid", "title": "Women's heights: μ = 164.7 cm, σ = 7.1 cm", "nodes": [
+  { "id": "x0", "label": "X (cm)", "row": 0, "col": 0 }, { "id": "x1", "label": "143.4", "row": 0, "col": 1 }, { "id": "x2", "label": "150.5", "row": 0, "col": 2 }, { "id": "x3", "label": "157.6", "row": 0, "col": 3 }, { "id": "x4", "label": "164.7", "row": 0, "col": 4 }, { "id": "x5", "label": "171.8", "row": 0, "col": 5 }, { "id": "x6", "label": "178.9", "row": 0, "col": 6 }, { "id": "x7", "label": "186.0", "row": 0, "col": 7 },
+  { "id": "z0", "label": "Z", "row": 1, "col": 0 }, { "id": "z1", "label": "−3", "row": 1, "col": 1 }, { "id": "z2", "label": "−2", "row": 1, "col": 2 }, { "id": "z3", "label": "−1", "row": 1, "col": 3 }, { "id": "z4", "label": "0", "row": 1, "col": 4 }, { "id": "z5", "label": "1", "row": 1, "col": 5 }, { "id": "z6", "label": "2", "row": 1, "col": 6 }, { "id": "z7", "label": "3", "row": 1, "col": 7 }
+], "hi": ["x6", "z6"], "caption": "Each 7.1 cm step is one unit of Z: 178.9 cm is two steps above 164.7, so Z = 2." }
+```
+
+$Z = 2.0$ lands exactly on an empirical-rule boundary, so the eight slices of lesson 7 give the percentage of women **below** 178.9 cm: $0.15 + 2.35 + 13.5 + 34 + 34 + 13.5 = \mathbf{97.5\%}$.
 
 ```widget
 normal-curve
@@ -69,9 +76,7 @@ Because $Z$ measures distance from the mean in units of $\sigma$, the empirical 
 **Unusual: $Z < -2$ or $Z > +2$.** Since 95% of values sit inside $-2 < Z < 2$, the remaining 5% (split into two 2.5% tails) is "unusual" — not impossible, just rare.
 
 :::quiz Outlier ≠ Unusual
-**"Outlier ≠ Unusual."** Two different rules that usually, but not always, agree:
-- **Unusual** uses the Z-score: $Z < -2$ or $Z > +2$.
-- **Outlier** uses the IQR fence rule: below $Q_1 - 1.5 \times IQR$ or above $Q_3 + 1.5 \times IQR$.
+**"Outlier ≠ Unusual."** Unusual uses the Z-score. It is not the same as an *outlier*, which uses quartiles (lesson 11); the two rules usually, but not always, agree.
 :::
 
 ### Worked example: LeBron James
@@ -91,7 +96,7 @@ normal-curve
 
 ## A level-300 Hero against the top 500
 
-Nexon's North America ranking lists the top 500 Heroes, a MapleStory warrior job, at levels 293 to 300 [GMS, v.271 Hero ranking, checked 2026-10-27]: 85 at 293, 102 at 294, 200 at 295, 59 at 296, 24 at 297, 13 at 298, 11 at 299 and 6 at 300. The 500 are a sample cut from 227 326 ranked Heroes, so use $\bar{X}$ and $s$: from the counts, $\bar{X} = 294.896$ and $s = 1.43991$. A Z-score only measures how far 300 sits from this list's own mean in this list's own $s$, so it needs no bell; turning that Z into a percentage would.
+Nexon's North America ranking lists the top 500 Heroes, a MapleStory warrior job, at levels 293 to 300 [GMS, v.271 Hero ranking, checked 2026-10-27]: 85 at 293, 102 at 294, 200 at 295, 59 at 296, 24 at 297, 13 at 298, 11 at 299 and 6 at 300. The 500 are a sample cut from 227 326 ranked Heroes, so use $\bar{X}$ and $s$: from the counts, $\bar{X} = 294.896$ and $s = 1.43991$. Computing Z needs no bell shape: it only measures distance from this list's mean in units of this list's $s$. Turning Z into a percentage, such as "the top 2.5%", is what needs the bell.
 
 ```quiz
 [
@@ -140,7 +145,7 @@ The Divine Orb is PoE1's high-value currency, priced in Chaos Orbs. Take poe.nin
     "answer": 2.5,
     "tolerance": 0.5,
     "unit": "%",
-    "explain": "$Z = (150.5 - 164.7)/7.1 = -14.2/7.1 = -2.0$ exactly. 95% sits inside $\\mu \\pm 2\\sigma$, so the two tails share 5% and the lower tail alone is $5\\% / 2 = 2.5\\%$. Above 178.9 cm ($Z = +2$) is the matching 2.5%; below it is the whole 95% band plus the lower tail, 97.5%."
+    "explain": "$Z = (150.5 - 164.7)/7.1 = -14.2/7.1 = -2.0$ exactly. Below $-2\\sigma$ are the two lowest slices of lesson 7: $0.15 + 2.35 = 2.5\\%$. Above 178.9 cm ($Z = +2$) is the matching 2.5%."
   },
   {
     "q": "IQ is $\\mu = 100$, $\\sigma = 15$. What IQ score corresponds to $Z = 3.2$?",
@@ -193,6 +198,6 @@ The Divine Orb is PoE1's high-value currency, priced in Chaos Orbs. Take poe.nin
     "answer": true,
     "explain": "$Z = (X - \\bar{X})/s$ for a sample, $Z = (X - \\mu)/\\sigma$ for a population — same idea, matched to the data you have."
   },
-  {"type": "shade", "q": "Women's heights are normal with $\\mu=164.7$ cm, $\\sigma=7.1$ cm. Shade the region below $X = 178.9$ cm ($Z = 2$).", "mu": 164.7, "sigma": 7.1, "answer": 97.5, "tolerance": 1, "region": "below", "hi": 2, "explain": "$Z=2$, so shade to $+2\\sigma$: 50% below the mean plus 47.5% between the mean and $+2\\sigma$ = 97.5%."}
+  {"type": "shade", "q": "Women's heights are normal with $\\mu=164.7$ cm, $\\sigma=7.1$ cm. Shade the region below $X = 178.9$ cm ($Z = 2$).", "mu": 164.7, "sigma": 7.1, "answer": 97.5, "tolerance": 1, "region": "below", "hi": 2, "explain": "$Z=2$, so shade to $+2\\sigma$: the slices $0.15 + 2.35 + 13.5 + 34 + 34 + 13.5 = 97.5\\%$."}
 ]
 ```

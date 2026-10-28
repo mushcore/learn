@@ -28,10 +28,10 @@ The notes describe the students in MATH 3042 by handedness and phone type:
 Select one student at random.
 
 - $P(\text{Right}) = \dfrac{|\text{Right}|}{|S|} = \dfrac{61}{71} = 0.8592$: a row total over the grand total.
-- $P(\text{iPhone} \mid \text{Right}) = \dfrac{|\text{iPhone} \cap \text{Right}|}{|\text{Right}|} = \dfrac{52}{61} = 0.8526$: restrict to the Right row; the cell over the **row** total.
+- $P(\text{iPhone} \mid \text{Right}) = \dfrac{|\text{iPhone} \cap \text{Right}|}{|\text{Right}|} = \dfrac{52}{61} = 0.8525$: restrict to the Right row; the cell over the **row** total.
 - $P(\text{Right} \mid \text{iPhone}) = \dfrac{|\text{Right} \cap \text{iPhone}|}{|\text{iPhone}|} = \dfrac{52}{58} = 0.8966$: restrict to the iPhone column; the same cell over the **column** total.
 
-The two conditionals share a numerator and differ only in which total is the new sample space. The filled notes box all three answers to four decimals, so give four. (Strictly $52/61 = 0.85246$ rounds to 0.8525; the notes' 0.8526 is the instructor's rounding, and either earns the mark.)
+The two conditionals share a numerator and differ only in which total is the new sample space. The filled notes box all three answers to four decimals, so give four.
 
 ```widget
 two-way
@@ -53,7 +53,12 @@ $$\text{Check: } 0.8592 \times 0.8169 = 0.7019 \ne 0.7324 \quad \Rightarrow \qua
 
 The product of the two marginals is not the joint probability, so the events are **dependent**: handedness carries some information about phone type in this class.
 
-The notes prove an equivalent test: $A$ and $B$ are independent exactly when $P(B \mid A) = P(B)$, *prob of B given A* equals *prob of B*, so knowing $A$ does not change the probability of $B$. Starting from $|A \cap B|/|S| = (|A|/|S|)(|B|/|S|)$ and multiplying both sides by $|S|/|A|$ gives $|A \cap B|/|A| = |B|/|S|$, which is $P(B \mid A) = P(B)$. On the table: $P(\text{iPhone} \mid \text{Right}) = 0.8526$ against $P(\text{iPhone}) = 0.8169$; different, so dependent, the same verdict.
+The notes prove an equivalent test: $A$ and $B$ are independent exactly when $P(B \mid A) = P(B)$, *prob of B given A* equals *prob of B*, so knowing $A$ does not change the probability of $B$. The proof in four steps:
+
+1. Start from independence written in counts: $|A \cap B|/|S| = (|A|/|S|)(|B|/|S|)$.
+2. Multiply both sides by $|S|/|A|$.
+3. Left side: $|A \cap B|/|A| = P(B \mid A)$. Right side: $|B|/|S| = P(B)$.
+4. On the table: $P(\text{iPhone} \mid \text{Right}) = 0.8525$ against $P(\text{iPhone}) = 0.8169$. Different, so dependent, the same verdict.
 
 :::quiz Independent is not mutually exclusive
 Mutually exclusive events with positive probabilities are always **dependent**: if $A$ happened, $B$ certainly did not, so $P(B \mid A) = 0 \ne P(B)$. Independence means the overlap is exactly $P(A)P(B)$, never zero.
@@ -81,9 +86,10 @@ These are counts on 800 real characters, so every conditional is a count restric
 ]
 ```
 
+- $P(\text{rank 1-200}) = 200/800 = 0.25$.
 - $P(\text{dead}) = 504/800 = 0.6300$.
 - One cell, two totals: $69/200 = 0.3450$ and $69/504 = 0.1369$.
-- Check: $0.25 \times 0.63 = 0.1575 \ne 69/800 = 0.08625$, so **dependent**; the dead share climbs from 0.345 in the top band to 0.785 in the bottom one.
+- Check: $0.25 \times 0.63 = 0.1575 \ne 69/800 = 0.08625$, so **dependent**; the dead share climbs from 0.345 in the top band to $157/200 = 0.785$ in the bottom one.
 
 ### The ladder table, one cell selected
 
@@ -95,6 +101,8 @@ two-way
 ```
 
 ## The multiplication rule (AND)
+
+The rule comes straight from the definition. From $P(B \mid A) = |A \cap B| / |A|$, multiply both sides by $|A|/|S| = P(A)$: $P(A)\,P(B \mid A) = |A \cap B|/|S| = P(A \cap B)$.
 
 $$P(A \cap B) = P(A) \cdot P(B) \quad \text{if independent}, \qquad P(A \cap B) = P(A) \cdot P(B \mid A) \quad \text{if dependent}$$
 
@@ -108,7 +116,25 @@ The second form is the general one (it reduces to the first when $P(B \mid A) = 
 
 The margin note beside the two boxed answers is *these differ*: replacing the card is what makes the draws independent.
 
-Rearranging the general multiplication rule gives the **conditional probability formula** in terms of probabilities rather than counts:
+Draw (b) as a tree. Each branch carries its probability given the branch before it, and each leaf is the product along its path, out of $52 \times 51 = 2652$ ordered pairs.
+
+```diagram
+{ "type": "tree", "nodes": [
+  { "id": "r", "label": "Draw 1" },
+  { "id": "a", "label": "Ace", "sub": "4/52", "parent": "r" },
+  { "id": "n", "label": "not Ace", "sub": "48/52", "parent": "r" },
+  { "id": "aa", "label": "Ace", "sub": "3/51 → 12/2652", "parent": "a" },
+  { "id": "an", "label": "not Ace", "sub": "48/51 → 192/2652", "parent": "a" },
+  { "id": "na", "label": "Ace", "sub": "4/51 → 192/2652", "parent": "n" },
+  { "id": "nn", "label": "not Ace", "sub": "47/51 → 2256/2652", "parent": "n" }
+], "hi": ["a", "aa", "r>a", "a>aa"], "caption": "Multiply along a path: Ace then Ace is 4/52 × 3/51 = 12/2652 = 0.0045." }
+```
+
+:::tip Exactly one: count the orders
+Exactly one Ace is the two middle paths: Ace then not, and not then Ace. Their products are the same, $4 \times 48 = 48 \times 4 = 192$ out of 2652, because only the order of the factors changes. So count the orders and multiply: $2 \times 192/2652 = 384/2652 = 0.1448$. Three draws with exactly one Ace would have 3 orders (first, second or third card).
+:::
+
+Solved for $P(B \mid A)$, the same general multiplication rule reads as the **conditional probability formula** in terms of probabilities rather than counts:
 
 $$P(B \mid A) = \frac{P(A \cap B)}{P(A)}$$
 
@@ -116,7 +142,16 @@ This is the form Bayes' rule (next lesson) is built from.
 
 ## Ascendancy by league, and a Chaos scroll's failures
 
-The same pull counts ascendancies (the subclass a character picks) in 1400 characters, 600 softcore and 800 Hardcore: Deadeye 55 and 1, Luminary 49 and 162 [PoE1, 3.29 Allflame, ladder pages pulled 2026-10-27, checked 2026-10-27]. A Classic Chaos scroll (the 10 % tier whose failures can destroy the item) succeeds 10 % of the time, and a failure destroys the item 50 % of the time [Classic, meowdb's copy of the in-game item text, unchanged since Closed Online Test 2, checked 2026-10-27].
+The same pull counts ascendancies (the subclass a character picks) in 1400 characters, 600 softcore and 800 Hardcore [PoE1, 3.29 Allflame, ladder pages pulled 2026-10-27, checked 2026-10-27]:
+
+| | Softcore | Hardcore | total |
+|---|---|---|---|
+| Deadeye | 55 | 1 | 56 |
+| Luminary | 49 | 162 | 211 |
+| other | 496 | 637 | 1133 |
+| total | 600 | 800 | 1400 |
+
+A Classic Chaos scroll (the 10 % tier whose failures can destroy the item) succeeds 10 % of the time, and a failure destroys the item 50 % of the time [Classic, meowdb's copy of the in-game item text, unchanged since Closed Online Test 2, checked 2026-10-27].
 
 ```quiz
 [
@@ -149,7 +184,7 @@ The same pull counts ascendancies (the subclass a character picks) in 1400 chara
     "type": "numeric",
     "answer": 0.8525,
     "tolerance": 0.0003,
-    "explain": "Restrict to the Right row: 52 iPhone users out of 61 right-handers, 52/61 = 0.8525 (boxed 0.8526 in the notes)."
+    "explain": "Restrict to the Right row: 52 iPhone users out of 61 right-handers, 52/61 = 0.85246, which rounds to 0.8525. The notes box 0.8526, the instructor's rounding; either earns the mark."
   },
   {
     "q": "P(Right | iPhone) = ? (4 decimals)",

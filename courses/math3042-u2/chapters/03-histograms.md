@@ -36,13 +36,15 @@ hist( BCIT.students$Age, col="lightblue")
 - "Take the student data (`BCIT.students`), pull out its Age column (`$Age`), set the fill colour (`col="lightblue"`), and draw the histogram with classes R picks (`hist`)."
 :::
 
-That gives classes 18–20, 20–22, ..., the biggest rectangle (about 110 students) over 20–22, and a nearly empty tail out to 42. The notes' seven-step recipe chooses the classes yourself.
+That gives classes 18–20, 20–22, ..., the biggest rectangle (about 110 students) over 20–22, and a nearly empty tail out to 42. R's default classes are closed on the right, (18, 20], (20, 22], …, so 22-year-olds count in 20–22. The recipe below uses left-closed classes, which moves them to 22–23. That is why its tallest class differs. The notes' seven-step recipe chooses the classes yourself.
 
 ## The recipe, worked on Age ($n = 302$, min 18, max 42)
 
 **1. Initial number of classes: $\sqrt{n}$.**
 
 $$\sqrt{n} = \sqrt{302} = 17.4$$
+
+√n classes holding about √n values each: 302 students → about 17 classes of about 17 students. Quadrupling $n$ only doubles the number of classes.
 
 **2. Initial class width: range divided by $\sqrt{n}$.**
 
@@ -52,13 +54,33 @@ The instructor calls this **"the ideal class width."**
 
 **3. Round the class width to match the precision of $X$:** $1.38 \to 2$, the **"actual class width."** Ages are whole years, so the width is a whole number; a width of 1 would be the bar plot again.
 
+:::tip Choosing the actual width
+Pick a nice number at $X$'s precision near $R/\sqrt{n}$, up or down. Then check that the number of classes comes out near $\sqrt{n}$.
+
+| Data | precision | $R/\sqrt{n}$ | actual width | classes | $\sqrt{n}$ |
+|---|---|---|---|---|---|
+| Age | 1 | 1.38 | 2 (up; 1 is the bar plot) | 13 | 17.4 |
+| Old Faithful | 0.001 | 0.212 | 0.200 (down) | 18 | 16.5 |
+| Plywood (Lab 2) | 0.001 | 0.0052 | 0.005 (down) | 5 | 4.24 |
+
+The Mirage prices and the monster levels below follow the same rule.
+:::
+
 **4. First lower class limit = the minimum $X$ (you may round it down):** $18$.
 
 **5. Determine all class limits.** Add the width for each next lower limit: 18, 20, 22, ... Each **upper limit is one unit of precision below the next lower limit**: 19, 21, 23, ..., so classes never overlap and leave no gaps.
 
+```diagram
+{"type": "grid", "nodes": [{"id": "r0c0", "label": "", "row": 0, "col": 0}, {"id": "r0c1", "label": "Class 1", "row": 0, "col": 1}, {"id": "r0c2", "label": "Class 2", "row": 0, "col": 2}, {"id": "r0c3", "label": "Class 3", "row": 0, "col": 3}, {"id": "r1c0", "label": "Recipe limits", "row": 1, "col": 0}, {"id": "r1c1", "label": "18–19", "row": 1, "col": 1}, {"id": "r1c2", "label": "20–21", "row": 1, "col": 2}, {"id": "r1c3", "label": "22–23", "row": 1, "col": 3}, {"id": "r2c0", "label": "R boundaries", "row": 2, "col": 0}, {"id": "r2c1", "label": "[18, 20)", "row": 2, "col": 1}, {"id": "r2c2", "label": "[20, 22)", "row": 2, "col": 2}, {"id": "r2c3", "label": "[22, 24)", "row": 2, "col": 3}, {"id": "r3c0", "label": "Ages counted", "row": 3, "col": 0}, {"id": "r3c1", "label": "18, 19", "row": 3, "col": 1}, {"id": "r3c2", "label": "20, 21", "row": 3, "col": 2}, {"id": "r3c3", "label": "22, 23", "row": 3, "col": 3}, {"id": "r4c0", "label": "Frequency", "row": 4, "col": 0}, {"id": "r4c1", "label": "35", "row": 4, "col": 1}, {"id": "r4c2", "label": "94", "row": 4, "col": 2}, {"id": "r4c3", "label": "104", "row": 4, "col": 3}], "hi": ["r1c1", "r2c1"], "caption": "Upper limit 19 and boundary 20 describe the same edge: 19 is the last value in, 20 the first value out."}
+```
+
 **6. Count the $X$ values in each class.** The result is the **frequency distribution**:
 
-Classes 18–19, 20–21, ..., 42–43 hold 35, 94, 104, 53, 10, 2, 1, 0, 1, 0, 1, 0, 1 students. The frequencies add to 302 (the widget below prints the full table). The empty classes (32–33, 36–37, 40–41) stay on the chart, which is what the bar plot hid.
+| Class | 18–19 | 20–21 | 22–23 | 24–25 | 26–27 | 28–29 | 30–31 | 32–33 | 34–35 | 36–37 | 38–39 | 40–41 | 42–43 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Frequency | 35 | 94 | 104 | 53 | 10 | 2 | 1 | 0 | 1 | 0 | 1 | 0 | 1 |
+
+$\Sigma f = 302$ (the widget below prints the full table). The empty classes (32–33, 36–37, 40–41) stay on the chart, which is what the bar plot hid.
 
 **7. Plot a rectangle for each class, showing the frequency:**
 
@@ -88,7 +110,13 @@ hist(BCIT.students$Age,
 - "Take the ages (`BCIT.students$Age`), build the boundaries 18, 20, …, 44 (`seq`), combine the tick settings (`c(15,45, 15)`), set the left-closed classes, labels and title (`right = FALSE`, `xlab=`, `ylab=`, `main=`), and draw the histogram (`hist`)."
 :::
 
-`breaks=seq(18, 44, by=2)` gives the boundaries 18, 20, ..., 44: thirteen classes, running past the maximum 42. `right = FALSE` makes each class **include its left boundary and exclude its right one**: **"this rectangle represents students with $18 \le X < 20$, not including 20."** The default `right = TRUE` would give $(18, 20]$. `xaxp=c(15, 45, 15)` puts a tick every 2 years.
+`breaks=seq(18, 44, by=2)` gives the boundaries 18, 20, ..., 44. Where 44 and thirteen come from:
+
+$$\text{classes} = \left\lfloor \dfrac{\max - \text{first lower limit}}{\text{width}} \right\rfloor + 1, \qquad \text{last break} = \text{first lower limit} + \text{classes} \times \text{width}$$
+
+$\lfloor x \rfloor$ means "round down to a whole number". Age: $\lfloor (42 - 18)/2 \rfloor + 1 = 12 + 1 = 13$ classes, last break $18 + 13 \times 2 = 44$. Check: the last class $[42, 44)$ holds the maximum 42.
+
+`right = FALSE` makes each class **include its left boundary and exclude its right one**: **"this rectangle represents students with $18 \le X < 20$, not including 20."** The default `right = TRUE` would give $(18, 20]$. `xaxp=c(15, 45, 15)` puts a tick every 2 years.
 
 ### The Age recipe on the 302 students
 
@@ -116,7 +144,7 @@ $$\sqrt{n} = \sqrt{272} = 16.5$$
 $$\text{range of } X = \max - \min = 5.1 - 1.6 = 3.5$$
 $$\text{ideal class width} = \frac{\text{range}}{\sqrt{n}} = \frac{3.5}{16.5} = 0.21212$$
 
-**"The class width must have the same number of decimal places as the $X$ data (3 digits). We also should round down to a 'nice' number. → actual class width = 0.200."** Lower limits start at 1.600; the first class is 1.600 to 1.799, where 1.799 is **"the last possible $X$ value before the next lower limit."**
+**"The class width must have the same number of decimal places as the $X$ data (3 digits). We also should round down to a 'nice' number. → actual class width = 0.200."** Lower limits start at 1.600; the first class is 1.600 to 1.799, where 1.799 is **"the last possible $X$ value before the next lower limit."** Classes: $\lfloor (5.1 - 1.6)/0.2 \rfloor + 1 = \lfloor 17.5 \rfloor + 1 = 18$, last break $1.6 + 18 \times 0.2 = 5.2$.
 
 From 1.600–1.799 up to 5.000–5.199, the 18 class frequencies are 12, 39, 20, 18, 3, 3, 2, 1, 4, 6, 10, 16, 31, 29, 35, 28, 11, 4. They sum to 272. The histogram *"is a direct visual representation of the frequency distribution"*:
 
@@ -151,7 +179,25 @@ Conclusion from the notes: **eruption durations cluster around two different val
 
 ### Values on a boundary
 
-Six of the notes' frequencies differ from an exact hand count: 2.200–2.399 has 18 (exact 16), 2.400–2.599 has 3 (5), 2.600–2.799 has 3 (2), 2.800–2.999 has 2 (3), 4.600–4.799 has 28 (22) and 4.800–4.999 has 11 (17). The table is what R printed. `seq(1.6, 5.2, by=0.2)` computes each break as `from + (0:n)*by`, so some are stored as 2.4000000000000004, 2.8000000000000003 and 4.800000000000001, and a value exactly on one of them (2.400, 2.800, 4.800) falls into the class below. Use the notes' numbers.
+:::warn On the quiz use the notes' (R's) counts
+Six of the notes' frequencies differ from an exact hand count. The notes' numbers are what R printed.
+:::
+
+| Class | Notes (R) | Exact hand count |
+|---|---|---|
+| 2.200–2.399 | 18 | 16 |
+| 2.400–2.599 | 3 | 5 |
+| 2.600–2.799 | 3 | 2 |
+| 2.800–2.999 | 2 | 3 |
+| 4.600–4.799 | 28 | 22 |
+| 4.800–4.999 | 11 | 17 |
+
+The cause:
+
+1. `seq()` builds each break as 1.6 + k × 0.2.
+2. Some breaks come out a hair high: 2.4000000000000004, 2.8000000000000003, 4.800000000000001.
+3. A value printed 2.400 is below that break, so `right=FALSE` counts it in the class below.
+4. The `hist-tally-play` widget below rings those values as it counts them.
 
 ### Tallying the classes
 
@@ -196,7 +242,12 @@ poe.ninja recorded a Divine Orb price in Chaos Orbs, PoE1's base currency, for e
 
 $$\sqrt{137} = 11.7, \qquad \frac{R}{\sqrt{n}} = \frac{612.0 - 36.3}{11.7} = \frac{575.7}{11.7} = 49.2$$
 
-Prices carry one decimal; the nice number near 49.2 is a width of 50.0. The first lower limit is the minimum rounded down, 30.0, so the classes run 30.0–79.9, 80.0–129.9, …, 580.0–629.9: twelve, close to 11.7. Their frequencies are 1, 3, 8, 5, 18, 26, 13, 10, 7, 19, 14, 13, summing to 137. Four days at exactly 280.0 count in 280.0–329.9: `right = FALSE` keeps a lower limit in its own class.
+- **Step 3, width:** 50.0, one decimal, the nice number near 49.2 (up).
+- **Step 4, first lower limit:** 30.0, the minimum 36.3 rounded down.
+- **Step 5, classes:** 30.0–79.9, 80.0–129.9, …, 580.0–629.9. $\lfloor (612.0 - 30.0)/50 \rfloor + 1 = 11 + 1 = 12$, close to 11.7; last break $30 + 12 \times 50 = 630$.
+- **Step 6, frequencies:** 1, 3, 8, 5, 18, 26, 13, 10, 7, 19, 14, 13, $\Sigma f = 137$.
+
+Four days at exactly 280.0 count in 280.0–329.9: `right = FALSE` keeps a lower limit in its own class.
 
 ```r
 mirage <- read.csv("poe1-ninja-divine-chaos-mirage.csv")
@@ -250,10 +301,10 @@ meowdb's Classic monster table lists 92 monsters; dropping the 5 with 0 EXP (fou
 [
   {"q": "Initial number of classes $\\sqrt{n}$? (1 decimal)", "type": "numeric", "answer": 9.3, "tolerance": 0.05, "explain": "$\\sqrt{87} = 9.327 \\approx 9.3$."},
   {"q": "Ideal class width $R/\\sqrt{n}$, using $\\sqrt{n} = 9.3$? (2 decimals)", "type": "numeric", "answer": 8.49, "tolerance": 0.03, "explain": "$R = 80 - 1 = 79$ levels, and $79/9.3 = 8.49$ (8.47 with the unrounded $\\sqrt{87}$)."},
-  {"q": "Which actual class width fits the recipe?", "options": ["10", "8.49", "8.5", "79"], "answer": 0, "explain": "Levels are whole numbers, so the width is a whole number, and 10 is the nice number near 8.49. From a first lower limit of 1 that gives 8 classes, 1–10 up to 71–80, close to $\\sqrt{n} = 9.3$."},
+  {"q": "Which actual class width fits the recipe?", "options": ["10", "8.49", "8.5", "79"], "answer": 0, "explain": "Levels are whole numbers, so the width is a whole number, and 10 is the nice number near 8.49 (rounded up). Check: from a first lower limit of 1, $\\lfloor (80 - 1)/10 \\rfloor + 1 = 8$ classes, 1–10 up to 71–80, close to $\\sqrt{n} = 9.3$."},
   {"q": "Start the first class at the minimum, 1, with width 10. What is its upper class limit?", "type": "numeric", "answer": 10, "tolerance": 0, "explain": "The next lower limit is 11; the upper limit is one unit of precision (1 level) below it: 10."},
   {"q": "With `breaks=seq(1, 81, by=10)` and `right=FALSE`, the eight Lv 30 monsters are counted in which class?", "options": ["21 to 30", "31 to 40", "half in each", "neither"], "answer": 0, "explain": "The classes are [21, 31) and [31, 41); 30 is below 31, so all eight count in 21–30. With a first lower limit of 0 instead, the break at 30 would move all eight up into 30–39."},
-  {"type": "fill", "q": "Fill the last break so the classes run past the maximum level 80.", "code": "hist(lv, breaks=seq(1, ___, by=10), right=FALSE,\n     xlab=\"Level\", ylab=\"Frequency\",\n     main=paste0(\"Classic monster levels (n = \", length(lv), \")\"))", "answer": ["81"], "explain": "Boundaries 1, 11, …, 71, 81: the class [71, 81) holds the maximum 80, so the sequence must reach 81. That makes $(81 - 1)/10 = 8$ classes."}
+  {"type": "fill", "q": "Fill the last break so the classes run past the maximum level 80.", "code": "hist(lv, breaks=seq(1, ___, by=10), right=FALSE,\n     xlab=\"Level\", ylab=\"Frequency\",\n     main=paste0(\"Classic monster levels (n = \", length(lv), \")\"))", "answer": ["81"], "explain": "Boundaries 1, 11, …, 71, 81: the class [71, 81) holds the maximum 80, so the sequence must reach 81. Classes $= \\lfloor (80 - 1)/10 \\rfloor + 1 = 7 + 1 = 8$; last break $= 1 + 8 \\times 10 = 81$."}
 ]
 ```
 

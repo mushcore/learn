@@ -4,13 +4,13 @@ minutes: 22
 ---
 <!-- facts: gms.starforce.rates-15-plus, gms.starforce.safeguard, gms.starforce.meso-cost, gms.starforce.star-catch, classic.scroll.tiers, classic.scroll.stat-ladders, gms.box.lucky-jewel-box -->
 
-Mesos per star and fragments per box need the same three moves as the practice paper and the Unit 4 problems, and no unit lesson teaches them: an expected value in money, the sheet's second variance formula, and probabilities over separate intervals.
+Mesos per star and fragments per box need the same three moves as the practice paper and the Unit 4 problems, and no unit lesson teaches them: an expected value in money, the formula sheet's second variance formula, and probabilities over separate intervals.
 
 ## X is the net amount per play
 
 For a game, a lottery or an insurance policy, X is what one play is worth to the person asked about: the prize minus the cost, or the payout minus the premium. Table the values of X with their probabilities first, then $\mu = \sum x\,P(x)$.
 
-The "Math Rules" lottery costs 2.50 dollars a ticket and pays 100 dollars with probability 0.021. A win is worth 100 − 2.50 = 97.50 net; a loss is −2.50.
+X = net gain to the buyer. The "Math Rules" lottery costs 2.50 dollars a ticket and pays 100 dollars with probability 0.021. A win is worth 100 − 2.50 = 97.50 net; a loss is −2.50.
 
 | x (dollars) | −2.50 | 97.50 |
 |---|---|---|
@@ -20,7 +20,7 @@ $$E(X) = -2.50(0.979) + 97.50(0.021) = -2.4475 + 2.0475 = -0.40$$
 
 The sign goes into words: "There is an expected loss of $0.40 per ticket."
 
-The three-card game asks "how much do you win per game on average", and the game costs nothing to enter, so its X is the gross winnings: 200 with probability 0.002353, 2 with probability 0.828235, 0 otherwise. $E = 200(0.002353) + 2(0.828235) = 2.13$ dollars per game. If a question gives a price to play, subtract it from every value of X first.
+The three-card game asks "how much do you win per game on average", and the game costs nothing to enter, so X = the gross winnings to the player: 200 with probability 0.002353, 2 with probability 0.828235, 0 otherwise. $E(X) = 200(0.002353) + 2(0.828235) = 2.13$ dollars per game. If a question gives a price to play, subtract it from every value of X first.
 
 ### The insurer's side: practice problem 2
 
@@ -32,13 +32,28 @@ A 30-year-old man survives the year with probability 0.9989 and pays a premium o
 ]
 ```
 
-For the company, X is the payout if the client dies minus the premium it keeps either way. The man's policy: $100{,}000(0.0011) - 180 = 110 - 180 = -70$. A negative expected cost is a gain, so the sheet answers "−70 (company gains 70 dollars)". The woman's premium P must give the same −70:
+Here X = net cost to the company, so a positive X is bad for the company, the opposite sign to the buyer's net gain above. The man's policy:
+
+| Outcome | X = company's net cost | P |
+|---|---|---|
+| dies | 100,000 − 180 = 99,820 | 0.0011 |
+| survives | −180 | 0.9989 |
+
+$E(X) = 99{,}820(0.0011) - 180(0.9989) = 109.80 - 179.80 = -70$. The premium is in both rows, so this simplifies to payout × P(death) − premium: $100{,}000(0.0011) - 180 = 110 - 180 = -70$. A cost of −70 is a gain of 70, so the practice-problem answer sheet writes "−70 (company gains 70 dollars)". The woman's premium P must give the same −70:
 
 $$75{,}000(0.0029) - P = -70 \quad\Rightarrow\quad 217.50 - P = -70 \quad\Rightarrow\quad P = 287.50$$
 
 ## Expected mesos for 15→16 stars on a Lv 150 item, Safeguard on
 
-A 15→16 Star Force tap, the GMS enhancement that adds stars to gear, succeeds 30 % [GMS, v.264 Star Force 15→16, checked 2026-10-27], Nexon's v.264 published rates, without the Star Catch bonus that v.271 builds in. Safeguard, for an extra 200 % of the base cost [GMS, v.264 Safeguard, checked 2026-10-27], turns destruction into maintain; removing that third outcome keeps the tap count geometric. Computed from the wiki's formula $1000 + L^3 \cdot 16^{2.7}/200$ [GMS, wiki Star Force cost formula, checked 2026-10-27] at L = 150, a tap costs 30,087,200 mesos, tripled to 90,261,600.
+Star Force is the GMS enhancement that adds stars to gear. X = the number of taps to reach 16 stars.
+
+- Success: p = 0.30 per 15→16 tap, 30 % [GMS, v.264 Star Force 15→16, checked 2026-10-27], Nexon's v.264 published rates, without the Star Catch bonus that v.271 builds in.
+- Safeguard: an extra 200 % of the base cost [GMS, v.264 Safeguard, checked 2026-10-27], so cost × 3. It turns destruction into maintain: a failed tap keeps the star, so each tap is success or stay with the same p every time, and X is geometric.
+- Cost per tap, computed from the wiki's formula $1000 + L^3 \cdot 16^{2.7}/200$ [GMS, wiki Star Force cost formula, checked 2026-10-27] at L = 150: 30,087,200 mesos, × 3 = 90,261,600.
+
+:::tip Constant cost per tap
+E(mesos) = cost per tap × E(taps), and a geometric count has E(X) = 1/p, so E(mesos) = cost × 1/p.
+:::
 
 ```quiz
 [
@@ -50,7 +65,7 @@ $$E(\text{mesos}) = 90{,}261{,}600 \times \frac{1}{0.30} = 300{,}872{,}000$$
 
 ## The variance shortcut on the formula sheet
 
-The sheet prints two forms, and they are equal:
+The formula sheet prints two forms, and they are equal:
 
 $$\sigma^2 = \sum (x-\mu)^2 P(x) \qquad \text{or} \qquad \sigma^2 = \sum x^2 P(x) - \mu^2$$
 
@@ -74,7 +89,7 @@ $\sigma^2 = 1.9237 - 0.9447^2 = 1.9237 - 0.892458 = 1.03124 \to 1.03$, the same 
 The notes write μ = 0.94. Squared and subtracted, it gives 1.9237 − 0.8836 = 1.0401 → 1.04, one unit off in the last digit. The long form barely moves with the rounded mean (1.03126), but the shortcut subtracts two close numbers, so keep μ at six significant digits.
 :::
 
-Abdullah's spam calls from Q6: $\sum x^2 P(x) = 0.23 + 1.64 + 1.53 + 1.76 + 1.50 = 6.66$ and $\mu = 2.3$, so $\sigma^2 = 6.66 - 5.29 = 1.37$ and $\sigma = 1.17$ calls per day.
+Abdullah's spam calls from Q6: $\sum x^2P(x) = 1^2(0.23) + 2^2(0.41) + 3^2(0.17) + 4^2(0.11) + 5^2(0.06) = 0.23 + 1.64 + 1.53 + 1.76 + 1.50 = 6.66$; $\mu^2 = 2.3^2 = 5.29$, so $\sigma^2 = 6.66 - 5.29 = 1.37$ and $\sigma = 1.17$ calls per day.
 
 ### The spam-call table, column by column
 
@@ -117,6 +132,10 @@ Poisson counts in non-overlapping intervals are independent. "Exactly 1 in this 
 
 Cafeteria, 0.3 per minute. For 10 minutes, $\lambda = 3$: $P(X = 2) = \frac{3^2}{2!}e^{-3} = 0.2240$ and $P(X \ge 2) = 1 - e^{-3}(1 + 3) = 0.8009$. For each 5-minute span $\lambda = 1.5$, so $P(1)^2 = 0.334695^2 = 0.1120$, half of 0.2240: the 10-minute count of 2 also includes 2 then 0 and 0 then 2.
 
+```diagram
+{"type": "grid", "title": "Two customers in 10 minutes, split into two 5-minute spans", "nodes": [{"id": "h0", "label": "First 5 min", "row": 0, "col": 0}, {"id": "h1", "label": "Second 5 min", "row": 0, "col": 1}, {"id": "h2", "label": "Probability", "row": 0, "col": 2}, {"id": "a0", "label": "2", "row": 1, "col": 0}, {"id": "a1", "label": "0", "row": 1, "col": 1}, {"id": "a2", "label": "0.2510 × 0.2231", "sub": "= 0.0560", "row": 1, "col": 2}, {"id": "b0", "label": "1", "row": 2, "col": 0}, {"id": "b1", "label": "1", "row": 2, "col": 1}, {"id": "b2", "label": "0.3347²", "sub": "= 0.1120", "row": 2, "col": 2}, {"id": "c0", "label": "0", "row": 3, "col": 0}, {"id": "c1", "label": "2", "row": 3, "col": 1}, {"id": "c2", "label": "0.2231 × 0.2510", "sub": "= 0.0560", "row": 3, "col": 2}, {"id": "t0", "label": "total", "row": 4, "col": 0}, {"id": "t1", "label": "", "row": 4, "col": 1}, {"id": "t2", "label": "0.2240", "sub": "= P(2 in 10 min)", "row": 4, "col": 2}], "hi": ["b0", "b1", "b2"], "caption": "The two-span question asks for the lit row, 0.1120; the 10-minute count of 2 adds all three rows, 0.2240."}
+```
+
 ### One 5-minute span at the cafeteria
 
 Square the P(X = 1) the widget shows for the two-span answer.
@@ -126,9 +145,20 @@ poisson-calc
 { "rate": 0.3, "per": 1, "unit": "min", "interval": 5, "x": 1, "op": "eq", "title": "Practice problem 13: 0.3 customers per minute over a 5-minute span" }
 ```
 
-The 100-year flood (practice problem 16) works the same way with $\lambda = 0.5$ per 50 years: at least 1 in 50 years is $1 - e^{-0.5} = 0.3935$; exactly 1 is $0.5e^{-0.5} = 0.3033$; exactly 1 in each of two 50-year spans is $0.3033^2 = 0.0920$; exactly 2 in 100 years, with $\lambda = 1$, is $\frac{1}{2}e^{-1} = 0.1839$.
+The 100-year flood (practice problem 16) works the same way with $\lambda = 0.5$ per 50 years:
+
+| Event | λ | Formula | P |
+|---|---|---|---|
+| ≥ 1 in 50 yr | 0.5 | 1 − e^(−0.5) | 0.3935 |
+| exactly 1 in 50 yr | 0.5 | 0.5e^(−0.5) | 0.3033 |
+| 1 in each of two 50-yr spans | 0.5 each | 0.3033² | 0.0920 |
+| exactly 2 in 100 yr | 1 | e^(−1)/2! | 0.1839 |
 
 "The next event falls between a and b" is two independent pieces: none in the first a, then at least one in the next b − a. Practice paper Q11b, floods at λ = 0.5 per 10 years: $P(0)\,(1 - P(0)) = 0.606531 \times 0.393469 = 0.2387$.
+
+```diagram
+{"type": "flow", "title": "The next event between a and b", "nodes": [{"id": "now", "label": "Now", "kind": "pill"}, {"id": "w1", "label": "Years 0–10", "sub": "0 floods · λ = 0.5 · P = 0.6065"}, {"id": "w2", "label": "Years 10–20", "sub": "≥ 1 flood · λ = 0.5 · P = 0.3935"}], "edges": [{"from": "now", "to": "w1"}, {"from": "w1", "to": "w2", "label": "then"}], "hi": ["w1", "w2"], "caption": "Separate windows are independent: 0.6065 × 0.3935 = 0.2387."}
+```
 
 ## A Safeguarded 16→17 tap, an Intermediate Hat HP scroll, a 4-calls-per-hour help line
 

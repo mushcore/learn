@@ -46,14 +46,14 @@ Deck: 52 cards, 26 red (hearts, diamonds) and 26 black (spades, clubs), 4 suits 
 
 ## Rules
 
-| Rule | Formula |
-|---|---|
-| complement | $P(\bar{A}) = 1 - P(A)$ (use for "at least one", "less than the maximum") |
-| addition | $P(A \cup B) = P(A) + P(B) - P(A \cap B)$; mutually exclusive: $P(A) + P(B)$ |
-| conditional | $P(B \mid A) = \dfrac{\lvert A \cap B \rvert}{\lvert A \rvert} = \dfrac{P(A \cap B)}{P(A)}$ |
-| multiplication | $P(A \cap B) = P(A)\,P(B \mid A)$; independent: $P(A)\,P(B)$ |
-| total probability | $P(B) = \sum_i P(A_i)\,P(B \mid A_i)$ |
-| Bayes | $P(A_i \mid B) = \dfrac{P(A_i)\,P(B \mid A_i)}{\sum_j P(A_j)\,P(B \mid A_j)}$ |
+| Rule | the question says… | Formula |
+|---|---|---|
+| complement | not, at least one, fewer than | $P(\bar{A}) = 1 - P(A)$ (use for "at least one", "less than the maximum") |
+| addition | or, either | $P(A \cup B) = P(A) + P(B) - P(A \cap B)$; mutually exclusive: $P(A) + P(B)$ |
+| conditional | given, if, among | $P(B \mid A) = \dfrac{\lvert A \cap B \rvert}{\lvert A \rvert} = \dfrac{P(A \cap B)}{P(A)}$ |
+| multiplication | and, both, then, all | $P(A \cap B) = P(A)\,P(B \mid A)$; independent: $P(A)\,P(B)$ |
+| total probability | a random one, with branch shares and rates given | $P(B) = \sum_i P(A_i)\,P(B \mid A_i)$ |
+| Bayes | what fraction of the defective (positive, dead) ones came from … | $P(A_i \mid B) = \dfrac{P(A_i)\,P(B \mid A_i)}{\sum_j P(A_j)\,P(B \mid A_j)}$ |
 
 | Example | Answer |
 |---|---|
@@ -96,7 +96,7 @@ Lab 4 conclusions: the estimate's variability falls by about $\sqrt{10}$ per ten
   {"q": "Rapid fire: $P(A \\cup B)$ for mutually exclusive A and B?", "options": ["$P(A) + P(B)$", "$P(A)P(B)$", "$P(A) + P(B) - P(A)P(B)$", "0"], "answer": 0, "explain": "The overlap is empty, so nothing to subtract."},
   {"q": "$P(B \\mid A)$ in terms of probabilities?", "options": ["$P(A \\cap B)/P(A)$", "$P(A \\cap B)/P(B)$", "$P(A)P(B)$", "$P(A)/P(B)$"], "answer": 0, "explain": "Restrict to A."},
   {"q": "$C(n, r)$ equals...", "options": ["$P(n, r) / r!$", "$P(n, r) \\cdot r!$", "$n^r$", "$n! / r!$"], "answer": 0, "explain": "Divide the ordered count by the r! orderings of each group."},
-  {"q": "Which R argument makes `sample()` allow repeated values?", "type": "text", "answer": ["replace=TRUE", "replace = TRUE", "replace"], "explain": "Dice and coins need it; cards (without replacement) do not."},
+  {"q": "Which R argument makes `sample()` allow repeated values?", "options": ["`replace=TRUE`", "`prob=`", "`size=`", "`repeat=TRUE`"], "answer": 0, "explain": "Dice and coins need it; cards (without replacement) do not."},
   {"q": "The posterior $P(A_i \\mid B)$ is one path of the tree divided by...", "options": ["P(A_i)", "P(B), the sum of every path ending in B", "1", "P(B | A_i)"], "answer": 1, "explain": "Bayes' rule: joint over total."}
 ]
 ```

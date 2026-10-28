@@ -23,6 +23,11 @@ R's built-in `mtcars` has 32 cars and eleven variables. The notes take $Y$ = `mp
 | Honda Civic | 1.615 | 30.4 |
 | Toyota Corolla | 1.835 | 33.9 |
 
+```widget
+scatter-corr
+{ "preset": "mtcars: wt vs mpg (Unit 2)", "title": "mtcars: fuel efficiency versus weight (drag the points)" }
+```
+
 Each row is one dot. The heavy Cadillac sits far right and low, the light Corolla far left and high, and over all 32 dots the picture *"trends downwards"*: heavier cars get fewer miles per gallon. The notes connect this to Unit 1: **"The fact that the points trend downwards is consistent with the linear correlation coefficient being negative."**
 
 ```r
@@ -52,7 +57,7 @@ $r = -0.868$ is a strong negative linear relationship ($-1 \le r \le 1$; values 
 
 ### The line through the dots
 
-The dotted line is the **line of best fit**, which the instructor also calls the **"regression line."** Its equation on the plot:
+On the instructor's plot of all 32 cars, a dotted line runs through the dots: the **line of best fit**, which the instructor also calls the **"regression line."** Its equation on the plot:
 
 $$\text{mpg} = -5.344 \cdot \text{wt} + 37.285$$
 
@@ -183,38 +188,60 @@ xyplot(mpg ~ wt, data = mtcars,
 His annotation on the last line: `type = c("p", "r")` means **"do data points ("p") and a regression line ("r")."** `cex = 1` is the point size, and `paste0()` builds the title from `nrow(mtcars)` so $n$ is not hard-coded.
 
 :::quiz Which side of the ~ is Y?
-`mpg ~ wt` reads "mpg **explained by** wt": left of `~` is $Y$ (vertical), right is $X$ (horizontal), as in `boxplot(extra ~ group)` (Unit 1) and `favstats(Days ~ Sex)` (Lab 2). Base `plot(x, y)` is the opposite order: $X$ first.
+A formula puts $Y$ first: left of `~` is $Y$, the measured variable. A numerical right side reads "**explained by**" (`mpg ~ wt`: mpg explained by wt); a categorical right side reads "**by**" (`Days ~ Sex`: Days by Sex). Base `plot(x, y)` is the opposite order: $X$ first.
+
+| Call | Written first | Horizontal axis | Vertical axis |
+|---|---|---|---|
+| `plot(mtcars$wt, mtcars$mpg)` | X (wt) | wt | mpg |
+| `xyplot(mpg ~ wt, data=mtcars)` | Y (mpg) | wt | mpg |
+| `lm(mtcars$mpg ~ mtcars$wt)` | Y (mpg) | (fits mpg from wt) | — |
+| `bwplot(Days ~ Sex, data=quine)` | measured (Days) | groups (Sex) | Days |
 :::
 
 :::info R syntax
 | Code | What it does |
 |---|---|
-| `boxplot(extra ~ group)` | `~` makes a formula: the `extra` values split by `group`, drawn as one box per group. |
-| `favstats(Days ~ Sex)` | From the mosaic package: summary statistics of `Days`, one row for each value of `Sex`. |
+| `plot(mtcars$wt, mtcars$mpg)`, `xyplot(mpg ~ wt, data=mtcars)`, `lm(mtcars$mpg ~ mtcars$wt)` | As above: base scatter plot, lattice scatter plot, fitted line. |
+| `bwplot(Days ~ Sex, data=quine)` | Lab 2's lattice box plot: `Days` by `Sex`, one box per sex, columns looked up in `quine`. |
 
 **Left to right**
 
-- `boxplot(extra ~ group)`: "Draw box plots (`boxplot`) of extra (`extra`) split by (`~`) group (`group`)."
-- `favstats(Days ~ Sex)`: "Print summary statistics (`favstats`) of Days (`Days`) split by (`~`) Sex (`Sex`)."
+- `plot(mtcars$wt, mtcars$mpg)`: "Plot (`plot`) weight across (`mtcars$wt`) against fuel efficiency up (`mtcars$mpg`)."
+- `xyplot(mpg ~ wt, data=mtcars)`: "Draw a lattice scatter plot (`xyplot`) of mpg explained by (`~`) wt (`mpg ~ wt`) from the car data (`data=mtcars`)."
+- `lm(mtcars$mpg ~ mtcars$wt)`: "Fit a line (`lm`) of mpg (`mtcars$mpg`) explained by (`~`) wt (`mtcars$wt`)."
+- `bwplot(Days ~ Sex, data=quine)`: "Draw box plots (`bwplot`) of Days (`Days`) by (`~`) Sex (`Sex`) from the quine data (`data=quine`)."
 
 **Right to left**, the order R runs it
 
-- `boxplot(extra ~ group)`: "Build the formula extra by group (`extra ~ group`), then draw one box per group (`boxplot`)."
-- `favstats(Days ~ Sex)`: "Build the formula Days by Sex (`Days ~ Sex`), then compute and print the statistics for each sex (`favstats`)."
+- `plot(mtcars$wt, mtcars$mpg)`: "Pull out wt and mpg (`$wt`, `$mpg`), then draw one dot per car (`plot`)."
+- `xyplot(mpg ~ wt, data=mtcars)`: "Look in the car data (`data=mtcars`) for the formula's columns (`mpg ~ wt`), then draw the plot (`xyplot`)."
+- `lm(mtcars$mpg ~ mtcars$wt)`: "Pull out mpg and wt (`mtcars$mpg`, `mtcars$wt`), make the formula (`~`), and fit the line (`lm`)."
+- `bwplot(Days ~ Sex, data=quine)`: "Look in quine (`data=quine`) for Days and Sex, build the formula Days by Sex (`Days ~ Sex`), then draw one box per sex (`bwplot`)."
 :::
 
 :::tip Units on the axis
 The notes label the weight axis "Weight (tons)". R's documentation says `wt` is in thousands of pounds (3.44 is 3440 lb, about 1.7 tons). Use the notes' label; the shape and the correlation do not depend on the unit.
 :::
 
-```widget
-scatter-corr
-{ "preset": "mtcars: wt vs mpg (Unit 2)", "title": "mtcars: fuel efficiency versus weight (drag the points)" }
-```
-
 ## A scatter plot of Classic monster EXP against level
 
 meowdb's Classic monster table gives each monster a level and the EXP, experience points, one kill pays; without the 5 zero-EXP test rows it holds 87 monsters, in a data frame `mon` [Classic, meowdb monster table, Grand Launch build, checked 2026-10-27]. Six field monsters as (level, EXP): Snail (1, 2), Ribbon Pig (10, 19), Stirge (20, 37), Iron Hog (28, 52), Drake (50, 133), Taurospear (75, 429).
+
+The Unit 1 formula for $r$, with $x$ = level, $y$ = EXP and $n = 6$:
+
+$$r = \dfrac{n\sum xy - \sum x \sum y}{\sqrt{(n\sum x^2 - (\sum x)^2)(n\sum y^2 - (\sum y)^2)}}$$
+
+Fill the sums on paper first:
+
+| monster | $x$ | $y$ | $xy$ | $x^2$ | $y^2$ |
+|---|---|---|---|---|---|
+| Snail | 1 | 2 | | | |
+| Ribbon Pig | 10 | 19 | | | |
+| Stirge | 20 | 37 | | | |
+| Iron Hog | 28 | 52 | | | |
+| Drake | 50 | 133 | | | |
+| Taurospear | 75 | 429 | | | |
+| $\Sigma$ | | | | | |
 
 ```quiz
 [

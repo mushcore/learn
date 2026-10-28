@@ -41,7 +41,7 @@ The complete table, with the extra row on top that the ogive needs:
 | 4.8 | 4.999 | 11 | 268 | 0.985 |
 | 5.0 | 5.199 | 4 | 272 | 1.000 |
 
-The instructor labelled the **Upper Class Limit** column **"X-axis"** and the **Cumul Rel Freq** column **"Y-axis"**: those two columns are the ogive. The top row (upper limit 1.599, cumulative 0) is *"one additional point at the beginning of the curve to indicate the 0.0 point"*.
+The instructor labelled the **Upper Class Limit** column **"X-axis"** and the **Cumul Rel Freq** column **"Y-axis"**: those two columns are the ogive. The top row (upper limit 1.599, cumulative 0) is *"one additional point at the beginning of the curve to indicate the 0.0 point"*. 1.599 is the first lower limit 1.600 minus one unit of precision: the upper limit of an imaginary empty class before the first.
 
 ## Reading the table
 
@@ -169,7 +169,29 @@ abline(h = 0.357, lty=3)
 
 - *What value of eruption duration has 30% of eruptions below and 70% above?* **About 2.35.** In his words: "About 30% of eruptions had $X < 2.35$, 70% of eruptions had $X \ge 2.35$. $P_{30} = 2.35$."
 
-The ogive is the graph of the percentile function from Unit 1 ([Quartiles & percentiles](#/math3042/quartiles-percentiles)), read in either direction. The fraction **between** $a$ and $b$ is the height at $b$ minus the height at $a$.
+:::tip Reading between two table points
+The ogive is straight between two table points, so a value between them is found by proportion.
+
+1. Find the two upper limits around $X$: 3.999 (0.493) and 4.199 (0.607).
+2. How far along: $(4.1 - 3.999)/0.2 = 0.505$.
+3. Height: $0.493 + 0.505 \times (0.607 - 0.493) = 0.493 + 0.058 = 0.551$, about 55%.
+
+Reverse, for $P_{30}$: 0.30 lies between 0.261 (at 2.199) and 0.327 (at 2.399). How far along: $(0.30 - 0.261)/(0.327 - 0.261) = 0.039/0.066 = 0.59$, so $X = 2.199 + 0.59 \times 0.2 = 2.32$. The instructor's 2.35 is read by eye off the drawn curve; both count.
+:::
+
+```diagram
+{"type": "flow", "nodes": [{"id": "x", "label": "X = 4.1"}, {"id": "b", "label": "Table points", "sub": "(3.999, 0.493) and (4.199, 0.607)"}, {"id": "f", "label": "How far along", "sub": "0.101 / 0.2 = 0.505"}, {"id": "h", "label": "Height", "sub": "0.493 + 0.505 × 0.114 = 0.551"}], "edges": [{"from": "x", "to": "b"}, {"from": "b", "to": "f"}, {"from": "f", "to": "h"}], "hi": ["f"], "caption": "Straight line between two table points: 4.1 is 0.505 of the way from 3.999 to 4.199, so the height is 0.551, about 55%."}
+```
+
+The ogive is the graph of the percentile function from Unit 1 ([Quartiles & percentiles](#/math3042/quartiles-percentiles)), read in either direction.
+
+:::tip Between two values
+Fraction from $a$ to $b$ = (height at $b$) − (height just below $a$). With classes, that is the upper limit of the last class you want minus the upper limit of the class before the first one you want. Eruptions from 3.0 to 4.199: $0.607$ (at 4.199) $- 0.357$ (at 2.999) $= 0.250$. Check by counts: $(1 + 4 + 6 + 10 + 16 + 31)/272 = 68/272 = 0.250$.
+:::
+
+```diagram
+{"type": "grid", "nodes": [{"id": "r0c0", "label": "Class", "row": 0, "col": 0}, {"id": "r0c1", "label": "2.8–2.999", "row": 0, "col": 1}, {"id": "r0c2", "label": "3.0–3.199", "row": 0, "col": 2}, {"id": "r0c3", "label": "3.2–3.399", "row": 0, "col": 3}, {"id": "r0c4", "label": "3.4–3.599", "row": 0, "col": 4}, {"id": "r0c5", "label": "3.6–3.799", "row": 0, "col": 5}, {"id": "r0c6", "label": "3.8–3.999", "row": 0, "col": 6}, {"id": "r0c7", "label": "4.0–4.199", "row": 0, "col": 7}, {"id": "r1c0", "label": "Frequency", "row": 1, "col": 0}, {"id": "r1c1", "label": "2", "row": 1, "col": 1}, {"id": "r1c2", "label": "1", "row": 1, "col": 2}, {"id": "r1c3", "label": "4", "row": 1, "col": 3}, {"id": "r1c4", "label": "6", "row": 1, "col": 4}, {"id": "r1c5", "label": "10", "row": 1, "col": 5}, {"id": "r1c6", "label": "16", "row": 1, "col": 6}, {"id": "r1c7", "label": "31", "row": 1, "col": 7}, {"id": "r2c0", "label": "Cum rel freq", "row": 2, "col": 0}, {"id": "r2c1", "label": "0.357", "row": 2, "col": 1}, {"id": "r2c2", "label": "0.360", "row": 2, "col": 2}, {"id": "r2c3", "label": "0.375", "row": 2, "col": 3}, {"id": "r2c4", "label": "0.397", "row": 2, "col": 4}, {"id": "r2c5", "label": "0.434", "row": 2, "col": 5}, {"id": "r2c6", "label": "0.493", "row": 2, "col": 6}, {"id": "r2c7", "label": "0.607", "row": 2, "col": 7}], "hi": ["r2c1", "r2c7"], "caption": "3.0 to 4.199 = 0.607 − 0.357 = 0.250: subtract the height at the class just before the first one wanted."}
+```
 
 ```widget
 ogive
@@ -194,7 +216,7 @@ Fifty delivery times in minutes were grouped into classes 10–14, 15–19, 20�
   {"q": "How many deliveries took less than 25 minutes?", "type": "numeric", "answer": 33, "tolerance": 0, "explain": "Everything up to and including the class ending at 24: the cumulative frequency 33."},
   {"q": "The ogive gets one extra point at height 0. What is its $x$-coordinate?", "type": "numeric", "answer": 9, "tolerance": 0, "explain": "The upper limit just before the first class: 10 − 1 = 9, so the curve starts at (9, 0) and then plots (14, 0.08), (19, 0.30), …"},
   {"q": "Which class contains the median?", "options": ["20–24", "15–19", "25–29", "30–34"], "answer": 0, "explain": "The cumulative relative frequencies are 0.08, 0.30, 0.66, 0.84, 0.96, 1.00. 0.5 is first passed in the class 20–24 (0.30 below it, 0.66 at its upper limit)."},
-  {"q": "What percentage of deliveries took 15 to 29 minutes?", "type": "numeric", "answer": 76, "tolerance": 0.5, "unit": "%", "explain": "Height at 29 minus height at 14: $0.84 - 0.08 = 0.76$, i.e. 76% (or $(11 + 18 + 9)/50 = 38/50$)."},
+  {"q": "What percentage of deliveries took 15 to 29 minutes?", "type": "numeric", "answer": 76, "tolerance": 0.5, "unit": "%", "explain": "Height at 29 (the last class wanted, 25–29) minus height at 14 (the class before the first one wanted, 15–19): $0.84 - 0.08 = 0.76$, i.e. 76%. Check by counts: $(11 + 18 + 9)/50 = 38/50 = 0.76$."},
   {"type": "fill", "q": "Fill the function that turns frequencies into running totals.", "code": "freqs <- c(4, 11, 18, 9, 6, 2)\n___(freqs)\n## [1]  4 15 33 42 48 50", "answer": ["cumsum"], "explain": "`cumsum()` adds each frequency to the previous total; the last value equals $n = 50$, the arithmetic check."}
 ]
 ```
@@ -209,7 +231,7 @@ Fifty delivery times in minutes were grouped into classes 10–14, 15–19, 20�
   {"q": "An ogive plots cumulative relative frequency against the lower class limits.", "type": "tf", "answer": false, "explain": "Against the UPPER class limits: a class's whole count is below its upper limit. One extra point (1.599, 0) is added at the start."},
   {"q": "Why is the point (1.599, 0) added to the Old Faithful ogive?", "options": ["To show that 0% of the data lies below the first class", "Because 1.599 is the median", "R requires an even number of points", "To make the curve pass through the origin"], "answer": 0, "explain": "The notes: 'we insert one additional point at the beginning of the curve to indicate the 0.0 point of cumulative relative frequency.'"},
   {"q": "From the ogive, about what percentage of eruptions last less than 3.0 minutes?", "type": "numeric", "answer": 35, "tolerance": 2, "unit": "%", "explain": "Up from 3.0 to the curve, across: approximately 35%, so $P_{35} = 3.0$ (the table gives 0.357 at 2.999)."},
-  {"q": "Which eruption duration has 30% of eruptions below it and 70% above it (the 30th percentile)?", "type": "numeric", "answer": 2.35, "tolerance": 0.15, "unit": "min", "explain": "Across from 0.30 to the curve, then down: about 2.35, i.e. $P_{30} = 2.35$."},
+  {"q": "Which eruption duration has 30% of eruptions below it and 70% above it (the 30th percentile)?", "type": "numeric", "answer": 2.35, "tolerance": 0.15, "unit": "min", "explain": "Across from 0.30 to the curve, then down: about 2.35, i.e. $P_{30} = 2.35$. By proportion between 0.261 (at 2.199) and 0.327 (at 2.399): $2.199 + 0.59 \\times 0.2 = 2.32$; both count."},
   {"q": "Which R function turns the frequencies 12, 39, 20, ... into the running totals 12, 51, 71, ...?", "options": ["`cumsum()`", "`sum()`", "`cut()`", "`table()`"], "answer": 0, "explain": "`cumsum()` computes cumulative sums; `cut()` assigns values to classes and `table()` counts them, then `cumsum()` accumulates."},
   {"q": "In `plot(upper.class.limits, ogive.values, type=\"b\", ...)`, what does `type=\"b\"` draw?", "options": ["Both the points and the lines connecting them", "Bars", "Only the points", "A box plot"], "answer": 0, "explain": "'b' is for both; 'p' would give points only and 'l' lines only."},
   {"q": "On an ogive the curve can go down between two consecutive points.", "type": "tf", "answer": false, "explain": "Cumulative frequency never decreases (a class adds zero or more individuals), so the ogive only rises or stays flat, ending at 1.0."}

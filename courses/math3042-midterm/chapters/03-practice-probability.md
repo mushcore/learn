@@ -61,6 +61,10 @@ Taught in [complements and addition](#/math3042-u3/complement-addition), [condit
 
 Two rules make the 3 marks. Within one flight the draws are dependent, so the second factor is a conditional probability: after one 311 passenger leaves the pool, 41 of the remaining 311 are from flight 311. Across flights the three cases cannot happen together, so the addition rule needs no overlap term. Leave the fractions unsimplified on paper; the marker reads the 41 and the 311 as evidence that you removed the first passenger.
 
+```diagram
+{ "type": "tree", "title": "Q4: multiply along a flight, add across flights", "nodes": [ { "id": "r", "label": "Pick 2 of 312" }, { "id": "a", "label": "1st: 311", "sub": "42/312", "parent": "r" }, { "id": "b", "label": "1st: 811", "sub": "116/312", "parent": "r" }, { "id": "c", "label": "1st: 911", "sub": "154/312", "parent": "r" }, { "id": "a2", "label": "2nd same flight", "sub": "41/311 → 0.0177", "parent": "a" }, { "id": "b2", "label": "2nd same flight", "sub": "115/311 → 0.1375", "parent": "b" }, { "id": "c2", "label": "2nd same flight", "sub": "153/311 → 0.2428", "parent": "c" } ], "hi": ["a2", "b2", "c2"], "caption": "Each leaf is first × second; mutually exclusive leaves add: 0.0177 + 0.1375 + 0.2428 = 0.3981." }
+```
+
 Taught in [complements and addition](#/math3042-u3/complement-addition) and [conditional probability and independence](#/math3042-u3/conditional-independence). The same three flights return in Q8 as an R hypergeometric question, worked in [Q7 to Q9](#/math3042-midterm/practice-r).
 
 ## Q5 (3 marks). A room is full of term 3 CST students. In this room, 85% of people are right-handed, and the other 15% are left-handed.
@@ -79,11 +83,15 @@ Taught in [complements and addition](#/math3042-u3/complement-addition) and [con
 ]
 ```
 
-The question gives P(yes | left-handed) and asks for P(left-handed | yes): the condition is reversed, which is what names Bayes' rule. The denominator is P(H) by the law of total probability, every way of saying yes: 0.09 from left-handers and 0.255 from right-handers. Left-handers are twice as likely to say yes, but there are so few of them that a yes still most likely came from a right-hander.
+The question gives P(yes | left-handed) and asks for P(left-handed | yes): the condition is reversed, which is what names Bayes' rule. The denominator is P(H) by the law of total probability, every way of saying yes: 0.09 from left-handers and 0.255 from right-handers. Left-handers are twice as likely to say yes, but there are so few of them that a yes still most likely came from a right-hander. In 1000 students: 150 are left-handed and 60 % of them, 90, say yes; 850 are right-handed and 30 % of them, 255, say yes. Of the 345 yeses, 90 come from left-handers: 90/345 = 0.2609.
 
 ### Q5's four numbers on a tree
 
-The tree widget has no preset for Q5, so type Q5's values into the "COVID serology" preset, reading Sick as left-handed and Tests positive as said yes: P(Sick) = 0.15 with P(Tests positive | Sick) = 0.6, and P(Not sick) = 0.85 with P(Tests positive | Not sick) = 0.3. The last line then gives P(L | H).
+```diagram
+{ "type": "tree", "nodes": [ { "id": "s", "label": "Student" }, { "id": "r", "label": "Right-handed", "sub": "0.85", "parent": "s" }, { "id": "l", "label": "Left-handed", "sub": "0.15", "parent": "s" }, { "id": "ry", "label": "Yes 0.3", "sub": "0.85 × 0.3 = 0.255", "parent": "r" }, { "id": "rn", "label": "No 0.7", "sub": "0.595", "parent": "r" }, { "id": "ly", "label": "Yes 0.6", "sub": "0.15 × 0.6 = 0.09", "parent": "l" }, { "id": "ln", "label": "No 0.4", "sub": "0.06", "parent": "l" } ], "hi": ["ry", "ly"], "caption": "P(yes) adds the two lit leaves; P(L | Yes) = 0.09 / (0.09 + 0.255) = 0.2609." }
+```
+
+The same tree as an interactive widget: it has no preset for Q5, so type Q5's values into the "COVID serology" preset, reading Sick as left-handed and Tests positive as said yes: P(Sick) = 0.15 with P(Tests positive | Sick) = 0.6, and P(Not sick) = 0.85 with P(Tests positive | Not sick) = 0.3. The last line then gives P(L | H).
 
 ```widget
 bayes-tree

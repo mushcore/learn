@@ -10,8 +10,8 @@ The top 200 of a PoE1 ladder are most often level 92 with a tail to 99, and one 
 
 The median, written $\tilde{X}$ or $Q_2$, is the value that sits in the **middle** once the data is sorted from smallest to largest.
 
-- **Odd $n$:** the median is the exact middle value.
-- **Even $n$:** there is no single middle value, so the median is the **mean of the two middle values**.
+- **Odd $n$:** the value at position $(n+1)/2$ ($n = 7$ → 4th).
+- **Even $n$:** there is no single middle value, so the median is the **average of the values at positions $n/2$ and $n/2 + 1$** ($n = 6$ → 3rd and 4th).
 
 :::warn Sort first
 Sort the data first; the median of unsorted data is wrong even when the counting is right.
@@ -109,7 +109,7 @@ The official PoE1 Ruthless Allflame ladder listed these levels for ranks 1-200 o
 |---|---|---|---|---|---|---|---|
 | Characters | 88 | 53 | 29 | 15 | 7 | 7 | 1 |
 
-The counts pile up at 92 with a thin tail to 99, a right-skewed table, so the three centres land in different places.
+The counts pile up at 92 with a thin tail to 99 (a shape called right-skewed, lesson 12), so the three centres land in different places.
 
 ```quiz
 [
@@ -139,7 +139,7 @@ Mode $<$ median $<$ mean: the seven characters at 97 and the one at 99 pull the 
 
 ### Every 8th rank in the calculator
 
-It holds every 8th rank (8, 16, ..., 200): 25 levels, mode 92, median 93, mean 93.04.
+The calculator below holds every 8th rank (8, 16, ..., 200): 25 levels, mode 92, median 93, mean 93.04.
 
 ```widget
 stat-calc
@@ -164,7 +164,7 @@ The mean is sensitive to **every** value, including extreme ones, so one huge ou
 
 Look back at $19, 19, 20, 22, 23, 25, 50$: the mean is $\frac{19+19+20+22+23+25+50}{7} \approx 25.4$ — pulled upward by the `50`. The median stayed at `22`, a much better description of where most of the data actually sits.
 
-This is the central idea of skewness (next): when a distribution is skewed or has outliers, the mean and median pull apart, and the median is usually the more trustworthy "typical value."
+This is the central idea of skewness (lesson 12): when a distribution is skewed or has outliers, the mean and median pull apart, and the median is usually the more trustworthy "typical value."
 
 ```widget
 drag-data
@@ -172,7 +172,7 @@ drag-data
   { "when": "mean>median", "text": "The mean is above the median: the outlier is pulling it upward." },
   { "when": "mean<median", "text": "The mean is below the median: whatever you dragged down is pulling it below." },
   { "when": "mean==median", "text": "Mean equals median: perfectly balanced, no single value is dominating." },
-  { "when": "max>uf", "text": "The largest value is beyond the upper fence — a classic single-outlier shape." }
+  { "when": "max>uf", "text": "The largest value is beyond the upper fence (the outlier cutoff of lesson 11): a classic single-outlier shape." }
 ]}
 ```
 

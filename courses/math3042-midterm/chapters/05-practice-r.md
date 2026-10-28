@@ -238,7 +238,24 @@ Taught in [Lab 2: grouped data in R](#/math3042-u2/lab2-grouped) and [R essentia
 
 > The flights had 42 passengers, 116 passengers, and 154 passengers, respectively. Twenty passengers are randomly selected, without replacement. Write a single R command that
 
-Twenty drawn without replacement from a population of 312 split into "on this flight" and "not on this flight" is **hypergeometric**. R's hypergeometric functions take four numbers in a fixed order: the count x (or, for `rhyper`, the number of simulations), the successes in the population, the failures in the population, the sample size. In R's own argument names that is `x` (or `nn`), `m`, `n`, `k`. The instructor writes the failures as an unevaluated sum such as `116+154`, which shows the marker which flights you counted.
+Twenty drawn without replacement from a population of 312 split into "on this flight" and "not on this flight" is **hypergeometric**. R's hypergeometric functions take four numbers in a fixed order:
+
+| Slot | R's name | Means | Q8a (flight 911) | Q8b, Q8c (flight 311) |
+|---|---|---|---|---|
+| 1 | `nn` / `x` / `q` | simulations, or the count asked about | 1 | 9, 11 |
+| 2 | `m` | successes in the population (K) | 154 | 42 |
+| 3 | `n` | failures in the population (N − K) | 42+116 | 116+154 |
+| 4 | `k` | sample size (the course's n) | 20 | 20 |
+
+:::warn R's n is the failures
+In the hypergeometric functions R's slot `n` holds the failures in the population, N − K. The course's n, the sample size, goes in R's last slot, `k`.
+:::
+
+The instructor writes the failures as an unevaluated sum such as `116+154`, which shows the marker which flights you counted.
+
+```diagram
+{ "type": "tree", "nodes": [ { "id": "p", "label": "312 passengers", "sub": "N" }, { "id": "s", "label": "m: successes", "sub": "flight 911: 154 (K)", "parent": "p" }, { "id": "f", "label": "n: failures", "sub": "42+116 (N − K)", "parent": "p" } ], "hi": ["s"], "caption": "Q8a splits the 312 into R's m and n, then draws k = 20 from all of them." }
+```
 
 **a. [1]** Simulates this scenario and determines the number of passengers in the group of 20 that were on flight 911.
 
@@ -281,7 +298,7 @@ rhyper(1, 154, 42+116, 20)
 - "Add 42 and 116 (`42+116`) to get the failures, take the 154 successes (`154`), the sample of 20 (`20`) and one simulation (`1`), then draw the random count (`rhyper`)."
 :::
 
-The output is random, a single whole number near the mean 20 × 154/312 = 9.87.
+The output is random, a single whole number near the hypergeometric mean μ = nK/N = 20 × 154/312 = 9.87.
 
 **b. [1]** Computes the probability that exactly 9 of the 20 passengers were on flight 311.
 
@@ -413,7 +430,7 @@ Taught in [hypergeometric](#/math3042-u4/hypergeometric) and [choosing the distr
     "q": "Fill the probability slot of the binomial draw.",
     "code": "times_caught <- rbinom(1, n, ___)",
     "answer": ["0.045", ".045"],
-    "explain": "`rbinom(m, size, prob)`: one draw, n trials, probability 0.045 of being caught on each. 4.5 % is written as 0.045."
+    "explain": "`rbinom(reps, size, prob)`: one draw, n trials, probability 0.045 of being caught on each. 4.5 % is written as 0.045."
   },
   {
     "type": "fill",
@@ -442,7 +459,7 @@ skytrain_sneaking <- function(n) {
 | Code | What it does |
 |---|---|
 | `skytrain_sneaking <- function(n) { … }` | `function(n)` makes a function with one input, `n`; the braces hold its body. `<-` stores it under the name `skytrain_sneaking`. |
-| `rbinom(1, n, 0.045)` | First argument (R's `n`) = 1 draw; size = `n`, the function's input; prob = 0.045. The two `n`s are different things. |
+| `rbinom(1, n, 0.045)` | `1` fills R's first slot (R's help calls it `n`: how many random counts to draw). The function's own input, `n` trips, fills the second slot, `size`. Same letter, two jobs: only the position tells R which is which. `0.045` fills `prob`. |
 | `times_caught <-` | Stores the drawn count inside the function. |
 | `return(times_caught/n)` | `/` divides; `return()` hands the proportion back to whoever called the function. |
 

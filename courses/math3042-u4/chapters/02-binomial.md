@@ -23,9 +23,56 @@ How many of the scrolls you pass on an item will succeed? *There are some random
 
 Drawing cards without replacement breaks 3 and 4 at once (the hypergeometric distribution handles that); "keep rolling until a 6" breaks 1 (the geometric).
 
+## The binomial formula
+
+Three Intermediate scrolls at $p = 0.6$ show where the formula comes from. Each scroll passes (S) or fails (F), so there are $2 \times 2 \times 2 = 8$ paths. A path's probability is the product of its three branches.
+
+```diagram
+{ "type": "grid", "title": "Three scrolls at p = 0.6: all eight paths", "nodes": [
+  { "id": "h0", "label": "Path", "row": 0, "col": 0 }, { "id": "h1", "label": "Branches", "row": 0, "col": 1 }, { "id": "h2", "label": "Successes", "row": 0, "col": 2 }, { "id": "h3", "label": "P(path)", "row": 0, "col": 3 },
+  { "id": "a0", "label": "SSS", "row": 1, "col": 0 }, { "id": "a1", "label": "0.6 × 0.6 × 0.6", "row": 1, "col": 1 }, { "id": "a2", "label": "3", "row": 1, "col": 2 }, { "id": "a3", "label": "0.216", "row": 1, "col": 3 },
+  { "id": "b0", "label": "SSF", "row": 2, "col": 0 }, { "id": "b1", "label": "0.6 × 0.6 × 0.4", "row": 2, "col": 1 }, { "id": "b2", "label": "2", "row": 2, "col": 2 }, { "id": "b3", "label": "0.144", "row": 2, "col": 3 },
+  { "id": "c0", "label": "SFS", "row": 3, "col": 0 }, { "id": "c1", "label": "0.6 × 0.4 × 0.6", "row": 3, "col": 1 }, { "id": "c2", "label": "2", "row": 3, "col": 2 }, { "id": "c3", "label": "0.144", "row": 3, "col": 3 },
+  { "id": "d0", "label": "SFF", "row": 4, "col": 0 }, { "id": "d1", "label": "0.6 × 0.4 × 0.4", "row": 4, "col": 1 }, { "id": "d2", "label": "1", "row": 4, "col": 2 }, { "id": "d3", "label": "0.096", "row": 4, "col": 3 },
+  { "id": "e0", "label": "FSS", "row": 5, "col": 0 }, { "id": "e1", "label": "0.4 × 0.6 × 0.6", "row": 5, "col": 1 }, { "id": "e2", "label": "2", "row": 5, "col": 2 }, { "id": "e3", "label": "0.144", "row": 5, "col": 3 },
+  { "id": "f0", "label": "FSF", "row": 6, "col": 0 }, { "id": "f1", "label": "0.4 × 0.6 × 0.4", "row": 6, "col": 1 }, { "id": "f2", "label": "1", "row": 6, "col": 2 }, { "id": "f3", "label": "0.096", "row": 6, "col": 3 },
+  { "id": "g0", "label": "FFS", "row": 7, "col": 0 }, { "id": "g1", "label": "0.4 × 0.4 × 0.6", "row": 7, "col": 1 }, { "id": "g2", "label": "1", "row": 7, "col": 2 }, { "id": "g3", "label": "0.096", "row": 7, "col": 3 },
+  { "id": "k0", "label": "FFF", "row": 8, "col": 0 }, { "id": "k1", "label": "0.4 × 0.4 × 0.4", "row": 8, "col": 1 }, { "id": "k2", "label": "0", "row": 8, "col": 2 }, { "id": "k3", "label": "0.064", "row": 8, "col": 3 }
+], "hi": ["b0", "b1", "b2", "b3", "c0", "c1", "c2", "c3", "e0", "e1", "e2", "e3"], "caption": "Exactly 2 successes: C(3, 2) = 3 paths, each 0.6² × 0.4 = 0.144, so P(X = 2) = 3 × 0.144 = 0.432." }
+```
+
+Every path with two S has two factors of 0.6 and one of 0.4, in some order, so all three have the same probability. Count the paths, then multiply by the probability of one path: that is the whole formula.
+
+*If a variable $X$ satisfies the conditions of a binomial variable, with $n$ trials and probability $p$ of success, then*
+
+$$P(x) = nCx \cdot p^x \cdot q^{n-x}, \qquad nCx = \frac{n!}{(n-x)!\,x!}, \qquad q = 1 - p$$
+
+Read it as three factors: $nCx$ counts which $x$ of the $n$ trials are the successes (the highlighted rows); $p^x$ is the probability those $x$ trials succeed; $q^{n-x}$ is the probability the other $n - x$ trials fail. The exponent on $q$ is $n - x$, the number of failures. C(n, x), $nCx$ and `choose(n, x)` are the same count. On the calculator $nCx$ is `n  2ndF  nCr  x`.
+
+$$P(2) = 3C2 \cdot 0.6^2 \cdot 0.4^1 = 3 \times 0.36 \times 0.4 = 0.432$$
+
+Check: the 8 path probabilities add to 1, and R's `dbinom(2, 3, 0.6)` gives 0.432.
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `choose(n, x)` | Counts the ways to choose x items from n: nCx. R's own names for the two slots are `n` and `k`. |
+| `dbinom(2, 3, 0.6)` | The binomial P(X = x): x = 2, size = 3 (n), prob = 0.6 (p). |
+
+**Left to right**
+
+- `choose(n, x)`: "The number of combinations (`choose`) of n items (`n`) taken x at a time (`x`)."
+- `dbinom(2, 3, 0.6)`: "The binomial probability of exactly (`dbinom`) 2 successes (`x = 2`) in 3 trials (`size = 3`) at chance 0.6 (`prob = 0.6`)."
+
+**Right to left**, the order R runs it
+
+- `choose(n, x)`: "Look up n and x (`n`, `x`), count the combinations (`choose`), and return the count."
+- `dbinom(2, 3, 0.6)`: "Take x = 2, size = 3 and prob = 0.6, compute P(X = 2) (`dbinom`), and print."
+:::
+
 ## The shape of the shoppers' distribution
 
-The demo notebook builds $P(0), \ldots, P(50)$ with `choose()` and draws the probability histogram: a bell peaking at 12 and 13 (about 0.13 each), essentially zero past 25.
+The loop below applies the formula once for each $x$ from 0 to 50. The demo notebook builds $P(0), \ldots, P(50)$ with `choose()` and draws the probability histogram: a bell peaking at 12 and 13 (about 0.13 each), essentially zero past 25.
 
 ```r
 n <- 50
@@ -82,28 +129,6 @@ binomial-calc
 { "n": 50, "p": 0.25, "x": 6, "op": "eq", "preset": "online shoppers", "conditions": true, "title": "Online shoppers: the four conditions and P(X = 6) with the formula substituted" }
 ```
 
-## The binomial formula
-
-*If a variable $X$ satisfies the conditions of a binomial variable, with $n$ trials and probability $p$ of success, then*
-
-$$P(x) = nCx \cdot p^x \cdot q^{n-x}, \qquad nCx = \frac{n!}{(n-x)!\,x!}, \qquad q = 1 - p$$
-
-Read it as three factors: $nCx$ counts which $x$ of the $n$ trials are the successes; $p^x$ is the probability those $x$ trials succeed; $q^{n-x}$ is the probability the other $n - x$ trials fail. The exponent on $q$ is $n - x$, the number of failures. On the calculator $nCx$ is `n  2ndF  nCr  x`; in R it is `choose(n, x)`.
-
-:::info R syntax
-| Code | What it does |
-|---|---|
-| `choose(n, x)` | Counts the ways to choose x items from n: nCx. R's own names for the two slots are `n` and `k`. |
-
-**Left to right**
-
-- `choose(n, x)`: "The number of combinations (`choose`) of n items (`n`) taken x at a time (`x`)."
-
-**Right to left**, the order R runs it
-
-- `choose(n, x)`: "Look up n and x (`n`, `x`), count the combinations (`choose`), and return the count."
-:::
-
 ## Seven Intermediate scrolls at 60 % each
 
 In MapleStory Classic an Intermediate scroll, the second of the four scroll tiers, succeeds 60 % of the time, by meowdb's copy of the in-game item text [Classic, Classic World Intermediate scroll, checked 2026-10-27]. You plan to use 7 of them on one item, and X = the number that succeed. Each use passes with the same fixed 60 %, one use does not change the next, and n = 7 is fixed in advance, so X is binomial with $n = 7$, $p = 0.6$.
@@ -145,6 +170,48 @@ dbinom(5, 7, 0.6)
 
 - `dbinom(5, 7, 0.6)`: "Take x = 5, size = 7 and prob = 0.6, compute P(X = 5) (`dbinom`), and print it."
 - `1 - pbinom(4, 7, 0.6)`: "Take q = 4, size = 7 and prob = 0.6, compute P(X ≤ 4) (`pbinom`), subtract it from 1 (`1 -`), and print it."
+:::
+
+Why 4 and not 5: `pbinom(x, n, p)` is the cumulative $P(X \le x)$, everything up to and including $x$. "At least 5" keeps 5, 6 and 7, so the part to subtract is everything up to 4.
+
+```diagram
+{ "type": "grid", "title": "Seven scrolls: where the cut falls for at least 5", "nodes": [
+  { "id": "h", "label": "x", "row": 0, "col": 0 },
+  { "id": "x0", "label": "0", "row": 0, "col": 1 }, { "id": "x1", "label": "1", "row": 0, "col": 2 }, { "id": "x2", "label": "2", "row": 0, "col": 3 }, { "id": "x3", "label": "3", "row": 0, "col": 4 }, { "id": "x4", "label": "4", "row": 0, "col": 5 }, { "id": "x5", "label": "5", "row": 0, "col": 6 }, { "id": "x6", "label": "6", "row": 0, "col": 7 }, { "id": "x7", "label": "7", "row": 0, "col": 8 },
+  { "id": "r", "label": "side", "row": 1, "col": 0 },
+  { "id": "s0", "label": "≤ 4", "row": 1, "col": 1 }, { "id": "s1", "label": "≤ 4", "row": 1, "col": 2 }, { "id": "s2", "label": "≤ 4", "row": 1, "col": 3 }, { "id": "s3", "label": "≤ 4", "row": 1, "col": 4 }, { "id": "s4", "label": "≤ 4", "row": 1, "col": 5 }, { "id": "s5", "label": "≥ 5", "row": 1, "col": 6 }, { "id": "s6", "label": "≥ 5", "row": 1, "col": 7 }, { "id": "s7", "label": "≥ 5", "row": 1, "col": 8 }
+], "hi": ["x5", "x6", "x7", "s5", "s6", "s7"], "caption": "Cut between 4 and 5: pbinom(4, 7, 0.6) = 0.5801 is everything left of the cut, so P(X ≥ 5) = 1 − 0.5801 = 0.4199." }
+```
+
+:::tip Words to R
+| Words | Set of $x$ | Complement | R ($n = 7$, $p = 0.6$) |
+|---|---|---|---|
+| at most 4 | {0, …, 4} | none needed | `pbinom(4, 7, 0.6)` |
+| fewer than 5 | {0, …, 4} | none needed | `pbinom(4, 7, 0.6)` |
+| at least 5 | {5, 6, 7} | $1 - P(X \le 4)$ | `1 - pbinom(4, 7, 0.6)` |
+| more than 5 | {6, 7} | $1 - P(X \le 5)$ | `1 - pbinom(5, 7, 0.6)` |
+
+For "at least $x$", subtract `p*(x - 1, …)` from 1. The geometric is the one exception (its R function counts failures); its lesson has the shifted table.
+:::
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `pbinom(4, 7, 0.6)` | `pbinom(q, size, prob)`: P(X ≤ 4) with size = 7 (n) and prob = 0.6 (p). |
+| `1 - pbinom(4, 7, 0.6)` | As in the block above: one minus P(X ≤ 4), so P(X ≥ 5). |
+| `1 - pbinom(5, 7, 0.6)` | q = 5, so one minus P(X ≤ 5): P(X ≥ 6), "more than 5". |
+
+**Left to right**
+
+- `pbinom(4, 7, 0.6)`: "The binomial probability of at most (`pbinom`) 4 successes (`q = 4`) in 7 trials (`size = 7`) at chance 0.6 (`prob = 0.6`)."
+- `1 - pbinom(4, 7, 0.6)`: "One minus (`1 -`) the probability of at most (`pbinom`) 4 successes (`q = 4`) in 7 trials (`size = 7`) at 0.6 (`prob = 0.6`)."
+- `1 - pbinom(5, 7, 0.6)`: "One minus (`1 -`) the probability of at most (`pbinom`) 5 successes (`q = 5`) in 7 trials (`size = 7`) at 0.6 (`prob = 0.6`)."
+
+**Right to left**, the order R runs it
+
+- `pbinom(4, 7, 0.6)`: "Take q = 4, size = 7 and prob = 0.6, and compute P(X ≤ 4) (`pbinom`)."
+- `1 - pbinom(4, 7, 0.6)`: "Compute P(X ≤ 4) (`pbinom`), then subtract it from 1 (`1 -`)."
+- `1 - pbinom(5, 7, 0.6)`: "Compute P(X ≤ 5) (`pbinom`), then subtract it from 1 (`1 -`)."
 :::
 
 ### Seven scroll uses: the eight bars and P(X ≥ 5)
@@ -311,7 +378,7 @@ binomial-calc
 { "preset": "2 jacks in 5 (with replacement)", "x": 2, "op": "ge", "title": "Jacks in 5 cards with replacement: the bars for = 2 and for ≥ 2" }
 ```
 
-`pbinom(x, n, p)` is the cumulative $P(X \le x)$, so $P(X \ge 2) = 1 - P(X \le 1)$ is `1 - pbinom(1, ...)`.
+By the Words to R table, "at least 2" is $1 - P(X \le 1)$, which is `1 - pbinom(1, ...)`.
 
 ```r
 dbinom(2, 5, 4/52)
@@ -434,7 +501,7 @@ Star Force, the GMS enhancement that adds stars to gear, succeeds 40 % at 12→1
     "q": "For the rolling-3s experiment (n = 5, p = 1/6), P(X = 0) and P(X = 1) are equal.",
     "type": "tf",
     "answer": true,
-    "explain": "P(0) = (5/6)⁵ = 3125/7776 and P(1) = 5 (1/6)(5/6)⁴ = 3125/7776: both 0.4019, because 5 × (1/6) = (5/6) × 1 trades one factor of 5/6 for the 5 ways to place the single 3."
+    "explain": "P(0) = (5/6)⁵ = 3125/7776 and P(1) = 5 (1/6)(5/6)⁴ = 3125/7776: both 0.4019. Divide P(1) by P(0): 5 · (1/6)(5/6)⁴ ÷ (5/6)⁵ = 5 · (1/6) ÷ (5/6) = 5 × 1/5 = 1. Swapping one 5/6 for 1/6 makes the product 5 times smaller, and the 5 places the single 3 can sit make it 5 times bigger again."
   }
 ]
 ```

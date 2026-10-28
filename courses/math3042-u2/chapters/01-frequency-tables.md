@@ -40,7 +40,14 @@ BCIT.students <- read.csv(file.path("Data", "BCIT.students.csv"), row.names = 1)
 - "Join the folder Data and the file name into one path (`file.path`), read that file into a data frame with column 1 as the row labels (`read.csv`, `row.names = 1`), and store it under the name BCIT.students (`BCIT.students <-`)."
 :::
 
-The printed notes show `read.csv("Data\BCIT.students.txt", row.names = 1, sep="")`, which does not run: `"\B"` is not a valid R escape, and `sep=""` splits on spaces rather than commas. `file.path()` joins the folder and file name with the right separator, as the demo notebook does.
+`row.names = 1` makes the first column the row labels, not data. `BCIT.students$Eye.Colour` is then the eye-colour column, like `TenMileRace$net` in Lab 1.
+
+:::warn The printed notes' version does not run
+The printed notes show `read.csv("Data\BCIT.students.txt", row.names = 1, sep="")`. `file.path()` above joins the folder and file name with the right separator, as the demo notebook does.
+
+- `\B` is not an escape R knows, so the string fails.
+- `sep=""` splits on spaces, not commas.
+:::
 
 :::info R syntax
 | Code | What it does |
@@ -58,8 +65,6 @@ The printed notes show `read.csv("Data\BCIT.students.txt", row.names = 1, sep=""
 
 - `read.csv("Data\BCIT.students.txt", row.names = 1, sep="")`: "Read the path string (`"Data\BCIT.students.txt"`) and fail at the unknown escape `\B`; had it parsed, R would set the row labels and separator (`row.names = 1`, `sep=""`) and then read the file (`read.csv`)."
 :::
-
-`row.names = 1` makes the first column the row labels, not data. `BCIT.students$Eye.Colour` is then the eye-colour column, like `TenMileRace$net` in Lab 1.
 
 ## Step 1: the frequency table
 
@@ -164,7 +169,17 @@ pie(freq.tab, radius=1.0, main="Eye Colour in BCIT Students (n = 302)")
 - "Take the counts (`freq.tab`), set the radius to 1.0 (`radius=1.0`) and the title (`main=`), then draw the pie (`pie`)."
 :::
 
-One slice per category, and the **angle of each slice is the category's relative frequency** $x/n$: Brown is $130/302 = 43\%$ of the circle, Green $10/302 = 3.3\%$. The instructor's annotation: **"shows relative frequency."** A pie answers "what fraction of the sample is Brown?" at a glance. It is bad at precise comparison: you cannot read off whether Black (95) beats Blue (52).
+One slice per category. Each slice's angle is the category's relative frequency times 360°. Brown: $130/302 = 0.4305$, and $0.4305 \times 360° = 155.0°$. Green: $10/302 \times 360° = 11.9°$. Check: the five angles in the pie add to 360°.
+
+:::tip Pie angle
+angle $= \dfrac{f}{n} \times 360°$, where $f$ is the category's count and $n$ the sample size.
+:::
+
+```diagram
+{"type": "flow", "nodes": [{"id": "c", "label": "Brown count", "sub": "f = 130"}, {"id": "p", "label": "Relative freq", "sub": "130 / 302 = 0.4305"}, {"id": "a", "label": "Angle", "sub": "0.4305 × 360° = 155.0°"}], "edges": [{"from": "c", "to": "p", "label": "÷ n"}, {"from": "p", "to": "a", "label": "× 360°"}], "hi": ["a"], "caption": "Angle = f/n × 360°: Brown's 130 of 302 students take 155.0° of the circle."}
+```
+
+The instructor's annotation: **"shows relative frequency."** A pie answers "what fraction of the sample is Brown?" at a glance. It is bad at precise comparison: you cannot read off whether Black (95) beats Blue (52).
 
 R draws the slices in alphabetical order, counter-clockwise from 3 o'clock, in its default colours (white, light blue, misty rose, light cyan, lavender). `radius=1.0` fills the plotting area; `main=` is the title.
 
@@ -208,7 +223,7 @@ cat-charts
 
 ## 124 117 PoE2 characters by base class
 
-Each character counts once under its ascendancy, the specialization picked inside one of eight base classes. Summed per base class, the counts make one categorical variable with real counts that sum to $n = 124\,117$ tracked characters, not every player.
+Every PoE2 character belongs to exactly one of eight base classes. Counting characters per base class gives one categorical variable: 8 categories, $n = 124\,117$ tracked characters (not every player).
 
 ```quiz
 [

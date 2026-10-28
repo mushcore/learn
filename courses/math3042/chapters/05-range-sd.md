@@ -10,23 +10,26 @@ How far does a Divine Orb's daily price stray in a quiet week, and what does one
 
 $R = \text{maximum } X - \text{minimum } X$
 
-Classroom ages: $R = 35 - 18 = 17$ years. It depends on only **two** values, so one weird data point changes everything.
+Ages 22, 19, 20, 22, 35, 19, 21, 23 (lesson 3): $R = 35 - 19 = 16$ years. It depends on only **two** values, so one weird data point changes everything.
 
 ## Standard deviation
 
 The **typical distance of the $X$ values away from the mean**. Same units as $X$.
+
+Why square? For 5.0, 4.5, 6.0, 7.0, 5.2 (mean 5.54) the plain deviations $X - \bar{X}$ are −0.54, −1.04, +0.46, +1.46, −0.34, and they add to 0. They always do, so their average says nothing. Squaring makes every term positive; the square root at the end returns to the units of $X$.
 
 | | Formula | Kind |
 |---|---|---|
 | Sample sd | $s = \sqrt{\frac{\sum (X - \bar{X})^2}{n - 1}}$ | statistic |
 | Population sd | $\sigma = \sqrt{\frac{\sum (X - \mu)^2}{N}}$ | parameter |
 
-:::warn Four facts
+:::warn Three facts
 - Sample $s$ divides by **$n - 1$**, not $n$. Reason given in the notes: this makes $s$ a **better approximation of $\sigma$** ($s^2$ is an *unbiased estimator* of $\sigma^2$).
 - $s$ uses the sample mean $\bar{X}$; $\sigma$ uses the population mean $\mu$.
-- The **units of $s$ and $\sigma$ are the same as the units of $X$** (unlike variance, which is squared).
-- Standard deviation depends on **all** of the data values — unlike $R$ and $IQR$.
+- Standard deviation depends on **all** of the data values — unlike $R$ and $IQR$ (the spread of the middle half, lesson 11).
 :::
+
+$s^2$, the value before the square root, is the **variance**; its units are squared, while $s$ and $\sigma$ have the units of $X$.
 
 ### s for the lecture sample 5.0, 4.5, 6.0, 7.0, 5.2
 
@@ -49,7 +52,7 @@ Each part of the formula is linked to its step in the working and its bar in the
 $$s = \tag{sqrt}{\sqrt{\tag{frac}{\frac{\tag{dev}{\sum (X - \bar{X})^2}}{\tag{nm1}{n - 1}}}}}$$
 
 1. Mean: $\bar{X} = \frac{5.0 + 4.5 + 6.0 + 7.0 + 5.2}{5} = \frac{27.7}{5} = 5.54$
-2. Deviations squared: {{dev-0}}$(5.0-5.54)^2${{/dev-0}} + {{dev-1}}$(4.5-5.54)^2${{/dev-1}} + {{dev-2}}$(6.0-5.54)^2${{/dev-2}} + {{dev-3}}$(7.0-5.54)^2${{/dev-3}} + {{dev-4}}$(5.2-5.54)^2${{/dev-4}}
+2. Deviations: $-0.54, -1.04, 0.46, 1.46, -0.34$ (sum 0). Squared: {{dev-0}}$(5.0-5.54)^2${{/dev-0}} + {{dev-1}}$(4.5-5.54)^2${{/dev-1}} + {{dev-2}}$(6.0-5.54)^2${{/dev-2}} + {{dev-3}}$(7.0-5.54)^2${{/dev-3}} + {{dev-4}}$(5.2-5.54)^2${{/dev-4}}
    $=$ {{dev-0}}$0.2916${{/dev-0}} $+$ {{dev-1}}$1.0816${{/dev-1}} $+$ {{dev-2}}$0.2116${{/dev-2}} $+$ {{dev-3}}$2.1316${{/dev-3}} $+$ {{dev-4}}$0.1156${{/dev-4}} $=$ {{dev}}$3.832${{/dev}}
 3. Divide by {{nm1}}$n - 1 = 4${{/nm1}}: {{frac}}$3.832 / 4 = 0.958${{/frac}}
 4. Square root: {{sqrt}}$s = \sqrt{0.958} = \mathbf{0.9788}${{/sqrt}}
@@ -99,6 +102,10 @@ poe.ninja's daily price of a Divine Orb, PoE1's high-value currency, in chaos or
 
 The single 324.0 day supplies 256 of the 348, so it dominates both $R$ and $s$. Treated as the whole population, the same week gives $\sigma = \sqrt{348/7} = 7.051$ chaos.
 
+:::tip s or σ?
+If the data are some of the group (the usual case, and any question that says "sample"), use $s$ with $n - 1$. R's `sd()` and the calculator's $s_x$ give this. Use $\sigma$ with $N$ only when the question says the data are the whole population.
+:::
+
 ### One bar per day
 
 The 324.0 bar towers over the other six.
@@ -114,7 +121,18 @@ When you only have a frequency table, use class marks $X_i$ and frequencies $f_i
 
 $\bar{X} = \frac{\sum f_i X_i}{\sum f_i}$ and $s = \sqrt{\frac{\sum f_i (X_i - \bar{X})^2}{\sum f_i - 1}}$
 
-This is Lab 1 pencil problem 2 (steel rods, $n = 350$): $\bar{X} = 10.02071$ mm, $s = 0.01200781$ mm.
+This is Lab 1 pencil problem 2 (steel rods, $n = 350$). Lesson 3 found $\bar{X} = 10.02071$ mm. Each row of the table below takes one class mark's distance from that mean, squares it, then counts it $f_i$ times:
+
+| $X_i$ | $f_i$ | $X_i - \bar{X}$ | $(X_i - \bar{X})^2$ | $f_i(X_i - \bar{X})^2$ |
+|---|---|---|---|---|
+| 10.00 | 40 | −0.02071 | 0.00042908 | 0.0171633 |
+| 10.01 | 75 | −0.01071 | 0.00011480 | 0.0086097 |
+| 10.02 | 100 | −0.00071 | 0.00000051 | 0.0000510 |
+| 10.03 | 90 | 0.00929 | 0.00008622 | 0.0077602 |
+| 10.04 | 45 | 0.01929 | 0.00037194 | 0.0167372 |
+| | **350** | | | **Σ = 0.0503214** |
+
+$s = \sqrt{0.0503214/349} = \sqrt{0.000144187} = \mathbf{0.012008}$ mm. $\sum f_i - 1 = 349$ is just $n - 1$, because $\sum f_i = n$. Check: 0.012 mm is about one 0.01 mm step between class marks, a sensible typical distance.
 
 ```widget
 grouped-mean
@@ -139,7 +157,7 @@ Shift the window: the Allflame Divine prices for 18 to 22 September 2026 are 345
 ```quiz
 [
   {
-    "q": "Same data, but treat it as a whole **population**. What is $\\sigma$? (3 decimals)",
+    "q": "The lecture sample 5.0, 4.5, 6.0, 7.0, 5.2 ($\\sum(X - \\bar{X})^2 = 3.832$), treated as a whole **population**: what is $\\sigma$? (3 decimals)",
     "type": "numeric",
     "answer": 0.875,
     "tolerance": 0.002,

@@ -5,6 +5,18 @@ minutes: 60
 
 Lab 4 said its pencil problems were "posted separately"; this is that sheet, 28 problems with an answer key, in the sheet's own wording. Each answer's explanation holds the worked solution with the rule named: NOT (complement), OR (addition), AND (multiplication), counting with $P$ and $C$, a conditional read off a table, or Bayes. Answers are the key's, to the key's decimals.
 
+:::tip Which rule: read the question's words first
+| words in the question | rule | first line to write |
+|---|---|---|
+| not, at least one, fewer than | NOT | $P(\bar{A}) = 1 - P(A)$, e.g. 1 − P(none) |
+| or, either | OR | $P(A) + P(B) - P(A \cap B)$; drop the overlap only if mutually exclusive |
+| and, both, then, all | AND | $P(A)\,P(B \mid A)$; $P(A)\,P(B)$ if independent or with replacement |
+| exactly one (of several picks) | AND, then count the orders | one order's product × the number of orders |
+| how many ways, a hand, in order | counting | $C(n, r)$ for a hand, $P(n, r)$ for an order |
+| if the worker…, given, among | conditional | cell over the row or column total |
+| what fraction of the defective / positive / serviced ones | Bayes | one path over the sum of the paths |
+:::
+
 ## 1. Two dice
 
 You roll two six-sided fair dice. Determine the probability that the total is: (a) equal to 12, (b) equal to 1, (c) at least 10, (d) an even number.
@@ -80,7 +92,7 @@ A carton of 24 light bulbs includes 3 that are defective. If two of the bulbs ar
 ```quiz
 [
   { "q": "(a) P(neither defective)? (4 decimals)", "type": "numeric", "answer": 0.7609, "tolerance": 0.0003, "explain": "C(21, 2)/C(24, 2) = 210/276 = 0.7609, or (21/24)(20/23)." },
-  { "q": "(b) P(exactly one defective)? (4 decimals)", "type": "numeric", "answer": 0.2283, "tolerance": 0.0003, "explain": "3 × 21 pairs with one of each: 63/276 = 0.2283." },
+  { "q": "(b) P(exactly one defective)? (4 decimals)", "type": "numeric", "answer": 0.2283, "tolerance": 0.0003, "explain": "One defective (3 choices) and one good (21 choices) make 3 × 21 = 63 unordered pairs: 63/276 = 0.2283. By orders: DG and GD each give (3/24)(21/23) = 0.1141, × 2 = 0.2283." },
   { "q": "(c) P(both defective)? (4 decimals)", "type": "numeric", "answer": 0.0109, "tolerance": 0.0003, "explain": "C(3, 2)/C(24, 2) = 3/276 = 0.0109. The three parts sum to 1." }
 ]
 ```
@@ -153,7 +165,7 @@ Assume that a certain batch of 200 castings contains 5 defectives. Calculate the
 [
   { "q": "(a) P(one casting defective)? (3 decimals)", "type": "numeric", "answer": 0.025, "tolerance": 0.0003, "explain": "5/200 = 0.025." },
   { "q": "(b) P(three selected, all defective)? (as a decimal, e.g. 0.00000761)", "type": "numeric", "answer": 0.00000761, "tolerance": 0.00000005, "explain": "AND rule without replacement: (5/200)(4/199)(3/198) = 60/7 880 400 = 7.61 × 10^-6." },
-  { "q": "(c) P(three selected, exactly one defective)? (4 decimals)", "type": "numeric", "answer": 0.072, "tolerance": 0.0003, "explain": "The defective can be the 1st, 2nd or 3rd pick: 3 × (5/200)(195/199)(194/198) = 7.20 × 10^-2. The same as C(5, 1) C(195, 2)/C(200, 3) = 0.0720." },
+  { "q": "(c) P(three selected, exactly one defective)? (4 decimals)", "type": "numeric", "answer": 0.072, "tolerance": 0.0003, "explain": "The orders DNN, NDN and NND each give the same product, (5 · 195 · 194)/(200 · 199 · 198) = 0.0240, because only the order of the factors changes. Three orders, so × 3 = 0.0720: the same order-counting as lesson 5's exactly-one-Ace tree. Check: C(5, 1) C(195, 2)/C(200, 3) = 0.0720." },
   { "q": "(d) P(two selected, at least one defective)? (4 decimals)", "type": "numeric", "answer": 0.0495, "tolerance": 0.0003, "explain": "NOT rule: 1 − P(neither) = 1 − (195/200)(194/199) = 1 − 0.9505 = 0.0495." }
 ]
 ```
@@ -192,7 +204,7 @@ A storage bin contains 200 injection molded parts from 4 cavities. One of the 4 
 ```quiz
 [
   { "q": "(a) P(both defective)? (5 decimals)", "type": "numeric", "answer": 0.06156, "tolerance": 0.00005, "explain": "50 of the 200 parts are from the faulty cavity: (50/200)(49/199) = 0.06156." },
-  { "q": "(b) P(only one defective)? (4 decimals)", "type": "numeric", "answer": 0.3769, "tolerance": 0.0003, "explain": "Defective first or second: 2 × (50/200)(150/199) = 0.3769." }
+  { "q": "(b) P(only one defective)? (4 decimals)", "type": "numeric", "answer": 0.3769, "tolerance": 0.0003, "explain": "The orders DN and ND each give (50 · 150)/(200 · 199) = 0.1884, the same factors in another order. Two orders: 2 × 0.1884 = 0.3769." }
 ]
 ```
 
@@ -205,7 +217,7 @@ Four machines, a drill, a lathe, a grinder and a miller operate independently of
 [
   { "q": "(a) P(all four idle)? (6 decimals)", "type": "numeric", "answer": 0.009216, "tolerance": 0.000005, "explain": "NOT each utilization, then the AND rule: 0.48 × 0.40 × 0.32 × 0.15 = 0.009216." },
   { "q": "(b) P(drill or lathe utilized)? (3 decimals)", "type": "numeric", "answer": 0.808, "tolerance": 0.0005, "explain": "NOT rule on 'both idle': 1 − 0.48 × 0.40 = 0.808; or the OR rule 0.52 + 0.60 − 0.52 × 0.60 = 0.808." },
-  { "q": "(c) P(at least two utilized)? (6 decimals)", "type": "numeric", "answer": 0.895168, "tolerance": 0.000005, "explain": "1 − P(none) − P(exactly one) = 1 − 0.009216 − 0.095616 = 0.895168. P(exactly one) = 0.52(0.40)(0.32)(0.15) + 0.48(0.60)(0.32)(0.15) + 0.48(0.40)(0.68)(0.15) + 0.48(0.40)(0.32)(0.85) = 0.009984 + 0.013824 + 0.019584 + 0.052224 = 0.095616." }
+  { "q": "(c) P(at least two utilized)? (6 decimals)", "type": "numeric", "answer": 0.895168, "tolerance": 0.000005, "explain": "At least two = NOT (none or exactly one). Exactly one is four orders, one per machine in use: (1) drill only 0.52(0.40)(0.32)(0.15) = 0.009984; (2) lathe only 0.48(0.60)(0.32)(0.15) = 0.013824; (3) miller only 0.48(0.40)(0.68)(0.15) = 0.019584; (4) grinder only 0.48(0.40)(0.32)(0.85) = 0.052224. Sum: P(exactly one) = 0.095616. NOT step: 1 − 0.009216 − 0.095616 = 0.895168." }
 ]
 ```
 
@@ -247,9 +259,28 @@ A lot consists of 10 articles. 6 of the articles have defects and the rest are g
 
 Two surge protectors p and q are used to protect an expensive television. If there is a surge in the voltage, the surge protector reduces it to a safe level. Assume that each surge protector has a 99% chance of working properly when a voltage surge occurs. (a) If two surge protectors are arranged in series, what is the probability that a voltage surge will not damage the television? (b) If two surge protectors are arranged in parallel, what is the probability that a voltage surge will not damage the television?
 
+```diagram
+{ "type": "flow", "nodes": [
+  { "id": "s", "label": "Surge" },
+  { "id": "p", "label": "p", "sub": "works 0.99" },
+  { "id": "q", "label": "q", "sub": "works 0.99" },
+  { "id": "tv", "label": "TV" }
+], "edges": [ { "from": "s", "to": "p" }, { "from": "p", "to": "q" }, { "from": "q", "to": "tv" } ], "hi": ["p", "q"], "caption": "Series: the surge meets p, then q. Either one working cuts it, so damage needs both to fail." }
+```
+
+```diagram
+{ "type": "tree", "nodes": [
+  { "id": "s", "label": "Surge" },
+  { "id": "p", "label": "p", "sub": "works 0.99", "parent": "s" },
+  { "id": "q", "label": "q", "sub": "works 0.99", "parent": "s" },
+  { "id": "tp", "label": "TV", "parent": "p" },
+  { "id": "tq", "label": "TV", "parent": "q" }
+], "hi": ["p", "q"], "caption": "Parallel: the surge splits and reaches the TV along both paths, so in the key's reading p and q must both work." }
+```
+
 ```quiz
 [
-  { "q": "(a) In series, P(television not damaged)? (4 decimals)", "type": "numeric", "answer": 0.9999, "tolerance": 0.00005, "explain": "The surge must get past both: damage needs both to fail, 0.01 × 0.01; NOT rule gives 1 − 0.0001 = 0.9999." },
+  { "q": "(a) In series, P(television not damaged)? (4 decimals)", "type": "numeric", "answer": 0.9999, "tolerance": 0.00005, "explain": "In series the surge meets p, then q. The TV is damaged only if p fails AND q fails: 0.01 × 0.01 = 0.0001. NOT rule: 1 − 0.0001 = 0.9999." },
   { "q": "(b) In parallel, P(television not damaged)? (4 decimals)", "type": "numeric", "answer": 0.9801, "tolerance": 0.0003, "explain": "The key's reading: the surge travels both paths, so both protectors must work: 0.99 × 0.99 = 0.9801. Series is the better arrangement here." }
 ]
 ```
@@ -363,7 +394,3 @@ If a person has recently been sick with COVID-19, their blood contains antibodie
 bayes-tree
 { "preset": "COVID serology" }
 ```
-
-:::quiz Which rule
-"Not", "at least one", "fewer than": NOT rule on the complement. "Or", "either": OR rule, subtract the overlap unless mutually exclusive. "And", "both", "then", "all": AND rule, with the second factor conditional unless the problem says independent or draws with replacement. "How many ways", "a hand", "in order": $C$ or $P$. "If the worker ..." or "given": restrict the table. "What fraction of the defective / positive / serviced ones": Bayes, one path over the sum of paths.
-:::

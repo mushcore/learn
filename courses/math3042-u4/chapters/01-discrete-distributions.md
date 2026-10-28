@@ -78,28 +78,37 @@ cbind(p.vals)
 
 *The mean and standard deviation of a random variable $X$ are called the parameters of its probability distribution.*
 
-The notes start from a fair six-sided die. `sample(1:6, 100, replace=TRUE)` gave 100 rolls whose mean was `sum(X.vals) / 100` = **3.38**. For *all possible* rolls, each face carries probability $\frac16$:
+The notes start from a fair six-sided die. `X.vals <- sample(1:6, 100, replace=TRUE)` stored 100 rolls (X.vals now holds the 100 rolls, replacing 0:3), and their mean was `sum(X.vals) / 100` = **3.38**. For *all possible* rolls, each face carries probability $\frac16$:
 
 $$\mu = \tfrac16 \cdot 1 + \tfrac16 \cdot 2 + \tfrac16 \cdot 3 + \tfrac16 \cdot 4 + \tfrac16 \cdot 5 + \tfrac16 \cdot 6 = \tfrac{21}{6} = 3.5$$
 
 :::info R syntax
 | Code | What it does |
 |---|---|
+| `X.vals <- …` | `<-` stores the 100 rolls under the name `X.vals`, replacing the family values it held. |
 | `sample(1:6, 100, replace=TRUE)` | `sample(x, size, replace)`: x = the faces 1 to 6 (`a:b` counts by 1), size = 100 rolls, and `replace=TRUE` lets a face come up again. |
 | `sum(X.vals) / 100` | `sum()` adds the 100 stored rolls; `/` divides by 100, giving their mean. |
 
 **Left to right**
 
-- `sample(1:6, 100, replace=TRUE)`: "A random sample (`sample`) from the faces 1 to 6 (`1:6`) of 100 values (`size = 100`), with repeats allowed (`replace=TRUE`)."
+- `X.vals <- sample(1:6, 100, replace=TRUE)`: "Store under the name X.vals (`X.vals <-`) a random sample (`sample`) from the faces 1 to 6 (`1:6`) of 100 values (`size = 100`), with repeats allowed (`replace=TRUE`)."
 - `sum(X.vals) / 100`: "The total (`sum`) of the rolls (`X.vals`) divided by (`/`) 100."
 
 **Right to left**, the order R runs it
 
-- `sample(1:6, 100, replace=TRUE)`: "Make the faces 1 to 6 (`1:6`), draw 100 of them with replacement (`sample`, `replace=TRUE`), and return the rolls."
+- `X.vals <- sample(1:6, 100, replace=TRUE)`: "Make the faces 1 to 6 (`1:6`), draw 100 of them with replacement (`sample`, `replace=TRUE`), and store the rolls as X.vals (`X.vals <-`)."
 - `sum(X.vals) / 100`: "Take the rolls (`X.vals`), add them (`sum`), and divide by 100 (`/`)."
 :::
 
-The instructor's bubble: the sample mean $\dfrac{N_1 \cdot 1 + N_2 \cdot 2 + \cdots}{N}$ is the same weighted sum with relative frequencies $N_i/N$ in place of $\frac16$. As $N$ grows, $\bar{X}$ settles at $\mu$; 3.38 is one sample's estimate of 3.5.
+Why the two means are close: $N_i$ is the number of times face $i$ came up in the $N = 100$ rolls. Three faces from one illustrative run:
+
+| face | count $N_i$ in 100 rolls | $N_i/100$ | probability |
+|---|---|---|---|
+| 1 | 21 | 0.21 | 1/6 = 0.1667 |
+| 2 | 18 | 0.18 | 1/6 = 0.1667 |
+| 6 | 13 | 0.13 | 1/6 = 0.1667 |
+
+The instructor's bubble: the sample mean $\dfrac{N_1 \cdot 1 + N_2 \cdot 2 + \cdots}{N}$ is the same weighted sum as $\mu$. $\bar{X}$ weights each face by its share of the 100 rolls; $\mu$ weights it by 1/6. As the rolls grow, each share approaches 1/6, so $\bar{X}$ settles at $\mu$; 3.38 is one sample's estimate of 3.5.
 
 Definition: if $X$ is a discrete random variable with probability distribution $P(x)$,
 
@@ -122,9 +131,16 @@ A Chaos Orb, the PoE1 currency that rerolls every modifier on a rare item, leave
 ]
 ```
 
-$$\mu = 4 \cdot \tfrac{8}{12} + 5 \cdot \tfrac{3}{12} + 6 \cdot \tfrac{1}{12} = \tfrac{32 + 15 + 6}{12} = \tfrac{53}{12} = 4.42$$
+| $x$ | $P(x)$ | $x\,P(x)$ | $x - \mu$ | $(x - \mu)^2$ | $(x - \mu)^2 P(x)$ |
+|---|---|---|---|---|---|
+| 4 | 8/12 = 0.6667 | 2.6667 | −0.4167 | 0.1736 | 0.1157 |
+| 5 | 3/12 = 0.2500 | 1.2500 | 0.5833 | 0.3403 | 0.0851 |
+| 6 | 1/12 = 0.0833 | 0.5000 | 1.5833 | 2.5069 | 0.2089 |
+| total | 1 | $\mu = 53/12 = 4.4167$ | | | $\sigma^2 = 0.4097$ |
 
-$$\sigma^2 = (4 - 4.4167)^2 \tfrac{8}{12} + (5 - 4.4167)^2 \tfrac{3}{12} + (6 - 4.4167)^2 \tfrac{1}{12} = 0.1157 + 0.0851 + 0.2089 = 0.4097, \qquad \sigma = \sqrt{0.4097} = 0.64$$
+Total the third column for $\mu$; total the last column for $\sigma^2$; take one square root.
+
+$$\sigma = \sqrt{0.4097} = 0.64$$
 
 ```r
 X.vals <- c(4, 5, 6)
@@ -188,10 +204,17 @@ pmf-table
 ]
 ```
 
-$$\mu = 0(0.4499) + 1(0.2504) + 2(0.2048) + 3(0.0949) = 0 + 0.2504 + 0.4096 + 0.2847 = 0.94$$
+| $x$ | $P(x)$ | $x\,P(x)$ | $x - \mu$ | $(x - \mu)^2$ | $(x - \mu)^2 P(x)$ |
+|---|---|---|---|---|---|
+| 0 | 0.4499 | 0 | −0.94 | 0.8836 | 0.3975 |
+| 1 | 0.2504 | 0.2504 | 0.06 | 0.0036 | 0.0009 |
+| 2 | 0.2048 | 0.4096 | 1.06 | 1.1236 | 0.2301 |
+| 3 | 0.0949 | 0.2847 | 2.06 | 4.2436 | 0.4027 |
+| total | 1.0000 | $\mu = 0.9447 \approx 0.94$ | | | $\sigma^2 = 1.03$ |
 
-$$\sigma^2 = (0 - 0.94)^2 (0.4499) + (1 - 0.94)^2 (0.2504) + (2 - 0.94)^2 (0.2048) + (3 - 0.94)^2 (0.0949)$$
-$$= 0.3975 + 0.0009 + 0.2301 + 0.4027 = 1.03, \qquad \sigma = \sqrt{1.03} = 1.016 \approx 1.02$$
+Same layout: third column for $\mu$, last column for $\sigma^2$, one square root.
+
+$$\sigma = \sqrt{1.03} = 1.016 \approx 1.02$$
 
 No family has 0.94 children; the expected value is a long-run average, not a possible value.
 
@@ -242,7 +265,13 @@ The unrounded 0.9447 and 1.0155 agree with the hand values to the two decimals t
 
 ## Minimum of two dice: μ and σ
 
-*The random experiment is rolling two fair six-sided dice. Let $X$ = the minimum of the two die values.* The sample space is the 6 × 6 grid of 36 equally likely pairs. The minimum is 1 whenever either die shows 1: the whole top row and the whole left column, 11 cells. The minimum is 2 on the next L-shape in, 9 cells. Each L inward is 2 cells shorter, so
+*The random experiment is rolling two fair six-sided dice. Let $X$ = the minimum of the two die values.* The sample space is the 6 × 6 grid of 36 equally likely pairs. The minimum is 1 whenever either die shows 1: the whole top row and the whole left column, 11 cells. The minimum is 2 on the next L-shape in, 9 cells. Each L inward is 2 cells shorter.
+
+```diagram
+{"type": "grid", "title": "Two dice: the 36 pairs (first die, second die)", "nodes": [{"id": "c00", "label": "(1,1)", "sub": "min 1", "row": 0, "col": 0}, {"id": "c01", "label": "(1,2)", "sub": "min 1", "row": 0, "col": 1}, {"id": "c02", "label": "(1,3)", "sub": "min 1", "row": 0, "col": 2}, {"id": "c03", "label": "(1,4)", "sub": "min 1", "row": 0, "col": 3}, {"id": "c04", "label": "(1,5)", "sub": "min 1", "row": 0, "col": 4}, {"id": "c05", "label": "(1,6)", "sub": "min 1", "row": 0, "col": 5}, {"id": "c10", "label": "(2,1)", "sub": "min 1", "row": 1, "col": 0}, {"id": "c11", "label": "(2,2)", "sub": "min 2", "row": 1, "col": 1}, {"id": "c12", "label": "(2,3)", "sub": "min 2", "row": 1, "col": 2}, {"id": "c13", "label": "(2,4)", "sub": "min 2", "row": 1, "col": 3}, {"id": "c14", "label": "(2,5)", "sub": "min 2", "row": 1, "col": 4}, {"id": "c15", "label": "(2,6)", "sub": "min 2", "row": 1, "col": 5}, {"id": "c20", "label": "(3,1)", "sub": "min 1", "row": 2, "col": 0}, {"id": "c21", "label": "(3,2)", "sub": "min 2", "row": 2, "col": 1}, {"id": "c22", "label": "(3,3)", "sub": "min 3", "row": 2, "col": 2}, {"id": "c23", "label": "(3,4)", "sub": "min 3", "row": 2, "col": 3}, {"id": "c24", "label": "(3,5)", "sub": "min 3", "row": 2, "col": 4}, {"id": "c25", "label": "(3,6)", "sub": "min 3", "row": 2, "col": 5}, {"id": "c30", "label": "(4,1)", "sub": "min 1", "row": 3, "col": 0}, {"id": "c31", "label": "(4,2)", "sub": "min 2", "row": 3, "col": 1}, {"id": "c32", "label": "(4,3)", "sub": "min 3", "row": 3, "col": 2}, {"id": "c33", "label": "(4,4)", "sub": "min 4", "row": 3, "col": 3}, {"id": "c34", "label": "(4,5)", "sub": "min 4", "row": 3, "col": 4}, {"id": "c35", "label": "(4,6)", "sub": "min 4", "row": 3, "col": 5}, {"id": "c40", "label": "(5,1)", "sub": "min 1", "row": 4, "col": 0}, {"id": "c41", "label": "(5,2)", "sub": "min 2", "row": 4, "col": 1}, {"id": "c42", "label": "(5,3)", "sub": "min 3", "row": 4, "col": 2}, {"id": "c43", "label": "(5,4)", "sub": "min 4", "row": 4, "col": 3}, {"id": "c44", "label": "(5,5)", "sub": "min 5", "row": 4, "col": 4}, {"id": "c45", "label": "(5,6)", "sub": "min 5", "row": 4, "col": 5}, {"id": "c50", "label": "(6,1)", "sub": "min 1", "row": 5, "col": 0}, {"id": "c51", "label": "(6,2)", "sub": "min 2", "row": 5, "col": 1}, {"id": "c52", "label": "(6,3)", "sub": "min 3", "row": 5, "col": 2}, {"id": "c53", "label": "(6,4)", "sub": "min 4", "row": 5, "col": 3}, {"id": "c54", "label": "(6,5)", "sub": "min 5", "row": 5, "col": 4}, {"id": "c55", "label": "(6,6)", "sub": "min 6", "row": 5, "col": 5}], "hi": ["c00", "c01", "c02", "c03", "c04", "c05", "c10", "c20", "c30", "c40", "c50"], "caption": "The minimum is 1 on the outer L of 11 cells (shaded), 2 on the next L of 9, and each L inward is 2 cells shorter: P(x) = (13 − 2x)/36."}
+```
+
+Counting each L over the 36 pairs:
 
 $$P(1) = \tfrac{11}{36}, \; P(2) = \tfrac{9}{36}, \; P(3) = \tfrac{7}{36}, \; P(4) = \tfrac{5}{36}, \; P(5) = \tfrac{3}{36}, \; P(6) = \tfrac{1}{36}$$
 
@@ -260,10 +289,19 @@ $$P(1) = \tfrac{11}{36}, \; P(2) = \tfrac{9}{36}, \; P(3) = \tfrac{7}{36}, \; P(
 ]
 ```
 
-$$\mu = 1 \cdot \tfrac{11}{36} + 2 \cdot \tfrac{9}{36} + 3 \cdot \tfrac{7}{36} + 4 \cdot \tfrac{5}{36} + 5 \cdot \tfrac{3}{36} + 6 \cdot \tfrac{1}{36} = \tfrac{91}{36} = 2.53$$
+| $x$ | $P(x)$ | $x\,P(x)$ | $x - \mu$ | $(x - \mu)^2$ | $(x - \mu)^2 P(x)$ |
+|---|---|---|---|---|---|
+| 1 | 11/36 | 11/36 | −1.53 | 2.3409 | 0.7153 |
+| 2 | 9/36 | 18/36 | −0.53 | 0.2809 | 0.0702 |
+| 3 | 7/36 | 21/36 | 0.47 | 0.2209 | 0.0430 |
+| 4 | 5/36 | 20/36 | 1.47 | 2.1609 | 0.3001 |
+| 5 | 3/36 | 15/36 | 2.47 | 6.1009 | 0.5084 |
+| 6 | 1/36 | 6/36 | 3.47 | 12.0409 | 0.3345 |
+| total | 36/36 | $\mu = 91/36 = 2.53$ | | | $\sigma^2 = 1.97$ |
 
-$$\sigma^2 = (1 - 2.53)^2 \tfrac{11}{36} + (2 - 2.53)^2 \tfrac{9}{36} + (3 - 2.53)^2 \tfrac{7}{36} + (4 - 2.53)^2 \tfrac{5}{36} + (5 - 2.53)^2 \tfrac{3}{36} + (6 - 2.53)^2 \tfrac{1}{36}$$
-$$= 0.7153 + 0.0702 + 0.0430 + 0.3001 + 0.5084 + 0.3345 = 1.97, \qquad \sigma = \sqrt{1.97} = 1.40$$
+$$\sigma = \sqrt{1.97} = 1.40$$
+
+In the widget, click a "minimum 1" cell to light the 11-cell L, then a "minimum 2" cell for the 9-cell L inside it.
 
 ```widget
 pmf-table

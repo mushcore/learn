@@ -14,6 +14,25 @@ $$1 - \frac{1}{k^2}$$
 
 The word "at least" is the whole point: Chebyshev gives a guaranteed lower bound that holds no matter how weird the distribution is. The empirical rule gives an approximate percentage, and only when the data are bell-shaped: write "at least" for a Chebyshev answer and "approximately" for an empirical-rule answer.
 
+:::tip Using the rule in four steps
+1. $k$ = (distance from the mean to the interval end) / $\sigma$.
+2. Inside the interval: **at least** $1 - 1/k^2$.
+3. Outside the interval: **at most** $1/k^2$.
+4. $k$ need not be whole: $k = 1.5$ gives $1 - 1/2.25 = 55.6\%$.
+:::
+
+## Worked example: moisture content
+
+Pencil problem: moisture content has $\mu = 18$, $\sigma = 0.5$, and the shape is **not assumed normal**, so Chebyshev applies.
+
+Question: what fraction of readings are guaranteed to fall between **17 and 19**?
+
+First find $k$: $17$ and $19$ are each $1$ unit from the mean, and $\sigma = 0.5$, so $k = \frac{1}{0.5} = 2$.
+
+$1 - \frac{1}{k^2} = 1 - \frac{1}{4} = 0.75 = \mathbf{75\%}$
+
+At least 75% of moisture readings fall between 17 and 19, whatever the true shape of the distribution, so at most $1/k^2 = 1/4 = 25\%$ fall outside.
+
 ## Comparing the two rules
 
 | $k$ | Chebyshev (at least) | Empirical rule (if normal) |
@@ -27,10 +46,6 @@ Chebyshev's numbers are always smaller (weaker) than the empirical rule's, becau
 ```widget
 chebyshev
 ```
-
-## Why $k = 1$ gives 0%
-
-At $k=1$, Chebyshev guarantees nothing, and the bound is *tight*: a data set with **half the values at $-10$ and half at $+10$** has $\mu = 0$ and $\sigma = 10$, every value at $Z = \pm 1$ exactly, and none strictly between $-1$ and $+1$. Some data set really does achieve the worst case, so Chebyshev cannot promise more than 0% at $k=1$.
 
 ## When to use which rule
 
@@ -48,25 +63,21 @@ meowdb's monster table for MapleStory Classic World, Nexon's separate classic-er
 ]
 ```
 
-| $k$ | Interval (HP) | Inside | Observed | Chebyshev: at least | Empirical rule says |
+| $k$ | Interval (HP) | Inside | Observed | Chebyshev floor | Empirical rule says |
 |---|---|---|---|---|---|
 | 1.5 | −46 500 to 63 700 | 84 | 96.6% | 55.6% | (no band) |
 | 2 | −64 900 to 82 100 | 85 | 97.7% | 75% | 95% |
 | 3 | −102 000 to 119 000 | 86 | 98.9% | 88.9% | 99.7% |
 
-At every $k$ the observed share clears Chebyshev's bound, so the bound is true here, as it must be for any list. The empirical rule's 99.7% at $k = 3$ is not: Jr. Balrog sits outside, leaving 1.1% beyond $\pm 3s$. Chebyshev is also far from tight on this list, 98.9% against a promise of 88.9%; "at least" is a floor, not an estimate.
+At every $k$ the observed share clears Chebyshev's bound, so the bound is true here, as it must be for any list. The empirical rule's 99.7% at $k = 3$ is not: Jr. Balrog sits outside, leaving 1.1% beyond $\pm 3s$. Chebyshev is also far from tight on this list, 98.9% against a promise of 88.9%; the bound is a floor, not an estimate.
 
-## Worked example: moisture content
+## Why $k = 1$ gives 0%
 
-Pencil problem: moisture content has $\mu = 18$, $\sigma = 0.5$, and the shape is **not assumed normal**, so Chebyshev applies.
+At $k=1$, Chebyshev guarantees nothing, and no better promise is possible: a data set with **half the values at $-10$ and half at $+10$** has $\mu = 0$ and $\sigma = 10$, every value at $Z = \pm 1$ exactly, and none strictly between $-1$ and $+1$. Some data set really does achieve the worst case, so Chebyshev cannot promise more than 0% at $k=1$.
 
-Question: what fraction of readings are guaranteed to fall between **17 and 19**?
-
-First find $k$: $17$ and $19$ are each $1$ unit from the mean, and $\sigma = 0.5$, so $k = \frac{1}{0.5} = 2$.
-
-$1 - \frac{1}{k^2} = 1 - \frac{1}{4} = 0.75 = \mathbf{75\%}$
-
-At least 75% of moisture readings fall between 17 and 19, whatever the true shape of the distribution.
+```diagram
+{ "type": "grid", "nodes": [ { "id": "a0", "label": "value", "row": 0, "col": 0 }, { "id": "a1", "label": "−10", "row": 0, "col": 1 }, { "id": "a2", "label": "0", "row": 0, "col": 2 }, { "id": "a3", "label": "+10", "row": 0, "col": 3 }, { "id": "b0", "label": "data", "row": 1, "col": 0 }, { "id": "b1", "label": "half the points", "row": 1, "col": 1 }, { "id": "b2", "label": "none (μ = 0)", "row": 1, "col": 2 }, { "id": "b3", "label": "half the points", "row": 1, "col": 3 }, { "id": "c0", "label": "Z", "row": 2, "col": 0 }, { "id": "c1", "label": "−1", "row": 2, "col": 1 }, { "id": "c2", "label": "0", "row": 2, "col": 2 }, { "id": "c3", "label": "+1", "row": 2, "col": 3 } ], "hi": ["b2"], "caption": "Every point sits exactly on μ − σ = −10 or μ + σ = +10, so 0% lie strictly between: the k = 1 bound of 0% is reached." }
+```
 
 ## Chebyshev bounds for Classic monster EXP
 

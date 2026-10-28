@@ -137,7 +137,14 @@ favstats(~Days, data=quine)
 - "Take the quine data (`data=quine`), find the variable Days named in the formula (`~Days`), and print its favourite statistics (`favstats`)."
 :::
 
-`~Days` is a **model formula**, read "in terms of". With a variable on the left it gives statistics **per group**:
+`~Days` is a **model formula**. With a variable on the left and a group on the right it gives statistics **per group**, read "Days **by** Lrn":
+
+| Formula | Left of ~ | Right of ~ | Result |
+|---|---|---|---|
+| `~Days` | nothing | Days | one summary of Days |
+| `Days~Lrn` | Days (measured) | Lrn (groups) | one row per group |
+| `Days~Eth+Sex` | Days | Eth and Sex | one value per combination, named A.F … |
+
 
 ```r
 favstats(Days~Lrn, data=quine)
@@ -156,7 +163,7 @@ favstats(Days~Lrn, data=quine)
 
 **Left to right**
 
-- "Print the favourite statistics (`favstats`) of Days (`Days`) in terms of (`~`) learner type (`Lrn`), with the columns taken from the quine data (`data=quine`)."
+- "Print the favourite statistics (`favstats`) of Days (`Days`) by (`~`) learner type (`Lrn`), with the columns taken from the quine data (`data=quine`)."
 
 **Right to left**, the order R runs it
 
@@ -190,7 +197,7 @@ round(mean(Days~Sex, data=quine), 1)
 
 **Left to right**
 
-- "Round (`round`) to one decimal place (`1`) the mean (`mean`) of Days (`Days`) in terms of (`~`) sex (`Sex`) in the quine data (`data=quine`)."
+- "Round (`round`) to one decimal place (`1`) the mean (`mean`) of Days (`Days`) by (`~`) sex (`Sex`) in the quine data (`data=quine`)."
 
 **Right to left**, the order R runs it
 
@@ -300,7 +307,7 @@ bwplot(~Days, data=quine, horizontal=TRUE,
 - "Count the rows of quine (`nrow(quine)`), glue that number into the title text (`paste0`, `main=`), set the x-axis label (`xlab="Days Absent"`) and sideways layout (`horizontal=TRUE`), take Days (`~Days`) from quine (`data=quine`), and draw the box plot (`bwplot`)."
 :::
 
-`bwplot` marks the median with a **dot**; the box is 5 to 22.75, the whiskers end at 0 and 48, and circles run out to 81.
+`bwplot` marks the median with a **dot**; the box is 5 to 22.75, the whiskers end at 0 and 48, and circles run out to 81. (48 is the largest Days value inside the upper fence, 49.375, which Task 7 computes; the circles are the 8 values beyond it.)
 
 ### Task 7: how many outliers?
 
@@ -372,7 +379,7 @@ favstats(Days~Sex, data=quine)
 
 **Left to right**
 
-- "Print the favourite statistics (`favstats`) of Days (`Days`) in terms of (`~`) sex (`Sex`), from the quine data (`data=quine`)."
+- "Print the favourite statistics (`favstats`) of Days (`Days`) by (`~`) sex (`Sex`), from the quine data (`data=quine`)."
 
 **Right to left**, the order R runs it
 
@@ -401,8 +408,8 @@ favstats(Days~Eth, data=quine)
 
 **Left to right**
 
-- `bwplot( Days~Eth, data=quine)`: "Draw box plots (`bwplot`) of Days (`Days`) in terms of (`~`) ethnicity (`Eth`), from quine (`data=quine`)."
-- `favstats(Days~Eth, data=quine)`: "Print the favourite statistics (`favstats`) of Days (`Days`) in terms of (`~`) ethnicity (`Eth`), from quine (`data=quine`)."
+- `bwplot( Days~Eth, data=quine)`: "Draw box plots (`bwplot`) of Days (`Days`) by (`~`) ethnicity (`Eth`), from quine (`data=quine`)."
+- `favstats(Days~Eth, data=quine)`: "Print the favourite statistics (`favstats`) of Days (`Days`) by (`~`) ethnicity (`Eth`), from quine (`data=quine`)."
 
 **Right to left**, the order R runs it
 
@@ -437,7 +444,7 @@ mean(Days~Eth+Sex, data=quine)
 
 **Left to right**
 
-- "Print the mean (`mean`) of Days (`Days`) in terms of (`~`) ethnicity (`Eth`) and also (`+`) sex (`Sex`), from quine (`data=quine`)."
+- "Print the mean (`mean`) of Days (`Days`) by (`~`) ethnicity (`Eth`) and also (`+`) sex (`Sex`), from quine (`data=quine`)."
 
 **Right to left**, the order R runs it
 
@@ -596,7 +603,7 @@ quantile(Days~Lrn, data=quine, prob=c(0.2, 0.4, 0.6, 0.8))
 
 **Left to right**
 
-- "Print the percentiles (`quantile`) of Days (`Days`) in terms of (`~`) learner type (`Lrn`) from quine (`data=quine`), at the combination (`c`) of 20, 40, 60 and 80% (`prob=c(0.2, 0.4, 0.6, 0.8)`)."
+- "Print the percentiles (`quantile`) of Days (`Days`) by (`~`) learner type (`Lrn`) from quine (`data=quine`), at the combination (`c`) of 20, 40, 60 and 80% (`prob=c(0.2, 0.4, 0.6, 0.8)`)."
 
 **Right to left**, the order R runs it
 
@@ -625,8 +632,8 @@ quantile(Days~Eth, data=quine, prob=c(0.2, 0.4, 0.6, 0.8))
 
 **Left to right**
 
-- `quantile(Days~Sex, …)`: "Print the percentiles (`quantile`) of Days (`Days`) in terms of (`~`) sex (`Sex`) from quine (`data=quine`) at 20, 40, 60 and 80% (`prob=c(0.2, 0.4, 0.6, 0.8)`)."
-- `quantile(Days~Eth, …)`: "Print the percentiles (`quantile`) of Days (`Days`) in terms of (`~`) ethnicity (`Eth`) from quine (`data=quine`) at 20, 40, 60 and 80% (`prob=c(0.2, 0.4, 0.6, 0.8)`)."
+- `quantile(Days~Sex, …)`: "Print the percentiles (`quantile`) of Days (`Days`) by (`~`) sex (`Sex`) from quine (`data=quine`) at 20, 40, 60 and 80% (`prob=c(0.2, 0.4, 0.6, 0.8)`)."
+- `quantile(Days~Eth, …)`: "Print the percentiles (`quantile`) of Days (`Days`) by (`~`) ethnicity (`Eth`) from quine (`data=quine`) at 20, 40, 60 and 80% (`prob=c(0.2, 0.4, 0.6, 0.8)`)."
 
 **Right to left**, the order R runs it
 
@@ -639,6 +646,10 @@ The instructor's answer: **`Eth` is the categorical variable that leads to the g
 ## Percentile rank
 
 `quantile()` goes from a percentage to a value; `dplyr`'s `percent_rank()` (no formula) goes from a value to its percentage:
+
+```diagram
+{"type": "flow", "nodes": [{"id": "p", "label": "Percentage p", "sub": "0.90"}, {"id": "x", "label": "Value X", "sub": "40 days"}, {"id": "p2", "label": "Percentage", "sub": "0.90 again"}], "edges": [{"from": "p", "to": "x", "label": "quantile(~Days, probs=p)"}, {"from": "x", "to": "p2", "label": "percent_rank(quine$Days)"}], "hi": ["x"], "caption": "Same ogive, read in opposite directions: quantile() goes from p to X, percent_rank() from X back to p."}
+```
 
 ```r
 head( percent_rank(quine$Days) )
@@ -662,7 +673,15 @@ head( percent_rank(quine$Days) )
 - "Take quine (`quine`), pull out its Days column (`$Days`), compute every value's percent rank (`percent_rank`), and show the first six (`head`)."
 :::
 
-The first child (2 days): 13 of the other 145 children have fewer days, $13/145 = 0.0897$. As whole numbers:
+:::tip percent_rank by hand
+`percent_rank(x)` $= \dfrac{\text{number of values below } x}{n - 1}$. Ties share the lower rank. The smallest value always gets 0 and the largest 1. Tiny case, 2 5 5 7 11 ($n = 5$, so divide by 4):
+:::
+
+```diagram
+{"type": "grid", "nodes": [{"id": "r0c0", "label": "value", "row": 0, "col": 0}, {"id": "r0c1", "label": "2", "row": 0, "col": 1}, {"id": "r0c2", "label": "5", "row": 0, "col": 2}, {"id": "r0c3", "label": "5", "row": 0, "col": 3}, {"id": "r0c4", "label": "7", "row": 0, "col": 4}, {"id": "r0c5", "label": "11", "row": 0, "col": 5}, {"id": "r1c0", "label": "values below", "row": 1, "col": 0}, {"id": "r1c1", "label": "0", "row": 1, "col": 1}, {"id": "r1c2", "label": "1", "row": 1, "col": 2}, {"id": "r1c3", "label": "1", "row": 1, "col": 3}, {"id": "r1c4", "label": "3", "row": 1, "col": 4}, {"id": "r1c5", "label": "4", "row": 1, "col": 5}, {"id": "r2c0", "label": "rank = below/4", "row": 2, "col": 0}, {"id": "r2c1", "label": "0", "row": 2, "col": 1}, {"id": "r2c2", "label": "0.25", "row": 2, "col": 2}, {"id": "r2c3", "label": "0.25", "row": 2, "col": 3}, {"id": "r2c4", "label": "0.75", "row": 2, "col": 4}, {"id": "r2c5", "label": "1", "row": 2, "col": 5}], "hi": ["r2c2", "r2c3"], "caption": "n = 5, so divide by n − 1 = 4. The two 5s tie and share the lower rank, 0.25."}
+```
+
+The first quine child (2 days): 13 values are below 2, and $n - 1 = 145$, so $13/145 = 0.0897$. As whole numbers:
 
 ```r
 head( round(100*percent_rank(quine$Days) ))
@@ -724,8 +743,8 @@ cbind(round(100*percent_rank( quine$Days )[is.F0.Male]))
 | `quine$Sex=="M"` | `==` tests equality for every element, giving `TRUE`/`FALSE` per child. Text values go in quotes. |
 | `( … ) & ( … )` | `&` is element-wise AND: `TRUE` only where both tests are `TRUE`. |
 | `is.F0.Male <- …` | Stores the logical vector, one value per row of `quine`. |
-| `round(100*percent_rank( quine$Days ))` | Whole-number percentile ranks for all 146 children, as above. |
-| `[is.F0.Male]` | `[ ]` with a logical vector keeps only the positions that are `TRUE`. |
+| `percent_rank( quine$Days )[is.F0.Male]` | Ranks for all 146 children, then keeps the F0-boy positions: `[ ]` with a logical vector keeps only the positions that are `TRUE`. |
+| `round(100*…)` | Turns those ranks into whole percents. |
 | `cbind( … )` | Turns the vector into a one-column matrix, so it prints one value per line. `[1,]` labels rows and `[,1]` the column. |
 
 **Left to right**
@@ -740,6 +759,23 @@ cbind(round(100*percent_rank( quine$Days )[is.F0.Male]))
 :::
 
 `&` is AND; `x[logical]` keeps the `TRUE` positions. Seventeen boys are in form F0; one (rank 99) is near the top for absences.
+
+These are ranks among all 146 children, then filtered. Rank 99 means more absences than 99% of the whole sample. The first six match `head()` above because quine's first rows are F0 boys. To rank inside the subgroup instead: `percent_rank(quine$Days[is.F0.Male])`.
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `quine$Days[is.F0.Male]` | Keeps the Days values of the 17 F0 boys first. |
+| `percent_rank( … )` | Then ranks those 17 values among themselves. |
+
+**Left to right**
+
+- `percent_rank(quine$Days[is.F0.Male])`: "Compute the percent ranks (`percent_rank`) of quine's Days (`quine$Days`) for the F0 boys only (`[is.F0.Male]`)."
+
+**Right to left**, the order R runs it
+
+- `percent_rank(quine$Days[is.F0.Male])`: "Take quine's Days (`quine$Days`), keep the F0-boy positions (`[is.F0.Male]`), then rank those values against each other (`percent_rank`)."
+:::
 
 The children above the 75th percentile:
 
@@ -871,7 +907,7 @@ sum(abs(Z.scores) > 3)
 - `sum(abs(Z.scores) > k)`, k = 1, 2, 3: "Take Z.scores (`Z.scores`), drop the signs (`abs`), test each against k (`> 1`, `> 2`, `> 3`), and count the TRUEs (`sum`)."
 :::
 
-`abs()` makes "above or below" one comparison. Eight matches Task 7's outlier count, but **outlier and unusual are different definitions** (Unit 1).
+`abs()` makes "above or below" one comparison. **Unusual** means $|Z| > 2$, so `sum(abs(Z.scores) > 2)` = 8 counts the unusual children. **Outlier** means beyond a fence (Task 7), which also gives 8. The counts match here by coincidence; the SFU rainfall in Mock Quiz 2 has a day that is an outlier but not unusual.
 
 ### Task 14: Chebyshev and the empirical rule
 
@@ -942,6 +978,10 @@ p3 # too low
 - `p1`, `p2`, `p3`: "Skip each note after the comment mark (`#`), look up p1, p2 and p3 (`p1`, `p2`, `p3`), and print each value."
 :::
 
+```diagram
+{"type": "grid", "nodes": [{"id": "r0c0", "label": "k", "row": 0, "col": 0}, {"id": "r0c1", "label": "Observed within ±k", "row": 0, "col": 1}, {"id": "r0c2", "label": "Chebyshev: at least", "row": 0, "col": 2}, {"id": "r0c3", "label": "Empirical: about", "row": 0, "col": 3}, {"id": "r0c4", "label": "Verdict", "row": 0, "col": 4}, {"id": "r1c0", "label": "1", "row": 1, "col": 0}, {"id": "r1c1", "label": "0.781", "row": 1, "col": 1}, {"id": "r1c2", "label": "0", "row": 1, "col": 2}, {"id": "r1c3", "label": "0.68", "row": 1, "col": 3}, {"id": "r1c4", "label": "too many", "row": 1, "col": 4}, {"id": "r2c0", "label": "2", "row": 2, "col": 0}, {"id": "r2c1", "label": "0.945", "row": 2, "col": 1}, {"id": "r2c2", "label": "0.75", "row": 2, "col": 2}, {"id": "r2c3", "label": "0.95", "row": 2, "col": 3}, {"id": "r2c4", "label": "close", "row": 2, "col": 4}, {"id": "r3c0", "label": "3", "row": 3, "col": 0}, {"id": "r3c1", "label": "0.979", "row": 3, "col": 1}, {"id": "r3c2", "label": "0.889", "row": 3, "col": 2}, {"id": "r3c3", "label": "0.997", "row": 3, "col": 3}, {"id": "r3c4", "label": "too few", "row": 3, "col": 4}], "hi": ["r1c3", "r3c3"], "caption": "Every observed value clears Chebyshev's floor; the empirical rule misses at k = 1 and k = 3."}
+```
+
 Chebyshev holds, as it must; the empirical rule misses at $k = 1$ and $3$: **the empirical rule does not hold for `Days`, since it is not a normally distributed variable. It cannot be, since it is significantly skewed, as shown by $Sk$ earlier.**
 
 ## favstats, fences and Z-scores for three leagues' Divine prices
@@ -950,7 +990,7 @@ poe.ninja's daily price of a Divine Orb, a high-value currency item, in Chaos Or
 
 ```quiz
 [
-  {"type": "fill", "q": "Fill the blank to get one row of statistics per league.", "code": "af <- read.csv(\"poe1-ninja-divine-chaos-allflame.csv\")\nke <- read.csv(\"poe1-ninja-divine-chaos-keepers.csv\")\nmi <- read.csv(\"poe1-ninja-divine-chaos-mirage.csv\")\ndivine <- data.frame(price = c(af$receive_value_chaos, ke$receive_value_chaos, mi$receive_value_chaos),\n                     league = rep(c(\"Allflame\", \"Keepers\", \"Mirage\"), times = c(96, 123, 137)))\nfavstats(price ~ ___, data=divine)\n##     league   min     Q1 median    Q3   max     mean        sd   n missing\n## 1 Allflame 75.90 193.30    300 350.0 400.0 268.9917  89.49155  96       0\n## 2  Keepers 44.85 142.15    150 176.5 271.3 157.7333  37.52127 123       0\n## 3   Mirage 36.30 274.70    368 500.0 612.0 379.6226 140.83837 137       0", "answer": ["league"], "explain": "`Y ~ G` gives the statistics of Y separately for each level of G: price in terms of league. The three rows come out in alphabetical order, Allflame, Keepers, Mirage, and n = 96 + 123 + 137 = 356 rows in all."},
+  {"type": "fill", "q": "Fill the blank to get one row of statistics per league.", "code": "af <- read.csv(\"poe1-ninja-divine-chaos-allflame.csv\")\nke <- read.csv(\"poe1-ninja-divine-chaos-keepers.csv\")\nmi <- read.csv(\"poe1-ninja-divine-chaos-mirage.csv\")\ndivine <- data.frame(price = c(af$receive_value_chaos, ke$receive_value_chaos, mi$receive_value_chaos),\n                     league = rep(c(\"Allflame\", \"Keepers\", \"Mirage\"), times = c(96, 123, 137)))\nfavstats(price ~ ___, data=divine)\n##     league   min     Q1 median    Q3   max     mean        sd   n missing\n## 1 Allflame 75.90 193.30    300 350.0 400.0 268.9917  89.49155  96       0\n## 2  Keepers 44.85 142.15    150 176.5 271.3 157.7333  37.52127 123       0\n## 3   Mirage 36.30 274.70    368 500.0 612.0 379.6226 140.83837 137       0", "answer": ["league"], "explain": "`Y ~ G` gives the statistics of Y separately for each level of G: price by league. The three rows come out in alphabetical order, Allflame, Keepers, Mirage, and n = 96 + 123 + 137 = 356 rows in all."},
   {"q": "From the Allflame row, compute Pearson's $Sk$. (2 decimals)", "type": "numeric", "answer": -1.04, "tolerance": 0.006, "explain": "$Sk = 3(\\bar{X} - Q_2)/s = 3(268.9917 - 300)/89.49155 = -93.0249/89.49155 = -1.0395$: highly skewed left. The cheap first weeks of the league pull the mean below the median."},
   {"q": "From the Keepers row, compute the upper fence. (3 decimals)", "type": "numeric", "answer": 228.025, "tolerance": 0.001, "explain": "$IQR = 176.5 - 142.15 = 34.35$; upper fence $= 176.5 + 1.5(34.35) = 176.5 + 51.525 = 228.025$ chaos. Keepers' maximum 271.3 is beyond it, so the box plot shows outliers on the right; the lower fence is $142.15 - 51.525 = 90.625$, above the minimum 44.85."},
   {"q": "Keepers' first day was priced at 44.85 chaos. Compute its Z-score within the Keepers league, as `scale()` on that league would. (2 decimals)", "type": "numeric", "answer": -3.01, "tolerance": 0.006, "explain": "$Z = (X - \\bar{X})/s = (44.85 - 157.7333)/37.52127 = -112.8833/37.52127 = -3.0085$: more than 3 sd below the Keepers mean, so unusual."},
@@ -965,7 +1005,7 @@ poe.ninja's daily price of a Divine Orb, a high-value currency item, in Chaos Or
     "q": "In `favstats(Days~Lrn, data=quine)`, what does the formula `Days~Lrn` mean?",
     "options": ["Days divided by Lrn", "Days, grouped by the levels of Lrn (one row of statistics per learner type)", "The correlation between Days and Lrn", "Days is approximately equal to Lrn"],
     "answer": 1,
-    "explain": "Read `~` as 'in terms of': the numerical variable on the left, summarized separately for each level of the categorical variable on the right. `~Days` alone means 'just Days'."
+    "explain": "Read `Days~Lrn` as 'Days by Lrn': the numerical variable on the left, summarized separately for each level of the categorical variable on the right. `~Days` alone means 'just Days'."
   },
   {
     "q": "`summary(quine$Days)` prints `0.00 5.00 11.00 16.46 22.75 81.00`. What is $Q_3$?",

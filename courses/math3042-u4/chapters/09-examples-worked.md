@@ -138,7 +138,11 @@ Every lecture example in the order it appears: a numeric item first, then the ar
 ]
 ```
 
-**Laser printers.** (a) $\mu = 200(0.1) = \mathbf{20}$, $\sigma = \sqrt{200(0.1)(0.9)} = \sqrt{18} = \mathbf{4.24}$. (b) $Z = (14 - 20)/4.24 = \mathbf{-1.41}$: within $\pm 2$, **not unusual** (tail check: `pbinom(14, 200, 0.1)` = 0.093, above 0.025). (c) Good evidence of improvement? **No**: 14 repairs is what chance produces under the old rate. R: `Z` prints `-1.414214`.
+**Laser printers.**
+
+1. (a) $\mu = 200(0.1)$, $\sigma = \sqrt{200(0.1)(0.9)} = \sqrt{18}$. **μ = 20, σ = 4.24**
+2. (b) $Z = (14 - 20)/4.24 = -1.41$, within $\pm 2$; tail check `pbinom(14, 200, 0.1)` = 0.093, above 0.025. R: `Z` prints `-1.414214`. **Not unusual**
+3. (c) Good evidence of improvement? 14 repairs is what chance produces under the old rate. **No**
 
 :::info R syntax
 | Code | What it does |
@@ -192,7 +196,13 @@ Every lecture example in the order it appears: a numeric item first, then the ar
 ]
 ```
 
-**Mac users, $N = 90$, $K = 40$, $n = 10$.** (a) $P(X = 4) = \dfrac{C(40,4)\,C(50,6)}{C(90,10)} = \dfrac{91\,390 \times 15\,890\,700}{5.7206 \times 10^{12}} = \mathbf{0.2539}$ (`dhyper(4, 40, 50, 10)` prints `0.2538614`). (b) $P(X \le 4) = 0.0018 + 0.0175 + 0.0732 + 0.1725 + 0.2539 = \mathbf{0.5189}$ (`phyper(4, 40, 50, 10)` prints `0.5188862`). (c) $\mu = 10 \cdot \tfrac{40}{90} = \mathbf{4.44}$; $\sigma^2 = 10 \cdot \tfrac{40}{90} \cdot \tfrac{50}{90} \cdot \tfrac{80}{89} = 2.2194$, $\sigma = \mathbf{1.49}$ (`c(mu, sig)` prints `4.4444 1.4898`). (d) The histogram peaks at 4 (0.2539) then 5 (0.2437). (e) $Z = (8 - 4.44)/1.49 = \mathbf{2.39}$, beyond 2: **unusual** (`1 - phyper(7, 40, 50, 10)` = 0.019).
+**Mac users, $N = 90$, $K = 40$, $n = 10$.**
+
+1. (a) $P(X = 4) = \dfrac{C(40,4)\,C(50,6)}{C(90,10)} = \dfrac{91\,390 \times 15\,890\,700}{5.7206 \times 10^{12}}$. R: `dhyper(4, 40, 50, 10)` prints `0.2538614`. **0.2539**
+2. (b) $P(X \le 4) = 0.0018 + 0.0175 + 0.0732 + 0.1725 + 0.2539$. R: `phyper(4, 40, 50, 10)` prints `0.5188862`. **0.5189**
+3. (c) $\mu = 10 \cdot \tfrac{40}{90}$; $\sigma^2 = 10 \cdot \tfrac{40}{90} \cdot \tfrac{50}{90} \cdot \tfrac{80}{89} = 2.2194$. R: `c(mu, sig)` prints `4.4444 1.4898`. **μ = 4.44, σ = 1.49**
+4. (d) The histogram peaks at 4 (0.2539), then 5 (0.2437). **Mode 4**
+5. (e) $Z = (8 - 4.44)/1.49 = 2.39$, beyond 2. R tail: `1 - phyper(7, 40, 50, 10)` = 0.019. **Unusual**
 
 :::info R syntax
 | Code | What it does |
@@ -228,7 +238,13 @@ Every lecture example in the order it appears: a numeric item first, then the ar
 ]
 ```
 
-**Help line, $p = 0.25$.** $P(3) = 0.75 \cdot 0.75 \cdot 0.25 = \mathbf{0.1406}$. $E[X] = 1/0.25 = \mathbf{4}$ calls; $\sigma = \sqrt{0.75/0.25^2} = \sqrt{12} = \mathbf{3.46}$. $P(X \ge 4) = 1 - 0.25 - 0.1875 - 0.1406 = \mathbf{0.4219} = 0.75^3$. R counts failures before the first success, so the lecture's $x$ is R's $x - 1$: `dgeom(2, 0.25)` prints `0.140625`; `1 - pgeom(2, 0.25)` prints `0.421875`. The histogram, 0.25, 0.1875, 0.1406, 0.1055, 0.0791, … always decreasing, so the mode is 1 even though the mean is 4.
+**Help line, $p = 0.25$.** R counts failures before the first success, so the lecture's $x$ is R's $x - 1$, and "at least $x$" is `1 - pgeom(x-2, p)`.
+
+1. $P(3) = 0.75 \cdot 0.75 \cdot 0.25$. R: `dgeom(2, 0.25)` prints `0.140625`. **0.1406**
+2. $E[X] = 1/0.25$. **4 calls**
+3. $\sigma = \sqrt{0.75/0.25^2} = \sqrt{12}$. **3.46**
+4. $P(X \ge 4) = 1 - 0.25 - 0.1875 - 0.1406 = 0.75^3$. R: `1 - pgeom(2, 0.25)` prints `0.421875`. **0.4219**
+5. Histogram: 0.25, 0.1875, 0.1406, 0.1055, 0.0791, … always decreasing, so the mode is 1 even though the mean is 4. **Mode 1**
 
 :::info R syntax
 | Code | What it does |
@@ -258,7 +274,13 @@ Every lecture example in the order it appears: a numeric item first, then the ar
 ]
 ```
 
-**Web server.** $\lambda = 60/2 = \mathbf{30}$ per minute (`lambda <- 1/2 * 60`). $P(X = 20) = \dfrac{30^{20}}{20!} e^{-30} = \mathbf{0.0134}$ (`dpois(20, lambda)` prints `0.01341115`). $P(X \le 20) = \mathbf{0.0353}$ (`ppois(20, lambda)` prints `0.03528462`). Unusual? $\mu = 30$, $\sigma = \sqrt{30} = 5.48$, $Z = (20 - 30)/5.48 = \mathbf{-1.83}$: **not unusual**. The histogram `dpois(0:80, 30)` peaks at 29 and 30 (0.0726 each), bell-shaped with a slight right skew.
+**Web server.**
+
+1. $\lambda = 60/2$ per minute. R: `lambda <- 1/2 * 60`. **λ = 30**
+2. $P(X = 20) = \dfrac{30^{20}}{20!} e^{-30}$. R: `dpois(20, lambda)` prints `0.01341115`. **0.0134**
+3. $P(X \le 20)$. R: `ppois(20, lambda)` prints `0.03528462`. **0.0353**
+4. Unusual? $\mu = 30$, $\sigma = \sqrt{30} = 5.48$, $Z = (20 - 30)/5.48 = -1.83$. **Not unusual**
+5. The histogram `dpois(0:80, 30)` peaks at 29 and 30 (0.0726 each), bell-shaped with a slight right skew. **Peak 29 and 30**
 
 :::info R syntax
 | Code | What it does |
@@ -292,7 +314,7 @@ Name the distribution and check its conditions, write the formula with the numbe
   { "q": "$x = 0, 1, 2, 3$ with $P(x) = 0.30, 0.35, 0.25, 0.10$: $\\mu$ = ? (2 decimals)", "type": "numeric", "answer": 1.15, "tolerance": 0.01, "explain": "0(0.30) + 1(0.35) + 2(0.25) + 3(0.10) = 0.35 + 0.50 + 0.30 = 1.15." },
   { "q": "$x = 0, 1, 2, 3$ with $P(x) = 0.30, 0.35, 0.25, 0.10$: $\\sigma$ = ? (2 decimals)", "type": "numeric", "answer": 0.96, "tolerance": 0.01, "explain": "σ² = (1.15)²(0.30) + (0.15)²(0.35) + (0.85)²(0.25) + (1.85)²(0.10) = 0.3968 + 0.0079 + 0.1806 + 0.3423 = 0.9275; σ = 0.96." },
   { "q": "Two fair dice, $X$ = the maximum of the two values: $\\mu$ = ? (2 decimals)", "type": "numeric", "answer": 4.47, "tolerance": 0.01, "explain": "Mirror the minimum: P(x) = (2x − 1)/36, so P(6) = 11/36 and P(1) = 1/36. μ = (1 + 6 + 15 + 28 + 45 + 66)/36 = 161/36 = 4.47 = 7 − 2.53." },
-  { "q": "$X$ = the maximum of the two values: $\\sigma$ = ? (2 decimals)", "type": "numeric", "answer": 1.40, "tolerance": 0.01, "explain": "The maximum is 7 minus the minimum, so the spread is the same: σ = 1.40." },
+  { "q": "$X$ = the maximum of the two values: $\\sigma$ = ? (2 decimals)", "type": "numeric", "answer": 1.40, "tolerance": 0.01, "explain": "Flip both dice (x → 7 − x). The flipped pair's minimum is 7 minus the original maximum, so max has the same distribution as 7 − min: P_max(x) = P_min(7 − x) = (2x − 1)/36, μ = 7 − 2.53 = 4.47, and the spread is unchanged, σ = 1.40." },
   { "q": "Binomial, $n = 40$, $p = 0.3$: $P(X = 6)$ = ? (4 decimals)", "type": "numeric", "answer": 0.0151, "tolerance": 0.0001, "explain": "C(40, 6) 0.3^6 0.7^34 = 3 838 380 × 0.000729 × 5.41 × 10⁻⁶ = 0.0151." },
   { "q": "Binomial, $n = 40$, $p = 0.3$: $\\mu$ = ? (2 decimals)", "type": "numeric", "answer": 12, "tolerance": 0.01, "explain": "np = 40 × 0.3 = 12." },
   { "q": "Binomial, $n = 40$, $p = 0.3$: $\\sigma$ = ? (2 decimals)", "type": "numeric", "answer": 2.90, "tolerance": 0.01, "explain": "√(40 × 0.3 × 0.7) = √8.4 = 2.90." },
@@ -302,7 +324,7 @@ Name the distribution and check its conditions, write the formula with the numbe
   { "q": "Five cards with replacement: P(at least 3 Kings) = ? (4 decimals)", "type": "numeric", "answer": 0.0040, "tolerance": 0.0001, "explain": "P(3) + P(4) + P(5) = 0.003878 + 0.000162 + 0.000003 = 0.0040; or 1 − pbinom(2, 5, 4/52). The complement of 'at least 3' is {0, 1, 2}." },
   { "q": "Five cards: P(exactly 3 Kings without replacement) = ? (4 decimals)", "type": "numeric", "answer": 0.0017, "tolerance": 0.0001, "explain": "C(4, 3) C(48, 2)/C(52, 5) = 4 × 1128/2 598 960 = 0.0017, less than half the with-replacement 0.0039: n/N = 9.6 % fails the 5 % rule." },
   { "q": "Hypergeometric, $N = 80$, $K = 30$, $n = 12$: $P(X = 4)$ = ? (4 decimals)", "type": "numeric", "answer": 0.2442, "tolerance": 0.0001, "explain": "C(30, 4) C(50, 8)/C(80, 12) = 27 405 × 536 878 650/6.0247 × 10¹³ = 0.2442; dhyper(4, 30, 50, 12)." },
-  { "q": "Hypergeometric, $N = 80$, $K = 30$, $n = 12$: $P(X \\le 4)$ = ? (4 decimals)", "type": "numeric", "answer": 0.5078, "tolerance": 0.0001, "explain": "phyper(4, 30, 50, 12) = 0.5078: the five terms P(0) … P(4) added." },
+  { "q": "Hypergeometric, $N = 80$, $K = 30$, $n = 12$: $P(X \\le 4)$ = ? (4 decimals)", "type": "numeric", "answer": 0.5078, "tolerance": 0.0001, "explain": "P(0) + … + P(4) = 0.0020 + 0.0186 + 0.0742 + 0.1688 + 0.2442 = 0.5078, each term C(30, x) C(50, 12 − x)/C(80, 12); phyper(4, 30, 50, 12)." },
   { "q": "Hypergeometric, $N = 80$, $K = 30$, $n = 12$: $\\mu$ = ? (2 decimals)", "type": "numeric", "answer": 4.5, "tolerance": 0.01, "explain": "nK/N = 12 × 30/80 = 4.50." },
   { "q": "Hypergeometric, $N = 80$, $K = 30$, $n = 12$: $\\sigma$ = ? (2 decimals)", "type": "numeric", "answer": 1.56, "tolerance": 0.01, "explain": "σ² = 12 (30/80)(50/80)(68/79) = 2.4209; σ = 1.56. The binomial would give 1.68; n/N = 15 % so the correction matters." },
   { "q": "Hypergeometric, $N = 80$, $K = 30$, $n = 12$: $Z$ for $X = 9$ = ? (2 decimals)", "type": "numeric", "answer": 2.89, "tolerance": 0.01, "explain": "(9 − 4.5)/1.56 = 2.89: unusual." },
@@ -311,7 +333,7 @@ Name the distribution and check its conditions, write the formula with the numbe
   { "q": "Geometric, $p = 0.2$: $\\sigma$ = ? (2 decimals)", "type": "numeric", "answer": 4.47, "tolerance": 0.01, "explain": "√(0.8/0.04) = √20 = 4.47." },
   { "q": "Geometric, $p = 0.2$: $P(X \\ge 4)$ = ? (4 decimals)", "type": "numeric", "answer": 0.512, "tolerance": 0.0001, "explain": "q³ = 0.8³ = 0.512: the first three trials all fail. Equivalently 1 − 0.2 − 0.16 − 0.128." },
   { "q": "A server gets one request every 2.5 seconds on average. $\\lambda$ per minute = ?", "type": "numeric", "answer": 24, "tolerance": 0.01, "explain": "60/2.5 = 24 requests per minute." },
-  { "q": "Poisson, $\\lambda = 24$: $P(X = 20)$ = ? (4 decimals)", "type": "numeric", "answer": 0.0624, "tolerance": 0.0001, "explain": "24^20 e^(−24)/20! = 0.0624; dpois(20, 24)." },
+  { "q": "Poisson, $\\lambda = 24$: $P(X = 20)$ = ? (4 decimals)", "type": "numeric", "answer": 0.0624, "tolerance": 0.0001, "explain": "24^20/20! = 4.020 × 10²⁷ / 2.433 × 10¹⁸ = 1.652 × 10⁹; × e^(−24) = 3.775 × 10⁻¹¹ gives 0.0624; dpois(20, 24)." },
   { "q": "Poisson, $\\lambda = 24$: $P(X \\le 20)$ = ? (4 decimals)", "type": "numeric", "answer": 0.2426, "tolerance": 0.0001, "explain": "ppois(20, 24) = 0.2426." },
   { "q": "Poisson, $\\lambda = 24$: $Z$ for 20 requests = ? (2 decimals, keep the sign)", "type": "numeric", "answer": -0.82, "tolerance": 0.01, "explain": "σ = √24 = 4.90; Z = (20 − 24)/4.90 = −0.82. Not unusual; the left tail 0.2426 is far above 0.025." }
 ]

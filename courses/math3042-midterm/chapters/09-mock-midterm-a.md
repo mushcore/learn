@@ -45,6 +45,11 @@ The histogram of one-way commute times (in minutes) to the Burnaby campus for 20
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Frequency | 8 | 22 | 41 | 37 | 29 | 21 | 15 | 11 | 7 | 5 | 3 | 1 |
 
+```widget
+freq-hist
+{ "start": 0, "width": 10, "freq": [8, 22, 41, 37, 29, 21, 15, 11, 7, 5, 3, 1], "label": "One-way commute (min)", "unit": "students", "title": "Commute times of 200 CST students" }
+```
+
 ```quiz
 [
   {
@@ -53,7 +58,7 @@ The histogram of one-way commute times (in minutes) to the Burnaby campus for 20
     "answer": 21,
     "tolerance": 1,
     "unit": "%",
-    "explain": "Add the bars from 60 minutes up: 15 + 11 + 7 + 5 + 3 + 1 = 42, so 42/200 = 0.21 or **21 %** commute at least 60 minutes. Equivalently 200 − 158 = 42, where 158 is the cumulative count through 60 minutes. Starting at the 50–60 bar (63 students, 31.5 %) counts students who commute less than an hour."
+    "explain": "Add the bars from 60 minutes up: 15 + 11 + 7 + 5 + 3 + 1 = 42, so 42/200 = 0.21 or **21 %** commute at least 60 minutes. Equivalently 200 − 158 = 42, where 158 is the cumulative count through 60 minutes. Starting one bar too early, at 50–60, gives 63 (31.5 %): it adds the 21 students who commute 50 to 59 minutes, who are under an hour."
   },
   {
     "q": "**Q1b (1 of 2 marks).** Based on the histogram, the **median** commute is approximately how many minutes?",
@@ -97,9 +102,9 @@ You are recommending one of two Wi-Fi routers for the BCIT library's study rooms
 ```quiz
 [
   {
-    "q": "**Q2 (4 marks).** Write a brief recommendation, citing relevant statistics. Comment on at least 2 measures of central tendency and at least 2 measures of spread. Write it on paper, then type the router you recommend (P or Q).",
-    "type": "text",
-    "answer": ["P", "Router P"],
+    "q": "**Q2 (4 marks).** Write a brief recommendation, citing relevant statistics. Comment on at least 2 measures of central tendency and at least 2 measures of spread. Write it on paper, then pick the router you recommend.",
+    "options": ["Router P", "Router Q"],
+    "answer": 0,
     "explain": "**I recommend Router P.** Its centre is comparable to Q's: Q's mean is about 4.3 Mbps higher (92.7 vs 88.4), but P's median is about 4.7 Mbps higher (91.2 vs 86.5), and both are well above 50 Mbps. Router P is far less variable: its standard deviation is 9.6 Mbps against 27.9, its variance 92.16 against 778.41, and its range 41.3 against 118.6 Mbps. P's slowest test, 66.0 Mbps, is still above the 50 Mbps requirement, while Q dropped to 38.2 Mbps. Q's mean above its median also suggests a right skew from a few very fast tests. So Router P is the more reliable choice for staying above 50 Mbps."
   }
 ]
@@ -319,7 +324,7 @@ Running a team's continuous-integration tests costs $0.80 of cloud time per push
     "type": "fill",
     "code": "times_broken <- rbinom(1, n, ___)",
     "answer": ["0.06", ".06"],
-    "explain": "`rbinom(m, n, p)`: one simulated count from n untested pushes, each breaking the build with p = 0.06."
+    "explain": "`rbinom(reps, n, p)`: one simulated count from n untested pushes, each breaking the build with p = 0.06."
   },
   {
     "q": "Q9a: the `sample` version. Fill the first probability, the one for 0 (a safe push).",
@@ -428,7 +433,7 @@ After each game the cards are replaced and the deck is reshuffled.
     "answer": 2.58,
     "tolerance": 0.01,
     "unit": "$",
-    "explain": "P(win 30) = (12/52)(11/51) = 132/2652 = 0.0497738. E[winnings] = 30 · P(30) + 3 · P(3) + 0 · P(0) = 30(0.0497738) + 3(0.361991) + 0 = 1.49321 + 1.08597 = **$2.58** per game. The question says \"win\", so these are gross winnings; there is no cost to subtract."
+    "explain": "P(win 30) = (12/52)(11/51) = 132/2652 = 0.0497738. Let X = the winnings to the player. E(X) = 30 · P(30) + 3 · P(3) + 0 · P(0) = 30(0.0497738) + 3(0.361991) + 0 = 1.49321 + 1.08597 = **$2.58** per game. The question says \"win\", so these are gross winnings; there is no cost to subtract."
   },
   {
     "q": "**Q12c (2 marks).** If you play twice, what is the probability that you win **at least $33** in total? (4 decimals)",

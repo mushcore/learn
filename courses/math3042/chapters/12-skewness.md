@@ -10,6 +10,11 @@ A Divine Orb that opens a league cheap and settles high, and a monster list wher
 
 For a perfectly symmetric distribution, the mean and the median sit at exactly the same spot. The moment a distribution grows a long tail on one side, the mean gets pulled toward that tail (because the mean uses every value, including the extreme ones) while the median barely moves (because the median only cares about rank).
 
+```widget
+skewness
+{ "title": "Skewness: mean chases the tail, median barely moves" }
+```
+
 - **Symmetric** → mean = median → skewness = 0.
 - **Skewed left** (long tail on the left) → the tail drags the mean **down below** the median → skewness < 0.
 - **Skewed right** (long tail on the right) → the tail drags the mean **up above** the median → skewness > 0.
@@ -34,7 +39,16 @@ Anything between $-1$ and $+1$ is only mildly skewed (or symmetric, near 0).
 
 ## Pearson's Sk for Allflame Divine prices and Classic monster HP
 
-poe.ninja's daily price of a Divine Orb, PoE1's high-value currency, climbs over the first 30 days of the Allflame league from 75.9 to about 193 chaos [PoE1, 3.29 Allflame, poe.ninja daily Divine price, checked 2026-10-27]. meowdb's monster table for MapleStory Classic, with the five zero-EXP test mobs dropped, lists 25 monsters from level 41 to 60 [Classic, Classic World Grand Launch build, meowdb monster table, checked 2026-10-27]: 22 field monsters between 1278 and 5428 HP and three bosses, Shade 47000, Zombie Mushmom 66640 and Rotten Mushmom 86400. A price that starts low and settles high has its tail on the left; a list where a few bosses dwarf the field has its tail on the right.
+poe.ninja's daily price of a Divine Orb, PoE1's high-value currency, climbs over the first 30 days of the Allflame league from 75.9 to about 193 chaos [PoE1, 3.29 Allflame, poe.ninja daily Divine price, checked 2026-10-27]. meowdb's monster table for MapleStory Classic, with the five zero-EXP test mobs dropped, lists 25 monsters from level 41 to 60 [Classic, Classic World Grand Launch build, meowdb monster table, checked 2026-10-27]: 22 field monsters between 1278 and 5428 HP and three bosses, Shade 47000, Zombie Mushmom 66640 and Rotten Mushmom 86400.
+
+Sort the 30 prices onto a number line: 22 of them sit between 155 and 208, and the eight league-start days trail off alone down to 75.9. The long, thin side is the left, so the tail is on the left. The monster list is the mirror image: 22 field monsters bunch below 5 500 HP and three bosses trail off alone to the right.
+
+```widget
+drag-data
+{ "data": "75.9 83.5 90 107 117.1 117.4 121.8 123 155 163.4 170 171.8 172.1 172.7 180.6 189.5 190 193 193 193 193.3 193.3 193.5 193.6 195.3 197.4 199 199.6 201 208.2", "title": "Allflame Divine price (chaos), first 30 days: the left tail", "claims": [
+  { "when": "mean<median", "text": "Mean below median: the left tail pulls it down." }
+]}
+```
 
 ```quiz
 [
@@ -105,16 +119,9 @@ $0.146$ is positive but well inside $(-1, 1)$, so cat bodyweight is **mildly ske
 R's `moments` library has a `skewness()` function that uses a **different formula** (the third standardized moment, not Pearson's mean/median formula). The course ignores it: compute Pearson's $Sk = 3(\bar{X}-Q_2)/s$ by hand or with the one-liner above.
 :::
 
-## Mean and median as the tail grows
-
-```widget
-skewness
-{ "title": "Skewness: mean chases the tail, median barely moves" }
-```
-
 ## Sk as one point moves into a tail
 
-Twelve settled Allflame days, 47 to 36 days before 2026-10-27, sit between 324.0 and 350.0 chaos with $Sk = -0.86$. Drag one price down toward 204.0, the one-day receive-side reading 35 days before, and watch $s$ grow with the tail.
+Twelve settled Allflame prices sit between 324.0 and 350.0 chaos, with $Sk = -0.86$. Drag the highest price, 350.0, down to 204.0 and watch $Sk$ pass $-1$ (it reaches $-1.06$).
 
 ```widget
 drag-data

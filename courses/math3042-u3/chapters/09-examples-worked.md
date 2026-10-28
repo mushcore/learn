@@ -26,7 +26,7 @@ Every example in the Unit 3 notes, in the order it appears, with the answer line
 | black card or heart | OR, mutually exclusive | $26/52 + 13/52 = 0.7500$ | 4 |
 | red card or Ace (in class) | OR | $26/52 + 4/52 - 2/52 = 0.5385$ | 4 |
 | 7 or Ace (printed) | OR, mutually exclusive | $8/52 = 0.1538$ | 4 |
-| two-way table, 71 students | conditional | $61/71 = 0.8592$; $52/61 = 0.8526$; $52/58 = 0.8966$ | 5 |
+| two-way table, 71 students | conditional | $61/71 = 0.8592$; $52/61 = 0.8525$; $52/58 = 0.8966$ | 5 |
 | Right and iPhone independent? | independence | $0.8592 \times 0.8169 = 0.7019 \ne 52/71 = 0.7324$: not independent | 5 |
 | two Aces | AND | with replacement $(4/52)^2 = 0.0059$; without $(4/52)(3/51) = 0.0045$ | 5 |
 | sex and handedness | total probability, Bayes | $P(L) = 0.09$; $P(F \mid L) = 0.03/0.09 = 0.3333$ | 6 |
@@ -46,6 +46,10 @@ bayes-tree
 Show the sample-space size or the formula name ($P$ or $C$), the substituted numbers, the arithmetic, and the final answer with the right number of decimals: $0.0085/0.0125 = 0.68$, not a bare 0.68.
 :::
 
+:::tip Counting positions with C
+With $n$ coins, the outcomes with exactly $k$ heads are the ways to choose which $k$ of the $n$ flips are heads: $C(n, k)$. Three coins, two heads: choose 2 of 3 positions, HHT, HTH, THH, which is $C(3, 2) = 3$, the 3 of lesson 1's 8 outcomes.
+:::
+
 ```quiz
 [
   {
@@ -53,7 +57,7 @@ Show the sample-space size or the formula name ($P$ or $C$), the substituted num
     "type": "numeric",
     "answer": 0.375,
     "tolerance": 0.001,
-    "explain": "|S| = 16; two heads can occupy C(4, 2) = 6 positions: 6/16 = 0.375."
+    "explain": "Choose which 2 of the 4 flips are heads: HHTT, HTHT, HTTH, THHT, THTH, TTHH, which is C(4, 2) = 6. |S| = 2⁴ = 16, so 6/16 = 0.375."
   },
   {
     "q": "Four coins: P(at least one head)? (4 decimals)",
@@ -179,7 +183,7 @@ Show the sample-space size or the formula name ($P$ or $C$), the substituted num
     "type": "numeric",
     "answer": 0.5625,
     "tolerance": 0.002,
-    "explain": "0.036 / 0.064 = 0.5625."
+    "explain": "Male path 0.30 × 0.12 = 0.036, over P(L) = 0.064 from the last question: 0.036 / 0.064 = 0.5625."
   },
   {
     "q": "Suppliers: A 60% share with 2% defective, B 40% with 5% defective. P(a defective part came from B)? (3 decimals)",

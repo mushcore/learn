@@ -24,7 +24,25 @@ Pick 20 characters from the top of a ladder and count the dead: every pick chang
 
 $$P(x) = \frac{C(K, x) \cdot C(N - K,\ n - x)}{C(N, n)}, \qquad x = 0, 1, 2, \ldots, n$$
 
-$C(N, n)$ counts every possible sample, $C(K, x)$ the ways to pick the $x$ successes, $C(N - K, n - x)$ the ways to pick the $n - x$ failures.
+$C(N, n)$ counts every possible sample, $C(K, x)$ the ways to pick the $x$ successes, $C(N - K, n - x)$ the ways to pick the $n - x$ failures. For two jacks in five cards the deck splits into two piles:
+
+```diagram
+{ "type": "tree", "title": "Two jacks in five cards: every letter of the formula", "nodes": [
+  { "id": "deck", "label": "Deck N = 52" },
+  { "id": "jacks", "label": "K = 4 jacks", "parent": "deck" },
+  { "id": "others", "label": "N − K = 48 others", "parent": "deck" },
+  { "id": "pickj", "label": "pick x = 2", "sub": "C(4, 2) ways", "parent": "jacks" },
+  { "id": "picko", "label": "pick n − x = 3", "sub": "C(48, 3) ways", "parent": "others" }
+], "hi": ["pickj", "picko"], "caption": "A sample of n = 5 takes x = 2 from the jacks and n − x = 3 from the others: C(4, 2) · C(48, 3) such samples out of C(52, 5)." }
+```
+
+The same five letters for the three examples of this lesson:
+
+| | $N$ | $K$ | $N - K$ | $n$ | $x$ |
+|---|---|---|---|---|---|
+| Jacks | 52 | 4 | 48 | 5 | 2 |
+| Mac users | 90 | 40 | 50 | 10 | 4 |
+| Hardcore top 200 | 200 | 69 | 131 | 20 | 7 |
 
 $$\mu = n \cdot \frac{K}{N}, \qquad \sigma^2 = n \cdot \frac{K}{N} \cdot \frac{N - K}{N} \cdot \frac{N - n}{N - 1}$$
 
@@ -63,25 +81,6 @@ The chance that the next card is a jack moves with every card dealt (4/52, then 
 deal-play
 {}
 ```
-
-`dhyper(x, K, N - K, n)` takes four arguments: the value $x$, the successes, the failures and the sample size, never $N$. `dhyper(4, 40, 90, 10)` describes a population of 130 and returns a wrong answer with no error message.
-
-:::info R syntax
-| Code | What it does |
-|---|---|
-| `dhyper(x, K, N - K, n)` | The slot pattern: R's `dhyper(x, m, n, k)` takes x, then m = K successes, then R's n = N − K failures, then k = the lesson's n drawn. |
-| `dhyper(4, 40, 90, 10)` | x = 4, m = 40, n = 90, k = 10. R reads 90 as the failures, so the population it uses is 40 + 90 = 130. |
-
-**Left to right**
-
-- `dhyper(x, K, N - K, n)`: "The hypergeometric probability (`dhyper`) of x successes (`x`) with K successes (`K`) and N minus K failures (`N - K`) in the population and n drawn (`n`)."
-- `dhyper(4, 40, 90, 10)`: "The hypergeometric probability (`dhyper`) of 4 successes (`x = 4`) with 40 successes (`m = 40`) and 90 failures (`n = 90`) and 10 drawn (`k = 10`)."
-
-**Right to left**, the order R runs it
-
-- `dhyper(x, K, N - K, n)`: "Subtract K from N (`N - K`), then compute P(X = x) from x, K, the failures and n (`dhyper`)."
-- `dhyper(4, 40, 90, 10)`: "Take 4, 40, 90 and 10 into the four slots, compute P(X = 4) for a population of 130 (`dhyper`), and print."
-:::
 
 ```r
 N <- 52
@@ -125,6 +124,27 @@ dbinom(2, 5, 4/52)
 - `dhyper(2, 4, 48, 5)`: "Take x = 2, m = 4, n = 48 and k = 5, compute P(X = 2) (`dhyper`), and print."
 - `choose(5,2)*(4/52)^2*(48/52)^3`: "Divide inside the brackets (`4/52`, `48/52`), raise to the powers (`^`), count the combinations (`choose`), multiply the three (`*`), and print."
 - `dbinom(2, 5, 4/52)`: "Divide 4 by 52 (`4/52`), compute P(X = 2) for size 5 (`dbinom`), and print."
+:::
+
+:::warn R's dhyper slots are not the course's letters
+`dhyper(x, K, N - K, n)` takes four arguments: the value $x$, the successes, the failures and the sample size, never $N$. R names them x, m, n, k, so R's n is the failures, not the sample size. `dhyper(2, 4, 48, 5)` is right. `dhyper(2, 4, 52, 5)` silently describes a deck of 4 + 52 = 56 cards and returns a wrong answer with no error.
+:::
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dhyper(x, K, N - K, n)` | The slot pattern: R's `dhyper(x, m, n, k)` takes x, then m = K successes, then R's n = N − K failures, then k = the lesson's n drawn. |
+| `dhyper(2, 4, 52, 5)` | x = 2, m = 4, n = 52, k = 5. R reads 52 as the failures, so the deck it uses has 4 + 52 = 56 cards. |
+
+**Left to right**
+
+- `dhyper(x, K, N - K, n)`: "The hypergeometric probability (`dhyper`) of x successes (`x`) with K successes (`K`) and N minus K failures (`N - K`) in the population and n drawn (`n`)."
+- `dhyper(2, 4, 52, 5)`: "The hypergeometric probability (`dhyper`) of 2 jacks (`x = 2`) with 4 jacks (`m = 4`) and 52 non-jacks (`n = 52`) and 5 drawn (`k = 5`)."
+
+**Right to left**, the order R runs it
+
+- `dhyper(x, K, N - K, n)`: "Subtract K from N (`N - K`), then compute P(X = x) from x, K, the failures and n (`dhyper`)."
+- `dhyper(2, 4, 52, 5)`: "Take 2, 4, 52 and 5 into the four slots, compute P(X = 2) for a deck of 56 (`dhyper`), and print."
 :::
 
 ## The superdeck: ten decks shuffled together
@@ -172,6 +192,14 @@ dbinom(2, 5, K/N)
 
 *If the sample size $n$ is 5 % or less of the total population $N$, then probabilities calculated using Hypergeometric and Binomial distributions are practically the same.*
 
+:::tip The 5 % rule in three steps
+1. Compute $n/N$, the sample size over the population (not $K/N$, which is $p$).
+2. If $n/N \le 0.05$, use the binomial with $p = K/N$; otherwise use the hypergeometric.
+3. Why it works: each draw changes the next $p$ by about $1/N$, so $n$ draws change it by about $n/N$. A small $n/N$ leaves $p$ almost fixed.
+
+One deck: $5/52 = 9.6\%$, and the binomial is off (0.0399 against 0.0465). Superdeck: $5/520 = 0.96\%$, and the two agree (0.0460 against 0.0465).
+:::
+
 ## Twenty characters from the Hardcore Allflame top 200
 
 On Hardcore Allflame, the PoE1 ladder where a character that dies is flagged dead, 69 of the characters ranked 1–200 were dead when the official ladder API was read [PoE1, 3.29 Hardcore Allflame ladder, checked 2026-10-27]. Pick 20 of those 200 at random, nobody twice; X = the number dead. This is a fixed list of $N = 200$ with $K = 69$ dead, drawn without replacement, so $p$ changes after each draw: 69/200, then 68/199 after a dead pick. A Star Force tap or a scroll use keeps its rate however many came before: that is why those were binomial.
@@ -185,7 +213,11 @@ On Hardcore Allflame, the PoE1 ladder where a character that dies is flagged dea
 
 $$P(X = 7) = \frac{C(69, 7) \cdot C(131, 13)}{C(200, 20)} = \frac{3.1333 \times 10^{26}}{1.6136 \times 10^{27}} = 0.1942$$
 
-$\mu = 20 \cdot \frac{69}{200} = 6.9$ and $\sigma = 2.02$, against the binomial's 2.13.
+$\mu = 20 \cdot \frac{69}{200} = 6.9$, and the correction factor shrinks the spread:
+
+$$\sigma^2 = 20 \cdot \tfrac{69}{200} \cdot \tfrac{131}{200} \cdot \tfrac{180}{199} = 4.5195 \times 0.9045 = 4.0880, \qquad \sigma = 2.02$$
+
+The binomial, without the factor, gives $\sqrt{4.5195} = 2.13$.
 
 ```r
 dhyper(7, 69, 131, 20)
@@ -241,7 +273,13 @@ hyper-vs-binom
 
 $$P(4) = \frac{C(40, 4) \cdot C(50, 6)}{C(90, 10)} = \frac{91\,390 \times 15\,890\,700}{5.7206 \times 10^{12}} = \frac{1.4523 \times 10^{12}}{5.7206 \times 10^{12}} = 0.2539$$
 
-**(b)** *What is the probability that 4 or fewer of them are Apple Mac users?* Five terms of the same formula:
+**(b)** *What is the probability that 4 or fewer of them are Apple Mac users?* Five terms of the same formula. The whole table, from the R output below:
+
+| $x$ | **0** | **1** | **2** | **3** | **4** | 5 | 6 | 7 | **8** | **9** | **10** |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| $P(x)$ | **0.0018** | **0.0175** | **0.0732** | **0.1725** | **0.2539** | 0.2437 | 0.1545 | 0.0639 | **0.0165** | **0.0024** | **0.0001** |
+
+(b) adds the bold left cells; (e) adds the bold right ones.
 
 $$P(X \le 4) = P(0) + P(1) + P(2) + P(3) + P(4) = 0.0018 + 0.0175 + 0.0732 + 0.1725 + 0.2539 = 0.5189$$
 
@@ -301,7 +339,7 @@ Z
 | `dhyper(4, K, N-K, n)` | x = 4, m = `K` (40), R's n = `N-K` (50 failures), k = `n` (the lesson's sample size, 10). |
 | `phyper(4, K, N-K, n)` | `phyper(q, m, n, k)`: the same slots with q = 4, giving P(X ≤ 4). |
 | `mu <- n*K/N` | `*` and `/` run left to right: nK/N. |
-| `sig <- sqrt(n*p*(1-p)*(N-n)/(N-1))` | Each bracket is worked out first; `sqrt()` roots the whole product. |
+| `sig <- sqrt(n*p*(1-p)*(N-n)/(N-1))` | Each bracket is worked out first; `sqrt()` roots the whole product. `p*(1-p)` is the formula's $\frac{K}{N} \cdot \frac{N-K}{N}$, since p = K/N. |
 | `c(mu, sig)` | Prints μ and σ on one line. |
 | `X.vals <- 0:n` | `a:b` is the whole numbers from a to b, here 0 to 10. |
 | `p.vals <- dhyper(X.vals, K, N-K, n)` | x = the whole vector, so one call returns all eleven probabilities. |

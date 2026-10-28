@@ -41,12 +41,13 @@ Lay the table out as $x$, $P(x)$, $x P(x)$, $(x - \mu)^2 P(x)$; total the last t
 | $\sigma^2$ | $npq$ | $n\dfrac{K}{N}\dfrac{N-K}{N}\dfrac{N-n}{N-1}$ | $\dfrac{1-p}{p^2}$ | $\lambda$ |
 | R: $P(X = x)$ | `dbinom(x, n, p)` | `dhyper(x, K, N-K, n)` | `dgeom(x-1, p)` | `dpois(x, lambda)` |
 | R: $P(X \le x)$ | `pbinom(x, n, p)` | `phyper(x, K, N-K, n)` | `pgeom(x-1, p)` | `ppois(x, lambda)` |
+| R: $P(X \ge x)$ | `1 - pbinom(x-1, n, p)` | `1 - phyper(x-1, K, N-K, n)` | `1 - pgeom(x-2, p)` $= q^{x-1}$ | `1 - ppois(x-1, lambda)` |
 
-Shortcuts: $P(X \ge x) = 1 - P(X \le x - 1)$; geometric $P(X \ge x) = q^{x-1}$ (the first $x - 1$ trials all fail); $nCx = \dfrac{n!}{(n-x)!\,x!}$ on the Sharp as `n 2ndF nCr x`; $e^{-\lambda}$ as `lambda +/- 2ndF e^x`.
+Shortcuts: $P(X \ge x) = 1 - P(X \le x - 1)$, which in R is `1 - p*(x-1, …)` except the geometric, whose R count of failures makes it `1 - pgeom(x-2, p)`; geometric $P(X \ge x) = q^{x-1}$ (the first $x - 1$ trials all fail) and $P(X > x) = q^x$; $nCx = \dfrac{n!}{(n-x)!\,x!}$ on the Sharp as `n 2ndF nCr x`; $e^{-\lambda}$ as `lambda +/- 2ndF e^x`.
 
 **5 % rule**: if $n \le 0.05\,N$ the binomial with $p = K/N$ gives practically the same probabilities as the hypergeometric (superdeck: $5/520 = 0.96\%$, 0.0460 vs 0.0465). At $n/N = 5/52 = 9.6\%$ or $10/90 = 11\%$ it does not (0.0399 vs 0.0465; $\sigma$ 1.49 vs 1.57).
 
-**Unusual**: compute $\mu$ and $\sigma$ from the row above, then $Z = (x - \mu)/\sigma$; beyond $\pm 2$ is unusual. The tail check (`pbinom`, `1 - phyper(x-1, …)`, `ppois`) below 0.025 says the same. Not unusual means consistent with chance, not evidence of no effect.
+**Unusual**: compute $\mu$ and $\sigma$ from the row above, then $Z = (x - \mu)/\sigma$; beyond $\pm 2$ is unusual. The tail check says the same. Low side: $P(X \le x)$ = `pbinom(x, …)` / `phyper(x, …)` / `ppois(x, …)`. High side: $P(X \ge x)$ = `1 - p*(x-1, …)` (geometric `x-2`). Unusual if below 0.025. Not unusual means consistent with chance, not evidence of no effect.
 
 **Poisson $\lambda$**: rescale to the interval asked about before substituting (1 per 2 s is $60/2 = 30$ per minute; 3 per hour is 1 per 20 minutes).
 
@@ -78,7 +79,7 @@ Histograms: binomial shoppers peaks at 12–13, nothing past 25; Mac users peaks
 | `choose(n, x) * p^x * (1-p)^(n-x)` = `dbinom(x, n, p)` | binomial by hand and by function |
 | `1 - pbinom(x-1, n, p)` | $P(X \ge x)$ |
 | `dhyper(x, K, N-K, n)`, `phyper(x, K, N-K, n)` | hypergeometric; successes, failures, draws |
-| `dgeom(x-1, p)`, `pgeom(x-1, p)`, `1 - pgeom(x-1, p)` | geometric $P(X = x)$, $P(X \le x)$, $P(X > x)$ with R's 0-based count of failures |
+| `dgeom(x-1, p)`, `pgeom(x-1, p)`, `1 - pgeom(x-1, p)`, `1 - pgeom(x-2, p)` | geometric $P(X = x)$, $P(X \le x)$, $P(X > x)$ with R's 0-based count of failures; P(X ≥ x) = `1 - pgeom(x-2, p)` = $q^{x-1}$ |
 | `lambda^x/factorial(x)*exp(-lambda)` = `dpois(x, lambda)`, `ppois(x, lambda)` | Poisson |
 | `Z <- (X-mu)/sig` | the unusual test |
 | `read.csv("SFU.Weather.with.Precip.csv", header=TRUE, na="NA", colClasses=c("Date","integer","character","integer","numeric","numeric","numeric"))` | import with Date as a date |

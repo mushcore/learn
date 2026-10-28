@@ -209,7 +209,15 @@ SFU.Weather$Z.Temp.anomaly <- Z.Temp.anomaly
 - `SFU.Weather$Z.Temp.anomaly <- Z.Temp.anomaly`: "Take the vector Z.Temp.anomaly and put it in the data frame as a new column (`SFU.Weather$Z.Temp.anomaly <-`)."
 :::
 
-`Monthly.Mean.Temp[Month]` is a vectorised lookup: it returns the right monthly mean for all 17 582 rows at once.
+`Monthly.Mean.Temp[Month]` is a vectorised lookup: it returns the right monthly mean for all 17 582 rows at once. Three rows of the result:
+
+| Date | Month | Temp.deg.C | Monthly.Mean.Temp[Month] | Monthly.SD.Temp[Month] | Z |
+|---|---|---|---|---|---|
+| 1966-01-01 | Jan | −2.5 | 2.90 | 3.67 | (−2.5 − 2.90)/3.67 = −1.47 |
+| 1968-01-14 | Jan | 8.6 | 2.90 | 3.67 | (8.6 − 2.90)/3.67 = 1.55 |
+| 1971-07-02 | Jul | 12.0 | 17.10 | 3.33 | (12.0 − 17.10)/3.33 = −1.53 |
+
+Each row's `Month` picks its own mean and sd. The July day at 12.0 °C is warmer than the mild January day at 8.6 °C, yet its Z is negative: cold for July.
 
 Task 4 draws it with mosaic's `histogram` and a fitted normal curve:
 
@@ -267,7 +275,42 @@ SFU.Weather$Temp.Seg <- with(SFU.Weather,
 - "Make the columns visible (`with`); for every row, test the anomaly against 0.4307 (`<=`) to choose Mid or Warm (inner `ifelse`), test it against −0.4307 (`<`) to choose Cold or that inner result (outer `ifelse`), and store the labels as Temp.Seg (`SFU.Weather$Temp.Seg <-`)."
 :::
 
-The inner test only sees days that failed the first, so *Mid* is $-0.4307 \le Z \le 0.4307$ and *Warm* is $Z > 0.4307$. The cut points ±0.4307 are the normal distribution's tertiles, which is why the segments come out near one third each.
+The inner test only sees days that failed the first, so *Mid* is $-0.4307 \le Z \le 0.4307$ and *Warm* is $Z > 0.4307$.
+
+Tertiles are the two cut points that split the bell into three equal areas: in R, `qnorm(1/3)` = −0.4307, and by symmetry `qnorm(2/3)` = 0.4307. That is why the segments come out near one third each.
+
+```r
+qnorm(1/3)
+qnorm(2/3)
+```
+```text
+[1] -0.4307273
+[1] 0.4307273
+```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `qnorm(1/3)` | `qnorm(p)`: the z with area p to its left under the standard normal curve (mean 0, sd 1). |
+| `1/3` | One third, computed first and passed as p. |
+
+**Left to right**
+
+- `qnorm(1/3)`: "The standard normal cut point (`qnorm`) with one third of the area to its left (`1/3`)."
+- `qnorm(2/3)`: "The cut point (`qnorm`) with two thirds of the area to its left (`2/3`)."
+
+**Right to left**, the order R runs it
+
+- `qnorm(1/3)`: "Divide 1 by 3 (`1/3`), find the z with that much area to its left (`qnorm`), and print."
+- `qnorm(2/3)`: "Divide 2 by 3 (`2/3`), find the z with that much area to its left (`qnorm`), and print."
+:::
+
+```widget
+pdf-area
+{ "dist": "normal", "mu": 0, "sigma": 1, "lo": -0.4307, "hi": 0.4307, "showCdf": false, "title": "Standard normal cut at ±0.4307: Cold (left) | Mid (shaded, 0.3333) | Warm (right), one third each" }
+```
+
+The shaded middle is Mid, 0.3333; the left tail below −0.4307 is Cold and the right tail above 0.4307 is Warm, 0.3333 each.
 
 ## Tasks 5 and 6: the segment proportions and their pie
 
@@ -468,7 +511,66 @@ DoW         FALSE TRUE
 - `p.Precip.Cond.Monday`: "Look it up and print it."
 :::
 
-`table()` on two columns gives rows by the first and columns by the second, indexed by name. The logical levels became the strings `"FALSE"` and `"TRUE"`, so `tab1["Monday", TRUE]` would not work. `tab1[ ,"TRUE"]` is the whole wet column, so $P(\text{Precip})$ = 8577/17 582 = 0.4878; `tab1["Monday",]` is the Monday row, so the conditional is the cell over its **row** total, 1222/2506 = 0.4876. *The fact that these two probabilities are so close (~0.488) means that having precipitation is independent of a day being Monday*: $P(B \mid A) = P(B)$ is Unit 3's test.
+The rule every conditional in this lab uses: the condition picks the total you divide by. Task 8 below builds `tab2` the same way, segments by the wet flag:
+
+:::tip Which total? (tab2)
+| You want | Numerator | Denominator | R (tab2) |
+|---|---|---|---|
+| P(wet \| Cold) | Cold-wet cell | Cold row total | `tab2["Cold","TRUE"]/sum(tab2["Cold",])` |
+| P(Cold \| wet) | Cold-wet cell | wet column total | `tab2["Cold","TRUE"]/sum(tab2[ ,"TRUE"])` |
+| P(Cold and wet) | Cold-wet cell | grand total | `tab2["Cold","TRUE"]/sum(tab2)` |
+| P(wet) | wet column total | grand total | `sum(tab2[ ,"TRUE"])/sum(tab2)` |
+:::
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `tab2["Cold","TRUE"]` | `[row, column]` by name: the one Cold-wet cell. |
+| `sum(tab2["Cold",])` | Blank column slot: the whole Cold row, added up. |
+| `sum(tab2[ ,"TRUE"])` | Blank row slot: the whole wet column, added up. |
+| `sum(tab2)` | Every cell added: the grand total. |
+| `/` | Divides the numerator by the denominator. |
+
+**Left to right**
+
+- `tab2["Cold","TRUE"]/sum(tab2["Cold",])`: "The Cold-wet cell (`tab2["Cold","TRUE"]`) divided by (`/`) the total (`sum`) of the Cold row (`tab2["Cold",]`)."
+- `tab2["Cold","TRUE"]/sum(tab2[ ,"TRUE"])`: "The same cell divided by (`/`) the total (`sum`) of the wet column (`tab2[ ,"TRUE"]`)."
+- `tab2["Cold","TRUE"]/sum(tab2)`: "The same cell divided by (`/`) the total of every cell (`sum(tab2)`)."
+- `sum(tab2[ ,"TRUE"])/sum(tab2)`: "The wet column total (`sum(tab2[ ,"TRUE"])`) divided by (`/`) the grand total (`sum(tab2)`)."
+
+**Right to left**, the order R runs it
+
+- `tab2["Cold","TRUE"]/sum(tab2["Cold",])`: "Take the Cold row and add it (`sum`), take the Cold-wet cell, and divide (`/`)."
+- `tab2["Cold","TRUE"]/sum(tab2[ ,"TRUE"])`: "Take the wet column and add it (`sum`), take the Cold-wet cell, and divide (`/`)."
+- `tab2["Cold","TRUE"]/sum(tab2)`: "Add every cell (`sum`), take the Cold-wet cell, and divide (`/`)."
+- `sum(tab2[ ,"TRUE"])/sum(tab2)`: "Add every cell (`sum(tab2)`), add the wet column (`sum(tab2[ ,"TRUE"])`), and divide (`/`)."
+:::
+
+```diagram
+{ "type": "grid", "title": "P(wet | Cold): divide by the Cold row total", "nodes": [
+  { "id": "h0", "label": "tab2", "row": 0, "col": 0 }, { "id": "h1", "label": "FALSE (dry)", "row": 0, "col": 1 }, { "id": "h2", "label": "TRUE (wet)", "row": 0, "col": 2 }, { "id": "h3", "label": "Row total", "row": 0, "col": 3 },
+  { "id": "c0", "label": "Cold", "row": 1, "col": 0 }, { "id": "c1", "label": "2591", "row": 1, "col": 1 }, { "id": "c2", "label": "3455", "row": 1, "col": 2 }, { "id": "c3", "label": "6046", "row": 1, "col": 3 },
+  { "id": "m0", "label": "Mid", "row": 2, "col": 0 }, { "id": "m1", "label": "3050", "row": 2, "col": 1 }, { "id": "m2", "label": "2906", "row": 2, "col": 2 }, { "id": "m3", "label": "5956", "row": 2, "col": 3 },
+  { "id": "w0", "label": "Warm", "row": 3, "col": 0 }, { "id": "w1", "label": "3364", "row": 3, "col": 1 }, { "id": "w2", "label": "2216", "row": 3, "col": 2 }, { "id": "w3", "label": "5580", "row": 3, "col": 3 },
+  { "id": "t0", "label": "Column total", "row": 4, "col": 0 }, { "id": "t1", "label": "9005", "row": 4, "col": 1 }, { "id": "t2", "label": "8577", "row": 4, "col": 2 }, { "id": "t3", "label": "17582", "row": 4, "col": 3 }
+], "hi": ["c1", "c2", "c3"], "caption": "Condition on Cold: only the Cold row counts, so P(wet | Cold) is the Cold-wet cell 3455 over the Cold row total 6046." }
+```
+
+```diagram
+{ "type": "grid", "title": "P(Cold | wet): divide by the wet column total", "nodes": [
+  { "id": "h0", "label": "tab2", "row": 0, "col": 0 }, { "id": "h1", "label": "FALSE (dry)", "row": 0, "col": 1 }, { "id": "h2", "label": "TRUE (wet)", "row": 0, "col": 2 }, { "id": "h3", "label": "Row total", "row": 0, "col": 3 },
+  { "id": "c0", "label": "Cold", "row": 1, "col": 0 }, { "id": "c1", "label": "2591", "row": 1, "col": 1 }, { "id": "c2", "label": "3455", "row": 1, "col": 2 }, { "id": "c3", "label": "6046", "row": 1, "col": 3 },
+  { "id": "m0", "label": "Mid", "row": 2, "col": 0 }, { "id": "m1", "label": "3050", "row": 2, "col": 1 }, { "id": "m2", "label": "2906", "row": 2, "col": 2 }, { "id": "m3", "label": "5956", "row": 2, "col": 3 },
+  { "id": "w0", "label": "Warm", "row": 3, "col": 0 }, { "id": "w1", "label": "3364", "row": 3, "col": 1 }, { "id": "w2", "label": "2216", "row": 3, "col": 2 }, { "id": "w3", "label": "5580", "row": 3, "col": 3 },
+  { "id": "t0", "label": "Column total", "row": 4, "col": 0 }, { "id": "t1", "label": "9005", "row": 4, "col": 1 }, { "id": "t2", "label": "8577", "row": 4, "col": 2 }, { "id": "t3", "label": "17582", "row": 4, "col": 3 }
+], "hi": ["c2", "m2", "w2", "t2"], "caption": "Condition on wet: only the wet column counts, so P(Cold | wet) is the same cell 3455 over the wet column total 8577. P(Cold and wet) would divide by the grand total 17582." }
+```
+
+Back to `tab1`:
+
+- **Orientation.** `table()` on two columns gives rows by the first column (DoW) and columns by the second (has.Precip), indexed by name.
+- **`"TRUE"` is a string.** The logical levels became the names `"FALSE"` and `"TRUE"`, so `tab1["Monday", TRUE]` would not work. `tab1[ ,"TRUE"]` is the whole wet column, so $P(\text{Precip})$ = 8577/17 582 = 0.4878. `tab1["Monday",]` is the Monday row, so the conditional is the cell over its **row** total, 1222/2506 = 0.4876.
+- **Verdict.** *The fact that these two probabilities are so close (~0.488) means that having precipitation is independent of a day being Monday*: $P(B \mid A) = P(B)$ is Unit 3's test.
 
 ## Task 8: are cold days wetter?
 
@@ -513,7 +615,7 @@ Temp.Seg FALSE TRUE
 - `c(…)`: "Put the three in one vector (`c`) and print it."
 :::
 
-$P(\text{Precip} > 0 \mid \text{Cold}) = 3455/6046 = 0.5715$; Mid 2906/5956 = 0.4879; Warm 2216/5580 = 0.3971. 3455 over the grand total 17 582 would be the joint probability 0.1965 instead. The lab's answer: *yes, since the probability of precipitation given a Cold day is greater than the probability of precipitation on a Warm or Mid day.* Temperature and precipitation are dependent.
+Each line is the first row of the "Which total?" table: $P(\text{Precip} > 0 \mid \text{Cold}) = 3455/6046 = 0.5715$; Mid 2906/5956 = 0.4879; Warm 2216/5580 = 0.3971. 3455 over the grand total 17 582 would be the joint probability 0.1965 instead. The lab's answer: *yes, since the probability of precipitation given a Cold day is greater than the probability of precipitation on a Warm or Mid day.* Temperature and precipitation are dependent.
 
 ```widget
 two-way
@@ -560,7 +662,7 @@ tab2["Warm","TRUE"]/sum(tab2[ ,"TRUE"])
 - `tab2["Warm","TRUE"]/sum(tab2[ ,"TRUE"])`: "Take the TRUE column and add it (`sum`), take the Warm, TRUE cell, divide (`/`), and print."
 :::
 
-The denominator is $P(\text{Precip})$ = 0.4878 again, by total probability. The second line checks it straight from the table: 2216/8577, the Warm cell over the wet **column** total. Four-decimal values on paper give 0.2583, a rounding difference only.
+The denominator is $P(\text{Precip})$ = 0.4878 again, by total probability. The second line checks it straight from the table, the second row of the "Which total?" table: 2216/8577, the Warm cell over the wet **column** total. Four-decimal values on paper give 0.2583, a rounding difference only.
 
 ### The same three branches on Unit 3's tree
 
@@ -570,6 +672,8 @@ bayes-tree
 ```
 
 ## Task 10: does the season change the dependence? A three-way table
+
+`tab2` is reused for a new three-way table; has.Precip is now the first index.
 
 ```r
 tab2 <- table(SFU.Weather[c("has.Precip","Temp.Seg","Season")])
@@ -620,7 +724,14 @@ has.Precip Cold  Mid Warm
 - `round(c(…), 4)`: "Combine the four (`c`), round to 4 decimals (`round`), and print."
 :::
 
-A three-way table is indexed `[has.Precip, Temp.Seg, Season]`; a blank index keeps every level. `sum(tab2[ ,"Warm","Winter"])` is all 400 + 1035 = 1435 warm winter days, so $P(\text{Precip} > 0 \mid \text{Warm and Winter})$ = 1035/1435 = 0.7213. *The season where SFU is most likely to have precipitation on a warm day is winter.* The season reverses the dependence: in winter a warm day is wetter than a cold one (0.72 against 612/1199 = 0.51), in summer a cold day is far wetter (897/1701 = 0.53 against 0.09).
+A three-way table is indexed `[has.Precip, Temp.Seg, Season]`; a blank index keeps every level. `sum(tab2[ ,"Warm","Winter"])` is all 400 + 1035 = 1435 warm winter days, so $P(\text{Precip} > 0 \mid \text{Warm and Winter})$ = 1035/1435 = 0.7213. *The season where SFU is most likely to have precipitation on a warm day is winter.*
+
+| Season | P(wet \| Cold) | P(wet \| Warm) | Wetter |
+|---|---|---|---|
+| Winter | 612/1199 = 0.51 | 1035/1435 = 0.72 | warm |
+| Summer | 897/1701 = 0.53 | 125/1437 = 0.09 | cold |
+
+**The season reverses which temperature segment is wetter.**
 
 ## Task 11: the month with the wettest warm days
 
@@ -670,7 +781,7 @@ barplot(pct, col="lightblue", ylim=c(0,100),
 
 ## Dead characters by rank band on the Hardcore ladder
 
-The 3.29 Hardcore Allflame ladder flags each character dead or alive. Four 200-character pages of it, ranks 1-200, 3001-3200, 7401-7600 and 14801-15000, hold 69, 120, 158 and 157 dead characters [PoE1, 3.29 Hardcore Allflame ladder, checked 2026-10-27]. Suppose `hc` holds those 800 characters, one row each, with the page in `band` and the ladder's `dead` flag as TRUE or FALSE. These are real counts in a two-way table, so P(dead | band) is a row proportion exactly as in Task 8, and the universe is these 800 sampled characters, not the whole ladder.
+The 3.29 Hardcore Allflame ladder flags each character dead or alive. Four 200-character pages of it, ranks 1-200, 3001-3200, 7401-7600 and 14801-15000, hold 69, 120, 158 and 157 dead characters [PoE1, 3.29 Hardcore Allflame ladder, checked 2026-10-27]. Suppose `hc` holds those 800 characters, one row each, with the page in `band` and the ladder's `dead` flag as TRUE or FALSE. These are real counts in a two-way table, so P(dead | band) is a row proportion exactly as in Task 8 (the "Which total?" table, with bands for segments and dead for wet), and the universe is these 800 sampled characters, not the whole ladder.
 
 ```r
 hc$band <- factor(hc$band, levels=c("1-200", "3001-3200", "7401-7600", "14801-15000"))

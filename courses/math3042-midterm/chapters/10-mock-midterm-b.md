@@ -47,6 +47,11 @@ The lengths (in minutes) of 60 online office-hour sessions for COMP 3522 were gr
 |---|---|---|---|---|---|---|
 | Frequency | 9 | 17 | 14 | 10 | 6 | 4 |
 
+```widget
+freq-hist
+{ "start": 0, "width": 4, "freq": [9, 17, 14, 10, 6, 4], "label": "Session length (min)", "unit": "sessions", "title": "Length of 60 office-hour sessions" }
+```
+
 ```quiz
 [
   {
@@ -68,7 +73,7 @@ The lengths (in minutes) of 60 online office-hour sessions for COMP 3522 were gr
     "type": "numeric",
     "answer": 0.518,
     "tolerance": 0.005,
-    "explain": "Sk = 3(X̄ − Q2)/s = 3(9.87 − 8.90)/5.62 = 3(0.97)/5.62 = 2.91/5.62 = **0.518**. Leaving out the 3 gives 0.173."
+    "explain": "Sk = 3(X̄ − Q2)/s = 3(9.87 − 8.90)/5.62 = 3(0.97)/5.62 = 2.91/5.62 = **0.518**. Leaving out the 3 gives 0.173. Use the stem's raw-data mean 9.87, not the grouped estimate 9.93: midpoints only approximate each session (with 9.93 you would get 0.550)."
   },
   {
     "q": "**Q1d (1 mark).** What shape does Sk = 0.518, together with the table, indicate? Type the direction of the skew (left or right).",

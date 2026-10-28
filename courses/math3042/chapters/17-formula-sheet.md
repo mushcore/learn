@@ -18,9 +18,22 @@ Everything from Unit 1 on one page: a lookup reference, with no new explanations
 | $Q_1, Q_2, Q_3$ | quartiles ($Q_2$ = median) | $IQR$ | interquartile range |
 | $f_i$ | frequency of class $i$ | $Z$ | Z-score (standard score) |
 | $R$ | range | $Sk$ | Pearson skewness coefficient |
-| $P_k$ | $k$-th percentile | $x$, $y$ | correlation pair values |
+| $P_k$ | $k$-th percentile | $x$, $y$ in $r$ | correlation pair values |
+| $X$ in $p = X/N$ | count in the category (population) | $x$ in $\hat{p} = x/n$ | count in the category (sample) |
 
 A **statistic** describes a sample ($\bar{X}, s, \hat{p}, r$). A **parameter** describes a population ($\mu, \sigma, p, \rho$).
+
+## Which one?
+
+| Situation | Use | Not |
+|---|---|---|
+| data are a sample | $s$, $n - 1$, `sd()` | $\sigma$ |
+| spread when means differ | CV | raw $s$ |
+| bell-shaped, % in a band | empirical rule ("approximately") | Chebyshev |
+| shape unknown or skewed | Chebyshev ("at least") | empirical rule |
+| flag a value using mean and sd | unusual, $Z < -2$ or $Z > 2$ | fences |
+| flag a value using quartiles | outlier, $1.5 \times IQR$ fences | Z |
+| quartiles on paper | hand method | R's `quantile()` |
 
 ## Proportions
 
@@ -36,8 +49,8 @@ $\bar{X} = \dfrac{\Sigma X}{n}$ (sample) $\qquad \mu = \dfrac{\Sigma X}{N}$ (pop
 
 ## Median / mode
 
-- Sort the data. Odd $n$: median is the exact middle value. Even $n$: median is the mean of the two middle values.
-- Mode: the most frequently occurring value. R has no base `mode()` statistical function — build a frequency table and take the max.
+- Sort the data. Odd $n$: median is the value at position $(n+1)/2$. Even $n$: median is the average of the values at positions $n/2$ and $n/2 + 1$.
+- Mode: the most frequently occurring value. R has no base `mode()` statistical function — build a frequency table and take the max. `names(which.max(table(x)))` and `levels(x)[which.max(table(x))]` (for a factor) give the same answer.
 
 ## Range and standard deviation
 
@@ -77,7 +90,7 @@ Going backwards: $X = \mu + Z\sigma \qquad X = \bar{X} + Zs$
 |---|---|---|---|---|---|---|---|
 | % of data **below** | 0.15% | 2.5% | 16% | 50% | 84% | 97.5% | 99.85% |
 
-Read this table directly: "% below $Z=+2$" $= 50\% + 95\%/2 = 97.5\%$, the whole lower half plus half of the middle 95% band.
+**The eight slices** from left to right: 0.15, 2.35, 13.5, 34, 34, 13.5, 2.35, 0.15 (%). $34 = 68/2$, $13.5 = (95 - 68)/2$, $2.35 = (99.7 - 95)/2$, $0.15 = (100 - 99.7)/2$. Any tail is a sum of slices: "% below $Z=+2$" $= 0.15 + 2.35 + 13.5 + 34 + 34 + 13.5 = 97.5\%$.
 
 ## Chebyshev's rule (works for ANY distribution shape)
 
@@ -98,7 +111,7 @@ Fraction of data with $-k < Z < k$ is **at least** $1 - \dfrac{1}{k^2}$.
 2. If $n$ is **odd**, exclude the middle value; if $n$ is **even**, don't exclude anything.
 3. $Q_1$ = median of the lower half. $Q_3$ = median of the upper half.
 
-R's `quantile()` interpolates differently and may not match the hand method exactly — both are valid ("about 10 different ways to define quartiles").
+R's `quantile()` interpolates differently and may not match the hand method exactly — both are valid ("about 10 different ways to define quartiles"). On paper, use the hand method; when a question gives $Q_1$ and $Q_3$, use the ones given.
 
 ## Percentiles
 
@@ -177,7 +190,7 @@ Properties: $-1 \le r \le 1$; unaffected by unit changes; unaffected by swapping
     "answer": 16,
     "tolerance": 0.5,
     "unit": "%",
-    "explain": "From the cumulative table: $Z=-1 \\to 16\\%$ below. (Half the outer 32% outside $\\mu\\pm\\sigma$ falls in the lower tail: $32\\%/2=16\\%$.)"
+    "explain": "From the cumulative table: $Z=-1 \\to 16\\%$ below, the slices $0.15 + 2.35 + 13.5 = 16\\%$."
   },
   {
     "q": "The upper outlier fence is $Q_3 + 1.5 \\times IQR$.",

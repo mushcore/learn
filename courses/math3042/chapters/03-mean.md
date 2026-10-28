@@ -75,7 +75,9 @@ stat-calc
 
 ## Grouped data
 
-Sometimes you don't get the raw values — you get a **frequency table**: how many observations ($f_i$) fell into each group ($i$), where each group is represented by its **class mark** $X_i$ (the midpoint of that group's interval). The grouped mean formula:
+Sometimes you don't get the raw values — you get a **frequency table**: how many observations ($f_i$) fell into each group ($i$), where each group is represented by its **class mark** $X_i$ (the midpoint of that group's interval).
+
+Tiny case: 3, 3, 3, 5 as a table is $X_i = 3$ with $f = 3$, and $X_i = 5$ with $f = 1$. The raw sum $3 + 3 + 3 + 5$ is $3(3) + 5(1) = 14$, and there are $3 + 1 = 4$ values, so $\bar{X} = 14/4 = 3.5$. So $f_i X_i$ means "this value, added $f_i$ times". The grouped mean formula:
 
 $$\bar{X} = \frac{\sum f_i X_i}{\sum f_i}$$
 
@@ -83,12 +85,14 @@ Every observation in a group is treated as if it were exactly at that group's mi
 
 ### Worked example: Old Faithful eruption durations
 
-| $X_i$ | 1.75 | 2.25 | 2.75 | 3.25 | 3.75 | 4.25 | 4.75 | 5.25 |
+| Interval | 1.5–2.0 | 2.0–2.5 | 2.5–3.0 | 3.0–3.5 | 3.5–4.0 | 4.0–4.5 | 4.5–5.0 | 5.0–5.5 |
 |---|---|---|---|---|---|---|---|---|
+| $X_i$ | 1.75 | 2.25 | 2.75 | 3.25 | 3.75 | 4.25 | 4.75 | 5.25 |
 | $f_i$ | 51 | 41 | 5 | 7 | 30 | 73 | 61 | 4 |
+| $f_i X_i$ | 89.25 | 92.25 | 13.75 | 22.75 | 112.5 | 310.25 | 289.75 | 21 |
 
 1. $\sum f_i = 51+41+5+7+30+73+61+4 = 272$
-2. $\sum f_i X_i = 51(1.75)+41(2.25)+5(2.75)+7(3.25)+30(3.75)+73(4.25)+61(4.75)+4(5.25) = 951.5$
+2. $\sum f_i X_i$ = sum of the bottom row $= 951.5$
 3. $\bar{X} = \dfrac{951.5}{272} = \mathbf{3.498}$
 
 ```widget
@@ -121,7 +125,7 @@ A level is a whole number, so every Hero in a column is exactly at its $X_i$: he
 2. $\sum f_i X_i = 1800 + 3289 + 3874 + 7128 + 17464 + 59000 + 29988 + 24905 = 147448$
 3. $\bar{X} = \dfrac{147448}{500} = \mathbf{294.896}$
 
-The mean sits below 295, the level 200 of the 500 Heroes share, because 187 Heroes at 293 and 294 outweigh the 113 above 295.
+Level 295 is the most common level (200 of the 500 Heroes). The mean, 294.896, lands just below it because 187 Heroes sit one or two levels below 295 and only 113 sit above it.
 
 ### The Hero table in the grouped-mean widget
 
@@ -132,9 +136,13 @@ grouped-mean
 
 ## Another grouped example: steel rods
 
-Lab 1's pencil problem 2: rod diameters given as a frequency table (diameter : count) — $10.00\text{mm}\!:\!40$, $10.01\!:\!75$, $10.02\!:\!100$, $10.03\!:\!90$, $10.04\!:\!45$. Here the diameters themselves are the class marks and $\sum f_i = 350$. Working the formula through gives
+Lab 1's pencil problem 2: rod diameters given as a frequency table (diameter : count) — $10.00\text{mm}\!:\!40$, $10.01\!:\!75$, $10.02\!:\!100$, $10.03\!:\!90$, $10.04\!:\!45$. Here the diameters themselves are the class marks.
 
-$$\bar{X} = 10.02071 \text{ mm}$$
+1. $\sum f_i = 40 + 75 + 100 + 90 + 45 = 350$
+2. $\sum f_i X_i = 10.00(40) + 10.01(75) + 10.02(100) + 10.03(90) + 10.04(45) = 400 + 750.75 + 1002 + 902.7 + 451.8 = 3507.25$
+3. $\bar{X} = 3507.25/350 = \mathbf{10.02071}$ mm
+
+Check: it lies between 10.00 and 10.04, nearest the 100-rod class 10.02.
 
 ## The ten days before, and the top 100 Heroes
 
@@ -211,7 +219,7 @@ The ten Allflame Divine prices before the window above, 8 to 17 October 2026, ar
     "answer": 10.02071,
     "tolerance": 0.0005,
     "unit": "mm",
-    "explain": "$\\sum f_i X_i / \\sum f_i = 10.02071$ mm, worked the same way as the Old Faithful example."
+    "explain": "1. $\\sum f_i = 40 + 75 + 100 + 90 + 45 = 350$. 2. $\\sum f_i X_i = 10.00(40) + 10.01(75) + 10.02(100) + 10.03(90) + 10.04(45) = 400 + 750.75 + 1002 + 902.7 + 451.8 = 3507.25$. 3. $\\bar{X} = 3507.25/350 = 10.02071$ mm. Check: it lies between 10.00 and 10.04, nearest the 100-rod class 10.02."
   }
 ]
 ```

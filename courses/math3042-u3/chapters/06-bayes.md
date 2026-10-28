@@ -10,7 +10,25 @@ You know each ladder rank band's dead share, $P(B \mid A_i)$, and you see a dead
 
 A class is 60% female and 40% male; 5% of the women are left-handed, 15% of the men.
 
-**(a) Pick a random student: P(left-handed)?** The instructor's sketch is a box split into an F column and an M column with the left-handers as a shaded strip crossing both: the left-handers come from two branches, the branches are mutually exclusive, so add the two pieces, and each piece is the AND rule:
+**(a) Pick a random student: P(left-handed)?** The instructor's sketch is a box split into an F column and an M column, with the left-handers as a strip crossing both:
+
+```diagram
+{ "type": "grid", "nodes": [
+  { "id": "h0", "label": "", "row": 0, "col": 0 },
+  { "id": "hf", "label": "Female 0.60", "row": 0, "col": 1 },
+  { "id": "hm", "label": "Male 0.40", "row": 0, "col": 2 },
+  { "id": "l", "label": "Left", "row": 1, "col": 0 },
+  { "id": "lf", "label": "0.6 × 0.05 = 0.03", "row": 1, "col": 1 },
+  { "id": "lm", "label": "0.4 × 0.15 = 0.06", "row": 1, "col": 2 },
+  { "id": "r", "label": "Right", "row": 2, "col": 0 },
+  { "id": "rf", "label": "0.57", "row": 2, "col": 1 },
+  { "id": "rm", "label": "0.34", "row": 2, "col": 2 }
+], "hi": ["l", "lf", "lm"], "caption": "Each cell is column share × rate. The Left row holds every left-hander: 0.03 + 0.06." }
+```
+
+1. Two ways to be left-handed: female then left, male then left.
+2. Each is the AND rule: $0.6 \times 0.05 = 0.03$ and $0.4 \times 0.15 = 0.06$.
+3. A student is one or the other, so add: $0.03 + 0.06 = 0.09$.
 
 $$P(L) = P(F \cap L) + P(M \cap L) = P(F)\,P(L \mid F) + P(M)\,P(L \mid M) = 0.6 \times 0.05 + 0.4 \times 0.15 = 0.09$$
 
@@ -25,6 +43,13 @@ bayes-tree
 { "preset": "sex and handedness" }
 ```
 
+In whole numbers: of 1000 students, 600 F → 30 L and 400 M → 60 L, so 30 of the 90 left-handers are female.
+
+```widget
+bayes-flow-play
+{ "preset": "sex and handedness" }
+```
+
 ## The rule for two branches
 
 Suppose $S$ is made up of two **exhaustive and mutually exclusive** events $A_1$ and $A_2$ (together they cover $S$, and they do not overlap), $S = A_1 \cup A_2$, *like Male ∪ Female*. Then for any event $B$,
@@ -32,6 +57,17 @@ Suppose $S$ is made up of two **exhaustive and mutually exclusive** events $A_1$
 $$P(A_1 \mid B) = \frac{P(A_1 \cap B)}{P(B)} = \frac{P(A_1)\,P(B \mid A_1)}{P(A_1)\,P(B \mid A_1) + P(A_2)\,P(B \mid A_2)}$$
 
 Numerator: the path through $A_1$. Denominator: every path that ends in $B$. The formula is nothing more than the conditional probability formula with $P(B)$ expanded into its branches.
+
+:::tip Who is who
+In lesson 5, $A$ was the condition in $P(B \mid A)$. In Bayes' rule the answer has $B$ as the condition.
+
+| symbol | role | CPUs | handedness | ladder |
+|---|---|---|---|---|
+| $A_i$ | the branch chosen first (prior) | maker | sex | rank band |
+| $B$ | what you observe | defective | left-handed | dead |
+
+The problem gives $P(B \mid A_i)$; Bayes turns it into $P(A_i \mid B)$.
+:::
 
 ## The general theorem
 
@@ -53,9 +89,22 @@ The notes' caption for this box is *Bayes' Theorem in General*: the two-branch r
 | AMD | 10.0% | 3.0% |
 | Other | 5.0% | 2.0% |
 
-The tree starts at a node the instructor labels *Start* and has three first-level branches ($A_1$ = Intel 0.85, $A_2$ = AMD 0.10, $A_3$ = Other 0.05), each splitting into Defective and Non-Defective. Beside each Defective leaf the notes write the joint probability of that path:
+The instructor's tree starts at *Start*. The first branches are the makers, $A_1$, $A_2$, $A_3$, with their market shares; each maker splits into Defective and Non-defective with its defect rate. Each leaf shows the branch rate → the joint probability of its path.
 
-$$P(\text{Intel} \cap \text{Defective}) = 0.85 \times 0.01 = 0.0085, \quad P(\text{AMD} \cap \text{Defective}) = 0.1 \times 0.03 = 0.0030, \quad P(\text{Other} \cap \text{Defective}) = 0.05 \times 0.02 = 0.0010$$
+```diagram
+{ "type": "tree", "nodes": [
+  { "id": "s", "label": "Start" },
+  { "id": "i", "label": "Intel", "sub": "0.85", "parent": "s" },
+  { "id": "a", "label": "AMD", "sub": "0.10", "parent": "s" },
+  { "id": "o", "label": "Other", "sub": "0.05", "parent": "s" },
+  { "id": "id", "label": "Defective", "sub": "0.01 → 0.0085", "parent": "i" },
+  { "id": "in", "label": "Non-defective", "sub": "0.99 → 0.8415", "parent": "i" },
+  { "id": "ad", "label": "Defective", "sub": "0.03 → 0.0030", "parent": "a" },
+  { "id": "an", "label": "Non-defective", "sub": "0.97 → 0.0970", "parent": "a" },
+  { "id": "od", "label": "Defective", "sub": "0.02 → 0.0010", "parent": "o" },
+  { "id": "on", "label": "Non-defective", "sub": "0.98 → 0.0490", "parent": "o" }
+], "hi": ["id", "ad", "od"], "caption": "Multiply along a path; add the lit leaves for P(D) = 0.0125; one lit leaf ÷ 0.0125 is the posterior." }
+```
 
 **(a) Pick a random CPU: P(defective)?** The three paths are *mutually exclusive* (a CPU has one maker), so their probabilities add:
 
@@ -96,7 +145,7 @@ The universe is **these 800 sampled characters, 200 from each of four pages** of
 | 7401-7600 | 0.25 | 158/200 = 0.790 |
 | 14801-15000 | 0.25 | 157/200 = 0.785 |
 
-Inside these 800 the pages are exhaustive and mutually exclusive, with known counts and dead rates: the CPU tree's shape. The prior 0.25 is 200 of these 800, not a share of the 15 000-character ladder, on which the four pages are not exhaustive.
+Each prior 0.25 is 200 of these 800, not of the whole ladder, so inside these 800 the four pages are exhaustive and mutually exclusive: the CPU tree's shape.
 
 ```quiz
 [
@@ -110,11 +159,20 @@ $$P(\text{dead}) = 0.25 \times 0.345 + 0.25 \times 0.600 + 0.25 \times 0.790 + 0
 
 $$P(\text{14801-15000} \mid \text{dead}) = \frac{0.25 \times 0.785}{0.6300} = \frac{0.19625}{0.6300} = 0.3115$$
 
-Conclusion sentence: *31.15% of the dead characters in this sample are from ranks 14801-15000.* The posteriors 0.1369, 0.2381, 0.3135 and 0.3115 add to 1; in counts, 157 of the 504 dead.
+Conclusion sentence: *31.15% of the dead characters in this sample are from ranks 14801-15000.* The posteriors 0.1369, 0.2381, 0.3135 and 0.3115 add to one.
+
+This is lesson 5's two-way table read down the Dead column: 157 of the 504 dead, 157/504 = 0.3115. When the priors come from counts in one table, the tree is the long way round.
 
 ## Which Mystery Fashion Crate gave a 1.00 % item
 
-The Classic Mystery Fashion Crate (a Cash Shop box giving one of 50 cosmetic items) had two versions at Nexon's published rates: Founder's, 16 items at 1.00 % and 2 at 3.00 % [Classic, Founder's Access Cash Shop rate page, checked 2026-10-27]; Grand Launch, 15 at 1.00 %, 4 at 3.00 % and 1 at 1.50 % [Classic, Grand Launch Cash Shop rate page, checked 2026-10-27]. One crate is picked at random, each equally likely, and opened.
+The Classic Mystery Fashion Crate (a Cash Shop box giving one of 50 cosmetic items) had two versions at Nexon's published rates: Founder's, 16 items at 1.00 % and 2 at 3.00 % [Classic, Founder's Access Cash Shop rate page, checked 2026-10-27]; Grand Launch, 15 at 1.00 %, 4 at 3.00 % and one at 1.50 % [Classic, Grand Launch Cash Shop rate page, checked 2026-10-27]. One crate is picked at random, each equally likely, and opened.
+
+One crate gives one item, so its items are mutually exclusive and the OR rule adds them: sixteen items at 1.00 % make $16 \times 0.01 = 0.16$.
+
+| crate | P(crate) | P(1.00 % item \| crate) | P(3.00 % item \| crate) | P(1.50 % item \| crate) |
+|---|---|---|---|---|
+| Founder's | 0.5 | 16 × 0.01 = 0.16 | 2 × 0.03 = 0.06 | 0 |
+| Grand Launch | 0.5 | 15 × 0.01 = 0.15 | 4 × 0.03 = 0.12 | 0.015 |
 
 ```quiz
 [

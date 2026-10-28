@@ -6,6 +6,8 @@ minutes: 20
 
 If $X$ follows a **normal distribution**, the **empirical rule** gives three fixed percentages for the share of values near the mean, built entirely from $\mu$ and $\sigma$ (or $\bar{X}$ and $s$ for a sample). If $X$ is not bell-shaped, those percentages can be far off, and a skewed MapleStory Classic monster list shows by how much.
 
+A normal distribution is the symmetric bell: most values near the mean, thinning out evenly on both sides.
+
 ## The three bands
 
 | Interval | % of values | Exact figure |
@@ -35,17 +37,34 @@ normal-curve
 
 ## Reading the tails
 
-Because the normal curve is symmetric, you can split each band's *leftover* probability evenly between the two tails.
+The three bands cut the bell into eight slices. The curve is symmetric, so each band's share splits evenly between its two sides:
 
-- Outside $\mu \pm 2\sigma$ is $100\% - 95\% = 5\%$ total, split into **2.5% in each tail** (below $\mu - 2\sigma$ and above $\mu + 2\sigma$).
-- Between $\mu$ and $\mu + \sigma$ is **half** of the 68% band: $68\%/2 = 34\%$.
-- Below $\mu - \sigma$ is the lower half (50%) minus that same 34% slice: $50\% - 34\% = 16\%$.
-- Below $\mu + \sigma$ is the lower half (50%) plus that 34% slice: $50\% + 34\% = 84\%$.
-- Above $\mu + 3\sigma$ is half of the leftover $0.3\%$: $0.3\%/2 = 0.15\%$.
+- $34 = 68/2$: the 1σ band, one side.
+- $13.5 = (95 - 68)/2$: the 2σ band minus the 1σ band, split over two sides.
+- $2.35 = (99.7 - 95)/2$: the 3σ band minus the 2σ band, split over two sides.
+- $0.15 = (100 - 99.7)/2$: what is left beyond 3σ, one side.
 
-::: tip Building any percentage from the three bands
-Every band question is adding and subtracting slices of 68/95/99.7 on a curve symmetric about $\mu$. The eight slices from $\mu-3\sigma$ to $\mu+3\sigma$ are 0.15, 2.35, 13.5, 34, 34, 13.5, 2.35, 0.15 percent, and they sum to 100.
-:::
+```diagram
+{ "type": "grid", "title": "The eight slices of the empirical rule (IQ: μ = 100, σ = 15)", "nodes": [
+  { "id": "h0", "label": "Slice", "row": 0, "col": 0 }, { "id": "h1", "label": "% in slice", "row": 0, "col": 1 }, { "id": "h2", "label": "% below its right edge", "row": 0, "col": 2 }, { "id": "h3", "label": "IQ at right edge", "row": 0, "col": 3 },
+  { "id": "r1", "label": "below −3σ", "row": 1, "col": 0 }, { "id": "a1", "label": "0.15", "row": 1, "col": 1 }, { "id": "b1", "label": "0.15", "row": 1, "col": 2 }, { "id": "c1", "label": "55", "row": 1, "col": 3 },
+  { "id": "r2", "label": "−3σ to −2σ", "row": 2, "col": 0 }, { "id": "a2", "label": "2.35", "row": 2, "col": 1 }, { "id": "b2", "label": "2.5", "row": 2, "col": 2 }, { "id": "c2", "label": "70", "row": 2, "col": 3 },
+  { "id": "r3", "label": "−2σ to −σ", "row": 3, "col": 0 }, { "id": "a3", "label": "13.5", "row": 3, "col": 1 }, { "id": "b3", "label": "16", "row": 3, "col": 2 }, { "id": "c3", "label": "85", "row": 3, "col": 3 },
+  { "id": "r4", "label": "−σ to μ", "row": 4, "col": 0 }, { "id": "a4", "label": "34", "row": 4, "col": 1 }, { "id": "b4", "label": "50", "row": 4, "col": 2 }, { "id": "c4", "label": "100", "row": 4, "col": 3 },
+  { "id": "r5", "label": "μ to +σ", "row": 5, "col": 0 }, { "id": "a5", "label": "34", "row": 5, "col": 1 }, { "id": "b5", "label": "84", "row": 5, "col": 2 }, { "id": "c5", "label": "115", "row": 5, "col": 3 },
+  { "id": "r6", "label": "+σ to +2σ", "row": 6, "col": 0 }, { "id": "a6", "label": "13.5", "row": 6, "col": 1 }, { "id": "b6", "label": "97.5", "row": 6, "col": 2 }, { "id": "c6", "label": "130", "row": 6, "col": 3 },
+  { "id": "r7", "label": "+2σ to +3σ", "row": 7, "col": 0 }, { "id": "a7", "label": "2.35", "row": 7, "col": 1 }, { "id": "b7", "label": "99.85", "row": 7, "col": 2 }, { "id": "c7", "label": "145", "row": 7, "col": 3 },
+  { "id": "r8", "label": "above +3σ", "row": 8, "col": 0 }, { "id": "a8", "label": "0.15", "row": 8, "col": 1 }, { "id": "b8", "label": "100", "row": 8, "col": 2 }, { "id": "c8", "label": "–", "row": 8, "col": 3 }
+], "hi": ["a4", "a5"], "caption": "The slices 0.15, 2.35, 13.5, 34, 34, 13.5, 2.35, 0.15 add to 100; any tail is a sum of slices." }
+```
+
+Every tail question is now "add the slices":
+
+- Above $\mu + 2\sigma$: $2.35 + 0.15 = 2.5\%$ (and $5\%$ outside $\mu \pm 2\sigma$, both sides).
+- Between $\mu$ and $\mu + \sigma$: one slice, $34\%$.
+- Below $\mu - \sigma$: $0.15 + 2.35 + 13.5 = 16\%$.
+- Below $\mu + \sigma$: $0.15 + 2.35 + 13.5 + 34 + 34 = 84\%$.
+- Above $\mu + 3\sigma$: one slice, $0.15\%$.
 
 ## Classic World monster HP: the rule fails on a skewed list
 
@@ -66,16 +85,22 @@ The 87 values have $\bar{X}$ = 8 610 HP and $s$ = 36 800 HP (unrounded 8 614.07 
 | $\bar{X} \pm 2s$ | −64 900 to 82 100 | 85 | 97.7% | 95% |
 | $\bar{X} \pm 3s$ | −102 000 to 119 000 | 86 | 98.9% | 99.7% |
 
-Three things break. Every lower end is negative, so nothing lies below any band: there is no lower tail at all. The one-$s$ band holds 95.4%, not 68%. And the three-$s$ band still misses Jr. Balrog, 8.62 standard deviations above the mean: 1.1% of the list sits outside $\bar{X} \pm 3s$ where a bell leaves 0.3%. The rule is not roughly right here; it is the wrong tool. A mean of 8 610 against a median of 1 001 is the warning to check before using it, and Chebyshev's rule (next lesson) is the bound that still holds.
+Three things break:
+
+1. No lower tail: every lower end is negative HP.
+2. The one-$s$ band holds 95.4%, not 68%, because four giants inflate $s$.
+3. Jr. Balrog is outside even $\pm 3s$: 1.1% of the list against the rule's 0.3%.
+
+Check first: a mean of 8 610 against a median of 1 001 warns that the rule does not apply; use Chebyshev's rule (lesson 9).
 
 ## Lab 1 pencil problem 5: moisture content
 
 Moisture content is normal with $\mu = 18$, $\sigma = 0.5$.
 
 - **(b)** Between 17 and 19 ($\mu \pm 2\sigma$, since $2 \times 0.5 = 1$): **95%**
-- **(c)** Above 19.5 ($\mu + 3\sigma$, since $3 \times 0.5 = 1.5$): the whole upper tail beyond $3\sigma$ is $0.3\% / 2 =$ **0.15%**
-- **(d)** Between 18 and 18.5 ($\mu$ to $\mu + \sigma$): half of 68% = **34%**
-- **(e)** Below 19 ($\mu + 2\sigma$): everything up to the mean (50%) plus the slice from $\mu$ to $\mu+2\sigma$ (half of 95% = 47.5%) = **97.5%**
+- **(c)** Above 19.5 ($\mu + 3\sigma$, since $3 \times 0.5 = 1.5$): the last slice, **0.15%**
+- **(d)** Between 18 and 18.5 ($\mu$ to $\mu + \sigma$): one slice, **34%**
+- **(e)** Below 19 ($\mu + 2\sigma$): the slices up to $+2\sigma$, $0.15 + 2.35 + 13.5 + 34 + 34 + 13.5 =$ **97.5%**
 
 ```widget
 normal-curve
@@ -130,7 +155,7 @@ Nexon's North America ranking lists the top 500 Heroes, a MapleStory warrior job
     "answer": 2.5,
     "tolerance": 0.05,
     "unit": "%",
-    "explain": "Outside $\\pm2\\sigma$ total is $100-95=5\\%$; the curve is symmetric so each tail gets half: $5\\%/2 = 2.5\\%$."
+    "explain": "Add the two slices above $+2\\sigma$: $2.35 + 0.15 = 2.5\\%$. Same as half of the $100-95=5\\%$ outside the band."
   },
   {
     "q": "What percentage of a normal distribution lies between $\\mu$ and $\\mu+\\sigma$ (not the full $\\mu\\pm\\sigma$ band)?",
@@ -154,7 +179,7 @@ Nexon's North America ranking lists the top 500 Heroes, a MapleStory warrior job
     "answer": 97.5,
     "tolerance": 0.2,
     "unit": "%",
-    "explain": "19 is $\\mu+2\\sigma$. Below the mean is 50%, plus the slice from $\\mu$ to $\\mu+2\\sigma$ (half of 95% = 47.5%), giving $50+47.5=97.5\\%$."
+    "explain": "19 is $\\mu+2\\sigma$. Add the slices up to $+2\\sigma$: $0.15 + 2.35 + 13.5 + 34 + 34 + 13.5 = 97.5\\%$."
   },
   {
     "q": "Same moisture distribution. What percentage of readings fall between 18 and 18.5?",
@@ -180,7 +205,7 @@ Nexon's North America ranking lists the top 500 Heroes, a MapleStory warrior job
     "explain": "99.7% falls inside $\\mu\\pm3\\sigma$, so $100\\%-99.7\\%=0.3\\%$ falls outside."
   },
   {"type": "shade", "q": "Shade the region that holds about **95%** of a normal distribution ($\\mu=18$, $\\sigma=0.5$ moisture content).", "mu": 18, "sigma": 0.5, "answer": 95, "lo": -2, "hi": 2, "explain": "$\\mu\\pm2\\sigma$ is 17 to 19, which holds 95% (exactly 95.45%). Drag the handles to $-2\\sigma$ and $+2\\sigma$."},
-  {"type": "shade", "q": "Shade everything **below** $\\mu+\\sigma$. What percentage is that?", "mu": 18, "sigma": 0.5, "answer": 84, "tolerance": 1, "region": "below", "hi": 1, "explain": "50% sits below the mean, plus half of the 68% band = 34%, so 84%."},
+  {"type": "shade", "q": "Shade everything **below** $\\mu+\\sigma$. What percentage is that?", "mu": 18, "sigma": 0.5, "answer": 84, "tolerance": 1, "region": "below", "hi": 1, "explain": "Add the slices up to $+\\sigma$: $0.15 + 2.35 + 13.5 + 34 + 34 = 84\\%$."},
   {"type": "shade", "q": "Shade everything **above** $\\mu+3\\sigma$ (above 19.5%).", "mu": 18, "sigma": 0.5, "answer": 0.15, "tolerance": 0.1, "region": "above", "lo": 3, "explain": "99.7% is inside $\\pm3\\sigma$, leaving 0.3% split between two tails: 0.15% each."}
 ]
 ```

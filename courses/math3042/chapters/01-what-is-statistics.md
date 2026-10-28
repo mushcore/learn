@@ -26,11 +26,9 @@ Statistics and probability show up throughout *data science* (including *machine
 
 The lecture uses a *data frame* from R's `survey` dataset: a table with one row per person and one column per measured variable. With a table like that you can ask questions such as:
 
-- What is the typical age of a student?
-- Do most students exercise?
-- Are students who smoke more or less likely to exercise?
-
-Answering the first kind of question is descriptive statistics; answering the second kind (generalizing beyond just this table) drifts into inference and probability.
+- What is the typical age of a student? (summarizes this table: descriptive)
+- Do most students exercise? (still this table: descriptive)
+- Are students who smoke more or less likely to exercise? (a claim about all students: inference and probability)
 
 **R language:** the `$` operator pulls out a single column (variable) from a data frame:
 
@@ -85,6 +83,10 @@ Quite often you cannot measure $X$ for the whole population, so you measure a sa
 
 - **Parameters** summarize $X$ for the **whole population**.
 - **Statistics** summarize $X$ for a **sample**.
+
+```diagram
+{ "type": "layers", "nodes": [ { "id": "pop", "label": "Population", "sub": "all 20,000 BCIT students: parameters μ, σ, p, ρ, N" }, { "id": "smp", "label": "Sample", "sub": "the 40 you measured: statistics X̄, s, p̂, r, n", "parent": "pop" }, { "id": "ind", "label": "Individual", "sub": "one student", "parent": "smp" } ], "hi": ["smp"], "caption": "Population ↔ Parameter, Sample ↔ Statistic (match the first letters)." }
+```
 
 ## Symbol table
 

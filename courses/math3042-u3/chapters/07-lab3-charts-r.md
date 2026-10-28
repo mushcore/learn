@@ -35,7 +35,29 @@ pie(percents, home.type)
 - `pie(percents, home.type)`: "Look up percents (`percents`) and home.type (`home.type`), then draw the pie from them (`pie`)."
 :::
 
-Task 1 adds a title and colours: `pie(percents, home.type, main="Living Arrangments of Students", col=c("pink", "snow","turquoise", "orange", "skyblue"))`.
+Task 1 adds a title and colours:
+
+```r
+pie(percents, home.type,
+    main="Living Arrangments of Students",
+    col=c("pink", "snow","turquoise", "orange", "skyblue"))
+```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `pie(percents, home.type, …)` | As above: x = `percents`, labels = `home.type`. A call may continue over several lines until its bracket closes. |
+| `main="Living Arrangments of Students"` | The title, a string in quotes (the lab's own spelling). |
+| `col=c("pink", "snow", …)` | Slice colours, one per slice in order, combined into a vector with `c()`. |
+
+**Left to right**
+
+- `pie(percents, home.type, main=…, col=…)`: "Draw a pie chart (`pie`) with slice sizes percents (`percents`), labels home.type (`home.type`), a title (`main=`) and five colours (`col=c(…)`)."
+
+**Right to left**, the order R runs it
+
+- `pie(percents, home.type, main=…, col=…)`: "Combine the five colour names (`c(…)`), take the title string (`main=`), look up the sizes and labels (`percents`, `home.type`), then draw the pie (`pie`)."
+:::
 
 From a data frame, the first step is Unit 2's frequency table:
 
@@ -143,7 +165,14 @@ cat-charts
 
 ## Bar charts
 
-`barplot(freq.tab)` draws the same table as bars. Task 3 turns it sideways: `barplot(freq.tab, horiz = TRUE, main=paste0("Writing hands of Students (n =", sum(freq.tab), ")"))`. Bars are better than slices for comparing two categories, and `horiz = TRUE` is the only new argument.
+`barplot(freq.tab)` draws the same table as bars. Task 3 turns it sideways:
+
+```r
+barplot(freq.tab)
+barplot(freq.tab,
+        horiz = TRUE,
+        main=paste0("Writing hands of Students (n =", sum(freq.tab), ")"))
+```
 
 :::info R syntax
 | Code | What it does |
@@ -163,9 +192,32 @@ cat-charts
 - `barplot(freq.tab, horiz = TRUE, main=…)`: "Add up the counts (`sum(freq.tab)`), glue the total into the title (`paste0`), then draw the sideways bars with that title (`barplot`, `horiz = TRUE`, `main=`)."
 :::
 
+Bars are better than slices for comparing two categories, and `horiz = TRUE` is the only new argument.
+
 ## Stem plots
 
-`stem(survey$Height)` prints "The decimal point is 1 digit(s) to the right of the |" and split stems: `15 | 0224` is 150 to 154 cm, the next `15 | 5555...` is 155 to 159. `head(cbind(survey$Height))` shows the raw values as a column, `NA` included. Task 4's plot, `stem(survey$Height, scale=2)`, doubles the number of stems so the key line becomes "The decimal point is at the |" and stems run 150, 152, ..., 200 (`152 | 045` is 152.0, 152.4, 152.5).
+`head(cbind(survey$Height))` shows the raw values as a column, `NA` included. The first lines `stem(survey$Height)` prints:
+
+```text
+  The decimal point is 1 digit(s) to the right of the |
+
+  15 | 0224
+  15 | 555566777777899
+```
+
+Task 4's plot, `stem(survey$Height, scale=2)`, starts:
+
+```text
+  The decimal point is at the |
+
+  150 | 0
+  152 | 045
+```
+
+| call | key line | stems | how to read one line |
+|---|---|---|---|
+| `stem(survey$Height)` | 1 digit(s) to the right of the \| | 15, 15, 16, 16, … 20: each tens value twice | `15 \| 0224` is 150, 152, 152, 154 cm; the next `15` line is 155 to 159 |
+| `stem(survey$Height, scale=2)` | at the \| | 150, 152, …, 200: twice as many stems | `152 \| 045` is 152.0, 152.4, 152.5 cm |
 
 :::info R syntax
 | Code | What it does |
@@ -280,42 +332,130 @@ cbind(heights.freq)
 - `breaks=seq(overall.min, overall.max+5, by=5)`: "Add 5 to overall.max (`overall.max+5`), count from overall.min up to it in fives (`seq`, `by=5`), then pass that as the break points (`breaks=`)."
 :::
 
-`cumsum(heights.freq)` accumulates: 6, 19, 39, 84, 126, 153, 181, 198, 206, 208, so 126 students are under 175 cm. The ogive is `plot(lower.limits, cumul.freq)` after a 0 is inserted at the front (`cumul.freq <- c(0, cumul.freq)`). `lower.limits` is `seq(150, 200, by=5)`, eleven values, and the padded counts are eleven too, so 0 sits at 150 and each class's count sits at that class's right boundary: 6 at 155, 19 at 160, 208 at 200. Task 7 dresses it: `type="b"` for points and lines, `pch=19`, `lty = 2`, `lwd=2`, axis labels, and `main=paste("Ogive of", sum(heights.freq), "student heights")` for the 208.
+The ogive takes three steps: running totals, a 0 in front, then the plot. Task 7's version of the plot:
+
+```r
+cumul.freq <- cumsum(heights.freq)
+cumul.freq <- c(0, cumul.freq)
+plot(lower.limits, cumul.freq,
+     col="black",
+     type="b",
+     pch=19,
+     cex=0.75,
+     lty = 2,
+     lwd=2,
+     xlab="student heights (cm)",
+     ylab="number of students",
+     main=paste("Ogive of", sum(heights.freq), "student heights"))
+```
 
 :::info R syntax
 | Code | What it does |
 |---|---|
-| `cumsum(heights.freq)` | Running totals: each entry is the sum of all counts up to and including that class. |
+| `cumul.freq <- cumsum(heights.freq)` | `cumsum` gives running totals: each entry is the sum of all counts up to and including that class. Stored as `cumul.freq`. |
 | `cumul.freq <- c(0, cumul.freq)` | `c()` puts a 0 in front of the old vector, and `<-` stores the longer vector back under the same name. |
-| `plot(lower.limits, cumul.freq)` | Plots points with x = `lower.limits` and y = `cumul.freq`, paired in order. |
+| `plot(lower.limits, cumul.freq, …)` | Plots points with x = `lower.limits` and y = `cumul.freq`, paired in order. |
+| `col="black"` | The colour of the points and lines. |
 | `type="b"` | Draws both points and lines joining them. |
 | `pch=19` | The point symbol: 19 is a filled circle. |
+| `cex=0.75` | Point size: 0.75 of the default. |
 | `lty = 2` | The line type: 2 is dashed. |
 | `lwd=2` | The line width: twice the default. |
+| `xlab=`, `ylab=` | The axis labels, as strings. |
 | `main=paste("Ogive of", sum(heights.freq), "student heights")` | `paste` glues its pieces with a space between each, unlike `paste0`. |
 
 **Left to right**
 
-- `cumsum(heights.freq)`: "The running totals (`cumsum`) of heights.freq (`heights.freq`)."
-- `plot(lower.limits, cumul.freq)`: "Plot (`plot`) lower.limits (`lower.limits`) across against cumul.freq (`cumul.freq`) up."
+- `cumul.freq <- cumsum(heights.freq)`: "Store under the name cumul.freq (`cumul.freq <-`) the running totals (`cumsum`) of heights.freq (`heights.freq`)."
 - `cumul.freq <- c(0, cumul.freq)`: "Store under the name cumul.freq (`cumul.freq <-`) a 0 (`0`) combined (`c()`) with the old cumul.freq (`cumul.freq`)."
-- `main=paste("Ogive of", sum(heights.freq), "student heights")`: "A title (`main=`) pasted together with spaces (`paste`) from Ogive of (`"Ogive of"`), the total count (`sum(heights.freq)`) and student heights (`"student heights"`)."
+- `plot(lower.limits, cumul.freq, …)`: "Plot (`plot`) lower.limits (`lower.limits`) across against cumul.freq (`cumul.freq`) up, in black (`col="black"`), as points and lines (`type="b"`), filled circles (`pch=19`) at 0.75 size (`cex=0.75`), dashed (`lty = 2`) and thick (`lwd=2`), with axis labels (`xlab=`, `ylab=`) and a title (`main=`) pasted with spaces (`paste`) around the total count (`sum(heights.freq)`)."
 
 **Right to left**, the order R runs it
 
-- `cumsum(heights.freq)`: "Take heights.freq (`heights.freq`) and add it up as it goes (`cumsum`)."
-- `plot(lower.limits, cumul.freq)`: "Look up the two vectors (`lower.limits`, `cumul.freq`), pair them in order, then draw the points (`plot`)."
+- `cumul.freq <- cumsum(heights.freq)`: "Take heights.freq (`heights.freq`), add it up as it goes (`cumsum`), then store it as cumul.freq (`cumul.freq <-`)."
 - `cumul.freq <- c(0, cumul.freq)`: "Look up the old cumul.freq, put 0 in front (`c(0, …)`), then store the result under the same name (`cumul.freq <-`)."
-- `main=paste("Ogive of", sum(heights.freq), "student heights")`: "Add up the counts (`sum(heights.freq)`), paste the total between the two text pieces with spaces (`paste`), then use that as the title (`main=`)."
+- `plot(lower.limits, cumul.freq, …)`: "Add up the counts (`sum(heights.freq)`) and paste the title (`paste`), look up the two vectors (`lower.limits`, `cumul.freq`), pair them in order, then draw them with the chosen style and labels (`plot`)."
 :::
 
+The padding is what makes the pairs line up: `lower.limits` is `seq(150, 200, by=5)`, eleven values, and the padded counts are eleven too.
+
+```diagram
+{ "type": "grid", "nodes": [
+  { "id": "x0", "label": "lower.limits", "row": 0, "col": 0 },
+  { "id": "x1", "label": "150", "row": 0, "col": 1 },
+  { "id": "x2", "label": "155", "row": 0, "col": 2 },
+  { "id": "x3", "label": "160", "row": 0, "col": 3 },
+  { "id": "x4", "label": "165", "row": 0, "col": 4 },
+  { "id": "x5", "label": "170", "row": 0, "col": 5 },
+  { "id": "x6", "label": "175", "row": 0, "col": 6 },
+  { "id": "x7", "label": "180", "row": 0, "col": 7 },
+  { "id": "x8", "label": "185", "row": 0, "col": 8 },
+  { "id": "x9", "label": "190", "row": 0, "col": 9 },
+  { "id": "x10", "label": "195", "row": 0, "col": 10 },
+  { "id": "x11", "label": "200", "row": 0, "col": 11 },
+  { "id": "y0", "label": "cumul.freq", "row": 1, "col": 0 },
+  { "id": "y1", "label": "0", "row": 1, "col": 1 },
+  { "id": "y2", "label": "6", "row": 1, "col": 2 },
+  { "id": "y3", "label": "19", "row": 1, "col": 3 },
+  { "id": "y4", "label": "39", "row": 1, "col": 4 },
+  { "id": "y5", "label": "84", "row": 1, "col": 5 },
+  { "id": "y6", "label": "126", "row": 1, "col": 6 },
+  { "id": "y7", "label": "153", "row": 1, "col": 7 },
+  { "id": "y8", "label": "181", "row": 1, "col": 8 },
+  { "id": "y9", "label": "198", "row": 1, "col": 9 },
+  { "id": "y10", "label": "206", "row": 1, "col": 10 },
+  { "id": "y11", "label": "208", "row": 1, "col": 11 }
+], "hi": ["y1", "y6"], "caption": "Eleven x values, eleven padded counts: 0 at 150, and 126 at 175 means 126 heights below 175 cm." }
+```
+
+So 0 sits at 150 and each class's count sits at that class's right boundary: 6 at 155, 126 at 175 (126 students are under 175 cm), 208 at 200. Task 7's arguments only style the plot (`type="b"` joins the points with lines) and compute the title, "Ogive of 208 student heights".
+
 :::warn Lab 3's ogive and Unit 2's
-Both put each cumulative value at the right end of its class, with a 0 at the start. Two things differ. Lab 3's y-axis is cumulative **counts** (up to 208); Unit 2's is cumulative **relative** frequency (up to 1.000). Lab 3's x-values are the class **boundaries** 155, 160, … (the variable is called `lower.limits` because each is also the next class's lower limit); Unit 2's are the **upper limits** 154, 159, … of whole-number classes.
+Both put each cumulative value at the right end of its class, with a 0 at the start. Two things differ:
+
+| | Lab 3 (R) | Unit 2 (pencil) |
+|---|---|---|
+| y-axis | cumulative counts, up to 208 | cumulative relative frequency, up to 1.000 |
+| x-values | class boundaries 155, 160, … | upper limits 154, 159, … |
+
+The variable is called `lower.limits` because each boundary is also the next class's lower limit.
 :::
 
 ## Lab 3 pencil problems
 
-They repeat Lab 2's. **Class width**: $n = 250$, min 51.3, max 135.4. $\sqrt{250} = 15.8$ classes, so the ideal width is $(135.4 - 51.3)/15.8 = 5.32$, rounded to 5.3 (16 classes) or 5 (17 classes). **Old Faithful waiting times**: the stem plot runs from 43 to 96 minutes, is bimodal, and most waits fall between 75 and 85. **Boxplots of heights by sex**: when the female box's upper quartile sits below the male box's lower quartile, *75% of female students are shorter than the shortest 25% of male students*; when the male median sits above the female maximum, *50% of the male students are taller than the tallest female student*.
+They repeat Lab 2's.
+
+- **Class width**: $n = 250$, min 51.3, max 135.4. The ideal width is the range over $\sqrt{n}$, $R/\sqrt{n}$, rounded to a convenient value; the number of classes is then the range over the width, rounded up.
+- **Old Faithful waiting times**: a stem plot from 43 to 96 minutes, with one cluster in the 50s and most waits between 75 and 85.
+- **Boxplots of heights by sex**: the female box's upper quartile (Q3) sits below the male box's lower quartile (Q1).
+
+```diagram
+{ "type": "grid", "nodes": [
+  { "id": "h0", "label": "height →", "row": 0, "col": 0 },
+  { "id": "h1", "label": "F Q1", "row": 0, "col": 1 },
+  { "id": "h2", "label": "F median", "row": 0, "col": 2 },
+  { "id": "h3", "label": "F Q3", "row": 0, "col": 3 },
+  { "id": "h4", "label": "M Q1", "row": 0, "col": 4 },
+  { "id": "h5", "label": "M median", "row": 0, "col": 5 },
+  { "id": "h6", "label": "M Q3", "row": 0, "col": 6 },
+  { "id": "f0", "label": "Female box", "row": 1, "col": 0 },
+  { "id": "f1", "label": "box", "row": 1, "col": 1 },
+  { "id": "f2", "label": "box", "row": 1, "col": 2 },
+  { "id": "f3", "label": "75% below", "row": 1, "col": 3 },
+  { "id": "f4", "label": "", "row": 1, "col": 4 },
+  { "id": "f5", "label": "", "row": 1, "col": 5 },
+  { "id": "f6", "label": "", "row": 1, "col": 6 },
+  { "id": "m0", "label": "Male box", "row": 2, "col": 0 },
+  { "id": "m1", "label": "", "row": 2, "col": 1 },
+  { "id": "m2", "label": "", "row": 2, "col": 2 },
+  { "id": "m3", "label": "", "row": 2, "col": 3 },
+  { "id": "m4", "label": "75% above", "row": 2, "col": 4 },
+  { "id": "m5", "label": "box", "row": 2, "col": 5 },
+  { "id": "m6", "label": "box", "row": 2, "col": 6 }
+], "hi": ["f3", "m4"], "caption": "Two boxes on one height axis. The female Q3 is left of the male Q1, so the two boxes do not overlap." }
+```
+
+Read it as: female Q3 < male Q1, so three quarters of the women are below a height that three quarters of the men are above.
 
 ```quiz
 [
@@ -326,9 +466,29 @@ They repeat Lab 2's. **Class width**: $n = 250$, min 51.3, max 135.4. $\sqrt{250
 ]
 ```
 
+The class width, step by step:
+
+1. $R = 135.4 - 51.3 = 84.1$.
+2. $\sqrt{250} = 15.81$.
+3. $84.1 / 15.81 = 5.32$.
+4. Width 5.3 → $84.1/5.3 = 15.9$ → 16 classes (width 5 gives $84.1/5 = 16.8$ → 17).
+
+The Old Faithful plot has two clusters, so it is bimodal. For the boxplots, the instructor's sentences are *75% of female students are shorter than the shortest 25% of male students* and, when the male median sits above the female maximum, *50% of the male students are taller than the tallest female student*.
+
 ## Histograms and scatter plots
 
-`hist(numerical.heights)` picks width-5 bins and poor labels; Task 6 specifies everything: `hist(numerical.heights, breaks=seq(150, 200, by=2.5), right=FALSE, col="pink", xlab="Heights (cm)", ylab="Frequency", main=paste0("Heights of Students (n = ", length(numerical.heights), ")"))`. The lab's solution spells the variable `numerical.Heights`; R names are case-sensitive, so use the spelling you defined. `length()` gives 209, every non-missing height. The table above summed to 208 because `cut(..., right=FALSE)` leaves the one 200 cm student outside `[195,200)`; `hist()` closes its last bin, so the histogram counts that student.
+`hist(numerical.heights)` picks width-5 bins and poor labels; Task 6 specifies everything:
+
+```r
+hist(numerical.heights)
+hist(numerical.heights,
+     breaks=seq(150, 200, by=2.5),
+     right=FALSE,
+     col="pink",
+     xlab="Heights (cm)",
+     ylab="Frequency",
+     main=paste0("Heights of Students (n = ", length(numerical.heights), ")"))
+```
 
 :::info R syntax
 | Code | What it does |
@@ -353,6 +513,8 @@ They repeat Lab 2's. **Class width**: $n = 250$, min 51.3, max 135.4. $\sqrt{250
 - `hist(numerical.heights, breaks=…, right=FALSE, col="pink", xlab=…, ylab=…, main=…)`: "Build the edges (`seq(150, 200, by=2.5)`), count the heights (`length`) and glue the title (`paste0`), then draw the histogram with those edges, left-closed bins, colour and labels (`hist`)."
 - `cut(..., right=FALSE)`: "Take the values and breaks (`...`), make the classes left-closed (`right=FALSE`), then sort each value into its class (`cut`)."
 :::
+
+The lab's solution spells the variable `numerical.Heights`; R names are case-sensitive, so use the spelling you defined. `length()` gives 209, every non-missing height. The table above summed to 208 because `cut(..., right=FALSE)` leaves the one 200 cm student outside `[195,200)`; `hist()` closes its last bin, so the histogram counts that student.
 
 Scatter plots use lattice's model formula, `xyplot(Wr.Hnd ~ Height, data=survey, col="black")`, a spread-out cloud with little correlation. Task 8 draws two: `xyplot(Pulse ~ Height, ...)` and `xyplot(Wr.Hnd ~ NW.Hnd, ...)`, each with `pch=19`, a hex colour and `main=paste0("... (n = ", nrow(survey), ")")`. Writing hand against non-writing hand is the far stronger linear relation (the two spans are nearly equal for everyone; $r \approx 0.95$), while pulse against height is a cloud ($r \approx -0.07$). `cor(x, y, use="complete.obs")` confirms it with the NAs skipped.
 

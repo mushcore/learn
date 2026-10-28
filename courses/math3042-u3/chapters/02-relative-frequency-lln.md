@@ -18,7 +18,7 @@ The filled notes label the fraction *x (# success)* over *n (# trials)* and call
 
 ## The PoE1 six-link chance is a relative frequency
 
-An Orb of Fusing, the currency that rerolls the links between an item's sockets, has no published six-link probability. A 2017 test used n = 100 000 Fusings on a six-socket item of 20 % quality and found the chance about 0.1 %, 1 in 1000 [PoE1, 3.0-era test still cited at 3.29 (poewiki), checked 2026-10-27]. GGG's own figure, "very close to 1/1500", predates the change that made each 1 % of quality improve the result by 1 %, so the usable number is this measured one. The test's count of six-links is not reported, only the rate and n.
+An Orb of Fusing, the currency that rerolls the links between an item's sockets, has no published six-link probability. A 2017 test used n = 100 000 Fusings on a six-socket item of 20 % quality and found the chance about 0.1 %, 1 in 1000 [PoE1, 3.0-era test still cited at 3.29 (poewiki), checked 2026-10-27]. GGG once said "very close to 1/1500". That was before quality started to improve the result (1 % per 1 % quality), so this lesson uses the measured 1 in 1000. The test's count of six-links is not reported, only the rate and n.
 
 ```quiz
 [
@@ -78,7 +78,10 @@ prob.B
 - `n.trials <- 10^5`: "Store under the name n.trials (`n.trials <-`) ten to the power (`^`) five (`10^5`)."
 - `n.dice <- 2`: "Store under the name n.dice (`n.dice <-`) the number 2 (`2`)."
 - `X.success <- 0`: "Store under the name X.success (`X.success <-`) the number 0 (`0`)."
-- `for (i.trial in 1:n.trials){ … }`: "For (`for`) each i.trial (`i.trial`) in 1 to n.trials (`1:n.trials`): store under dice (`dice <-`) a sample (`sample`) from the faces (`c(1,2,3,4,5,6)`) of size n.dice (`n.dice`) with replacement (`replace=TRUE`); store under success (`success <-`) whether the first die (`dice[1]`) equals (`==`) 6 and (`&`) the second die (`dice[2]`) equals 6; and store under X.success (`X.success <-`) the old count plus (`+`) success."
+- `for (i.trial in 1:n.trials){ … }`: "For (`for`) each i.trial (`i.trial`) in 1 to n.trials (`1:n.trials`), run the three body lines below."
+- Body line 1, `dice <- sample(…)`: "Store under dice (`dice <-`) a sample (`sample`) from the faces (`c(1,2,3,4,5,6)`) of size n.dice (`n.dice`) with replacement (`replace=TRUE`): two rolled faces."
+- Body line 2, `success <- (dice[1] == 6) & (dice[2] == 6)`: "Store under success (`success <-`) whether the first die (`dice[1]`) equals (`==`) 6 and (`&`) the second die (`dice[2]`) equals 6: TRUE only if both are 6."
+- Body line 3, `X.success <- X.success + success`: "Store under X.success (`X.success <-`) the old count plus (`+`) success: add 1 for TRUE."
 - `prob.B <- X.success / n.trials`: "Store under the name prob.B (`prob.B <-`) X.success (`X.success`) divided by (`/`) n.trials (`n.trials`)."
 - `prob.B`: "Print prob.B (`prob.B`)."
 
@@ -87,12 +90,15 @@ prob.B
 - `n.trials <- 10^5`: "Raise 10 to the power 5 (`10^5`), then store it as n.trials (`n.trials <-`)."
 - `n.dice <- 2`: "Take 2 (`2`) and store it as n.dice (`n.dice <-`)."
 - `X.success <- 0`: "Take 0 (`0`) and store it as X.success (`X.success <-`)."
-- `for (i.trial in 1:n.trials){ … }`: "Build the sequence 1 to n.trials (`1:n.trials`); each time round, combine the faces (`c(1,2,3,4,5,6)`), draw n.dice of them with replacement (`sample`, `replace=TRUE`) and store them (`dice <-`); pick each die (`dice[1]`, `dice[2]`), compare it with 6 (`==`), join the two answers (`&`) and store that (`success <-`); add it to the count (`X.success + success`) and store the total (`X.success <-`)."
+- `for (i.trial in 1:n.trials){ … }`: "Build the sequence 1 to n.trials (`1:n.trials`), then run the three body lines once for each value (`for`)."
+- Body line 1, `dice <- sample(…)`: "Combine the faces (`c(1,2,3,4,5,6)`), draw n.dice of them with replacement (`sample`, `replace=TRUE`), then store them (`dice <-`)."
+- Body line 2, `success <- (dice[1] == 6) & (dice[2] == 6)`: "Pick each die (`dice[1]`, `dice[2]`), compare it with 6 (`==`), join the two answers (`&`), then store that (`success <-`)."
+- Body line 3, `X.success <- X.success + success`: "Add success to the count (`X.success + success`), then store the total (`X.success <-`)."
 - `prob.B <- X.success / n.trials`: "Divide X.success by n.trials (`X.success / n.trials`), then store it as prob.B (`prob.B <-`)."
 - `prob.B`: "Look up prob.B (`prob.B`) and print it."
 :::
 
-`sample(c(1,2,3,4,5,6), n.dice, replace=TRUE)` rolls two dice (`replace=TRUE` lets both show the same number, lesson 8). `success` is `TRUE` or `FALSE`, and adding it to `X.success` counts the TRUEs. The run in the filled notes gave $P(B) \approx x/n = 0.0281$, against the exact $1/36 = 0.0278$; the demo notebook's `prob.B.classical <- 1/(6^2)` prints 0.02777778. Every run lands on a slightly different third decimal.
+`sample(c(1,2,3,4,5,6), n.dice, replace=TRUE)` rolls two dice (`replace=TRUE` lets both show the same number, lesson 8). `success` is `TRUE` or `FALSE`, and adding it to `X.success` counts the TRUEs. This run printed 0.02799; the run in the filled notes printed 0.0281. Both are near the exact $1/36 = 0.0278$, and every run lands on a slightly different third decimal. The demo notebook's `prob.B.classical <- 1/(6^2)` prints 0.02777778.
 
 ### x/n settling as n grows
 
@@ -119,7 +125,7 @@ The test's 1 in 1000 over n = 100 000 Fusings, and GGG's older 1/1500, are the t
   {"q": "Why does the lesson use the test's 1 in 1000 rather than GGG's 1/1500?", "options": ["GGG's figure predates the change that made item quality improve the result", "1/1500 is a classical probability and 1 in 1000 is not", "the test counted every Fusing ever used", "larger probabilities are always more accurate"], "answer": 0, "explain": "Each 1 % of quality now improves the result by 1 %, and the test used a 20 %-quality item; GGG's statement came before that change. Neither figure is classical: no one listed equally likely outcomes."},
   {"q": "With n = 100 000 Fusings, the test's 1 in 1000 is the classical probability of a six-link.", "type": "tf", "answer": false, "explain": "However large $n$ is, $x/n$ is a relative frequency, an estimate of $P(A)$. The classical definition needs a list of equally likely outcomes, which nobody has for links."},
   {"q": "A player Fuses 10 times with no six-link, so for them $x/n = 0/10 = 0$. This shows the six-link chance is 0.", "type": "tf", "answer": false, "explain": "Ten trials of an event near $0.001$ will almost always show no success, the same as ten trials of boxcars. The law of large numbers needs a large $n$."},
-  {"q": "Which definition of probability does the six-link figure use?", "type": "text", "answer": ["relative frequency", "relative-frequency", "the relative frequency definition", "relative freq"], "explain": "Successes over trials, $x/n$, from repeating the experiment: the relative frequency definition."}
+  {"q": "Which definition of probability does the six-link figure use?", "options": ["relative frequency", "classical", "a guess from the game files", "equally likely outcomes"], "answer": 0, "explain": "Successes over trials, $x/n$, from repeating the experiment: the relative frequency definition."}
 ]
 ```
 

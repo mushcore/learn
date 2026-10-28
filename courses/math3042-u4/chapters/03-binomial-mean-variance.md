@@ -16,7 +16,7 @@ $$\mu = \sum x \cdot P(x), \qquad \sigma^2 = \sum (x - \mu)^2 \cdot P(x)$$
 
 $$\mu = np, \qquad \sigma^2 = npq, \qquad \sigma = \sqrt{npq}$$
 
-The mean is the number of trials times the success probability: 50 visitors at 25 % each should average 12.5 sales. The variance is $npq$, and $\sigma$ is its square root, not $npq$ itself.
+The mean is the number of trials times the success probability: 50 visitors at 25 % each should average 12.5 sales. Each visitor contributes, on average, 0.25 of a sale (1 with probability 0.25, 0 otherwise). Fifty visitors add fifty of those: 50 × 0.25 = 12.5. The variance is $npq$, and $\sigma$ is its square root, not $npq$ itself.
 
 The rolling-3s table from the last lesson checks the shortcut against the definition: $\sum x P(x) = 0(0.4019) + 1(0.4019) + 2(0.1608) + 3(0.0322) + 4(0.0032) + 5(0.0001) = 0.8334$, and $np = 5 \cdot \frac16 = 0.8333$. Same number, one line instead of six.
 
@@ -93,7 +93,31 @@ An observed count $x$ is converted to a Z-score exactly as a data value was in U
 
 $$Z = \frac{x - \mu}{\sigma}$$
 
-$|Z| > 2$ is **unusual**; $Z < -2$ is *unusually low*, $Z > 2$ *unusually high*. A value between $-2$ and $2$ is within the range chance alone produces, even when it is on the low side of $\mu$. Quiz 4 Part 2 also accepted the tail probability as the test: the count is unusual when $P(X \le x)$ (or $P(X \ge x)$ on the high side) is below 0.025. Both tests are taught; they agree in every example of this unit.
+$|Z| > 2$ is **unusual**. A value between $-2$ and $2$ is within the range chance alone produces, even when it is on the low side of $\mu$. The tail probability is a second test: the count is unusual when the tail beyond it is below 0.025. Each side has its own tail and its own R call:
+
+| Side | Z test | Tail test | Tail in R (binomial) | Example: shoppers, $\mu = 12.5$, $\sigma = 3.06$ |
+|---|---|---|---|---|
+| low | $Z < -2$ | $P(X \le x) < 0.025$ | `pbinom(x, n, p)` | $x = 6$: $Z = (6 - 12.5)/3.06 = -2.12$, tail `pbinom(6, 50, 0.25)` = 0.0194: unusually low |
+| high | $Z > 2$ | $P(X \ge x) < 0.025$ | `1 - pbinom(x-1, n, p)` | $x = 20$: $Z = (20 - 12.5)/3.06 = 2.45$, tail `1 - pbinom(19, 50, 0.25)` = 0.0139: unusually high |
+
+Both tests are taught and agree in every lecture example of this unit. Right at the edge they can split (shoppers $x = 19$: $Z = 2.12$ but the tail is 0.0287), so use the test the question names.
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `pbinom(x, n, p)`, `pbinom(6, 50, 0.25)` | `pbinom(q, size, prob)`: P(X ≤ q), the low tail; here q = 6, size = 50 (n), prob = 0.25 (p). |
+| `1 - pbinom(x-1, n, p)`, `1 - pbinom(19, 50, 0.25)` | q = x − 1 = 19, so `pbinom` gives P(X ≤ 19) and `1 -` turns it into the high tail P(X ≥ 20). |
+
+**Left to right**
+
+- `pbinom(6, 50, 0.25)`: "The binomial probability of at most (`pbinom`) 6 sales (`q = 6`) from 50 visitors (`size = 50`) at 0.25 (`prob = 0.25`)."
+- `1 - pbinom(19, 50, 0.25)`: "One minus (`1 -`) the probability of at most (`pbinom`) 19 sales (`q = 19`) from 50 visitors (`size = 50`) at 0.25 (`prob = 0.25`)."
+
+**Right to left**, the order R runs it
+
+- `pbinom(6, 50, 0.25)`: "Take q = 6, size = 50 and prob = 0.25, and compute P(X ≤ 6) (`pbinom`)."
+- `1 - pbinom(19, 50, 0.25)`: "Compute P(X ≤ 19) (`pbinom`), then subtract it from 1 (`1 -`)."
+:::
 
 ## Forty items tapped once at 15→16
 
@@ -192,7 +216,7 @@ $$Z = \frac{14 - 20}{4.24} = -1.41$$
 
 $-1.41$ is not beyond $-2$: **not unusual**. The tail agrees: $P(X \le 14) = 0.0929$, above 0.025.
 
-**(c)** *Does this sample provide good evidence that the modifications improved the reliability of this model of laser printer?* No: 14 repairs is within what the old 10 % rate produces by chance alone, so the sample is consistent with no improvement. Not unusual is not evidence of no effect either; it is insufficient evidence of an effect.
+**(c)** *Does this sample provide good evidence that the modifications improved the reliability of this model of laser printer?* No: 14 repairs is within what the old 10 % rate produces by chance alone, so the sample is consistent with no improvement. This does not show the modifications failed. It only shows that 14 repairs could easily happen under the old 10 % rate, so the sample cannot prove an improvement.
 
 ```widget
 binomial-calc

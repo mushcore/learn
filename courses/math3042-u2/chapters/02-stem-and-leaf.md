@@ -106,12 +106,20 @@ The decimal point is 1 digit(s) to the right of the |
 
 Two notes from the lecture:
 
-- **R split each stem into two lines**, leaves 0–4 and 5–9, because 302 values on one line per stem would be too crowded.
+- **R split each stem into two lines**, leaves 0–4 and 5–9, because 302 values on one line per stem would be too crowded. So the first `14 |` line is 141–144 and the second is 146–148.
 - **"We can easily see that the typical student height is around 165 to 170 cm"**: the two longest lines are stem 16.
 
 ### Reading the key line
 
-The first line R prints, *"The decimal point is 1 digit(s) to the right of the |"*, turns stems and leaves back into numbers. The instructor circled the first row: **"therefore 14 | 1 represents 141 cm."** Join stem and leaf as 141; the decimal point sits one digit right of the bar, so the value is 141, not 14.1.
+The first line R prints, *"The decimal point is 1 digit(s) to the right of the |"*, turns stems and leaves back into numbers. The instructor circled the first row: **"therefore 14 | 1 represents 141 cm."**
+
+:::tip Reading the key line
+Read the bar as a decimal point, then move it as the key says: "k digit(s) to the right" moves it right k places, "to the left" moves it left k places. $14 \mid 1$ reads as 14.1; the key says right 1, so the value is 141.
+:::
+
+```diagram
+{"type": "grid", "nodes": [{"id": "r0c0", "label": "Key line says", "row": 0, "col": 0}, {"id": "r0c1", "label": "Printed", "row": 0, "col": 1}, {"id": "r0c2", "label": "Bar as a point", "row": 0, "col": 2}, {"id": "r0c3", "label": "Move", "row": 0, "col": 3}, {"id": "r0c4", "label": "Value", "row": 0, "col": 4}, {"id": "r1c0", "label": "1 right", "row": 1, "col": 0}, {"id": "r1c1", "label": "14 | 1", "row": 1, "col": 1}, {"id": "r1c2", "label": "14.1", "row": 1, "col": 2}, {"id": "r1c3", "label": "right 1", "row": 1, "col": 3}, {"id": "r1c4", "label": "141", "row": 1, "col": 4}, {"id": "r2c0", "label": "1 left", "row": 2, "col": 0}, {"id": "r2c1", "label": "22 | 8", "row": 2, "col": 1}, {"id": "r2c2", "label": "22.8", "row": 2, "col": 2}, {"id": "r2c3", "label": "left 1", "row": 2, "col": 3}, {"id": "r2c4", "label": "2.28", "row": 2, "col": 4}, {"id": "r3c0", "label": "2 right", "row": 3, "col": 0}, {"id": "r3c1", "label": "31 | 4", "row": 3, "col": 1}, {"id": "r3c2", "label": "31.4", "row": 3, "col": 2}, {"id": "r3c3", "label": "right 2", "row": 3, "col": 3}, {"id": "r3c4", "label": "3140", "row": 3, "col": 4}], "hi": ["r1c4", "r2c4", "r3c4"], "caption": "Read the bar as a decimal point, then move it k places the way the key says: 14 | 1 is 14.1, moved right 1 to 141."}
+```
 
 The demo notebook's `scale` argument compresses the number of stems by half, giving one line per stem:
 
@@ -185,7 +193,13 @@ The decimal point is 1 digit(s) to the left of the |
 - "Take the Old Faithful data (`faithful`), pull out its eruptions column (`$eruptions`), and print its stem-and-leaf plot (`stem`)."
 :::
 
-The key now says the decimal point is one digit to the **left** of the bar: 16 | 0 is 1.60 and 22 | 8 is 2.28. Here R went the other way from the heights and put **two** stems on each line (16 covers 1.60–1.79), because 272 values over 1.6–5.1 would otherwise give too many lines. That is why the 16 line reads 0, 7, 0, 3, 5, ... rather than a sorted 0–9: the first three leaves are 1.60, 1.67, 1.70.
+The key now says the decimal point is one digit to the **left** of the bar: 16 | 0 reads as 16.0, moved left 1 to 1.60, and 22 | 8 is 2.28. Here R went the other way from the heights and put **two** stems on each line (16 covers 1.60–1.79), because 272 values over 1.6–5.1 would otherwise give too many lines. The 16 line, `16 | 070355555588`, is two sorted runs:
+
+```diagram
+{"type": "grid", "nodes": [{"id": "r0c0", "label": "Run", "row": 0, "col": 0}, {"id": "r0c1", "label": "Stem", "row": 0, "col": 1}, {"id": "r0c2", "label": "Leaves", "row": 0, "col": 2}, {"id": "r0c3", "label": "Values", "row": 0, "col": 3}, {"id": "r1c0", "label": "first", "row": 1, "col": 0}, {"id": "r1c1", "label": "16", "row": 1, "col": 1}, {"id": "r1c2", "label": "0 7", "row": 1, "col": 2}, {"id": "r1c3", "label": "1.60, 1.67", "row": 1, "col": 3}, {"id": "r2c0", "label": "second", "row": 2, "col": 0}, {"id": "r2c1", "label": "17", "row": 2, "col": 1}, {"id": "r2c2", "label": "0 3 5 5 5 5 5 5 8 8", "row": 2, "col": 2}, {"id": "r2c3", "label": "1.70, 1.73, 1.75 (six), 1.78 (two)", "row": 2, "col": 3}], "hi": ["r2c1", "r2c2"], "caption": "The line 16 | 070355555588 holds two stems: the leaves restart at 0 where 16 ticks to 17."}
+```
+
+The leaves restart at 0 where the stem ticks from 16 to 17; each run is sorted.
 
 The instructor's conclusion: **"Most eruptions are around 1.8 or 4.4"**, two clusters with a gap from about 2.6 to 3.4. The histogram lesson shows the same two humps.
 
@@ -222,6 +236,10 @@ The instructor crossed the chart out and wrote **"Not recommended"**, for two re
 - **potentially too many rectangles**: one bar per distinct age.
 - **can be missing X values along the horizontal axis**: nobody is 27, 31, 32, 33, 34, 36, 37, 38, 40 or 41, so those ages do not appear. The axis reads 18, 19, ..., 26, 28, 29, 30, 35, 39, 42 with equal spacing, hiding the real gaps. The notes call this **"one serious problem."**
 
+```diagram
+{"type": "grid", "nodes": [{"id": "r0c0", "label": "Position", "row": 0, "col": 0}, {"id": "r0c1", "label": "1st", "row": 0, "col": 1}, {"id": "r0c2", "label": "2nd", "row": 0, "col": 2}, {"id": "r0c3", "label": "3rd", "row": 0, "col": 3}, {"id": "r0c4", "label": "4th", "row": 0, "col": 4}, {"id": "r0c5", "label": "5th", "row": 0, "col": 5}, {"id": "r0c6", "label": "6th", "row": 0, "col": 6}, {"id": "r0c7", "label": "7th", "row": 0, "col": 7}, {"id": "r0c8", "label": "8th", "row": 0, "col": 8}, {"id": "r0c9", "label": "9th", "row": 0, "col": 9}, {"id": "r0c10", "label": "10th", "row": 0, "col": 10}, {"id": "r1c0", "label": "Real ages", "row": 1, "col": 0}, {"id": "r1c1", "label": "26", "row": 1, "col": 1}, {"id": "r1c2", "label": "27", "row": 1, "col": 2}, {"id": "r1c3", "label": "28", "row": 1, "col": 3}, {"id": "r1c4", "label": "29", "row": 1, "col": 4}, {"id": "r1c5", "label": "30", "row": 1, "col": 5}, {"id": "r1c6", "label": "31", "row": 1, "col": 6}, {"id": "r1c7", "label": "32", "row": 1, "col": 7}, {"id": "r1c8", "label": "33", "row": 1, "col": 8}, {"id": "r1c9", "label": "34", "row": 1, "col": 9}, {"id": "r1c10", "label": "35", "row": 1, "col": 10}, {"id": "r2c0", "label": "barplot positions", "row": 2, "col": 0}, {"id": "r2c1", "label": "26", "row": 2, "col": 1}, {"id": "r2c2", "label": "28", "row": 2, "col": 2}, {"id": "r2c3", "label": "29", "row": 2, "col": 3}, {"id": "r2c4", "label": "30", "row": 2, "col": 4}, {"id": "r2c5", "label": "35", "row": 2, "col": 5}], "hi": ["r2c2", "r2c5"], "caption": "28 sits right after 26, and 35 right after 30: the gaps vanish."}
+```
+
 A histogram fixes it by dividing the whole range into classes of equal width, so every value has a place on the axis.
 
 ## A stem-and-leaf plot of commute times
@@ -233,9 +251,9 @@ Eighteen commute times in minutes: 23, 41, 35, 18, 27, 44, 31, 29, 36, 52, 25, 3
   {"q": "Write the line for stem 3, leaves sorted (format `3 | 1 2 3`).", "type": "text", "answer": ["3 | 1 3 4 5 6 8 9", "3|1 3 4 5 6 8 9", "3 | 1345689", "3|1345689", "3 |1 3 4 5 6 8 9", "3| 1 3 4 5 6 8 9"], "explain": "The 30s are 35, 31, 36, 38, 33, 34, 39: leaves 5, 1, 6, 8, 3, 4, 9, sorted to 1 3 4 5 6 8 9. The whole plot: 1 | 8; 2 | 2 3 5 7 9 9; 3 | 1 3 4 5 6 8 9; 4 | 1 4 7; 5 | 2"},
   {"q": "How many leaves are on stem 2?", "type": "numeric", "answer": 6, "tolerance": 0, "explain": "23, 27, 29, 25, 29, 22: six values in the 20s, so `2 | 2 3 5 7 9 9`."},
   {"q": "What is the mode of the commute times?", "type": "numeric", "answer": 29, "tolerance": 0, "unit": "min", "explain": "The only repeated leaf on a line is the 9 twice on stem 2: 29 appears twice, every other value once."},
-  {"q": "R prints \"The decimal point is 1 digit(s) to the left of the |\". What value is `37 | 4`?", "type": "numeric", "answer": 3.74, "tolerance": 0.0001, "explain": "Join stem and leaf (374) and put the decimal point one digit left of the bar: 3.74."},
+  {"q": "R prints \"The decimal point is 1 digit(s) to the left of the |\". What value is `37 | 4`?", "type": "numeric", "answer": 3.74, "tolerance": 0.0001, "explain": "Read the bar as a decimal point, 37.4; the key moves it one place left: 3.74."},
   {"q": "A value of 6.384 goes into a plot whose leaves are hundredths. Write its stem and leaf (format `63 | 8`).", "type": "text", "answer": ["63 | 8", "63|8", "63 |8", "63| 8"], "explain": "Round first: 6.384 → 6.38. The last digit, 8, is the leaf; everything before it, 63, is the stem."},
-  {"q": "R prints \"The decimal point is 2 digit(s) to the right of the |\". What value is `12 | 7`?", "type": "numeric", "answer": 1270, "tolerance": 0, "explain": "Join to 127, then the decimal point sits two digits right of the bar: 12|7 → 1270."}
+  {"q": "R prints \"The decimal point is 2 digit(s) to the right of the |\". What value is `12 | 7`?", "type": "numeric", "answer": 1270, "tolerance": 0, "explain": "Read the bar as a decimal point, 12.7; the key moves it two places right: 1270."}
 ]
 ```
 
@@ -245,8 +263,8 @@ Eighteen commute times in minutes: 23, 41, 35, 18, 27, 44, 31, 29, 36, 52, 25, 3
   {"q": "The instructor describes a stem-and-leaf plot as essentially a...", "options": ["frequency distribution of X", "measure of centre", "scatter plot", "percentile table"], "answer": 0, "explain": "Each line's length is the frequency of that stem's range, so the plot is a frequency distribution that still shows every value."},
   {"q": "For the 20 heights, which values produce the line `15 | 3 4 8 9`?", "type": "text", "answer": ["153 154 158 159", "153, 154, 158, 159", "154 153 159 158", "153,154,158,159"], "explain": "Stem 15 with leaves 3, 4, 8, 9 are 153, 154, 158, 159 (the raw data has 154, 153, 159, 158; leaves are sorted)."},
   {"q": "From the 20-height plot, what did the instructor identify as the mode?", "type": "numeric", "answer": 170, "tolerance": 0, "unit": "cm", "explain": "The 17 line reads 0 0 0 0 5 8: 170 occurs four times, more than any other value. 'The centre is around 170 cm (the mode is 170 cm).'"},
-  {"q": "R prints `The decimal point is 1 digit(s) to the right of the |` above the heights plot. What value does `14 | 1` represent?", "type": "numeric", "answer": 141, "tolerance": 0, "unit": "cm", "explain": "Join stem and leaf (141) and place the decimal point one digit to the right of the bar: 141."},
-  {"q": "In `stem(faithful$eruptions)` the key says the decimal point is 1 digit to the LEFT of the bar. What is `22 | 8`?", "type": "numeric", "answer": 2.28, "tolerance": 0.001, "explain": "Join to get 228, move the decimal one digit left of the bar: 2.28, which is 2.283 rounded to two decimals."},
+  {"q": "R prints `The decimal point is 1 digit(s) to the right of the |` above the heights plot. What value does `14 | 1` represent?", "type": "numeric", "answer": 141, "tolerance": 0, "unit": "cm", "explain": "Read the bar as a decimal point, 14.1; the key moves it one place right: 141."},
+  {"q": "In `stem(faithful$eruptions)` the key says the decimal point is 1 digit to the LEFT of the bar. What is `22 | 8`?", "type": "numeric", "answer": 2.28, "tolerance": 0.001, "explain": "Read the bar as a decimal point, 22.8; the key moves it one place left: 2.28, which is 2.283 rounded to two decimals."},
   {"q": "Why does the instructor round 2.283 to 2.28 before making the Old Faithful stem-and-leaf plot?", "options": ["Four digits of precision would produce too many stems", "R cannot handle decimals", "Because 2.283 is an outlier", "To make the mean easier to compute"], "answer": 0, "explain": "'If we used all four digits, then we would have too many stems. Instead, round each X first and then cut it into a stem and a leaf.'"},
   {"q": "R never splits a stem across two lines; every stem always gets exactly one line.", "type": "tf", "answer": false, "explain": "For the 302 heights R split each stem into two lines (leaves 0-4 and 5-9); for Old Faithful it merged two stems per line. The key line tells you how to read it."},
   {"q": "What conclusion did the instructor write under the Old Faithful stem-and-leaf plot?", "options": ["Most eruptions are around 1.8 or 4.4 (two clusters)", "Eruptions are evenly spread from 1.6 to 5.1", "The typical eruption is about 3.0", "There are no eruptions above 4.0"], "answer": 0, "explain": "The long lines are near 18-20 and 40-46, with almost nothing around 26-32: a two-humped (bimodal) shape."},

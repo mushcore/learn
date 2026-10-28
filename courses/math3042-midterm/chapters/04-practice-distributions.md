@@ -40,7 +40,18 @@ The last two questions on the practice paper are worth 5 marks each and combine 
 
 Part a carries one mark for λ and the distribution, one for the number. Part b's three marks go to the translation: "the next flood is between 10 and 20 years from now" is the same event as "zero floods in years 0 to 10, and one or more in years 10 to 20". Once that sentence is written, the rest is two Poisson values with the same λ.
 
-The key adds a bracket: "this is equivalent also to a geometric variable problem with p = 1 − e^(−0.05)". Treat each year as a trial in which a flood happens with probability P(at least one in a year) = 1 − e^(−0.05) = 0.0488. The first flood falls in year 11 to 20 when the first 10 years all fail and at least one of the next 10 succeeds: with q = e^(−0.05), q¹⁰ − q²⁰ = e^(−0.5) − e^(−1) = 0.2387, the same number.
+```diagram
+{ "type": "flow", "title": "Q11b on a timeline", "nodes": [ { "id": "now", "label": "Now", "kind": "pill" }, { "id": "w1", "label": "Years 0–10", "sub": "0 floods · λ = 0.5 · P = 0.6065" }, { "id": "w2", "label": "Years 10–20", "sub": "≥ 1 flood · λ = 0.5 · P = 0.3935" } ], "edges": [ { "from": "now", "to": "w1" }, { "from": "w1", "to": "w2", "label": "then" } ], "hi": ["w1", "w2"], "caption": "Separate windows are independent: 0.6065 × 0.3935 = 0.2387." }
+```
+
+:::info Optional: the key's geometric route
+The key adds a bracket: "this is equivalent also to a geometric variable problem with p = 1 − e^(−0.05)".
+
+1. Each year is a trial: p = P(≥ 1 flood in a year) = 1 − e^(−0.05) = 0.0488, so q = e^(−0.05).
+2. P(no flood in years 1–10) = q¹⁰ = e^(−0.5) = 0.6065.
+3. P(no flood in years 1–20) = q²⁰ = e^(−1) = 0.3679.
+4. The first flood is in years 11–20 when step 2 happens but step 3 does not: q¹⁰ − q²⁰ = 0.6065 − 0.3679 = 0.2387, the same number.
+:::
 
 ### Floods in a 10-year interval
 
@@ -92,7 +103,7 @@ Taught in [Poisson: counts per interval](#/math3042-u4/poisson) and [geometric](
     "answer": 2.13,
     "tolerance": 0.005,
     "unit": "$",
-    "explain": "Let X = the winnings in one game: $200 with probability 0.002353, $2 with probability 0.828235, $0 otherwise. E[Winning] = $200 · P(win $200) + $2 · P(win $2) + $0 · P(win $0) = 200(0.002353) + 2(0.828235) + 0 = 0.470588 + 1.656471 = $**2.13**. The question says *win*, and the game has no entry fee, so these are gross winnings. Rounding first (200 × 0.0024 + 2 × 0.83) gives $2.14."
+    "explain": "Let X = the winnings to the player in one game: $200 with probability 0.002353, $2 with probability 0.828235, $0 otherwise. E(X) = $200 · P(win $200) + $2 · P(win $2) + $0 · P(win $0) = 200(0.002353) + 2(0.828235) + 0 = 0.470588 + 1.656471 = $**2.13**. The question says *win*, and the game has no entry fee, so these are gross winnings. Rounding first (200 × 0.0024 + 2 × 0.83) gives $2.14."
   },
   {
     "q": "**Q12c.** Two games: P(win at least $5 in total)? (4 decimals)",
@@ -103,6 +114,15 @@ Taught in [Poisson: counts per interval](#/math3042-u4/poisson) and [geometric](
   }
 ]
 ```
+
+The three outcomes of one game, X = the winnings to the player:
+
+| Outcome | x (dollars) | P(x) | x · P(x) |
+|---|---|---|---|
+| all three the same rank | 200 | 0.002353 | 0.4706 |
+| all different | 2 | 0.828235 | 1.6565 |
+| exactly two share a rank | 0 | 0.169412 | 0 |
+| Σ | | 1 | 2.1271 |
 
 Part c is marked on one sentence: the only way to win at least $5 is to win $200 at least once. Then it is "A or B" for two independent games, and the overlap term p² is tiny (0.0000055) but belongs in the formula. "Without replacement" applies inside a game; "the cards are replaced and the deck reshuffled" is what makes the two games independent.
 
@@ -140,11 +160,11 @@ Taught in [counting](#/math3042-u3/counting), [conditional probability and indep
     "explain": "No flood in the first 20 years (λ = 1), then at least one in the next 10 (λ = 0.5): P = e^(−1) · (1 − e^(−0.5)) = 0.367879 × 0.393469 = 0.1447."
   },
   {
-    "q": "Three-card game: P(win nothing in one game)? (4 decimals)",
+    "q": "Three-card game: P(win nothing in both of two games)? (4 decimals)",
     "type": "numeric",
-    "answer": 0.1694,
+    "answer": 0.0287,
     "tolerance": 0.0001,
-    "explain": "Win nothing means exactly two cards share a rank. It is the complement of the other two outcomes: 1 − 0.828235 − 0.002353 = 0.169412 → 0.1694."
+    "explain": "Win nothing means exactly two cards share a rank, the complement of the other two outcomes: 1 − 0.828235 − 0.002353 = 0.169412. The games are independent, so multiply: 0.169412² = 0.028700 → 0.0287."
   },
   {
     "q": "Winning $2 in each of two games satisfies \"at least $5 in total\".",
@@ -158,7 +178,7 @@ Taught in [counting](#/math3042-u3/counting), [conditional probability and indep
     "answer": 21.27,
     "tolerance": 0.005,
     "unit": "$",
-    "explain": "Expected values add over independent games: 10 × E[X] = 10 × 2.12706 = $21.27. Multiplying the rounded $2.13 gives $21.30; carry the unrounded value."
+    "explain": "Expected values add over independent games: 10 × E(X) = 10 × 2.12706 = $21.27. Multiplying the rounded $2.13 gives $21.30; carry the unrounded value."
   }
 ]
 ```

@@ -55,61 +55,97 @@ binomial-calc
 
 ## Twelve signatures to know cold
 
-```r
-dbinom(x, n, p)        pbinom(k, n, p)        rbinom(m, n, p)
-dhyper(x, K, N-K, n)   phyper(k, K, N-K, n)   rhyper(m, K, N-K, n)
-dgeom(x-1, p)          pgeom(k-1, p)          rgeom(m, p) + 1
-dpois(x, lambda)       ppois(k, lambda)       rpois(m, lambda)
-```
+R's argument names reuse the course's letters for other things. Each cell reads "R's name → what you put there, in the course's symbols"; `reps` is how many random values an `r` function draws.
+
+| Position | binomial | hypergeometric | geometric | Poisson |
+|---|---|---|---|---|
+| 1 (d, p) | `x` / `q` → x or k | `x` / `q` → x or k | `x` / `q` → x − 1 or k − 1 failures | `x` / `q` → x or k |
+| 1 (r) | `n` → reps | `nn` → reps | `n` → reps | `n` → reps |
+| 2 | `size` → n trials | `m` → K successes | `prob` → p | `lambda` → λ |
+| 3 | `prob` → p | `n` → N − K failures | | |
+| 4 | | `k` → n, the sample size | | |
+
+:::warn R's n, m and k are not the course's
+In `dhyper`, `phyper` and `rhyper`, R's `m` is the successes K, R's `n` is the failures N − K, and R's `k` is the course's sample size n. In every `r` function R's first argument, also named `n`, is reps, not a number of trials.
+:::
+
+| | $P(X = x)$ | $P(X \le k)$ | `reps` random values |
+|---|---|---|---|
+| binomial | `dbinom(x, n, p)` | `pbinom(k, n, p)` | `rbinom(reps, n, p)` |
+| hypergeometric | `dhyper(x, K, N-K, n)` | `phyper(k, K, N-K, n)` | `rhyper(reps, K, N-K, n)` |
+| geometric | `dgeom(x-1, p)` | `pgeom(k-1, p)` | `rgeom(reps, p) + 1` |
+| Poisson | `dpois(x, lambda)` | `ppois(k, lambda)` | `rpois(reps, lambda)` |
 
 :::info R syntax
 | Code | What it does |
 |---|---|
 | `dbinom(x, n, p)` | R's names: x = x, size = n trials, prob = p. Returns P(X = x). |
 | `pbinom(k, n, p)` | q = k, size = n, prob = p. Returns P(X ≤ k). |
-| `rbinom(m, n, p)` | R's `n` = m values to draw (not the trials), size = n, prob = p. |
+| `rbinom(reps, n, p)` | R's `n` = reps values to draw (not the trials), size = n, prob = p. |
 | `dhyper(x, K, N-K, n)` | x = x, m = K successes in the population, n = N-K failures, k = n sample size. R's `n` is the failures. |
 | `phyper(k, K, N-K, n)` | q = k, then m, n, k as in `dhyper`. Returns P(X ≤ k). |
-| `rhyper(m, K, N-K, n)` | nn = m values to draw, then m, n, k as in `dhyper`. |
+| `rhyper(reps, K, N-K, n)` | nn = reps values to draw, then R's m, n, k as in `dhyper`. |
 | `dgeom(x-1, p)` | x = x-1 failures before the first success, prob = p. |
 | `pgeom(k-1, p)` | q = k-1 failures, prob = p. Returns P(at most k trials). |
-| `rgeom(m, p) + 1` | R's `n` = m values to draw, prob = p; `+ 1` adds one to every value, turning failures into trials. |
+| `rgeom(reps, p) + 1` | R's `n` = reps values to draw, prob = p; `+ 1` adds one to every value, turning failures into trials. |
 | `dpois(x, lambda)` | x = x, lambda = the mean count for the interval. |
 | `ppois(k, lambda)` | q = k, lambda. Returns P(X ≤ k). |
-| `rpois(m, lambda)` | R's `n` = m values to draw, lambda. |
+| `rpois(reps, lambda)` | R's `n` = reps values to draw, lambda. |
 
 **Left to right**
 
+**Binomial**
+
 - `dbinom(x, n, p)`: "The binomial probability of exactly (`dbinom`) x successes (`x`) in n trials (`n`) with probability p (`p`)."
 - `pbinom(k, n, p)`: "The binomial probability of at most (`pbinom`) k (`k`) in n trials (`n`) with probability p (`p`)."
-- `rbinom(m, n, p)`: "Draw at random (`rbinom`) m counts (`m`), each from n trials (`n`) with probability p (`p`)."
+- `rbinom(reps, n, p)`: "Draw at random (`rbinom`) reps counts (`reps`), each from n trials (`n`) with probability p (`p`)."
+
+**Hypergeometric**
+
 - `dhyper(x, K, N-K, n)`: "The hypergeometric probability of exactly (`dhyper`) x (`x`) with K successes (`K`) and N minus K failures (`N-K`), drawing n (`n`)."
 - `phyper(k, K, N-K, n)`: "The hypergeometric probability of at most (`phyper`) k (`k`) with K successes (`K`), N minus K failures (`N-K`), drawing n (`n`)."
-- `rhyper(m, K, N-K, n)`: "Draw at random (`rhyper`) m counts (`m`) with K successes (`K`), N minus K failures (`N-K`), drawing n (`n`)."
+- `rhyper(reps, K, N-K, n)`: "Draw at random (`rhyper`) reps counts (`reps`) with K successes (`K`), N minus K failures (`N-K`), drawing n (`n`)."
+
+**Geometric**
+
 - `dgeom(x-1, p)`: "The geometric probability of exactly (`dgeom`) x minus 1 failures (`x-1`) before a success with probability p (`p`)."
 - `pgeom(k-1, p)`: "The geometric probability of at most (`pgeom`) k minus 1 failures (`k-1`) with probability p (`p`)."
-- `rgeom(m, p) + 1`: "Draw at random (`rgeom`) m failure counts (`m`) with probability p (`p`), plus one (`+ 1`) each."
+- `rgeom(reps, p) + 1`: "Draw at random (`rgeom`) reps failure counts (`reps`) with probability p (`p`), plus one (`+ 1`) each."
+
+**Poisson**
+
 - `dpois(x, lambda)`: "The Poisson probability of exactly (`dpois`) x (`x`) with mean lambda (`lambda`)."
 - `ppois(k, lambda)`: "The Poisson probability of at most (`ppois`) k (`k`) with mean lambda (`lambda`)."
-- `rpois(m, lambda)`: "Draw at random (`rpois`) m counts (`m`) with mean lambda (`lambda`)."
+- `rpois(reps, lambda)`: "Draw at random (`rpois`) reps counts (`reps`) with mean lambda (`lambda`)."
 
 **Right to left**, the order R runs it
 
+**Binomial**
+
 - `dbinom(x, n, p)`: "Take x (`x`), n trials (`n`) and p (`p`), then compute P(X = x) (`dbinom`)."
 - `pbinom(k, n, p)`: "Take k (`k`), n (`n`) and p (`p`), then add up P(0) to P(k) (`pbinom`)."
-- `rbinom(m, n, p)`: "Take how many draws (`m`), n (`n`) and p (`p`), then simulate the counts (`rbinom`)."
+- `rbinom(reps, n, p)`: "Take how many draws (`reps`), n (`n`) and p (`p`), then simulate the counts (`rbinom`)."
+
+**Hypergeometric**
+
 - `dhyper(x, K, N-K, n)`: "Subtract K from N for the failures (`N-K`), take x (`x`), K (`K`) and the sample size (`n`), then compute P(X = x) (`dhyper`)."
 - `phyper(k, K, N-K, n)`: "Subtract K from N (`N-K`), take k (`k`), K (`K`) and n (`n`), then add up P(0) to P(k) (`phyper`)."
-- `rhyper(m, K, N-K, n)`: "Subtract K from N (`N-K`), take how many draws (`m`), K (`K`) and n (`n`), then simulate the counts (`rhyper`)."
+- `rhyper(reps, K, N-K, n)`: "Subtract K from N (`N-K`), take how many draws (`reps`), K (`K`) and n (`n`), then simulate the counts (`rhyper`)."
+
+**Geometric**
+
 - `dgeom(x-1, p)`: "Subtract 1 from the trial number (`x-1`), take p (`p`), then compute the probability of that many failures first (`dgeom`)."
 - `pgeom(k-1, p)`: "Subtract 1 from k (`k-1`), take p (`p`), then compute the cumulative probability (`pgeom`)."
-- `rgeom(m, p) + 1`: "Take how many draws (`m`) and p (`p`), simulate failure counts (`rgeom`), then add one to each (`+ 1`)."
+- `rgeom(reps, p) + 1`: "Take how many draws (`reps`) and p (`p`), simulate failure counts (`rgeom`), then add one to each (`+ 1`)."
+
+**Poisson**
+
 - `dpois(x, lambda)`: "Take x (`x`) and the mean (`lambda`), then compute P(X = x) (`dpois`)."
 - `ppois(k, lambda)`: "Take k (`k`) and the mean (`lambda`), then add up P(0) to P(k) (`ppois`)."
-- `rpois(m, lambda)`: "Take how many draws (`m`) and the mean (`lambda`), then simulate the counts (`rpois`)."
+- `rpois(reps, lambda)`: "Take how many draws (`reps`) and the mean (`lambda`), then simulate the counts (`rpois`)."
 :::
 
-In `r` functions the first argument m is how many values to draw. The hypergeometric slots are, in order: x, successes in the population, failures in the population, sample size. Leave the failures as an unevaluated sum, as the instructor does: `dhyper(9, 42, 116+154, 20)`.
+Leave the hypergeometric failures as an unevaluated sum, as the instructor does: `dhyper(9, 42, 116+154, 20)`.
 
 :::info R syntax
 | Code | What it does |
@@ -125,7 +161,20 @@ In `r` functions the first argument m is how many values to draw. The hypergeome
 - `dhyper(9, 42, 116+154, 20)`: "Add 116 and 154 (`116+154`), take 9, 42 and 20 (`9`, `42`, `20`), then compute P(X = 9) (`dhyper`)."
 :::
 
-The course counts geometric *trials* up to and including the first success; R's geometric functions count *failures* before it. So the trial number x goes in as `x-1`, P(X ≤ k) is `pgeom(k-1, p)`, and a simulated trial count is `rgeom(m, p) + 1`.
+:::warn Course counts trials, R counts failures
+The course's geometric X counts *trials* up to and including the first success; R's geometric functions count *failures* before it. So the trial number x goes in as `x-1`, P(X ≤ k) is `pgeom(k-1, p)`, and a simulated trial count is `rgeom(reps, p) + 1`.
+:::
+
+```diagram
+{ "type": "flow", "nodes": [ { "id": "t1", "label": "Fail", "sub": "trial 1 · failure 1" }, { "id": "t2", "label": "Fail", "sub": "trial 2 · failure 2" }, { "id": "t3", "label": "Fail", "sub": "trial 3 · failure 3" }, { "id": "t4", "label": "Success", "sub": "trial 4" } ], "edges": [ { "from": "t1", "to": "t2" }, { "from": "t2", "to": "t3" }, { "from": "t3", "to": "t4" } ], "hi": ["t4"], "caption": "Course X = 4 trials; R sees 3 failures, so P(X = 4) is dgeom(3, p)." }
+```
+
+The same chain on a new case, p = 0.25 and the first success on trial 6: the boxes, the product 0.75⁵ × 0.25 and the R line with the shift.
+
+```widget
+geometric-calc
+{ "p": 0.25, "x": 6, "presets": false, "title": "First success on trial 6, p = 0.25: dgeom(6-1, 0.25)" }
+```
 
 ### The model and its R call from four questions
 
@@ -138,7 +187,13 @@ dist-picker
 
 ## Seven scrolls, taps to 14→15, twenty ladder picks: one call each
 
-In MapleStory Classic an Intermediate scroll succeeds 60 % [Classic, Classic World Intermediate scroll, checked 2026-10-27] by meowdb's copy of the in-game item text; 7 uses on one item are binomial, because n is fixed and each use passes at the same rate whatever the last one did. Star Force, the GMS enhancement that adds stars to gear, succeeds 30 % at 14→15 on the wiki's table [GMS, the wiki's Star Force table 14→15, checked 2026-10-27], without the Star Catch bonus that v.271 builds in; below 15 stars a failed tap keeps the star on a non-Superior item, so the taps to the first success are geometric. On the PoE1 Hardcore Allflame ladder 69 of the characters ranked 1–200 were dead [PoE1, 3.29 Hardcore Allflame ladder, checked 2026-10-27]; 20 picks from that fixed list, nobody twice, are hypergeometric.
+In MapleStory Classic an Intermediate scroll succeeds 60 % [Classic, Classic World Intermediate scroll, checked 2026-10-27] by meowdb's copy of the in-game item text. Star Force, the GMS enhancement that adds stars to gear, succeeds 30 % at 14→15 on the wiki's table [GMS, the wiki's Star Force table 14→15, checked 2026-10-27], without the Star Catch bonus that v.271 builds in. On the PoE1 Hardcore Allflame ladder 69 of the characters ranked 1–200 were dead [PoE1, 3.29 Hardcore Allflame ladder, checked 2026-10-27].
+
+| Story | Numbers | Why this model | Model |
+|---|---|---|---|
+| 7 Intermediate scrolls on one item | n = 7, p = 0.6 | fixed n, the same p each use whatever the last one did | binomial |
+| taps 14→15 | p = 0.30 | count taps to the first success; below 15 stars a failed tap keeps the star on a non-Superior item | geometric |
+| 20 ladder picks | N = 200, K = 69 dead, n = 20 | a fixed list, nobody twice, and 20 is 10 % of 200 | hypergeometric |
 
 ```quiz
 [
@@ -146,7 +201,7 @@ In MapleStory Classic an Intermediate scroll succeeds 60 % [Classic, Classic Wor
   { "q": "Taps to the first 14→15 success, p = 0.30. P(the first success is on the 4th tap).", "type": "fill", "code": "dgeom(___, 0.30)", "answer": ["3", "4-1", "4 - 1"], "explain": "The course counts taps (trials); R counts failures before the success. Tap 4 is 3 failures, then the success: `dgeom(3, 0.30)` = 0.7³ × 0.3 = 0.343 × 0.3 = 0.1029." },
   { "q": "Same taps. P(the first success comes within the first 5 taps) = P(X ≤ 5)? (4 decimals)", "type": "numeric", "answer": 0.8319, "tolerance": 0.0001, "explain": "Within 5 taps is the complement of 5 failures in a row: 1 − q⁵ = 1 − 0.7⁵ = 1 − 0.16807 = 0.83193, so 0.8319. In R, `pgeom(5-1, 0.30)` = `pgeom(4, 0.30)`: R counts failures, so 5 taps is at most 4 failures." },
   { "q": "Twenty of the Hardcore Allflame top 200 (69 dead), nobody picked twice, X = the number dead. P(at most 5 dead).", "type": "fill", "code": "phyper(5, 69, ___, 20)", "answer": ["131", "200-69", "200 - 69"], "explain": "Slots: x = 5, successes in the population 69 dead, failures in the population 200 − 69 = 131 alive, sample size 20. `phyper(5, 69, 131, 20)` = 0.2477983, so 0.2478." },
-  { "q": "Simulate 1000 values of X = taps to the first 14→15 success, in the course's trial count. Write the full command on paper, then type the name of the function you used.", "type": "text", "answer": ["rgeom"], "explain": "`rgeom(1000, 0.30) + 1`: m = 1000 draws, p = 0.30. `rgeom` returns failures before the first success, so the `+ 1` turns each into a tap count starting at 1. Their mean settles near 1/p = 3.33 taps." }
+  { "q": "Simulate 1000 values of X = taps to the first 14→15 success, in the course's trial count. Write the full command on paper, then type the name of the function you used.", "type": "text", "answer": ["rgeom"], "explain": "`rgeom(1000, 0.30) + 1`: reps = 1000 draws, p = 0.30. `rgeom` returns failures before the first success, so the `+ 1` turns each into a tap count starting at 1. Their mean settles near 1/p = 3.33 taps." }
 ]
 ```
 
@@ -221,7 +276,13 @@ binomial-calc
 ]
 ```
 
-`p(k)` always includes k, so every event is rewritten as "at most something". The examples are the labs' own commands and outputs.
+`p(k)` always includes k, so every event is rewritten as "at most something". The grid marks the integers each event keeps, around k = 25:
+
+```diagram
+{"type": "grid", "title": "Which integers each event includes", "nodes": [{"id": "h0", "label": "Event", "row": 0, "col": 0}, {"id": "h1", "label": "23", "row": 0, "col": 1}, {"id": "h2", "label": "24", "row": 0, "col": 2}, {"id": "h3", "label": "25", "row": 0, "col": 3}, {"id": "h4", "label": "26", "row": 0, "col": 4}, {"id": "h5", "label": "27", "row": 0, "col": 5}, {"id": "h6", "label": "R call", "row": 0, "col": 6}, {"id": "r1", "label": "X < 25", "row": 1, "col": 0}, {"id": "c11", "label": "■", "row": 1, "col": 1}, {"id": "c12", "label": "■", "row": 1, "col": 2}, {"id": "c13", "label": "", "row": 1, "col": 3}, {"id": "c14", "label": "", "row": 1, "col": 4}, {"id": "c15", "label": "", "row": 1, "col": 5}, {"id": "r1c", "label": "pbinom(24,…)", "row": 1, "col": 6}, {"id": "r2", "label": "X ≤ 25", "row": 2, "col": 0}, {"id": "c21", "label": "■", "row": 2, "col": 1}, {"id": "c22", "label": "■", "row": 2, "col": 2}, {"id": "c23", "label": "■", "row": 2, "col": 3}, {"id": "c24", "label": "", "row": 2, "col": 4}, {"id": "c25", "label": "", "row": 2, "col": 5}, {"id": "r2c", "label": "pbinom(25,…)", "row": 2, "col": 6}, {"id": "r3", "label": "X ≥ 25", "row": 3, "col": 0}, {"id": "c31", "label": "", "row": 3, "col": 1}, {"id": "c32", "label": "", "row": 3, "col": 2}, {"id": "c33", "label": "■", "row": 3, "col": 3}, {"id": "c34", "label": "■", "row": 3, "col": 4}, {"id": "c35", "label": "■", "row": 3, "col": 5}, {"id": "r3c", "label": "1 - pbinom(24,…)", "row": 3, "col": 6}, {"id": "r4", "label": "X > 25", "row": 4, "col": 0}, {"id": "c41", "label": "", "row": 4, "col": 1}, {"id": "c42", "label": "", "row": 4, "col": 2}, {"id": "c43", "label": "", "row": 4, "col": 3}, {"id": "c44", "label": "■", "row": 4, "col": 4}, {"id": "c45", "label": "■", "row": 4, "col": 5}, {"id": "r4c", "label": "1 - pbinom(25,…)", "row": 4, "col": 6}], "hi": ["c11", "c12", "c21", "c22", "c23", "c33", "c34", "c35", "c44", "c45"], "caption": "A p-call counts from the left up to and including its argument; an upper tail is 1 minus the part left of it."}
+```
+
+The examples in the table are the labs' own commands and outputs.
 
 | Event | Rewrite | Lab 6 T3: n = 100, p = 0.2 | Lab 7 T10: λ = 34 |
 |---|---|---|---|
@@ -327,7 +388,7 @@ ppois(68, 2*34)      # at most 68 in the two years together
 - `ppois(68, 2*34)`: "Multiply 2 by 34 (`2*34`) for the mean, take 68 (`68`), then compute P(X ≤ 68) (`ppois`)."
 :::
 
-Independent periods multiply. A question about the total over a longer interval rescales λ instead. The second event contains the first, so its probability is larger.
+Year 1 = 20 failures, year 2 = 48: the total 68 passes `ppois(68, 68)`, but year 2 breaks "at most 34 in each year". So the doubled-interval event contains the each-year event and is more likely (0.5322 against 0.2975). Independent periods multiply; a question about the total over a longer interval rescales λ instead.
 
 ## The formula typed into R, without the sheet
 
@@ -381,7 +442,7 @@ mean(sim)                              # settles near the expected value
 | Code | What it does |
 |---|---|
 | `name <- function(n) { … }` | `function(n)` makes a function with input `n`; `<-` stores it under `name`. The body sits in braces. |
-| `X <- rbinom(1, n, p)` | R's `n` = 1 draw, size = `n` (the input), prob = `p`, which must be set outside. Stores the count in `X`. |
+| `X <- rbinom(1, n, p)` | `1` fills R's first slot (R calls it `n`: how many counts to draw). The function's input `n` fills the second slot, `size`. Same letter, two jobs: only the position tells them apart. prob = `p`, which must be set outside. Stores the count in `X`. |
 | `return(X/n)` | Hands back the proportion. |
 | `# or` | A comment: the second definition replaces the first if both are run. |
 | `sample(0:1, n, replace = TRUE, prob = c(1-p, p))` | x = `0:1` (`:` makes 0, 1), size = `n`, draws with replacement, `c()` gives one probability per value. |
@@ -446,7 +507,7 @@ Park.Until.Ticket <- function(p) {                               # Lab 7 T6a: tr
 **Left to right**
 
 - `Left.Prop <- function(n, p) { … }`: "Store under Left.Prop (`Left.Prop <-`) a function (`function`) of n and p (`(n, p)`) that stores in X (`X <-`) one (`1`) binomial count (`rbinom`) from n trials (`n`) with probability p (`p`), then (`;`) gives X divided by n (`X/n`)."
-- `Draw.Cards <- function(m, n) { … }`: "Store under Draw.Cards (`Draw.Cards <-`) a function (`function`) of m and n (`(m, n)`) that makes m zeros (`X <- numeric(m)`), then for each i from 1 to m (`for (i in 1:m)`) stores in slot i (`X[i] <-`) the count (`sum`) of cards at most (`<=`) 4 among n (`n`) cards sampled (`sample`) from 1 to 52 (`1:52`) without replacement (`replace = FALSE`), and hands back X (`return(X)`)."
+- `Draw.Cards <- function(m, n) { … }`: "Store under Draw.Cards (`Draw.Cards <-`) a function (`function`) of m and n (`(m, n)`) whose body runs the seven steps listed under Draw.Cards step by step below."
 - `Park.Until.Ticket <- function(p) { … }`: "Store under Park.Until.Ticket (`Park.Until.Ticket <-`) a function (`function`) of p (`(p)`) that starts x at 1 (`x <- 1`), and while (`while`) one draw (`sample`, `1`) from Ticket and None (`c("Ticket", "None")`) with probabilities p and 1 minus p (`prob = c(p, 1-p)`) equals (`==`) None, adds 1 to x (`x <- x + 1`), then hands back x (`return(x)`)."
 
 **Right to left**, the order R runs it
@@ -454,23 +515,33 @@ Park.Until.Ticket <- function(p) {                               # Lab 7 T6a: tr
 - `Left.Prop <- function(n, p) { … }`: "Build a function (`function`) of n and p (`(n, p)`) whose body draws one count (`rbinom(1, n, p)`), stores it in X (`X <-`), and ends with X divided by n (`X/n`); store it as Left.Prop (`Left.Prop <-`)."
 - `Draw.Cards <- function(m, n) { … }`: "Build a function (`function`) of m and n whose body makes m zeros (`numeric(m)`, `X <-`); each time round (`for (i in 1:m)`) it deals n of the cards 1 to 52 (`sample(1:52, n, replace = FALSE)`), marks the aces (`<= 4`), counts them (`sum`) and fills slot i (`X[i] <-`); it hands back X (`return(X)`). Store it as Draw.Cards (`Draw.Cards <-`)."
 - `Park.Until.Ticket <- function(p) { … }`: "Build a function (`function`) of p whose body sets x to 1 (`x <- 1`); each time round it makes the probabilities (`c(p, 1-p)`), draws one outcome (`sample`), tests it against None (`==`), and if equal adds 1 (`x <- x + 1`); it hands back x (`return(x)`). Store it as Park.Until.Ticket (`Park.Until.Ticket <-`)."
+
+**Draw.Cards step by step** (the lab names reps `m`)
+
+1. `X <- numeric(m)`: make m empty slots.
+2. `for (i in 1:m)`: repeat m times.
+3. `sample(1:52, n, replace = FALSE)`: deal n cards.
+4. `<= 4`: mark cards 1 to 4, the aces.
+5. `sum(…)`: count the marks.
+6. `X[i] <-`: store the count in slot i.
+7. `return(X)`: hand back all m counts.
 :::
 
-`Park.Until.Ticket` counts trials directly, so it needs no `+ 1`; `rgeom(m, p) + 1` is the one-line version.
+`Park.Until.Ticket` counts trials directly, so it needs no `+ 1`; `rgeom(reps, p) + 1` is the one-line version.
 
 :::info R syntax
 | Code | What it does |
 |---|---|
-| `rgeom(m, p)` | R's first argument, `n` = m values to draw (here a letter standing for a number); prob = p. Returns failure counts. |
+| `rgeom(reps, p)` | R's first argument, `n` = reps values to draw (here a name standing for a number); prob = p. Returns failure counts. |
 | `+ 1` | Adds 1 to every value, turning failures before the success into trial numbers. |
 
 **Left to right**
 
-- `rgeom(m, p) + 1`: "Draw at random (`rgeom`) m failure counts (`m`) with probability p (`p`), plus one (`+ 1`) each."
+- `rgeom(reps, p) + 1`: "Draw at random (`rgeom`) reps failure counts (`reps`) with probability p (`p`), plus one (`+ 1`) each."
 
 **Right to left**, the order R runs it
 
-- `rgeom(m, p) + 1`: "Take m and p (`m`, `p`), simulate the failure counts (`rgeom`), then add one to each (`+ 1`)."
+- `rgeom(reps, p) + 1`: "Take reps and p (`reps`, `p`), simulate the failure counts (`rgeom`), then add one to each (`+ 1`)."
 :::
 
 ## Data-frame commands from Q7 and the labs
@@ -542,7 +613,7 @@ Lab 6's die again: n = 30, p = 1/12. Write each command on paper before filling 
   { "q": "P(at least 4 eights).", "type": "fill", "code": "1 - pbinom(___, 30, 1/12)", "answer": ["3"], "explain": "X ≥ 4 is the complement of X ≤ 3: `1 - pbinom(3, 30, 1/12)` = 1 − 0.7625 = 0.2375." },
   { "q": "P(between 1 and 5 eights, inclusive).", "type": "fill", "code": "pbinom(5, 30, 1/12) - pbinom(___, 30, 1/12)", "answer": ["0"], "explain": "p(b) − p(a − 1) with a = 1, b = 5: `pbinom(5, 30, 1/12) - pbinom(0, 30, 1/12)` = 0.8916." },
   { "q": "P(more than 4 eights) without writing `1 -`.", "type": "fill", "code": "pbinom(4, 30, 1/12, lower.tail = ___)", "answer": ["FALSE", "F"], "explain": "`lower.tail = FALSE` gives P(X > 4), the same as `1 - pbinom(4, 30, 1/12)` = 0.0999." },
-  { "q": "Simulate the 30-roll experiment 1000 times, giving the number of 8s in each. Write the full command on paper, then type the name of the function you used.", "type": "text", "answer": ["rbinom"], "explain": "`rbinom(1000, 30, 1/12)`: m = 1000 draws, size n = 30, prob p = 1/12. Their mean settles near μ = np = 30/12 = 2.5." }
+  { "q": "Simulate the 30-roll experiment 1000 times, giving the number of 8s in each. Write the full command on paper, then type the name of the function you used.", "type": "text", "answer": ["rbinom"], "explain": "`rbinom(1000, 30, 1/12)`: reps = 1000 draws, size n = 30, prob p = 1/12. Their mean settles near μ = np = 30/12 = 2.5." }
 ]
 ```
 

@@ -33,11 +33,38 @@ $$\mu = \lambda, \qquad \sigma^2 = \lambda$$
 
 so $\sigma = \sqrt{\lambda}$. One number sets the centre and the spread together.
 
+A small case first, $\lambda = 2$ events per interval:
+
+| $x$ | 0 | 1 | 2 | 3 | 4 |
+|---|---|---|---|---|---|
+| $\frac{2^x}{x!}e^{-2}$ | 0.1353 | 0.2707 | 0.2707 | 0.1804 | 0.0902 |
+
+$e^{-2} = 0.1353$ is $P(0)$; each next bar is the last one times $\lambda/x$. For example $P(3) = \frac{2^3}{3!}e^{-2} = \frac{8}{6} \times 0.1353 = 0.1804$, which is $P(2) \times \frac{2}{3}$.
+
+```widget
+poisson-calc
+{ "rate": 2, "per": 1, "interval": 1, "x": 3, "op": "eq", "presets": false, "title": "lambda = 2: the bars for x = 0, 1, 2, … and P(3) substituted" }
+```
+
 ## The web server: rescale λ first
 
 *Suppose a web server gets on average one request every 2 seconds. Assuming requests arrive randomly and independently over time, what is the probability that 20 requests will arrive during a one-minute interval?*
 
-The rate is given per 2 seconds; the question is about one minute. One request every 2 seconds is 60/2 = 30 requests per minute, so $\lambda = 30$ for a one-minute interval (the demo writes it as `lambda <- 1/2 * 60`).
+The rate is given per 2 seconds; the question is about one minute. Rescale in three steps:
+
+1. Rate per one unit: 1 request ÷ 2 s = 0.5 per s.
+2. Times the interval length in the same unit: 0.5 × 60 s = 30.
+3. $\lambda = 30$ for one minute (the demo writes it as `lambda <- 1/2 * 60`).
+
+```diagram
+{ "type": "flow", "title": "Rescaling the rate to the interval", "nodes": [
+  { "id": "a", "label": "1 per 2 s", "sub": "the given rate" },
+  { "id": "b", "label": "0.5 per s", "sub": "rate per unit" },
+  { "id": "c", "label": "30 per 60 s", "sub": "λ for one minute" }
+], "edges": [ { "from": "a", "to": "b", "label": "÷ 2" }, { "from": "b", "to": "c", "label": "× 60" } ], "hi": ["c"], "caption": "λ belongs to the interval the question asks about: 1 per 2 s is 30 per minute." }
+```
+
+The same three steps rescale the tickets, CPU and accident rates later in the unit.
 
 ```quiz
 [
@@ -221,7 +248,9 @@ round(p.vals[c(20, 25, 30, 35, 40) + 1], 4)
 - `round(p.vals[c(20, 25, 30, 35, 40) + 1], 4)`: "Combine the five counts (`c`), add 1 to each (`+ 1`), pick those slots of p.vals (`p.vals[ ]`), round to 4 decimals (`round`), and print."
 :::
 
-The `+ 1` is because `p.vals[1]` is $P(0)$. The bars rise to a peak at 29 and 30 (equal, because $P(30)/P(29) = 30/30 = 1$), then fall a little more slowly than they rose: bell-shaped and slightly right-skewed, with nothing visible past 50. For a large $\lambda$ the Poisson looks like the binomial histograms of the earlier lessons, centred on $\lambda$ with spread $\sqrt{\lambda}$.
+The `+ 1` is because `p.vals[1]` is $P(0)$.
+
+Each bar is the previous one times $\lambda/x$ (from the formula), so the bars rise while $x < 30$ and fall once $x > 30$. The peak is at 29 and 30, equal because $P(30)/P(29) = 30/30 = 1$. After it the bars fall a little more slowly than they rose: bell-shaped and slightly right-skewed, with nothing visible past 50. For a large $\lambda$ the Poisson looks like the binomial histograms of the earlier lessons, centred on $\lambda$ with spread $\sqrt{\lambda}$.
 
 :::quiz λ must match the interval in the question
 Convert the rate before using it: 3 per hour over 20 minutes is $\lambda = 1$, not 3. And $\sigma$ is $\sqrt{\lambda}$, not $\lambda$.

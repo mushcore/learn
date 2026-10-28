@@ -14,7 +14,7 @@ const WIDGETS = new Set([
   "compile-pipeline", "type-sizes", "init-forms", "expr-stepper", "int-division", "cin-sim", "manipulators", "bitwise", "namespaces",
   "stat-calc", "stat-bars", "normal-curve", "chebyshev", "boxplot", "scatter-corr", "grouped-mean", "skewness", "proportion", "drag-data",
   "topology", "sine-wave", "freq-period", "composite", "encapsulation", "signal-levels",
-  "cat-charts", "stem-leaf", "hist-builder", "ogive", "group-stats",
+  "cat-charts", "stem-leaf", "hist-builder", "ogive", "group-stats", "freq-hist",
   "pointer-viz", "file-seek", "open-modes", "rand-range", "getline-sim", "vector-viz",
   "op-counter", "loop-grid", "growth-plot", "big-o-check", "fib-race",
   "channel-filter", "decibel", "snr-noise", "data-rate", "bandwidth-delay", "tx-modes",

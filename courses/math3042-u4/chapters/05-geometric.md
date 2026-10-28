@@ -22,23 +22,9 @@ A 14→15 tap succeeds 30 % [GMS, the wiki's Star Force table 14→15, checked 2
 
 Two failed taps, each with $q = 0.70$, then the success with $p = 0.30$:
 
-$$P(3) = 0.70 \times 0.70 \times 0.30 = 0.1470, \qquad \mu = \frac{1}{0.30} = 3.33 \text{ taps}, \qquad \sigma = \sqrt{\frac{0.70}{0.30^2}} = 2.79$$
+$$P(3) = 0.70 \times 0.70 \times 0.30 = 0.1470$$
 
-In R, `dgeom(2, 0.3)`: R counts failures before the first success, so the 3rd tap is $x - 1 = 2$ failures.
-
-:::info R syntax
-| Code | What it does |
-|---|---|
-| `dgeom(2, 0.3)` | `dgeom(x, prob)`: x = 2 failures before the first success, prob = 0.3 per tap. |
-
-**Left to right**
-
-- `dgeom(2, 0.3)`: "The geometric probability (`dgeom`) of exactly 2 failures before the first success (`x = 2`) at 0.3 per tap (`prob = 0.3`)."
-
-**Right to left**, the order R runs it
-
-- `dgeom(2, 0.3)`: "Take x = 2 and prob = 0.3, compute the chance of 2 failed taps then a success (`dgeom`), and print."
-:::
+R's version of this comes in "R counts failures" below.
 
 ### Fourteen-to-fifteen taps as boxes and bars
 
@@ -75,7 +61,9 @@ $$P(X = x) = q^{x-1} \cdot p, \qquad \mu = \frac{1}{p}, \qquad \sigma^2 = \frac{
 
 $x$ is the trial number of the first success, so $x - 1$ failures come before it (one factor of $q$ each) and the single success supplies the one factor of $p$. The exponent is $x - 1$, never $x$: $P(3)$ has two 0.75s in it, not three.
 
-The notes derive $\mu = 1/p$ from the definition $\mu = \sum x P(x)$ and say *you are not expected to be able to perform a derivation like the following*. The chain, for the curious: $\sum_{x \ge 1} x q^{x-1} p = p \cdot \frac{d}{dq}\left[\sum_{x \ge 1} q^x\right] = p \cdot \frac{d}{dq}\left[\frac{q}{1-q}\right] = p \cdot \frac{1}{(1-q)^2} = \frac{p}{p^2} = \frac{1}{p}$ (sum of a geometric series, quotient rule, then $1 - q = p$).
+A 1-in-4 chance needs about 4 tries: $\mu = 1/p$. (The notes' derivation is at the end of the lesson, for the curious.)
+
+**Back to the taps**, $p = 0.30$: $\mu = \dfrac{1}{0.30} = 3.33$ taps and $\sigma = \sqrt{\dfrac{0.70}{0.30^2}} = \sqrt{7.78} = 2.79$.
 
 ## Failure, failure, success, drawn as boxes
 
@@ -92,7 +80,7 @@ Every added box is another $q$, so the bars fall by the factor $q = 0.75$ each s
 
 $$E[X] = \frac{1}{p} = \frac{1}{0.25} = 4 \text{ calls}, \qquad \sigma_X = \sqrt{\frac{1 - p}{p^2}} = \sqrt{\frac{0.75}{0.0625}} = \sqrt{12} = 3.46$$
 
-A 1-in-4 chance per call needs about 4 calls on average, which is what $1/p$ says. The standard deviation is almost as large as the mean: the distribution has a long right tail of unlucky callers.
+The standard deviation is almost as large as the mean: the distribution has a long right tail of unlucky callers.
 
 ```r
 p <- 0.25
@@ -138,11 +126,37 @@ c(mu, sig)
 
 $$P(X \ge 4) = 1 - P(1) - P(2) - P(3) = 1 - 0.25 - 0.1875 - 0.1406 = 0.4219$$
 
-The shortcut gives the same number: needing at least 4 calls means the first three all failed, $q^3 = 0.75^3 = 0.421875$. In general $P(X \ge x) = q^{x-1}$ (the first $x - 1$ trials all fail) and $P(X \le x) = 1 - q^x$.
+The shortcut gives the same number: needing at least 4 calls means the first three all failed, $q^3 = 0.75^3 = 0.421875$.
+
+```diagram
+{ "type": "flow", "title": "At least 4 calls: the first three all fail", "nodes": [
+  { "id": "c1", "label": "call 1", "sub": "F, q = 0.75" },
+  { "id": "c2", "label": "call 2", "sub": "F, q = 0.75" },
+  { "id": "c3", "label": "call 3", "sub": "F, q = 0.75" },
+  { "id": "c4", "label": "call 4", "sub": "?" },
+  { "id": "c5", "label": "call 5", "sub": "?" }
+], "edges": [ { "from": "c1", "to": "c2" }, { "from": "c2", "to": "c3" }, { "from": "c3", "to": "c4" }, { "from": "c4", "to": "c5" } ], "hi": ["c1", "c2", "c3"], "caption": "X ≥ 4 ⇔ calls 1–3 all fail: 0.75³ = 0.4219. X ≤ 3 is the opposite event: 1 − 0.75³ = 0.5781." }
+```
+
+So the two tail shortcuts have different exponents. $P(X \ge x) = q^{x-1}$: only the first $x - 1$ trials must fail. $P(X \le x) = 1 - q^x$: the opposite of "the first $x$ all fail". Help line: $P(X \ge 4) = 0.75^3$, $P(X \le 4) = 1 - 0.75^4 = 0.6836$.
 
 ## R counts failures: dgeom(x − 1, p)
 
-R's geometric variable is the number of **failures before** the first success, so the lecture's $X = x$ is R's $x - 1$. Every `dgeom` and `pgeom` call in this course carries that shift.
+:::warn R's geometric counts failures, not trials
+R's geometric variable is the number of **failures before** the first success, so the lecture's $X = x$ is R's $x - 1$. Every `dgeom` and `pgeom` call in this course carries that shift, and "at least" carries a shift of 2.
+:::
+
+```diagram
+{ "type": "grid", "title": "Lecture X to R: the four questions", "nodes": [
+  { "id": "h0", "label": "Lecture asks", "row": 0, "col": 0 }, { "id": "h1", "label": "Means", "row": 0, "col": 1 }, { "id": "h2", "label": "By hand", "row": 0, "col": 2 }, { "id": "h3", "label": "R", "row": 0, "col": 3 },
+  { "id": "e0", "label": "P(X = x)", "row": 1, "col": 0 }, { "id": "e1", "label": "x − 1 failures, then a success", "row": 1, "col": 1 }, { "id": "e2", "label": "q^(x−1) p", "row": 1, "col": 2 }, { "id": "e3", "label": "dgeom(x-1, p)", "row": 1, "col": 3 },
+  { "id": "l0", "label": "P(X ≤ x)", "row": 2, "col": 0 }, { "id": "l1", "label": "success by trial x", "row": 2, "col": 1 }, { "id": "l2", "label": "1 − q^x", "row": 2, "col": 2 }, { "id": "l3", "label": "pgeom(x-1, p)", "row": 2, "col": 3 },
+  { "id": "g0", "label": "P(X > x)", "row": 3, "col": 0 }, { "id": "g1", "label": "the first x all fail", "row": 3, "col": 1 }, { "id": "g2", "label": "q^x", "row": 3, "col": 2 }, { "id": "g3", "label": "1 - pgeom(x-1, p)", "row": 3, "col": 3 },
+  { "id": "a0", "label": "P(X ≥ x)", "row": 4, "col": 0 }, { "id": "a1", "label": "the first x − 1 all fail", "row": 4, "col": 1 }, { "id": "a2", "label": "q^(x−1)", "row": 4, "col": 2 }, { "id": "a3", "label": "1 - pgeom(x-2, p)", "row": 4, "col": 3 }
+], "hi": ["a0", "a1", "a2", "a3"], "caption": "Only 'at least' shifts by 2: help line P(X ≥ 4) = 0.75³ = 1 - pgeom(2, 0.25) = 0.4219." }
+```
+
+Worked row, help line: $P(X \ge 4) = 0.75^3 = 0.4219$, which is `1 - pgeom(2, p)` with $p = 0.25$, the last line of the block below.
 
 ```r
 q^2 * p                    # P(X = 3) by the formula
@@ -329,3 +343,7 @@ A Mystery Fashion Crate (a Classic cash-shop box) and a Divine Wishing Bell (a G
   }
 ]
 ```
+
+:::info For the curious: where μ = 1/p comes from
+The notes derive $\mu = 1/p$ from the definition $\mu = \sum x P(x)$ and say *you are not expected to be able to perform a derivation like the following*. The chain: $\sum_{x \ge 1} x q^{x-1} p = p \cdot \frac{d}{dq}\left[\sum_{x \ge 1} q^x\right] = p \cdot \frac{d}{dq}\left[\frac{q}{1-q}\right] = p \cdot \frac{1}{(1-q)^2} = \frac{p}{p^2} = \frac{1}{p}$ (sum of a geometric series, quotient rule, then $1 - q = p$).
+:::

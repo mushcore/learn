@@ -6,7 +6,14 @@ Three of the practice paper's questions, 13 marks between them, ask you to read 
 
 ## Q1 (5 marks). The following histogram summarizes the length (in cm) of flower petals from 150 different iris flowers.
 
-The paper shows "Histogram of Flower Petal Lengths" with bins 0.5 cm wide. Here it is as the frequency table you would read off the bars, with the running total added.
+The paper shows "Histogram of Flower Petal Lengths" with bins 0.5 cm wide. Here it is redrawn from its bar heights. Look at the shape first: a cluster on the left, an empty bar, then the main peak.
+
+```widget
+freq-hist
+{ "start": 2.5, "width": 0.5, "freq": [37, 13, 0, 1, 4, 11, 21, 21, 17, 16, 5, 4], "label": "Petal length (cm)", "unit": "petals", "mean": "midpoint", "median": true, "toggles": true, "title": "Histogram of Flower Petal Lengths (n = 150)", "note": "Answer Q1b on paper first, then tick the boxes to see the mean marker and the median class." }
+```
+
+The same bars as the frequency table you would read off the histogram, with the running total added.
 
 | Petal length (cm) | Frequency | Cumulative |
 |---|---|---|
@@ -30,6 +37,10 @@ The paper shows "Histogram of Flower Petal Lengths" with bins 0.5 cm wide. Here 
 
 **c. [2]** Is it reasonable to use the empirical rule on this dataset? Justify your answer with reference to specific features of the histogram.
 
+:::tip Mean against median
+A long tail drags the mean toward it; the median, a position, barely moves. Left tail: mean < median. Right tail: mean > median.
+:::
+
 ```quiz
 [
   {
@@ -46,7 +57,7 @@ The paper shows "Histogram of Flower Petal Lengths" with bins 0.5 cm wide. Here 
     "answer": 5.25,
     "tolerance": 0.25,
     "unit": "cm",
-    "explain": "Any value from 5.0 to 5.5 is a fair reading; the key gives **5.25 cm** with the note \"must be below the median\". The 50 petals under 3.5 cm sit far to the left of everything else and pull the mean down, so the mean lies below the median class. The class-midpoint estimate (Σ midpoint × frequency / 150) is 5.20 cm, which agrees."
+    "explain": "Any value from 5.0 to 5.5 is a fair reading; the key gives **5.25 cm** with the note \"must be below the median\". The 50 petals under 3.5 cm sit far to the left of everything else and pull the mean down, so the mean lies below the median class. The class-midpoint estimate agrees: Σ midpoint × f = 2.75(37) + 3.25(13) + 4.25(1) + 4.75(4) + 5.25(11) + 5.75(21) + 6.25(21) + 6.75(17) + 7.25(16) + 7.75(5) + 8.25(4) = 779.5, and 779.5/150 = 5.20 cm."
   },
   {
     "q": "**Q1b.** The median petal length is approximately? (cm)",
@@ -65,7 +76,14 @@ The paper shows "Histogram of Flower Petal Lengths" with bins 0.5 cm wide. Here 
 ]
 ```
 
-The first mark on 1b is for a mean below the median; the second is for a median in the right class. Mean below median is the signature of a left tail, here the separate cluster of 50 short petals. The empirical rule (68 %, 95 %, 99.7 % within 1, 2, 3 standard deviations) is a property of bell-shaped data, which is why the verdict in 1c rests on shape and nothing else.
+The first mark on 1b is for a mean below the median; the second is for a median in the right class. The empirical rule (68 %, 95 %, 99.7 % within 1, 2, 3 standard deviations) is a property of bell-shaped data, which is why the verdict in 1c rests on shape and nothing else.
+
+The midpoint mean as a table, one row per class (the empty 3.5–4.0 class adds nothing):
+
+```widget
+grouped-mean
+{ "rows": [[2.75, 37], [3.25, 13], [3.75, 0], [4.25, 1], [4.75, 4], [5.25, 11], [5.75, 21], [6.25, 21], [6.75, 17], [7.25, 16], [7.75, 5], [8.25, 4]], "title": "Q1's petals: class midpoints × frequencies" }
+```
 
 Taught in [the empirical rule](#/math3042/empirical-rule), [skewness](#/math3042/skewness) and [histograms](#/math3042-u2/histograms).
 
@@ -88,10 +106,10 @@ Taught in [the empirical rule](#/math3042/empirical-rule), [skewness](#/math3042
 ```quiz
 [
   {
-    "q": "**Q2.** Write your recommendation on paper (verdict, two centre measures, two spread measures), then type the tablet you recommend: X or Y.",
-    "type": "text",
-    "answer": ["Y", "Tablet Y", "tablet y"],
-    "explain": "Model answer: I recommend **tablet Y**. The two tablets have comparable average battery life: tablet X has the higher mean (135.5 vs 133.2 min, about 2 minutes more) while tablet Y has the higher median (135.7 vs 130.2 min, about 6 minutes more), and both centres are well above 120 minutes. Tablet Y's battery life is much less variable: its standard deviation is 10.8 min against 34.7, its variance 116.6 against 1204.1, and its range 37.0 against 80.7 min. So a larger proportion of Y's batteries will last beyond 120 minutes, which makes tablet Y the more reliable choice for lasting at least 2 hours."
+    "q": "**Q2.** Write your recommendation on paper (verdict, two centre measures, two spread measures), then pick the tablet you recommend.",
+    "options": ["tablet Y", "tablet X"],
+    "answer": 0,
+    "explain": "Model answer: I recommend **tablet Y**. The two tablets have comparable average battery life: tablet X has the higher mean (135.5 vs 133.2 min, about 2 minutes more) while tablet Y has the higher median (135.7 vs 130.2 min, about 6 minutes more), and both centres are well above 120 minutes. Tablet Y's battery life is much less variable: its standard deviation is 10.8 min against 34.7, its variance 116.6 against 1204.1, and its range 37.0 against 80.7 min. So a larger proportion of Y's batteries will last beyond 120 minutes, which makes tablet Y the more reliable choice for lasting at least 2 hours.\n\nWhy the smaller SD wins: 120 minutes is (120 − 133.2)/10.8 = −1.22 SDs below Y's mean but only (120 − 135.5)/34.7 = −0.45 SDs below X's, so far more of X's batteries fall short of 2 hours."
   }
 ]
 ```
@@ -102,21 +120,30 @@ The posted solution says "the mean battery life is about 3 minutes higher for Ta
 
 Three things carry the marks. The verdict comes first. Each comparison cites both numbers, not just "Y is less variable". And the word that decides the question is *reliable*: reliability is about spread, so the spread measures win the argument once the centres are shown to be close. The minimums do not settle it on their own, since both (91.9 and 108.2) are under 120.
 
+### Batteries under 2 hours, tablet X against tablet Y
+
+Switch between the two presets: the shaded area below 120 minutes is about 33 % for X and about 11 % for Y, if battery life is roughly bell-shaped.
+
+```widget
+normal-curve
+{ "mu": 135.5, "sigma": 34.7, "x": 120, "presets": { "Tablet X": [135.5, 34.7, 120], "Tablet Y": [133.2, 10.8, 120] } }
+```
+
 The same comparison in one number is the [coefficient of variation](#/math3042/cv): CV = s / x̄ × 100 % puts the spread of each tablet on the same relative scale. Measures of centre and spread are taught in [the mean](#/math3042/mean), [median and mode](#/math3042/median-mode) and [range and standard deviation](#/math3042/range-sd).
 
 ## Q10 (4 marks). The chart below shows the inflation-adjusted price of gold ($ per oz) since 2019, grouped by year (2019 to 2025).
 
 The paper shows horizontal side-by-side boxplots titled "Price of Gold Since 2019", price from 1000 to 4000 $ per oz. These are the approximate readings off the figure.
 
-| Year | Box, Q1 to Q3 ($ per oz) | Median ($ per oz) |
-|---|---|---|
-| 2019 | about 1300 to 1500 | about 1420 |
-| 2020 | about 1680 to 1890 | about 1770 |
-| 2021 | very narrow box | about 1780 |
-| 2022 | about 1750 to 1880 | about 1800 |
-| 2023 | about 1930 to 1990 (narrow) | about 1960 |
-| 2024 | about 2250 to 2630 | about 2390 |
-| 2025 | about 3120 to 3380, whiskers about 2790 to 4090 | about 3280 |
+| Year | Box, Q1 to Q3 ($ per oz) | IQR = box width | Median ($ per oz) |
+|---|---|---|---|
+| 2019 | about 1300 to 1500 | about 200 | about 1420 |
+| 2020 | about 1680 to 1890 | about 210 | about 1770 |
+| 2021 | very narrow box | very small | about 1780 |
+| 2022 | about 1750 to 1880 | about 130 | about 1800 |
+| 2023 | about 1930 to 1990 (narrow) | about 60 | about 1960 |
+| 2024 | about 2250 to 2630 | about 380 | about 2390 |
+| 2025 | about 3120 to 3380, whiskers about 2790 to 4090 | about 260 | about 3280 |
 
 > For each statement below, write TRUE or FALSE and briefly explain your answer.
 
@@ -136,7 +163,7 @@ The paper shows horizontal side-by-side boxplots titled "Price of Gold Since 201
     "q": "**Q10b.** The variability of the price of gold has steadily increased from 2019 to 2025.",
     "type": "tf",
     "answer": false,
-    "explain": "Model answer (key): \"FALSE. Variability in this context is best represented by the interquartile range (IQR), which is the width of the box in the box plots. There is not clear trend in the IQR. For instance, 2024 has the largest IQR while 2020 and 2025 are approximately the same.\" From the readings the box widths are about 200, 210, very narrow, 130, 60, 380 and 260: they shrink from 2020 to 2023, jump in 2024 and fall back in 2025. \"Steadily\" fails. The long 2025 whiskers do not rescue the statement; the IQR is the measure the key uses."
+    "explain": "Model answer (key): \"FALSE. Variability in this context is best represented by the interquartile range (IQR), which is the width of the box in the box plots. There is not clear trend in the IQR. For instance, 2024 has the largest IQR while 2020 and 2025 are approximately the same.\" The IQR column of the readings falls from 2020 to 2023, jumps in 2024 and falls back in 2025. \"Steadily\" fails. The long 2025 whiskers do not rescue the statement; the IQR is the measure the key uses."
   }
 ]
 ```
@@ -145,7 +172,7 @@ A TRUE/FALSE part is worth 2 marks: one for the word, one for the explanation th
 
 ### The box width is the IQR
 
-The ten days of gold prices from the Lab 2 pencil problem, in CA$ per oz. The box runs from Q1 to Q3, so its width is the IQR; the whiskers and any circled outliers are not part of it.
+A different, smaller gold data set (ten daily closing prices from Lab 2, in CA$ per oz), used only to show that the box width is the IQR. The box runs from Q1 to Q3, so its width is the IQR; the whiskers and any circled outliers are not part of it.
 
 ```widget
 boxplot

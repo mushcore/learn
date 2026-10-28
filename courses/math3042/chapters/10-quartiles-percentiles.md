@@ -18,12 +18,24 @@ Sorted data can be cut into four equal-sized quarters by three cut points:
 
 ## Hand method for small data sets
 
-To find $Q_1$ and $Q_3$ by hand: find the median first, then treat the **lower half** and **upper half** as their own mini data sets and take the median of each. If $n$ is **odd**, exclude the middle value itself from both halves before you split.
+To find $Q_1$ and $Q_3$ by hand:
+
+1. Sort the data and find the median $Q_2$.
+2. Split into a **lower half** and an **upper half**. If $n$ is **odd**, leave the median value out of both halves.
+3. $Q_1$ is the median of the lower half; $Q_3$ is the median of the upper half.
 
 The median examples, extended to quartiles:
 
 **Odd $n = 7$:** $19, 19, 20, (22), 23, 25, 50$ → median $Q_2 = 22$.
 Exclude the 22, split what's left: lower half $19, 19, 20$ → $Q_1 = 19$ (its median). Upper half $23, 25, 50$ → $Q_3 = 25$.
+
+```diagram
+{ "type": "grid", "nodes": [
+  { "id": "p0", "label": "position", "row": 0, "col": 0 }, { "id": "p1", "label": "1", "row": 0, "col": 1 }, { "id": "p2", "label": "2", "row": 0, "col": 2 }, { "id": "p3", "label": "3", "row": 0, "col": 3 }, { "id": "p4", "label": "4", "row": 0, "col": 4 }, { "id": "p5", "label": "5", "row": 0, "col": 5 }, { "id": "p6", "label": "6", "row": 0, "col": 6 }, { "id": "p7", "label": "7", "row": 0, "col": 7 },
+  { "id": "v0", "label": "value", "row": 1, "col": 0 }, { "id": "v1", "label": "19", "row": 1, "col": 1 }, { "id": "v2", "label": "19", "row": 1, "col": 2 }, { "id": "v3", "label": "20", "row": 1, "col": 3 }, { "id": "v4", "label": "22", "row": 1, "col": 4 }, { "id": "v5", "label": "23", "row": 1, "col": 5 }, { "id": "v6", "label": "25", "row": 1, "col": 6 }, { "id": "v7", "label": "50", "row": 1, "col": 7 },
+  { "id": "r0", "label": "role", "row": 2, "col": 0 }, { "id": "r1", "label": "–", "row": 2, "col": 1 }, { "id": "r2", "label": "Q1", "row": 2, "col": 2 }, { "id": "r3", "label": "–", "row": 2, "col": 3 }, { "id": "r4", "label": "Q2", "sub": "excluded", "row": 2, "col": 4 }, { "id": "r5", "label": "–", "row": 2, "col": 5 }, { "id": "r6", "label": "Q3", "row": 2, "col": 6 }, { "id": "r7", "label": "–", "row": 2, "col": 7 }
+], "hi": ["v2", "r2", "v6", "r6"], "caption": "Lower half 19, 19, 20 has middle 19 = Q1; upper half 23, 25, 50 has middle 25 = Q3; the 22 sits in neither half." }
+```
 
 **Even $n = 6$:** $19, 20, (23, 27), 29, 30$ → median $Q_2 = \frac{23+27}{2} = 25$.
 No value to exclude — split evenly: lower half $19, 20, 23$ → $Q_1 = 20$. Upper half $27, 29, 30$ → $Q_3 = 29$.
@@ -59,9 +71,11 @@ boxplot
 
 ## A large example: faithful eruptions
 
-The `faithful$eruptions` data set has $n = 272$ values. $25\%$ of $272 = 68$, so $Q_1$ separates the lowest 68 values from the upper 204. By hand, that lands between the 68th and 69th sorted values:
+The `faithful$eruptions` data set has $n = 272$ values. The hand method still works: $n = 272$ is even, so the lower half is positions 1–136. Its median sits between positions 68 and 69, because $136/2 = 68$:
 
 $Q_1 = \frac{68\text{th} + 69\text{th}}{2} = \frac{2.150 + 2.167}{2} = 2.1585$
+
+Use the halves every time. "25% of $n$" is only a shortcut that lands on the same positions when $n$ is a multiple of 4.
 
 $Q_2 = \frac{136\text{th} + 137\text{th}}{2} = 4.000$
 
@@ -71,6 +85,10 @@ R's `quantile()` function does not compute quartiles exactly this way — it int
 
 :::quiz Slight disagreement is OK
 **"There are about 10 different ways to define quartiles. Slight disagreement is OK."** A hand-calculated $Q_1$ that differs slightly from R's `quantile()` output is expected, not a mistake.
+:::
+
+:::tip On paper, use the hand method
+R's `quantile()` and the boxplot widget interpolate, so their quartiles (and the fences built from them, lesson 11) differ slightly from the hand method's. When a question gives $Q_1$ and $Q_3$, use the ones given.
 :::
 
 ## Percentiles
@@ -158,8 +176,8 @@ Drop Mano and eleven field monsters remain: 45, 115, 142, 172, 233, 403, 510, 84
   {"q": "Same 11 field monsters: $Q_3$ by the hand method?", "type": "numeric", "answer": 982, "tolerance": 0, "unit": "HP", "explain": "Upper half (403 excluded): 510, 842, 982, 1336, 3218; its median is 982."},
   {"q": "Ruthless ranks 1 to 200: $Q_1$ by the hand method (average of the 50th and 51st sorted levels)?", "type": "numeric", "answer": 92, "tolerance": 0, "explain": "Sorted, positions 1 to 88 are level 92, so the 50th and 51st are both 92: $Q_1 = (92 + 92)/2 = 92$."},
   {"q": "Ruthless ranks 1 to 200: $Q_3$ by the hand method (average of the 150th and 151st)?", "type": "numeric", "answer": 94, "tolerance": 0, "explain": "Sort the 200 levels from lowest to highest; $Q_3$ is the average of the values at positions 150 and 151. Running totals of the counts say which level fills which positions: 92 fills 1 to 88, 93 fills 89 to 141 (88 + 53 = 141), and 94 fills 142 to 170 (141 + 29 = 170). Positions 150 and 151 both fall in 142 to 170, so both are 94, and $Q_3 = (94 + 94)/2 = 94$. ($Q_2$, the 100th and 101st, falls in the 93 block, 89 to 141, so it is 93.)"},
-  {"q": "What percentage of ranks 1 to 200 are below level 95?", "type": "numeric", "answer": 85, "tolerance": 0, "unit": "%", "explain": "$88 + 53 + 29 = 170$ characters are below 95, and $170/200 = 0.85 = 85\\%$. Level 95 covers positions 171 to 185, so it sits around $P_{85}$ to $P_{92}$."},
-  {"type": "fill", "q": "The Ruthless levels in R. Fill the blank so `quantile()` returns $P_{90}$.", "code": "lvl <- rep(c(92, 93, 94, 95, 96, 97, 99), c(88, 53, 29, 15, 7, 7, 1))\nquantile(lvl, ___)\n## 90%\n##  95", "answer": ["0.9", "0.90", ".9"], "explain": "Give the percentage as a decimal: 0.9. 90% of 200 is 180; the 180th and 181st sorted levels are both 95 (level 95 covers positions 171 to 185), so the hand method and R agree on $P_{90} = 95$."}
+  {"q": "What percentage of ranks 1 to 200 are below level 95?", "type": "numeric", "answer": 85, "tolerance": 0, "unit": "%", "explain": "$88 + 53 + 29 = 170$ characters are below 95, and $170/200 = 0.85 = 85\\%$."},
+  {"type": "fill", "q": "The Ruthless levels in R: `rep(values, times)` repeats each level its count of times, rebuilding the 200 levels. Fill the blank so `quantile()` returns $P_{90}$.", "code": "lvl <- rep(c(92, 93, 94, 95, 96, 97, 99), c(88, 53, 29, 15, 7, 7, 1))\nquantile(lvl, ___)\n## 90%\n##  95", "answer": ["0.9", "0.90", ".9"], "explain": "Give the percentage as a decimal: 0.9. 90% of 200 is 180; the 180th and 181st sorted levels are both 95 (level 95 covers positions 171 to 185), so the hand method and R agree on $P_{90} = 95$."}
 ]
 ```
 
@@ -187,7 +205,7 @@ Drop Mano and eleven field monsters remain: 45, 115, 142, 172, 233, 403, 510, 84
     "q": "The faithful eruptions data has $n = 272$. How many values fall at or below $Q_1$?",
     "type": "numeric",
     "answer": 68,
-    "explain": "25% of 272 = 68."
+    "explain": "The lower half is positions 1–136, and $Q_1$ sits between its 68th and 69th values, so 68 values fall at or below it (25% of 272 = 68 gives the same count because 272 is a multiple of 4)."
   },
   {
     "q": "What is $Q_1$ of the faithful data by the hand method (average of the 68th and 69th sorted values)?",

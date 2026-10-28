@@ -8,6 +8,22 @@ A problem never says "this is hypergeometric": it describes cards, printers or a
 
 ## Four questions pick the distribution
 
+Ask the questions in this order. The first yes names the distribution.
+
+```diagram
+{ "type": "tree", "title": "The order to ask the four questions", "nodes": [
+  { "id": "q1", "label": "Events in an interval, known rate?" },
+  { "id": "pois", "label": "yes: Poisson", "sub": "λ for the interval", "parent": "q1" },
+  { "id": "q2", "label": "no: trials until the first success?", "parent": "q1" },
+  { "id": "geo", "label": "yes: Geometric", "sub": "q^(x−1) p", "parent": "q2" },
+  { "id": "q3", "label": "no: a fixed n of trials?", "parent": "q2" },
+  { "id": "tab", "label": "no: build the table", "sub": "μ = Σ x P(x)", "parent": "q3" },
+  { "id": "q4", "label": "yes: without replacement and n/N > 5 %?", "parent": "q3" },
+  { "id": "hyp", "label": "yes: Hypergeometric", "sub": "C(K,x) C(N−K,n−x) / C(N,n)", "parent": "q4" },
+  { "id": "bin", "label": "no: Binomial", "sub": "p = K/N if without replacement", "parent": "q4" }
+], "hi": ["pois", "geo", "tab", "hyp", "bin"], "caption": "Interval first, then first success, then fixed n; a fixed n without replacement is hypergeometric only when n/N > 5 % (Mac class: 10/90 = 11 %)." }
+```
+
 | Ask | Yes means | $X$ is | $P(x)$ | $\mu$ | $\sigma^2$ |
 |---|---|---|---|---|---|
 | A fixed number of trials $n$, each success with the same $p$ (with replacement, or an infinite population)? | **Binomial** | number of successes in $n$ trials, 0 … $n$ | $nCx\, p^x q^{n-x}$ | $np$ | $npq$ |
@@ -26,37 +42,53 @@ dist-picker
 
 Every distribution has a `d` function for a single probability and a `p` function for the cumulative probability up to and including $x$. The arguments differ, and the order matters:
 
-| Distribution | $P(X = x)$ | $P(X \le x)$ | Arguments |
-|---|---|---|---|
-| Binomial | `dbinom(x, n, p)` | `pbinom(x, n, p)` | count, trials, success probability |
-| Hypergeometric | `dhyper(x, K, N-K, n)` | `phyper(x, K, N-K, n)` | count, successes in population, **failures** in population, draws |
-| Geometric | `dgeom(x-1, p)` | `pgeom(x-1, p)` | **failures** before the first success, so the lecture's $x$ becomes $x - 1$ |
-| Poisson | `dpois(x, lambda)` | `ppois(x, lambda)` | count, mean for the interval |
+| Distribution | $P(X = x)$ | $P(X \le x)$ | $P(X \ge x)$ | Arguments |
+|---|---|---|---|---|
+| Binomial | `dbinom(x, n, p)` | `pbinom(x, n, p)` | `1 - pbinom(x-1, n, p)` | count, trials, success probability |
+| Hypergeometric | `dhyper(x, K, N-K, n)` | `phyper(x, K, N-K, n)` | `1 - phyper(x-1, K, N-K, n)` | count, successes in population, **failures** in population, draws |
+| Geometric | `dgeom(x-1, p)` | `pgeom(x-1, p)` | `1 - pgeom(x-2, p)` $= q^{x-1}$ | **failures** before the first success, so the lecture's $x$ becomes $x - 1$ |
+| Poisson | `dpois(x, lambda)` | `ppois(x, lambda)` | `1 - ppois(x-1, lambda)` | count, mean for the interval |
+
+:::warn R's slots are not the course's letters
+`dhyper`'s slots are R's m, n, k: the course's $K$, $N - K$ and $n$. The geometric `d` and `p` functions count failures, not trials. So "at least $x$" is `1 - p*(x-1, ...)` for three of the four, but `1 - pgeom(x-2, p)` for the geometric: at least $x$ trials means at least $x - 1$ failures, the complement of at most $x - 2$ failures. Help line, $P(X \ge 4) = 0.75^3 = 0.4219$ is `1 - pgeom(2, 0.25)`; `1 - pgeom(3, 0.25)` would be $P(X > 4) = 0.75^4 = 0.3164$.
+:::
 
 :::info R syntax
 | Code | What it does |
 |---|---|
 | `dbinom(x, n, p)`, `pbinom(x, n, p)` | R's `dbinom(x, size, prob)` and `pbinom(q, size, prob)`: the count, size = n trials, prob = p. |
+| `1 - pbinom(x-1, n, p)` | `x-1` fills q, so `pbinom` gives P(X ≤ x − 1); `1 -` turns it into P(X ≥ x). |
 | `dhyper(x, K, N-K, n)`, `phyper(x, K, N-K, n)` | R's `dhyper(x, m, n, k)` and `phyper(q, m, n, k)`: m = K successes, R's n = N − K failures, k = the lesson's n drawn. |
+| `1 - phyper(x-1, K, N-K, n)` | The same slots with q = x − 1; one minus that is P(X ≥ x). |
 | `dgeom(x-1, p)`, `pgeom(x-1, p)` | R's `dgeom(x, prob)` and `pgeom(q, prob)` count failures, so the first slot gets the lecture's x minus 1. |
+| `1 - pgeom(x-2, p)` | q = x − 2 failures at most, so one minus it is at least x − 1 failures: first success on trial x or later. |
 | `dpois(x, lambda)`, `ppois(x, lambda)` | R's `dpois(x, lambda)` and `ppois(q, lambda)`: the count, then the mean for the interval. |
+| `1 - ppois(x-1, lambda)` | q = x − 1; one minus it is P(X ≥ x). |
 
 **Left to right**
 
 - `dbinom(x, n, p)`, `pbinom(x, n, p)`: "The binomial probability of exactly (`dbinom`) or at most (`pbinom`) x successes (`x`) in n trials (`n`) at chance p (`p`)."
+- `1 - pbinom(x-1, n, p)`: "One minus (`1 -`) the binomial probability of at most (`pbinom`) x minus 1 successes (`x-1`) in n trials (`n`) at chance p (`p`)."
 - `dhyper(x, K, N-K, n)`, `phyper(x, K, N-K, n)`: "The hypergeometric probability of exactly (`dhyper`) or at most (`phyper`) x successes (`x`) with K successes (`K`) and N minus K failures (`N-K`) in the population and n drawn (`n`)."
+- `1 - phyper(x-1, K, N-K, n)`: "One minus (`1 -`) the hypergeometric probability of at most (`phyper`) x minus 1 successes (`x-1`) with K successes (`K`), N minus K failures (`N-K`) and n drawn (`n`)."
 - `dgeom(x-1, p)`, `pgeom(x-1, p)`: "The geometric probability of exactly (`dgeom`) or at most (`pgeom`) x minus 1 failures (`x-1`) at chance p (`p`)."
+- `1 - pgeom(x-2, p)`: "One minus (`1 -`) the probability of at most (`pgeom`) x minus 2 failures (`x-2`) at chance p (`p`)."
 - `dpois(x, lambda)`, `ppois(x, lambda)`: "The Poisson probability of exactly (`dpois`) or at most (`ppois`) x events (`x`) with mean lambda (`lambda`)."
+- `1 - ppois(x-1, lambda)`: "One minus (`1 -`) the Poisson probability of at most (`ppois`) x minus 1 events (`x-1`) with mean lambda (`lambda`)."
 
 **Right to left**, the order R runs it
 
 - `dbinom(x, n, p)`, `pbinom(x, n, p)`: "Take x, n and p, then compute P(X = x) (`dbinom`) or P(X ≤ x) (`pbinom`)."
+- `1 - pbinom(x-1, n, p)`: "Subtract 1 from x (`x-1`), compute P(X ≤ x − 1) (`pbinom`), and subtract it from 1 (`1 -`)."
 - `dhyper(x, K, N-K, n)`, `phyper(x, K, N-K, n)`: "Subtract K from N (`N-K`), then compute P(X = x) (`dhyper`) or P(X ≤ x) (`phyper`)."
+- `1 - phyper(x-1, K, N-K, n)`: "Subtract 1 from x (`x-1`) and K from N (`N-K`), compute P(X ≤ x − 1) (`phyper`), and subtract it from 1 (`1 -`)."
 - `dgeom(x-1, p)`, `pgeom(x-1, p)`: "Subtract 1 from x (`x-1`), then compute the probability of that many failures (`dgeom`) or at most that many (`pgeom`)."
+- `1 - pgeom(x-2, p)`: "Subtract 2 from x (`x-2`), compute the chance of at most that many failures (`pgeom`), and subtract it from 1 (`1 -`)."
 - `dpois(x, lambda)`, `ppois(x, lambda)`: "Take x and lambda, then compute P(X = x) (`dpois`) or P(X ≤ x) (`ppois`)."
+- `1 - ppois(x-1, lambda)`: "Subtract 1 from x (`x-1`), compute P(X ≤ x − 1) (`ppois`), and subtract it from 1 (`1 -`)."
 :::
 
-The Mac class is `dhyper(4, 40, 50, 10)`, with the 50 failures where $N$ might be expected. "At least $x$" is `1 - p*(x-1, ...)`, the complement of "at most $x - 1$". For a by-hand check, `choose(n, x)` is $nCx$ and `factorial(x)` is $x!$.
+The Mac class is `dhyper(4, 40, 50, 10)`, with the 50 failures where $N$ might be expected. For a by-hand check, `choose(n, x)` is $nCx$ and `factorial(x)` is $x!$.
 
 :::info R syntax
 | Code | What it does |

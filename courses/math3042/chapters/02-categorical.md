@@ -17,6 +17,13 @@ $$
 p = \frac{X}{N}
 $$
 
+Here $X$ is the **count** in the category across the whole population, not the variable $X$ of lesson 1; the notes reuse the letter.
+
+| | Sample | Population |
+|---|---|---|
+| count in category | $x$ | $X$ |
+| total | $n$ | $N$ |
+
 ## Worked example: eye colour
 
 A sample of BCIT students gives these counts for $X$ = Eye Colour:
@@ -121,7 +128,7 @@ The set of possible values a non-numerical variable can take (here, `"F"` and `"
 | Code | What it does |
 |---|---|
 | `TenMileRace$sex` | `$` picks the `sex` column of the `TenMileRace` data frame. |
-| `levels(…)` | Lists the allowed values of a factor column as text strings. |
+| `levels(…)` | Lists the allowed values of a categorical column (R calls such a column a factor) as text strings. |
 
 **Left to right**
 

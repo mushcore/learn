@@ -21,27 +21,57 @@ Left: printed on the provided formula sheet. Right: printed nowhere. Round a pro
 | Unit 4: discrete distributions: the formula sheet gives you | You must know cold |
 |---|---|
 | $\mu = \sum x P(x)$; $\sigma^2 = \sum (x-\mu)^2 P(x) = \sum x^2 P(x) - \mu^2$ | $\sum P(x) = 1$; carry $\mu$ unrounded; money: $X$ = net payoff = prize − cost |
-| binomial, hypergeometric, geometric, Poisson: $P(x)$, $\mu$, $\sigma^2$ | binomial: fixed $n$, with replacement; hypergeometric: without replacement, small $N$; geometric: $X$ = **trials** to the first success, $P(X \ge k) = q^{k-1}$; Poisson: counts in an interval, $\lambda$ = rate × interval, separate intervals multiply |
+| binomial, hypergeometric, geometric, Poisson: $P(x)$, $\mu$, $\sigma^2$ | binomial: fixed $n$, the same $p$ each trial (with replacement, or $n \le$ 5 % of $N$); hypergeometric: without replacement and $n >$ 5 % of $N$; geometric: $X$ = **trials** to the first success, $P(X \ge k) = q^{k-1}$; Poisson: counts in an interval, $\lambda$ = rate × interval, separate intervals multiply |
 
 ## R the R sheet does not give you
 
 The R sheet has only bare binomial and Poisson names. Geometric: R counts failures.
 
-| | $P(X = x)$ | $P(X \le k)$ | $m$ random values |
+| | $P(X = x)$ | $P(X \le k)$ | `reps` random values |
 |---|---|---|---|
-| binomial | `dbinom(x, n, p)` | `pbinom(k, n, p)` | `rbinom(m, n, p)` |
-| hypergeometric | `dhyper(x, K, N-K, n)` | `phyper(k, K, N-K, n)` | `rhyper(m, K, N-K, n)` |
-| geometric | `dgeom(x-1, p)` | `pgeom(k-1, p)` | `rgeom(m, p) + 1` |
-| Poisson | `dpois(x, lambda)` | `ppois(k, lambda)` | `rpois(m, lambda)` |
+| binomial | `dbinom(x, n, p)` | `pbinom(k, n, p)` | `rbinom(reps, n, p)` |
+| hypergeometric | `dhyper(x, K, N-K, n)` | `phyper(k, K, N-K, n)` | `rhyper(reps, K, N-K, n)` |
+| geometric | `dgeom(x-1, p)` | `pgeom(k-1, p)` | `rgeom(reps, p) + 1` |
+| Poisson | `dpois(x, lambda)` | `ppois(k, lambda)` | `rpois(reps, lambda)` |
 
-Inequalities: exactly $k$ `d(k)`; at most $k$ `p(k)`; fewer than $k$ `p(k-1)`; at least $k$ `1 - p(k-1)`; more than $k$ `1 - p(k)` or `lower.tail = FALSE`; $a$ to $b$ `p(b) - p(a-1)`; each of two periods `p(k)^2`; a doubled interval `ppois(k, 2*lambda)`.
+| Event | R |
+|---|---|
+| exactly $k$ | `d(k)` |
+| at most $k$ | `p(k)` |
+| fewer than $k$ | `p(k-1)` |
+| at least $k$ | `1 - p(k-1)` |
+| more than $k$ | `1 - p(k)` or `lower.tail = FALSE` |
+| $a$ to $b$ | `p(b) - p(a-1)` |
+| each of two periods | `p(k)^2` |
+| a doubled interval | `ppois(k, 2*lambda)` |
 
 Simulate: `sample(0:1, n, replace = TRUE, prob = c(0.955, 0.045))`; `f <- function(n) { X <- rbinom(1, n, p); return(X/n) }`. Data: `quantile(df$col, 0.20)`; `library(dplyr)`, `filter(df, col < 250)`; `library(mosaic)`, `bwplot(y ~ g, data = df, main = "", xlab = "", ylab = "")` or `boxplot(y ~ g, data = df)`.
 
 :::quiz Twenty recall prompts
-1 $P(A \mid B)$? 2 Independence test? 3 P(at least one)? 4 Median position? 5 $IQR$? 6 Right skew: larger? 7 Unusual if? 8 Empirical rule needs? 9 Net payoff? 10 λ, 6 per hour over 20 minutes? 11 Sample without replacement from 40? 12 Trials to the first success? 13 Geometric $P(X \ge k)$? 14 R, geometric $P(X = x)$? 15 R, binomial $P(X \ge k)$? 16 `dhyper` argument order? 17 R, 1 in each of two hours? 18 Variance shortcut? 19 Rounding? 20 A simulation function calls?
+Cover the Answer column, answer each prompt, then uncover.
 
-**Answers.** 1 $P(A \cap B)/P(B)$. 2 $P(A \mid B) = P(A)$. 3 $1 - P(\text{none})$. 4 $(n+1)/2$. 5 $Q_3 - Q_1$. 6 the mean. 7 $\lvert Z \rvert > 2$. 8 bell shape. 9 prize − cost. 10 2. 11 hypergeometric. 12 geometric. 13 $q^{k-1}$. 14 `dgeom(x-1, p)`. 15 `1 - pbinom(k-1, n, p)`. 16 x, K, N−K, n. 17 `dpois(1, lambda)^2`. 18 $\sum x^2P(x) - \mu^2$. 19 4 decimals; 3 s.f. 20 an r-function or `sample`.
+| # | Prompt | Answer |
+|---|---|---|
+| 1 | $P(A \mid B)$? | $P(A \cap B)/P(B)$ |
+| 2 | Independence test? | $P(A \mid B) = P(A)$ |
+| 3 | P(at least one)? | $1 - P(\text{none})$ |
+| 4 | Median position? | $(n+1)/2$ |
+| 5 | $IQR$? | $Q_3 - Q_1$ |
+| 6 | Right skew: which is larger, mean or median? | the mean |
+| 7 | Unusual if? | $\lvert Z \rvert > 2$ |
+| 8 | Empirical rule needs? | bell shape |
+| 9 | Net payoff? | prize − cost |
+| 10 | λ, 6 per hour over 20 minutes? | 2 |
+| 11 | Sample without replacement from 40? | hypergeometric |
+| 12 | Trials to the first success? | geometric |
+| 13 | Geometric $P(X \ge k)$? | $q^{k-1}$ |
+| 14 | R, geometric $P(X = x)$? | `dgeom(x-1, p)` |
+| 15 | R, binomial $P(X \ge k)$? | `1 - pbinom(k-1, n, p)` |
+| 16 | `dhyper` argument order? | x, K, N−K, n |
+| 17 | R: P(exactly 1 in each of two separate hours)? | `dpois(1, lambda)^2` |
+| 18 | Variance shortcut? | $\sum x^2P(x) - \mu^2$ |
+| 19 | Rounding? | 4 decimals; 3 s.f. |
+| 20 | A simulation function calls? | an r-function or `sample` |
 :::
 
 ```quiz
