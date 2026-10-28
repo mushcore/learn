@@ -38,6 +38,23 @@ Answering the first kind of question is descriptive statistics; answering the se
 survey$Pulse
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `survey` | The name of the data frame: a table with one row per person and one column per variable. |
+| `$` | Picks one column of a data frame by its name. |
+| `Pulse` | The column wanted; the name must match the column's spelling and capitals exactly. |
+| `survey$Pulse` | Typed alone, R prints that column as a vector of values. |
+
+**Left to right**
+
+- "The Pulse column (`Pulse`) of the survey data (`survey$`)."
+
+**Right to left**, the order R runs it
+
+- "Take the survey data (`survey`), pull out its Pulse column (`$Pulse`), and print it."
+:::
+
 That returns every recorded pulse value as a vector.
 
 ## Two kinds of data

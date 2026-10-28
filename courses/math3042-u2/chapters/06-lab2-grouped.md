@@ -18,6 +18,32 @@ data(quine)
 View(quine)
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `library(MASS)` | Loads the installed `MASS` package so its datasets, including `quine`, can be used. |
+| `library(mosaic)` | Loads `mosaic`, which adds `favstats()`, formula versions of `mean()` and friends, `histogram()` and `bwplot()`. |
+| `library(dplyr)` | Loads `dplyr`, used here for `percent_rank()`. |
+| `data(quine)` | Puts the `quine` data frame from the loaded package into your workspace. |
+| `View(quine)` | Opens the data frame in a spreadsheet-style viewer; it prints nothing in the console. Note the capital V. |
+
+**Left to right**
+
+- `library(MASS)`: "Load the package (`library`) called MASS (`MASS`)."
+- `library(mosaic)`: "Load the package (`library`) called mosaic (`mosaic`)."
+- `library(dplyr)`: "Load the package (`library`) called dplyr (`dplyr`)."
+- `data(quine)`: "Bring in the dataset (`data`) named quine (`quine`)."
+- `View(quine)`: "Open a spreadsheet view (`View`) of the quine data frame (`quine`)."
+
+**Right to left**, the order R runs it
+
+- `library(MASS)`: "Take the name MASS (`MASS`) and load that package (`library`)."
+- `library(mosaic)`: "Take the name mosaic (`mosaic`) and load that package (`library`)."
+- `library(dplyr)`: "Take the name dplyr (`dplyr`) and load that package (`library`)."
+- `data(quine)`: "Take the name quine (`quine`) and put that dataset in the workspace (`data`)."
+- `View(quine)`: "Take the quine data frame (`quine`) and open it in the viewer (`View`)."
+:::
+
 Each of the $n = 146$ rows is **one child**: `Days` absent, plus the categories `Sex`, `Eth` (Aboriginal `"A"` or not `"N"`), `Age` (form `"F0"` to `"F3"`) and `Lrn` (average `"AL"` or slow `"SL"`).
 
 ## `summary()`
@@ -30,6 +56,23 @@ summary( X.vals )
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
    8.00    9.75   10.50   10.25   11.00   12.00
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `X.vals <- c(9, 10, 8, 10, 11, 12, 11, 11)` | `<-` is assignment; `c()` combines the eight numbers into one vector stored as `X.vals`. The dot is just part of the name. |
+| `summary( X.vals )` | Prints six labelled statistics of the vector. Spaces inside the parentheses do not matter. |
+
+**Left to right**
+
+- `X.vals <- c(9, 10, 8, 10, 11, 12, 11, 11)`: "Store under the name X.vals (`X.vals <-`) the combination (`c`) of the eight numbers 9 to 11 (`9, 10, 8, 10, 11, 12, 11, 11`)."
+- `summary( X.vals )`: "Print the six-number summary (`summary`) of X.vals (`X.vals`)."
+
+**Right to left**, the order R runs it
+
+- `X.vals <- c(9, 10, 8, 10, 11, 12, 11, 11)`: "Take the eight numbers (`9, 10, 8, 10, 11, 12, 11, 11`), combine them into one vector (`c`), and store it as X.vals (`X.vals <-`)."
+- `summary( X.vals )`: "Take X.vals (`X.vals`) and print its six-number summary (`summary`)."
+:::
 
 The **mean sits in the middle**: minimum, $Q_1$, median, mean, $Q_3$, maximum. `sd()` is separate.
 
@@ -45,6 +88,25 @@ sd(quine$Days)
 [1] 16.25322
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `quine$Days` | `$` takes one column of a data frame by name: the `Days` column of `quine`, as a vector. |
+| `summary(quine$Days)` | The six-number line for that column. |
+| `sd(quine$Days)` | The sample standard deviation of the column. |
+| `[1]` | In the output, the index of the first value on that printed line; `sd()` returns a single value. |
+
+**Left to right**
+
+- `summary(quine$Days)`: "Print the six-number summary (`summary`) of the Days column (`Days`) of the quine data (`quine$`)."
+- `sd(quine$Days)`: "Print the standard deviation (`sd`) of the Days column (`Days`) of the quine data (`quine$`)."
+
+**Right to left**, the order R runs it
+
+- `summary(quine$Days)`: "Take the quine data (`quine`), pull out its Days column (`$Days`), and print its six-number summary (`summary`)."
+- `sd(quine$Days)`: "Take the quine data (`quine`), pull out its Days column (`$Days`), and print its standard deviation (`sd`)."
+:::
+
 $\bar{X} = 16.5$ is well above $Q_2 = 11.0$: skewed right.
 
 ## `favstats()` and the model formula
@@ -59,6 +121,22 @@ favstats(~Days, data=quine)
    0  5     11 22.75  81 16.4589 16.25322 146       0
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `favstats(…)` | A `mosaic` function that prints min, quartiles, max, mean, sd, n and missing count in one row. |
+| `~Days` | `~` builds a formula; with nothing on the left it means just the variable `Days`. |
+| `data=quine` | Named argument: look up the names in the formula as columns of `quine`, so no `$` is needed. |
+
+**Left to right**
+
+- "Print the favourite statistics (`favstats`) of Days on its own (`~Days`), with the columns taken from the quine data (`data=quine`)."
+
+**Right to left**, the order R runs it
+
+- "Take the quine data (`data=quine`), find the variable Days named in the formula (`~Days`), and print its favourite statistics (`favstats`)."
+:::
+
 `~Days` is a **model formula**, read "in terms of". With a variable on the left it gives statistics **per group**:
 
 ```r
@@ -69,6 +147,21 @@ favstats(Days~Lrn, data=quine)
 1  AL   0  5     12 22.5  69 15.81928 13.91012 83       0
 2  SL   0  5     10 22.5  81 17.30159 18.99035 63       0
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `Days~Lrn` | Formula with the measured variable on the left and the grouping variable on the right: statistics of `Days` for each level of `Lrn`. |
+| `data=quine` | As above: the column names come from `quine`. The output gets one row per group. |
+
+**Left to right**
+
+- "Print the favourite statistics (`favstats`) of Days (`Days`) in terms of (`~`) learner type (`Lrn`), with the columns taken from the quine data (`data=quine`)."
+
+**Right to left**, the order R runs it
+
+- "Take the quine data (`data=quine`), split Days (`Days`) by (`~`) the levels of Lrn (`Lrn`), and print the favourite statistics of each group (`favstats`)."
+:::
 
 The instructor's conclusion: "slow" learners had a greater mean days absent (17.3) than "average" learners (15.8). `Y~G1+G2` gives one result per combination of two categorical variables.
 
@@ -89,6 +182,21 @@ round(mean(Days~Sex, data=quine), 1)
 15.2 18.0
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `mean(Days~Sex, data=quine)` | With `mosaic` loaded, `mean()` takes a formula: one mean of `Days` per level of `Sex`, returned as a named vector. |
+| `round(…, 1)` | `round(x, digits)`: x is the vector of means, digits = 1 keeps one decimal place. The names F and M are kept. |
+
+**Left to right**
+
+- "Round (`round`) to one decimal place (`1`) the mean (`mean`) of Days (`Days`) in terms of (`~`) sex (`Sex`) in the quine data (`data=quine`)."
+
+**Right to left**, the order R runs it
+
+- "Take the quine data (`data=quine`), split Days (`Days`) by (`~`) Sex (`Sex`), compute each group's mean (`mean`), and round those means (`round`) to one decimal (`1`)."
+:::
+
 Boys were absent about three days more.
 
 ### Task 4: $Sk$ overall and by sex
@@ -107,6 +215,31 @@ Sk.grouped
 0.9839306 0.7132158
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `mean(~Days, data=quine)`, `median(…)`, `sd(…)` | The `mosaic` formula versions: each returns one number for the whole `Days` column. |
+| `3*( … - … )/sd(…)` | `*` multiplies, `-` subtracts, `/` divides; the parentheses force the subtraction first. |
+| `Sk.all <- …` | Stores the result; it prints nothing. |
+| `Sk.all` | Typing a name alone prints its value. |
+| `Sk.grouped <- 3*(mean(Days~Sex, …) - median(Days~Sex, …))/sd(Days~Sex, …)` | Same formula with `Days~Sex`: each call returns an F and an M value, and the arithmetic works element by element. |
+| `Sk.grouped` | Prints the two values, labelled F and M. |
+
+**Left to right**
+
+- `Sk.all <- …`: "Store under the name Sk.all (`Sk.all <-`) three times (`3*`) the mean (`mean`) minus (`-`) the median (`median`) of Days (`~Days`), divided by (`/`) the sd (`sd`) of Days, all from quine (`data=quine`)."
+- `Sk.all`: "Print Sk.all (`Sk.all`)."
+- `Sk.grouped <- …`: "Store under the name Sk.grouped (`Sk.grouped <-`) three times (`3*`) the mean (`mean`) minus (`-`) the median (`median`) of Days by Sex (`Days~Sex`), divided by (`/`) the sd by Sex (`sd`), all from quine (`data=quine`)."
+- `Sk.grouped`: "Print Sk.grouped (`Sk.grouped`)."
+
+**Right to left**, the order R runs it
+
+- `Sk.all <- …`: "From quine (`data=quine`) compute the mean (`mean`) and median (`median`) of Days (`~Days`), subtract them (`-`), multiply by three (`3*`), divide by the sd of Days (`/`, `sd`), and store the result as Sk.all (`Sk.all <-`)."
+- `Sk.all`: "Look up Sk.all (`Sk.all`) and print it."
+- `Sk.grouped <- …`: "From quine (`data=quine`) compute the means (`mean`) and medians (`median`) of Days by Sex (`Days~Sex`), subtract them pair by pair (`-`), multiply by three (`3*`), divide by each group's sd (`/`, `sd`), and store both values as Sk.grouped (`Sk.grouped <-`)."
+- `Sk.grouped`: "Look up Sk.grouped (`Sk.grouped`) and print it."
+:::
+
 By hand: $3(16.4589 - 11)/16.25322 = 1.0076$, **highly skewed right** ($Sk > 1$). Girls (0.98) are slightly more skewed than boys (0.71).
 
 ## Task 5: `histogram()` of `Days`
@@ -121,6 +254,25 @@ histogram(~Days, data=quine,
           main=paste0("Days absent (n = ", nrow(quine), ")"))
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `histogram(~Days, data=quine, …)` | The `mosaic` (lattice) histogram of the `Days` column of `quine`; the call continues over several lines until the closing parenthesis. |
+| `type="count"` | Bar heights are counts (frequencies) instead of the default percent or density scale. |
+| `col="#FF7256"` | Bar fill colour, given as a hex RGB code in quotes. |
+| `breaks=seq(0, 85, by=5)` | Bin edges. `seq(from, to, by)`: from = 0, to = 85, by = 5, so edges 0, 5, …, 85. |
+| `main=` | The plot title. |
+| `paste0("Days absent (n = ", nrow(quine), ")")` | `paste0()` glues its pieces into one string with no separator; `nrow(quine)` is the number of rows, inserted between the two text pieces. |
+
+**Left to right**
+
+- "Draw a histogram (`histogram`) of Days (`~Days`) from quine (`data=quine`), with counts on the vertical axis (`type="count"`), coral bars (`col="#FF7256"`), bin edges in a sequence from 0 to 85 in steps of 5 (`breaks=seq(0, 85, by=5)`), and a title (`main=`) glued together (`paste0`) from the opening text (`"Days absent (n = "`), the number of rows of quine (`nrow(quine)`) and a closing bracket (`")"`)."
+
+**Right to left**, the order R runs it
+
+- "Count the rows of quine (`nrow(quine)`), glue that number between the two text pieces (`paste0`) to make the title (`main=`), build the edges 0, 5, …, 85 (`seq(0, 85, by=5)`) as the bins (`breaks=`), set the colour (`col="#FF7256"`) and count scale (`type="count"`), take Days (`~Days`) from quine (`data=quine`), and draw the histogram (`histogram`)."
+:::
+
 `"#FF7256"` is "coral" as a hex RGB code. The instructor's answer: **the long right tail is consistent with the high skewness ($Sk = 1.01$) for the entire sample.**
 
 ## Task 6: `bwplot()` of `Days`
@@ -130,6 +282,23 @@ bwplot(~Days, data=quine, horizontal=TRUE,
        xlab="Days Absent",
        main=paste0("Box plot of Days Absent (n =", nrow(quine), ")"))
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `bwplot(~Days, data=quine, …)` | The `mosaic` (lattice) box-and-whisker plot of `Days`. |
+| `horizontal=TRUE` | Lays the box sideways, with `Days` along the x-axis. `TRUE` is R's logical true, written without quotes. |
+| `xlab="Days Absent"` | The x-axis label. |
+| `main=paste0(…, nrow(quine), …)` | Title built as above. This text has no space after `=`, so the number prints right against it. |
+
+**Left to right**
+
+- "Draw a box-and-whisker plot (`bwplot`) of Days (`~Days`) from quine (`data=quine`), lying sideways (`horizontal=TRUE`), with the x-axis label Days Absent (`xlab="Days Absent"`) and a title (`main=`) glued together (`paste0`) from text, the number of rows of quine (`nrow(quine)`) and a closing bracket."
+
+**Right to left**, the order R runs it
+
+- "Count the rows of quine (`nrow(quine)`), glue that number into the title text (`paste0`, `main=`), set the x-axis label (`xlab="Days Absent"`) and sideways layout (`horizontal=TRUE`), take Days (`~Days`) from quine (`data=quine`), and draw the box plot (`bwplot`)."
+:::
 
 `bwplot` marks the median with a **dot**; the box is 5 to 22.75, the whiskers end at 0 and 48, and circles run out to 81.
 
@@ -152,6 +321,37 @@ sum(is.outlier)
 [1] 8
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `Q1 <- quantile(~Days, data=quine, prob=0.25)` | The 25th percentile of `Days`, stored as `Q1`. `prob=` names the percentage; mosaic accepts `prob` as well as `probs`. |
+| `Q3 <- quantile(…, prob=0.75)` | Same for the 75th percentile. |
+| `lower.fence <- Q1 - 1.5*(Q3 - Q1)` | Q1 minus 1.5 times the IQR; the parentheses compute the IQR first. |
+| `upper.fence <- Q3 + 1.5*(Q3 - Q1)` | Q3 plus 1.5 times the IQR. |
+| `quine$Days > upper.fence` | `>` compares every value of the column with the fence, giving a vector of `TRUE`/`FALSE`, one per child. `<` works the same way. |
+| `( … ) \| ( … )` | `\|` is element-wise OR: `TRUE` where either comparison is `TRUE`. The line break is fine because the line ends with `\|`. |
+| `is.outlier <- …` | Stores the logical vector. |
+| `sum(is.outlier)` | `TRUE` counts as 1 and `FALSE` as 0, so the sum is the number of outliers. |
+
+**Left to right**
+
+- `Q1 <- quantile(~Days, data=quine, prob=0.25)`: "Store under the name Q1 (`Q1 <-`) the percentile (`quantile`) of Days (`~Days`) in quine (`data=quine`) at 25% (`prob=0.25`)."
+- `Q3 <- quantile(~Days, data=quine, prob=0.75)`: "Store under the name Q3 (`Q3 <-`) the percentile (`quantile`) of Days (`~Days`) in quine (`data=quine`) at 75% (`prob=0.75`)."
+- `lower.fence <- Q1 - 1.5*(Q3 - Q1)`: "Store under the name lower.fence (`lower.fence <-`) Q1 (`Q1`) minus (`-`) 1.5 times (`1.5*`) the gap from Q1 to Q3 (`Q3 - Q1`)."
+- `upper.fence <- Q3 + 1.5*(Q3 - Q1)`: "Store under the name upper.fence (`upper.fence <-`) Q3 (`Q3`) plus (`+`) 1.5 times (`1.5*`) the gap from Q1 to Q3 (`Q3 - Q1`)."
+- `is.outlier <- …`: "Store under the name is.outlier (`is.outlier <-`) whether each Days value of quine (`quine$Days`) is above the upper fence (`> upper.fence`) or (`|`) each Days value is below the lower fence (`< lower.fence`)."
+- `sum(is.outlier)`: "Print the total (`sum`) of is.outlier (`is.outlier`)."
+
+**Right to left**, the order R runs it
+
+- `Q1 <- quantile(~Days, data=quine, prob=0.25)`: "Take Days (`~Days`) from quine (`data=quine`), find its 25th percentile (`prob=0.25`, `quantile`), and store it as Q1 (`Q1 <-`)."
+- `Q3 <- quantile(~Days, data=quine, prob=0.75)`: "Take Days (`~Days`) from quine (`data=quine`), find its 75th percentile (`prob=0.75`, `quantile`), and store it as Q3 (`Q3 <-`)."
+- `lower.fence <- Q1 - 1.5*(Q3 - Q1)`: "Subtract Q1 from Q3 (`Q3 - Q1`), multiply by 1.5 (`1.5*`), subtract that from Q1 (`Q1 -`), and store it as lower.fence (`lower.fence <-`)."
+- `upper.fence <- Q3 + 1.5*(Q3 - Q1)`: "Subtract Q1 from Q3 (`Q3 - Q1`), multiply by 1.5 (`1.5*`), add that to Q3 (`Q3 +`), and store it as upper.fence (`upper.fence <-`)."
+- `is.outlier <- …`: "Take the Days column of quine (`quine$Days`), test each value against the upper fence (`> upper.fence`) and against the lower fence (`< lower.fence`), combine the two tests with OR (`|`), and store the TRUE/FALSE vector as is.outlier (`is.outlier <-`)."
+- `sum(is.outlier)`: "Take is.outlier (`is.outlier`), add up its TRUEs as ones (`sum`), and print the count."
+:::
+
 By hand: $IQR = 17.75$, lower fence $5 - 26.625 = -21.625$ (unreachable), upper fence $22.75 + 26.625 = 49.375$. Eight children exceed it: 53, 53, 54, 57, 60, 67, 69 and 81. `sum()` of a logical vector **counts the `TRUE`s**.
 
 ## Comparing groups
@@ -164,6 +364,20 @@ favstats(Days~Sex, data=quine)
 1   F   0 5.00     10 20.25  81 15.22500 15.93100 80       0
 2   M   0 5.25     14 27.00  69 17.95455 16.63401 66       0
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `favstats(Days~Sex, data=quine)` | As above, with `Sex` as the grouping variable: one row of statistics for F and one for M. |
+
+**Left to right**
+
+- "Print the favourite statistics (`favstats`) of Days (`Days`) in terms of (`~`) sex (`Sex`), from the quine data (`data=quine`)."
+
+**Right to left**, the order R runs it
+
+- "Take the quine data (`data=quine`), split Days (`Days`) by (`~`) Sex (`Sex`), and print each group's favourite statistics (`favstats`)."
+:::
 
 Three observations: both sexes include **perfect attendance** (minimum 0); boys had **more** absences at each quartile (5.25 vs 5, 14 vs 10, 27 vs 20.25); yet the child with the **most** absences was female (81 vs 69).
 
@@ -178,6 +392,23 @@ favstats(Days~Eth, data=quine)
 1   A   0  6     15 32  81 21.23188 17.71851 69       0
 2   N   0  4      7 16  69 12.18182 13.56051 77       0
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `bwplot( Days~Eth, data=quine)` | With a group on the right of `~`, one box per level of `Eth`, side by side. The plot appears in the plot pane, not in the printed output. |
+| `favstats(Days~Eth, data=quine)` | One row of statistics per level of `Eth`. |
+
+**Left to right**
+
+- `bwplot( Days~Eth, data=quine)`: "Draw box plots (`bwplot`) of Days (`Days`) in terms of (`~`) ethnicity (`Eth`), from quine (`data=quine`)."
+- `favstats(Days~Eth, data=quine)`: "Print the favourite statistics (`favstats`) of Days (`Days`) in terms of (`~`) ethnicity (`Eth`), from quine (`data=quine`)."
+
+**Right to left**, the order R runs it
+
+- `bwplot( Days~Eth, data=quine)`: "Take quine (`data=quine`), split Days (`Days`) by (`~`) Eth (`Eth`), and draw one box per group (`bwplot`)."
+- `favstats(Days~Eth, data=quine)`: "Take quine (`data=quine`), split Days (`Days`) by (`~`) Eth (`Eth`), and print each group's statistics (`favstats`)."
+:::
 
 ```widget
 group-stats
@@ -197,6 +428,21 @@ mean(Days~Eth+Sex, data=quine)
      A.F      N.F      A.M      N.M
 20.92105 10.07143 21.61290 14.71429
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `Days~Eth+Sex` | In a formula, `+` adds a second grouping variable, not arithmetic: one group per Eth and Sex combination. |
+| `mean(…, data=quine)` | One mean per combination, returned as a vector named like `A.F`. |
+
+**Left to right**
+
+- "Print the mean (`mean`) of Days (`Days`) in terms of (`~`) ethnicity (`Eth`) and also (`+`) sex (`Sex`), from quine (`data=quine`)."
+
+**Right to left**, the order R runs it
+
+- "Take quine (`data=quine`), split Days (`Days`) by (`~`) every combination of Eth (`Eth`) and (`+`) Sex (`Sex`), and print each group's mean (`mean`)."
+:::
 
 Ethnicity moves the mean by about 10 days, sex by a few.
 
@@ -223,6 +469,28 @@ sprintf("The least consistent group is %s.",
 [1] "The least consistent group is N.M."
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `CV.grouped <- sd(…) / mean(…)` | Divides the four group sds by the four group means element by element; the names stay attached. The line break is fine after `/`. |
+| `which.min( CV.grouped )` | The position of the smallest value, carrying its name. |
+| `names(…)` | Pulls out just the name, such as `"A.M"`. |
+| `sprintf("… %s.", …)` | Builds a string: `%s` is replaced by the next argument as text. Printed with `[1]` and quotes. |
+| `which.max( CV.grouped )` | The position of the largest value; the second `sprintf()` line works the same way. |
+
+**Left to right**
+
+- `CV.grouped <- …`: "Store under the name CV.grouped (`CV.grouped <-`) the sd (`sd`) of Days by Eth and Sex (`Days~Eth+Sex`) in quine (`data=quine`) divided by (`/`) the mean (`mean`) of Days by Eth and Sex."
+- `sprintf("The most consistent group is %s.", …)`: "Print a sentence (`sprintf`) whose blank (`%s`) is filled with the label (`names`) of the smallest entry (`which.min`) of CV.grouped (`CV.grouped`)."
+- `sprintf("The least consistent group is %s.", …)`: "Print a sentence (`sprintf`) whose blank (`%s`) is filled with the label (`names`) of the largest entry (`which.max`) of CV.grouped (`CV.grouped`)."
+
+**Right to left**, the order R runs it
+
+- `CV.grouped <- …`: "From quine (`data=quine`) compute the group sds (`sd`) and group means (`mean`) of Days by Eth and Sex (`Days~Eth+Sex`), divide one by the other (`/`), and store the four ratios as CV.grouped (`CV.grouped <-`)."
+- `sprintf("The most consistent group is %s.", …)`: "Take CV.grouped (`CV.grouped`), find the position of its smallest value (`which.min`), get that position's label (`names`), and drop it into the blank (`%s`) of the sentence (`sprintf`)."
+- `sprintf("The least consistent group is %s.", …)`: "Take CV.grouped (`CV.grouped`), find the position of its largest value (`which.max`), get that position's label (`names`), and drop it into the blank (`%s`) of the sentence (`sprintf`)."
+:::
+
 The CVs are about A.F 0.94, A.M 0.71, N.F 0.89, N.M 1.18. `names(which.min(...))` labels the smallest. The task says `Age` and `Sex`; the posted solution uses `Eth` and `Sex`.
 
 ## Percentiles: `quantile()` and `probs=`
@@ -237,6 +505,20 @@ quantile(~Days, data=quine)
  0.00  5.00 11.00 22.75 81.00
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `quantile(~Days, data=quine)` | With no percentages given, returns the 0%, 25%, 50%, 75% and 100% points, each labelled by its percentage. |
+
+**Left to right**
+
+- "Print the percentiles (`quantile`) of Days (`~Days`) from quine (`data=quine`)."
+
+**Right to left**, the order R runs it
+
+- "Take Days (`~Days`) from quine (`data=quine`) and print its five standard percentiles (`quantile`)."
+:::
+
 Any $P_k$ comes from `probs=`:
 
 ```r
@@ -246,6 +528,20 @@ quantile(~Days, probs=0.9, data=quine)
 90%
  40
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `probs=0.9` | The percentage wanted, as a proportion: 0.9 is the 90th percentile. Named arguments can come in any order, so it can sit before `data=`. |
+
+**Left to right**
+
+- "Print the percentile (`quantile`) of Days (`~Days`) at 90% (`probs=0.9`) from quine (`data=quine`)."
+
+**Right to left**, the order R runs it
+
+- "Take Days (`~Days`) from quine (`data=quine`), and print its value at the 0.9 point (`probs=0.9`, `quantile`)."
+:::
 
 Ninety percent were absent 40 days or fewer. Several at once:
 
@@ -259,6 +555,23 @@ quantile(~Days, probs=seq(0.1,0.9, by=0.1), data=quine)
 10% 20% 30% 40% 50% 60% 70% 80% 90%
   2   5   5   7  11  14  20  27  40
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `probs=c(0.1, 0.9)` | `c()` passes two proportions, so two percentiles come back. |
+| `probs=seq(0.1,0.9, by=0.1)` | `seq(from, to, by)`: from = 0.1, to = 0.9, by = 0.1, so nine proportions and nine percentiles. |
+
+**Left to right**
+
+- `quantile(~Days, probs=c(0.1, 0.9), data=quine)`: "Print the percentiles (`quantile`) of Days (`~Days`) at the combination (`c`) of 10% and 90% (`probs=c(0.1, 0.9)`) from quine (`data=quine`)."
+- `quantile(~Days, probs=seq(0.1,0.9, by=0.1), data=quine)`: "Print the percentiles (`quantile`) of Days (`~Days`) at a sequence (`seq`) from 0.1 to 0.9 in steps of 0.1 (`probs=seq(0.1,0.9, by=0.1)`) from quine (`data=quine`)."
+
+**Right to left**, the order R runs it
+
+- `quantile(~Days, probs=c(0.1, 0.9), data=quine)`: "Combine 0.1 and 0.9 into a vector (`c(0.1, 0.9)`) as the proportions (`probs=`), take Days (`~Days`) from quine (`data=quine`), and print those two percentiles (`quantile`)."
+- `quantile(~Days, probs=seq(0.1,0.9, by=0.1), data=quine)`: "Build the sequence 0.1, 0.2, …, 0.9 (`seq(0.1,0.9, by=0.1)`) as the proportions (`probs=`), take Days (`~Days`) from quine (`data=quine`), and print those nine percentiles (`quantile`)."
+:::
 
 $P_{20} = P_{30} = 5$: so many children have exactly 5 days that two percentiles coincide.
 
@@ -275,6 +588,21 @@ quantile(Days~Lrn, data=quine, prob=c(0.2, 0.4, 0.6, 0.8))
 2  SL   5 6.0 13.2  28
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `quantile(Days~Lrn, data=quine, …)` | Grouped formula: the percentiles of `Days` for each level of `Lrn`, one row per group. |
+| `prob=c(0.2, 0.4, 0.6, 0.8)` | The four proportions wanted, combined with `c()`; written `prob` here, which mosaic accepts. |
+
+**Left to right**
+
+- "Print the percentiles (`quantile`) of Days (`Days`) in terms of (`~`) learner type (`Lrn`) from quine (`data=quine`), at the combination (`c`) of 20, 40, 60 and 80% (`prob=c(0.2, 0.4, 0.6, 0.8)`)."
+
+**Right to left**, the order R runs it
+
+- "Combine the four proportions (`c(0.2, 0.4, 0.6, 0.8)`) as the percentages wanted (`prob=`), take quine (`data=quine`), split Days (`Days`) by (`~`) Lrn (`Lrn`), and print each group's percentiles (`quantile`)."
+:::
+
 Learner status makes little difference. By `Sex` and by `Eth`:
 
 ```r
@@ -290,6 +618,22 @@ quantile(Days~Eth, data=quine, prob=c(0.2, 0.4, 0.6, 0.8))
 2   N   3   5 10.6 19.6
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `quantile(Days~Sex, …)`, `quantile(Days~Eth, …)` | The same call as above with `Sex`, then `Eth`, as the grouping variable; each prints its own table. |
+
+**Left to right**
+
+- `quantile(Days~Sex, …)`: "Print the percentiles (`quantile`) of Days (`Days`) in terms of (`~`) sex (`Sex`) from quine (`data=quine`) at 20, 40, 60 and 80% (`prob=c(0.2, 0.4, 0.6, 0.8)`)."
+- `quantile(Days~Eth, …)`: "Print the percentiles (`quantile`) of Days (`Days`) in terms of (`~`) ethnicity (`Eth`) from quine (`data=quine`) at 20, 40, 60 and 80% (`prob=c(0.2, 0.4, 0.6, 0.8)`)."
+
+**Right to left**, the order R runs it
+
+- `quantile(Days~Sex, …)`: "Combine the four proportions (`c(…)`, `prob=`), take quine (`data=quine`), split Days (`Days`) by (`~`) Sex (`Sex`), and print each group's percentiles (`quantile`)."
+- `quantile(Days~Eth, …)`: "Combine the four proportions (`c(…)`, `prob=`), take quine (`data=quine`), split Days (`Days`) by (`~`) Eth (`Eth`), and print each group's percentiles (`quantile`)."
+:::
+
 The instructor's answer: **`Eth` is the categorical variable that leads to the greatest differences**, about twice as many days at each percentile.
 
 ## Percentile rank
@@ -303,6 +647,21 @@ head( percent_rank(quine$Days) )
 [1] 0.08965517 0.47586207 0.55862069 0.17931034 0.17931034 0.53793103
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `percent_rank(quine$Days)` | From `dplyr`: one rank between 0 and 1 for every element of the vector. It takes a plain vector, not a formula. |
+| `head( … )` | Shows only the first six elements. |
+
+**Left to right**
+
+- "Show the first six (`head`) of the percent ranks (`percent_rank`) of the Days column (`Days`) of quine (`quine$`)."
+
+**Right to left**, the order R runs it
+
+- "Take quine (`quine`), pull out its Days column (`$Days`), compute every value's percent rank (`percent_rank`), and show the first six (`head`)."
+:::
+
 The first child (2 days): 13 of the other 145 children have fewer days, $13/145 = 0.0897$. As whole numbers:
 
 ```r
@@ -311,6 +670,22 @@ head( round(100*percent_rank(quine$Days) ))
 ```text
 [1]  9 48 56 18 18 54
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `100*percent_rank(quine$Days)` | Multiplies every rank by 100 to make percentages. |
+| `round( … )` | `round(x, digits)` with only x given: digits defaults to 0, so whole numbers. |
+| `head( … )` | The first six, as above. |
+
+**Left to right**
+
+- "Show the first six (`head`) of the rounded (`round`) values of 100 times (`100*`) the percent ranks (`percent_rank`) of the Days column (`Days`) of quine (`quine$`)."
+
+**Right to left**, the order R runs it
+
+- "Take quine (`quine`), pull out Days (`$Days`), compute the percent ranks (`percent_rank`), multiply by 100 (`100*`), round to whole numbers (`round`), and show the first six (`head`)."
+:::
 
 The first child was absent more often than 9% of all students; the third (14 days), 56%.
 
@@ -343,6 +718,27 @@ cbind(round(100*percent_rank( quine$Days )[is.F0.Male]))
 [17,]   52
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `quine$Sex=="M"` | `==` tests equality for every element, giving `TRUE`/`FALSE` per child. Text values go in quotes. |
+| `( … ) & ( … )` | `&` is element-wise AND: `TRUE` only where both tests are `TRUE`. |
+| `is.F0.Male <- …` | Stores the logical vector, one value per row of `quine`. |
+| `round(100*percent_rank( quine$Days ))` | Whole-number percentile ranks for all 146 children, as above. |
+| `[is.F0.Male]` | `[ ]` with a logical vector keeps only the positions that are `TRUE`. |
+| `cbind( … )` | Turns the vector into a one-column matrix, so it prints one value per line. `[1,]` labels rows and `[,1]` the column. |
+
+**Left to right**
+
+- `is.F0.Male <- …`: "Store under the name is.F0.Male (`is.F0.Male <-`) whether each child's Sex in quine (`quine$Sex`) equals (`==`) M (`"M"`) and (`&`) their Age (`quine$Age`) equals (`==`) F0 (`"F0"`)."
+- `cbind(…)`: "Print as one column (`cbind`) the rounded (`round`) values of 100 times (`100*`) the percent ranks (`percent_rank`) of quine's Days (`quine$Days`), keeping only the positions where is.F0.Male is TRUE (`[is.F0.Male]`)."
+
+**Right to left**, the order R runs it
+
+- `is.F0.Male <- …`: "Test each child's Sex (`quine$Sex`) for M (`=="M"`), test each Age (`quine$Age`) for F0 (`=="F0"`), combine the tests with AND (`&`), and store the result as is.F0.Male (`is.F0.Male <-`)."
+- `cbind(…)`: "Take quine's Days (`quine$Days`), compute the percent ranks of all children (`percent_rank`), keep the male F0 positions (`[is.F0.Male]`), multiply by 100 (`100*`), round (`round`), and print as one column (`cbind`)."
+:::
+
 `&` is AND; `x[logical]` keeps the `TRUE` positions. Seventeen boys are in form F0; one (rank 99) is near the top for absences.
 
 The children above the 75th percentile:
@@ -359,6 +755,21 @@ subset( quine, percent_rank(Days) > 0.75)
 146   N   F  F3  AL   37
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `subset( quine, … )` | `subset(x, subset)`: x is the data frame, the second argument is a condition; returns the rows where it is `TRUE`. |
+| `percent_rank(Days) > 0.75` | Inside `subset()` column names work directly, so `Days` needs no `quine$`. The row names on the left are the original row numbers. |
+
+**Left to right**
+
+- "Keep the rows (`subset`) of quine (`quine`) where the percent rank (`percent_rank`) of Days (`Days`) is above (`>`) 0.75 (`0.75`)."
+
+**Right to left**, the order R runs it
+
+- "Take the Days column (`Days`), compute its percent ranks (`percent_rank`), test each against 0.75 (`> 0.75`), and keep the rows of quine (`quine`) where the test is TRUE (`subset`)."
+:::
+
 `subset()` keeps the rows where the condition is `TRUE`. Thirty-seven rows come back, 25 of them `A`.
 
 ### Task 12: the bottom quarter
@@ -371,6 +782,25 @@ round(prop.table( table(P25.students$Sex )),3)
     F     M
 0.622 0.378
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `P25.students <- subset( quine, percent_rank( Days ) < 0.25 )` | Keeps the rows ranked below 0.25 and stores them as a new data frame. |
+| `table(P25.students$Sex )` | Counts how many rows have each value of `Sex`. |
+| `prop.table( … )` | Divides each count by the total, so the values add to 1. |
+| `round( … ,3)` | `round(x, digits)`: digits = 3 decimal places. |
+
+**Left to right**
+
+- `P25.students <- …`: "Store under the name P25.students (`P25.students <-`) the rows (`subset`) of quine (`quine`) where the percent rank (`percent_rank`) of Days (`Days`) is below (`<`) 0.25 (`0.25`)."
+- `round(prop.table(…),3)`: "Round (`round`) to three decimals (`3`) the proportions (`prop.table`) of the counts (`table`) of the Sex column (`Sex`) of P25.students (`P25.students$`)."
+
+**Right to left**, the order R runs it
+
+- `P25.students <- …`: "Compute the percent ranks (`percent_rank`) of Days (`Days`), test each against 0.25 (`< 0.25`), keep the matching rows of quine (`subset`, `quine`), and store them as P25.students (`P25.students <-`)."
+- `round(prop.table(…),3)`: "Take P25.students (`P25.students`), pull out its Sex column (`$Sex`), count each value (`table`), turn the counts into proportions (`prop.table`), and round to three decimals (`round`, `3`)."
+:::
 
 `prop.table()` turns the counts into proportions: girls are 62.2% of the bottom quarter, against 80 of 146 (54.8%) overall.
 
@@ -391,6 +821,21 @@ head( scale( quine$Days ) )
 [6,] -0.2128134
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `scale( quine$Days )` | Subtracts the mean and divides by the sd for every element. It returns a one-column matrix, hence the `[1,]` and `[,1]` labels. |
+| `head( … )` | On a matrix, shows the first six rows. |
+
+**Left to right**
+
+- "Show the first six rows (`head`) of the standardized values (`scale`) of the Days column (`Days`) of quine (`quine$`)."
+
+**Right to left**, the order R runs it
+
+- "Take quine (`quine`), pull out Days (`$Days`), turn every value into a Z-score (`scale`), and show the first six rows (`head`)."
+:::
+
 The first child: $(2 - 16.4589)/16.25322 = -0.8896$, 0.89 sd **below** the mean.
 
 ### Task 13: counts beyond k sd
@@ -408,6 +853,23 @@ sum(abs(Z.scores) > 3)
 [1] 8
 [1] 3
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `Z.scores <- scale( quine$Days )` | Stores the Z-scores. |
+| `sum(abs(Z.scores) > k)` | `abs()` drops the sign, `>` gives `TRUE`/`FALSE` per child, and `sum()` counts the `TRUE`s. The three lines do this for k = 1, 2, 3. |
+
+**Left to right**
+
+- `Z.scores <- scale( quine$Days )`: "Store under the name Z.scores (`Z.scores <-`) the standardized values (`scale`) of the Days column (`Days`) of quine (`quine$`)."
+- `sum(abs(Z.scores) > k)`, k = 1, 2, 3: "Print the count (`sum`) of the size without sign (`abs`) of each Z-score (`Z.scores`) that is above (`>`) k (`1`, `2`, `3`)."
+
+**Right to left**, the order R runs it
+
+- `Z.scores <- scale( quine$Days )`: "Take quine (`quine`), pull out Days (`$Days`), standardize it (`scale`), and store it as Z.scores (`Z.scores <-`)."
+- `sum(abs(Z.scores) > k)`, k = 1, 2, 3: "Take Z.scores (`Z.scores`), drop the signs (`abs`), test each against k (`> 1`, `> 2`, `> 3`), and count the TRUEs (`sum`)."
+:::
 
 `abs()` makes "above or below" one comparison. Eight matches Task 7's outlier count, but **outlier and unusual are different definitions** (Unit 1).
 
@@ -432,6 +894,27 @@ p3 >= (1 - 1/3^2)
 [1] TRUE
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `n.students <- nrow(quine)` | Stores the number of rows (children). |
+| `p1 <- sum(abs(Z.scores) <= 1) / n.students` | `<=` is less than or equal; the count of `TRUE`s divided by n is the fraction within 1 sd. `p2` and `p3` repeat it for 2 and 3. |
+| `#Chebyshev's Theorem says:` | `#` starts a comment: R ignores the rest of the line. |
+| `p1 >= (1 - 1/1^2)` | `^` is a power and binds tighter than `/`, so this is 1 minus 1/(1 squared). `>=` is greater than or equal and prints `TRUE` or `FALSE`. The next two lines use k = 2, 3. |
+
+**Left to right**
+
+- `n.students <- nrow(quine)`: "Store under the name n.students (`n.students <-`) the number of rows (`nrow`) of quine (`quine`)."
+- `p1 <- …`, `p2 <- …`, `p3 <- …`: "Store under the name p1 (`p1 <-`) the count (`sum`) of Z-scores (`Z.scores`) whose size without sign (`abs`) is at most (`<=`) 1, divided by (`/`) n.students (`n.students`); p2 and p3 use 2 and 3."
+- `p1 >= (1 - 1/1^2)`, and the k = 2, 3 lines: "Print whether p1 (`p1`) is at least (`>=`) one minus (`1 -`) one over (`1/`) k squared (`1^2`)."
+
+**Right to left**, the order R runs it
+
+- `n.students <- nrow(quine)`: "Take quine (`quine`), count its rows (`nrow`), and store the count as n.students (`n.students <-`)."
+- `p1 <- …`, `p2 <- …`, `p3 <- …`: "Take Z.scores (`Z.scores`), drop the signs (`abs`), test each against 1 (`<= 1`), count the TRUEs (`sum`), divide by n.students (`/ n.students`), and store as p1 (`p1 <-`); p2 and p3 use 2 and 3."
+- `p1 >= (1 - 1/1^2)`, and the k = 2, 3 lines: "Square k (`1^2`), divide one by it (`1/`), subtract that from one (`1 -`), compare p1 with the result (`p1 >=`), and print TRUE or FALSE."
+:::
+
 ```r
 #Empirical Rule predicts 0.68, 0.95, and 0.997
 p1 # too large
@@ -443,6 +926,21 @@ p3 # too low
 [1] 0.9452055
 [1] 0.9794521
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `#Empirical Rule predicts …` | A comment line, ignored by R. |
+| `p1 # too large` | Typing the name prints its value; the `#` comment after it is ignored. `p2` and `p3` print the same way. |
+
+**Left to right**
+
+- `p1`, `p2`, `p3`: "Print the value of p1 (`p1`), then p2 (`p2`), then p3 (`p3`); the notes after each (`#`) are skipped."
+
+**Right to left**, the order R runs it
+
+- `p1`, `p2`, `p3`: "Skip each note after the comment mark (`#`), look up p1, p2 and p3 (`p1`, `p2`, `p3`), and print each value."
+:::
 
 Chebyshev holds, as it must; the empirical rule misses at $k = 1$ and $3$: **the empirical rule does not hold for `Days`, since it is not a normally distributed variable. It cannot be, since it is significantly skewed, as shown by $Sk$ earlier.**
 

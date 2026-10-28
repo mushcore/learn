@@ -57,7 +57,37 @@ The excerpt is the only place the column names appear: `wt` for **birth weight**
 quantile(Gestation$wt, 0.20)
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `Gestation$wt` | `$` picks one column of a data frame by name: the `wt` column of `Gestation`. It fills `x`, the data. |
+| `0.20` | Fills `probs`: the proportion for the percentile, between 0 and 1. |
+| `quantile(…)` | Returns the value below which that proportion of the data lies, labelled `20%` when printed. |
+
+**Left to right**
+
+- "Find the value with a given proportion of the data below it (`quantile`) in the wt column (`wt`) of the Gestation data (`Gestation$`), at the proportion 0.20 (`0.20`)."
+
+**Right to left**, the order R runs it
+
+- "Take the Gestation data (`Gestation`), pull out its wt column (`$wt`), and find the weight with 20 % of the values below it (`0.20`, `quantile`)."
+:::
+
 The column is reached with `$`. A bare `quantile(wt, 0.20)` fails because no object called `wt` exists outside the data frame.
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `quantile(wt, 0.20)` | `wt` fills `x`, but R looks for an object named `wt` on its own, finds none, and stops with an error. 0.20 fills `probs`. |
+
+**Left to right**
+
+- `quantile(wt, 0.20)`: "Find the 0.20 quantile (`quantile`, `0.20`) of an object called wt (`wt`), which does not exist outside the data frame."
+
+**Right to left**, the order R runs it
+
+- `quantile(wt, 0.20)`: "Look up an object named wt (`wt`), fail to find it, and stop before `quantile` ever runs."
+:::
 
 **b. [1]** We define premature births as those born before 250 days of gestation. Give an R command (or commands) that would create a dataset consisting of all of the data for only those babies with a gestation period of less than 250 days.
 
@@ -84,12 +114,50 @@ library(dplyr)
 premature_babies <- filter(Gestation, gestation < 250)
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `library(dplyr)` | Loads the dplyr package, which provides `filter`. Run it once per session before the first `filter` call. |
+| `premature_babies <-` | `<-` is assignment: the result is stored under the name `premature_babies`, which makes it a new dataset. |
+| `filter(Gestation, …)` | The first argument is the data frame; `filter` keeps only the rows where the condition after it is TRUE. |
+| `gestation < 250` | `<` is "less than", checked row by row. The column is named bare: `filter` looks it up inside `Gestation`. |
+
+**Left to right**
+
+- `library(dplyr)`: "Load the package (`library`) called dplyr (`dplyr`)."
+- `premature_babies <- filter(Gestation, gestation < 250)`: "Store under the name premature_babies (`premature_babies <-`) the rows kept (`filter`) from the Gestation data (`Gestation`) where the gestation column (`gestation`) is less than (`<`) 250 (`250`)."
+
+**Right to left**, the order R runs it
+
+- `library(dplyr)`: "Find the package dplyr (`dplyr`) and load it (`library`)."
+- `premature_babies <- filter(Gestation, gestation < 250)`: "Take the Gestation data (`Gestation`), test each row's gestation (`gestation`) for being less than (`<`) 250 (`250`), keep the rows where that is true (`filter`), and store the result as premature_babies (`premature_babies <-`)."
+:::
+
 `filter` keeps whole rows, so every column comes along. The other accepted forms:
 
 ```r
 premature_babies <- subset(Gestation, gestation < 250)
 premature_babies <- Gestation[Gestation$gestation < 250, ]
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `subset(Gestation, gestation < 250)` | Base R, no package. The first argument `x` is the data frame; the second, `subset`, is the row condition, with the column named bare. |
+| `Gestation$gestation < 250` | Gives one TRUE or FALSE per row. Outside `filter` and `subset` the column needs `$`. |
+| `Gestation[ rows , ]` | `[ ]` on a data frame takes rows before the comma and columns after it. TRUE rows are kept; the empty slot after the comma means all columns. |
+| `<-` | Assignment, as above: both lines store the result in `premature_babies`. |
+
+**Left to right**
+
+- `premature_babies <- subset(Gestation, gestation < 250)`: "Store under the name premature_babies (`premature_babies <-`) the part (`subset`) of the Gestation data (`Gestation`) where gestation (`gestation`) is less than (`<`) 250 (`250`)."
+- `premature_babies <- Gestation[Gestation$gestation < 250, ]`: "Store under the name premature_babies (`premature_babies <-`) the Gestation data (`Gestation`) at the rows (`[ ]`) where its gestation column (`Gestation$gestation`) is less than (`<`) 250 (`250`), with every column (the empty slot after `,`)."
+
+**Right to left**, the order R runs it
+
+- `premature_babies <- subset(Gestation, gestation < 250)`: "Take the Gestation data (`Gestation`), check each row's gestation (`gestation`) against less than (`<`) 250 (`250`), keep the rows that pass (`subset`), and store them as premature_babies (`premature_babies <-`)."
+- `premature_babies <- Gestation[Gestation$gestation < 250, ]`: "Pull out the gestation column (`Gestation$gestation`), mark each row TRUE where it is less than (`<`) 250 (`250`), pick those rows and all columns (`,`) from Gestation (`Gestation[ ]`), and store them as premature_babies (`premature_babies <-`)."
+:::
 
 The comma inside the brackets matters: rows before it, all columns after it.
 
@@ -119,12 +187,48 @@ bwplot(wt ~ race, data = Gestation, main = "Boxplots of Birth Weights by Race",
        xlab = "Mother's Race", ylab = "Baby's Birth Weight (ounces)")
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `library(mosaic)` | Loads the mosaic package, which makes `bwplot` available. |
+| `wt ~ race` | `~` builds a formula: the numeric variable on the left, the grouping variable on the right. It fills `bwplot`'s first argument, `x`. |
+| `data = Gestation` | The data frame the formula's names are looked up in, so no `$` is needed. |
+| `main = "…"` | The plot title, a string in quotes. |
+| `xlab = "…"`, `ylab = "…"` | The x-axis and y-axis labels. |
+
+**Left to right**
+
+- `library(mosaic)`: "Load the package (`library`) called mosaic (`mosaic`)."
+- `bwplot(wt ~ race, data = Gestation, main = …, xlab = …, ylab = …)`: "Draw box-and-whisker plots (`bwplot`) of birth weight (`wt`) split by (`~`) race (`race`), from the Gestation data (`data = Gestation`), with a title (`main =`), an x-axis label (`xlab =`) and a y-axis label (`ylab =`)."
+
+**Right to left**, the order R runs it
+
+- `library(mosaic)`: "Find the package mosaic (`mosaic`) and load it (`library`)."
+- `bwplot(wt ~ race, data = Gestation, main = …, xlab = …, ylab = …)`: "Build the formula weight by race (`wt ~ race`), look its names up in Gestation (`data = Gestation`), take the title (`main =`) and the axis labels (`xlab =`, `ylab =`), then draw the boxplots (`bwplot`)."
+:::
+
 or, in base R with no package:
 
 ```r
 boxplot(wt ~ race, data = Gestation, main = "Boxplots of Birth Weights by Race",
         xlab = "Mother's Race", ylab = "Baby's Birth Weight (ounces)")
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `boxplot(wt ~ race, …)` | Base R's boxplot; no `library()` call. The formula fills its first argument, `formula`, with the same left-right meaning as above. |
+| `data = Gestation` | Where `wt` and `race` are found. |
+| `main =`, `xlab =`, `ylab =` | Title and axis labels, as in the `bwplot` line. |
+
+**Left to right**
+
+- "Draw boxplots (`boxplot`) of birth weight (`wt`) split by (`~`) race (`race`), from the Gestation data (`data = Gestation`), with a title (`main =`) and axis labels (`xlab =`, `ylab =`)."
+
+**Right to left**, the order R runs it
+
+- "Build the formula weight by race (`wt ~ race`), look its names up in Gestation (`data = Gestation`), take the title and labels (`main =`, `xlab =`, `ylab =`), then draw the boxplots (`boxplot`)."
+:::
 
 With a formula, `data = Gestation` replaces the `$`. The R sheet provided at the exam lists neither `filter` nor `bwplot`; both come from memory.
 
@@ -160,6 +264,23 @@ Twenty drawn without replacement from a population of 312 split into "on this fl
 rhyper(1, 154, 42+116, 20)
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `1` | Fills `nn`: how many random values to draw, here one simulated group. |
+| `154` | Fills `m`: successes in the population (flight 911). |
+| `42+116` | Fills `n`: failures in the population. `+` adds; R works out the sum before the call runs. This `n` is not a sample size. |
+| `20` | Fills `k`: the sample size. |
+
+**Left to right**
+
+- "Simulate a hypergeometric count (`rhyper`) once (`1`) from 154 successes (`154`) and 42 plus 116 failures (`42+116`), drawing 20 (`20`)."
+
+**Right to left**, the order R runs it
+
+- "Add 42 and 116 (`42+116`) to get the failures, take the 154 successes (`154`), the sample of 20 (`20`) and one simulation (`1`), then draw the random count (`rhyper`)."
+:::
+
 The output is random, a single whole number near the mean 20 × 154/312 = 9.87.
 
 **b. [1]** Computes the probability that exactly 9 of the 20 passengers were on flight 311.
@@ -185,6 +306,20 @@ The output is random, a single whole number near the mean 20 × 154/312 = 9.87.
 ```r
 dhyper(9, 42, 116+154, 20)
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dhyper(9, 42, 116+154, 20)` | x = 9 (the count asked about), m = 42 successes, n = 116+154 failures, k = 20 drawn. Returns P(X = 9). |
+
+**Left to right**
+
+- "The hypergeometric probability of exactly (`dhyper`) 9 (`9`) when there are 42 successes (`42`) and 116 plus 154 failures (`116+154`), drawing 20 (`20`)."
+
+**Right to left**, the order R runs it
+
+- "Add 116 and 154 (`116+154`) to get the failures, take the count 9 (`9`), the 42 successes (`42`) and the sample of 20 (`20`), then compute P(X = 9) (`dhyper`)."
+:::
 
 It returns about 0.0002997: nine from a flight that holds 13 % of the room is far above the expected 20 × 42/312 = 2.7.
 
@@ -219,11 +354,41 @@ It returns about 0.0002997: nine from a flight that holds 13 % of the room is fa
 1 - phyper(11, 42, 116+154, 20)
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `phyper(11, 42, 116+154, 20)` | q = 11, m = 42, n = 116+154, k = 20. Returns the cumulative P(X ≤ 11). |
+| `1 - …` | `-` subtracts: one minus the call's result. |
+
+**Left to right**
+
+- "One (`1`) minus (`-`) the hypergeometric probability of at most (`phyper`) 11 (`11`) with 42 successes (`42`), 116 plus 154 failures (`116+154`) and 20 drawn (`20`)."
+
+**Right to left**, the order R runs it
+
+- "Add 116 and 154 (`116+154`), compute P(X ≤ 11) (`phyper`, `11`) for 42 successes (`42`) and 20 drawn (`20`), then subtract it (`-`) from one (`1`)."
+:::
+
 or
 
 ```r
 phyper(11, 42, 116+154, 20, lower.tail = FALSE)
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `phyper(11, 42, 116+154, 20, …)` | Same four slots as above: q, m, n, k. |
+| `lower.tail = FALSE` | A named argument. Its default, TRUE, gives P(X ≤ q); FALSE gives the upper tail P(X > q). `FALSE` is upper case, no quotes. |
+
+**Left to right**
+
+- "The hypergeometric cumulative probability (`phyper`) at 11 (`11`) with 42 successes (`42`), 116 plus 154 failures (`116+154`) and 20 drawn (`20`), taken from the upper tail (`lower.tail = FALSE`)."
+
+**Right to left**, the order R runs it
+
+- "Add 116 and 154 (`116+154`), switch to the upper tail (`lower.tail = FALSE`), and compute P(X > 11) (`phyper`, `11`) for 42 successes (`42`) and 20 drawn (`20`)."
+:::
 
 Both return about 4.45 × 10⁻⁷. The question asks only for the command; no number is needed.
 
@@ -273,6 +438,27 @@ skytrain_sneaking <- function(n) {
 }
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `skytrain_sneaking <- function(n) { … }` | `function(n)` makes a function with one input, `n`; the braces hold its body. `<-` stores it under the name `skytrain_sneaking`. |
+| `rbinom(1, n, 0.045)` | First argument (R's `n`) = 1 draw; size = `n`, the function's input; prob = 0.045. The two `n`s are different things. |
+| `times_caught <-` | Stores the drawn count inside the function. |
+| `return(times_caught/n)` | `/` divides; `return()` hands the proportion back to whoever called the function. |
+
+**Left to right**
+
+- `skytrain_sneaking <- function(n) { … }`: "Store under the name skytrain_sneaking (`skytrain_sneaking <-`) a function (`function`) of one input n (`(n)`) that runs the lines in braces (`{ }`)."
+- `times_caught <- rbinom(1, n, 0.045)`: "Store under times_caught (`times_caught <-`) one (`1`) random binomial count (`rbinom`) from n trials (`n`) with probability 0.045 (`0.045`)."
+- `return(times_caught/n)`: "Hand back (`return`) times_caught (`times_caught`) divided by (`/`) n (`n`)."
+
+**Right to left**, the order R runs it
+
+- `skytrain_sneaking <- function(n) { … }`: "Build a function (`function`) with input n (`(n)`) and body in braces (`{ }`), then store it as skytrain_sneaking (`skytrain_sneaking <-`)."
+- `times_caught <- rbinom(1, n, 0.045)`: "Take one draw (`1`), n trials (`n`) and probability 0.045 (`0.045`), simulate the count (`rbinom`), and store it as times_caught (`times_caught <-`)."
+- `return(times_caught/n)`: "Divide (`/`) times_caught (`times_caught`) by n (`n`), then hand the result back (`return`)."
+:::
+
 or
 
 ```r
@@ -283,7 +469,48 @@ skytrain_sneaking2 <- function(n) {
 }
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `skytrain_sneaking2 <- function(n) { … }` | A second function with one input `n`, built as above. |
+| `sample(0:1, …)` | `0:1` is the values 0 and 1 (`:` makes a whole-number sequence); it fills `x`, the values to draw from. |
+| `n` | Fills `size`: how many values to draw, one per trip. |
+| `replace = TRUE` | Draws with replacement, so 0 and 1 can come up again on every draw. |
+| `prob = c(0.955, 0.045)` | `c()` combines numbers into a vector; one probability per value of `x`, in the same order. |
+| `# 0 is successfully snuck on, 1 is caught` | `#` starts a comment: R ignores the rest of the line. |
+| `return(sum(caught)/n)` | `sum()` adds the zeros and ones, giving the number caught; divided by `n` and returned. |
+
+**Left to right**
+
+- `skytrain_sneaking2 <- function(n) { … }`: "Store under the name skytrain_sneaking2 (`skytrain_sneaking2 <-`) a function (`function`) of one input n (`(n)`) that runs the lines in braces (`{ }`)."
+- `caught <- sample(0:1, n, replace = TRUE, prob = c(0.955, 0.045))`: "Store under caught (`caught <-`) a random sample (`sample`) from the values 0 to 1 (`0:1`), n of them (`n`), with replacement (`replace = TRUE`), with probabilities (`prob =`) combined (`c`) as 0.955 and 0.045 (`0.955`, `0.045`)."
+- `return(sum(caught)/n)`: "Hand back (`return`) the total (`sum`) of caught (`caught`) divided by (`/`) n (`n`)."
+
+**Right to left**, the order R runs it
+
+- `skytrain_sneaking2 <- function(n) { … }`: "Build a function (`function`) with input n (`(n)`) and body in braces (`{ }`), then store it as skytrain_sneaking2 (`skytrain_sneaking2 <-`)."
+- `caught <- sample(0:1, n, replace = TRUE, prob = c(0.955, 0.045))`: "Make the values 0 and 1 (`0:1`), combine 0.955 and 0.045 into the probabilities (`c`, `prob =`), allow repeats (`replace = TRUE`), draw n values (`n`, `sample`), and store them as caught (`caught <-`)."
+- `return(sum(caught)/n)`: "Add up caught (`caught`, `sum`), divide by n (`/`, `n`), then hand the result back (`return`)."
+:::
+
 `sum(caught)/n` and `mean(caught)` are the same number: the mean of a vector of zeros and ones is the proportion of ones. The key writes `skytrain_sneaking=function(n){ ... }`; `=` and `<-` both assign.
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `mean(caught)` | The average of the vector `caught`; for zeros and ones, the proportion of ones. |
+| `skytrain_sneaking=function(n){ ... }` | The key's spelling: `=` stores the function, exactly as `<-` would. Spaces around `=` and before `{` are optional. |
+
+**Left to right**
+
+- `mean(caught)`: "The average (`mean`) of caught (`caught`)."
+- `skytrain_sneaking=function(n){ ... }`: "Store under the name skytrain_sneaking (`skytrain_sneaking=`) a function (`function`) of one input n (`(n)`) with the body in braces (`{ }`)."
+
+**Right to left**, the order R runs it
+
+- `mean(caught)`: "Take caught (`caught`) and average it (`mean`)."
+- `skytrain_sneaking=function(n){ ... }`: "Build a function (`function`) of n (`(n)`) with its body (`{ }`), then store it as skytrain_sneaking (`skytrain_sneaking=`)."
+:::
 
 **b. [1]** Write a command or series of commands that uses your function from part a. to compute the total number of dollars saved by a single student who attempts to sneak on the SkyTrain 20 times.
 
@@ -308,6 +535,23 @@ skytrain_sneaking2 <- function(n) {
 ```r
 20*3.50 - skytrain_sneaking(20)*20*173
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `20*3.50` | `*` multiplies: the fares avoided. |
+| `skytrain_sneaking(20)` | Calls the part a function with `n` = 20; it returns one random proportion. |
+| `…*20*173` | Proportion times 20 tries times the fine. |
+| `-` | Subtracts; `*` is done before `-`, as in ordinary arithmetic. |
+
+**Left to right**
+
+- "Twenty (`20`) times (`*`) 3.50 (`3.50`), minus (`-`) the simulated proportion caught (`skytrain_sneaking`) over 20 tries (`(20)`) times 20 (`*20`) times 173 (`*173`)."
+
+**Right to left**, the order R runs it
+
+- "Run the function with n = 20 (`skytrain_sneaking(20)`), multiply the proportion by 20 and by 173 (`*20*173`), work out 20 times 3.50 (`20*3.50`), then subtract the fines from the fares (`-`)."
+:::
 
 Part b reuses part a: call the function with n = 20, then turn the proportion into dollars. Calling it once gives one random student; the expected value comes next.
 

@@ -48,7 +48,44 @@ Ten marks are R written by hand, about thirteen are written interpretation, and 
 
 **R command.** A full runnable line with the real argument values: `library(dplyr)` before `filter`, `Gestation$wt` for a column, `data = Gestation` for a formula like `wt ~ race`. Write `dhyper(9, 42, 116+154, 20)`, never `dhyper(x, K, N-K, n)`.
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `library(dplyr)` | Loads the dplyr package, which provides `filter`. |
+| `dhyper(9, 42, 116+154, 20)` | x = 9, m = 42 successes in the population, n = 116+154 failures (`+` adds before the call), k = 20 drawn. Returns P(X = 9). |
+| `dhyper(x, K, N-K, n)` | The template: R's slots x, m, n, k filled by the course's x, K, N−K, n. Letters alone do not run unless they hold numbers. |
+
+**Left to right**
+
+- `library(dplyr)`: "Load the package (`library`) called dplyr (`dplyr`)."
+- `dhyper(9, 42, 116+154, 20)`: "The hypergeometric probability of exactly (`dhyper`) 9 (`9`) with 42 successes (`42`), 116 plus 154 failures (`116+154`) and 20 drawn (`20`)."
+- `dhyper(x, K, N-K, n)`: "The hypergeometric probability of exactly (`dhyper`) x (`x`) with K successes (`K`), N minus K failures (`N-K`) and n drawn (`n`)."
+
+**Right to left**, the order R runs it
+
+- `library(dplyr)`: "Find the package dplyr (`dplyr`) and load it (`library`)."
+- `dhyper(9, 42, 116+154, 20)`: "Add 116 and 154 (`116+154`), take 9, 42 and 20 (`9`, `42`, `20`), then compute P(X = 9) (`dhyper`)."
+- `dhyper(x, K, N-K, n)`: "Subtract K from N (`N-K`), take x, K and n (`x`, `K`, `n`), then compute P(X = x) (`dhyper`)."
+:::
+
 **R function.** `name <- function(n) { ... return(...) }`. The body must simulate with an r-function or `sample()`; a function that returns `n*0.045/n` computes the average and scores zero.
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `name <-` | `<-` is assignment: the function is stored under the name `name`. |
+| `function(n) { … }` | Makes a function with one input, `n`; the lines inside the braces are its body. |
+| `return(...)` | Hands the result back to whoever called the function. |
+| `...` | Here just a placeholder for code you write, not R syntax. |
+
+**Left to right**
+
+- `name <- function(n) { ... return(...) }`: "Store under the name name (`name <-`) a function (`function`) of one input n (`(n)`) whose body in braces (`{ }`) ends by handing back a result (`return`)."
+
+**Right to left**, the order R runs it
+
+- `name <- function(n) { ... return(...) }`: "Build a function (`function`) with input n (`(n)`) and a body (`{ }`) that ends with `return`, then store it under the name name (`name <-`)."
+:::
 
 ## The study order through Units 1 to 4
 
@@ -79,6 +116,25 @@ Optional: [correlation](#/math3042/correlation), [categorical data](#/math3042/c
 | [favstats and model formulas](#/math3042-u2/lab2-grouped) | 22 | write `favstats(y ~ g, data = df)` and `bwplot(y ~ g, data = df)` |
 | [Unit 2 sheet](#/math3042-u2/formula-sheet-2) | 8 | recall the class-width recipe |
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `y ~ g` | `~` builds a formula: the numeric variable `y` on the left, the grouping variable `g` on the right. |
+| `data = df` | The data frame the formula's names are looked up in, so no `$` is needed. |
+| `favstats(y ~ g, data = df)` | From mosaic: one row of summary statistics for `y` per group of `g`. |
+| `bwplot(y ~ g, data = df)` | From mosaic: side-by-side boxplots of `y`, one per group. The formula fills its first argument, `x`. |
+
+**Left to right**
+
+- `favstats(y ~ g, data = df)`: "Summary statistics (`favstats`) of y (`y`) split by (`~`) g (`g`) from the data frame df (`data = df`)."
+- `bwplot(y ~ g, data = df)`: "Boxplots (`bwplot`) of y (`y`) split by (`~`) g (`g`) from the data frame df (`data = df`)."
+
+**Right to left**, the order R runs it
+
+- `favstats(y ~ g, data = df)`: "Build the formula y by g (`y ~ g`), look its names up in df (`data = df`), then summarise each group (`favstats`)."
+- `bwplot(y ~ g, data = df)`: "Build the formula y by g (`y ~ g`), look its names up in df (`data = df`), then draw the boxplots (`bwplot`)."
+:::
+
 Optional: [stem-and-leaf](#/math3042-u2/stem-and-leaf), [ogives](#/math3042-u2/cumulative-ogive), [scatter plots](#/math3042-u2/scatter-plots).
 
 | Unit 3: probability | Min | After it you can |
@@ -90,6 +146,22 @@ Optional: [stem-and-leaf](#/math3042-u2/stem-and-leaf), [ogives](#/math3042-u2/c
 | [Bayes](#/math3042-u3/bayes) | 25 | reverse a conditional with a tree |
 | [Simulating with sample()](#/math3042-u3/lab4-simulations) | 28 | write `sample(..., replace = TRUE, prob = ...)` inside a function |
 | [Unit 3 sheet](#/math3042-u3/formula-sheet-3) | 8 | know which rules are given |
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `sample(...` | Draws random values. The first two slots, `x` (the values to draw from) and `size` (how many), are left as `...` here. |
+| `replace = TRUE` | Draws with replacement, so a value can come up again on every draw. |
+| `prob = ...` | One probability per value of `x`, in the same order; left as a placeholder here. |
+
+**Left to right**
+
+- `sample(..., replace = TRUE, prob = ...)`: "Draw a random sample (`sample`) from some values (`...`), with replacement (`replace = TRUE`), using given probabilities (`prob =`)."
+
+**Right to left**, the order R runs it
+
+- `sample(..., replace = TRUE, prob = ...)`: "Take the values and how many (`...`), allow repeats (`replace = TRUE`), attach the probabilities (`prob =`), then draw (`sample`)."
+:::
 
 Optional: [relative frequency](#/math3042-u3/relative-frequency-lln), [the 28 practice problems](#/math3042-u3/practice-problems).
 

@@ -16,6 +16,21 @@ Every piece is a plain sum you can get from a table: $\sum x$, $\sum y$, $\sum x
 r <- cor(X, Y)
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `cor(X, Y)` | Pearson's correlation of two vectors of the same length, paired by position: `X` fills argument `x`, `Y` fills `y`. |
+| `r <- …` | `<-` is assignment: it stores the result under the name `r`. |
+
+**Left to right**
+
+- "Store under the name r (`r <-`) the correlation (`cor`) of X (`X`) with Y (`Y`)."
+
+**Right to left**, the order R runs it
+
+- "Take the two vectors (`X`, `Y`), compute their correlation (`cor`), and store it as r (`r <-`)."
+:::
+
 $r$ is the **sample** statistic. The **population** version is written $\rho$ (rho) — same idea, different symbol, because you rarely have the whole population.
 
 ## Worked example: resistance and failure time

@@ -66,6 +66,28 @@ dpois(20, lambda)
 [1] 0.01341115
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `lambda <- 1/2 * 60` | `<-` is assignment. `/` and `*` run left to right, so this is (1/2) × 60, stored in `lambda`. |
+| `#` | Starts a comment: R ignores the rest of the line. |
+| `lambda^20/factorial(20)*exp(-lambda)` | `^` is a power and runs first; `factorial(20)` is 20!; `exp(-lambda)` is e to the power −λ; `/` and `*` then run left to right. |
+| `dpois(20, lambda)` | `dpois(x, lambda)`: x = 20, lambda = the stored mean for one minute. |
+| `[1]` | R starts each printed line with the position of its first value; `[1]` means value 1. |
+
+**Left to right**
+
+- `lambda <- 1/2 * 60`: "Store under the name lambda (`lambda <-`) one half (`1/2`) times (`*`) 60."
+- `lambda^20/factorial(20)*exp(-lambda)`: "lambda to the power 20 (`lambda^20`) divided by (`/`) 20 factorial (`factorial(20)`) times (`*`) e to the minus lambda (`exp(-lambda)`)."
+- `dpois(20, lambda)`: "The Poisson probability (`dpois`) of exactly 20 requests (`x = 20`) with mean lambda (`lambda`)."
+
+**Right to left**, the order R runs it
+
+- `lambda <- 1/2 * 60`: "Divide 1 by 2 (`1/2`), multiply by 60 (`* 60`), then store it as lambda (`lambda <-`)."
+- `lambda^20/factorial(20)*exp(-lambda)`: "Raise lambda to the 20th (`lambda^20`), divide by 20! (`/factorial(20)`), multiply by e to the minus lambda (`*exp(-lambda)`), and print."
+- `dpois(20, lambda)`: "Take x = 20 and the mean (`lambda`), compute P(X = 20) (`dpois`), and print."
+:::
+
 ## 20 or fewer: a cumulative probability
 
 *What is the probability that 20 or fewer requests will arrive in a given minute?* This is $P(X \le 20) = P(0) + P(1) + \cdots + P(20)$, twenty-one terms of the formula. Nobody adds them by hand; `ppois` does:
@@ -76,6 +98,20 @@ ppois(20, lambda)
 ```text
 [1] 0.03528462
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `ppois(20, lambda)` | `ppois(q, lambda)`: q = 20, giving P(X ≤ 20); `lambda` is the value stored in the block above. |
+
+**Left to right**
+
+- "The Poisson probability of at most (`ppois`) 20 requests (`q = 20`) with mean lambda (`lambda`)."
+
+**Right to left**, the order R runs it
+
+- "Look up lambda (`lambda`), add up P(0) through P(20) (`ppois`, `20`), and print."
+:::
 
 $P(X \le 20) = 0.0353$, almost three times $P(X = 20)$ alone: the terms for 15 to 19 contribute most of the rest.
 
@@ -97,6 +133,32 @@ Z
 ```text
 [1] -1.825742
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `mu <- lambda` | Copies the value of `lambda` into `mu`. |
+| `sig <- sqrt(lambda)` | `sqrt()` is the square root: σ = √λ. |
+| `X <- 20` | Stores the observed count. |
+| `Z <- (X - mu)/sig` | The brackets make the subtraction happen first; `/` then divides by `sig`. |
+| `Z` | A name alone on a line prints its value. |
+
+**Left to right**
+
+- `mu <- lambda`: "Store under the name mu (`mu <-`) the value of lambda (`lambda`)."
+- `sig <- sqrt(lambda)`: "Store under the name sig (`sig <-`) the square root (`sqrt`) of lambda (`lambda`)."
+- `X <- 20`: "Store under the name X (`X <-`) the number 20."
+- `Z <- (X - mu)/sig`: "Store under the name Z (`Z <-`) X minus mu (`X - mu`) divided by (`/`) sig (`sig`)."
+- `Z`: "Show Z (`Z`)."
+
+**Right to left**, the order R runs it
+
+- `mu <- lambda`: "Look up lambda (`lambda`), then store it as mu (`mu <-`)."
+- `sig <- sqrt(lambda)`: "Take the square root of lambda (`sqrt`), then store it as sig (`sig <-`)."
+- `X <- 20`: "Take 20 and store it as X (`X <-`)."
+- `Z <- (X - mu)/sig`: "Subtract mu from X (`X - mu`), divide by sig (`/`), and store it as Z (`Z <-`)."
+- `Z`: "Look up Z (`Z`) and print it."
+:::
 
 ## λ from a rate and an interval
 
@@ -130,6 +192,34 @@ round(p.vals[c(20, 25, 30, 35, 40) + 1], 4)
 ```text
 [1] 0.0134 0.0511 0.0726 0.0453 0.0139
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `X.vals <- 0:80` | `a:b` is the whole numbers from a to b, here 0 to 80. |
+| `p.vals <- dpois(X.vals, lambda)` | x = the whole vector, so one call returns all 81 probabilities. |
+| `barplot(p.vals, …)` | One bar per value; `p.vals` fills `height`. |
+| `names.arg=X.vals` | The labels under the bars: 0 to 80. |
+| `space=0`, `col="pink"` | No gaps between bars, and the bar colour. |
+| `xlab=`, `ylab=`, `main=` | The axis labels and the title, as strings. |
+| `c(20, 25, 30, 35, 40) + 1` | `c()` combines five numbers; `+ 1` adds 1 to each, because slot 1 holds P(0). |
+| `p.vals[ … ]` | `[ ]` picks slots by position, counting from 1; a vector of positions returns those five slots. |
+| `round(…, 4)` | `round(x, digits)`: the five probabilities to 4 decimals. |
+
+**Left to right**
+
+- `X.vals <- 0:80`: "Store under the name X.vals (`X.vals <-`) the whole numbers 0 to 80 (`0:80`)."
+- `p.vals <- dpois(X.vals, lambda)`: "Store under the name p.vals (`p.vals <-`) the Poisson probabilities (`dpois`) of each x in X.vals (`X.vals`) with mean lambda (`lambda`)."
+- `barplot(…)`: "Draw a bar chart (`barplot`) of p.vals (`p.vals`), labelled 0 to 80 (`names.arg=X.vals`), with no gaps (`space=0`), in pink (`col="pink"`), with axis labels (`xlab=`, `ylab=`) and a title (`main=`)."
+- `round(p.vals[c(20, 25, 30, 35, 40) + 1], 4)`: "Round (`round`) to 4 decimals (`4`) the slots of p.vals (`p.vals[ ]`) at 20, 25, 30, 35 and 40 (`c(…)`) plus 1 (`+ 1`)."
+
+**Right to left**, the order R runs it
+
+- `X.vals <- 0:80`: "Make 0 to 80 (`0:80`), then store it as X.vals (`X.vals <-`)."
+- `p.vals <- dpois(X.vals, lambda)`: "Compute P(X = x) for every x in X.vals with mean lambda (`dpois`), and store them as p.vals (`p.vals <-`)."
+- `barplot(…)`: "Take the heights (`p.vals`), labels (`names.arg=X.vals`), no gaps (`space=0`), colour (`col="pink"`) and text labels (`xlab=`, `ylab=`, `main=`), and draw the bars (`barplot`)."
+- `round(p.vals[c(20, 25, 30, 35, 40) + 1], 4)`: "Combine the five counts (`c`), add 1 to each (`+ 1`), pick those slots of p.vals (`p.vals[ ]`), round to 4 decimals (`round`), and print."
+:::
 
 The `+ 1` is because `p.vals[1]` is $P(0)$. The bars rise to a peak at 29 and 30 (equal, because $P(30)/P(29) = 30/30 = 1$), then fall a little more slowly than they rose: bell-shaped and slightly right-skewed, with nothing visible past 50. For a large $\lambda$ the Poisson looks like the binomial histograms of the earlier lessons, centred on $\lambda$ with spread $\sqrt{\lambda}$.
 

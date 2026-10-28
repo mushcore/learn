@@ -24,6 +24,20 @@ Every lecture example in the order it appears: a numeric item first, then the ar
 
 **Number of children.** $\mu = 0(0.4499) + 1(0.2504) + 2(0.2048) + 3(0.0949) = 0.9447 = \mathbf{0.94}$. $\sigma^2 = (0 - 0.94)^2 (0.4499) + (1 - 0.94)^2 (0.2504) + (2 - 0.94)^2 (0.2048) + (3 - 0.94)^2 (0.0949) = 1.03$; $\sigma = \sqrt{1.03} = \mathbf{1.02}$. R: `c(mu, sig)` prints `0.9447 1.0155`.
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `c(mu, sig)` | `c()` combines values into one vector; here the stored mean `mu` and standard deviation `sig`, so both print on one line. |
+
+**Left to right**
+
+- `c(mu, sig)`: "Combine (`c`) the mean (`mu`) and the standard deviation (`sig`)."
+
+**Right to left**, the order R runs it
+
+- `c(mu, sig)`: "Look up mu and sig (`mu`, `sig`), put them in one vector (`c`), and print it."
+:::
+
 ```quiz
 [
   { "q": "Two fair dice, $X$ = the minimum of the two values, so $P(x) = 11/36, 9/36, 7/36, 5/36, 3/36, 1/36$ for $x = 1 \\ldots 6$. The minimum of two dice: $\\mu$ = ? (2 decimals)", "type": "numeric", "answer": 2.53, "tolerance": 0.01, "explain": "(1·11 + 2·9 + 3·7 + 4·5 + 5·3 + 6·1)/36 = 91/36 = 2.53. The 11 cells with minimum 1 are the top row and left column of the 6 × 6 grid; each later L-shape has two fewer cells." },
@@ -45,6 +59,20 @@ Every lecture example in the order it appears: a numeric item first, then the ar
 
 **$P(X = 6)$ for the shoppers.** Conditions: fixed $n = 50$, sale or no sale, the same $p = 0.25$ for every visitor, visitors independent. $P(6) = C(50, 6)\,0.25^6\,0.75^{44} = 15\,890\,700 \times 2.441 \times 10^{-4} \times 3.18 \times 10^{-6} = \mathbf{0.0123}$. R: `dbinom(6, 50, 0.25)` prints `0.01234465`.
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dbinom(6, 50, 0.25)` | `dbinom(x, size, prob)`, the binomial P(X = x): x = 6, size = 50 (n), prob = 0.25 (p). |
+
+**Left to right**
+
+- `dbinom(6, 50, 0.25)`: "The binomial probability of exactly (`dbinom`) 6 sales (`x = 6`) among 50 visitors (`size = 50`) at 0.25 each (`prob = 0.25`)."
+
+**Right to left**, the order R runs it
+
+- `dbinom(6, 50, 0.25)`: "Take x = 6, size = 50 and prob = 0.25, compute P(X = 6) (`dbinom`), and print it."
+:::
+
 ```quiz
 [
   { "q": "A fair die is rolled 5 times, $X$ = the number of 3s. $P(X = 0)$ for the number of 3s = ? (4 decimals)", "type": "numeric", "answer": 0.4019, "tolerance": 0.0001, "explain": "(5/6)^5 = 0.4019: every roll misses. C(5, 0) = 1 and (1/6)^0 = 1, so the formula collapses to q^n." },
@@ -54,6 +82,21 @@ Every lecture example in the order it appears: a numeric item first, then the ar
 
 **Rolling 3s, $n = 5$.** Check the conditions: five rolls, fixed; each roll is a 3 or not; $p = 1/6$ on every roll; rolls independent. Distribution: $P(0) = (5/6)^5 = 0.4019$, $P(1) = C(5,1)(1/6)(5/6)^4 = 0.4019$, $P(2) = C(5,2)(1/6)^2(5/6)^3 = 0.1608$, $P(3) = 0.0322$, $P(4) = 0.0032$, $P(5) = 0.0001$ (sum 1.0001 by rounding). R: `dbinom(0:5, 5, 1/6)`.
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `0:5` | `a:b` is the whole numbers from a to b, so x is the six values 0 to 5 at once. |
+| `dbinom(0:5, 5, 1/6)` | x = 0:5, size = 5 rolls (n), prob = 1/6 (p): returns all six probabilities in one vector. |
+
+**Left to right**
+
+- `dbinom(0:5, 5, 1/6)`: "The binomial probabilities (`dbinom`) of 0 to 5 threes (`0:5`) in 5 rolls (`size = 5`) at 1/6 each (`prob = 1/6`)."
+
+**Right to left**, the order R runs it
+
+- `dbinom(0:5, 5, 1/6)`: "Make 0 to 5 (`0:5`), divide 1 by 6 (`1/6`), compute P(X = x) for each of the six x values (`dbinom`), and print them."
+:::
+
 ```quiz
 [
   { "q": "Five cards drawn **with** replacement. P(exactly 2 Jacks) = ? (4 decimals)", "type": "numeric", "answer": 0.0465, "tolerance": 0.0001, "explain": "Binomial with n = 5, p = 4/52: C(5, 2)(4/52)²(48/52)³ = 10 × 0.005917 × 0.7865 = 0.0465. Replacement keeps p at 4/52 on every draw." },
@@ -62,6 +105,23 @@ Every lecture example in the order it appears: a numeric item first, then the ar
 ```
 
 **Jacks with replacement.** $P(X = 2) = C(5,2)\,(4/52)^2\,(48/52)^3 = \mathbf{0.0465}$; $P(X \ge 2) = 1 - (48/52)^5 - 5\,(4/52)(48/52)^4 = 1 - 0.6702 - 0.2792 = \mathbf{0.0506}$. R: `dbinom(2, 5, 4/52)` prints `0.04654006`; `1 - pbinom(1, 5, 4/52)` prints `0.05058269`.
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dbinom(2, 5, 4/52)` | x = 2 jacks, size = 5 cards (n), prob = 4/52 (p). |
+| `1 - pbinom(1, 5, 4/52)` | `pbinom(q, size, prob)` is P(X ≤ q), here q = 1; `1 -` subtracts it from 1, giving P(X ≥ 2). |
+
+**Left to right**
+
+- `dbinom(2, 5, 4/52)`: "The binomial probability of exactly (`dbinom`) 2 jacks (`x = 2`) in 5 cards (`size = 5`) at 4/52 (`prob = 4/52`)."
+- `1 - pbinom(1, 5, 4/52)`: "One minus (`1 -`) the probability of at most (`pbinom`) 1 jack (`q = 1`) in 5 cards (`size = 5`) at 4/52 (`prob = 4/52`)."
+
+**Right to left**, the order R runs it
+
+- `dbinom(2, 5, 4/52)`: "Divide 4 by 52 (`4/52`), compute P(X = 2) for size 5 (`dbinom`), and print."
+- `1 - pbinom(1, 5, 4/52)`: "Divide 4 by 52 (`4/52`), compute P(X ≤ 1) (`pbinom`), subtract it from 1 (`1 -`), and print."
+:::
 
 ```quiz
 [
@@ -80,6 +140,20 @@ Every lecture example in the order it appears: a numeric item first, then the ar
 
 **Laser printers.** (a) $\mu = 200(0.1) = \mathbf{20}$, $\sigma = \sqrt{200(0.1)(0.9)} = \sqrt{18} = \mathbf{4.24}$. (b) $Z = (14 - 20)/4.24 = \mathbf{-1.41}$: within $\pm 2$, **not unusual** (tail check: `pbinom(14, 200, 0.1)` = 0.093, above 0.025). (c) Good evidence of improvement? **No**: 14 repairs is what chance produces under the old rate. R: `Z` prints `-1.414214`.
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `pbinom(14, 200, 0.1)` | `pbinom(q, size, prob)`: q = 14, size = 200 (n), prob = 0.1 (p). It returns P(X ≤ 14), the left tail. |
+
+**Left to right**
+
+- `pbinom(14, 200, 0.1)`: "The binomial probability of at most (`pbinom`) 14 repairs (`q = 14`) among 200 printers (`size = 200`) at 0.1 each (`prob = 0.1`)."
+
+**Right to left**, the order R runs it
+
+- `pbinom(14, 200, 0.1)`: "Take q = 14, size = 200 and prob = 0.1, add up P(0) through P(14) (`pbinom`), and print."
+:::
+
 ## 4.3 Hypergeometric distribution
 
 ```quiz
@@ -90,6 +164,23 @@ Every lecture example in the order it appears: a numeric item first, then the ar
 ```
 
 **Jacks: hypergeometric vs binomial.** $P(X = 2) = \dfrac{C(4,2)\,C(48,3)}{C(52,5)} = \dfrac{6 \times 17\,296}{2\,598\,960} = \mathbf{0.0399}$ (`dhyper(2, 4, 48, 5)` prints `0.03992982`), against the with-replacement $\mathbf{0.0465}$. **Superdeck**: $\dfrac{C(40,2)\,C(480,3)}{C(520,5)} = \mathbf{0.0460}$ (`dhyper(2, 40, 480, 5)` prints `0.04597`); binomial with $p = 40/520 = 4/52$ is still $0.0465$. The gap closed because $n/N$ fell from $5/52 = 9.6\%$ to $5/520 = 0.96\%$: the 5 % rule.
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dhyper(2, 4, 48, 5)` | `dhyper(x, m, n, k)`: x = 2 jacks, m = 4 jacks in the deck, n = 48 non-jacks, k = 5 cards drawn. R's `n` is the failures, not the sample size. |
+| `dhyper(2, 40, 480, 5)` | The same slots for the superdeck: m = 40 jacks, n = 480 non-jacks, k = 5. |
+
+**Left to right**
+
+- `dhyper(2, 4, 48, 5)`: "The hypergeometric probability (`dhyper`) of 2 jacks (`x = 2`) from a deck with 4 jacks (`m = 4`) and 48 other cards (`n = 48`) when 5 are drawn (`k = 5`)."
+- `dhyper(2, 40, 480, 5)`: "The hypergeometric probability (`dhyper`) of 2 jacks (`x = 2`) from 40 jacks (`m = 40`) and 480 other cards (`n = 480`) when 5 are drawn (`k = 5`)."
+
+**Right to left**, the order R runs it
+
+- `dhyper(2, 4, 48, 5)`: "Take x = 2, m = 4, n = 48 and k = 5, compute P(X = 2) (`dhyper`), and print."
+- `dhyper(2, 40, 480, 5)`: "Take x = 2, m = 40, n = 480 and k = 5, compute P(X = 2) (`dhyper`), and print."
+:::
 
 ```quiz
 [
@@ -102,6 +193,29 @@ Every lecture example in the order it appears: a numeric item first, then the ar
 ```
 
 **Mac users, $N = 90$, $K = 40$, $n = 10$.** (a) $P(X = 4) = \dfrac{C(40,4)\,C(50,6)}{C(90,10)} = \dfrac{91\,390 \times 15\,890\,700}{5.7206 \times 10^{12}} = \mathbf{0.2539}$ (`dhyper(4, 40, 50, 10)` prints `0.2538614`). (b) $P(X \le 4) = 0.0018 + 0.0175 + 0.0732 + 0.1725 + 0.2539 = \mathbf{0.5189}$ (`phyper(4, 40, 50, 10)` prints `0.5188862`). (c) $\mu = 10 \cdot \tfrac{40}{90} = \mathbf{4.44}$; $\sigma^2 = 10 \cdot \tfrac{40}{90} \cdot \tfrac{50}{90} \cdot \tfrac{80}{89} = 2.2194$, $\sigma = \mathbf{1.49}$ (`c(mu, sig)` prints `4.4444 1.4898`). (d) The histogram peaks at 4 (0.2539) then 5 (0.2437). (e) $Z = (8 - 4.44)/1.49 = \mathbf{2.39}$, beyond 2: **unusual** (`1 - phyper(7, 40, 50, 10)` = 0.019).
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dhyper(4, 40, 50, 10)` | x = 4, m = 40 Mac users, n = 50 others (R's n is the failures), k = 10 sampled. |
+| `phyper(4, 40, 50, 10)` | `phyper(q, m, n, k)`: the same slots with q = 4, giving P(X ≤ 4). |
+| `c(mu, sig)` | `c()` combines the stored `mu` and `sig` so they print on one line. |
+| `1 - phyper(7, 40, 50, 10)` | P(X ≤ 7) subtracted from 1 (`1 -`): P(X ≥ 8), the right tail. |
+
+**Left to right**
+
+- `dhyper(4, 40, 50, 10)`: "The hypergeometric probability (`dhyper`) of 4 Mac users (`x = 4`) with 40 Mac users (`m = 40`) and 50 others (`n = 50`) in the class and 10 sampled (`k = 10`)."
+- `phyper(4, 40, 50, 10)`: "The probability of at most (`phyper`) 4 Mac users (`q = 4`) with the same 40, 50 and 10 (`m`, `n`, `k`)."
+- `c(mu, sig)`: "Combine (`c`) mu and sig (`mu`, `sig`)."
+- `1 - phyper(7, 40, 50, 10)`: "One minus (`1 -`) the probability of at most (`phyper`) 7 Mac users (`q = 7`) with 40, 50 and 10 (`m`, `n`, `k`)."
+
+**Right to left**, the order R runs it
+
+- `dhyper(4, 40, 50, 10)`: "Take x, m, n and k, compute P(X = 4) (`dhyper`), and print."
+- `phyper(4, 40, 50, 10)`: "Take q, m, n and k, add up P(0) through P(4) (`phyper`), and print."
+- `c(mu, sig)`: "Look up mu and sig (`mu`, `sig`), put them in one vector (`c`), and print."
+- `1 - phyper(7, 40, 50, 10)`: "Add up P(0) through P(7) (`phyper`), subtract from 1 (`1 -`), and print."
+:::
 
 ## 4.4 Geometric distribution
 
@@ -116,6 +230,23 @@ Every lecture example in the order it appears: a numeric item first, then the ar
 
 **Help line, $p = 0.25$.** $P(3) = 0.75 \cdot 0.75 \cdot 0.25 = \mathbf{0.1406}$. $E[X] = 1/0.25 = \mathbf{4}$ calls; $\sigma = \sqrt{0.75/0.25^2} = \sqrt{12} = \mathbf{3.46}$. $P(X \ge 4) = 1 - 0.25 - 0.1875 - 0.1406 = \mathbf{0.4219} = 0.75^3$. R counts failures before the first success, so the lecture's $x$ is R's $x - 1$: `dgeom(2, 0.25)` prints `0.140625`; `1 - pgeom(2, 0.25)` prints `0.421875`. The histogram, 0.25, 0.1875, 0.1406, 0.1055, 0.0791, … always decreasing, so the mode is 1 even though the mean is 4.
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dgeom(2, 0.25)` | `dgeom(x, prob)`: x = 2 failures before the first success, prob = 0.25, which is the lecture's P(X = 3). |
+| `1 - pgeom(2, 0.25)` | `pgeom(q, prob)` with q = 2 is the chance of at most 2 failures; `1 -` takes the complement. |
+
+**Left to right**
+
+- `dgeom(2, 0.25)`: "The geometric probability (`dgeom`) of exactly 2 failures before the first success (`x = 2`) at 0.25 per call (`prob = 0.25`)."
+- `1 - pgeom(2, 0.25)`: "One minus (`1 -`) the probability of at most (`pgeom`) 2 failures (`q = 2`) at 0.25 per call (`prob = 0.25`)."
+
+**Right to left**, the order R runs it
+
+- `dgeom(2, 0.25)`: "Take x = 2 and prob = 0.25, compute the chance of 2 failures then a success (`dgeom`), and print."
+- `1 - pgeom(2, 0.25)`: "Compute the chance of at most 2 failures (`pgeom`), subtract it from 1 (`1 -`), and print."
+:::
+
 ## 4.5 Poisson distribution
 
 ```quiz
@@ -128,6 +259,29 @@ Every lecture example in the order it appears: a numeric item first, then the ar
 ```
 
 **Web server.** $\lambda = 60/2 = \mathbf{30}$ per minute (`lambda <- 1/2 * 60`). $P(X = 20) = \dfrac{30^{20}}{20!} e^{-30} = \mathbf{0.0134}$ (`dpois(20, lambda)` prints `0.01341115`). $P(X \le 20) = \mathbf{0.0353}$ (`ppois(20, lambda)` prints `0.03528462`). Unusual? $\mu = 30$, $\sigma = \sqrt{30} = 5.48$, $Z = (20 - 30)/5.48 = \mathbf{-1.83}$: **not unusual**. The histogram `dpois(0:80, 30)` peaks at 29 and 30 (0.0726 each), bell-shaped with a slight right skew.
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `lambda <- 1/2 * 60` | `<-` is assignment. `/` and `*` run left to right, (1/2) × 60, and the result is stored as `lambda`. |
+| `dpois(20, lambda)` | `dpois(x, lambda)`: x = 20, lambda = the stored mean per minute. |
+| `ppois(20, lambda)` | `ppois(q, lambda)`: q = 20, giving P(X ≤ 20). |
+| `dpois(0:80, 30)` | `0:80` is the whole numbers 0 to 80, so x is 81 values at once, with lambda = 30. |
+
+**Left to right**
+
+- `lambda <- 1/2 * 60`: "Store under the name lambda (`lambda <-`) one half (`1/2`) times (`*`) 60."
+- `dpois(20, lambda)`: "The Poisson probability of exactly (`dpois`) 20 requests (`x = 20`) with mean lambda (`lambda`)."
+- `ppois(20, lambda)`: "The Poisson probability of at most (`ppois`) 20 requests (`q = 20`) with mean lambda (`lambda`)."
+- `dpois(0:80, 30)`: "The Poisson probabilities (`dpois`) of 0 to 80 requests (`0:80`) with mean 30 (`lambda = 30`)."
+
+**Right to left**, the order R runs it
+
+- `lambda <- 1/2 * 60`: "Divide 1 by 2 (`1/2`), multiply by 60 (`* 60`), then store it as lambda (`lambda <-`)."
+- `dpois(20, lambda)`: "Look up lambda (`lambda`), compute P(X = 20) (`dpois`), and print."
+- `ppois(20, lambda)`: "Look up lambda (`lambda`), add up P(0) through P(20) (`ppois`), and print."
+- `dpois(0:80, 30)`: "Make 0 to 80 (`0:80`), compute P(X = x) for each with mean 30 (`dpois`), and print the 81 values."
+:::
 
 :::info A complete answer line
 Name the distribution and check its conditions, write the formula with the numbers substituted, show the arithmetic, and give 4 decimals for a probability and 2 for $\mu$, $\sigma$ or $Z$: $C(40,4)\,C(50,6)/C(90,10) = 0.2539$, not a bare 0.2539.

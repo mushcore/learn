@@ -70,6 +70,34 @@ max(X.vals)
 [1] 0.754
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `X.vals <- c(0.754, …, 0.752)` | `c()` combines the 18 values into one vector; `<-` stores it as `X.vals`. The call continues onto the second line. |
+| `n <- length(X.vals)` | `length()` counts the elements of the vector. |
+| `(max(X.vals)-min(X.vals))/sqrt(n)` | `max()` and `min()` are the largest and smallest values, `-` subtracts, `/` divides, `sqrt()` is the square root. Parentheses force the subtraction first. |
+| `ideal.width <- …` | Stores the ideal width; assignment prints nothing. |
+| `round(ideal.width, 3)` | Fills x = `ideal.width`, digits = 3, and prints the rounded width. |
+| `min(X.vals)`, `max(X.vals)` | Each prints one value, the smallest and then the largest. |
+| `[1]` | In printed output, `[1]` is the position of the first value on that line, not part of the value. |
+
+**Left to right**
+
+- `X.vals <- c(0.754, …, 0.752)`: "Store under the name X.vals (`X.vals <-`) the 18 thicknesses combined into one vector (`c`)."
+- `n <- length(X.vals)`: "Store as n (`n <-`) the number of elements (`length`) of the thicknesses (`X.vals`)."
+- `ideal.width <- …`: "Store as ideal.width (`ideal.width <-`) the largest value (`max`) minus (`-`) the smallest (`min`), divided by (`/`) the square root (`sqrt`) of n (`n`)."
+- `round(ideal.width, 3)`: "Print, rounded (`round`) to 3 decimals (`3`), the ideal width (`ideal.width`)."
+- `min(X.vals)`, `max(X.vals)`: "Print the smallest (`min`), then the largest (`max`), of the thicknesses (`X.vals`)."
+
+**Right to left**, the order R runs it
+
+- `X.vals <- c(0.754, …, 0.752)`: "Combine the 18 numbers into a vector (`c`) and store it (`X.vals <-`)."
+- `n <- length(X.vals)`: "Look up the vector (`X.vals`), count its elements (`length`), and store the count (`n <-`)."
+- `ideal.width <- …`: "Find the largest and smallest values (`max`, `min`), subtract inside the parentheses (`-`), take the square root of n (`sqrt(n)`), divide (`/`), and store the result (`ideal.width <-`)."
+- `round(ideal.width, 3)`: "Look up the ideal width (`ideal.width`), round it to 3 decimals (`round`), and print it."
+- `min(X.vals)`, `max(X.vals)`: "Look up the vector (`X.vals`), find its smallest (`min`) and print it, then its largest (`max`) and print it."
+:::
+
 ```r
 lower.limits <- seq(0.730, 0.750, by=0.005)
 upper.limits <- lower.limits + 0.005 - 0.001
@@ -86,6 +114,37 @@ freq.dist
 [0.745,0.75)         0.745        0.749 4 0.222
 [0.75,0.755)         0.750        0.754 7 0.389
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `lower.limits <- seq(0.730, 0.750, by=0.005)` | `seq()` fills from = 0.730, to = 0.750, by = 0.005: the five lower limits. |
+| `upper.limits <- lower.limits + 0.005 - 0.001` | Arithmetic on a vector applies to every element: each lower limit plus the width minus one unit. |
+| `cut( X.vals, breaks=seq(0.730, 0.755, by=0.005), right=FALSE)` | Replaces each value with its class label; `breaks=` lists the six boundaries, and `right=FALSE` closes each class on the left. |
+| `table( … )` | Counts how many values fall in each class. |
+| `freqs <- cbind( … )` | `cbind()` turns the counts into a one-column matrix whose row names are the class labels. |
+| `rel.freqs <- round(freqs / n, 3);` | Divides every count by n and rounds to 3 decimals. The `;` ends a statement and is optional at a line end. |
+| `freq.dist <- cbind( lower.limits, upper.limits, freqs, rel.freqs)` | Binds the four as side-by-side columns. The two vectors take their variable names as column headings; the two matrices have no column names, so those headings are blank. |
+| `freq.dist` | A name on its own line prints it: one row per class, labelled by its `[lower,upper)` interval. |
+
+**Left to right**
+
+- `lower.limits <- seq(…)`: "Store as lower.limits (`lower.limits <-`) the sequence (`seq`) from 0.730 to 0.750 in steps of 0.005 (`by=0.005`)."
+- `upper.limits <- …`: "Store as upper.limits (`upper.limits <-`) each lower limit (`lower.limits`) plus (`+`) the width 0.005 minus (`-`) one unit 0.001."
+- `freqs <- cbind(table(cut(…)))`: "Store as freqs (`freqs <-`) a one-column matrix (`cbind`) of the count per class (`table`) of the thicknesses (`X.vals`) sorted into classes (`cut`) with boundaries from 0.730 to 0.755 by 0.005 (`breaks=seq(…)`), closed on the left (`right=FALSE`)."
+- `rel.freqs <- round(freqs / n, 3);`: "Store as rel.freqs (`rel.freqs <-`) the counts (`freqs`) divided by (`/`) n (`n`), rounded (`round`) to 3 decimals, ending the statement (`;`)."
+- `freq.dist <- cbind(…)`: "Store as freq.dist (`freq.dist <-`) the columns bound side by side (`cbind`): lower limits, upper limits, counts and relative frequencies (`lower.limits, upper.limits, freqs, rel.freqs`)."
+- `freq.dist`: "Print the frequency distribution (`freq.dist`)."
+
+**Right to left**, the order R runs it
+
+- `lower.limits <- seq(…)`: "Build the sequence 0.730 to 0.750 by 0.005 (`seq`) and store it (`lower.limits <-`)."
+- `upper.limits <- …`: "Take the lower limits (`lower.limits`), add 0.005 and subtract 0.001 from each (`+`, `-`), and store the result (`upper.limits <-`)."
+- `freqs <- cbind(table(cut(…)))`: "Build the boundaries (`seq`), label each thickness with its left-closed class (`cut`, `right=FALSE`), count each class (`table`), bind the counts as a column (`cbind`), and store it (`freqs <-`)."
+- `rel.freqs <- round(freqs / n, 3);`: "Divide each count by n (`freqs / n`), round to 3 decimals (`round`), and store the result (`rel.freqs <-`)."
+- `freq.dist <- cbind(…)`: "Look up the four pieces (`lower.limits`, `upper.limits`, `freqs`, `rel.freqs`), bind them as columns (`cbind`), and store the table (`freq.dist <-`)."
+- `freq.dist`: "Look up freq.dist (`freq.dist`) and print it."
+:::
 
 `breaks=seq(0.730, 0.755, by=0.005)` lists the boundaries and `right=FALSE` makes each class $[\text{lower}, \text{next lower})$, which is why R labels them `[0.73,0.735)`. The table's upper limit 0.734 is the last possible data value inside that class.
 
@@ -209,6 +268,48 @@ sum(is.outlier)
 5945.455 6635.735
 [1] 0
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `X.gold <- c(6195.20, …, 6127.91)` | `c()` combines the ten prices into one vector, stored as `X.gold`. |
+| `R <- max(X.gold) - min(X.gold)` | The range; R is case-sensitive, so the name `R` is just a variable. |
+| `R` | A name on its own line prints its value. |
+| `Q1 <- quantile(X.gold, 0.25)`, `Q3 <- quantile(X.gold, 0.75)` | `quantile()` fills x = `X.gold`, probs = 0.25 or 0.75, with R's default interpolation. The result keeps a name like `25%`. |
+| `IQR(X.gold)` | Prints Q3 minus Q1, computed the same way. |
+| `lower.fence <- Q1 - 1.5*IQR(X.gold)` | `*` multiplies: Q1 minus 1.5 IQR. The name `25%` carries over from `Q1`. |
+| `upper.fence <- Q3 + 1.5*IQR(X.gold)` | Q3 plus 1.5 IQR, keeping the name `75%`. |
+| `c(lower.fence, upper.fence)` | Combines the two fences and prints them under their carried names. |
+| `(X.gold < lower.fence) \| (X.gold > upper.fence)` | `<` and `>` compare every price, giving TRUE or FALSE each; `\|` is "or", TRUE where either side is TRUE. |
+| `is.outlier <- …` | Stores the ten TRUE/FALSE values. |
+| `sum(is.outlier)` | `sum()` counts each TRUE as 1 and FALSE as 0, so it prints the number of outliers. |
+
+**Left to right**
+
+- `X.gold <- c(…)`: "Store under the name X.gold (`X.gold <-`) the ten prices combined into one vector (`c`)."
+- `R <- max(X.gold) - min(X.gold)`: "Store as R (`R <-`) the largest price (`max(X.gold)`) minus (`-`) the smallest (`min(X.gold)`)."
+- `R`: "Print the range (`R`)."
+- `Q1 <- …`, `Q3 <- …`: "Store as Q1 (`Q1 <-`) the 25th percentile (`quantile`, `0.25`) of the prices (`X.gold`), and as Q3 (`Q3 <-`) the 75th (`0.75`)."
+- `IQR(X.gold)`: "Print the interquartile range (`IQR`) of the prices (`X.gold`)."
+- `lower.fence <- …`: "Store as lower.fence (`lower.fence <-`) Q1 (`Q1`) minus (`-`) 1.5 times (`*`) the IQR (`IQR(X.gold)`)."
+- `upper.fence <- …`: "Store as upper.fence (`upper.fence <-`) Q3 (`Q3`) plus (`+`) 1.5 times (`*`) the IQR (`IQR(X.gold)`)."
+- `c(lower.fence, upper.fence)`: "Print the two fences combined (`c`)."
+- `is.outlier <- …`: "Store as is.outlier (`is.outlier <-`), for each price, whether it is below the lower fence (`X.gold < lower.fence`) or (`|`) above the upper fence (`X.gold > upper.fence`)."
+- `sum(is.outlier)`: "Print the number of TRUE values (`sum`) in is.outlier (`is.outlier`)."
+
+**Right to left**, the order R runs it
+
+- `X.gold <- c(…)`: "Combine the ten numbers (`c`) and store them (`X.gold <-`)."
+- `R <- max(X.gold) - min(X.gold)`: "Find the largest and smallest prices (`max`, `min`), subtract (`-`), and store the range (`R <-`)."
+- `R`: "Look up R (`R`) and print it."
+- `Q1 <- …`, `Q3 <- …`: "Compute the 0.25 and 0.75 quantiles of the prices (`quantile`) and store them (`Q1 <-`, `Q3 <-`)."
+- `IQR(X.gold)`: "Look up the prices (`X.gold`), compute Q3 minus Q1 (`IQR`), and print it."
+- `lower.fence <- …`: "Compute the IQR (`IQR(X.gold)`), multiply by 1.5 (`*`), subtract from Q1 (`-`), and store it (`lower.fence <-`)."
+- `upper.fence <- …`: "Compute the IQR (`IQR(X.gold)`), multiply by 1.5 (`*`), add to Q3 (`+`), and store it (`upper.fence <-`)."
+- `c(lower.fence, upper.fence)`: "Look up both fences, combine them (`c`), and print them."
+- `is.outlier <- …`: "Compare every price with each fence (`<`, `>`), join the two results with or (`|`), and store the TRUE/FALSE values (`is.outlier <-`)."
+- `sum(is.outlier)`: "Look up the TRUE/FALSE values (`is.outlier`), add them up as 1s and 0s (`sum`), and print the count."
+:::
 
 The `25%` and `75%` labels on the fences are names carried along from `quantile()`; the numbers are the fences.
 

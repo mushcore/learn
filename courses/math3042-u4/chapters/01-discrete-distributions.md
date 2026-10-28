@@ -43,6 +43,37 @@ cbind(p.vals)
 [4,] 0.0949
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `X.vals <- c(0,1,2,3)` | `<-` is assignment: it stores a value under a name. `c()` combines values into one vector, here the four x values. The dot is part of the name. |
+| `N.vals <- c(4978190, 2770850, 2266190, 1049870)` | Stores the four family counts as one vector. |
+| `N.vals / sum(N.vals)` | `sum()` adds the whole vector; `/` then divides every count by that total at once. |
+| `round(…, 4)` | `round(x, digits)`: x is the vector of proportions, digits = 4 decimal places. |
+| `barplot(p.vals, …)` | Draws one bar per value in `p.vals`; the first argument, `height`, is the bar heights. |
+| `names.arg=X.vals` | The labels printed under the bars: 0 to 3. |
+| `space=0` | No gap between bars, so they touch like a histogram. |
+| `xlab=`, `ylab=`, `main=` | The x-axis label, the y-axis label and the title, each a string in quotes. |
+| `cbind(p.vals)` | `cbind()` binds vectors as columns; one vector gives a one-column matrix headed by the vector's name. |
+| `[1,]` | In a printed matrix, `[1,]` labels row 1; the empty place after the comma means every column. |
+
+**Left to right**
+
+- `X.vals <- c(0,1,2,3)`: "Store under the name X.vals (`X.vals <-`) the combination (`c`) of 0, 1, 2 and 3."
+- `N.vals <- c(…)`: "Store under the name N.vals (`N.vals <-`) the combination (`c`) of the four family counts."
+- `p.vals <- round(N.vals / sum(N.vals), 4)`: "Store under the name p.vals (`p.vals <-`) the rounding (`round`) of each count (`N.vals`) divided by (`/`) the total (`sum`) of the counts (`N.vals`), to 4 decimals (`4`)."
+- `barplot(…)`: "Draw a bar chart (`barplot`) of the heights p.vals (`p.vals`), labelled 0 to 3 (`names.arg=X.vals`), with no gaps (`space=0`), an x-axis label (`xlab=`), a y-axis label (`ylab=`) and a title (`main=`)."
+- `cbind(p.vals)`: "Bind as a column (`cbind`) the proportions (`p.vals`)."
+
+**Right to left**, the order R runs it
+
+- `X.vals <- c(0,1,2,3)`: "Combine 0, 1, 2 and 3 into a vector (`c`), then store it as X.vals (`X.vals <-`)."
+- `N.vals <- c(…)`: "Combine the four counts into a vector (`c`), then store it as N.vals (`N.vals <-`)."
+- `p.vals <- round(N.vals / sum(N.vals), 4)`: "Take the counts (`N.vals`), add them up (`sum`), divide each count by that total (`/`), round to 4 decimals (`round`, `4`), and store the result as p.vals (`p.vals <-`)."
+- `barplot(…)`: "Take the heights (`p.vals`), the labels (`names.arg=X.vals`), no gaps (`space=0`) and the three text labels (`xlab=`, `ylab=`, `main=`), and draw the bars (`barplot`)."
+- `cbind(p.vals)`: "Take the proportions (`p.vals`), make them a one-column matrix (`cbind`), and print it."
+:::
+
 ## The parameters: μ is the expected value, σ the standard deviation
 
 *The mean and standard deviation of a random variable $X$ are called the parameters of its probability distribution.*
@@ -50,6 +81,23 @@ cbind(p.vals)
 The notes start from a fair six-sided die. `sample(1:6, 100, replace=TRUE)` gave 100 rolls whose mean was `sum(X.vals) / 100` = **3.38**. For *all possible* rolls, each face carries probability $\frac16$:
 
 $$\mu = \tfrac16 \cdot 1 + \tfrac16 \cdot 2 + \tfrac16 \cdot 3 + \tfrac16 \cdot 4 + \tfrac16 \cdot 5 + \tfrac16 \cdot 6 = \tfrac{21}{6} = 3.5$$
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `sample(1:6, 100, replace=TRUE)` | `sample(x, size, replace)`: x = the faces 1 to 6 (`a:b` counts by 1), size = 100 rolls, and `replace=TRUE` lets a face come up again. |
+| `sum(X.vals) / 100` | `sum()` adds the 100 stored rolls; `/` divides by 100, giving their mean. |
+
+**Left to right**
+
+- `sample(1:6, 100, replace=TRUE)`: "A random sample (`sample`) from the faces 1 to 6 (`1:6`) of 100 values (`size = 100`), with repeats allowed (`replace=TRUE`)."
+- `sum(X.vals) / 100`: "The total (`sum`) of the rolls (`X.vals`) divided by (`/`) 100."
+
+**Right to left**, the order R runs it
+
+- `sample(1:6, 100, replace=TRUE)`: "Make the faces 1 to 6 (`1:6`), draw 100 of them with replacement (`sample`, `replace=TRUE`), and return the rolls."
+- `sum(X.vals) / 100`: "Take the rolls (`X.vals`), add them (`sum`), and divide by 100 (`/`)."
+:::
 
 The instructor's bubble: the sample mean $\dfrac{N_1 \cdot 1 + N_2 \cdot 2 + \cdots}{N}$ is the same weighted sum with relative frequencies $N_i/N$ in place of $\frac16$. As $N$ grows, $\bar{X}$ settles at $\mu$; 3.38 is one sample's estimate of 3.5.
 
@@ -90,6 +138,35 @@ c(mu, sig)
 [1] 4.4166667 0.6400955
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `X.vals <- c(4, 5, 6)` | Replaces the old `X.vals` with the three affix counts. |
+| `p.vals <- c(8, 3, 1) / 12` | `/` divides each weight by 12, giving the three probabilities. |
+| `X.vals * p.vals` | `*` multiplies the two vectors slot by slot: each x times its P(x). |
+| `mu <- sum( … )` | Adds the three products and stores the result in `mu`. Spaces inside the brackets are optional. |
+| `sig = sqrt( … )` | `=` assigns, like `<-`. `sqrt()` takes the square root of everything inside, once. |
+| `(X.vals - mu)^2` | `-` subtracts `mu` from every x; `^` raises to a power, so `^2` squares each difference. |
+| `c(mu, sig)` | Puts the two numbers in one vector so they print on one line. |
+| `[1]` | R starts each printed line with the position of its first value; `[1]` means the line begins at value 1. |
+
+**Left to right**
+
+- `X.vals <- c(4, 5, 6)`: "Store under the name X.vals (`X.vals <-`) the combination (`c`) of 4, 5 and 6."
+- `p.vals <- c(8, 3, 1) / 12`: "Store under the name p.vals (`p.vals <-`) the combination (`c`) of 8, 3 and 1, each divided by (`/`) 12."
+- `mu <- sum( X.vals * p.vals )`: "Store under the name mu (`mu <-`) the total (`sum`) of each value (`X.vals`) times (`*`) its probability (`p.vals`)."
+- `sig = sqrt( sum((X.vals - mu)^2 * p.vals) )`: "Store under the name sig (`sig =`) the square root (`sqrt`) of the total (`sum`) of each value (`X.vals`) minus (`-`) the mean (`mu`), squared (`^2`), times (`*`) its probability (`p.vals`)."
+- `c(mu, sig)`: "Combine (`c`) the mean (`mu`) and the standard deviation (`sig`)."
+
+**Right to left**, the order R runs it
+
+- `X.vals <- c(4, 5, 6)`: "Combine 4, 5 and 6 (`c`), then store the vector as X.vals (`X.vals <-`)."
+- `p.vals <- c(8, 3, 1) / 12`: "Combine 8, 3 and 1 (`c`), divide each by 12 (`/`), then store the result as p.vals (`p.vals <-`)."
+- `mu <- sum( X.vals * p.vals )`: "Multiply each value (`X.vals`) by its probability (`*`, `p.vals`), add the products (`sum`), then store the total as mu (`mu <-`)."
+- `sig = sqrt( sum((X.vals - mu)^2 * p.vals) )`: "Subtract the mean (`mu`) from each value (`X.vals`, `-`), square each difference (`^2`), multiply by the probabilities (`*`, `p.vals`), add them (`sum`), take the square root (`sqrt`), then store it as sig (`sig =`)."
+- `c(mu, sig)`: "Take mu (`mu`) and sig (`sig`), put them in one vector (`c`), and print it."
+:::
+
 ### The Chaos Orb table: the sum check, the bars, and μ and σ term by term
 
 ```widget
@@ -124,6 +201,8 @@ pmf-table
 ```
 
 ```r
+X.vals <- c(0,1,2,3)                          # the family table again:
+p.vals <- c(0.4499, 0.2504, 0.2048, 0.0949)   # the Chaos Orb block replaced both
 mu <- sum( X.vals * p.vals )
 sig = sqrt( sum((X.vals - mu)^2 * p.vals) )
 c(mu, sig)
@@ -132,6 +211,32 @@ c(mu, sig)
 ```text
 [1] 0.9447000 1.0155008
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `X.vals <- c(0,1,2,3)` | Sets the family values again. The Chaos Orb block above stored 4, 5, 6 under the same name, and R keeps the most recent assignment. |
+| `p.vals <- c(0.4499, 0.2504, 0.2048, 0.0949)` | The family probabilities, the same rounded values the first block computed. |
+| `mu <- sum( X.vals * p.vals )` | As above: each x times its probability, summed. It uses whatever `X.vals` and `p.vals` hold at the moment it runs. |
+| `sig = sqrt( sum((X.vals - mu)^2 * p.vals) )` | As above: squared distances times probabilities, summed, then one square root. |
+| `c(mu, sig)` | Prints μ and σ together on one line. |
+
+**Left to right**
+
+- `X.vals <- c(0,1,2,3)`: "Store under the name X.vals (`X.vals <-`) the combination (`c`) of 0, 1, 2 and 3 (`0,1,2,3`)."
+- `p.vals <- c(0.4499, …)`: "Store under the name p.vals (`p.vals <-`) the combination (`c`) of the four family probabilities (`0.4499, 0.2504, 0.2048, 0.0949`)."
+- `mu <- sum( X.vals * p.vals )`: "Store under the name mu (`mu <-`) the total (`sum`) of each value (`X.vals`) times (`*`) its probability (`p.vals`)."
+- `sig = sqrt( sum((X.vals - mu)^2 * p.vals) )`: "Store under the name sig (`sig =`) the square root (`sqrt`) of the total (`sum`) of the squared (`^2`) distances from the mean (`X.vals - mu`) times (`*`) the probabilities (`p.vals`)."
+- `c(mu, sig)`: "Combine (`c`) mu (`mu`) and sig (`sig`)."
+
+**Right to left**, the order R runs it
+
+- `X.vals <- c(0,1,2,3)`: "Take 0, 1, 2 and 3 (`0,1,2,3`), combine them into one vector (`c`), and store it as X.vals (`X.vals <-`), replacing the Chaos Orb values."
+- `p.vals <- c(0.4499, …)`: "Take the four probabilities (`0.4499, 0.2504, 0.2048, 0.0949`), combine them (`c`), and store them as p.vals (`p.vals <-`)."
+- `mu <- sum( X.vals * p.vals )`: "Multiply the values by their probabilities (`X.vals`, `*`, `p.vals`), add the products (`sum`), and store the total as mu (`mu <-`)."
+- `sig = sqrt( sum((X.vals - mu)^2 * p.vals) )`: "Subtract mu from each value (`X.vals - mu`), square (`^2`), multiply by the probabilities (`*`, `p.vals`), add (`sum`), take the square root (`sqrt`), and store it as sig (`sig =`)."
+- `c(mu, sig)`: "Take mu and sig (`mu`, `sig`), put them in one vector (`c`), and print it."
+:::
 
 The unrounded 0.9447 and 1.0155 agree with the hand values to the two decimals the notes box.
 
@@ -177,6 +282,32 @@ c(mu, sig)
 [1] 2.527778 1.404084
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `X.vals <- c(1,2,3,4,5,6)` | The six possible minimums as one vector. |
+| `Probs <- c(11/36, 9/36, 7/36, 5/36, 3/36, 1/36)` | Each division is worked out first, so the vector holds six decimals. `Probs` is just another name. |
+| `mu <- sum(X.vals*Probs)` | As above, with `Probs` in place of `p.vals`; spaces around operators make no difference. |
+| `sig <- sqrt(sum((X.vals-mu)^2*Probs))` | As above: squared distances times probabilities, summed, one square root. |
+| `c(mu, sig)` | Prints the two values on one line. |
+
+**Left to right**
+
+- `X.vals <- c(1,2,3,4,5,6)`: "Store under the name X.vals (`X.vals <-`) the combination (`c`) of 1 to 6."
+- `Probs <- c(11/36, …)`: "Store under the name Probs (`Probs <-`) the combination (`c`) of 11 over 36 (`11/36`) down to 1 over 36 (`1/36`)."
+- `mu <- sum(X.vals*Probs)`: "Store under the name mu (`mu <-`) the total (`sum`) of each value (`X.vals`) times (`*`) its probability (`Probs`)."
+- `sig <- sqrt(sum((X.vals-mu)^2*Probs))`: "Store under the name sig (`sig <-`) the square root (`sqrt`) of the total (`sum`) of the squared (`^2`) distances from the mean (`X.vals-mu`) times (`*`) the probabilities (`Probs`)."
+- `c(mu, sig)`: "Combine (`c`) mu (`mu`) and sig (`sig`)."
+
+**Right to left**, the order R runs it
+
+- `X.vals <- c(1,2,3,4,5,6)`: "Combine 1 to 6 (`c`), then store the vector as X.vals (`X.vals <-`)."
+- `Probs <- c(11/36, …)`: "Work out each fraction (`/`), combine the six results (`c`), then store them as Probs (`Probs <-`)."
+- `mu <- sum(X.vals*Probs)`: "Multiply values by probabilities (`X.vals`, `*`, `Probs`), add (`sum`), and store as mu (`mu <-`)."
+- `sig <- sqrt(sum((X.vals-mu)^2*Probs))`: "Subtract mu from each value (`X.vals-mu`), square (`^2`), multiply by the probabilities (`*`, `Probs`), add (`sum`), take the square root (`sqrt`), and store as sig (`sig <-`)."
+- `c(mu, sig)`: "Take mu and sig (`mu`, `sig`), put them in one vector (`c`), and print it."
+:::
+
 ## Minimum of three dice, by simulation
 
 With three dice the grid is a 6 × 6 × 6 cube, so the notes ask for the mean *by simulation in R*, 100 000 rolls of three dice. `sd()` is the sample standard deviation; with 100 000 trials it estimates $\sigma$ to about two decimals.
@@ -195,6 +326,38 @@ c(mu, sig)
 ```text
 [1] 2.042750 1.143986
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `m.trials <- 10^5` | `^` is a power: 10^5 is 100 000 trials. |
+| `X.vals <- integer(m.trials)` | Makes a vector of 100 000 whole-number zeros for the loop to fill. |
+| `for (i.trial in 1:m.trials){ … }` | `a:b` is the whole numbers from a to b. The line inside the braces runs once for each `i.trial` = 1, 2, …, 100 000. |
+| `sample(1:6, 3, replace=TRUE)` | `sample(x, size, replace)`: x = the faces 1 to 6, size = 3 dice, and `replace=TRUE` lets a face come up more than once. |
+| `min( … )` | The smallest of the three dice. |
+| `X.vals[i.trial] <- …` | `[ ]` picks a slot by position, counting from 1; this trial's minimum goes in slot `i.trial`. |
+| `mu <- mean(X.vals)` | The average of the 100 000 simulated minimums. |
+| `sig <- sd(X.vals)` | Their sample standard deviation. |
+| `c(mu, sig)` | Prints both on one line. |
+
+**Left to right**
+
+- `m.trials <- 10^5`: "Store under the name m.trials (`m.trials <-`) 10 to the power (`^`) 5."
+- `X.vals <- integer(m.trials)`: "Store under the name X.vals (`X.vals <-`) a vector of whole-number zeros (`integer`) as long as m.trials (`m.trials`)."
+- `for (i.trial in 1:m.trials){ … }`: "For each trial number (`for`, `i.trial`) from 1 to m.trials (`1:m.trials`), store in that trial's slot of X.vals (`X.vals[i.trial] <-`) the smallest (`min`) of a sample (`sample`) of 3 faces (`3`) from 1 to 6 (`1:6`), with repeats allowed (`replace=TRUE`)."
+- `mu <- mean(X.vals)`: "Store under the name mu (`mu <-`) the average (`mean`) of the minimums (`X.vals`)."
+- `sig <- sd(X.vals)`: "Store under the name sig (`sig <-`) the standard deviation (`sd`) of the minimums (`X.vals`)."
+- `c(mu, sig)`: "Combine (`c`) mu (`mu`) and sig (`sig`)."
+
+**Right to left**, the order R runs it
+
+- `m.trials <- 10^5`: "Raise 10 to the power 5 (`10^5`), then store it as m.trials (`m.trials <-`)."
+- `X.vals <- integer(m.trials)`: "Take the length (`m.trials`), make that many zeros (`integer`), and store them as X.vals (`X.vals <-`)."
+- `for (i.trial in 1:m.trials){ … }`: "Make the numbers 1 to 100 000 (`1:m.trials`); for each one (`for`, `i.trial`), take the faces 1 to 6 (`1:6`), draw 3 with repeats allowed (`sample`, `3`, `replace=TRUE`), find the smallest (`min`), and store it in slot i.trial (`X.vals[i.trial] <-`)."
+- `mu <- mean(X.vals)`: "Take the minimums (`X.vals`), average them (`mean`), and store as mu (`mu <-`)."
+- `sig <- sd(X.vals)`: "Take the minimums (`X.vals`), find their standard deviation (`sd`), and store as sig (`sig <-`)."
+- `c(mu, sig)`: "Take mu and sig (`mu`, `sig`), put them in one vector (`c`), and print it."
+:::
 
 The digits past the second vary from run to run; the instructor wrote $\mu = 2.04$, $\sigma = 1.15$ and *$\mu$ gets smaller for more dice*: the more dice you roll, the more likely one of them is a 1. Counting the cube exactly gives $P(x) = ((7 - x)^3 - (6 - x)^3)/216$, with $\mu = 2.0417$ and $\sigma = 1.1439$.
 

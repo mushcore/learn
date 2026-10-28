@@ -80,6 +80,27 @@ pnorm(1.10) - pnorm(0.55)
 [1] 0.1554936
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `pnorm(-1.96)` | P(Z ≤ q) with q = −1.96. With `mean` and `sd` left out, they take their defaults 0 and 1. |
+| `1 - pnorm(2.33)` | One minus the left tail: the right tail above 2.33. |
+| `pnorm(1.10) - pnorm(0.55)` | Upper left tail minus lower left tail: the area between. |
+| `[1]` | In the output, the position of the first value on each printed line. |
+
+**Left to right**
+
+- `pnorm(-1.96)`: "The standard normal area to the left (`pnorm`) of minus 1.96 (`-1.96`)."
+- `1 - pnorm(2.33)`: "One (`1`) minus (`-`) the standard normal area to the left (`pnorm`) of 2.33 (`2.33`)."
+- `pnorm(1.10) - pnorm(0.55)`: "The standard normal area to the left (`pnorm`) of 1.10 (`1.10`), minus (`-`) the area to the left (`pnorm`) of 0.55 (`0.55`)."
+
+**Right to left**, the order R runs it
+
+- `pnorm(-1.96)`: "Take minus 1.96 (`-1.96`) and find the standard normal area to its left (`pnorm`)."
+- `1 - pnorm(2.33)`: "Find the area left of 2.33 (`pnorm(2.33)`), then take it away from one (`1 -`)."
+- `pnorm(1.10) - pnorm(0.55)`: "Find the area left of 1.10 (`pnorm(1.10)`), find the area left of 0.55 (`pnorm(0.55)`), then subtract the second from the first (`-`)."
+:::
+
 R agrees with the table to 4 decimals in all three. The values 1.96 and 2.33 are worth remembering: they cut off a 2.5 % and a 1 % tail, and the course's confidence intervals will use them.
 
 ## The table, highlighted
@@ -109,6 +130,23 @@ qnorm(0.95)
 [1] 1.959964
 [1] 1.644854
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `qnorm(0.975)` | The z with P(Z ≤ z) = p, here p = 0.975; `mean` and `sd` default to 0 and 1. |
+| `qnorm(0.95)` | The same with p = 0.95. |
+
+**Left to right**
+
+- `qnorm(0.975)`: "The standard normal value with probability 0.975 (`0.975`) below it (`qnorm`)."
+- `qnorm(0.95)`: "The standard normal value with probability 0.95 (`0.95`) below it (`qnorm`)."
+
+**Right to left**, the order R runs it
+
+- `qnorm(0.975)`: "Take the probability 0.975 (`0.975`) and find the z that has that much area to its left (`qnorm`)."
+- `qnorm(0.95)`: "Take the probability 0.95 (`0.95`) and find the z that has that much area to its left (`qnorm`)."
+:::
 
 ```widget
 z-table

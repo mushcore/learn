@@ -66,6 +66,23 @@ deal-play
 
 `dhyper(x, K, N - K, n)` takes four arguments: the value $x$, the successes, the failures and the sample size, never $N$. `dhyper(4, 40, 90, 10)` describes a population of 130 and returns a wrong answer with no error message.
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dhyper(x, K, N - K, n)` | The slot pattern: R's `dhyper(x, m, n, k)` takes x, then m = K successes, then R's n = N − K failures, then k = the lesson's n drawn. |
+| `dhyper(4, 40, 90, 10)` | x = 4, m = 40, n = 90, k = 10. R reads 90 as the failures, so the population it uses is 40 + 90 = 130. |
+
+**Left to right**
+
+- `dhyper(x, K, N - K, n)`: "The hypergeometric probability (`dhyper`) of x successes (`x`) with K successes (`K`) and N minus K failures (`N - K`) in the population and n drawn (`n`)."
+- `dhyper(4, 40, 90, 10)`: "The hypergeometric probability (`dhyper`) of 4 successes (`x = 4`) with 40 successes (`m = 40`) and 90 failures (`n = 90`) and 10 drawn (`k = 10`)."
+
+**Right to left**, the order R runs it
+
+- `dhyper(x, K, N - K, n)`: "Subtract K from N (`N - K`), then compute P(X = x) from x, K, the failures and n (`dhyper`)."
+- `dhyper(4, 40, 90, 10)`: "Take 4, 40, 90 and 10 into the four slots, compute P(X = 4) for a population of 130 (`dhyper`), and print."
+:::
+
 ```r
 N <- 52
 K <- 4
@@ -82,6 +99,33 @@ dbinom(2, 5, 4/52)
 [1] 0.04654006
 [1] 0.04654006
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `N <- 52`, `K <- 4`, `n <- 5` | `<-` is assignment: each number is stored under its name. R is case-sensitive, so `N` and `n` are different names. |
+| `choose(K, 2)*choose(N-K, n-2) / choose(N, n)` | The formula by hand: `choose()` counts combinations, `-` subtracts, `*` multiplies and `/` divides. |
+| `dhyper(2, 4, 48, 5)` | `dhyper(x, m, n, k)`: x = 2 jacks, m = 4 jacks in the deck, n = 48 non-jacks, k = 5 cards drawn. R's `n` is the failures, not the lesson's n. |
+| `choose(5,2)*(4/52)^2*(48/52)^3` | The binomial formula by hand; the brackets make each division happen before its power `^`. |
+| `dbinom(2, 5, 4/52)` | `dbinom(x, size, prob)`: x = 2, size = 5 (n), prob = 4/52 (p). |
+| `[1]` | R starts each printed line with the position of its first value; `[1]` means value 1. |
+
+**Left to right**
+
+- `N <- 52`, `K <- 4`, `n <- 5`: "Store under the names N, K and n (`N <-`, `K <-`, `n <-`) the numbers 52, 4 and 5."
+- `choose(K, 2)*choose(N-K, n-2) / choose(N, n)`: "The combinations (`choose`) of K and 2 times (`*`) the combinations of N minus K (`N-K`) and n minus 2 (`n-2`), divided by (`/`) the combinations of N and n (`choose(N, n)`)."
+- `dhyper(2, 4, 48, 5)`: "The hypergeometric probability (`dhyper`) of 2 successes (`x = 2`) when the population has 4 successes (`m = 4`) and 48 failures (`n = 48`) and 5 are drawn (`k = 5`)."
+- `choose(5,2)*(4/52)^2*(48/52)^3`: "The combinations (`choose`) of 5 and 2 times (`*`) 4/52 squared (`(4/52)^2`) times (`*`) 48/52 cubed (`(48/52)^3`)."
+- `dbinom(2, 5, 4/52)`: "The binomial probability (`dbinom`) of 2 successes (`x = 2`) in 5 trials (`size = 5`) at 4/52 (`prob = 4/52`)."
+
+**Right to left**, the order R runs it
+
+- `N <- 52`, `K <- 4`, `n <- 5`: "Take 52, 4 and 5 and store them as N, K and n (`N <-`, `K <-`, `n <-`)."
+- `choose(K, 2)*choose(N-K, n-2) / choose(N, n)`: "Work out N minus K and n minus 2 (`N-K`, `n-2`), count the three sets of combinations (`choose`), multiply the first two (`*`), divide by the third (`/`), and print."
+- `dhyper(2, 4, 48, 5)`: "Take x = 2, m = 4, n = 48 and k = 5, compute P(X = 2) (`dhyper`), and print."
+- `choose(5,2)*(4/52)^2*(48/52)^3`: "Divide inside the brackets (`4/52`, `48/52`), raise to the powers (`^`), count the combinations (`choose`), multiply the three (`*`), and print."
+- `dbinom(2, 5, 4/52)`: "Divide 4 by 52 (`4/52`), compute P(X = 2) for size 5 (`dbinom`), and print."
+:::
 
 ## The superdeck: ten decks shuffled together
 
@@ -103,6 +147,26 @@ dbinom(2, 5, K/N)
 [1] 0.04597149
 [1] 0.04654006
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `N <- 520`, `K <- 40`, `n <- 5` | As above; the new values replace the old ones. |
+| `dhyper(2, K, N-K, 5)` | x = 2, m = `K` (40 jacks), n = `N-K` (480 non-jacks), k = 5 cards drawn. |
+| `dbinom(2, 5, K/N)` | x = 2, size = 5, prob = `K/N`, the share of jacks in the superdeck. |
+
+**Left to right**
+
+- `N <- 520`, `K <- 40`, `n <- 5`: "Store under the names N, K and n (`N <-`, `K <-`, `n <-`) the numbers 520, 40 and 5."
+- `dhyper(2, K, N-K, 5)`: "The hypergeometric probability (`dhyper`) of 2 jacks (`x = 2`) with K successes (`m = K`), N minus K failures (`n = N-K`) and 5 drawn (`k = 5`)."
+- `dbinom(2, 5, K/N)`: "The binomial probability (`dbinom`) of 2 jacks (`x = 2`) in 5 cards (`size = 5`) at K over N (`prob = K/N`)."
+
+**Right to left**, the order R runs it
+
+- `N <- 520`, `K <- 40`, `n <- 5`: "Take 520, 40 and 5 and store them as N, K and n (`N <-`, `K <-`, `n <-`)."
+- `dhyper(2, K, N-K, 5)`: "Look up K, subtract K from N (`N-K`), compute P(X = 2) (`dhyper`), and print."
+- `dbinom(2, 5, K/N)`: "Divide K by N (`K/N`), compute P(X = 2) for size 5 (`dbinom`), and print."
+:::
 
 ## The 5 % rule
 
@@ -132,6 +196,23 @@ dbinom(7, 20, 69/200)
 [1] 0.1941807
 [1] 0.1841978
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dhyper(7, 69, 131, 20)` | x = 7, m = 69 dead characters, n = 131 alive ones, k = 20 picked. |
+| `dbinom(7, 20, 69/200)` | x = 7, size = 20 (n), prob = 69/200 (p), the binomial stand-in. |
+
+**Left to right**
+
+- `dhyper(7, 69, 131, 20)`: "The hypergeometric probability (`dhyper`) of 7 dead (`x = 7`) with 69 dead (`m = 69`) and 131 alive (`n = 131`) in the list and 20 picked (`k = 20`)."
+- `dbinom(7, 20, 69/200)`: "The binomial probability (`dbinom`) of 7 dead (`x = 7`) in 20 picks (`size = 20`) at 69 over 200 (`prob = 69/200`)."
+
+**Right to left**, the order R runs it
+
+- `dhyper(7, 69, 131, 20)`: "Take x = 7, m = 69, n = 131 and k = 20, compute P(X = 7) (`dhyper`), and print."
+- `dbinom(7, 20, 69/200)`: "Divide 69 by 200 (`69/200`), compute P(X = 7) for size 20 (`dbinom`), and print."
+:::
 
 ### Twenty picks from 200: hypergeometric beside binomial
 
@@ -211,6 +292,57 @@ Z
 [11] 0.0001
 [1] 2.386629
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `N <- 90`, `K <- 40`, `n <- 10` | As above, with the Mac class numbers. |
+| `p <- K/N` | `/` divides: the share of Mac users. |
+| `dhyper(4, K, N-K, n)` | x = 4, m = `K` (40), R's n = `N-K` (50 failures), k = `n` (the lesson's sample size, 10). |
+| `phyper(4, K, N-K, n)` | `phyper(q, m, n, k)`: the same slots with q = 4, giving P(X ≤ 4). |
+| `mu <- n*K/N` | `*` and `/` run left to right: nK/N. |
+| `sig <- sqrt(n*p*(1-p)*(N-n)/(N-1))` | Each bracket is worked out first; `sqrt()` roots the whole product. |
+| `c(mu, sig)` | Prints μ and σ on one line. |
+| `X.vals <- 0:n` | `a:b` is the whole numbers from a to b, here 0 to 10. |
+| `p.vals <- dhyper(X.vals, K, N-K, n)` | x = the whole vector, so one call returns all eleven probabilities. |
+| `barplot(p.vals, …)` | One bar per value; `p.vals` fills `height`. |
+| `names.arg=X.vals` | The labels under the bars: 0 to 10. |
+| `col="pink"`, `space=0` | The bar colour, and no gaps between bars. |
+| `xlab=`, `ylab=`, `main=` | The axis labels and the title, as strings. |
+| `round(p.vals, 4)` | `round(x, digits)`: each probability to 4 decimals. |
+| `X <- 8`, `Z <- (X-mu)/sig`, `Z` | Stores the count, computes its Z-score (brackets first), then prints `Z`. |
+| `[11]` | The long vector wraps; the second line starts at value 11, so its label is `[11]`. |
+
+**Left to right**
+
+- `N <- 90`, `K <- 40`, `n <- 10`: "Store under the names N, K and n (`N <-`, `K <-`, `n <-`) the numbers 90, 40 and 10."
+- `p <- K/N`: "Store under the name p (`p <-`) K divided by N (`K/N`)."
+- `dhyper(4, K, N-K, n)`: "The hypergeometric probability (`dhyper`) of 4 Mac users (`x = 4`) with K successes (`m = K`), N minus K failures (`n = N-K`) and n drawn (`k = n`)."
+- `phyper(4, K, N-K, n)`: "The hypergeometric probability of at most (`phyper`) 4 Mac users (`q = 4`) with the same K, N minus K and n (`K`, `N-K`, `n`)."
+- `mu <- n*K/N`: "Store under the name mu (`mu <-`) n times K divided by N (`n*K/N`)."
+- `sig <- sqrt(n*p*(1-p)*(N-n)/(N-1))`: "Store under the name sig (`sig <-`) the square root (`sqrt`) of n times p times 1 minus p (`n*p*(1-p)`) times N minus n (`N-n`) divided by N minus 1 (`/(N-1)`)."
+- `c(mu, sig)`: "Combine (`c`) mu and sig (`mu`, `sig`)."
+- `X.vals <- 0:n`: "Store under the name X.vals (`X.vals <-`) the whole numbers 0 to n (`0:n`)."
+- `p.vals <- dhyper(X.vals, K, N-K, n)`: "Store under the name p.vals (`p.vals <-`) the hypergeometric probabilities (`dhyper`) of each x in X.vals (`X.vals`) for K, N minus K and n (`K`, `N-K`, `n`)."
+- `barplot(…)`: "Draw a bar chart (`barplot`) of p.vals (`p.vals`), labelled 0 to 10 (`names.arg=X.vals`), in pink (`col="pink"`), with no gaps (`space=0`), with axis labels (`xlab=`, `ylab=`) and a title (`main=`)."
+- `round(p.vals, 4)`: "Round (`round`) p.vals (`p.vals`) to 4 decimals (`4`)."
+- `X <- 8`, `Z <- (X-mu)/sig`, `Z`: "Store under the name X (`X <-`) 8; store under the name Z (`Z <-`) X minus mu (`X-mu`) divided by (`/`) sig; show Z (`Z`)."
+
+**Right to left**, the order R runs it
+
+- `N <- 90`, `K <- 40`, `n <- 10`: "Take 90, 40 and 10 and store them as N, K and n (`N <-`, `K <-`, `n <-`)."
+- `p <- K/N`: "Divide K by N (`K/N`), then store it as p (`p <-`)."
+- `dhyper(4, K, N-K, n)`: "Subtract K from N (`N-K`), compute P(X = 4) (`dhyper`), and print."
+- `phyper(4, K, N-K, n)`: "Subtract K from N (`N-K`), compute P(X ≤ 4) (`phyper`), and print."
+- `mu <- n*K/N`: "Multiply n by K, divide by N (`n*K/N`), then store it as mu (`mu <-`)."
+- `sig <- sqrt(n*p*(1-p)*(N-n)/(N-1))`: "Work out each bracket (`1-p`, `N-n`, `N-1`), multiply and divide left to right (`*`, `/`), take the square root (`sqrt`), and store it as sig (`sig <-`)."
+- `c(mu, sig)`: "Put mu and sig in one vector (`c`) and print it."
+- `X.vals <- 0:n`: "Make 0 to 10 (`0:n`), then store it as X.vals (`X.vals <-`)."
+- `p.vals <- dhyper(X.vals, K, N-K, n)`: "Subtract K from N (`N-K`), compute P(X = x) for every x in X.vals (`dhyper`), and store them as p.vals (`p.vals <-`)."
+- `barplot(…)`: "Take the heights (`p.vals`), labels (`names.arg=X.vals`), colour (`col="pink"`), no gaps (`space=0`) and text labels (`xlab=`, `ylab=`, `main=`), and draw the bars (`barplot`)."
+- `round(p.vals, 4)`: "Take p.vals, round each to 4 decimals (`round`), and print."
+- `X <- 8`, `Z <- (X-mu)/sig`, `Z`: "Store 8 as X (`X <-`); subtract mu from X (`X-mu`), divide by sig (`/`) and store as Z (`Z <-`); then print Z (`Z`)."
+:::
 
 `phyper(4, K, N-K, n)` is the cumulative $P(X \le 4)$ in one call.
 

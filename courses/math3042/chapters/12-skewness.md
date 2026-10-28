@@ -80,6 +80,25 @@ In R this is one line:
 3 * (mean(cats$Bwt) - median(cats$Bwt)) / sd(cats$Bwt)
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `cats$Bwt` | `$` picks the `Bwt` (body weight) column of the `cats` data frame; `cats` comes from the `MASS` package, which must be loaded first. |
+| `mean(cats$Bwt)` | The average of the column. |
+| `median(cats$Bwt)` | The middle value of the column. |
+| `sd(cats$Bwt)` | The sample standard deviation (divides by n − 1). |
+| `( … - … )` | `-` subtracts; the brackets make R do the subtraction before multiplying and dividing. |
+| `3 * … / …` | `*` multiplies and `/` divides, worked left to right: 3 times the gap, then over the SD. |
+
+**Left to right**
+
+- "Three (`3`) times (`*`) the gap (`( … )`) found as the average (`mean`) of the body weights (`cats$Bwt`) minus (`-`) the median (`median`) of the body weights (`cats$Bwt`), divided by (`/`) the standard deviation (`sd`) of the body weights (`cats$Bwt`)."
+
+**Right to left**, the order R runs it
+
+- "Take the cats data (`cats`) and pull out its body weights (`$Bwt`); find their average (`mean`) and their median (`median`) and subtract the median from the mean (`-`) inside the brackets (`( … )`); multiply that gap by three (`3 *`); then find the standard deviation (`sd`) of the weights and divide by it (`/`)."
+:::
+
 $0.146$ is positive but well inside $(-1, 1)$, so cat bodyweight is **mildly skewed right** — a small number of heavier cats stretch the upper tail, pulling the mean just above the median.
 
 :::warn Don't use the `moments` package formula

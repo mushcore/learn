@@ -61,7 +61,7 @@ The lengths (in minutes) of 60 online office-hour sessions for COMP 3522 were gr
     "q": "**Q1b (1 mark).** Which class contains the median? Type it as lower–upper, for example 0-4.",
     "type": "text",
     "answer": ["8-12", "8–12", "8 - 12", "8 to 12", "8-12 min"],
-    "explain": "With n = 60 the median sits between the 30th and 31st values. Cumulative frequencies: 9, 26 through 8 minutes, then 40 through 12 minutes. The 30th and 31st values fall in the **8–12 minute** class."
+    "explain": "Put the 60 sessions in order from shortest to longest. 60 is even, so there are two middle values, at positions 60/2 = 30 and 31. Keep a running total of the frequencies to see which positions each class fills: 0–4 fills 1 to 9, 4–8 fills 10 to 26 (9 + 17), and 8–12 fills 27 to 40 (26 + 14). Positions 30 and 31 both fall in 27 to 40, so the median is in the **8–12 minute** class."
   },
   {
     "q": "**Q1c (1 mark).** From the raw data, R reports X̄ = 9.87, Q2 = 8.90 and s = 5.62. Compute Pearson's coefficient of skewness. (3 significant digits)",

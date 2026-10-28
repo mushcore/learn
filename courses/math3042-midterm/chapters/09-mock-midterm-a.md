@@ -61,7 +61,7 @@ The histogram of one-way commute times (in minutes) to the Burnaby campus for 20
     "answer": 35,
     "tolerance": 5,
     "unit": "min",
-    "explain": "The median sits between the 100th and 101st values. Cumulative counts: 8, 30, 71 through 30 minutes, then 108 through 40 minutes. The 100th and 101st values are in the **30–40 minute class**, so the median is about **35 minutes** (any value in 30 to 40 is accepted)."
+    "explain": "Put the 200 commutes in order from shortest to longest. 200 is even, so there are two middle values, at positions 200/2 = 100 and 101. Keep a running total of the bars to see which positions each class fills: 0–10 fills 1 to 8, 10–20 fills 9 to 30 (8 + 22), 20–30 fills 31 to 71 (30 + 41), and 30–40 fills 72 to 108 (71 + 37). Positions 100 and 101 both fall in 72 to 108, so the median is in the **30–40 minute class**, so the median is about **35 minutes** (any value in 30 to 40 is accepted)."
   },
   {
     "q": "**Q1b (2 of 2 marks).** Based on the histogram, the **mean** commute is approximately how many minutes?",

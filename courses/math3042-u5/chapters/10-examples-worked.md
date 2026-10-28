@@ -43,6 +43,28 @@ punif(11, 0, 20) - punif(8, 0, 20);  1 - punif(12, 0, 20);  punif(4, 0, 20) - pu
 [1] 0
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `;` | Separates commands written on one line; each still prints its own result. |
+| `punif(11, 0, 20) - punif(8, 0, 20)` | `punif` fills q = 11 (then 8), min = 0, max = 20; `-` subtracts the two left areas. |
+| `1 - punif(12, 0, 20)` | One minus the left area: the right tail above 12. |
+| `punif(4, 0, 20) - punif(4, 0, 20)` | The same call twice: a zero-width interval. |
+| `[1]` | In the output, the position of the first value on each printed line. |
+
+**Left to right**
+
+- `punif(11, 0, 20) - punif(8, 0, 20)`: "The uniform area to the left (`punif`) of 11 (`11`) on 0 (`0`) to 20 (`20`), minus (`-`) the uniform area to the left (`punif`) of 8 (`8`) on the same interval."
+- `1 - punif(12, 0, 20)`: "One (`1`) minus (`-`) the uniform area to the left (`punif`) of 12 (`12`) on 0 to 20 (`0, 20`)."
+- `punif(4, 0, 20) - punif(4, 0, 20)`: "The uniform area to the left (`punif`) of 4 (`4`) on 0 to 20 (`0, 20`), minus (`-`) that same area again (`punif(4, 0, 20)`)."
+
+**Right to left**, the order R runs it
+
+- `punif(11, 0, 20) - punif(8, 0, 20)`: "Find the area left of 11 on 0 to 20 (`punif(11, 0, 20)`), find the area left of 8 (`punif(8, 0, 20)`), then subtract the second from the first (`-`)."
+- `1 - punif(12, 0, 20)`: "Find the area left of 12 on 0 to 20 (`punif(12, 0, 20)`), then take it away from one (`1 -`)."
+- `punif(4, 0, 20) - punif(4, 0, 20)`: "Find the area left of 4 (`punif(4, 0, 20)`) twice, then subtract one from the other (`-`)."
+:::
+
 ## The standard normal Z (p. 79)
 
 ```quiz
@@ -79,6 +101,27 @@ pnorm(-1.96);  1 - pnorm(2.33);  pnorm(1.10) - pnorm(0.55)
 [1] 0.1554936
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `pnorm(-1.96)` | q = −1.96; `mean` and `sd` are left out, so they take their defaults 0 and 1. |
+| `1 - pnorm(2.33)` | One minus the left tail: the right tail above 2.33. |
+| `pnorm(1.10) - pnorm(0.55)` | Upper left tail minus lower left tail. |
+| `;` | As above: three commands on one line, three printed lines. |
+
+**Left to right**
+
+- `pnorm(-1.96)`: "The standard normal area to the left (`pnorm`) of minus 1.96 (`-1.96`)."
+- `1 - pnorm(2.33)`: "One (`1`) minus (`-`) the standard normal area to the left (`pnorm`) of 2.33 (`2.33`)."
+- `pnorm(1.10) - pnorm(0.55)`: "The standard normal area to the left (`pnorm`) of 1.10 (`1.10`), minus (`-`) the area to the left (`pnorm`) of 0.55 (`0.55`)."
+
+**Right to left**, the order R runs it
+
+- `pnorm(-1.96)`: "Take minus 1.96 (`-1.96`) and find the standard normal area to its left (`pnorm`)."
+- `1 - pnorm(2.33)`: "Find the area left of 2.33 (`pnorm(2.33)`), then take it away from one (`1 -`)."
+- `pnorm(1.10) - pnorm(0.55)`: "Find the area left of 1.10 (`pnorm(1.10)`), find the area left of 0.55 (`pnorm(0.55)`), then subtract the second from the first (`-`)."
+:::
+
 ## IQ below 120, $X \sim N(100, 15^2)$ (p. 80)
 
 ```quiz
@@ -88,6 +131,20 @@ pnorm(-1.96);  1 - pnorm(2.33);  pnorm(1.10) - pnorm(0.55)
 ```
 
 **(a) In R:** `pnorm(120, 100, 15)` prints `0.9087888`. The $15^2$ in $N(100, 15^2)$ is the variance; the standard deviation passed to `pnorm` is 15.
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `pnorm(120, 100, 15)` | The normal left-tail area: q = 120, mean = 100, sd = 15 (the standard deviation, not the variance). |
+
+**Left to right**
+
+- `pnorm(120, 100, 15)`: "The normal area to the left (`pnorm`) of 120 (`120`) on the curve with mean 100 (`100`) and sd 15 (`15`)."
+
+**Right to left**, the order R runs it
+
+- `pnorm(120, 100, 15)`: "Take the curve with mean 100 and sd 15 (`100, 15`), then find the area left of 120 (`pnorm(120, …)`)."
+:::
 
 **(b) With the Z table:** $Z = \dfrac{120 - 100}{15} = \dfrac{20}{15} = 1.33$; $P(Z \le 1.33) = 0.9082$. R's 0.9088 comes from the unrounded $Z = 1.3333$; either is accepted when the method is shown.
 
@@ -127,6 +184,26 @@ pnorm(5, 4.35, 0.5) - pnorm(4.35, 4.35, 0.5);  1 - pnorm(5, 4.35, 0.5);  qnorm(0
 [1] 5.172427
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `pnorm(5, 4.35, 0.5) - pnorm(4.35, 4.35, 0.5)` | q = 5 and then q = 4.35, both with mean = 4.35, sd = 0.5; the difference is the between. |
+| `1 - pnorm(5, 4.35, 0.5)` | The right tail above 5. |
+| `qnorm(0.95, 4.35, 0.5)` | Backwards: p = 0.95, mean = 4.35, sd = 0.5; the x with 0.95 to its left. |
+
+**Left to right**
+
+- `pnorm(5, 4.35, 0.5) - pnorm(4.35, 4.35, 0.5)`: "The normal area to the left (`pnorm`) of 5 (`5`) with mean 4.35 (`4.35`) and sd 0.5 (`0.5`), minus (`-`) the area to the left (`pnorm`) of the mean 4.35 (`4.35`) on the same curve."
+- `1 - pnorm(5, 4.35, 0.5)`: "One (`1`) minus (`-`) the normal area to the left (`pnorm`) of 5 (`5`) with mean 4.35 and sd 0.5 (`4.35, 0.5`)."
+- `qnorm(0.95, 4.35, 0.5)`: "The value with probability 0.95 (`0.95`) below it (`qnorm`) on the normal curve with mean 4.35 (`4.35`) and sd 0.5 (`0.5`)."
+
+**Right to left**, the order R runs it
+
+- `pnorm(5, 4.35, 0.5) - pnorm(4.35, 4.35, 0.5)`: "Find the area left of 5 (`pnorm(5, 4.35, 0.5)`), find the area left of 4.35 (`pnorm(4.35, 4.35, 0.5)`), then subtract the second from the first (`-`)."
+- `1 - pnorm(5, 4.35, 0.5)`: "Find the area left of 5 (`pnorm(5, 4.35, 0.5)`), then take it away from one (`1 -`)."
+- `qnorm(0.95, 4.35, 0.5)`: "Take the curve with mean 4.35 and sd 0.5 (`4.35, 0.5`) and the probability 0.95 (`0.95`), and return the x that has that much area to its left (`qnorm`)."
+:::
+
 ## Gaussian noise: a 0 bit read as a 1 (p. 82)
 
 Bit 0 is sent as 2 V, bit 1 as 3 V; the receiver picks whichever level is closer, so the threshold is 2.5 V. Noise is normal with $\mu = 0$ V, $\sigma = 0.22$ V.
@@ -147,6 +224,23 @@ A sent 0 is misread when the noise pushes 2 V past 2.5 V, that is when $N > 0.5$
 [1] 0.01152131
 [1] 0.01160379
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `1 - pnorm(0.5, 0, 0.22)` | q = 0.5, mean = 0, sd = 0.22: the noise's right tail above 0.5. |
+| `1 - pnorm(2.27)` | The same tail through the rounded Z = 2.27, with the default mean 0 and sd 1. |
+
+**Left to right**
+
+- `1 - pnorm(0.5, 0, 0.22)`: "One (`1`) minus (`-`) the normal area to the left (`pnorm`) of 0.5 (`0.5`) with mean 0 (`0`) and sd 0.22 (`0.22`)."
+- `1 - pnorm(2.27)`: "One (`1`) minus (`-`) the standard normal area to the left (`pnorm`) of 2.27 (`2.27`)."
+
+**Right to left**, the order R runs it
+
+- `1 - pnorm(0.5, 0, 0.22)`: "Find the area left of 0.5 under the noise curve (`pnorm(0.5, 0, 0.22)`), then take it away from one (`1 -`)."
+- `1 - pnorm(2.27)`: "Find the standard normal area left of 2.27 (`pnorm(2.27)`), then take it away from one (`1 -`)."
+:::
 
 ## 5.3 Web server, average wait 2.5 s (pp. 83–84)
 
@@ -199,6 +293,23 @@ pexp(4, rate = 1/2.5);  qexp(0.95, rate = 1/2.5)
 [1] 7.489331
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `pexp(4, rate = 1/2.5)` | q = 4, with the named argument `rate` = 1/β = 0.4; `/` divides. |
+| `qexp(0.95, rate = 1/2.5)` | p = 0.95 and the same rate: the 95th percentile. |
+
+**Left to right**
+
+- `pexp(4, rate = 1/2.5)`: "The exponential area to the left (`pexp`) of 4 (`4`) with rate (`rate =`) one divided by 2.5 (`1/2.5`)."
+- `qexp(0.95, rate = 1/2.5)`: "The value with probability 0.95 (`0.95`) below it (`qexp`) for rate (`rate =`) one divided by 2.5 (`1/2.5`)."
+
+**Right to left**, the order R runs it
+
+- `pexp(4, rate = 1/2.5)`: "Divide one by 2.5 to get the rate (`1/2.5`), pass it as the rate (`rate =`), then find the area left of 4 (`pexp(4, …)`)."
+- `qexp(0.95, rate = 1/2.5)`: "Divide one by 2.5 (`1/2.5`), pass it as the rate (`rate =`), then find the x with 0.95 below it (`qexp(0.95, …)`)."
+:::
+
 ## Bank teller, 30 customers per hour (p. 85)
 
 The 30 per hour is a rate: $\beta = 60/30 = 2$ minutes per customer, $F(x) = 1 - e^{-x/2}$.
@@ -237,6 +348,29 @@ pexp(2.5, rate) - pexp(1.5, rate);  (pexp(3.5, rate) - pexp(2.5, rate)) / (1 - p
 [1] 0.1858618
 [1] 2.772589
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `rate <- 0.5` | `<-` is assignment: stores 0.5 per minute under the name `rate`. |
+| `pexp(2.5, rate) - pexp(1.5, rate)` | The second positional argument fills `rate`. F(2.5) − F(1.5). |
+| `(pexp(3.5, rate) - pexp(2.5, rate)) / (1 - pexp(1, rate))` | Brackets group: the interval's area divided by P(X > 1). |
+| `qexp(0.75, rate)` | p = 0.75 with the stored rate: the 75th percentile. |
+
+**Left to right**
+
+- `rate <- 0.5`: "Store under the name rate (`rate <-`) the number 0.5 (`0.5`)."
+- `pexp(2.5, rate) - pexp(1.5, rate)`: "The exponential area to the left (`pexp`) of 2.5 (`2.5`) at the stored rate (`rate`), minus (`-`) the area to the left (`pexp`) of 1.5 (`1.5`)."
+- `(pexp(3.5, rate) - pexp(2.5, rate)) / (1 - pexp(1, rate))`: "The area left of 3.5 (`pexp(3.5, rate)`) minus (`-`) the area left of 2.5 (`pexp(2.5, rate)`), all divided by (`/`) one minus (`1 -`) the area left of 1 (`pexp(1, rate)`)."
+- `qexp(0.75, rate)`: "The value with probability 0.75 (`0.75`) below it (`qexp`) at the stored rate (`rate`)."
+
+**Right to left**, the order R runs it
+
+- `rate <- 0.5`: "Take 0.5 (`0.5`) and store it as rate (`rate <-`)."
+- `pexp(2.5, rate) - pexp(1.5, rate)`: "Look up the stored rate (`rate`), find the area left of 2.5 (`pexp(2.5, rate)`) and left of 1.5 (`pexp(1.5, rate)`), then subtract (`-`)."
+- `(pexp(3.5, rate) - pexp(2.5, rate)) / (1 - pexp(1, rate))`: "Find the area between 2.5 and 3.5 inside the first brackets (`pexp(3.5, rate) - pexp(2.5, rate)`), find one minus the area left of 1 inside the second (`1 - pexp(1, rate)`), then divide the first by the second (`/`)."
+- `qexp(0.75, rate)`: "Look up the rate (`rate`), then find the x with 0.75 below it (`qexp(0.75, …)`)."
+:::
 
 :::info A complete answer line
 The formula in symbols, the numbers substituted, the intermediate values (the $Z$, the table value, the $e^{-x/\beta}$) and the final answer with its units: $e^{-0.75} - e^{-1.25} = 0.4724 - 0.2865 = 0.1859$, not a bare 0.1859.

@@ -33,7 +33,50 @@ Every distribution has a `d` function for a single probability and a `p` functio
 | Geometric | `dgeom(x-1, p)` | `pgeom(x-1, p)` | **failures** before the first success, so the lecture's $x$ becomes $x - 1$ |
 | Poisson | `dpois(x, lambda)` | `ppois(x, lambda)` | count, mean for the interval |
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dbinom(x, n, p)`, `pbinom(x, n, p)` | R's `dbinom(x, size, prob)` and `pbinom(q, size, prob)`: the count, size = n trials, prob = p. |
+| `dhyper(x, K, N-K, n)`, `phyper(x, K, N-K, n)` | R's `dhyper(x, m, n, k)` and `phyper(q, m, n, k)`: m = K successes, R's n = N − K failures, k = the lesson's n drawn. |
+| `dgeom(x-1, p)`, `pgeom(x-1, p)` | R's `dgeom(x, prob)` and `pgeom(q, prob)` count failures, so the first slot gets the lecture's x minus 1. |
+| `dpois(x, lambda)`, `ppois(x, lambda)` | R's `dpois(x, lambda)` and `ppois(q, lambda)`: the count, then the mean for the interval. |
+
+**Left to right**
+
+- `dbinom(x, n, p)`, `pbinom(x, n, p)`: "The binomial probability of exactly (`dbinom`) or at most (`pbinom`) x successes (`x`) in n trials (`n`) at chance p (`p`)."
+- `dhyper(x, K, N-K, n)`, `phyper(x, K, N-K, n)`: "The hypergeometric probability of exactly (`dhyper`) or at most (`phyper`) x successes (`x`) with K successes (`K`) and N minus K failures (`N-K`) in the population and n drawn (`n`)."
+- `dgeom(x-1, p)`, `pgeom(x-1, p)`: "The geometric probability of exactly (`dgeom`) or at most (`pgeom`) x minus 1 failures (`x-1`) at chance p (`p`)."
+- `dpois(x, lambda)`, `ppois(x, lambda)`: "The Poisson probability of exactly (`dpois`) or at most (`ppois`) x events (`x`) with mean lambda (`lambda`)."
+
+**Right to left**, the order R runs it
+
+- `dbinom(x, n, p)`, `pbinom(x, n, p)`: "Take x, n and p, then compute P(X = x) (`dbinom`) or P(X ≤ x) (`pbinom`)."
+- `dhyper(x, K, N-K, n)`, `phyper(x, K, N-K, n)`: "Subtract K from N (`N-K`), then compute P(X = x) (`dhyper`) or P(X ≤ x) (`phyper`)."
+- `dgeom(x-1, p)`, `pgeom(x-1, p)`: "Subtract 1 from x (`x-1`), then compute the probability of that many failures (`dgeom`) or at most that many (`pgeom`)."
+- `dpois(x, lambda)`, `ppois(x, lambda)`: "Take x and lambda, then compute P(X = x) (`dpois`) or P(X ≤ x) (`ppois`)."
+:::
+
 The Mac class is `dhyper(4, 40, 50, 10)`, with the 50 failures where $N$ might be expected. "At least $x$" is `1 - p*(x-1, ...)`, the complement of "at most $x - 1$". For a by-hand check, `choose(n, x)` is $nCx$ and `factorial(x)` is $x!$.
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dhyper(4, 40, 50, 10)` | x = 4, m = 40 Mac users, n = 50 others (R's n is the failures), k = 10 sampled. |
+| `choose(n, x)` | Counts combinations, nCx; R names its two slots `n` and `k`. |
+| `factorial(x)` | x!, the product 1 × 2 × … × x. |
+
+**Left to right**
+
+- `dhyper(4, 40, 50, 10)`: "The hypergeometric probability (`dhyper`) of 4 Mac users (`x = 4`) with 40 Mac users (`m = 40`) and 50 others (`n = 50`) and 10 sampled (`k = 10`)."
+- `choose(n, x)`: "The number of combinations (`choose`) of n items (`n`) taken x at a time (`x`)."
+- `factorial(x)`: "The factorial (`factorial`) of x (`x`)."
+
+**Right to left**, the order R runs it
+
+- `dhyper(4, 40, 50, 10)`: "Take 4, 40, 50 and 10, compute P(X = 4) (`dhyper`), and print."
+- `choose(n, x)`: "Look up n and x, count the combinations (`choose`), and return the count."
+- `factorial(x)`: "Look up x, multiply 1 up to x (`factorial`), and return the product."
+:::
 
 ## Every lecture example as one line
 
@@ -66,6 +109,43 @@ ppois(20, 30)                    # web server: P(X <= 20)
 [1] 0.03528462
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `#` | Starts a comment: R ignores the rest of the line, so each line carries its own label. |
+| `dbinom(6, 50, 0.25)`, `dbinom(2, 5, 4/52)` | `dbinom(x, size, prob)`: the count x, then size (n), then prob (p). |
+| `round(dbinom(0:5, 5, 1/6), 4)` | `0:5` is the whole numbers 0 to 5, so x is six values at once; `round(x, digits)` keeps 4 decimals. |
+| `1 - pbinom(1, 5, 4/52)` | `pbinom(q, size, prob)` is P(X ≤ q); `1 -` turns P(X ≤ 1) into P(X ≥ 2). |
+| `dhyper(2, 4, 48, 5)`, `dhyper(2, 40, 480, 5)`, `dhyper(4, 40, 50, 10)` | `dhyper(x, m, n, k)`: m = successes, n = failures (R's n, not the sample size), k = number drawn. |
+| `phyper(4, 40, 50, 10)` | `phyper(q, m, n, k)`: the same slots, P(X ≤ 4). |
+| `dgeom(2, 0.25)` | `dgeom(x, prob)`: x counts failures before the first success, so the lecture's X = 3 is x = 2. |
+| `1 - pgeom(2, 0.25)` | `pgeom(q, prob)`: at most 2 failures; `1 -` takes the complement. |
+| `dpois(20, 30)`, `ppois(20, 30)` | `dpois(x, lambda)` and `ppois(q, lambda)`: the count, then the mean for the interval. |
+| `[1]` | R starts each printed line with the position of its first value; every line here begins at value 1. |
+
+**Left to right**
+
+- `dbinom(…)` lines: "The binomial probability of exactly (`dbinom`) x successes (`x`) in n trials (`size`) at chance p (`prob`)."
+- `round(dbinom(0:5, 5, 1/6), 4)`: "Round (`round`) to 4 decimals (`4`) the binomial probabilities (`dbinom`) of 0 to 5 (`0:5`) in 5 rolls (`size = 5`) at 1/6 (`prob = 1/6`)."
+- `1 - pbinom(1, 5, 4/52)`: "One minus (`1 -`) the probability of at most (`pbinom`) 1 jack (`q = 1`) in 5 cards (`size = 5`) at 4/52 (`prob = 4/52`)."
+- `dhyper(…)` lines: "The hypergeometric probability (`dhyper`) of x successes (`x`) with m successes (`m`) and n failures (`n`) in the population and k drawn (`k`)."
+- `phyper(4, 40, 50, 10)`: "The probability of at most (`phyper`) 4 (`q = 4`) with 40 successes (`m = 40`), 50 failures (`n = 50`) and 10 drawn (`k = 10`)."
+- `dgeom(2, 0.25)`: "The geometric probability (`dgeom`) of 2 failures before the first success (`x = 2`) at chance 0.25 (`prob = 0.25`)."
+- `1 - pgeom(2, 0.25)`: "One minus (`1 -`) the probability of at most (`pgeom`) 2 failures (`q = 2`) at 0.25 (`prob = 0.25`)."
+- `dpois(20, 30)`, `ppois(20, 30)`: "The Poisson probability of exactly (`dpois`) or at most (`ppois`) 20 events (`20`) with mean 30 (`lambda = 30`)."
+
+**Right to left**, the order R runs it
+
+- `dbinom(…)` lines: "Take x, size and prob, compute P(X = x) (`dbinom`), and print."
+- `round(dbinom(0:5, 5, 1/6), 4)`: "Make 0 to 5 (`0:5`), compute the six binomial probabilities (`dbinom`), round them to 4 decimals (`round`), and print."
+- `1 - pbinom(1, 5, 4/52)`: "Divide 4 by 52 (`4/52`), compute P(X ≤ 1) (`pbinom`), subtract it from 1 (`1 -`), and print."
+- `dhyper(…)` lines: "Take x, m, n and k, compute P(X = x) (`dhyper`), and print."
+- `phyper(4, 40, 50, 10)`: "Take q, m, n and k, compute P(X ≤ 4) (`phyper`), and print."
+- `dgeom(2, 0.25)`: "Take 2 failures and prob 0.25, compute the probability (`dgeom`), and print."
+- `1 - pgeom(2, 0.25)`: "Compute the chance of at most 2 failures (`pgeom`), subtract it from 1 (`1 -`), and print."
+- `dpois(20, 30)`, `ppois(20, 30)`: "Take 20 and lambda = 30, compute P(X = 20) (`dpois`) or P(X ≤ 20) (`ppois`), and print."
+:::
+
 The outputs are the notes' answers: 0.0123, the 3s table, 0.0465 and 0.0506, 0.0399 against 0.0465, 0.0460, 0.2539 and 0.5189, 0.1406 and 0.4219, 0.0134 and 0.0353. On paper the formula is written out with the numbers substituted; the `d`/`p` line checks it.
 
 ## The two recipes that go with any distribution
@@ -88,6 +168,42 @@ lambda <- 30                              # web server
 [1] -1.825742
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `;` | Separates commands written on one line; `n <- 200; p <- 0.1; q <- 1 - p` is three commands. |
+| `n <- 200; p <- 0.1; q <- 1 - p` | `<-` is assignment: stores n, p and q = 1 − p. |
+| `mu <- n*p; sig <- sqrt(n*p*q)` | `*` multiplies and `sqrt()` is the square root: the binomial μ and σ. |
+| `(14 - mu)/sig` | Brackets first, then `/`. Not stored anywhere, so R prints it. |
+| `N <- 90; K <- 40; n <- 10; p <- K/N` | Replaces `n` and `p`; R is case-sensitive, so `N` and `n` are different names. |
+| `mu <- n*K/N; sig <- sqrt(n*p*(1-p)*(N-n)/(N-1))` | The hypergeometric μ and σ; each bracket is worked out first. |
+| `(8 - mu)/sig` | The Mac Z-score, printed. |
+| `lambda <- 30` | Stores the Poisson mean. |
+| `(20 - lambda)/sqrt(lambda)` | The server Z-score: σ = √λ in the denominator. |
+
+**Left to right**
+
+- `n <- 200; p <- 0.1; q <- 1 - p`: "Store under the names n, p and q (`n <-`, `p <-`, `q <-`) 200, 0.1 and 1 minus p (`1 - p`), one command after another (`;`)."
+- `mu <- n*p; sig <- sqrt(n*p*q)`: "Store under the name mu (`mu <-`) n times p (`n*p`); then (`;`) store under the name sig (`sig <-`) the square root (`sqrt`) of n times p times q (`n*p*q`)."
+- `(14 - mu)/sig`: "14 minus mu (`14 - mu`) divided by (`/`) sig (`sig`)."
+- `N <- 90; K <- 40; n <- 10; p <- K/N`: "Store under the names N, K and n (`N <-`, `K <-`, `n <-`) 90, 40 and 10, and under p (`p <-`) K divided by N (`K/N`)."
+- `mu <- n*K/N; sig <- …`: "Store under the name mu (`mu <-`) n times K over N (`n*K/N`); then store under the name sig (`sig <-`) the square root (`sqrt`) of n p (1 − p) times N minus n over N minus 1 (`(N-n)/(N-1)`)."
+- `(8 - mu)/sig`: "8 minus mu (`8 - mu`) divided by (`/`) sig (`sig`)."
+- `lambda <- 30`: "Store under the name lambda (`lambda <-`) the number 30."
+- `(20 - lambda)/sqrt(lambda)`: "20 minus lambda (`20 - lambda`) divided by (`/`) the square root (`sqrt`) of lambda."
+
+**Right to left**, the order R runs it
+
+- `n <- 200; p <- 0.1; q <- 1 - p`: "Store 200 as n and 0.1 as p (`n <-`, `p <-`); subtract p from 1 (`1 - p`) and store it as q (`q <-`)."
+- `mu <- n*p; sig <- sqrt(n*p*q)`: "Multiply n by p and store it as mu (`mu <-`); multiply n, p and q, take the square root (`sqrt`) and store it as sig (`sig <-`)."
+- `(14 - mu)/sig`: "Subtract mu from 14 (`14 - mu`), divide by sig (`/`), and print."
+- `N <- 90; K <- 40; n <- 10; p <- K/N`: "Store 90, 40 and 10 as N, K and n; divide K by N (`K/N`) and store it as p (`p <-`)."
+- `mu <- n*K/N; sig <- …`: "Work out n K over N and store it as mu (`mu <-`); work out each bracket, multiply and divide, take the square root (`sqrt`), and store it as sig (`sig <-`)."
+- `(8 - mu)/sig`: "Subtract mu from 8 (`8 - mu`), divide by sig (`/`), and print."
+- `lambda <- 30`: "Take 30 and store it as lambda (`lambda <-`)."
+- `(20 - lambda)/sqrt(lambda)`: "Subtract lambda from 20 (`20 - lambda`), take the square root of lambda (`sqrt`), divide (`/`), and print."
+:::
+
 Only the Mac count (Z = 2.39) is unusual; the printers (−1.41) and the quiet minute (−1.83) are not.
 
 **The probability histogram.** Build the vector of $x$ values, apply the `d` function, and `barplot` with `space=0` so the bars touch:
@@ -99,6 +215,30 @@ barplot(p.vals, names.arg=X.vals, col="pink", space=0,
         xlab="x", ylab="P(x)", main="Number of Mac Users in a Sample (n=10)")
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `X.vals <- 0:10` | `<-` stores; `a:b` is the whole numbers from a to b, here 0 to 10. |
+| `p.vals <- dhyper(X.vals, 40, 50, 10)` | x = all eleven values at once, m = 40 successes, n = 50 failures, k = 10 drawn. |
+| `barplot(p.vals, …)` | One bar per value; `p.vals` fills `height`. |
+| `names.arg=X.vals` | The labels under the bars: 0 to 10. |
+| `col="pink"` | The bar fill colour. |
+| `space=0` | No gap between bars, so they touch. |
+| `xlab=`, `ylab=`, `main=` | The x-axis label, the y-axis label and the title, as strings. |
+
+**Left to right**
+
+- `X.vals <- 0:10`: "Store under the name X.vals (`X.vals <-`) the whole numbers 0 to 10 (`0:10`)."
+- `p.vals <- dhyper(X.vals, 40, 50, 10)`: "Store under the name p.vals (`p.vals <-`) the hypergeometric probabilities (`dhyper`) of each x in X.vals (`X.vals`) with 40 successes (`m = 40`), 50 failures (`n = 50`) and 10 drawn (`k = 10`)."
+- `barplot(…)`: "Draw a bar chart (`barplot`) of p.vals (`p.vals`), labelled 0 to 10 (`names.arg=X.vals`), in pink (`col="pink"`), with no gaps (`space=0`), with axis labels (`xlab=`, `ylab=`) and a title (`main=`)."
+
+**Right to left**, the order R runs it
+
+- `X.vals <- 0:10`: "Make 0 to 10 (`0:10`), then store it as X.vals (`X.vals <-`)."
+- `p.vals <- dhyper(X.vals, 40, 50, 10)`: "Compute P(X = x) for every x in X.vals (`dhyper`), then store them as p.vals (`p.vals <-`)."
+- `barplot(…)`: "Take the heights (`p.vals`), labels (`names.arg=X.vals`), colour (`col="pink"`), no gaps (`space=0`) and text labels (`xlab=`, `ylab=`, `main=`), and draw the bars (`barplot`)."
+:::
+
 With another `d` line and range of `X.vals` (`0:50` for the shoppers, `1:10` with `q^(X.vals - 1)*p` for the help line, `0:80` for the server), the same four lines draw every histogram in the unit.
 
 ## Practice scenarios
@@ -109,6 +249,20 @@ dist-picker
 ```
 
 Practice Problem 23 (the first miss on the 15th shot) is geometric with success = miss, $p = 0.05$: $0.95^{14}(0.05) = 0.0244$. Practice Problem 25 (ten 4-choice questions guessed, none right) is binomial with $n = 10$, $p = 0.25$, $x = 0$: $0.75^{10} = 0.0563$, which is `dbinom(0, 10, 0.25)`.
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dbinom(0, 10, 0.25)` | `dbinom(x, size, prob)`: x = 0 right, size = 10 questions (n), prob = 0.25 (p). |
+
+**Left to right**
+
+- `dbinom(0, 10, 0.25)`: "The binomial probability of exactly (`dbinom`) 0 right (`x = 0`) in 10 questions (`size = 10`) at 0.25 each (`prob = 0.25`)."
+
+**Right to left**, the order R runs it
+
+- `dbinom(0, 10, 0.25)`: "Take x = 0, size = 10 and prob = 0.25, compute P(X = 0) (`dbinom`), and print."
+:::
 
 ## Name the distribution: scrolls, a ladder draw, Star Force taps, a Chaos Orb and an intersection
 

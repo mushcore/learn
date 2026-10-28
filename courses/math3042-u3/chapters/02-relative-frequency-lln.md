@@ -57,6 +57,41 @@ prob.B
 [1] 0.02799
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `n.trials <- 10^5` | `<-` is assignment: it stores 100 000 under the name `n.trials`. `^` raises to a power. The dot is just part of the name. |
+| `n.dice <- 2` | Stores the number of dice per trial. |
+| `X.success <- 0` | Starts the success counter at 0. |
+| `for (i.trial in 1:n.trials){ … }` | `1:n.trials` is the whole numbers 1 to 100 000; the loop runs the lines inside the braces once for each value of `i.trial`. |
+| `sample(c(1,2,3,4,5,6), n.dice, replace=TRUE)` | `c()` combines values into a vector. `sample` fills x = the vector of faces, size = `n.dice` draws. |
+| `replace=TRUE` | Puts each drawn value back, so both dice can show the same face. |
+| `dice <- …` | Stores the two rolled faces in the vector `dice`. |
+| `dice[1] == 6` | `[ ]` picks an element by position, counting from 1, so `dice[1]` is the first die. `==` tests equality and gives `TRUE` or `FALSE`. |
+| `(…) & (…)` | `&` is AND: `TRUE` only when both comparisons are `TRUE`. |
+| `X.success <- X.success + success` | Adds the logical to the counter; in arithmetic R counts `TRUE` as 1 and `FALSE` as 0. |
+| `prob.B <- X.success / n.trials` | `/` divides: successes over trials, x/n. |
+| `prob.B` | A name on its own line prints its value. `[1]` in the output is the position of the first value on that printed line. |
+
+**Left to right**
+
+- `n.trials <- 10^5`: "Store under the name n.trials (`n.trials <-`) ten to the power (`^`) five (`10^5`)."
+- `n.dice <- 2`: "Store under the name n.dice (`n.dice <-`) the number 2 (`2`)."
+- `X.success <- 0`: "Store under the name X.success (`X.success <-`) the number 0 (`0`)."
+- `for (i.trial in 1:n.trials){ … }`: "For (`for`) each i.trial (`i.trial`) in 1 to n.trials (`1:n.trials`): store under dice (`dice <-`) a sample (`sample`) from the faces (`c(1,2,3,4,5,6)`) of size n.dice (`n.dice`) with replacement (`replace=TRUE`); store under success (`success <-`) whether the first die (`dice[1]`) equals (`==`) 6 and (`&`) the second die (`dice[2]`) equals 6; and store under X.success (`X.success <-`) the old count plus (`+`) success."
+- `prob.B <- X.success / n.trials`: "Store under the name prob.B (`prob.B <-`) X.success (`X.success`) divided by (`/`) n.trials (`n.trials`)."
+- `prob.B`: "Print prob.B (`prob.B`)."
+
+**Right to left**, the order R runs it
+
+- `n.trials <- 10^5`: "Raise 10 to the power 5 (`10^5`), then store it as n.trials (`n.trials <-`)."
+- `n.dice <- 2`: "Take 2 (`2`) and store it as n.dice (`n.dice <-`)."
+- `X.success <- 0`: "Take 0 (`0`) and store it as X.success (`X.success <-`)."
+- `for (i.trial in 1:n.trials){ … }`: "Build the sequence 1 to n.trials (`1:n.trials`); each time round, combine the faces (`c(1,2,3,4,5,6)`), draw n.dice of them with replacement (`sample`, `replace=TRUE`) and store them (`dice <-`); pick each die (`dice[1]`, `dice[2]`), compare it with 6 (`==`), join the two answers (`&`) and store that (`success <-`); add it to the count (`X.success + success`) and store the total (`X.success <-`)."
+- `prob.B <- X.success / n.trials`: "Divide X.success by n.trials (`X.success / n.trials`), then store it as prob.B (`prob.B <-`)."
+- `prob.B`: "Look up prob.B (`prob.B`) and print it."
+:::
+
 `sample(c(1,2,3,4,5,6), n.dice, replace=TRUE)` rolls two dice (`replace=TRUE` lets both show the same number, lesson 8). `success` is `TRUE` or `FALSE`, and adding it to `X.success` counts the TRUEs. The run in the filled notes gave $P(B) \approx x/n = 0.0281$, against the exact $1/36 = 0.0278$; the demo notebook's `prob.B.classical <- 1/(6^2)` prints 0.02777778. Every run lands on a slightly different third decimal.
 
 ### x/n settling as n grows

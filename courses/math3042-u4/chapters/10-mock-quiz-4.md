@@ -35,6 +35,55 @@ pie(table(SFU.Weather$has.Precip), labels=c("Dry","Wet"),
     main=paste0("Days at SFU (n = ", Something, ")"))
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `library(dplyr); library(mosaic)` | `library()` loads a package; `;` separates two commands on one line. |
+| `SFU.Weather <- read.csv(…)` | `<-` stores the data frame read from the CSV file. |
+| `header=TRUE` | The file's first line holds the column names. |
+| `na="NA"` | Reaches `read.table`'s `na.strings` argument by a unique abbreviation of its name: the text NA marks a missing value. |
+| `colClasses=c("Date", …)` | `c()` combines one type name per column, in order. |
+| `#` | Starts a comment: R ignores the rest of the line, including the marks in brackets. |
+| `Something` | A placeholder for code you write; R would stop with an error if it ran as is. |
+| `filter(SFU.Weather, Something)` | dplyr's `filter()` keeps the rows where the condition you write is TRUE. |
+| `nrow(SFU.Weather)` | The number of rows. |
+| `SFU.Weather$has.Precip <- Something` | `$` with a new name adds a column, filled by your expression. |
+| `weekdays(SFU.Weather$Date)` | The day name of each date. |
+| `SFU.Weather$DoW %in% c("Saturday","Sunday")` | `%in%` is TRUE for each row whose day is one of the two listed. |
+| `ifelse(…, "Weekend", "Weekday")` | `ifelse(test, yes, no)`: "Weekend" where the test is TRUE, "Weekday" otherwise. |
+| `table(SFU.Weather[c("Weekend","has.Precip")])` | A two-way table of counts: rows by Weekend, columns by has.Precip. |
+| `p.wet          <- Something` | Stores your answer; the extra spaces only line the code up. |
+| `pie(table(SFU.Weather$has.Precip), …)` | `pie()` draws one slice per count in the table. |
+| `labels=c("Dry","Wet")` | The slice labels, in the table's order: FALSE comes before TRUE. |
+| `main=paste0("Days at SFU (n = ", Something, ")")` | The title: `paste0()` joins the pieces with nothing between them, with your computed n in the middle. |
+
+**Left to right**
+
+- `library(dplyr); library(mosaic)`: "Load the package (`library`) dplyr, then (`;`) load (`library`) mosaic."
+- `SFU.Weather <- read.csv(…)`: "Store under the name SFU.Weather (`SFU.Weather <-`) the table read from the CSV file (`read.csv`) with a header line (`header=TRUE`), NA as missing (`na="NA"`) and the seven column types (`colClasses=c(…)`)."
+- `SFU.Weather <- filter(SFU.Weather, Something)`: "Store under the name SFU.Weather (`SFU.Weather <-`) the rows kept (`filter`) where your condition (`Something`) holds."
+- `nrow(SFU.Weather)`: "The number of rows (`nrow`) of SFU.Weather."
+- `SFU.Weather$has.Precip <- Something`: "Store in a new column has.Precip (`SFU.Weather$has.Precip <-`) your expression (`Something`)."
+- `SFU.Weather$DoW <- weekdays(SFU.Weather$Date)`: "Store in a new column DoW (`SFU.Weather$DoW <-`) the day name (`weekdays`) of each date (`SFU.Weather$Date`)."
+- `SFU.Weather$Weekend <- ifelse(…)`: "Store in a new column Weekend (`SFU.Weather$Weekend <-`) Weekend if (`ifelse`) the day (`SFU.Weather$DoW`) is in (`%in%`) Saturday or Sunday (`c(…)`), otherwise Weekday."
+- `tab <- table(…)`: "Store under the name tab (`tab <-`) the count table (`table`) of the Weekend and has.Precip columns (`SFU.Weather[c(…)]`)."
+- `p.wet`, `p.wet.weekend`, `p.weekend.wet` lines: "Store under each name (`<-`) your expression (`Something`)."
+- `pie(…)`: "Draw a pie (`pie`) of the tally (`table`) of has.Precip (`SFU.Weather$has.Precip`), labelled Dry and Wet (`labels=c(…)`), titled (`main=`) by joining (`paste0`) the text, your n (`Something`) and a closing bracket."
+
+**Right to left**, the order R runs it
+
+- `library(dplyr); library(mosaic)`: "Load dplyr (`library`), then load mosaic (`library`)."
+- `SFU.Weather <- read.csv(…)`: "Combine the type names (`c`), read the file with them (`read.csv`, `header=TRUE`, `na="NA"`, `colClasses=`), and store the data frame (`SFU.Weather <-`)."
+- `SFU.Weather <- filter(SFU.Weather, Something)`: "Evaluate your condition for each row (`Something`), keep the TRUE rows (`filter`), and store the result back (`SFU.Weather <-`)."
+- `nrow(SFU.Weather)`: "Count the rows (`nrow`) and print."
+- `SFU.Weather$has.Precip <- Something`: "Evaluate your expression (`Something`) and store it as the column has.Precip (`SFU.Weather$has.Precip <-`)."
+- `SFU.Weather$DoW <- weekdays(SFU.Weather$Date)`: "Pull out the dates (`$Date`), name each day (`weekdays`), and store them as DoW (`SFU.Weather$DoW <-`)."
+- `SFU.Weather$Weekend <- ifelse(…)`: "Combine the two day names (`c`), test each row's day against them (`%in%`), choose Weekend or Weekday (`ifelse`), and store the labels as Weekend (`SFU.Weather$Weekend <-`)."
+- `tab <- table(…)`: "Keep the two columns (`[c(…)]`), count every combination (`table`), and store as tab (`tab <-`)."
+- `p.wet`, `p.wet.weekend`, `p.weekend.wet` lines: "Evaluate your expression (`Something`), then store it under the name (`<-`)."
+- `pie(…)`: "Compute your n (`Something`), join it into the title (`paste0`), count the dry and wet days (`table`), and draw the pie with the labels and title (`pie`, `labels=`, `main=`)."
+:::
+
 ```quiz
 [
   {"q": "A discrete random variable is one that has...", "options": ["any value in an interval", "only two values", "a finite or countable number of values", "a mean of zero"], "answer": 2, "explain": "Finite (number of 3s in 5 rolls) or countable (number of children: 0, 1, 2, …, a countable infinity). Values on a continuum are Unit 5."},

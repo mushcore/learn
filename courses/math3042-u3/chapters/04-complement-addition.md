@@ -29,6 +29,24 @@ $$P(\text{at least one match}) = 1 - 0.4927 = 0.5073$$
 
 More likely than not, with only 23 people. The demo notebook's simulation (`sample(1:365, 23, replace=TRUE)` and `length(unique(...)) < 23` over $10^5$ rooms) lands on 0.507.
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `sample(1:365, 23, replace=TRUE)` | `1:365` is the whole numbers 1 to 365. `sample` fills x = those dates, size = 23 people; `replace=TRUE` lets two people share a date. |
+| `unique(...)` | Keeps one copy of each distinct value; the `...` stands for the sampled birthdays. |
+| `length(unique(...)) < 23` | `length` counts the distinct dates; `<` is less than, so `TRUE` means at least one date repeated. |
+
+**Left to right**
+
+- `sample(1:365, 23, replace=TRUE)`: "A random sample (`sample`) from the dates 1 to 365 (`1:365`) of size 23 (`23`) with replacement (`replace=TRUE`)."
+- `length(unique(...)) < 23`: "Whether the number (`length`) of distinct values (`unique`) in the birthdays (`...`) is less than (`<`) 23 (`23`)."
+
+**Right to left**, the order R runs it
+
+- `sample(1:365, 23, replace=TRUE)`: "Build the dates 1 to 365 (`1:365`), allow repeats (`replace=TRUE`), then draw 23 of them (`sample`)."
+- `length(unique(...)) < 23`: "Take the birthdays (`...`), drop the duplicates (`unique`), count what is left (`length`), then compare the count with 23 (`< 23`)."
+:::
+
 ```widget
 birthday
 ```

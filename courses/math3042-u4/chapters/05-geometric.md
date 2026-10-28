@@ -26,6 +26,20 @@ $$P(3) = 0.70 \times 0.70 \times 0.30 = 0.1470, \qquad \mu = \frac{1}{0.30} = 3.
 
 In R, `dgeom(2, 0.3)`: R counts failures before the first success, so the 3rd tap is $x - 1 = 2$ failures.
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dgeom(2, 0.3)` | `dgeom(x, prob)`: x = 2 failures before the first success, prob = 0.3 per tap. |
+
+**Left to right**
+
+- `dgeom(2, 0.3)`: "The geometric probability (`dgeom`) of exactly 2 failures before the first success (`x = 2`) at 0.3 per tap (`prob = 0.3`)."
+
+**Right to left**, the order R runs it
+
+- `dgeom(2, 0.3)`: "Take x = 2 and prob = 0.3, compute the chance of 2 failed taps then a success (`dgeom`), and print."
+:::
+
 ### Fourteen-to-fifteen taps as boxes and bars
 
 ```widget
@@ -91,6 +105,33 @@ c(mu, sig)
 [1] 4.000000 3.464102
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `p <- 0.25` | `<-` is assignment: it stores 0.25 under the name `p`. |
+| `q <- 1 - p` | `-` subtracts; 0.75 is stored in `q`. |
+| `mu <- 1/p` | `/` divides: μ = 1/p. |
+| `sig <- sqrt((1 - p)/p^2)` | `^` is a power and runs before `/`; the brackets make `1 - p` first; `sqrt()` roots the result. |
+| `c(mu, sig)` | `c()` combines the two values so they print on one line. |
+| `[1]` | R starts each printed line with the position of its first value; `[1]` means value 1. |
+
+**Left to right**
+
+- `p <- 0.25`: "Store under the name p (`p <-`) the number 0.25."
+- `q <- 1 - p`: "Store under the name q (`q <-`) 1 minus p (`1 - p`)."
+- `mu <- 1/p`: "Store under the name mu (`mu <-`) 1 divided by p (`1/p`)."
+- `sig <- sqrt((1 - p)/p^2)`: "Store under the name sig (`sig <-`) the square root (`sqrt`) of 1 minus p (`1 - p`) divided by (`/`) p squared (`p^2`)."
+- `c(mu, sig)`: "Combine (`c`) mu and sig (`mu`, `sig`)."
+
+**Right to left**, the order R runs it
+
+- `p <- 0.25`: "Take 0.25 and store it as p (`p <-`)."
+- `q <- 1 - p`: "Subtract p from 1 (`1 - p`), then store it as q (`q <-`)."
+- `mu <- 1/p`: "Divide 1 by p (`1/p`), then store it as mu (`mu <-`)."
+- `sig <- sqrt((1 - p)/p^2)`: "Subtract p from 1 (`1 - p`), square p (`p^2`), divide (`/`), take the square root (`sqrt`), and store it as sig (`sig <-`)."
+- `c(mu, sig)`: "Put mu and sig in one vector (`c`) and print it."
+:::
+
 ## P(X ≥ 4): the complement, or three failures in a row
 
 "At least 4 calls" is everything except 1, 2 or 3 calls, where $P(1) = 0.25$, $P(2) = 0.75 \times 0.25 = 0.1875$ and $P(3) = 0.1406$:
@@ -116,6 +157,30 @@ dgeom(2, p)                # the same: 2 failures, then the success
 [1] 0.421875
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `#` | Starts a comment: R ignores the rest of the line. |
+| `q^2 * p` | `^` runs before `*`: q squared times p. It uses `p` and `q` stored in the block above. |
+| `dgeom(2, p)` | `dgeom(x, prob)`: x = 2 failures before the first success, prob = `p`. |
+| `1 - p - q*p - q^2*p` | `^` and `*` run first, then the subtractions left to right. |
+| `1 - pgeom(2, p)` | `pgeom(q, prob)`: q = 2, the chance of at most 2 failures; `1 -` takes its complement. |
+
+**Left to right**
+
+- `q^2 * p`: "q squared (`q^2`) times (`*`) p (`p`)."
+- `dgeom(2, p)`: "The geometric probability (`dgeom`) of exactly 2 failures before the first success (`x = 2`) at chance p (`prob = p`)."
+- `1 - p - q*p - q^2*p`: "1 minus p (`1 - p`) minus q times p (`- q*p`) minus q squared times p (`- q^2*p`)."
+- `1 - pgeom(2, p)`: "One minus (`1 -`) the geometric probability of at most (`pgeom`) 2 failures (`q = 2`) at chance p (`prob = p`)."
+
+**Right to left**, the order R runs it
+
+- `q^2 * p`: "Square q (`q^2`), multiply by p (`*`), and print."
+- `dgeom(2, p)`: "Take x = 2 and prob = p, compute the probability of 2 failures then a success (`dgeom`), and print."
+- `1 - p - q*p - q^2*p`: "Work out q times p (`q*p`) and q squared times p (`q^2*p`), subtract p and both from 1 left to right (`-`), and print."
+- `1 - pgeom(2, p)`: "Compute the chance of at most 2 failures (`pgeom`), subtract it from 1 (`1 -`), and print."
+:::
+
 The probability histogram the notes ask for uses the formula directly on a vector of $x$ values:
 
 ```r
@@ -128,6 +193,32 @@ barplot(p.vals, names.arg=X.vals, col="pink", space=0,
 ```text
  [1] 0.2500 0.1875 0.1406 0.1055 0.0791 0.0593 0.0445 0.0334 0.0250 0.0188
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `X.vals <- 1:10` | `a:b` is the whole numbers from a to b, here 1 to 10. |
+| `p.vals <- q^(X.vals - 1)*p` | Works on the whole vector at once: subtracts 1 from each x, raises q to each result, multiplies by p. |
+| `round(p.vals, 4)` | `round(x, digits)`: each probability to 4 decimals. |
+| `barplot(p.vals, …)` | One bar per value; `p.vals` fills `height`. |
+| `names.arg=X.vals` | The labels under the bars: 1 to 10. |
+| `col="pink"`, `space=0` | The bar colour, and no gaps between bars. |
+| `xlab=`, `ylab=`, `main=` | The axis labels and the title, as strings. |
+
+**Left to right**
+
+- `X.vals <- 1:10`: "Store under the name X.vals (`X.vals <-`) the whole numbers 1 to 10 (`1:10`)."
+- `p.vals <- q^(X.vals - 1)*p`: "Store under the name p.vals (`p.vals <-`) q to the power (`^`) each x minus 1 (`X.vals - 1`), times (`*`) p (`p`)."
+- `round(p.vals, 4)`: "Round (`round`) p.vals (`p.vals`) to 4 decimals (`4`)."
+- `barplot(…)`: "Draw a bar chart (`barplot`) of p.vals (`p.vals`), labelled 1 to 10 (`names.arg=X.vals`), in pink (`col="pink"`), with no gaps (`space=0`), with axis labels (`xlab=`, `ylab=`) and a title (`main=`)."
+
+**Right to left**, the order R runs it
+
+- `X.vals <- 1:10`: "Make 1 to 10 (`1:10`), then store it as X.vals (`X.vals <-`)."
+- `p.vals <- q^(X.vals - 1)*p`: "Subtract 1 from each x (`X.vals - 1`), raise q to each power (`q^`), multiply by p (`*p`), and store the ten results as p.vals (`p.vals <-`)."
+- `round(p.vals, 4)`: "Take p.vals, round each to 4 decimals (`round`), and print."
+- `barplot(…)`: "Take the heights (`p.vals`), labels (`names.arg=X.vals`), colour (`col="pink"`), no gaps (`space=0`) and text labels (`xlab=`, `ylab=`, `main=`), and draw the bars (`barplot`)."
+:::
 
 Each bar is 0.75 times the one before it, so the histogram is strictly decreasing: the **mode is 1** even though the mean is 4. The ten bars add to 0.9437; the missing 0.0563 is $q^{10}$, the tail beyond 10 calls.
 

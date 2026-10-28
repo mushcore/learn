@@ -36,6 +36,25 @@ qexp(0.95, rate = 1/2.5)    # 95th percentile
 [1] 7.489331
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `# 95th percentile` | `#` starts a comment: R ignores the rest of the line. |
+| `qexp(0.95, rate = 1/2.5)` | The inverse of `pexp`: p = 0.95, and the named `rate` = 1/β. Returns the x with 0.95 to its left. |
+| `-2.5 * log(0.05)` | `log()` is the natural log, ln; `*` multiplies; the leading `-` makes the result positive. |
+| `[1]` | In the output, the position of the first value on each printed line. |
+
+**Left to right**
+
+- `qexp(0.95, rate = 1/2.5)`: "The value with probability 0.95 (`0.95`) below it (`qexp`) for rate (`rate =`) one divided by 2.5 (`1/2.5`)."
+- `-2.5 * log(0.05)`: "Minus 2.5 (`-2.5`) times (`*`) the natural log (`log`) of 0.05 (`0.05`)."
+
+**Right to left**, the order R runs it
+
+- `qexp(0.95, rate = 1/2.5)`: "Divide one by 2.5 (`1/2.5`), pass it as the rate (`rate =`), then find the x with 0.95 below it (`qexp(0.95, …)`)."
+- `-2.5 * log(0.05)`: "Take the natural log of 0.05 (`log(0.05)`), then multiply it by minus 2.5 (`-2.5 *`)."
+:::
+
 ```widget
 exp-wait
 { "beta": 2.5, "x": 7.49, "p": 0.95, "mode": "percentile", "title": "Web server: the percentile slider; x_p = −β ln(1 − p), so p = 0.95 lands at 7.49 s" }
@@ -81,6 +100,29 @@ qexp(0.75, rate)                                     # (c)
 [1] 0.1858618
 [1] 2.772589
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `rate <- 30/60` | `<-` is assignment: stores 0.5 per minute under the name `rate`. |
+| `pexp(2.5, rate) - pexp(1.5, rate)` | Positionally q, then rate (the second formal is `rate`, so naming it is optional). F(2.5) − F(1.5). |
+| `(pexp(3.5, rate) - pexp(2.5, rate)) / (1 - pexp(1, rate))` | Brackets group: the interval's area divided by P(X > 1), the conditional probability. |
+| `qexp(0.75, rate)` | p = 0.75 with the stored rate: the 75th percentile. |
+
+**Left to right**
+
+- `rate <- 30/60`: "Store under the name rate (`rate <-`) 30 divided by 60 (`30/60`)."
+- `pexp(2.5, rate) - pexp(1.5, rate)`: "The exponential area to the left (`pexp`) of 2.5 (`2.5`) at the stored rate (`rate`), minus (`-`) the area to the left (`pexp`) of 1.5 (`1.5`)."
+- `(pexp(3.5, rate) - pexp(2.5, rate)) / (1 - pexp(1, rate))`: "The area left of 3.5 (`pexp(3.5, rate)`) minus (`-`) the area left of 2.5 (`pexp(2.5, rate)`), all divided by (`/`) one minus (`1 -`) the area left of 1 (`pexp(1, rate)`)."
+- `qexp(0.75, rate)`: "The value with probability 0.75 (`0.75`) below it (`qexp`) at the stored rate (`rate`)."
+
+**Right to left**, the order R runs it
+
+- `rate <- 30/60`: "Divide 30 by 60 (`30/60`), then store the result as rate (`rate <-`)."
+- `pexp(2.5, rate) - pexp(1.5, rate)`: "Look up the rate (`rate`), find the area left of 2.5 (`pexp(2.5, rate)`) and left of 1.5 (`pexp(1.5, rate)`), then subtract (`-`)."
+- `(pexp(3.5, rate) - pexp(2.5, rate)) / (1 - pexp(1, rate))`: "Find the area between 2.5 and 3.5 inside the first brackets, find one minus the area left of 1 inside the second (`1 - pexp(1, rate)`), then divide the first by the second (`/`)."
+- `qexp(0.75, rate)`: "Look up the rate (`rate`), then find the x with 0.75 below it (`qexp(0.75, …)`)."
+:::
 
 ## Memoryless: the time already spent does not change the time to come
 

@@ -49,6 +49,24 @@ The expected cost is −70 dollars, an expected gain of $70 to the company per p
 [1] 287.5
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `100000*(1-0.9989) - 180` | `*` multiplies, `-` subtracts; the brackets are worked out first. R prints the result. |
+| `75000*(1-0.9971) + 70` | `+` adds: the premium that gives the same expected cost. |
+| `[1]` | In the output, the index of the first value on the printed line. Each line here holds one value. |
+
+**Left to right**
+
+- `100000*(1-0.9989) - 180`: "100000 (`100000`) times (`*`) one minus 0.9989 (`1-0.9989`), minus (`-`) 180 (`180`)."
+- `75000*(1-0.9971) + 70`: "75000 (`75000`) times (`*`) one minus 0.9971 (`1-0.9971`), plus (`+`) 70 (`70`)."
+
+**Right to left**, the order R runs it
+
+- `100000*(1-0.9989) - 180`: "Work out the bracket (`1-0.9989`), multiply by 100000 (`*`), then subtract 180 (`- 180`)."
+- `75000*(1-0.9971) + 70`: "Work out the bracket (`1-0.9971`), multiply by 75000 (`*`), then add 70 (`+ 70`)."
+:::
+
 ### PP4. Overbooking
 
 An airline overbooks a flight. X = the number of passengers who cannot board, with P(X = x) = 0.067, 0.141, 0.274, 0.331, 0.187 for x = 0, 1, 2, 3, 4. What is the expected number of passengers who cannot board?
@@ -76,6 +94,27 @@ sum(x*p)
 ```text
 [1] 2.43
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `x <- 0:4` | `<-` is assignment; `0:4` is the whole numbers 0 to 4, stored in `x`. |
+| `p <- c(0.067, …)` | `c()` combines the five probabilities into one vector, stored in `p`. |
+| `x*p` | `*` on two vectors multiplies them slot by slot: x·P(x) for each x. |
+| `sum(…)` | Adds those five products. |
+
+**Left to right**
+
+- `x <- 0:4`: "Store under the name x (`x <-`) the whole numbers 0 to 4 (`0:4`)."
+- `p <- c(0.067, 0.141, 0.274, 0.331, 0.187)`: "Store under the name p (`p <-`) the five probabilities combined into one vector (`c`)."
+- `sum(x*p)`: "The total (`sum`) of x (`x`) times (`*`) p (`p`), slot by slot."
+
+**Right to left**, the order R runs it
+
+- `x <- 0:4`: "Make the numbers 0 to 4 (`0:4`), then store them as x (`x <-`)."
+- `p <- c(0.067, 0.141, 0.274, 0.331, 0.187)`: "Combine the five probabilities (`c`), then store them as p (`p <-`)."
+- `sum(x*p)`: "Multiply x by p slot by slot (`x*p`), then add the products (`sum`)."
+:::
 
 ### PP5. Two 12-sided dice
 
@@ -144,9 +183,54 @@ sqrt(sum((X.vals-mu)^2*p.vals))
 [1] 2.823478
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `X.vals <- 2:24` | The possible sums 2 to 24. The dot is just part of the name. |
+| `# sum of two dice` | `#` starts a comment: R ignores the rest of the line. |
+| `(12 - abs(X.vals - 13))/144` | Works on every value at once; `abs()` is absolute value, `/` divides. Gives P(x) for each sum. |
+| `mu <- sum(X.vals*p.vals); mu` | `;` separates two statements. The first stores the mean in `mu`; the bare `mu` then prints it. |
+| `sqrt(sum((X.vals-mu)^2*p.vals))` | `^2` squares each deviation; `sum` adds the weighted squares; `sqrt()` takes the square root, giving σ. |
+| `X.vals <- 1:12`, `p.vals <- (2*(12 - X.vals) + 1)/144` | Reassigning overwrites the old values: now the minimum's values and probabilities. |
+| last two lines | Repeat the mean and SD lines for the minimum. |
+
+**Left to right**
+
+- `X.vals <- 2:24`: "Store under X.vals (`X.vals <-`) the whole numbers 2 to 24 (`2:24`)."
+- `p.vals <- (12 - abs(X.vals - 13))/144`: "Store under p.vals (`p.vals <-`) 12 minus (`-`) the absolute value (`abs`) of X.vals minus 13 (`X.vals - 13`), divided by (`/`) 144."
+- `mu <- sum(X.vals*p.vals); mu`: "Store under mu (`mu <-`) the total (`sum`) of X.vals times p.vals (`X.vals*p.vals`), then (`;`) print mu (`mu`)."
+- `sqrt(sum((X.vals-mu)^2*p.vals))`: "The square root (`sqrt`) of the total (`sum`) of X.vals minus mu (`X.vals-mu`) squared (`^2`) times p.vals (`*p.vals`)."
+- `X.vals <- 1:12`, `p.vals <- (2*(12 - X.vals) + 1)/144`, then the same two lines: "Store under X.vals the numbers 1 to 12 (`1:12`) and under p.vals 2 times 12 minus X.vals, plus 1, over 144 (`(2*(12 - X.vals) + 1)/144`), then repeat the mean and SD lines (`mu <-`, `sqrt`)."
+
+**Right to left**, the order R runs it
+
+- `X.vals <- 2:24`: "Make the numbers 2 to 24 (`2:24`), then store them as X.vals (`X.vals <-`)."
+- `p.vals <- (12 - abs(X.vals - 13))/144`: "Subtract 13 from each X.vals (`X.vals - 13`), take absolute values (`abs`), subtract from 12 (`12 -`), divide by 144 (`/144`), store as p.vals (`p.vals <-`)."
+- `mu <- sum(X.vals*p.vals); mu`: "Multiply slot by slot (`X.vals*p.vals`), add up (`sum`), store as mu (`mu <-`), then print it (`; mu`)."
+- `sqrt(sum((X.vals-mu)^2*p.vals))`: "Subtract mu (`X.vals-mu`), square (`^2`), weight by p.vals (`*p.vals`), add up (`sum`), take the square root (`sqrt`)."
+- `X.vals <- 1:12`, `p.vals <- (2*(12 - X.vals) + 1)/144`, then the same two lines: "Make 1 to 12 and store it (`1:12`, `X.vals <-`), compute each probability and store it (`(2*(12 - X.vals) + 1)/144`, `p.vals <-`), then rerun the mean and SD lines (`mu <-`, `sqrt`)."
+:::
+
 ## Binomial: PP1, PP3
 
 Taught in [Binomial: successes in n trials](#/math3042-u4/binomial). R: `dbinom(x, n, p)` for exactly x, `pbinom(k, n, p)` for k or fewer.
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dbinom(x, n, p)` | Template: x fills `x`, n fills `size` (trials), p fills `prob`. Returns P(X = x). |
+| `pbinom(k, n, p)` | Template: k fills `q`, then `size` and `prob` as above. Returns P(X ≤ k). |
+
+**Left to right**
+
+- `dbinom(x, n, p)`: "The binomial probability of exactly (`dbinom`) x (`x`) in n trials (`n`) with probability p (`p`)."
+- `pbinom(k, n, p)`: "The binomial probability of at most (`pbinom`) k (`k`) in n trials (`n`) with probability p (`p`)."
+
+**Right to left**, the order R runs it
+
+- `dbinom(x, n, p)`: "Take x, n and p (`x`, `n`, `p`), then compute P(X = x) (`dbinom`)."
+- `pbinom(k, n, p)`: "Take k, n and p (`k`, `n`, `p`), then add up P(0) to P(k) (`pbinom`)."
+:::
 
 ### PP1. Ore samples
 
@@ -191,6 +275,23 @@ pbinom(3, 4, 0.7)
 [1] 0.7599
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dbinom(4, 4, 0.7)`, `dbinom(0, 4, 0.7)` | x = 4 or 0, size = 4 (n), prob = 0.7 (p). Each returns P(X = x). |
+| `pbinom(3, 4, 0.7)` | q = 3, size = 4, prob = 0.7. Returns P(X ≤ 3). |
+
+**Left to right**
+
+- `dbinom(4, 4, 0.7)`, `dbinom(0, 4, 0.7)`: "The binomial probability of exactly (`dbinom`) 4, then 0 (`4`, `0`), in 4 trials (`4`) with probability 0.7 (`0.7`)."
+- `pbinom(3, 4, 0.7)`: "The binomial probability of at most (`pbinom`) 3 (`3`) in 4 trials (`4`) with probability 0.7 (`0.7`)."
+
+**Right to left**, the order R runs it
+
+- `dbinom(4, 4, 0.7)`, `dbinom(0, 4, 0.7)`: "Take x = 4 or 0 (`4`, `0`), 4 trials (`4`) and 0.7 (`0.7`), then compute P(X = x) (`dbinom`)."
+- `pbinom(3, 4, 0.7)`: "Take 3 (`3`), 4 trials (`4`) and 0.7 (`0.7`), then add up P(0) to P(3) (`pbinom`)."
+:::
+
 ### PP3. Guessing on a test
 
 A test has 10 multiple-choice questions with 4 choices each, and a student guesses every answer. Find the probability that the student gets (a) none correct, (b) 8 out of 10 or better.
@@ -229,9 +330,43 @@ dbinom(0, 10, 0.25)
 [1] 0.000415802
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dbinom(0, 10, 0.25)` | x = 0, size = 10, prob = 0.25. |
+| `1 - pbinom(7, 10, 0.25)` | q = 7, size = 10, prob = 0.25 gives P(X ≤ 7); `1 -` subtracts it from one. |
+
+**Left to right**
+
+- `dbinom(0, 10, 0.25)`: "The binomial probability of exactly (`dbinom`) 0 (`0`) in 10 trials (`10`) with probability 0.25 (`0.25`)."
+- `1 - pbinom(7, 10, 0.25)`: "One (`1`) minus (`-`) the binomial probability of at most (`pbinom`) 7 (`7`) in 10 trials (`10`) with probability 0.25 (`0.25`)."
+
+**Right to left**, the order R runs it
+
+- `dbinom(0, 10, 0.25)`: "Take 0 (`0`), 10 trials (`10`) and 0.25 (`0.25`), then compute P(X = 0) (`dbinom`)."
+- `1 - pbinom(7, 10, 0.25)`: "Take 7, 10 and 0.25, add up P(0) to P(7) (`pbinom`), then subtract from one (`1 -`)."
+:::
+
 ## Geometric: PP6
 
 Taught in [Geometric: trials to the first success](#/math3042-u4/geometric). The course counts trials; R counts failures before the first success, so P(X = x) is `dgeom(x-1, p)` and P(X ≤ k) is `pgeom(k-1, p)`.
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dgeom(x-1, p)` | Template: x-1 (failures before the success) fills `x`, p fills `prob`. `-` subtracts before the call. |
+| `pgeom(k-1, p)` | Template: k-1 fills `q`, p fills `prob`. Returns P(at most k-1 failures). |
+
+**Left to right**
+
+- `dgeom(x-1, p)`: "The geometric probability of exactly (`dgeom`) x minus 1 failures (`x-1`) with probability p (`p`)."
+- `pgeom(k-1, p)`: "The geometric probability of at most (`pgeom`) k minus 1 failures (`k-1`) with probability p (`p`)."
+
+**Right to left**, the order R runs it
+
+- `dgeom(x-1, p)`: "Subtract 1 from x (`x-1`), take p (`p`), then compute the probability (`dgeom`)."
+- `pgeom(k-1, p)`: "Subtract 1 from k (`k-1`), take p (`p`), then compute the cumulative probability (`pgeom`)."
+:::
 
 ### PP6. Job applications
 
@@ -279,9 +414,43 @@ dgeom(4, 0.15)
 [1] 0.7225
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `1/0.15` | `/` divides: R as a calculator. |
+| `dgeom(4, 0.15)` | x = 4 failures before the first success, prob = 0.15. |
+| `1 - pgeom(1, 0.15)` | q = 1 failure, prob = 0.15 gives P(at most 1 failure); `1 -` takes the complement. |
+
+**Left to right**
+
+- `1/0.15`: "One (`1`) divided by (`/`) 0.15 (`0.15`)."
+- `dgeom(4, 0.15)`: "The geometric probability of exactly (`dgeom`) 4 failures (`4`) with probability 0.15 (`0.15`)."
+- `1 - pgeom(1, 0.15)`: "One (`1`) minus (`-`) the geometric probability of at most (`pgeom`) 1 failure (`1`) with probability 0.15 (`0.15`)."
+
+**Right to left**, the order R runs it
+
+- `1/0.15`: "Take 0.15 (`0.15`) and divide it into one (`1/`)."
+- `dgeom(4, 0.15)`: "Take 4 failures (`4`) and 0.15 (`0.15`), then compute the probability (`dgeom`)."
+- `1 - pgeom(1, 0.15)`: "Take 1 (`1`) and 0.15 (`0.15`), compute P(at most 1 failure) (`pgeom`), then subtract from one (`1 -`)."
+:::
+
 ## Hypergeometric: PP8, PP9, PP11, PP14, PP15
 
 Taught in [Hypergeometric: sampling without replacement](#/math3042-u4/hypergeometric). Every one samples without replacement from a small lot, so the three-C formula applies: $P(x) = C(K,x)\,C(N-K,n-x)/C(N,n)$. In R, `dhyper(x, K, N-K, n)` takes x, the successes in the population, the failures in the population, and the sample size.
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dhyper(x, K, N-K, n)` | Template: x fills `x`, K fills `m` (successes), N-K fills `n` (failures), n fills `k` (sample size). R's `n` is the failures, not the sample. |
+
+**Left to right**
+
+- `dhyper(x, K, N-K, n)`: "The hypergeometric probability of exactly (`dhyper`) x (`x`) with K successes (`K`), N minus K failures (`N-K`) and n drawn (`n`)."
+
+**Right to left**, the order R runs it
+
+- `dhyper(x, K, N-K, n)`: "Subtract K from N (`N-K`), take x, K and n (`x`, `K`, `n`), then compute P(X = x) (`dhyper`)."
+:::
 
 ### PP8. Wood lots
 
@@ -332,6 +501,26 @@ phyper(1, 4, 20-4, 5)
 [1] 0.7182663
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dhyper(1, 4, 20-4, 5)` | x = 1, m = 4 successes in the lot, n = 20-4 failures (R works out the subtraction), k = 5 drawn. |
+| `phyper(1, 4, 20-4, 5)` | q = 1, then m, n, k as above. Returns P(X ≤ 1). |
+| `1 - dhyper(0, 4, 20-4, 5)` | One minus P(X = 0). |
+
+**Left to right**
+
+- `dhyper(1, 4, 20-4, 5)`: "The hypergeometric probability of exactly (`dhyper`) 1 (`1`) with 4 successes (`4`), 20 minus 4 failures (`20-4`) and 5 drawn (`5`)."
+- `phyper(1, 4, 20-4, 5)`: "The hypergeometric probability of at most (`phyper`) 1 (`1`), same lot (`4`, `20-4`, `5`)."
+- `1 - dhyper(0, 4, 20-4, 5)`: "One (`1`) minus (`-`) the probability of exactly (`dhyper`) 0 (`0`), same lot (`4`, `20-4`, `5`)."
+
+**Right to left**, the order R runs it
+
+- `dhyper(1, 4, 20-4, 5)`: "Subtract 4 from 20 (`20-4`), take 1, 4 and 5 (`1`, `4`, `5`), then compute P(X = 1) (`dhyper`)."
+- `phyper(1, 4, 20-4, 5)`: "Subtract 4 from 20 (`20-4`), then add up P(0) and P(1) (`phyper`)."
+- `1 - dhyper(0, 4, 20-4, 5)`: "Subtract 4 from 20 (`20-4`), compute P(X = 0) (`dhyper`), then subtract from one (`1 -`)."
+:::
+
 ### PP9. Batteries
 
 A sample of 3 is taken from a lot of 24 batteries, 6 of which are defective. Find the probability that the sample contains (a) no defectives, (b) exactly 1 defective, (c) at least 2 defectives.
@@ -379,6 +568,23 @@ dhyper(1, 6, 24-6, 3)
 [1] 0.1432806
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dhyper(0, 6, 24-6, 3)`, `dhyper(1, 6, 24-6, 3)` | x = 0 or 1, m = 6 defective, n = 24-6 good, k = 3 drawn. |
+| `1 - phyper(1, 6, 24-6, 3)` | q = 1, same m, n, k: one minus P(X ≤ 1). |
+
+**Left to right**
+
+- `dhyper(0, 6, 24-6, 3)`, `dhyper(1, 6, 24-6, 3)`: "The hypergeometric probability of exactly (`dhyper`) 0, then 1 (`0`, `1`), with 6 defective (`6`), 24 minus 6 good (`24-6`) and 3 drawn (`3`)."
+- `1 - phyper(1, 6, 24-6, 3)`: "One (`1`) minus (`-`) the probability of at most (`phyper`) 1 (`1`), same lot (`6`, `24-6`, `3`)."
+
+**Right to left**, the order R runs it
+
+- `dhyper(0, 6, 24-6, 3)`, `dhyper(1, 6, 24-6, 3)`: "Subtract 6 from 24 (`24-6`), take x = 0 or 1, 6 and 3, then compute P(X = x) (`dhyper`)."
+- `1 - phyper(1, 6, 24-6, 3)`: "Subtract 6 from 24 (`24-6`), add up P(0) and P(1) (`phyper`), then subtract from one (`1 -`)."
+:::
+
 ### PP11. Lotto 6/49
 
 In Lotto 6/49 you pick 6 numbers from 1 to 49 and 6 winning numbers are drawn. What is the probability of matching exactly 3 of the 6? Express it also as "1 in …".
@@ -414,6 +620,23 @@ dhyper(3, 6, 49-6, 6)
 [1] 0.0176504
 [1] 56.65593
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dhyper(3, 6, 49-6, 6)` | x = 3 matches, m = 6 winning numbers, n = 49-6 others, k = 6 picked. |
+| `1/dhyper(…)` | One divided by that probability: the "1 in …" figure. |
+
+**Left to right**
+
+- `dhyper(3, 6, 49-6, 6)`: "The hypergeometric probability of exactly (`dhyper`) 3 (`3`) with 6 winning numbers (`6`), 49 minus 6 others (`49-6`) and 6 picked (`6`)."
+- `1/dhyper(3, 6, 49-6, 6)`: "One (`1`) divided by (`/`) that same probability (`dhyper(3, 6, 49-6, 6)`)."
+
+**Right to left**, the order R runs it
+
+- `dhyper(3, 6, 49-6, 6)`: "Subtract 6 from 49 (`49-6`), take 3, 6 and 6, then compute P(X = 3) (`dhyper`)."
+- `1/dhyper(3, 6, 49-6, 6)`: "Compute P(X = 3) again (`dhyper`), then divide it into one (`1/`)."
+:::
 
 ### PP14. Lot of 50
 
@@ -468,6 +691,26 @@ phyper(1, 6, 50-6, 5)
 [1] 0.009244086
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dhyper(0, 6, 50-6, 5)` | x = 0, m = 6 defective, n = 50-6 good, k = 5 drawn. |
+| `phyper(1, 6, 50-6, 5)` | q = 1: P(X ≤ 1). |
+| `1 - phyper(2, 6, 50-6, 5)` | q = 2: one minus P(X ≤ 2). |
+
+**Left to right**
+
+- `dhyper(0, 6, 50-6, 5)`: "The hypergeometric probability of exactly (`dhyper`) 0 (`0`) with 6 defective (`6`), 50 minus 6 good (`50-6`) and 5 drawn (`5`)."
+- `phyper(1, 6, 50-6, 5)`: "The probability of at most (`phyper`) 1 (`1`), same lot (`6`, `50-6`, `5`)."
+- `1 - phyper(2, 6, 50-6, 5)`: "One (`1`) minus (`-`) the probability of at most (`phyper`) 2 (`2`), same lot."
+
+**Right to left**, the order R runs it
+
+- `dhyper(0, 6, 50-6, 5)`: "Subtract 6 from 50 (`50-6`), take 0, 6 and 5, then compute P(X = 0) (`dhyper`)."
+- `phyper(1, 6, 50-6, 5)`: "Subtract 6 from 50 (`50-6`), then add up P(0) and P(1) (`phyper`)."
+- `1 - phyper(2, 6, 50-6, 5)`: "Subtract 6 from 50 (`50-6`), add up P(0) to P(2) (`phyper`), then subtract from one (`1 -`)."
+:::
+
 ### PP15. Gas detectors
 
 A shipment of 15 gas detectors contains 2 defectives. A sample of 3 is tested. What is the probability that the sample contains no defectives?
@@ -492,6 +735,20 @@ dhyper(0, 2, 15-2, 3)
 ```text
 [1] 0.6285714
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dhyper(0, 2, 15-2, 3)` | x = 0, m = 2 defective, n = 15-2 good, k = 3 tested. |
+
+**Left to right**
+
+- "The hypergeometric probability of exactly (`dhyper`) 0 (`0`) with 2 defective (`2`), 15 minus 2 good (`15-2`) and 3 tested (`3`)."
+
+**Right to left**, the order R runs it
+
+- "Subtract 2 from 15 (`15-2`), take 0, 2 and 3 (`0`, `2`, `3`), then compute P(X = 0) (`dhyper`)."
+:::
 
 ## Poisson: PP7, PP10, PP12, PP13, PP16
 
@@ -559,6 +816,22 @@ round(dpois(0:4, 116/365), 4)
 [1] 0.7277 0.2313 0.0368 0.0039 0.0003
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dpois(0:4, 116/365)` | x = `0:4`, five values at once; lambda = 116/365 per day. Returns five probabilities. |
+| `round(…, 4)` | x = the five probabilities, digits = 4 decimal places. |
+| output line | All five values print on one line; `[1]` marks the first. |
+
+**Left to right**
+
+- "Round (`round`) to 4 decimals (`4`) the Poisson probabilities of exactly (`dpois`) 0 to 4 (`0:4`) with mean 116 over 365 (`116/365`)."
+
+**Right to left**, the order R runs it
+
+- "Divide 116 by 365 (`116/365`), make 0 to 4 (`0:4`), compute the five probabilities (`dpois`), then round each to 4 decimals (`round`, `4`)."
+:::
+
 ### PP10. Low birth weight
 
 A hospital averages 210 low-birth-weight babies per year. (a) What is the probability of more than 1 on a given day? (b) Would 2 on one day be unusual?
@@ -596,6 +869,23 @@ The sheet's 0.113 is truncated; three significant digits would be 0.114. For (b)
 [1] 1.878223
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `1 - ppois(1, 210/365)` | q = 1, lambda = 210/365: one minus P(X ≤ 1). |
+| `(2 - 210/365)/sqrt(210/365)` | The brackets group the numerator; `sqrt()` is the square root of λ, the SD. Gives the z-score. |
+
+**Left to right**
+
+- `1 - ppois(1, 210/365)`: "One (`1`) minus (`-`) the Poisson probability of at most (`ppois`) 1 (`1`) with mean 210 over 365 (`210/365`)."
+- `(2 - 210/365)/sqrt(210/365)`: "Two minus 210 over 365 (`2 - 210/365`), divided by (`/`) the square root (`sqrt`) of 210 over 365 (`210/365`)."
+
+**Right to left**, the order R runs it
+
+- `1 - ppois(1, 210/365)`: "Divide 210 by 365 (`210/365`), add up P(0) and P(1) (`ppois`), then subtract from one (`1 -`)."
+- `(2 - 210/365)/sqrt(210/365)`: "Work out the bracket (`2 - 210/365`), take the square root of λ (`sqrt(210/365)`), then divide the first by the second (`/`)."
+:::
+
 ### PP12. Cesium-137
 
 A sample of 1,000,000 cesium-137 atoms decays to 977,287 atoms over 365 days. What is the probability that exactly 50 atoms decay on a given day?
@@ -620,6 +910,20 @@ dpois(50, 22713/365)
 ```text
 [1] 0.01552357
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dpois(50, 22713/365)` | x = 50, lambda = 22713/365; R does the division, so no rounded λ is typed. |
+
+**Left to right**
+
+- "The Poisson probability of exactly (`dpois`) 50 (`50`) with mean 22713 over 365 (`22713/365`)."
+
+**Right to left**, the order R runs it
+
+- "Divide 22713 by 365 (`22713/365`), take 50 (`50`), then compute P(X = 50) (`dpois`)."
+:::
 
 ### PP13. Cafeteria
 
@@ -663,6 +967,26 @@ dpois(1, 1.5)^2
 [1] 0.8008517
 [1] 0.1120209
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dpois(2, 3)` | x = 2, lambda = 3. |
+| `1 - ppois(1, 3)` | q = 1, lambda = 3: one minus P(X ≤ 1). |
+| `dpois(1, 1.5)^2` | x = 1, lambda = 1.5; `^2` squares the result. |
+
+**Left to right**
+
+- `dpois(2, 3)`: "The Poisson probability of exactly (`dpois`) 2 (`2`) with mean 3 (`3`)."
+- `1 - ppois(1, 3)`: "One (`1`) minus (`-`) the Poisson probability of at most (`ppois`) 1 (`1`) with mean 3 (`3`)."
+- `dpois(1, 1.5)^2`: "The Poisson probability of exactly (`dpois`) 1 (`1`) with mean 1.5 (`1.5`), squared (`^2`)."
+
+**Right to left**, the order R runs it
+
+- `dpois(2, 3)`: "Take 2 and the mean 3 (`2`, `3`), then compute P(X = 2) (`dpois`)."
+- `1 - ppois(1, 3)`: "Take 1 and 3, add up P(0) and P(1) (`ppois`), then subtract from one (`1 -`)."
+- `dpois(1, 1.5)^2`: "Take 1 and 1.5, compute P(X = 1) (`dpois`), then square it (`^2`)."
+:::
 
 ### PP16. 100-year flood
 
@@ -715,6 +1039,26 @@ dpois(2, 1)
 [1] 0.09196986
 [1] 0.1839397
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `1 - dpois(0, 0.5)` | x = 0, lambda = 0.5: one minus P(X = 0). |
+| `dpois(1, 0.5)`, `dpois(1, 0.5)^2` | x = 1, lambda = 0.5; the second squares it. |
+| `dpois(2, 1)` | x = 2, lambda = 1. |
+
+**Left to right**
+
+- `1 - dpois(0, 0.5)`: "One (`1`) minus (`-`) the Poisson probability of exactly (`dpois`) 0 (`0`) with mean 0.5 (`0.5`)."
+- `dpois(1, 0.5)`, `dpois(1, 0.5)^2`: "The Poisson probability of exactly (`dpois`) 1 (`1`) with mean 0.5 (`0.5`), then the same squared (`^2`)."
+- `dpois(2, 1)`: "The Poisson probability of exactly (`dpois`) 2 (`2`) with mean 1 (`1`)."
+
+**Right to left**, the order R runs it
+
+- `1 - dpois(0, 0.5)`: "Take 0 and 0.5, compute P(X = 0) (`dpois`), then subtract from one (`1 -`)."
+- `dpois(1, 0.5)`, `dpois(1, 0.5)^2`: "Take 1 and 0.5, compute P(X = 1) (`dpois`), and in the second line square it (`^2`)."
+- `dpois(2, 1)`: "Take 2 and the mean 1, then compute P(X = 2) (`dpois`)."
+:::
 
 ```quiz
 [

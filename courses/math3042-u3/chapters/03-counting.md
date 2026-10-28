@@ -74,6 +74,26 @@ All of these are presets in the calculator above. Decide P, C or $n^r$ for each 
 
 On the calculator: $C(52, 4)$ is `52  2nd F  nCr  4`; `nPr` gives permutations and `n!` factorials. In R: `factorial(4)`, `choose(52, 4) * factorial(4)` for $P(52, 4)$, `choose(52, 4)` for $C(52, 4)$.
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `factorial(4)` | 4!, the product 4 × 3 × 2 × 1. |
+| `choose(52, 4)` | nCr with n = 52 and k = 4: the number of 4-card sets from 52. |
+| `choose(52, 4) * factorial(4)` | `*` multiplies: the sets times the 4! orders of each set gives P(52, 4). |
+
+**Left to right**
+
+- `factorial(4)`: "The factorial (`factorial`) of 4 (`4`)."
+- `choose(52, 4) * factorial(4)`: "The number of ways to choose (`choose`) 4 (`4`) from 52 (`52`), times (`*`) the factorial (`factorial`) of 4 (`4`)."
+- `choose(52, 4)`: "The number of ways to choose (`choose`) 4 (`4`) from 52 (`52`)."
+
+**Right to left**, the order R runs it
+
+- `factorial(4)`: "Take 4 (`4`) and multiply down to 1 (`factorial`)."
+- `choose(52, 4) * factorial(4)`: "Count the 4-card sets (`choose(52, 4)`), compute 4! (`factorial(4)`), then multiply them (`*`)."
+- `choose(52, 4)`: "Take 52 and 4 (`52, 4`) and count the unordered selections (`choose`)."
+:::
+
 ## Three Classic characters, ten 2nd-job paths
 
 A MapleStory Classic account holds up to 3 characters, and at Lv. 30 each takes one of 10 2nd-job paths [Classic, Grand Launch Release Notes 2026-10-20 (Nexon), checked 2026-10-27]: 3 each for Warrior and Magician, 2 each for Bowman and Thief. Both counts are Nexon's, so all three ways of choosing are sourced: with repeats, in order without repeats, and as a set.

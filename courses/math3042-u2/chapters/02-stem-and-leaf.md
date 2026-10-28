@@ -89,6 +89,21 @@ The decimal point is 1 digit(s) to the right of the |
   19 | 779
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `BCIT.students$Height.CM` | `$` picks one column of a data frame by name: the 302 heights. The dots are part of the names. |
+| `stem( … )` | Prints a stem-and-leaf plot of a numeric vector as text in the console, starting with the key line; it draws no graph. |
+
+**Left to right**
+
+- "Print a stem-and-leaf plot (`stem`) of the Height.CM column (`Height.CM`) of the student data (`BCIT.students$`)."
+
+**Right to left**, the order R runs it
+
+- "Take the student data (`BCIT.students`), pull out its Height.CM column (`$Height.CM`), and print its stem-and-leaf plot (`stem`)."
+:::
+
 Two notes from the lecture:
 
 - **R split each stem into two lines**, leaves 0–4 and 5–9, because 302 values on one line per stem would be too crowded.
@@ -103,6 +118,21 @@ The demo notebook's `scale` argument compresses the number of stems by half, giv
 ```r
 stem( BCIT.students$Height.CM, scale=0.5)
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `stem( BCIT.students$Height.CM, …)` | The same plot of the heights column, as above. |
+| `scale=0.5` | A named argument controlling the plot length; the default is 1, and 0.5 gives about half as many lines. |
+
+**Left to right**
+
+- "Print a stem-and-leaf plot (`stem`) of the Height.CM column of the student data (`BCIT.students$Height.CM`) at half the length (`scale=0.5`)."
+
+**Right to left**, the order R runs it
+
+- "Take the student data (`BCIT.students`), pull out its Height.CM column (`$Height.CM`), set the length to half (`scale=0.5`), and print the plot (`stem`)."
+:::
 
 ## Too many digits: round first
 
@@ -140,6 +170,21 @@ The decimal point is 1 digit(s) to the left of the |
   50 | 0370
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `faithful$eruptions` | `faithful` is a data frame built into R, ready to use without loading; `$eruptions` picks its eruption-duration column. |
+| `stem( … )` | Prints the stem-and-leaf plot; R chooses the stems and the key line itself. |
+
+**Left to right**
+
+- "Print a stem-and-leaf plot (`stem`) of the eruptions column (`eruptions`) of the built-in Old Faithful data (`faithful$`)."
+
+**Right to left**, the order R runs it
+
+- "Take the Old Faithful data (`faithful`), pull out its eruptions column (`$eruptions`), and print its stem-and-leaf plot (`stem`)."
+:::
+
 The key now says the decimal point is one digit to the **left** of the bar: 16 | 0 is 1.60 and 22 | 8 is 2.28. Here R went the other way from the heights and put **two** stems on each line (16 covers 1.60–1.79), because 272 values over 1.6–5.1 would otherwise give too many lines. That is why the 16 line reads 0, 7, 0, 3, 5, ... rather than a sorted 0–9: the first three leaves are 1.60, 1.67, 1.70.
 
 The instructor's conclusion: **"Most eruptions are around 1.8 or 4.4"**, two clusters with a gap from about 2.6 to 3.4. The histogram lesson shows the same two humps.
@@ -155,6 +200,22 @@ An **integer** variable like Age can "occasionally" be bar-plotted like a catego
 ```r
 barplot( table(BCIT.students$Age), xlab="Age", ylab="Frequency" )
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `table(BCIT.students$Age)` | Counts how many students have each distinct age; only ages that occur get a count. |
+| `barplot( … )` | Draws one bar per count. The first argument, `height`, is the table, so its names (the ages) label the bars. |
+| `xlab="Age"`, `ylab="Frequency"` | The x-axis label and the y-axis label, each a string in quotes. |
+
+**Left to right**
+
+- "Draw a bar chart (`barplot`) of the count per age (`table`) of the Age column (`Age`) of the student data (`BCIT.students$`), with the axis labels Age and Frequency (`xlab="Age"`, `ylab="Frequency"`)."
+
+**Right to left**, the order R runs it
+
+- "Take the student data (`BCIT.students`), pull out its Age column (`$Age`), count each distinct age (`table`), set the axis labels (`xlab=`, `ylab=`), and draw one bar per count (`barplot`)."
+:::
 
 The instructor crossed the chart out and wrote **"Not recommended"**, for two reasons:
 

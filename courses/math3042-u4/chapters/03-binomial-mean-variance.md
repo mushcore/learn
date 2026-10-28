@@ -53,6 +53,35 @@ c(mu, sig)
 [1] 12.500000  3.061862
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `n <- 50`, `p <- 0.25` | `<-` is assignment: it stores each number under its name. |
+| `q <- 1 - p` | `-` subtracts; the result, 0.75, is stored in `q`. |
+| `mu <- n*p` | `*` multiplies: μ = np. |
+| `sig <- sqrt(n*p*q)` | `sqrt()` takes the square root of the product npq. |
+| `c(mu, sig)` | `c()` combines the two values into one vector so they print on one line. |
+| `[1]` | R starts each printed line with the position of its first value; `[1]` means value 1. |
+
+**Left to right**
+
+- `n <- 50`: "Store under the name n (`n <-`) the number 50."
+- `p <- 0.25`: "Store under the name p (`p <-`) the number 0.25."
+- `q <- 1 - p`: "Store under the name q (`q <-`) 1 minus (`-`) p (`p`)."
+- `mu <- n*p`: "Store under the name mu (`mu <-`) n (`n`) times (`*`) p (`p`)."
+- `sig <- sqrt(n*p*q)`: "Store under the name sig (`sig <-`) the square root (`sqrt`) of n times p times q (`n*p*q`)."
+- `c(mu, sig)`: "Combine (`c`) mu (`mu`) and sig (`sig`)."
+
+**Right to left**, the order R runs it
+
+- `n <- 50`: "Take 50 and store it as n (`n <-`)."
+- `p <- 0.25`: "Take 0.25 and store it as p (`p <-`)."
+- `q <- 1 - p`: "Subtract p from 1 (`1 - p`), then store it as q (`q <-`)."
+- `mu <- n*p`: "Multiply n by p (`n*p`), then store it as mu (`mu <-`)."
+- `sig <- sqrt(n*p*q)`: "Multiply n, p and q (`n*p*q`), take the square root (`sqrt`), then store it as sig (`sig <-`)."
+- `c(mu, sig)`: "Take mu and sig (`mu`, `sig`), put them in one vector (`c`), and print it."
+:::
+
 ```widget
 binomial-calc
 { "n": 50, "p": 0.25, "x": 6, "op": "eq", "preset": "online shoppers", "title": "Online shoppers: μ = np and σ = √npq under the bars, and the Z of any x" }
@@ -99,6 +128,36 @@ Z
 [1] 2.415229
 [1] 0.01477705
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `n <- 40`, `p <- 0.3`, `q <- 1 - p` | As above; the new values replace the old ones under the same names. |
+| `mu <- n*p`, `sig <- sqrt(n*p*q)`, `c(mu, sig)` | As above: μ, σ, then both printed on one line. |
+| `Z <- (19 - mu)/sig` | The brackets make the subtraction happen first; `/` then divides by `sig`. |
+| `Z` | A name alone on a line prints its value. |
+| `1 - pbinom(18, 40, 0.3)` | `pbinom(q, size, prob)` is P(X ≤ q): q = 18, size = 40 (n), prob = 0.3 (p). `1 -` turns it into P(X ≥ 19). |
+
+**Left to right**
+
+- `n <- 40`, `p <- 0.3`, `q <- 1 - p`: "Store under the names n, p and q (`n <-`, `p <-`, `q <-`) the numbers 40, 0.3 and 1 minus p (`1 - p`)."
+- `mu <- n*p`: "Store under the name mu (`mu <-`) n times p (`n*p`)."
+- `sig <- sqrt(n*p*q)`: "Store under the name sig (`sig <-`) the square root (`sqrt`) of n times p times q (`n*p*q`)."
+- `c(mu, sig)`: "Combine (`c`) mu and sig (`mu`, `sig`)."
+- `Z <- (19 - mu)/sig`: "Store under the name Z (`Z <-`) 19 minus mu (`19 - mu`) divided by (`/`) sig (`sig`)."
+- `Z`: "Show Z (`Z`)."
+- `1 - pbinom(18, 40, 0.3)`: "One minus (`1 -`) the probability of at most (`pbinom`) 18 successes (`q = 18`) in 40 trials (`size = 40`) at 0.3 (`prob = 0.3`)."
+
+**Right to left**, the order R runs it
+
+- `n <- 40`, `p <- 0.3`, `q <- 1 - p`: "Take 40 and 0.3 and store them as n and p (`n <-`, `p <-`); subtract p from 1 (`1 - p`) and store it as q (`q <-`)."
+- `mu <- n*p`: "Multiply n by p (`n*p`), then store it as mu (`mu <-`)."
+- `sig <- sqrt(n*p*q)`: "Multiply n, p and q (`n*p*q`), take the square root (`sqrt`), and store it as sig (`sig <-`)."
+- `c(mu, sig)`: "Put mu and sig in one vector (`c`) and print it."
+- `Z <- (19 - mu)/sig`: "Subtract mu from 19 (`19 - mu`), divide by sig (`/`), and store it as Z (`Z <-`)."
+- `Z`: "Look up Z (`Z`) and print it."
+- `1 - pbinom(18, 40, 0.3)`: "Compute P(X ≤ 18) for size 40 and prob 0.3 (`pbinom`), subtract it from 1 (`1 -`), and print."
+:::
 
 ### Forty taps at 30 %: μ and σ under the bars, and the right tail from 19
 
@@ -163,6 +222,39 @@ pbinom(14, 200, 0.1)
 [1] -1.414214
 [1] 0.09294618
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `n <- 200`, `p <- 0.1`, `q <- 1-p` | As above, with the printer numbers. |
+| `mu <- n*p`, `sig <- sqrt(n*p*q)`, `c(mu, sig)` | As above. |
+| `X <- 14` | Stores the observed count. R names are case-sensitive, so `X` and `x` would be different names. |
+| `Z <- (X-mu)/sig` | Brackets first, then `/`: the Z-score of 14. |
+| `Z` | Prints the value of `Z`. |
+| `pbinom(14, 200, 0.1)` | q = 14, size = 200 (n), prob = 0.1 (p): P(X ≤ 14), the left tail. |
+
+**Left to right**
+
+- `n <- 200`, `p <- 0.1`, `q <- 1-p`: "Store under the names n, p and q (`n <-`, `p <-`, `q <-`) 200, 0.1 and 1 minus p (`1-p`)."
+- `mu <- n*p`: "Store under the name mu (`mu <-`) n times p (`n*p`)."
+- `sig <- sqrt(n*p*q)`: "Store under the name sig (`sig <-`) the square root (`sqrt`) of n times p times q (`n*p*q`)."
+- `c(mu, sig)`: "Combine (`c`) mu and sig (`mu`, `sig`)."
+- `X <- 14`: "Store under the name X (`X <-`) the number 14."
+- `Z <- (X-mu)/sig`: "Store under the name Z (`Z <-`) X minus mu (`X-mu`) divided by (`/`) sig (`sig`)."
+- `Z`: "Show Z (`Z`)."
+- `pbinom(14, 200, 0.1)`: "The probability of at most (`pbinom`) 14 repairs (`q = 14`) in 200 printers (`size = 200`) at 0.1 (`prob = 0.1`)."
+
+**Right to left**, the order R runs it
+
+- `n <- 200`, `p <- 0.1`, `q <- 1-p`: "Take 200 and 0.1 and store them as n and p (`n <-`, `p <-`); subtract p from 1 (`1-p`) and store it as q (`q <-`)."
+- `mu <- n*p`: "Multiply n by p (`n*p`), then store it as mu (`mu <-`)."
+- `sig <- sqrt(n*p*q)`: "Multiply n, p and q (`n*p*q`), take the square root (`sqrt`), and store it as sig (`sig <-`)."
+- `c(mu, sig)`: "Put mu and sig in one vector (`c`) and print it."
+- `X <- 14`: "Take 14 and store it as X (`X <-`)."
+- `Z <- (X-mu)/sig`: "Subtract mu from X (`X-mu`), divide by sig (`/`), and store it as Z (`Z <-`)."
+- `Z`: "Look up Z (`Z`) and print it."
+- `pbinom(14, 200, 0.1)`: "Take q = 14, size = 200 and prob = 0.1, compute P(X ≤ 14) (`pbinom`), and print."
+:::
 
 ## Fifty Greater scrolls and thirty Intermediate scrolls: unusual counts?
 

@@ -40,6 +40,41 @@ barplot(p.vals, names.arg=X.vals, col="pink", space=0,
         main="Probability Distribution of X")
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `n <- 50` | `<-` is assignment: it stores 50 under the name `n`. |
+| `p <- 0.25` | Stores the success probability in `p`. |
+| `X.vals <- 0:n` | `a:b` is the whole numbers from a to b, here 0 to 50 (51 values). The dot is just part of the name. |
+| `p.vals <- numeric(n+1)` | `numeric(51)` makes a vector of 51 zeros for the loop to fill. |
+| `for (x in 0:n){ … }` | Runs the lines inside the braces once for each `x` = 0, 1, …, 50. |
+| `p.vals[x+1] = …` | `[ ]` picks a slot by position, and R counts slots from 1, so P(X = 0) goes in slot 1. `=` assigns, like `<-`. |
+| `choose(n, x)*p^x*(1-p)^(n-x)` | `choose(n, x)` is nCx, `^` raises to a power, `*` multiplies: the binomial formula for one x. |
+| `barplot(p.vals, …)` | Draws one bar per value in `p.vals`; the first argument, `height`, is the bar heights. |
+| `names.arg=X.vals` | The labels printed under the bars: 0 to 50. |
+| `col="pink"` | The bar fill colour. |
+| `space=0` | No gap between bars, so the plot reads like a histogram. |
+| `xlab=`, `ylab=`, `main=` | The x-axis label, the y-axis label and the title, each a string in quotes. |
+
+**Left to right**
+
+- `n <- 50`: "Store under the name n (`n <-`) the number 50."
+- `p <- 0.25`: "Store under the name p (`p <-`) the number 0.25."
+- `X.vals <- 0:n`: "Store under the name X.vals (`X.vals <-`) the whole numbers from 0 to n (`0:n`)."
+- `p.vals <- numeric(n+1)`: "Store under the name p.vals (`p.vals <-`) a vector of zeros (`numeric`) n plus 1 long (`n+1`)."
+- `for (x in 0:n){ … }`: "For each x (`for`, `x`) from 0 to n (`0:n`), store in slot x plus 1 of p.vals (`p.vals[x+1] =`) the number of combinations (`choose`) of n and x (`n`, `x`) times (`*`) p to the power x (`p^x`) times (`*`) 1 minus p (`1-p`) to the power n minus x (`^(n-x)`)."
+- `barplot(…)`: "Draw a bar chart (`barplot`) of the heights p.vals (`p.vals`), labelled by X.vals (`names.arg=X.vals`), in pink (`col="pink"`), with no gaps (`space=0`), an x-axis label (`xlab=`), a y-axis label (`ylab=`) and a title (`main=`)."
+
+**Right to left**, the order R runs it
+
+- `n <- 50`: "Take 50 and store it as n (`n <-`)."
+- `p <- 0.25`: "Take 0.25 and store it as p (`p <-`)."
+- `X.vals <- 0:n`: "Make the whole numbers 0 to 50 (`0:n`), then store them as X.vals (`X.vals <-`)."
+- `p.vals <- numeric(n+1)`: "Add 1 to n (`n+1`), make that many zeros (`numeric`), then store them as p.vals (`p.vals <-`)."
+- `for (x in 0:n){ … }`: "Make 0 to 50 (`0:n`); for each x (`for`, `x`), work out n minus x (`n-x`) and 1 minus p (`1-p`), raise to the powers (`^`), count the combinations (`choose(n, x)`), multiply the three factors (`*`), and store the result in slot x plus 1 (`p.vals[x+1] =`)."
+- `barplot(…)`: "Take the heights (`p.vals`), the labels (`names.arg=X.vals`), the colour (`col="pink"`), no gaps (`space=0`) and the three text labels (`xlab=`, `ylab=`, `main=`), and draw the bars (`barplot`)."
+:::
+
 `p.vals[x+1]` holds $P(X = x)$ because R vectors start at index 1 and $x$ starts at 0.
 
 ```widget
@@ -54,6 +89,20 @@ binomial-calc
 $$P(x) = nCx \cdot p^x \cdot q^{n-x}, \qquad nCx = \frac{n!}{(n-x)!\,x!}, \qquad q = 1 - p$$
 
 Read it as three factors: $nCx$ counts which $x$ of the $n$ trials are the successes; $p^x$ is the probability those $x$ trials succeed; $q^{n-x}$ is the probability the other $n - x$ trials fail. The exponent on $q$ is $n - x$, the number of failures. On the calculator $nCx$ is `n  2ndF  nCr  x`; in R it is `choose(n, x)`.
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `choose(n, x)` | Counts the ways to choose x items from n: nCx. R's own names for the two slots are `n` and `k`. |
+
+**Left to right**
+
+- `choose(n, x)`: "The number of combinations (`choose`) of n items (`n`) taken x at a time (`x`)."
+
+**Right to left**, the order R runs it
+
+- `choose(n, x)`: "Look up n and x (`n`, `x`), count the combinations (`choose`), and return the count."
+:::
 
 ## Seven Intermediate scrolls at 60 % each
 
@@ -79,6 +128,24 @@ dbinom(5, 7, 0.6)
 [1] 0.2612736
 [1] 0.419904
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dbinom(5, 7, 0.6)` | The binomial P(X = x): x = 5, size = 7 (n), prob = 0.6 (p). |
+| `1 - pbinom(4, 7, 0.6)` | `pbinom(q, size, prob)` is P(X ≤ q): q = 4, size = 7, prob = 0.6. `1 -` subtracts it from 1, giving P(X ≥ 5). |
+| `[1]` | R starts each printed line with the position of its first value; each call prints its own line, so each starts at `[1]`. |
+
+**Left to right**
+
+- `dbinom(5, 7, 0.6)`: "The binomial probability of exactly (`dbinom`) 5 successes (`x = 5`) in 7 trials (`size = 7`) with success chance 0.6 (`prob = 0.6`)."
+- `1 - pbinom(4, 7, 0.6)`: "One minus (`1 -`) the binomial probability of at most (`pbinom`) 4 successes (`q = 4`) in 7 trials (`size = 7`) with success chance 0.6 (`prob = 0.6`)."
+
+**Right to left**, the order R runs it
+
+- `dbinom(5, 7, 0.6)`: "Take x = 5, size = 7 and prob = 0.6, compute P(X = 5) (`dbinom`), and print it."
+- `1 - pbinom(4, 7, 0.6)`: "Take q = 4, size = 7 and prob = 0.6, compute P(X ≤ 4) (`pbinom`), subtract it from 1 (`1 -`), and print it."
+:::
 
 ### Seven scroll uses: the eight bars and P(X ≥ 5)
 
@@ -115,6 +182,22 @@ choose(50, 6) * 0.25^6 * 0.75^44
 ```text
 [1] 0.01234465
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `choose(50, 6)` | `choose(n, k)` counts combinations: n = 50, k = 6, so this is 50C6. |
+| `0.25^6`, `0.75^44` | `^` raises to a power: p to the x and q to the n − x. |
+| `*` | Multiplies the three factors; `^` is worked out before `*`. |
+
+**Left to right**
+
+- "The number of combinations (`choose`) of 50 and 6 (`50`, `6`) times (`*`) 0.25 to the power 6 (`0.25^6`) times (`*`) 0.75 to the power 44 (`0.75^44`)."
+
+**Right to left**, the order R runs it
+
+- "Count the combinations of 50 and 6 (`choose(50, 6)`), raise 0.25 to the 6th (`0.25^6`), raise 0.75 to the 44th (`0.75^44`), multiply the three (`*`), and print the result."
+:::
 
 ## Rolling 3s: the full table for n = 5
 
@@ -164,6 +247,46 @@ dbinom(2, 5, 1/6)
 [1] 0.160751
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `n <- 5`, `p <- 1/6` | `<-` stores the trials and the success probability; `1/6` is stored as a decimal. |
+| `X.vals <- 0:5` | `a:b` gives the whole numbers 0 to 5. |
+| `p.vals <- dbinom(X.vals, n, p)` | x = the whole vector 0:5, size = `n`, prob = `p`: one call returns all six probabilities. |
+| `barplot(p.vals, …)` | One bar per probability; `p.vals` fills `height`. |
+| `names.arg=X.vals` | The labels under the bars: 0 to 5. |
+| `space=0`, `col="pink"` | No gap between bars, and the bar fill colour. |
+| `xlab=`, `ylab=`, `main=` | The axis labels and title, as strings. |
+| `round(p.vals, 4)` | `round(x, digits)`: each probability to 4 decimals. |
+| `(5/6)^5` | The brackets make the division happen before the power. |
+| `dbinom(0, 5, 1/6)` | x = 0, size = 5, prob = 1/6. |
+| `choose(5,1)*(1/6)*(5/6)^4`, `choose(5,2)*(1/6)^2*(5/6)^3` | The formula by hand for x = 1 and x = 2, each followed by its `dbinom(1, 5, 1/6)` or `dbinom(2, 5, 1/6)` check. |
+
+**Left to right**
+
+- `n <- 5`: "Store under the name n (`n <-`) the number 5."
+- `p <- 1/6`: "Store under the name p (`p <-`) 1 divided by 6 (`1/6`)."
+- `X.vals <- 0:5`: "Store under the name X.vals (`X.vals <-`) the whole numbers 0 to 5 (`0:5`)."
+- `p.vals <- dbinom(X.vals, n, p)`: "Store under the name p.vals (`p.vals <-`) the binomial probabilities (`dbinom`) of each x in X.vals (`X.vals`) for n trials (`n`) with chance p (`p`)."
+- `barplot(…)`: "Draw a bar chart (`barplot`) of p.vals (`p.vals`), labelled 0 to 5 (`names.arg=X.vals`), with no gaps (`space=0`), in pink (`col="pink"`), with axis labels (`xlab=`, `ylab=`) and a title (`main=`)."
+- `round(p.vals, 4)`: "Round (`round`) the probabilities (`p.vals`) to 4 decimals (`4`)."
+- `(5/6)^5`: "5 divided by 6 (`5/6`), to the power 5 (`^5`)."
+- `dbinom(0, 5, 1/6)`, `dbinom(1, 5, 1/6)`, `dbinom(2, 5, 1/6)`: "The binomial probability (`dbinom`) of 0, 1 or 2 threes (`x`) in 5 rolls (`size = 5`) with chance 1/6 (`prob = 1/6`)."
+- `choose(5,1)*(1/6)*(5/6)^4` and `choose(5,2)*(1/6)^2*(5/6)^3`: "The combinations (`choose`) of 5 and x times (`*`) 1/6 to the x times (`*`) 5/6 to the 5 minus x (`^`)."
+
+**Right to left**, the order R runs it
+
+- `n <- 5`: "Take 5 and store it as n (`n <-`)."
+- `p <- 1/6`: "Divide 1 by 6 (`1/6`), then store it as p (`p <-`)."
+- `X.vals <- 0:5`: "Make 0 to 5 (`0:5`), then store it as X.vals (`X.vals <-`)."
+- `p.vals <- dbinom(X.vals, n, p)`: "Take the six x values (`X.vals`), n (`n`) and p (`p`), compute each P(X = x) (`dbinom`), and store them as p.vals (`p.vals <-`)."
+- `barplot(…)`: "Take the heights (`p.vals`), labels (`names.arg=X.vals`), no gaps (`space=0`), colour (`col="pink"`) and text labels (`xlab=`, `ylab=`, `main=`), and draw the bars (`barplot`)."
+- `round(p.vals, 4)`: "Take p.vals (`p.vals`), round each to 4 decimals (`round`, `4`), and print."
+- `(5/6)^5`: "Divide 5 by 6 (`5/6`), raise it to the 5th (`^5`), and print."
+- `dbinom(0, 5, 1/6)`, `dbinom(1, 5, 1/6)`, `dbinom(2, 5, 1/6)`: "Take x, size 5 and prob 1/6, compute P(X = x) (`dbinom`), and print."
+- `choose(5,1)*(1/6)*(5/6)^4` and `choose(5,2)*(1/6)^2*(5/6)^3`: "Count the combinations (`choose`), raise 1/6 and 5/6 to their powers (`^`), multiply the three (`*`), and print."
+:::
+
 Lab 4's `dice3` experiment is this distribution by simulation: the relative-frequency bars settle on 0.40, 0.40, 0.16, 0.03 as $m$ grows.
 
 ```widget
@@ -203,6 +326,23 @@ dbinom(1, 5, 4/52)
 [1] 0.2792404
 [1] 0.05058269
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dbinom(2, 5, 4/52)`, `dbinom(0, 5, 4/52)`, `dbinom(1, 5, 4/52)` | `dbinom(x, size, prob)` with x = 2, 0 and 1; size = 5 cards (n); prob = 4/52 (p). |
+| `1 - pbinom(1, 5, 4/52)` | `pbinom` with q = 1 is P(X ≤ 1); `1 -` turns it into P(X ≥ 2). |
+
+**Left to right**
+
+- `dbinom(2, 5, 4/52)`, `dbinom(0, 5, 4/52)`, `dbinom(1, 5, 4/52)`: "The binomial probability of exactly (`dbinom`) 2, 0 or 1 jacks (`x`) in 5 cards (`size = 5`) with chance 4/52 (`prob = 4/52`)."
+- `1 - pbinom(1, 5, 4/52)`: "One minus (`1 -`) the probability of at most (`pbinom`) 1 jack (`q = 1`) in 5 cards (`size = 5`) with chance 4/52 (`prob = 4/52`)."
+
+**Right to left**, the order R runs it
+
+- `dbinom(2, 5, 4/52)`, `dbinom(0, 5, 4/52)`, `dbinom(1, 5, 4/52)`: "Divide 4 by 52 (`4/52`), compute P(X = x) for size 5 (`dbinom`), and print."
+- `1 - pbinom(1, 5, 4/52)`: "Divide 4 by 52 (`4/52`), compute P(X ≤ 1) for size 5 (`pbinom`), subtract from 1 (`1 -`), and print."
+:::
 
 :::quiz Complements and exponents
 "At least 2" is $1 - P(0) - P(1)$, not $1 - P(2)$. The failure factor is $q^{n - x}$: for 2 jacks in 5 cards it is $(48/52)^3$, three failures, not $(48/52)^2$.

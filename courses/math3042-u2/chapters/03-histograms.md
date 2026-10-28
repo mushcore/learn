@@ -20,6 +20,22 @@ R picks classes for you if you let it:
 hist( BCIT.students$Age, col="lightblue")
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `BCIT.students$Age` | `$` picks the `Age` column of the data frame by name. |
+| `hist( … )` | Draws a histogram of a numeric vector, its first argument `x`. With no `breaks=` given, R chooses the classes itself. |
+| `col="lightblue"` | The rectangle fill colour, a colour name in quotes. |
+
+**Left to right**
+
+- "Draw a histogram (`hist`) of the Age column (`Age`) of the student data (`BCIT.students$`) in light blue (`col="lightblue"`)."
+
+**Right to left**, the order R runs it
+
+- "Take the student data (`BCIT.students`), pull out its Age column (`$Age`), set the fill colour (`col="lightblue"`), and draw the histogram with classes R picks (`hist`)."
+:::
+
 That gives classes 18–20, 20–22, ..., the biggest rectangle (about 110 students) over 20–22, and a nearly empty tail out to 42. The notes' seven-step recipe chooses the classes yourself.
 
 ## The recipe, worked on Age ($n = 302$, min 18, max 42)
@@ -52,6 +68,25 @@ hist(BCIT.students$Age,
      xlab="Age", ylab="Frequency", xaxp=c(15,45, 15),
      main="Age of BCIT Students (n = 302)")
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `hist(BCIT.students$Age, …)` | A histogram of the ages, as above; the call runs over four lines until its closing `)`. |
+| `breaks=seq(18, 44, by=2)` | `seq()` fills from = 18, to = 44, by = 2: the class boundaries 18, 20, …, 44. |
+| `right = FALSE` | Each class includes its left boundary and excludes its right one. |
+| `xlab="Age"`, `ylab="Frequency"` | The x-axis label and the y-axis label. |
+| `xaxp=c(15,45, 15)` | `c()` combines three numbers: x-axis ticks from 15 to 45, split into 15 intervals. |
+| `main="…"` | The chart title. |
+
+**Left to right**
+
+- "Draw a histogram (`hist`) of the ages (`BCIT.students$Age`) with class boundaries in a sequence from 18 to 44 in steps of 2 (`breaks=seq(18, 44, by=2)`), each class closed on the left (`right = FALSE`), the axis labels Age and Frequency (`xlab=`, `ylab=`), ticks from 15 to 45 in 15 intervals (`xaxp=c(15,45, 15)`) and a title (`main=`)."
+
+**Right to left**, the order R runs it
+
+- "Take the ages (`BCIT.students$Age`), build the boundaries 18, 20, …, 44 (`seq`), combine the tick settings (`c(15,45, 15)`), set the left-closed classes, labels and title (`right = FALSE`, `xlab=`, `ylab=`, `main=`), and draw the histogram (`hist`)."
+:::
 
 `breaks=seq(18, 44, by=2)` gives the boundaries 18, 20, ..., 44: thirteen classes, running past the maximum 42. `right = FALSE` makes each class **include its left boundary and exclude its right one**: **"this rectangle represents students with $18 \le X < 20$, not including 20."** The default `right = TRUE` would give $(18, 20]$. `xaxp=c(15, 45, 15)` puts a tick every 2 years.
 
@@ -92,6 +127,25 @@ hist( faithful$eruptions,
       main="Eruption duration of Old Faithful (n = 272)",
       col="pink")
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `hist( faithful$eruptions, …)` | A histogram of the built-in `faithful` data frame's `eruptions` column. |
+| `breaks=seq(1.6, 5.2, by=0.2)` | Boundaries from 1.6 to 5.2 in steps of 0.2: 18 classes. |
+| `right=FALSE` | Each class keeps its left boundary and excludes its right one, as above. |
+| `xlab="Eruptions (sec)"` | The x-axis label, printed exactly as typed. |
+| `main="…"` | The chart title. |
+| `col="pink"` | The rectangle fill colour. |
+
+**Left to right**
+
+- "Draw a histogram (`hist`) of the eruption durations (`faithful$eruptions`) with boundaries in a sequence from 1.6 to 5.2 in steps of 0.2 (`breaks=seq(1.6, 5.2, by=0.2)`), classes closed on the left (`right=FALSE`), an x-axis label (`xlab=`), a title (`main=`) and pink rectangles (`col="pink"`)."
+
+**Right to left**, the order R runs it
+
+- "Take the Old Faithful data (`faithful`), pull out its eruptions column (`$eruptions`), build the boundaries 1.6 to 5.2 (`seq`), set the left-closed classes, label, title and colour (`right=FALSE`, `xlab=`, `main=`, `col=`), and draw the histogram (`hist`)."
+:::
 
 Conclusion from the notes: **eruption durations cluster around two different values, 2.0 and 4.5**. The shape is bimodal, and the mean (3.49) sits in the valley between the peaks.
 
@@ -151,6 +205,28 @@ hist(mirage$receive_value_chaos,
      xlab="Divine Orb price (chaos)", ylab="Frequency",
      main=paste0("Mirage Divine prices (n = ", nrow(mirage), ")"))
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `mirage <- read.csv("poe1-ninja-divine-chaos-mirage.csv")` | `read.csv()` reads the comma-separated file into a data frame; `<-` stores it as `mirage`. |
+| `hist(mirage$receive_value_chaos, …)` | A histogram of the price column, picked with `$`. |
+| `breaks=seq(30, 630, by=50)` | Boundaries 30, 80, …, 630: twelve classes of width 50. |
+| `right=FALSE` | Each class keeps its left boundary, so 280.0 counts in the class starting at 280. |
+| `xlab="…"`, `ylab="Frequency"` | The x-axis label and the y-axis label. |
+| `main=paste0(…)` | `paste0()` joins its pieces into one string with no spaces added between them. |
+| `nrow(mirage)` | The number of rows in `mirage`, one per day, so the title's n is computed. |
+
+**Left to right**
+
+- `mirage <- read.csv(…)`: "Store under the name mirage (`mirage <-`) the data frame read from the comma-separated file (`read.csv`) poe1-ninja-divine-chaos-mirage.csv."
+- `hist(mirage$receive_value_chaos, …)`: "Draw a histogram (`hist`) of the price column (`receive_value_chaos`) of the Mirage data (`mirage$`) with boundaries from 30 to 630 in steps of 50 (`breaks=seq(30, 630, by=50)`), classes closed on the left (`right=FALSE`), axis labels (`xlab=`, `ylab=`) and a title joined (`main=paste0`) from text and the row count of the data (`nrow(mirage)`)."
+
+**Right to left**, the order R runs it
+
+- `mirage <- read.csv(…)`: "Read the file into a data frame (`read.csv`) and store it as mirage (`mirage <-`)."
+- `hist(mirage$receive_value_chaos, …)`: "Take the Mirage data (`mirage`), pull out its price column (`$receive_value_chaos`), build the boundaries (`seq`), count its rows (`nrow`) and join that into the title (`paste0`), set the left-closed classes and labels (`right=FALSE`, `xlab=`, `ylab=`), and draw the histogram (`hist`)."
+:::
 
 Two humps, 280.0–329.9 and 480.0–529.9, and a thin left tail: three of the four days below 130 chaos are the league's first three.
 

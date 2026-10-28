@@ -54,7 +54,7 @@ The paper shows "Histogram of Flower Petal Lengths" with bins 0.5 cm wide. Here 
     "answer": 5.75,
     "tolerance": 0.25,
     "unit": "cm",
-    "explain": "With n = 150 the median sits between the 75th and 76th values. The cumulative count reaches 66 at the end of the 5.0–5.5 class and 87 at the end of 5.5–6.0, so the 75th and 76th values lie in **5.5–6.0**. The key takes the class midpoint, **5.75 cm**; interpolating inside the class gives 5.73 cm. Anything in 5.5 to 6.0 earns the mark."
+    "explain": "Put the 150 petals in order from shortest to longest. 150 is even, so there are two middle values, at positions 150/2 = 75 and 76, and the median is between them. The Cumulative column is a running total, so it gives the last position each class reaches: 5.0–5.5 ends at position 66, and the 21 petals in 5.5–6.0 take the next positions, 67 to 87 (66 + 21 = 87). Positions 75 and 76 both fall in 67 to 87, so the median lies in **5.5–6.0**. The key takes the class midpoint, **5.75 cm**; interpolating inside the class gives 5.73 cm. Anything in 5.5 to 6.0 earns the mark."
   },
   {
     "q": "**Q1c.** Write your justification on paper, then type the one feature of this histogram that rules out the empirical rule.",

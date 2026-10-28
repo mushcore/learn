@@ -61,6 +61,21 @@ stat-bars
 
 In R: `sd(c(5.0, 4.5, 6.0, 7.0, 5.2))` → `0.9788`. R's `sd` **always** computes the sample version with $n-1$.
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `c(5.0, 4.5, 6.0, 7.0, 5.2)` | `c()` combines the five values, separated by commas, into one vector. |
+| `sd(…)` | The sample standard deviation of the vector, dividing by n − 1. |
+
+**Left to right**
+
+- `sd(c(5.0, 4.5, 6.0, 7.0, 5.2))`: "The sample standard deviation (`sd`) of the combined values (`c`) 5.0, 4.5, 6.0, 7.0 and 5.2 (`5.0, 4.5, 6.0, 7.0, 5.2`)."
+
+**Right to left**, the order R runs it
+
+- `sd(c(5.0, 4.5, 6.0, 7.0, 5.2))`: "Take the five values (`5.0, 4.5, 6.0, 7.0, 5.2`), combine them into one vector (`c`), and compute its sample standard deviation (`sd`)."
+:::
+
 :::tip Reading s on the calculator
 In STAT mode, read $\bar{x}$, $s$ (often labelled $s_x$ or $\sigma_{n-1}$) and $\sigma$ (labelled $\sigma_n$).
 :::

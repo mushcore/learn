@@ -26,6 +26,21 @@ Ages in a sample: $22, 19, 20, 22, 35, 19, 21, 23$.
 
 In R: `mean(c(22, 19, 20, 22, 35, 19, 21, 23))` → `22.625`.
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `c(22, 19, 20, 22, 35, 19, 21, 23)` | `c()` combines the eight ages, separated by commas, into one vector. |
+| `mean(…)` | Adds the values in the vector and divides by how many there are. |
+
+**Left to right**
+
+- `mean(c(22, 19, 20, 22, 35, 19, 21, 23))`: "The average (`mean`) of the combined values (`c`) 22, 19, 20, 22, 35, 19, 21 and 23 (`22, 19, 20, 22, 35, 19, 21, 23`)."
+
+**Right to left**, the order R runs it
+
+- `mean(c(22, 19, 20, 22, 35, 19, 21, 23))`: "Take the eight ages (`22, 19, 20, 22, 35, 19, 21, 23`), combine them into one vector (`c`), and average it (`mean`)."
+:::
+
 :::tip Calculator
 Enter these eight ages in your calculator's **STAT mode** as a 1-variable data list; it should read $\bar{x}$ = `22.625`.
 :::

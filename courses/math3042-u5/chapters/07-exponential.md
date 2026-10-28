@@ -20,6 +20,23 @@ Two facts sit in that formula. $X \ge 0$: a wait cannot be negative, so $f(x) = 
 
 A problem hands you one of two numbers. "Average wait 2.5 seconds" is $\beta = 2.5$ s directly. "30 customers per hour" is a **rate**, and $\beta$ is its reciprocal in the units you want: $60/30 = 2$ minutes per customer. R's `pexp` and `qexp` take the rate, not $\beta$, so the call is `pexp(4, rate = 1/2.5)`; `pexp(4, 2.5)` silently uses a mean of 0.4 s and returns 0.9999546.
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `pexp(4, rate = 1/2.5)` | The exponential F(x): q = 4, and the named argument `rate` = 1/2.5 = 0.4; `/` divides. |
+| `pexp(4, 2.5)` | The unnamed second value fills `rate`, so 2.5 is taken as the rate, not the mean. |
+
+**Left to right**
+
+- `pexp(4, rate = 1/2.5)`: "The exponential area to the left (`pexp`) of 4 (`4`) with rate (`rate =`) one divided by 2.5 (`1/2.5`)."
+- `pexp(4, 2.5)`: "The exponential area to the left (`pexp`) of 4 (`4`) with 2.5 (`2.5`) as the rate."
+
+**Right to left**, the order R runs it
+
+- `pexp(4, rate = 1/2.5)`: "Divide one by 2.5 (`1/2.5`), pass it as the rate (`rate =`), then find the area left of 4 (`pexp(4, …)`)."
+- `pexp(4, 2.5)`: "Take 2.5 as the rate (`2.5`), then find the area left of 4 (`pexp(4, …)`)."
+:::
+
 ## The density is highest at 0 and decays steadily
 
 ```widget
@@ -87,6 +104,31 @@ dexp(0, rate = 1/beta)        # f(0) = 1/beta, the height at zero
 [1] 0.2018965
 [1] 0.4
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `beta <- 2.5` | `<-` is assignment: stores the mean wait under the name `beta`. |
+| `# (b) P(X <= 4)` | `#` starts a comment: R ignores the rest of the line. |
+| `pexp(4, rate = 1/beta)` | The exponential F(x): q = 4, and the named argument `rate` = 1/β = 0.4. `/` divides. |
+| `1 - pexp(4, rate = 1/beta)` | One minus F(4): the right tail P(X > 4). |
+| `dexp(0, rate = 1/beta)` | The density height f(x) at x = 0, not an area. |
+| `[1]` | In the output, the position of the first value on each printed line. |
+
+**Left to right**
+
+- `beta <- 2.5`: "Store under the name beta (`beta <-`) the number 2.5 (`2.5`)."
+- `pexp(4, rate = 1/beta)`: "The exponential area to the left (`pexp`) of 4 (`4`) with rate (`rate =`) one divided by beta (`1/beta`)."
+- `1 - pexp(4, rate = 1/beta)`: "One (`1`) minus (`-`) the exponential area to the left (`pexp`) of 4 (`4`) with rate one over beta (`rate = 1/beta`)."
+- `dexp(0, rate = 1/beta)`: "The exponential density height (`dexp`) at 0 (`0`) with rate (`rate =`) one over beta (`1/beta`)."
+
+**Right to left**, the order R runs it
+
+- `beta <- 2.5`: "Take 2.5 (`2.5`) and store it as beta (`beta <-`)."
+- `pexp(4, rate = 1/beta)`: "Look up beta (`beta`), divide one by it (`1/beta`), pass that as the rate (`rate =`), then find the area left of 4 (`pexp(4, …)`)."
+- `1 - pexp(4, rate = 1/beta)`: "Compute the rate (`1/beta`), find the area left of 4 (`pexp(4, …)`), then take it away from one (`1 -`)."
+- `dexp(0, rate = 1/beta)`: "Compute the rate (`1/beta`), then find the density's height at 0 (`dexp(0, …)`)."
+:::
 
 ```widget
 exp-wait

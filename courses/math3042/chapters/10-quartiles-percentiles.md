@@ -81,7 +81,39 @@ $Q_1 = P_{25} \qquad Q_2 = P_{50} \qquad Q_3 = P_{75}$
 
 In R: `quantile(data$X, k/100)`; give the percentage as a decimal (`0.33` for the 33rd percentile, not `33`).
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `data$X` | A template: `$` picks column `X` of a data frame called `data`; put your own names in. This fills `quantile()`'s argument `x`. |
+| `k/100` | `/` divides: the percentile k turned into a proportion. This fills the argument `probs`. |
+| `quantile(…)` | Returns the cut point with that proportion of the data below it. |
+
+**Left to right**
+
+- `quantile(data$X, k/100)`: "The cut point (`quantile`) of column X (`X`) of the data (`data$`) with k percent (`k/100`) of the values below it."
+
+**Right to left**, the order R runs it
+
+- `quantile(data$X, k/100)`: "Take the data (`data`) and pull out its column X (`$X`), divide k by 100 (`k/100`) to get a proportion, and find the cut point at that proportion (`quantile`)."
+:::
+
 Example: `quantile(faithful$eruptions, 0.33)` gives $P_{33} = 2.417$. That means 33% of eruption durations are below 2.417 minutes, and 67% are above.
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `faithful$eruptions` | `$` picks the `eruptions` column of R's built-in `faithful` data frame; fills argument `x`. |
+| `0.33` | Fills argument `probs`: the 33rd percentile, written as a proportion. |
+| `quantile(…)` | Returns that one cut point, printed under its label `33%`. |
+
+**Left to right**
+
+- `quantile(faithful$eruptions, 0.33)`: "The cut point (`quantile`) of the eruptions column (`eruptions`) of the faithful data (`faithful$`) with 33 percent of the values below it (`0.33`)."
+
+**Right to left**, the order R runs it
+
+- `quantile(faithful$eruptions, 0.33)`: "Take the faithful data (`faithful`), pull out its eruptions column (`$eruptions`), and find the cut point (`quantile`) at proportion 0.33 (`0.33`)."
+:::
 
 ## The five-number summary
 
@@ -93,6 +125,21 @@ Calling `quantile()` with no second argument returns all five landmark values at
 ```
 
 That's `quantile(faithful$eruptions)`. This five-number summary is exactly what a boxplot draws.
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `faithful$eruptions` | The `eruptions` column of the `faithful` data frame; fills argument `x`. |
+| `quantile(…)` | With `probs` left out, R uses 0, 0.25, 0.5, 0.75 and 1, so it returns the five-number summary, each under its percent label. |
+
+**Left to right**
+
+- `quantile(faithful$eruptions)`: "The five-number summary (`quantile`) of the eruptions column (`eruptions`) of the faithful data (`faithful$`)."
+
+**Right to left**, the order R runs it
+
+- `quantile(faithful$eruptions)`: "Take the faithful data (`faithful`), pull out its eruptions column (`$eruptions`), and find the cut points at 0%, 25%, 50%, 75% and 100% (`quantile`)."
+:::
 
 ## The boxplot of the first ten eruptions
 
@@ -110,7 +157,7 @@ Drop Mano and eleven field monsters remain: 45, 115, 142, 172, 233, 403, 510, 84
   {"q": "The 11 field monsters (Mano dropped): $Q_1$ by the hand method?", "type": "numeric", "answer": 142, "tolerance": 0, "unit": "HP", "explain": "$n = 11$ is odd: the median is the 6th value, 403, and it is left out of both halves. Lower half 45, 115, 142, 172, 233; its median is 142."},
   {"q": "Same 11 field monsters: $Q_3$ by the hand method?", "type": "numeric", "answer": 982, "tolerance": 0, "unit": "HP", "explain": "Upper half (403 excluded): 510, 842, 982, 1336, 3218; its median is 982."},
   {"q": "Ruthless ranks 1 to 200: $Q_1$ by the hand method (average of the 50th and 51st sorted levels)?", "type": "numeric", "answer": 92, "tolerance": 0, "explain": "Sorted, positions 1 to 88 are level 92, so the 50th and 51st are both 92: $Q_1 = (92 + 92)/2 = 92$."},
-  {"q": "Ruthless ranks 1 to 200: $Q_3$ by the hand method (average of the 150th and 151st)?", "type": "numeric", "answer": 94, "tolerance": 0, "explain": "Cumulative counts: level 92 ends at position 88, 93 at $88 + 53 = 141$, 94 at $141 + 29 = 170$. Positions 150 and 151 are both 94, so $Q_3 = 94$. ($Q_2$, the 100th and 101st, is 93.)"},
+  {"q": "Ruthless ranks 1 to 200: $Q_3$ by the hand method (average of the 150th and 151st)?", "type": "numeric", "answer": 94, "tolerance": 0, "explain": "Sort the 200 levels from lowest to highest; $Q_3$ is the average of the values at positions 150 and 151. Running totals of the counts say which level fills which positions: 92 fills 1 to 88, 93 fills 89 to 141 (88 + 53 = 141), and 94 fills 142 to 170 (141 + 29 = 170). Positions 150 and 151 both fall in 142 to 170, so both are 94, and $Q_3 = (94 + 94)/2 = 94$. ($Q_2$, the 100th and 101st, falls in the 93 block, 89 to 141, so it is 93.)"},
   {"q": "What percentage of ranks 1 to 200 are below level 95?", "type": "numeric", "answer": 85, "tolerance": 0, "unit": "%", "explain": "$88 + 53 + 29 = 170$ characters are below 95, and $170/200 = 0.85 = 85\\%$. Level 95 covers positions 171 to 185, so it sits around $P_{85}$ to $P_{92}$."},
   {"type": "fill", "q": "The Ruthless levels in R. Fill the blank so `quantile()` returns $P_{90}$.", "code": "lvl <- rep(c(92, 93, 94, 95, 96, 97, 99), c(88, 53, 29, 15, 7, 7, 1))\nquantile(lvl, ___)\n## 90%\n##  95", "answer": ["0.9", "0.90", ".9"], "explain": "Give the percentage as a decimal: 0.9. 90% of 200 is 180; the 180th and 181st sorted levels are both 95 (level 95 covers positions 171 to 185), so the hand method and R agree on $P_{90} = 95$."}
 ]

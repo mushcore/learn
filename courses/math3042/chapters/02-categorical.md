@@ -63,6 +63,32 @@ pie(Eye.Color.Freq)                      # quick visual
 Eye.Color.Freq[["Brown"]] / n.sample     # 0.4305...
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `Eye.Color.Freq <- …` | `<-` is assignment: it stores the result under the name `Eye.Color.Freq`. The dots are just part of the name. |
+| `c(Black = 95, Brown = 130, …)` | `c()` combines values into one vector; writing `name = value` gives each value a name, so this is a named vector of five counts. |
+| `# 302` | `#` starts a comment: R ignores everything after it on the line. |
+| `n.sample <- sum(Eye.Color.Freq)` | `sum()` adds every value in the vector; the total is stored in `n.sample`. |
+| `pie(Eye.Color.Freq)` | Draws a pie chart, one slice per value, labelled with the vector's names. |
+| `Eye.Color.Freq[["Brown"]]` | `[[ ]]` pulls out a single element by name, as the bare number 130 without its name. |
+| `/ n.sample` | `/` divides: the Brown count over the total. |
+
+**Left to right**
+
+- `Eye.Color.Freq <- c(…)`: "Store under the name Eye.Color.Freq (`Eye.Color.Freq <-`) the combination (`c`) of the counts Black 95 (`Black = 95`), Brown 130 (`Brown = 130`), Blue 52 (`Blue = 52`), Green 10 (`Green = 10`) and Other 15 (`Other = 15`)."
+- `n.sample <- sum(Eye.Color.Freq)`: "Store under the name n.sample (`n.sample <-`) the total (`sum`) of the counts (`Eye.Color.Freq`)."
+- `pie(Eye.Color.Freq)`: "Draw a pie chart (`pie`) of the counts (`Eye.Color.Freq`)."
+- `Eye.Color.Freq[["Brown"]] / n.sample`: "The count (`Eye.Color.Freq`) picked out by the name Brown (`[["Brown"]]`), divided by (`/`) the sample size (`n.sample`)."
+
+**Right to left**, the order R runs it
+
+- `Eye.Color.Freq <- c(…)`: "Pair each count with its name (`Black = 95`, `Brown = 130`, `Blue = 52`, `Green = 10`, `Other = 15`), combine them into one named vector (`c`), and store it as Eye.Color.Freq (`Eye.Color.Freq <-`)."
+- `n.sample <- sum(Eye.Color.Freq)`: "Take the counts (`Eye.Color.Freq`), add them up (`sum`), and store the total as n.sample (`n.sample <-`)."
+- `pie(Eye.Color.Freq)`: "Take the counts (`Eye.Color.Freq`) and draw them as a pie chart (`pie`)."
+- `Eye.Color.Freq[["Brown"]] / n.sample`: "Take the counts (`Eye.Color.Freq`), pull out the bare Brown count (`[["Brown"]]`), fetch the sample size (`n.sample`), and divide the first by the second (`/`)."
+:::
+
 Frequencies straight from raw data use `table()`. From Lab 1, the `TenMileRace` data set's `sex` column:
 
 ```r
@@ -74,7 +100,37 @@ table(TenMileRace$sex)
 4325 4311
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `TenMileRace$sex` | `$` picks the `sex` column of the `TenMileRace` data frame. |
+| `table(…)` | Counts how many times each distinct value appears. The output lists each level with its count underneath. |
+
+**Left to right**
+
+- "The tally of how often each value appears (`table`) in the sex column (`sex`) of the race data (`TenMileRace$`)."
+
+**Right to left**, the order R runs it
+
+- "Take the race data (`TenMileRace`), pull out its sex column (`$sex`), and count how often each value appears (`table`)."
+:::
+
 The set of possible values a non-numerical variable can take (here, `"F"` and `"M"`) is called its **levels** in R — check with `levels(TenMileRace$sex)`.
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `TenMileRace$sex` | `$` picks the `sex` column of the `TenMileRace` data frame. |
+| `levels(…)` | Lists the allowed values of a factor column as text strings. |
+
+**Left to right**
+
+- `levels(TenMileRace$sex)`: "The allowed values (`levels`) of the sex column (`sex`) of the race data (`TenMileRace$`)."
+
+**Right to left**, the order R runs it
+
+- `levels(TenMileRace$sex)`: "Take the race data (`TenMileRace`), pull out its sex column (`$sex`), and list its allowed values (`levels`)."
+:::
 
 ## Proportions and the mode for a commute survey
 

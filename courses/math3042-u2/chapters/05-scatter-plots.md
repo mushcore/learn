@@ -32,6 +32,22 @@ cor(mtcars$wt, mtcars$mpg)
 [1] -0.8676594
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `mtcars$wt`, `mtcars$mpg` | `$` picks one column of the built-in `mtcars` data frame by name: the weights and the fuel efficiencies. |
+| `cor( … , … )` | Returns the linear correlation coefficient r of its first two arguments, `x` and `y`, paired car by car. |
+| `[1]` | In printed output, `[1]` is the position of the first value on that line, not part of the value. |
+
+**Left to right**
+
+- "Compute the correlation (`cor`) between the weight column (`mtcars$wt`) and the fuel-efficiency column (`mtcars$mpg`) of the car data."
+
+**Right to left**, the order R runs it
+
+- "Take the car data (`mtcars`), pull out its wt and mpg columns (`$wt`, `$mpg`), compute r for the pairs (`cor`), and print it."
+:::
+
 $r = -0.868$ is a strong negative linear relationship ($-1 \le r \le 1$; values near $-1$ mean the dots hug a downward line). An upward trend gives positive $r$; a shapeless cloud gives $r \approx 0$ ([Linear correlation r](#/math3042/correlation)).
 
 ### The line through the dots
@@ -47,6 +63,25 @@ model <- lm(mtcars$mpg ~ mtcars$wt)
 abline(model, lty=3)
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `model <- …` | `<-` is assignment: the fitted line is stored under the name `model`. |
+| `lm(mtcars$mpg ~ mtcars$wt)` | Fits a straight line. `~` makes a formula: the left side (mpg) is Y, explained by the right side (wt), X. |
+| `abline(model, …)` | Adds the fitted line to the plot already drawn, using the intercept and slope stored in `model`. |
+| `lty=3` | Line type 3: a dotted line. |
+
+**Left to right**
+
+- `model <- lm(mtcars$mpg ~ mtcars$wt)`: "Store under the name model (`model <-`) the fitted straight line (`lm`) of fuel efficiency (`mtcars$mpg`) explained by (`~`) weight (`mtcars$wt`)."
+- `abline(model, lty=3)`: "Add a straight line (`abline`) from the fitted model (`model`), dotted (`lty=3`)."
+
+**Right to left**, the order R runs it
+
+- `model <- lm(mtcars$mpg ~ mtcars$wt)`: "Pull out the mpg and wt columns (`mtcars$mpg`, `mtcars$wt`), make the formula Y explained by X (`~`), fit the line (`lm`), and store it (`model <-`)."
+- `abline(model, lty=3)`: "Read the intercept and slope from the model (`model`), set the dotted style (`lty=3`), and draw the line on the plot (`abline`)."
+:::
+
 ## Drawing it in R: two ways
 
 Base R, from the demo notebook:
@@ -61,6 +96,30 @@ plot( mtcars$wt, mtcars$mpg,    #X and Y values
       col="#66BD63", pch=19, lwd=1)
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `data(mtcars)` | Loads the built-in `mtcars` data set into the workspace by name. |
+| `plot( mtcars$wt, mtcars$mpg, …)` | The first argument, `x`, goes on the horizontal axis and the second, `y`, on the vertical: one point per car. |
+| `#X and Y values` | `#` starts a comment: R ignores the rest of that line. |
+| `type="p"` | Draw points only. |
+| `main="…"` | The chart title. |
+| `ylab="…"`, `xlab="…"` | The y-axis label and the x-axis label. |
+| `col="#66BD63"` | The point colour as a hex code: `#` then two hex digits each for red, green and blue. Inside quotes, `#` is not a comment. |
+| `pch=19` | Plotting character 19: a solid round dot. |
+| `lwd=1` | Line width for drawing the symbols, the normal thickness. |
+
+**Left to right**
+
+- `data(mtcars)`: "Load the built-in data set (`data`) named mtcars (`mtcars`)."
+- `plot( mtcars$wt, mtcars$mpg, …)`: "Plot (`plot`) weight across (`mtcars$wt`) against fuel efficiency up (`mtcars$mpg`) as points (`type="p"`), with a title (`main=`), axis labels (`ylab=`, `xlab=`), green colour (`col="#66BD63"`), solid dots (`pch=19`) and normal line width (`lwd=1`)."
+
+**Right to left**, the order R runs it
+
+- `data(mtcars)`: "Find the data set called mtcars (`mtcars`) and load it (`data`)."
+- `plot( mtcars$wt, mtcars$mpg, …)`: "Pull out the wt and mpg columns (`$wt`, `$mpg`), set the point type, labels, colour, symbol and width (`type=`, `main=`, `ylab=`, `xlab=`, `col=`, `pch=`, `lwd=`), and draw one dot per car (`plot`)."
+:::
+
 `plot(x, y)` takes $X$ first and $Y$ second. `type="p"` means points, `pch=19` the solid dot, `col` a hex RGB colour (the kind Lab 2 asks for), and `xlab`/`ylab`/`main` the labels.
 
 The instructor's **lattice** version in the margin uses a model formula:
@@ -69,6 +128,24 @@ The instructor's **lattice** version in the margin uses a model formula:
 library(lattice)
 xyplot(mpg ~ wt, data = mtcars)
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `library(lattice)` | Loads the `lattice` package, which provides `xyplot()`. |
+| `xyplot(mpg ~ wt, …)` | A scatter plot from a formula: left of `~` is Y (vertical), right of `~` is X (horizontal). |
+| `data = mtcars` | Tells `xyplot()` to look up `mpg` and `wt` as columns of `mtcars`, so no `$` is needed. |
+
+**Left to right**
+
+- `library(lattice)`: "Load the package (`library`) called lattice (`lattice`)."
+- `xyplot(mpg ~ wt, data = mtcars)`: "Draw a lattice scatter plot (`xyplot`) of fuel efficiency (`mpg`) explained by (`~`) weight (`wt`), both found in the car data (`data = mtcars`)."
+
+**Right to left**, the order R runs it
+
+- `library(lattice)`: "Find the lattice package (`lattice`) and load it (`library`)."
+- `xyplot(mpg ~ wt, data = mtcars)`: "Look in the car data (`data = mtcars`) for the columns in the formula Y explained by X (`mpg ~ wt`), then draw the scatter plot (`xyplot`)."
+:::
 
 and the fully labelled form:
 
@@ -82,10 +159,48 @@ xyplot(mpg ~ wt, data = mtcars,
        type = c("p", "r"))
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `xyplot(mpg ~ wt, data = mtcars, …)` | The same lattice scatter plot, as above, with one argument per line after it. |
+| `xlab = "…"`, `ylab = "…"` | The x-axis label and the y-axis label. |
+| `main = paste0(…)` | `paste0()` joins its pieces into one string with no spaces added, making the title. |
+| `nrow(mtcars)` | The number of rows in `mtcars`, one per car, so the title's n is computed. |
+| `pch = 19` | Solid round dots. |
+| `cex = 1` | Symbol size as a multiple of the normal size; 1 is normal size. |
+| `col = "lightgreen"` | The point colour. |
+| `type = c("p", "r")` | `c()` combines two codes: `"p"` draws the points and `"r"` adds a regression line. |
+
+**Left to right**
+
+- "Draw a lattice scatter plot (`xyplot`) of mpg explained by wt (`mpg ~ wt`) from the car data (`data = mtcars`), with axis labels (`xlab =`, `ylab =`), a title joined (`main = paste0`) from text and the row count of the data (`nrow(mtcars)`), solid dots (`pch = 19`) at normal size (`cex = 1`), light green (`col = "lightgreen"`), showing points and a regression line combined (`type = c("p", "r")`)."
+
+**Right to left**, the order R runs it
+
+- "Count the rows of the car data (`nrow(mtcars)`), join that into the title text (`paste0`), combine the two type codes (`c("p", "r")`), set the labels, symbol, size and colour (`xlab =`, `ylab =`, `pch =`, `cex =`, `col =`), look up mpg and wt in the data (`mpg ~ wt`, `data = mtcars`), and draw the plot (`xyplot`)."
+:::
+
 His annotation on the last line: `type = c("p", "r")` means **"do data points ("p") and a regression line ("r")."** `cex = 1` is the point size, and `paste0()` builds the title from `nrow(mtcars)` so $n$ is not hard-coded.
 
 :::quiz Which side of the ~ is Y?
 `mpg ~ wt` reads "mpg **explained by** wt": left of `~` is $Y$ (vertical), right is $X$ (horizontal), as in `boxplot(extra ~ group)` (Unit 1) and `favstats(Days ~ Sex)` (Lab 2). Base `plot(x, y)` is the opposite order: $X$ first.
+:::
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `boxplot(extra ~ group)` | `~` makes a formula: the `extra` values split by `group`, drawn as one box per group. |
+| `favstats(Days ~ Sex)` | From the mosaic package: summary statistics of `Days`, one row for each value of `Sex`. |
+
+**Left to right**
+
+- `boxplot(extra ~ group)`: "Draw box plots (`boxplot`) of extra (`extra`) split by (`~`) group (`group`)."
+- `favstats(Days ~ Sex)`: "Print summary statistics (`favstats`) of Days (`Days`) split by (`~`) Sex (`Sex`)."
+
+**Right to left**, the order R runs it
+
+- `boxplot(extra ~ group)`: "Build the formula extra by group (`extra ~ group`), then draw one box per group (`boxplot`)."
+- `favstats(Days ~ Sex)`: "Build the formula Days by Sex (`Days ~ Sex`), then compute and print the statistics for each sex (`favstats`)."
 :::
 
 :::tip Units on the axis

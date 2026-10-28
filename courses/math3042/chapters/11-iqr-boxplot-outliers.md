@@ -28,6 +28,22 @@ The five-number summary (min, $Q_1$, $Q_2$, $Q_3$, max) draws directly onto a **
 
 Boxplots are most useful for comparing groups. `boxplot(extra ~ group, data = sleep)` draws one box per level of `group`, plotting the numeric variable `extra` against it. The `extra ~ group` syntax is a **model formula**: "extra as explained by group."
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `extra ~ group` | `~` builds a formula: the left side (`extra`) is plotted, split by the right side (`group`). |
+| `data = sleep` | Named argument: look up the formula's column names in R's built-in `sleep` data frame. |
+| `boxplot(…)` | Draws one box plot per group, side by side. |
+
+**Left to right**
+
+- `boxplot(extra ~ group, data = sleep)`: "Draw box plots (`boxplot`) of extra (`extra`) grouped by (`~`) group (`group`), using the columns of the sleep data (`data = sleep`)."
+
+**Right to left**, the order R runs it
+
+- `boxplot(extra ~ group, data = sleep)`: "Take the sleep data (`data = sleep`), build the formula extra grouped by group (`extra ~ group`), split the extra values by group, and draw one box plot per group (`boxplot`)."
+:::
+
 The instructor's conclusion from that plot: *"Generally, the drug for group 2 was more effective than the drug for group 1 (not for all individuals)."* The hedge matters: the group 2 box sits higher overall, but the boxes still overlap, so it isn't true for every individual.
 
 ## Outliers and fences

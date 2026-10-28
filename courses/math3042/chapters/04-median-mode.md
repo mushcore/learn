@@ -49,6 +49,23 @@ $$Q_2 = \frac{3.333 + 3.600}{2} = 3.4665$$
 
 In R: `median(faithful$eruptions[1:10])` → `3.4665`.
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `faithful$eruptions` | `$` picks the `eruptions` column of R's built-in `faithful` data frame. |
+| `1:10` | `a:b` is the whole numbers from a to b: here 1 to 10. |
+| `[1:10]` | `[ ]` picks values by position, and R counts from 1, so this keeps the first ten values. |
+| `median(…)` | The middle value of those ten; R sorts them itself, so the data need not be sorted first. |
+
+**Left to right**
+
+- `median(faithful$eruptions[1:10])`: "The median (`median`) of the eruptions column (`eruptions`) of the faithful data (`faithful$`), positions (`[ ]`) 1 to 10 (`1:10`)."
+
+**Right to left**, the order R runs it
+
+- `median(faithful$eruptions[1:10])`: "Take the faithful data (`faithful`), pull out its eruptions column (`$eruptions`), build the positions 1 to 10 (`1:10`), keep those values (`[ ]`), and find their middle value (`median`)."
+:::
+
 ```widget
 stat-calc
 { "data": "1.800 1.950 2.283 2.883 3.333 3.600 3.600 4.350 4.533 4.700", "title": "First 10 Old Faithful eruptions" }
@@ -66,6 +83,24 @@ Example from the notes: `survey$Pulse` has mode `80`, occurring 18 times — mor
 
 In R: `as.double(names(which.max(table(survey$Pulse))))` → `80`.
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `survey$Pulse` | `$` picks the `Pulse` column of the `survey` data frame. |
+| `table(…)` | Counts how often each distinct pulse value appears; each count is labelled with its value, stored as text. |
+| `which.max(…)` | The position of the largest count, keeping that count's label. On a tie it takes the first. |
+| `names(…)` | Pulls out the label: the pulse value itself, still as text. |
+| `as.double(…)` | Converts that text into a number. |
+
+**Left to right**
+
+- `as.double(names(which.max(table(survey$Pulse))))`: "Convert to a number (`as.double`) the label (`names`) of the entry with the highest count (`which.max`) in the tally of how often each value appears (`table`) in the Pulse column (`Pulse`) of the survey data (`survey$`)."
+
+**Right to left**, the order R runs it
+
+- `as.double(names(which.max(table(survey$Pulse))))`: "Take the survey data (`survey`), pull out its Pulse column (`$Pulse`), count how often each pulse value appears (`table`), find the value with the highest count (`which.max`), get its label (`names`), and convert that label from text to a number (`as.double`)."
+:::
+
 ## Ruthless ladder ranks 1-200: three centres from one level table
 
 The official PoE1 Ruthless Allflame ladder listed these levels for ranks 1-200 on 27 October 2026 [PoE1, 3.29 Allflame Ruthless ladder, checked 2026-10-27]:
@@ -79,14 +114,26 @@ The counts pile up at 92 with a thin tail to 99, a right-skewed table, so the th
 ```quiz
 [
   {"q": "What is the mode of the 200 levels?", "type": "numeric", "answer": 92, "tolerance": 0, "explain": "Level 92 has the largest count, 88, so the mode is 92."},
-  {"q": "What is the median $Q_2$ of the 200 levels?", "type": "numeric", "answer": 93, "tolerance": 0, "explain": "$n = 200$ is even, so average the 100th and 101st sorted values. Counting up: 88 characters reach position 88, then $88 + 53 = 141$, so positions 89 to 141 are all 93. Both middle values are 93: $Q_2 = (93 + 93)/2 = 93$."},
+  {"q": "What is the median $Q_2$ of the 200 levels?", "type": "numeric", "answer": 93, "tolerance": 0, "explain": "Sort the 200 levels from lowest to highest. 200 is even, so there are two middle values, at positions 100 and 101, and the median is their average. Running totals of the counts say which level fills which positions: the 88 level-92 characters fill positions 1 to 88, and the 53 level-93 characters fill the next 53, positions 89 to 141 (88 + 53 = 141). Positions 100 and 101 both fall in 89 to 141, so both are 93, and $Q_2 = (93 + 93)/2 = 93$."},
   {"q": "The 200 levels sum to 18626. Compute $\\bar{X}$. (2 decimals)", "type": "numeric", "answer": 93.13, "tolerance": 0.005, "explain": "$\\bar{X} = 18626/200 = 93.13$."}
 ]
 ```
 
-1. Mode: 92, with 88 characters.
-2. Median: $n = 200$, so average the 100th and 101st values. Cumulative counts are 88 at level 92 and $88 + 53 = 141$ at 93, so both middle positions are 93 and $Q_2 = 93$.
-3. Mean: $\sum X = 92(88) + 93(53) + 94(29) + 95(15) + 96(7) + 97(7) + 99(1) = 18626$, and $\bar{X} = 18626/200 = 93.13$.
+**Mode.** Level 92 has the biggest count, 88 characters, so the mode is 92.
+
+**Median.** Picture the 200 levels written out in a line from lowest to highest: 88 copies of 92, then 53 copies of 93, and so on. The median is the middle of that line. With $n = 200$ there is no single middle value, because 200 is even: the two middle values sit at positions $n/2 = 100$ and $n/2 + 1 = 101$, and the median is their average.
+
+To find which level sits at position 100 without writing all 200 out, keep a running total of the counts (the cumulative count). Each level fills the positions from just after the previous total up to its own total:
+
+| Level | Characters | Cumulative count | Positions it fills |
+|---|---|---|---|
+| 92 | 88 | 88 | 1 to 88 |
+| 93 | 53 | $88 + 53 = 141$ | 89 to 141 |
+| 94 | 29 | $141 + 29 = 170$ | 142 to 170 |
+
+Position 100 comes after position 88, the last 92, and before position 141, the last 93, so it holds a 93. Position 101 is in the same block, so it is also 93. The median is the average of the two: $Q_2 = (93 + 93)/2 = 93$. You can stop at level 93; the higher levels are all past position 141.
+
+**Mean.** Multiply each level by its count and add: $\sum X = 92(88) + 93(53) + 94(29) + 95(15) + 96(7) + 97(7) + 99(1) = 18626$, and $\bar{X} = 18626/200 = 93.13$.
 
 Mode $<$ median $<$ mean: the seven characters at 97 and the one at 99 pull the mean up, while the median only sees that they sit above the middle.
 

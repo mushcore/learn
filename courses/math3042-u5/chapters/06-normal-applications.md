@@ -20,6 +20,21 @@ pnorm(120, 100, 15)
 [1] 0.9087888
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `pnorm(120, 100, 15)` | The normal left-tail area: q = 120, mean = 100, sd = 15 (the standard deviation, not the variance 225). |
+| `[1]` | In the output, the position of the first value on the printed line. |
+
+**Left to right**
+
+- "The normal area to the left (`pnorm`) of 120 (`120`) on the curve with mean 100 (`100`) and standard deviation 15 (`15`)."
+
+**Right to left**, the order R runs it
+
+- "Take the curve with mean 100 and sd 15 (`100, 15`), find the area to the left (`pnorm`) of 120 (`120`)."
+:::
+
 The arguments are $x$, then $\mu$, then $\sigma$. In the notes' figure of the IQ bell, from about 40 to 160, this is the area to the left of 120.
 
 ## Key idea: Z = (X − μ)/σ
@@ -94,6 +109,26 @@ qnorm(0.95, 4.35, 0.5)
 [1] 5.172427
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `pnorm(5, 4.35, 0.5) - pnorm(4.35, 4.35, 0.5)` | q = 5 and then q = 4.35, both with mean = 4.35, sd = 0.5; `-` subtracts the two left areas for the between. |
+| `1 - pnorm(5, 4.35, 0.5)` | One minus the left area: the right tail above 5. |
+| `qnorm(0.95, 4.35, 0.5)` | Backwards: p = 0.95, mean = 4.35, sd = 0.5; returns the x with 0.95 to its left. |
+
+**Left to right**
+
+- `pnorm(5, 4.35, 0.5) - pnorm(4.35, 4.35, 0.5)`: "The normal area to the left (`pnorm`) of 5 (`5`) with mean 4.35 (`4.35`) and sd 0.5 (`0.5`), minus (`-`) the area to the left (`pnorm`) of the mean 4.35 (`4.35`) on the same curve."
+- `1 - pnorm(5, 4.35, 0.5)`: "One (`1`) minus (`-`) the normal area to the left (`pnorm`) of 5 (`5`) with mean 4.35 and sd 0.5 (`4.35, 0.5`)."
+- `qnorm(0.95, 4.35, 0.5)`: "The value with probability 0.95 (`0.95`) below it (`qnorm`) on the normal curve with mean 4.35 (`4.35`) and sd 0.5 (`0.5`)."
+
+**Right to left**, the order R runs it
+
+- `pnorm(5, 4.35, 0.5) - pnorm(4.35, 4.35, 0.5)`: "Find the area left of 5 (`pnorm(5, 4.35, 0.5)`), find the area left of 4.35 (`pnorm(4.35, 4.35, 0.5)`), then subtract the second from the first (`-`)."
+- `1 - pnorm(5, 4.35, 0.5)`: "Find the area left of 5 (`pnorm(5, 4.35, 0.5)`), then take it away from one (`1 -`)."
+- `qnorm(0.95, 4.35, 0.5)`: "Take the curve with mean 4.35 and sd 0.5 (`4.35, 0.5`) and the probability 0.95 (`0.95`), and return the x with that much area to its left (`qnorm`)."
+:::
+
 `qnorm(p, mu, sigma)` does the backwards read and the un-standardizing in one call.
 
 ```widget
@@ -120,6 +155,20 @@ About 1.2 % of transmitted 0-bits are flipped. By symmetry a sent 1 (3 V) is rea
 ```text
 [1] 0.01152131
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `1 - pnorm(0.5, 0, 0.22)` | q = 0.5, mean = 0, sd = 0.22; one minus the left area gives the noise's right tail above 0.5. |
+
+**Left to right**
+
+- "One (`1`) minus (`-`) the normal area to the left (`pnorm`) of 0.5 (`0.5`) with mean 0 (`0`) and sd 0.22 (`0.22`)."
+
+**Right to left**, the order R runs it
+
+- "Find the area left of 0.5 under the noise curve (`pnorm(0.5, 0, 0.22)`), then take it away from one (`1 -`)."
+:::
 
 R's 0.0115 uses the unrounded $Z = 2.2727$.
 

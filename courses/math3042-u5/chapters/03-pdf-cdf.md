@@ -62,6 +62,30 @@ F(4) - F(4)
 [1] 0
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `F <- function(t) punif(t, 0, 20)` | `<-` is assignment. `function(t)` makes a one-argument function; its body, with no braces, is the single call `punif(q = t, min = 0, max = 20)`. |
+| `F(11) - F(8)` | Calls `F` twice and subtracts: F(11) − F(8). |
+| `1 - F(12)` | The right tail, one minus F(12). |
+| `F(4) - F(4)` | A zero-width interval. |
+| `[1]` | In the output, the position of the first value on each printed line. |
+
+**Left to right**
+
+- `F <- function(t) punif(t, 0, 20)`: "Store under the name F (`F <-`) a function of t (`function(t)`) that returns the uniform area to the left (`punif`) of t (`t`) on 0 to 20 (`0, 20`)."
+- `F(11) - F(8)`: "F at 11 (`F(11)`) minus (`-`) F at 8 (`F(8)`)."
+- `1 - F(12)`: "One (`1`) minus (`-`) F at 12 (`F(12)`)."
+- `F(4) - F(4)`: "F at 4 (`F(4)`) minus (`-`) F at 4 again (`F(4)`)."
+
+**Right to left**, the order R runs it
+
+- `F <- function(t) punif(t, 0, 20)`: "Build a function that takes t (`function(t)`) and computes `punif(t, 0, 20)`, then store it as F (`F <-`); nothing is computed until F is called."
+- `F(11) - F(8)`: "Run F on 11 (`F(11)`), run F on 8 (`F(8)`), then subtract the second from the first (`-`)."
+- `1 - F(12)`: "Run F on 12 (`F(12)`), then take it away from one (`1 -`)."
+- `F(4) - F(4)`: "Run F on 4 twice (`F(4)`), then subtract (`-`)."
+:::
+
 ## The density and its cumulative curve side by side
 
 ```widget

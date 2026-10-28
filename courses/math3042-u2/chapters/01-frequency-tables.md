@@ -23,7 +23,41 @@ Load it with `read.csv`:
 BCIT.students <- read.csv(file.path("Data", "BCIT.students.csv"), row.names = 1)
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `BCIT.students <- …` | `<-` is assignment: it stores the data frame on the right under the name `BCIT.students`. The dots are just part of the name. |
+| `read.csv(…)` | Reads a comma-separated text file into a data frame, one row per line. Its first argument, `file`, is the path. |
+| `file.path("Data", "BCIT.students.csv")` | Joins the folder and the file name into one path, with `/` between them. Strings go in quotes. |
+| `row.names = 1` | A named argument: column 1 of the file becomes the row labels instead of a data column. |
+
+**Left to right**
+
+- "Store under the name BCIT.students (`BCIT.students <-`) the data frame read from a comma-separated file (`read.csv`) whose path is the folder Data joined to the file BCIT.students.csv (`file.path("Data", "BCIT.students.csv")`), with column 1 as the row labels (`row.names = 1`)."
+
+**Right to left**, the order R runs it
+
+- "Join the folder Data and the file name into one path (`file.path`), read that file into a data frame with column 1 as the row labels (`read.csv`, `row.names = 1`), and store it under the name BCIT.students (`BCIT.students <-`)."
+:::
+
 The printed notes show `read.csv("Data\BCIT.students.txt", row.names = 1, sep="")`, which does not run: `"\B"` is not a valid R escape, and `sep=""` splits on spaces rather than commas. `file.path()` joins the folder and file name with the right separator, as the demo notebook does.
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `read.csv(…)` | Reads a text file of rows into a data frame. Its first argument, `file`, is the path in quotes. |
+| `"Data\BCIT.students.txt"` | Inside a string, `\` starts an escape code. `\B` is not one, so R stops with an error before reading anything. |
+| `row.names = 1` | Column 1 of the file becomes the row labels, as above. |
+| `sep=""` | The field separator. `""` means any run of spaces or tabs, replacing `read.csv`'s comma. |
+
+**Left to right**
+
+- `read.csv("Data\BCIT.students.txt", row.names = 1, sep="")`: "Read into a data frame (`read.csv`) the file at the path Data, backslash, BCIT.students.txt (`"Data\BCIT.students.txt"`), with column 1 as the row labels (`row.names = 1`) and spaces as the separator (`sep=""`)."
+
+**Right to left**, the order R runs it
+
+- `read.csv("Data\BCIT.students.txt", row.names = 1, sep="")`: "Read the path string (`"Data\BCIT.students.txt"`) and fail at the unknown escape `\B`; had it parsed, R would set the row labels and separator (`row.names = 1`, `sep=""`) and then read the file (`read.csv`)."
+:::
 
 `row.names = 1` makes the first column the row labels, not data. `BCIT.students$Eye.Colour` is then the eye-colour column, like `TenMileRace$net` in Lab 1.
 
@@ -39,6 +73,25 @@ freq.tab
 Black  Blue Brown Green Other
    95    52   130    10    15
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `BCIT.students$Eye.Colour` | `$` picks one column of a data frame by name: here the eye-colour column, one value per student. |
+| `table( … )` | Counts how many times each distinct value appears, giving one count per category. |
+| `freq.tab <- …` | Stores the counts under the name `freq.tab`; assignment prints nothing. |
+| `freq.tab` | A name on its own line prints its value: each category name above its count. |
+
+**Left to right**
+
+- `freq.tab <- table( BCIT.students$Eye.Colour )`: "Store under the name freq.tab (`freq.tab <-`) the count per category (`table`) of the Eye.Colour column (`Eye.Colour`) of the student data (`BCIT.students$`)."
+- `freq.tab`: "Print the table (`freq.tab`)."
+
+**Right to left**, the order R runs it
+
+- `freq.tab <- table( BCIT.students$Eye.Colour )`: "Take the student data (`BCIT.students`), pull out its Eye.Colour column (`$Eye.Colour`), count each category (`table`), and store the counts as freq.tab (`freq.tab <-`)."
+- `freq.tab`: "Look up freq.tab (`freq.tab`) and print it."
+:::
 
 **R lists the categories alphabetically**, not by size and not in the order they appear in the data. The counts sum to $n$: $95 + 52 + 130 + 10 + 15 = 302$.
 
@@ -63,6 +116,30 @@ Brown
 [1] "Black" "Blue"  "Brown" "Green" "Other"
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `freq.tab[3]` | `[ ]` picks an element by position, and R counts from 1, so 3 is the third category. Single brackets keep the name. |
+| `freq.tab["Brown"]` | The same element picked by its name, written as a string in quotes. |
+| `freq.tab[[3]]` | Double brackets return the bare value at position 3, with the name dropped. |
+| `names(freq.tab)` | Returns the element names as a vector of strings. |
+| `[1]` | In printed output, `[1]` is the position of the first value on that line, not part of the value. |
+
+**Left to right**
+
+- `freq.tab[3]`: "From the table (`freq.tab`) take element number 3, keeping its name (`[3]`)."
+- `freq.tab["Brown"]`: "From the table (`freq.tab`) take the element named Brown (`["Brown"]`)."
+- `freq.tab[[3]]`: "From the table (`freq.tab`) take element number 3 as a bare value, name dropped (`[[3]]`)."
+- `names(freq.tab)`: "List the names (`names`) of the table's elements (`freq.tab`)."
+
+**Right to left**, the order R runs it
+
+- `freq.tab[3]`: "Look up the table (`freq.tab`), then pick position 3 with its name (`[3]`)."
+- `freq.tab["Brown"]`: "Look up the table (`freq.tab`), then pick the element named Brown (`["Brown"]`)."
+- `freq.tab[[3]]`: "Look up the table (`freq.tab`), then pick position 3 and drop the name (`[[3]]`)."
+- `names(freq.tab)`: "Look up the table (`freq.tab`), then return its element names (`names`)."
+:::
+
 Single brackets keep the name attached; **double square brackets drop it** and return the bare `[1] 130`. Position 3 is Brown only because of the alphabetical order: Black (1), Blue (2), Brown (3), Green (4), Other (5).
 
 ## Step 2a: the pie chart
@@ -70,6 +147,22 @@ Single brackets keep the name attached; **double square brackets drop it** and r
 ```r
 pie(freq.tab, radius=1.0, main="Eye Colour in BCIT Students (n = 302)")
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `pie(freq.tab, …)` | Draws a pie chart. The first argument, `x`, gives the slice sizes; its names become the slice labels. |
+| `radius=1.0` | The size of the circle. The default is 0.8, so 1.0 draws a larger pie. |
+| `main="…"` | The chart title, a string in quotes. |
+
+**Left to right**
+
+- "Draw a pie chart (`pie`) of the eye-colour counts (`freq.tab`) with a circle of radius 1.0 (`radius=1.0`) and the title Eye Colour in BCIT Students (`main=`)."
+
+**Right to left**, the order R runs it
+
+- "Take the counts (`freq.tab`), set the radius to 1.0 (`radius=1.0`) and the title (`main=`), then draw the pie (`pie`)."
+:::
 
 One slice per category, and the **angle of each slice is the category's relative frequency** $x/n$: Brown is $130/302 = 43\%$ of the circle, Green $10/302 = 3.3\%$. The instructor's annotation: **"shows relative frequency."** A pie answers "what fraction of the sample is Brown?" at a glance. It is bad at precise comparison: you cannot read off whether Black (95) beats Blue (52).
 
@@ -82,6 +175,23 @@ barplot(freq.tab, col="lightgreen",
         xlab="Eye Colour", ylab="Frequency",
         main="Eye Colour in BCIT Students (n = 302)")
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `barplot(freq.tab, …)` | Draws one bar per element. The first argument, `height`, gives the bar heights; the names label the bars. |
+| `col="lightgreen"` | The bar fill colour, given as a colour name in quotes. |
+| `xlab="Eye Colour"`, `ylab="Frequency"` | The x-axis label and the y-axis label. |
+| `main="…"` | The chart title. A call can run over several lines; R reads on until the closing `)`. |
+
+**Left to right**
+
+- "Draw a bar chart (`barplot`) of the eye-colour counts (`freq.tab`) in light green (`col="lightgreen"`), with the axis labels Eye Colour and Frequency (`xlab=`, `ylab=`) and a title (`main=`)."
+
+**Right to left**, the order R runs it
+
+- "Take the counts (`freq.tab`), set the colour (`col="lightgreen"`), the axis labels (`xlab=`, `ylab=`) and the title (`main=`), then draw the bars (`barplot`)."
+:::
 
 One bar per category with **height equal to the frequency**. The instructor's annotations: the y-axis shows **"absolute freq."**, and the chart **"shows absolute frequency, better for comparisons."** All bars share one axis, so Brown (130) against Black (95) is read exactly.
 
@@ -128,6 +238,26 @@ pie(base.tab, main="PoE2 base classes (n = 124117)")
 barplot(base.tab, col="lightgreen", ylab="Frequency")
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `base.tab <- c(Druid=10771, …, Witch=12792)` | `c()` combines values into one vector; `name=value` gives each element a name. The result is stored in `base.tab`. |
+| `pie(base.tab, main="…")` | A pie with one slice per element, labelled by the names, with a title. |
+| `barplot(base.tab, col="lightgreen", ylab="Frequency")` | One bar per element, as above, filled light green, with a y-axis label. |
+
+**Left to right**
+
+- `base.tab <- c(Druid=10771, …)`: "Store under the name base.tab (`base.tab <-`) the combined vector (`c`) of eight counts, each with its class name (`Druid=10771`, …, `Witch=12792`)."
+- `pie(base.tab, main=…)`: "Draw a pie chart (`pie`) of the class counts (`base.tab`) with a title (`main=`)."
+- `barplot(base.tab, …)`: "Draw a bar chart (`barplot`) of the class counts (`base.tab`) in light green (`col="lightgreen"`) with the y-axis label Frequency (`ylab=`)."
+
+**Right to left**, the order R runs it
+
+- `base.tab <- c(Druid=10771, …)`: "Pair each count with its name (`Druid=10771`, …), combine the eight into one vector (`c`), and store it as base.tab (`base.tab <-`)."
+- `pie(base.tab, main=…)`: "Take the counts (`base.tab`), set the title (`main=`), then draw the pie (`pie`)."
+- `barplot(base.tab, …)`: "Take the counts (`base.tab`), set the colour and y-axis label (`col=`, `ylab=`), then draw the bars (`barplot`)."
+:::
+
 The pie shows Mercenary as over a third of the circle; only the bars settle Monk against Sorceress, whose slices differ by 2.1°.
 
 ## Dressing up a bar chart (from the demo notebook)
@@ -146,6 +276,30 @@ barplot(freq.tab,  col=c("black","lightblue","brown","lightgreen","white"),
         density=30, angle=30)
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `barplot(freq.tab, …)` | Bars from the frequency table, as above; each line below adds one more argument. |
+| `col=c("black","lightblue","brown","lightgreen","white")` | `c()` makes a vector of five colour names, used in order, one per bar. |
+| `border="black"` | The colour of each bar's outline. |
+| `ylab="Frequency"` | The y-axis label. |
+| `main=paste(…)` | `paste()` joins its pieces into one string, putting a space between pieces. |
+| `nrow(BCIT.students)` | The number of rows in the data frame, so the title's n is computed. |
+| `sub="…"` | A subtitle printed below the plot. |
+| `space = 0.1` | The gap before each bar, as a fraction of the average bar width: a narrow gap. |
+| `legend.text=FALSE` | No legend is drawn. |
+| `horiz=FALSE` | Bars stand upright; `TRUE` would lay them sideways. |
+| `density=30, angle=30` | Fills the bars with hatching, 30 lines per inch slanted at 30 degrees, instead of solid colour. |
+
+**Left to right**
+
+- "Draw a bar chart (`barplot`) of the eye-colour counts (`freq.tab`), one colour per bar from a combined list of five (`col=c(...)`), black outlines (`border="black"`), the y-axis label Frequency (`ylab=`), a title joined (`main=paste`) from text and the number of rows of the student data (`nrow(BCIT.students)`), a subtitle (`sub=`), narrow gaps (`space = 0.1`), no legend (`legend.text=FALSE`), upright bars (`horiz=FALSE`) and hatching at 30 lines per inch and 30 degrees (`density=30, angle=30`)."
+
+**Right to left**, the order R runs it
+
+- "Count the rows of the student data (`nrow(BCIT.students)`), join that count into the title text (`paste`), combine the five colours (`c`), set the outlines, label, subtitle, gaps, legend, direction and hatching (`border=`, `ylab=`, `sub=`, `space=`, `legend.text=`, `horiz=`, `density=`, `angle=`), then draw the bars of the counts (`barplot(freq.tab, …)`)."
+:::
+
 - `col=c(...)`: one colour per bar, in alphabetical category order.
 - `main=paste("... n = ", nrow(BCIT.students), ")")` builds the title from the row count, so $n$ is **never hard-coded**. Lab 2 asks for this.
 - `space` is the gap between bars, `horiz=TRUE` lays them sideways, `density`/`angle` hatch them.
@@ -154,9 +308,39 @@ barplot(freq.tab,  col=c("black","lightblue","brown","lightgreen","white"),
 A pie chart can be drawn straight from percentages when a question gives those instead of counts (Lab 3 does it with `pie(percents, labels)`).
 :::
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `pie(percents, labels)` | By position, `percents` fills `x`, the slice sizes, and `labels` fills `labels`, the text written beside each slice. |
+
+**Left to right**
+
+- `pie(percents, labels)`: "Draw a pie chart (`pie`) with slices sized by the percentages (`percents`) and named by the label text (`labels`)."
+
+**Right to left**, the order R runs it
+
+- `pie(percents, labels)`: "Look up the percentages (`percents`) and the label text (`labels`), then draw the pie (`pie`)."
+:::
+
 ## Count the ascendancies of 800 Hardcore ladder characters
 
 Four pages of the PoE1 Hardcore Allflame ladder hold 800 characters, one row each in `hc`; the largest of 21 ascendancy counts are Luminary 162, Chieftain 110 and Elementalist 109 [PoE1, 3.29 Hardcore Allflame ladder, checked 2026-10-27]. `hc.tab <- table(hc$ascendancy)`, and `top3` is the table for those three only.
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `hc$ascendancy` | `$` picks the `ascendancy` column of the data frame `hc`, one value per character. |
+| `table( … )` | Counts how many characters have each ascendancy. |
+| `hc.tab <- …` | Stores the counts under the name `hc.tab`. |
+
+**Left to right**
+
+- `hc.tab <- table(hc$ascendancy)`: "Store under the name hc.tab (`hc.tab <-`) the count per category (`table`) of the ascendancy column (`ascendancy`) of the ladder data (`hc$`)."
+
+**Right to left**, the order R runs it
+
+- `hc.tab <- table(hc$ascendancy)`: "Take the ladder data (`hc`), pull out its ascendancy column (`$ascendancy`), count each ascendancy (`table`), and store the counts (`hc.tab <-`)."
+:::
 
 ```quiz
 [

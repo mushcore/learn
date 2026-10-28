@@ -40,6 +40,21 @@ $$P(B > 0.95) = \frac{1.0 - 0.95}{1.0 - 0.8} = \frac{0.05}{0.2} = \mathbf{0.2500
 
 One hit in four draws B in the top quarter of B's range. **Mean and standard deviation.** $\mu = \dfrac{0.8 + 1.0}{2} = 0.9$ and $\sigma = \dfrac{0.2}{\sqrt{12}} = \dfrac{0.2}{3.4641} = 0.0577$. In R the right tail is `1 - punif(0.95, 0.8, 1.0)`, which prints 0.25.
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `punif(0.95, 0.8, 1.0)` | The uniform F(x): q = 0.95, min = 0.8, max = 1.0; the area to the left of 0.95. |
+| `1 - …` | One minus the left area: the right tail. |
+
+**Left to right**
+
+- `1 - punif(0.95, 0.8, 1.0)`: "One (`1`) minus (`-`) the uniform area to the left (`punif`) of 0.95 (`0.95`) on 0.8 (`0.8`) to 1.0 (`1.0`)."
+
+**Right to left**, the order R runs it
+
+- `1 - punif(0.95, 0.8, 1.0)`: "Find the area left of 0.95 on 0.8 to 1.0 (`punif(0.95, 0.8, 1.0)`), then take it away from one (`1 -`)."
+:::
+
 ### B above 0.95 as a rectangle
 
 ```widget
@@ -93,6 +108,28 @@ punif(4, 0, 20) - punif(4, 0, 20)
 [1] 0
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `punif(11, 0, 20)` | The uniform F(x): q = 11 (the bound), min = 0, max = 20. Returns the area to the left of 11. |
+| `punif(11, 0, 20) - punif(8, 0, 20)` | `-` subtracts: the area up to 11 minus the area up to 8, the interval. |
+| `1 - punif(12, 0, 20)` | One minus the left area: the right tail above 12. |
+| `punif(4, 0, 20) - punif(4, 0, 20)` | The same call twice, so the difference is a zero-width interval. |
+| `[1]` | In the output, the position of the first value on each printed line; each line prints one result. |
+
+**Left to right**
+
+- `punif(11, 0, 20) - punif(8, 0, 20)`: "The uniform area to the left (`punif`) of 11 (`11`) on 0 (`0`) to 20 (`20`), minus (`-`) the uniform area to the left (`punif`) of 8 (`8`) on the same interval."
+- `1 - punif(12, 0, 20)`: "One (`1`) minus (`-`) the uniform area to the left (`punif`) of 12 (`12`) on 0 to 20 (`0, 20`)."
+- `punif(4, 0, 20) - punif(4, 0, 20)`: "The uniform area to the left (`punif`) of 4 (`4`) on 0 to 20 (`0, 20`), minus (`-`) that same area again (`punif(4, 0, 20)`)."
+
+**Right to left**, the order R runs it
+
+- `punif(11, 0, 20) - punif(8, 0, 20)`: "Find the area left of 11 on 0 to 20 (`punif(11, 0, 20)`), find the area left of 8 (`punif(8, 0, 20)`), then subtract the second from the first (`-`)."
+- `1 - punif(12, 0, 20)`: "Find the area left of 12 on 0 to 20 (`punif(12, 0, 20)`), then take it away from one (`1 -`)."
+- `punif(4, 0, 20) - punif(4, 0, 20)`: "Find the area left of 4 (`punif(4, 0, 20)`) twice, then subtract one from the other (`-`)."
+:::
+
 ## The rectangle under the bus density
 
 ```widget
@@ -105,6 +142,20 @@ The same rectangle with bounds 12 and 20 is "more than 12 minutes"; with both bo
 ## Height is density, not probability
 
 The height 0.05 is not the probability of anything: a uniform on $[0, 0.5]$ has height 2, and no probability is 2. Height times width is probability. `dunif(4, 0, 20)` returns 0.05, the height of the density at 4, and is never the answer to a "what is the probability" question.
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `dunif(4, 0, 20)` | The `d` prefix is the density: x = 4, min = 0, max = 20. Returns the height of f at 4, not an area. |
+
+**Left to right**
+
+- `dunif(4, 0, 20)`: "The uniform density height (`dunif`) at 4 (`4`) on 0 (`0`) to 20 (`20`)."
+
+**Right to left**, the order R runs it
+
+- `dunif(4, 0, 20)`: "Take the interval 0 to 20 (`0, 20`) and the point 4 (`4`), then return the density's height there (`dunif`)."
+:::
 
 Units must match the interval. If the same bus question is posed in hours, the wait is uniform on $[0, \frac{1}{3}]$ and "more than 0.2 hours" is $\dfrac{1/3 - 0.2}{1/3} = 0.40$, the same answer as 12 minutes. Mixing a limit in minutes with an interval in hours gives nonsense.
 

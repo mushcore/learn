@@ -65,6 +65,37 @@ cumul.rel.freq.dist <- round( cumul.freq.dist / n.total , 3)
 cbind(cumul.rel.freq.dist)
 ```
 
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `freq.distribution <- table(cut(…))` | `<-` is assignment: the class counts are stored as `freq.distribution`. The dots are part of the name. |
+| `cut(faithful$eruptions, …)` | Replaces each eruption value with the label of the class it falls in. Its first argument, `x`, is the data. |
+| `breaks=seq(1.6, 5.2, 0.2)` | `seq()` fills from = 1.6, to = 5.2, by = 0.2 by position: the class boundaries. |
+| `right=FALSE` | Classes include their left boundary and exclude their right one. |
+| `include.lowest=TRUE` | With `right=FALSE`, also lets a value equal to the very last boundary, 5.2, count in the last class. |
+| `table( … )` | Counts how many values carry each class label. |
+| `cumul.freq.dist <- cumsum(freq.distribution)` | `cumsum()` replaces each count with the running total up to and including it. |
+| `n.total <-  nrow(faithful)` | `nrow()` is the number of rows in the data frame, one per eruption. |
+| `round( cumul.freq.dist / n.total , 3)` | `/` divides every running total by n; `round()` fills x = that result, digits = 3 decimals. |
+| `cbind(cumul.rel.freq.dist)` | Binds the vector as a column, so it prints one class per line with its label. |
+
+**Left to right**
+
+- `freq.distribution <- table(cut(…))`: "Store under the name freq.distribution (`freq.distribution <-`) the count per class (`table`) of the eruption durations (`faithful$eruptions`) sorted into classes (`cut`) with boundaries from 1.6 to 5.2 in steps of 0.2 (`breaks=seq(1.6, 5.2, 0.2)`), closed on the left (`right=FALSE`), with 5.2 kept in the last class (`include.lowest=TRUE`)."
+- `cumul.freq.dist <- cumsum(freq.distribution)`: "Store as cumul.freq.dist (`cumul.freq.dist <-`) the running totals (`cumsum`) of the class counts (`freq.distribution`)."
+- `n.total <-  nrow(faithful)`: "Store as n.total (`n.total <-`) the number of rows (`nrow`) of the Old Faithful data (`faithful`)."
+- `cumul.rel.freq.dist <- round(…)`: "Store as cumul.rel.freq.dist (`cumul.rel.freq.dist <-`) the rounded (`round`) running totals (`cumul.freq.dist`) divided by (`/`) n (`n.total`), to 3 decimals (`3`)."
+- `cbind(cumul.rel.freq.dist)`: "Print as one column (`cbind`) the cumulative relative frequencies (`cumul.rel.freq.dist`)."
+
+**Right to left**, the order R runs it
+
+- `freq.distribution <- table(cut(…))`: "Take the Old Faithful data (`faithful`), pull out its eruptions column (`$eruptions`), build the boundaries (`seq`), label each value with its class (`cut`), count each class (`table`), and store the counts as freq.distribution (`freq.distribution <-`)."
+- `cumul.freq.dist <- cumsum(freq.distribution)`: "Take the counts (`freq.distribution`), add them up as running totals (`cumsum`), and store them (`cumul.freq.dist <-`)."
+- `n.total <-  nrow(faithful)`: "Count the rows of the data (`nrow(faithful)`) and store the count (`n.total <-`)."
+- `cumul.rel.freq.dist <- round(…)`: "Divide each running total by n (`cumul.freq.dist / n.total`), round to 3 decimals (`round`, `3`), and store the result (`cumul.rel.freq.dist <-`)."
+- `cbind(cumul.rel.freq.dist)`: "Take the vector (`cumul.rel.freq.dist`), bind it as a column (`cbind`), and print it."
+:::
+
 `cut()` assigns each value to a class, `table()` counts, `cumsum()` turns 12, 39, 20, ... into 12, 51, 71, ..., and `cbind()` prints a column.
 
 ## The ogive
@@ -91,6 +122,39 @@ abline(v = 4.1, lty=3)
 abline(h = 0.55, lty=3)
 abline(h = 0.357, lty=3)
 ```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `upper.class.limits <- seq(1.599, 5.199, 0.2)` | from = 1.599, to = 5.199, by = 0.2: the 19 upper limits, including the extra 1.599. |
+| `ogive.values <- c(0, cumul.rel.freq.dist)` | `c()` combines values into one vector: a 0 followed by the 18 cumulative relative frequencies. |
+| `plot(upper.class.limits, ogive.values, …)` | Plots the first vector on the x-axis against the second on the y-axis, one point per pair. |
+| `type="b"` | Draws both points and the lines joining them. |
+| `lwd=3` | Line width, three times the default thickness. |
+| `ylab=`, `xlab=`, `main=` | The y-axis label, the x-axis label and the title, each a string in quotes. |
+| `xaxp=c(1.6, 5.2, 36)` | x-axis ticks from 1.6 to 5.2 split into 36 intervals: one every 0.1. |
+| `yaxp=c(0, 1, 20)` | y-axis ticks from 0 to 1 split into 20 intervals: one every 0.05. |
+| `grid()` | Adds light dotted grid lines at the axis ticks of the plot already drawn. |
+| `# these lines are …` | `#` starts a comment: R ignores everything after it on that line. |
+| `abline(v = 4.1, lty=3)` | Adds a vertical line at x = 4.1; `lty=3` makes it dotted. |
+| `abline(h = 0.55, lty=3)`, `abline(h = 0.357, lty=3)` | Add dotted horizontal lines at heights 0.55 and 0.357. |
+
+**Left to right**
+
+- `upper.class.limits <- seq(1.599, 5.199, 0.2)`: "Store as upper.class.limits (`upper.class.limits <-`) the sequence (`seq`) from 1.599 to 5.199 in steps of 0.2 (`1.599, 5.199, 0.2`)."
+- `ogive.values <- c(0, cumul.rel.freq.dist)`: "Store as ogive.values (`ogive.values <-`) a 0 combined (`c`) with the cumulative relative frequencies (`cumul.rel.freq.dist`)."
+- `plot(upper.class.limits, ogive.values, …)`: "Plot (`plot`) the upper limits across (`upper.class.limits`) against the ogive heights up (`ogive.values`) as points joined by lines (`type="b"`), three times thick (`lwd=3`), with axis labels and a title (`ylab=`, `xlab=`, `main=`), x ticks every 0.1 (`xaxp=c(1.6, 5.2, 36)`) and y ticks every 0.05 (`yaxp=c(0, 1, 20)`)."
+- `grid()`: "Add a grid (`grid`) to the plot."
+- `abline(…)` lines: "Add a dotted (`lty=3`) straight line (`abline`): vertical at 4.1 (`v = 4.1`), then horizontal at 0.55 and 0.357 (`h = 0.55`, `h = 0.357`)."
+
+**Right to left**, the order R runs it
+
+- `upper.class.limits <- seq(1.599, 5.199, 0.2)`: "Build the sequence 1.599 to 5.199 by 0.2 (`seq`) and store it (`upper.class.limits <-`)."
+- `ogive.values <- c(0, cumul.rel.freq.dist)`: "Put 0 in front of the cumulative relative frequencies (`c(0, cumul.rel.freq.dist)`) and store the result (`ogive.values <-`)."
+- `plot(upper.class.limits, ogive.values, …)`: "Look up the x values and y values (`upper.class.limits`, `ogive.values`), combine the tick settings (`c`), set the type, width, labels and title (`type=`, `lwd=`, `ylab=`, `xlab=`, `main=`), and draw the plot (`plot`)."
+- `grid()`: "Read the current plot's ticks and draw grid lines at them (`grid`)."
+- `abline(…)` lines: "Set the position and the dotted style (`v =` or `h =`, `lty=3`), then draw each line on the plot (`abline`)."
+:::
 
 `type="b"` draws **b**oth points and lines. `c(0, cumul.rel.freq.dist)` prepends the 0 for the 1.599 point; `abline()` draws the dotted guide lines used below.
 
