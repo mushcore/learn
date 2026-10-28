@@ -277,6 +277,12 @@
       "description": "Vasco Castela's lectures 1 to 5, one module per lecture, plus a Midterm module: moral reasoning drills, Kohlberg's stages, relativism and objectivism, act utilitarianism I and II, every listed practice question answered in writing against a marker's checklist, two mock midterms and a printable answer-skeleton sheet.",
       "modules": [
         {
+          "id": "libs7102-l1",
+          "title": "Lecture 1",
+          "subtitle": "Foundations of ethical debate: philosophy and the three branches of ethics, valid and sound arguments, empirical, value and conceptual claims, trick questions, and genuine moral action",
+          "description": "Lecture 1 of LIBS 7102 Ethics for Computing Professionals: what philosophy does that science cannot; meta-, normative and applied ethics; no ought without can, no ought from is, explanation is not justification; arguments, premises and conclusions, and why an argument is never true or false; deductive and inductive arguments; validity, soundness and the slide's practice arguments; empirical, value and conceptual claims and the value-argument shape; the trick questions the exam uses; Gyges' ring, psychological and normative egoism, Hume and Williams on why genuine moral action exists. Ends with a 20-item mock quiz."
+        },
+        {
           "id": "libs7102-l2",
           "title": "Lecture 2",
           "subtitle": "Conventional morality: conflicts of interest, Piaget and Kohlberg's six stages with stage 4.5, why convention is not the final level, and Singer's \"All animals are equal\"",

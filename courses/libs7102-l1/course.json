@@ -1,0 +1,87 @@
+{
+  "title": "LIBS 7102 · Lecture 1",
+  "subtitle": "Foundations of ethical debate: philosophy and the three branches of ethics, valid and sound arguments, empirical, value and conceptual claims, trick questions, and genuine moral action",
+  "description": "Lecture 1 of LIBS 7102 Ethics for Computing Professionals: what philosophy does that science cannot; meta-, normative and applied ethics; no ought without can, no ought from is, explanation is not justification; arguments, premises and conclusions, and why an argument is never true or false; deductive and inductive arguments; validity, soundness and the slide's practice arguments; empirical, value and conceptual claims and the value-argument shape; the trick questions the exam uses; Gyges' ring, psychological and normative egoism, Hume and Williams on why genuine moral action exists. Ends with a 20-item mock quiz.",
+  "intro": ":::exam Midterm facts\n**Midterm: Wednesday Oct 28, in class.** Closed book, two hours, on paper, 20 % of the course. You write four or five two-paragraph answers, choosing from about six (for example, answer 4 of 6). Questions cover lectures 1 to 5 and are taken from the practice list (rare) or very similar to it (typical), often paired with a computing case or asking you to argue a side. It feeds the moral-reasoning question that most midterms include, which scores close to 100 % or 0 %.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "mock-quiz-l1",
+        "note": "take it cold (about 20 min)"
+      },
+      {
+        "lesson": "valid-and-sound",
+        "note": "write the definitions of valid and sound from memory, then check"
+      },
+      {
+        "lesson": "validity-drill",
+        "note": "judge every argument before revealing"
+      },
+      {
+        "lesson": "three-kinds-of-claim",
+        "note": "type each of the slide's sentences as empirical, value or conceptual"
+      },
+      {
+        "lesson": "trick-questions",
+        "note": "write the M practice answer in two paragraphs before the model"
+      },
+      {
+        "lesson": "mock-quiz-l1",
+        "note": "retake; aim for 90 % or better"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Moral reasoning",
+      "lessons": [
+        {
+          "id": "philosophy-and-the-three-ethics",
+          "title": "Philosophy asks what science cannot answer, and ethics has three branches",
+          "file": "chapters/01-philosophy-and-the-three-ethics.md"
+        },
+        {
+          "id": "valid-and-sound",
+          "title": "Valid means the premises guarantee the conclusion; sound adds true premises",
+          "file": "chapters/02-valid-and-sound.md"
+        },
+        {
+          "id": "validity-drill",
+          "title": "Validity drill: judge each argument valid or invalid, sound or unsound",
+          "file": "chapters/03-validity-drill.md"
+        },
+        {
+          "id": "three-kinds-of-claim",
+          "title": "Claims are empirical, value or conceptual, and a value conclusion needs a value premise",
+          "file": "chapters/04-three-kinds-of-claim.md"
+        },
+        {
+          "id": "trick-questions",
+          "title": "Some exam tasks cannot be done, and the answer says why",
+          "file": "chapters/05-trick-questions.md"
+        }
+      ]
+    },
+    {
+      "title": "2. Genuine moral action",
+      "lessons": [
+        {
+          "id": "genuine-moral-action",
+          "title": "Self-interest is not selfishness, so genuine moral action exists",
+          "file": "chapters/06-genuine-moral-action.md"
+        }
+      ]
+    },
+    {
+      "title": "3. Mock quiz",
+      "lessons": [
+        {
+          "id": "mock-quiz-l1",
+          "title": "Mock quiz: Lecture 1",
+          "file": "chapters/07-mock-quiz-l1.md"
+        }
+      ]
+    }
+  ]
+}
