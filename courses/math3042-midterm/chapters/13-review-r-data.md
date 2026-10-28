@@ -2,7 +2,7 @@
 title: "Review 2: R for data on paper: quantile, filter, favstats, bwplot"
 minutes: 30
 ---
-<!-- facts: none; midterm review uses the instructor's and the labs' own examples -->
+<!-- facts: gms.data.ranking-overall-legendary-2026-10-27 -->
 :::quiz What the paper asks and what earns the marks
 Q7 (4 marks) gives a help-file excerpt for a data frame and asks for R commands written by hand: a percentile (1), a filtered dataset (1), side-by-side boxplots (2). Each mark needs a full, runnable line: the right function, the exact column names from the excerpt, real numbers, and the `library()` line when a package is needed. The second boxplot mark is for the title and axis labels.
 :::
@@ -267,65 +267,65 @@ favstats(Days ~ Eth, data = quine)
 
 ## New variants
 
-A data frame `Flights` has columns `delay` (minutes late), `distance` (km) and `airline` (text: "AirCanada", "WestJet", "Porter").
+A data frame `Ranking` is read from `gms-ranking-overall-legendary-2026-10-27.csv`, the top 500 characters in Nexon's North America overall ranking for GMS (MapleStory) on 2026-10-27, all 500 rows. Its columns, named as the CSV has them: `rank`, `level` (297 to 300), `exp` (exp into the current level), `job_name` (text, the character's job, the game's class: 51 different jobs, Night Lord the most common with 61) and `world_id` (Nexon's numeric world code). One row per character with a numeric column and a text group column is exactly the shape `quantile`, `filter`, `bwplot` and `favstats` work on.
 
 ```quiz
 [
   {
     "type": "fill",
-    "q": "**Variant 1.** The 90th percentile of flight delay.",
-    "code": "quantile(Flights$delay, ___)",
+    "q": "**Variant 1.** The 90th percentile of character level.",
+    "code": "quantile(Ranking$level, ___)",
     "answer": ["0.90", "0.9", ".9", ".90"],
-    "explain": "The 90th percentile is the proportion 0.90: $$90\\% = 0.90$$ Full line: `quantile(Flights$delay, 0.90)`."
+    "explain": "The 90th percentile is the proportion 0.90: $$90\\% = 0.90$$ Full line: `quantile(Ranking$level, 0.90)`."
   },
   {
     "type": "fill",
-    "q": "**Variant 2.** Both quartiles, Q1 and Q3, in one command.",
-    "code": "quantile(Flights$delay, ___)",
+    "q": "**Variant 2.** Both quartiles of level, Q1 and Q3, in one command.",
+    "code": "quantile(Ranking$level, ___)",
     "answer": ["c(0.25, 0.75)", "c(0.25,0.75)", "c(.25, .75)", "c(.25,.75)"],
-    "explain": "Q1 has 25 % below it, Q3 has 75 %. `c()` combines both proportions into one vector: `quantile(Flights$delay, c(0.25, 0.75))` prints `25%` and `75%`."
+    "explain": "Q1 has 25 % below it, Q3 has 75 %. `c()` combines both proportions into one vector: `quantile(Ranking$level, c(0.25, 0.75))` prints `25%` and `75%`."
   },
   {
     "type": "fill",
-    "q": "**Variant 3.** A dataset of flights at most 15 minutes late.",
-    "code": "on_time <- filter(Flights, delay ___ 15)",
+    "q": "**Variant 3.** A dataset of characters at most level 298.",
+    "code": "below_299 <- filter(Ranking, level ___ 298)",
     "answer": ["<="],
-    "explain": "\"At most 15\" includes 15, so `<=`. `<` would drop the flights exactly 15 minutes late. Needs `library(dplyr)` on the line before."
+    "explain": "\"At most 298\" includes 298, so `<=`. `<` would drop the level-298 characters. Needs `library(dplyr)` on the line before."
   },
   {
     "type": "fill",
-    "q": "**Variant 4 (if time).** A dataset of flights longer than 1000 km.",
-    "code": "long_flights <- filter(Flights, distance ___ 1000)",
+    "q": "**Variant 4 (if time).** A dataset of characters above level 297.",
+    "code": "high_level <- filter(Ranking, level ___ 297)",
     "answer": [">"],
-    "explain": "\"Longer than\" excludes 1000 itself: `>`. \"At least 1000\" would be `>=`."
+    "explain": "\"Above\" excludes 297 itself: `>`. \"At least 297\" would be `>=`, and would keep all 500 rows."
   },
   {
     "type": "fill",
-    "q": "**Variant 5 (if time).** Only the WestJet flights. Type the value exactly as it goes in the code.",
-    "code": "westjet <- filter(Flights, airline == ___)",
-    "answer": ["\"WestJet\"", "'WestJet'"],
-    "explain": "A text value goes in quotes, spelled and capitalised exactly as in the data: `\"WestJet\"`. Without quotes R looks for an object called WestJet and stops with an error. Equality is `==`, two signs."
+    "q": "**Variant 5 (if time).** Only the Night Lord characters. Type the value exactly as it goes in the code.",
+    "code": "night_lords <- filter(Ranking, job_name == ___)",
+    "answer": ["\"Night Lord\"", "'Night Lord'"],
+    "explain": "A text value goes in quotes, spelled, spaced and capitalised exactly as in the data: `\"Night Lord\"`. Without quotes R stops with an error. Equality is `==`, two signs."
   },
   {
     "type": "fill",
-    "q": "**Variant 6 (if time).** WestJet flights that were more than 30 minutes late, with `subset`.",
-    "code": "late_wj <- subset(Flights, (airline == \"WestJet\") ___ (delay > 30))",
+    "q": "**Variant 6 (if time).** Night Lords at level 300, with `subset`.",
+    "code": "nl_300 <- subset(Ranking, (job_name == \"Night Lord\") ___ (level == 300))",
     "answer": ["&"],
-    "explain": "Both conditions must hold, so `&` (and). `|` would keep every WestJet flight plus every late flight. With `filter` a comma does the same job: `filter(Flights, airline == \"WestJet\", delay > 30)`."
+    "explain": "Both conditions must hold, so `&` (and). `|` would keep every Night Lord plus every level-300 character. With `filter` a comma does the same job: `filter(Ranking, job_name == \"Night Lord\", level == 300)`."
   },
   {
     "type": "fill",
-    "q": "**Variant 7 (if time).** Side-by-side boxplots of delay by airline, titled and labelled.",
-    "code": "bwplot(delay ~ ___, data = Flights, main = \"Flight Delays by Airline\", xlab = \"Airline\", ylab = \"Delay (minutes)\")",
-    "answer": ["airline"],
-    "explain": "Numeric column left of `~`, group right: `delay ~ airline`. `library(mosaic)` first. `main`, `xlab` and `ylab` earn the second mark."
+    "q": "**Variant 7 (if time).** Side-by-side boxplots of level by job, titled and labelled.",
+    "code": "bwplot(level ~ ___, data = Ranking, main = \"Levels by Job, GMS Top 500\", xlab = \"Job\", ylab = \"Level\")",
+    "answer": ["job_name"],
+    "explain": "Numeric column left of `~`, group right: `level ~ job_name`, the column name exactly as in the CSV, underscore included. `library(mosaic)` first. `main`, `xlab` and `ylab` earn the second mark."
   },
   {
     "type": "fill",
-    "q": "**Variant 8 (if time).** Summary statistics of distance for each airline. Fill the formula.",
-    "code": "favstats(___, data = Flights)",
-    "answer": ["distance ~ airline", "distance~airline"],
-    "explain": "`favstats(distance ~ airline, data = Flights)`, after `library(mosaic)`: one row per airline with min, Q1, median, Q3, max, mean, sd and n."
+    "q": "**Variant 8 (if time).** Summary statistics of level for each job. Fill the formula.",
+    "code": "favstats(___, data = Ranking)",
+    "answer": ["level ~ job_name", "level~job_name"],
+    "explain": "`favstats(level ~ job_name, data = Ranking)`, after `library(mosaic)`: one row per job with min, Q1, median, Q3, max, mean, sd and n."
   }
 ]
 ```

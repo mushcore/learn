@@ -2,7 +2,7 @@
 title: "Review 6: Poisson plug-in: rescale λ, then use the sheet"
 minutes: 30
 ---
-<!-- facts: none; midterm review uses the instructor's and the labs' own examples -->
+<!-- facts: none; no bank entry gives counts per time interval, so the Poisson examples stay the instructor's and the labs' -->
 
 :::quiz What the paper asks and what earns the marks
 The practice paper's Q11a (2 marks): floods average once every 20 years; P(exactly two floods in the next 10 years)?

@@ -2,7 +2,7 @@
 title: "Review 1: reading histograms, boxplots and summary tables"
 minutes: 30
 ---
-<!-- facts: none; midterm review uses the instructor's and the labs' own examples -->
+<!-- facts: poe1.data.divine-chaos-allflame, poe1.data.divine-chaos-mirage, poe1.data.divine-chaos-keepers, classic.monster.training-hp, classic.data.monsters, gms.data.ranking-level-hero-2026-10-27 -->
 :::quiz What the paper asks and what earns the marks
 Q1 (5 marks) reads a histogram: a percentage, the mean and median, and whether the empirical rule applies. Q2 (4 marks) recommends one of two products from a summary table. Q10 (4 marks) is TRUE or FALSE on boxplots, each with a reason. About 13 of 46 marks, and almost no arithmetic: the marks are for a verdict plus the numbers that back it.
 :::
@@ -17,9 +17,11 @@ Do if time is short: Q1, Q2, Q10 and new variants 1 to 3. The rest are marked "i
 
 ## The ideas, from zero
 
-**Mean.** Add the values, divide by how many: for 2, 4, 9 the mean is $15/3 = 5$. On the sheet, under Descriptive Statistics: $\bar{X} = \dfrac{\sum x}{n}$ for a sample, $\mu = \dfrac{\sum x}{N}$ for a population.
+The tiny cases below use poe.ninja's daily price of the Divine Orb, a Path of Exile 1 currency item, counted in Chaos Orbs (chaos), the game's everyday currency, over the Allflame league (96 days to 2026-10-27). One day gives one price, so the list is a plain set of numbers to average and sort.
 
-**Median.** The middle value once the data are in order. Its position is $(n+1)/2$: for 2, 4, 9, position $(3+1)/2 = 2$, so the median is 4. For 150 values, $(150+1)/2 = 75.5$, halfway between the 75th and 76th. Not on the sheet: remember $(n+1)/2$.
+**Mean.** Add the values, divide by how many: the last three Allflame days gave 265, 300 and 270 chaos, so the mean is $835/3 = 278$ chaos. On the sheet, under Descriptive Statistics: $\bar{X} = \dfrac{\sum x}{n}$ for a sample, $\mu = \dfrac{\sum x}{N}$ for a population.
+
+**Median.** The middle value once the data are in order. Its position is $(n+1)/2$: sorted, the three prices are 265, 270, 300, position $(3+1)/2 = 2$, so the median is 270 chaos. For all 96 Allflame days, $(96+1)/2 = 48.5$, halfway between the 48th and 49th. Not on the sheet: remember $(n+1)/2$.
 
 **Mode.** The most common value, or on a histogram the tallest bar.
 
@@ -238,100 +240,100 @@ Each TRUE/FALSE part: one mark for the word, one for the reason that names the f
 
 ## New variants
 
-**Variant 1.** Commute times (minutes) for 80 workers, classes 10 minutes wide:
+**Variant 1.** The 96 Allflame daily Divine prices (all rows, `receive_value_chaos`) in classes 50 chaos wide; a price on a boundary counts in the upper class. A league's price starts low and settles high, so the shape is the point of the question.
 
-| Minutes | 0–10 | 10–20 | 20–30 | 30–40 | 40–50 | 50–60 | 60–70 | 70–80 | 80–90 |
-|---|---|---|---|---|---|---|---|---|---|
-| Frequency | 6 | 22 | 20 | 13 | 8 | 5 | 3 | 2 | 1 |
-| Cumulative | 6 | 28 | 48 | 61 | 69 | 74 | 77 | 79 | 80 |
+| Chaos | 50–100 | 100–150 | 150–200 | 200–250 | 250–300 | 300–350 | 350–400 | 400–450 |
+|---|---|---|---|---|---|---|---|---|
+| Frequency | 3 | 5 | 26 | 8 | 4 | 25 | 24 | 1 |
+| Cumulative | 3 | 8 | 34 | 42 | 46 | 71 | 95 | 96 |
 
 ```widget
 freq-hist
-{ "start": 0, "width": 10, "freq": [6, 22, 20, 13, 8, 5, 3, 2, 1], "label": "Commute time (minutes)", "unit": "workers", "mean": "midpoint", "median": true, "toggles": true, "title": "Commute times (n = 80)", "note": "Read the shape first: where is the long tail?" }
+{ "start": 50, "width": 50, "freq": [3, 5, 26, 8, 4, 25, 24, 1], "label": "Divine Orb price (chaos)", "unit": "days", "mean": "midpoint", "median": true, "toggles": true, "title": "Allflame daily Divine prices (n = 96)", "note": "Read the shape first: how many peaks, and where is the long tail?" }
 ```
 
-**Variant 2.** Two couriers; a parcel must arrive within 60 minutes. Delivery times (minutes):
+**Variant 2.** A trader holding Divine Orbs through a whole league wants the steadier price. poe.ninja's daily price over two finished leagues, all days of each (chaos):
 
-| Statistic | Courier A (n=50) | Courier B (n=55) |
+| Statistic | Mirage (n=137) | Keepers (n=123) |
 |---|---|---|
-| Mean | 48.2 | 45.9 |
-| Median | 47.5 | 44.0 |
-| Standard deviation | 6.1 | 14.8 |
-| Minimum | 35.0 | 20.1 |
-| Maximum | 62.3 | 88.4 |
+| Mean | 379.6 | 157.7 |
+| Median | 368.0 | 150.0 |
+| Standard deviation | 140.8 | 37.5 |
+| Minimum | 36.3 | 44.85 |
+| Maximum | 612.0 | 271.3 |
 
-**Variant 3.** A boxplot of 120 exam scores: box from 64 to 74, median line at 67, lower whisker to 55, upper whisker to 88, one dot at 95.
+**Variant 3.** A boxplot of the HP (hit points) of 12 common MapleStory Classic training monsters from meowdb's fan database, hand method: box from 157 to 1159, median line at 456.5, lower whisker to 45, upper whisker to 1336, dots at 3218 (Drake) and 7420 (Mano, a boss). One boss among field monsters is the kind of value the fences exist to flag.
 
 ```quiz
 [
   {
-    "q": "**Variant 1.** What percentage of workers commute at least 30 minutes?",
+    "q": "**Variant 1.** On what percentage of Allflame days was the Divine price at least 300 chaos? (percent, 2 decimals)",
     "type": "numeric",
-    "answer": 40,
+    "answer": 52.08,
     "tolerance": 0.5,
     "unit": "%",
-    "explain": "\"At least 30\" is the class 30–40 and everything above it. Under 30 is the cumulative at the end of 20–30: 48. So $$\\dfrac{80 - 48}{80} = \\dfrac{32}{80} = \\mathbf{0.40} \\text{ or } \\mathbf{40\\%}$$"
+    "explain": "\"At least 300\" is the class 300–350 and everything above it. Under 300 is the cumulative at the end of 250–300: 46. So $$\\dfrac{96 - 46}{96} = \\dfrac{50}{96} = \\mathbf{0.5208} \\text{ or } \\mathbf{52.08\\%}$$"
   },
   {
-    "q": "**Variant 1.** What percentage commute less than 20 minutes (at most the 10–20 class)?",
+    "q": "**Variant 1.** On what percentage of days was the price under 200 chaos? (percent, 2 decimals)",
     "type": "numeric",
-    "answer": 35,
+    "answer": 35.42,
     "tolerance": 0.5,
     "unit": "%",
-    "explain": "The cumulative column at the end of 10–20 is $$6 + 22 = 28$$ so $$\\dfrac{28}{80} = \\mathbf{0.35} \\text{ or } \\mathbf{35\\%}$$"
+    "explain": "The cumulative column at the end of 150–200 is $$3 + 5 + 26 = 34$$ so $$\\dfrac{34}{96} = \\mathbf{0.3542} \\text{ or } \\mathbf{35.42\\%}$$"
   },
   {
-    "q": "**Variant 1.** Which is true of the mean and median commute time?",
-    "options": ["the mean is above the median: the data are right-skewed", "the mean is below the median: the data are left-skewed", "they are about equal: the data are bell-shaped"],
-    "answer": 0,
-    "explain": "The long tail runs right, to 80–90 minutes. Median position $$\\dfrac{80+1}{2} = 40.5$$ falls in 20–30 (cumulative 28, then 48), so the median is about **25 min**. The midpoint mean is $$\\dfrac{5(6) + 15(22) + 25(20) + 35(13) + 45(8) + 55(5) + 65(3) + 75(2) + 85(1)}{80} = \\dfrac{2380}{80} = \\mathbf{29.75} \\text{ min}$$ above the median, as right skew predicts."
+    "q": "**Variant 1.** Which is true of the mean and median Divine price?",
+    "options": ["the mean is above the median: the data are right-skewed", "the mean is below the median: the cheap early days drag the mean down", "they are about equal: the data are bell-shaped"],
+    "answer": 1,
+    "explain": "Two peaks (150–200 and 300–400) and a tail of cheap days on the left. Median position $$\\dfrac{96+1}{2} = 48.5$$ falls in 300–350 (cumulative 46, then 71), so the median is about **325 chaos**. The midpoint mean is $$\\dfrac{75(3) + 125(5) + 175(26) + 225(8) + 275(4) + 325(25) + 375(24) + 425(1)}{96} = \\dfrac{25850}{96} = \\mathbf{269} \\text{ chaos}$$ below the median. The raw data agree: mean 269, median 300 chaos. Bimodal as well, so the empirical rule would not apply."
   },
   {
     "type": "free",
-    "q": "**Variant 2.** Recommend a courier. Cite two measures of centre and two of spread.",
-    "model": "I recommend courier A. The centres are close: A's mean is 48.2 vs B's 45.9 min and A's median 47.5 vs 44.0 min, both well under 60. A is far more consistent: SD 6.1 vs 14.8 min, CV 12.7 % vs 32.2 %, and range 27.3 vs 68.3 min. So a larger share of A's parcels arrive within 60 minutes.",
-    "points": ["Verdict first: courier A", "Two centre measures with both numbers: mean 48.2 vs 45.9, median 47.5 vs 44.0", "SD with both numbers: 6.1 vs 14.8", "Second spread measure: CV 12.7 % vs 32.2 % or range 27.3 vs 68.3", "Links smaller spread to more parcels within 60 min"],
+    "q": "**Variant 2.** Which league's Divine price was steadier? Cite two measures of centre and two of spread.",
+    "model": "Keepers had the steadier Divine price. The centres differ a lot: Mirage's mean was 379.6 vs Keepers' 157.7 chaos, and its median 368.0 vs 150.0, so the SDs alone mislead. Keepers is still steadier: SD 37.5 vs 140.8 chaos, CV 23.8 % vs 37.1 %, and range 226 vs 576 chaos. Relative to its own price level, Keepers' price moved less.",
+    "points": ["Verdict first: Keepers", "Two centre measures with both numbers: mean 379.6 vs 157.7, median 368.0 vs 150.0", "SD with both numbers: 140.8 vs 37.5", "CV with both numbers, because the centres differ: 37.1 % vs 23.8 %", "Range as a further spread figure: 576 vs 226"],
     "rows": 6,
-    "explain": "B is a little faster on average, but the requirement is a deadline, so consistency decides. CV A: $$\\dfrac{6.1}{48.2} \\times 100\\% = \\mathbf{12.7\\%}$$ CV B: $$\\dfrac{14.8}{45.9} \\times 100\\% = \\mathbf{32.2\\%}$$ Ranges: $$62.3 - 35.0 = 27.3, \\quad 88.4 - 20.1 = 68.3$$ 60 minutes is $$Z_A = \\dfrac{60 - 48.2}{6.1} = 1.93$$ SDs above A's mean but only $$Z_B = \\dfrac{60 - 45.9}{14.8} = 0.95$$ above B's."
+    "explain": "When the means differ this much, compare spread on one scale with the CV. Mirage: $$\\dfrac{140.8}{379.6} \\times 100\\% = \\mathbf{37.1\\%}$$ Keepers: $$\\dfrac{37.5}{157.7} \\times 100\\% = \\mathbf{23.8\\%}$$ Ranges: $$612.0 - 36.3 = 575.7 \\approx 576, \\quad 271.3 - 44.85 = 226.45 \\approx 226$$"
   },
   {
-    "q": "**Variant 3.** The median score is 70.",
+    "q": "**Variant 3.** The median HP is 500.",
     "type": "tf",
     "answer": false,
-    "explain": "The median is the line inside the box, at **67**. 70 is not marked on the plot at all."
+    "explain": "The median is the line inside the box, at **456.5**: with $n = 12$ it is the mean of the 6th and 7th values, $$\\dfrac{403 + 510}{2} = 456.5$$ 500 is not marked on the plot."
   },
   {
-    "q": "**Variant 3.** The IQR is 10 points.",
+    "q": "**Variant 3.** The IQR is 1002 HP.",
     "type": "tf",
     "answer": true,
-    "explain": "The box width is the IQR: $$IQR = Q_3 - Q_1 = 74 - 64 = \\mathbf{10}$$"
+    "explain": "The box width is the IQR: $$IQR = Q_3 - Q_1 = 1159 - 157 = \\mathbf{1002}$$"
   },
   {
-    "q": "**Variant 3 (if time).** The score of 95 is an outlier.",
+    "q": "**Variant 3 (if time).** Mano's 7420 HP is an outlier.",
     "type": "tf",
     "answer": true,
-    "explain": "Upper fence (on the sheet, under Outliers): $$Q_3 + 1.5\\,IQR = 74 + 1.5(10) = \\mathbf{89}$$ 95 is above 89, so it is an outlier; that is why it is drawn as a dot. Lower fence: $$64 - 15 = 49$$ the whisker end 55 is inside it."
+    "explain": "Upper fence (on the sheet, under Outliers): $$Q_3 + 1.5\\,IQR = 1159 + 1.5(1002) = \\mathbf{2662}$$ 7420 is above 2662, so it is an outlier, drawn as a dot; Drake's 3218 is one too. Lower fence: $$157 - 1503 = -1346$$ the whisker end 45 is inside it."
   },
   {
-    "q": "**Variant 3 (if time).** The scores are left-skewed.",
+    "q": "**Variant 3 (if time).** The HP values are left-skewed.",
     "type": "tf",
     "answer": false,
-    "explain": "FALSE: right-skewed. The upper whisker is longer ($$88 - 74 = 14$$ against $$64 - 55 = 9$$), the median 67 sits nearer $Q_1$ than $Q_3$, and the outlier is on the high side."
+    "explain": "FALSE: right-skewed. The upper whisker is longer ($$1336 - 1159 = 177$$ against $$157 - 45 = 112$$), the median 456.5 sits nearer $Q_1$ than $Q_3$ ($$456.5 - 157 = 299.5$$ against $$1159 - 456.5 = 702.5$$), and both outliers are on the high side."
   },
   {
-    "q": "**Variant 4 (if time).** Adult heights have mean 170 cm and SD 8 cm. Is a height of 188 cm unusual? Type the Z-score (2 decimals).",
+    "q": "**Variant 4 (if time).** The top 500 Heroes (a GMS job) in Nexon's North America job ranking on 2026-10-27 have mean level 294.896 and SD 1.44. Is a level-300 Hero unusual? Type the Z-score (3 significant digits).",
     "type": "numeric",
-    "answer": 2.25,
+    "answer": 3.54,
     "tolerance": 0.01,
-    "explain": "Let x = 188 cm. On the sheet: $$Z = \\dfrac{x - \\bar X}{s} = \\dfrac{188 - 170}{8} = \\mathbf{2.25}$$ $|Z| = 2.25 > 2$, so yes, 188 cm is unusual."
+    "explain": "Let x = 300. On the sheet: $$Z = \\dfrac{x - \\bar X}{s} = \\dfrac{300 - 294.896}{1.44} = \\mathbf{3.54}$$ $|Z| = 3.54 > 2$, so yes, level 300 is unusual even within the top 500. Z needs no bell: it measures distance from this list's own mean in its own SD."
   },
   {
-    "q": "**Variant 5 (if time).** Cereal box weights are bell-shaped with mean 500 g and SD 4 g. About what percentage of boxes weigh more than 504 g?",
+    "q": "**Variant 5 (if time).** meowdb's 87 Classic monsters (the 92-row table minus the 5 rows with 0 EXP) have mean HP 8610 and SD 36 800. What percentage of them lie within 1 SD of the mean? (percent, 2 decimals)",
     "type": "numeric",
-    "answer": 16,
+    "answer": 95.4,
     "tolerance": 0.5,
     "unit": "%",
-    "explain": "504 is $$\\dfrac{504 - 500}{4} = 1$$ SD above the mean. The empirical rule puts 68 % within 1 SD, so 32 % outside, split evenly between the two tails: $$\\dfrac{100\\% - 68\\%}{2} = \\mathbf{16\\%}$$ The rule is allowed here only because the weights are bell-shaped."
+    "explain": "Unrounded, within 1 SD means $$8614 - 36\\,752 < 0 \\le \\text{HP} \\le 8614 + 36\\,752 = 45\\,366$$ Every monster but the 4 above 45 366 HP qualifies: $$\\dfrac{83}{87} = \\mathbf{0.9540} \\text{ or } \\mathbf{95.40\\%}$$ The empirical rule says 68 %. It fails because HP is heavily right-skewed: a few bosses inflate the SD, so nearly everything sits inside 1 SD. Answer \"the rule does not apply\" and name the skew."
   }
 ]
 ```

@@ -2,7 +2,9 @@
 title: "Review 5: complement and independence"
 minutes: 30
 ---
-<!-- facts: none; midterm review uses the instructor's and the labs' own examples -->
+<!-- facts: classic.scroll.tiers, gms.starforce.rates-0-14, gms.starforce.star-catch, poe1.fusing.six-link-measured, poe1.vaal.gem-outcomes, poe1.ladder.hc-dead-by-rank -->
+
+Every "will at least one of my scrolls pass" question is a complement and a product of independent tries. This review fixes the two moves on the practice paper's lottery, then drills them on scrolls, Star Force taps and Fusings.
 
 :::quiz What the paper asks and what earns the marks
 The practice paper's Q3a and Q3b (1 mark each) ask: a ticket wins with probability 2.1 %; out of 8 tickets, what is P(none win) and P(at least one wins)?
@@ -29,13 +31,13 @@ Do the sample question and the first three variants below; the rest are "if time
 
 ### A probability is favourable over total
 
-A **probability** is a number from 0 to 1 that says how likely an event is. An **event** is a set of outcomes you care about, such as "the die shows 6".
+A **probability** is a number from 0 to 1 that says how likely an event is. An **event** is a set of outcomes you care about, such as "the gem becomes its Vaal version".
 
 When every outcome is equally likely:
 
 $$P(\text{event}) = \dfrac{\text{favourable outcomes}}{\text{total outcomes}}$$
 
-One fair die, event "shows 6": $P = \dfrac{1}{6} = 0.1667$.
+A Vaal Orb, the PoE1 currency that corrupts an item, has four effects on a skill gem that the wiki gives equal weight: level change, quality change, becomes the Vaal version, no effect. Event "becomes the Vaal version": $P = \dfrac{1}{4} = 0.2500$.
 
 ### The complement: "not A"
 
@@ -43,19 +45,19 @@ The **complement** of A, written "not A", is every outcome where A does not happ
 
 $$P(\text{not } A) = 1 - P(A)$$
 
-Die, "not a 6": $1 - \dfrac{1}{6} = \dfrac{5}{6} = 0.8333$.
+Vaal Orb, "not the Vaal version": $1 - \dfrac{1}{4} = \dfrac{3}{4} = 0.7500$.
 
 The sheet's "Probability Rules" block prints this one too, as the last line: $P(A') = 1 - P(A)$ "for any event $A$". Find it there rather than recalling it.
 
 ### Independent events multiply
 
-Two events are **independent** when one happening does not change the chance of the other. Two separate coin flips are independent: the first landing heads does nothing to the second.
+Two events are **independent** when one happening does not change the chance of the other. In MapleStory Classic a scroll, the item that tries to add a stat to gear, passes 60 % at the Intermediate tier and 10 % at the Greater tier by meowdb's copy of the in-game item text. Each scroll is its own roll with the same printed rate, so the first passing does nothing to the second.
 
 For independent events, the chance that both happen is the product. **On the sheet**, under Probability Rules: $P(A \cap B) = P(A)\,P(B)$ "if events A and B are independent" ($\cap$ means "and").
 
-Two coins, both heads: $0.5 \times 0.5 = 0.25$.
+Two Intermediate scrolls, both pass: $0.6 \times 0.6 = 0.3600$.
 
-The same rule works for any number of independent events: multiply them all. Three dice all showing 6: $\left(\dfrac{1}{6}\right)^3 = 0.0046$.
+The same rule works for any number of independent events: multiply them all. Three Greater scrolls all pass: $0.1^3 = 0.0010$.
 
 ### "All n" and "none of n"
 
@@ -72,20 +74,20 @@ Neither formula is printed; both are the multiplication rule written n times.
 
 $$P(\text{at least one}) = 1 - P(\text{none}) = 1 - (1 - p)^n$$
 
-Three tries at p = 0.1: $1 - 0.9^3 = 1 - 0.729 = 0.2710$.
+Three Greater scrolls at p = 0.1, at least one passes: $1 - 0.9^3 = 1 - 0.729 = 0.2710$.
 
 :::warn Two traps
 **Adding is wrong.** "At least one of 8 tickets at 2.1 %" is not $8 \times 0.021 = 0.168$: that counts the outcomes with two or more wins more than once. Use $1 - 0.979^8$.
 
-**Without replacement from a small group is not independent.** Picking 2 people from 5, of whom 2 smoke: once the first pick is a smoker, only 1 smoker is left in 4, so the second chance changes from $\frac{2}{5}$ to $\frac{1}{4}$. Multiply the *changing* fractions, $\frac{2}{5} \times \frac{1}{4} = 0.1$, not $0.4 \times 0.4$.
+**Without replacement from a fixed list is not independent.** On the PoE1 Hardcore Allflame ladder, 69 of the 200 characters ranked 1–200 were dead. Pick 2 different characters from those 200: once the first is dead, only 68 dead are left in 199, so the second chance changes from $\frac{69}{200}$ to $\frac{68}{199}$. Multiply the *changing* fractions, $\frac{69}{200} \times \frac{68}{199} = 0.1179$, not $0.345 \times 0.345 = 0.1190$.
 :::
 
 ### When independence is a fair assumption
 
-- Separate lottery tickets, separate coin flips, separate dice: yes.
+- Separate lottery tickets, separate scroll uses, separate taps of Star Force (the GMS enhancement that adds stars to gear) below 15 stars: yes, each is its own roll at the same published rate.
 - Separate days, separate flights, separate machines, when the question says "independently": yes.
 - Sampling **with replacement** (put it back before the next pick): yes, the group is the same every time.
-- Sampling **without replacement** from a small group (cards from a deck, 2 passengers from a crowd, 3 castings from 200 with 5 bad): no; the fractions change after each pick, and you multiply the changed fractions instead.
+- Sampling **without replacement** from a fixed list (cards from a deck, 2 characters from the 200 top Hardcore ranks): no; the fractions change after each pick, and you multiply the changed fractions instead.
 
 Exam rule for every answer: "Let X = ..." or name the events in words; name the rule; formula; substitute; round a probability to 4 decimals.
 
@@ -209,66 +211,68 @@ The complement of the estimate matches the complement rule: $1 - 0.16789 = 0.832
 
 These and the rest of the Unit 3 set are worked in [Unit 3 practice problems](#/math3042-u3/practice-problems).
 
-## New variants
+## New variants: scrolls, Star Force taps below 15 and Fusings
+
+Star Force success below 15 stars comes from the wiki's table, without the Star Catch bonus that v.271 builds in: 50 % at 10→11, 40 % at 12→13, 35 % at 13→14, 30 % at 14→15, and a failure keeps the star, nothing is destroyed. Each tap is its own roll with the same published rate, so taps on different items are independent. An Orb of Fusing, the PoE1 currency that rerolls an item's socket links, six-links about 1 in 1000 times, measured in a 2017 test of n = 100 000 Fusings on a 20 %-quality item.
 
 The first three are mandatory; the rest are "if time".
 
 ```quiz
 [
   {
-    "q": "A commuter passes 4 traffic lights that work independently; each is red on arrival with probability 0.3. P(at least one red light)? (4 decimals)",
+    "q": "You tap Star Force once at 13→14 on each of 4 different non-Superior items (35 % each). P(at least one tap succeeds)? (4 decimals)",
     "type": "numeric",
-    "answer": 0.7599,
+    "answer": 0.8215,
     "tolerance": 0.0006,
-    "explain": "Let R = a light is red; P(R) = 0.3, P(not R) = 0.7. **Complement rule**: at least one red = 1 − P(no red). The lights are **independent, so multiply**: $$P(\\text{no red}) = 0.7^4 = 0.2401$$ $$P(\\text{at least one red}) = 1 - 0.2401 = \\mathbf{0.7599}$$"
+    "explain": "Let S = a tap succeeds; P(S) = 0.35, P(not S) = 0.65. Each tap is its own roll at the same rate, so the taps are independent. **Complement rule**: at least one success = 1 − P(no success). **Independent, so multiply**: $$P(\\text{no success}) = 0.65^4 = 0.178506$$ $$P(\\text{at least one}) = 1 - 0.178506 = 0.821494 \\to \\mathbf{0.8215}$$"
   },
   {
-    "q": "Same 4 lights: P(no red light at all)? (4 decimals)",
+    "q": "Same 4 taps: P(no tap succeeds)? (4 decimals)",
     "type": "numeric",
-    "answer": 0.2401,
+    "answer": 0.1785,
     "tolerance": 0.0006,
-    "explain": "None red means every light is not red, each with probability $1 - 0.3 = 0.7$. Independent, so multiply: $$P(\\text{none}) = 0.7 \\times 0.7 \\times 0.7 \\times 0.7 = 0.7^4 = \\mathbf{0.2401}$$"
+    "explain": "None succeed means every tap fails, each with probability $1 - 0.35 = 0.65$. Independent, so multiply: $$P(\\text{none}) = 0.65 \\times 0.65 \\times 0.65 \\times 0.65 = 0.65^4 = 0.178506 \\to \\mathbf{0.1785}$$"
   },
   {
-    "q": "Same 4 lights: P(all four red)? (4 decimals)",
+    "q": "Same 4 taps: P(all four succeed)? (4 decimals)",
     "type": "numeric",
-    "answer": 0.0081,
+    "answer": 0.015,
     "tolerance": 0.0006,
-    "explain": "All four red; independent, so multiply: $$P(\\text{all}) = 0.3^4 = 0.3 \\times 0.3 \\times 0.3 \\times 0.3 = \\mathbf{0.0081}$$"
+    "explain": "All four succeed; independent, so multiply: $$P(\\text{all}) = 0.35^4 = 0.35 \\times 0.35 \\times 0.35 \\times 0.35 = 0.015006 \\to \\mathbf{0.0150}$$"
   },
   {
-    "q": "*If time.* Each of 3 independent flights is late with probability 0.18. P(none of the 3 flights is late)? (4 decimals)",
+    "q": "*If time.* You use 3 Intermediate scrolls (60 % each) on one item. P(none of the 3 passes)? (4 decimals)",
     "type": "numeric",
-    "answer": 0.5514,
+    "answer": 0.064,
     "tolerance": 0.0006,
-    "explain": "Let L = a flight is late; P(not L) = 1 − 0.18 = 0.82. The flights are independent: $$P(\\text{none late}) = 0.82^3 = 0.551368 \\to \\mathbf{0.5514}$$"
+    "explain": "Let A = a scroll passes; P(not A) = 1 − 0.6 = 0.4. Each scroll is its own roll at the printed 60 %, so the uses are independent: $$P(\\text{none pass}) = 0.4^3 = \\mathbf{0.0640}$$"
   },
   {
-    "q": "*If time.* A machine makes 2 % defective parts. An inspector samples 5 parts with replacement. P(at least one defective in the sample)? (4 decimals)",
+    "q": "*If time.* Using the measured rate of about 1 in 1000 per Fusing, P(at least one six-link in 1500 Fusings)? (4 decimals)",
     "type": "numeric",
-    "answer": 0.0961,
+    "answer": 0.777,
     "tolerance": 0.0006,
-    "explain": "With replacement, every pick has the same 2 % chance, so the picks are independent. A good part has $1 - 0.02 = 0.98$. **Complement rule**: $$P(\\text{at least one defective}) = 1 - P(\\text{no defective}) = 1 - 0.98^5 = 1 - 0.903921 = 0.096079 \\to \\mathbf{0.0961}$$"
+    "explain": "Each Fusing is its own reroll at the same rate p = 0.001, so the Fusings are independent. A Fusing misses with $1 - 0.001 = 0.999$. **Complement rule**: $$P(\\text{at least one}) = 1 - P(\\text{no six-link}) = 1 - 0.999^{1500} = 1 - 0.222963 = 0.777037 \\to \\mathbf{0.7770}$$ The wiki's \"about 77 % within 1500 fusings\" is this number."
   },
   {
-    "q": "*If time.* The chance of rain is 35 % on Saturday and 60 % on Sunday; assume the days are independent. P(it rains on both days)? (4 decimals)",
+    "q": "*If time.* You use one Intermediate scroll (60 %) and then one Greater scroll (10 %) on an item. P(both pass)? (4 decimals)",
     "type": "numeric",
-    "answer": 0.21,
+    "answer": 0.06,
     "tolerance": 0.0006,
-    "explain": "**Both** = and; the days are independent, so multiply: $$P(\\text{Sat and Sun}) = 0.35 \\times 0.60 = \\mathbf{0.2100}$$"
+    "explain": "**Both** = and; each scroll is its own roll at its printed rate, so the two are independent and you multiply: $$P(\\text{both}) = 0.6 \\times 0.1 = \\mathbf{0.0600}$$"
   },
   {
-    "q": "*If time.* Three independent sensors detect a leak with probabilities 0.8, 0.9 and 0.7. P(at least one detects it)? (4 decimals)",
+    "q": "*If time.* You tap Star Force once on three different non-Superior items: one at 10→11 (50 %), one at 12→13 (40 %), one at 14→15 (30 %). P(at least one succeeds)? (4 decimals)",
     "type": "numeric",
-    "answer": 0.994,
+    "answer": 0.79,
     "tolerance": 0.0006,
-    "explain": "Each misses with $1 - 0.8 = 0.2$, $1 - 0.9 = 0.1$, $1 - 0.7 = 0.3$. Independent, so multiply the misses: $$P(\\text{all miss}) = 0.2 \\times 0.1 \\times 0.3 = 0.006$$ **Complement**: $$1 - 0.006 = \\mathbf{0.9940}$$ Different p values are fine; you multiply each one."
+    "explain": "Each tap fails with $1 - 0.5 = 0.5$, $1 - 0.4 = 0.6$, $1 - 0.3 = 0.7$. Each tap is its own roll, so they are independent; multiply the failures: $$P(\\text{all fail}) = 0.5 \\times 0.6 \\times 0.7 = 0.21$$ **Complement**: $$1 - 0.21 = \\mathbf{0.7900}$$ Different p values are fine; you multiply each one."
   },
   {
-    "q": "*If time.* A committee of 5 has 2 smokers. Two members are chosen at random **without replacement**. True or false: P(both smokers) = 0.4 × 0.4 = 0.16, because the two picks are independent.",
+    "q": "*If time.* Of the 200 Hardcore Allflame characters ranked 1–200, 69 were dead. Two different characters are chosen at random from those 200 **without replacement**. True or false: P(both dead) = 0.345 × 0.345 = 0.1190, because the two picks are independent.",
     "type": "tf",
     "answer": false,
-    "explain": "Without replacement from a small group, the picks are **not** independent. After a smoker is picked, 1 smoker remains among 4 people, so the second chance is $\\frac{1}{4}$, not $\\frac{2}{5}$: $$P(\\text{both}) = \\dfrac{2}{5} \\times \\dfrac{1}{4} = \\dfrac{2}{20} = \\mathbf{0.1}$$ 0.16 would be right only with replacement."
+    "explain": "Without replacement from a fixed list, the picks are **not** independent. After a dead character is picked, 68 dead remain among 199, so the second chance is $\\frac{68}{199}$, not $\\frac{69}{200}$: $$P(\\text{both}) = \\dfrac{69}{200} \\times \\dfrac{68}{199} = \\dfrac{4692}{39800} = 0.117889 \\to \\mathbf{0.1179}$$ 0.1190 would be right only with replacement."
   }
 ]
 ```

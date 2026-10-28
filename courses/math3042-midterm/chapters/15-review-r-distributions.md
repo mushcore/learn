@@ -2,7 +2,9 @@
 title: "Review 4: R for distributions on paper: d, p and r"
 minutes: 30
 ---
-<!-- facts: none; midterm review uses the instructor's and the labs' own examples -->
+<!-- facts: gms.data.ranking-overall-legendary-2026-10-27, gms.starforce.rates-0-14, gms.starforce.star-catch, classic.scroll.tiers, poe1.fusing.six-link-measured -->
+
+A ranked list drawn without replacement, Star Force taps below 15 and scroll uses are the paper's hypergeometric, geometric and binomial stories, so the new variants fill the same R slots from game numbers.
 
 :::quiz What the paper asks and what earns the marks
 About 3 marks: Q8 asks for three single R commands (simulate, exactly, at least) for a hypergeometric draw. Each command is 1 mark, and the mark needs the right prefix (r, d or p), the right function, every number in the right slot, and the right cut point for "at least". No output number is asked for.
@@ -283,21 +285,28 @@ The full breakdowns for each Q8 line are in [Q7 to Q9](#/math3042-midterm/practi
 
 The first three are mandatory; the rest are "if time". Write the whole command on paper, then fill the blank.
 
+The game stories, with why each fits its family:
+
+- **Hypergeometric.** Nexon's North America overall ranking top 500 on 2026-10-27 holds 61 Night Lords (a thief job). Drawing characters from that fixed list of 500 without replacement changes the chance after every pick.
+- **Geometric.** Star Force, the GMS enhancement that adds stars to gear: at 14 stars on a non-Superior item the wiki's table gives each tap a 0.30 success rate, and a failure keeps the star with no destruction, so every tap is the same independent trial until the first success.
+- **Binomial.** An Intermediate scroll, the MapleStory Classic tier, succeeds 60 % of the time on every use, and one use does not change the next.
+- **Large-n binomial.** An Orb of Fusing, the PoE1 currency that rerolls socket links, six-links a six-socket item about 1 time in 1000, measured over n = 100 000 Fusings in a 2017 test on a 20 %-quality item; separate players each using one Fusing are separate trials at that rate.
+
 ```quiz
 [
   {
     "type": "fill",
-    "q": "1 (mandatory). A box of 50 batteries holds 8 dead ones. You take 6 without replacement. P(at most 1 dead)? Fill R's third slot.",
-    "code": "phyper(1, 8, ___, 6)",
-    "answer": ["42", "50-8"],
-    "explain": "Let X = dead batteries in the 6. Without replacement from a population: **hypergeometric**. N = 50, K = 8, so the failures are $$N - K = 50 - 8 = 42$$ \"At most 1\" is the p-function at 1, and the sample size 6 goes last: `phyper(1, 8, 42, 6)` = 0.7584. Writing 50 in the third slot is the classic error."
+    "q": "1 (mandatory). From the 500 ranked characters (61 Night Lords) you pick 6 at random without replacement. P(at most 1 Night Lord)? Fill R's third slot.",
+    "code": "phyper(1, 61, ___, 6)",
+    "answer": ["439", "500-61"],
+    "explain": "Let X = Night Lords among the 6. Without replacement from a fixed list: **hypergeometric**. N = 500, K = 61, so the failures are $$N - K = 500 - 61 = 439$$ \"At most 1\" is the p-function at 1, and the sample size 6 goes last: `phyper(1, 61, 439, 6)` = 0.8409. Writing 500 in the third slot is the classic error."
   },
   {
     "type": "fill",
-    "q": "2 (mandatory). Each free throw goes in with probability 0.2. P(the 5th try is the first success)? Fill the first slot.",
-    "code": "dgeom(___, 0.2)",
+    "q": "2 (mandatory). Tapping 14→15 stars, success 0.30 per tap. P(the 5th tap is the first success)? Fill the first slot.",
+    "code": "dgeom(___, 0.3)",
     "answer": ["4", "5-1"],
-    "explain": "Let X = the try of the first success: **geometric**. \"Is\" means exactly, so the d-function. R counts the failures before the first success: $$x - 1 = 5 - 1 = 4$$ `dgeom(5-1, 0.2)` = $0.8^4 \\times 0.2$ = 0.0819."
+    "explain": "Let X = the tap of the first success: **geometric**, since below 15 a failure keeps the star and nothing is destroyed. \"Is\" means exactly, so the d-function. R counts the failures before the first success: $$x - 1 = 5 - 1 = 4$$ `dgeom(5-1, 0.3)` = $0.7^4 \\times 0.3$ = 0.0720."
   },
   {
     "type": "fill",
@@ -308,17 +317,17 @@ The first three are mandatory; the rest are "if time". Write the whole command o
   },
   {
     "type": "fill",
-    "q": "4 (if time). 30 % of customers buy a warranty. Of 20 customers, P(more than 7 buy one)? Fill the cut point.",
-    "code": "1 - pbinom(___, 20, 0.3)",
-    "answer": ["7"],
-    "explain": "Let X = buyers among 20: **binomial**, n = 20, p = 0.3. \"More than 7\" starts at 8, so subtract at most 7: `1 - pbinom(7, 20, 0.3)` or `pbinom(7, 20, 0.3, lower.tail = FALSE)` = 0.2277."
+    "q": "4 (if time). You use 20 Intermediate scrolls (60 % each). P(more than 14 succeed)? Fill the cut point.",
+    "code": "1 - pbinom(___, 20, 0.6)",
+    "answer": ["14"],
+    "explain": "Let X = successes among 20 uses: **binomial**, n = 20, p = 0.6. \"More than 14\" starts at 15, so subtract at most 14: `1 - pbinom(14, 20, 0.6)` or `pbinom(14, 20, 0.6, lower.tail = FALSE)` = 0.1256."
   },
   {
     "type": "fill",
-    "q": "5 (if time). 20 % of parts are defective. Of 15 parts, P(at least 4 defective)? Fill the cut point.",
-    "code": "1 - pbinom(___, 15, 0.2)",
+    "q": "5 (if time). 5000 players each use one Orb of Fusing on their own six-socket item (p = 0.001). P(at least 4 six-link)? Fill the cut point.",
+    "code": "1 - pbinom(___, 5000, 0.001)",
     "answer": ["3", "4-1"],
-    "explain": "Binomial, n = 15, p = 0.2. \"At least 4\" is everything except 3 or fewer: $$1 - P(X \\le 3)$$ `1 - pbinom(3, 15, 0.2)` = 0.3518."
+    "explain": "Binomial, n = 5000, p = 0.001 (expected count $np = 5$). \"At least 4\" is everything except 3 or fewer: $$1 - P(X \\le 3)$$ `1 - pbinom(3, 5000, 0.001)` = 0.7351."
   },
   {
     "type": "fill",
@@ -329,17 +338,17 @@ The first three are mandatory; the rest are "if time". Write the whole command o
   },
   {
     "type": "fill",
-    "q": "7 (if time). Same free throws (p = 0.2): P(the first success comes within the first 10 tries)? Fill the first slot.",
-    "code": "pgeom(___, 0.2)",
+    "q": "7 (if time). Same 14→15 taps (p = 0.3): P(the first success comes within the first 10 taps)? Fill the first slot.",
+    "code": "pgeom(___, 0.3)",
     "answer": ["9", "10-1"],
-    "explain": "Geometric, cumulative: \"within 10 tries\" is at most 10, and R wants x − 1 = 9: `pgeom(10-1, 0.2)` = $1 - 0.8^{10}$ = 0.8926."
+    "explain": "Geometric, cumulative: \"within 10 taps\" is at most 10, and R wants x − 1 = 9: `pgeom(10-1, 0.3)` = $1 - 0.7^{10}$ = 0.9718."
   },
   {
     "type": "fill",
     "q": "8 (if time). Simulate the number of calls in each of 30 separate hours at the help desk (2.4 per hour). Fill the first slot.",
     "code": "rpois(___, 2.4)",
     "answer": ["30"],
-    "explain": "\"Simulate\" is the r-function. The first slot of every r-function is how many random values to draw: 30 hours. `rpois(30, 2.4)` returns 30 random whole numbers averaging near 2.4. The binomial version, 1000 simulated groups of 20 customers, is `rbinom(1000, 20, 0.3)`."
+    "explain": "\"Simulate\" is the r-function. The first slot of every r-function is how many random values to draw: 30 hours. `rpois(30, 2.4)` returns 30 random whole numbers averaging near 2.4. The binomial version, 1000 simulated batches of 20 Intermediate scrolls, is `rbinom(1000, 20, 0.6)`."
   }
 ]
 ```

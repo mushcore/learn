@@ -2,7 +2,9 @@
 title: "Review 3: probability tables, expected value and expected winnings"
 minutes: 30
 ---
-<!-- facts: none; midterm review uses the instructor's and the labs' own examples -->
+<!-- facts: gms.box.lucky-jewel-box, classic.scroll.tiers, classic.scroll.stat-ladders, gms.scroll.chaos-outcomes, gms.starforce.rates-15-plus, gms.starforce.rates-0-14, gms.starforce.trace-recovery, gms.starforce.meso-cost, gms.starforce.star-catch -->
+
+A box's drop table, a scroll's stat change and a Star Force tap's three outcomes are all probability tables, so the paper's spam-call and lottery questions are the same sums you already do in game.
 
 :::quiz What the paper asks and what earns the marks
 About 5 to 7 marks: Q6 (a table of spam calls, 3 marks), Q3c (expected profit on a lottery ticket, 2 marks), Q12b (average winnings in a card game, 2 marks).
@@ -38,9 +40,9 @@ Two rules make it a valid table: every P(x) is between 0 and 1, and the P(x) add
 
 $$0.02 + 0.23 + 0.41 + 0.17 + 0.11 + 0.06 = 1.00$$
 
-**Finding a missing probability.** If one P(x) is blank, it is whatever makes the total 1. With 0.15, 0.30, ?, 0.20, 0.10:
+**Finding a missing probability.** If one P(x) is blank, it is whatever makes the total 1. The Lucky Jewel Box, a GMS cash-shop box, adds one bonus roll of Sol Erda Fragments (a crafting material); in Nexon's published rates (2022 post), X = fragments is 3, 5, 15, 20, 35, 40, 45 or 50 with 0.45, 0.25, ?, 0.07, 0.06, 0.04, 0.02, 0.01. The box gives exactly one bonus row, so the rows are a full table:
 
-$$? = 1 - (0.15 + 0.30 + 0.20 + 0.10) = 1 - 0.75 = 0.25$$
+$$? = 1 - (0.45 + 0.25 + 0.07 + 0.06 + 0.04 + 0.02 + 0.01) = 1 - 0.90 = 0.10$$
 
 ## At least, at most: add the rows
 
@@ -58,7 +60,7 @@ The values of X cannot happen together (today cannot have both 2 and 3 calls), s
 
 The **expected value** (the mean, μ, also written E(X)) is the long-run average of X over many days: multiply each value by its probability and add.
 
-Tiny case: a coin pays 10 with probability 0.5 and 0 otherwise. In the long run you average $10(0.5) + 0(0.5) = 5$ per toss.
+Tiny case: an Intermediate scroll, the MapleStory Classic tier that succeeds 60 % of the time, adds INT +2 to an overall on a success and nothing on a failure. In the long run you average $2(0.6) + 0(0.4) = 1.2$ INT per scroll.
 
 The formula is **on the formula sheet, under Discrete Probability Distributions**:
 
@@ -218,7 +220,7 @@ sig <- sqrt(sum((X.vals - mu)^2*P.vals))
 - `sig`: "Subtract mu, square, multiply by P(x), add, take the square root, then store."
 :::
 
-The lab's answer: for its 20 chips at p = 1/4 (a binomial table, so μ = np = 5), both routes give  = (0 - 5)/1.936 = -2.582$, below −2, so zero defective coatings would be unusual.
+The lab's answer: for its 20 chips at p = 1/4 (a binomial table, so μ = np = 5), both routes give $Z = (0 - 5)/1.936 = -2.582$, below −2, so zero defective coatings would be unusual.
 
 **Unit 4 practice problem 4 (overbooking).** X = passengers who cannot board, P(x) = 0.067, 0.141, 0.274, 0.331, 0.187 for x = 0 to 4.
 
@@ -247,73 +249,75 @@ More of the sixteen are in [the Unit 4 practice problems](#/math3042-midterm/uni
 
 ## New variants
 
-The first three are mandatory; the rest are "if time". The table for items 1 to 4: X = books a student borrows in a week.
+The first three are mandatory; the rest are "if time". The table for items 1 to 4 is the wiki's for a successful Chaos Scroll of Goodness, a GMS scroll that changes each stat on the item by 0 to +5: X = the change to one stat. A scroll gives exactly one change per stat, so the six rows are a full table.
 
-| x | 0 | 1 | 2 | 3 | 4 |
-|---|---|---|---|---|---|
-| P(x) | 0.15 | 0.30 | ? | 0.20 | 0.10 |
+| x | 0 | 1 | 2 | 3 | 4 | 5 |
+|---|---|---|---|---|---|---|
+| P(x) | 0.1838 | 0.3301 | ? | 0.1387 | 0.0494 | 0.0593 |
+
+Items 5 to 7 use Star Force, the GMS enhancement that adds stars to gear. From 15 stars a tap succeeds (+1 star) with 0.30, keeps the star with 0.679 and destroys the item with 0.021: Nexon's v.264 published rates, without the Star Catch bonus that v.271 builds in. A destroyed item's trace restores it at 12 stars. Below 15 the wiki's table gives 14→15 a success rate of 0.30 with no destruction, and a failure keeps the star.
 
 ```quiz
 [
   {
     "q": "1 (mandatory). Find the missing P(2). (4 decimals)",
     "type": "numeric",
-    "answer": 0.25,
-    "tolerance": 0.0006,
-    "explain": "Let X = books borrowed in a week. **Rule:** the probabilities of a table add to 1. $$\\sum P(x) = 1$$ Substitute the four known rows: $$P(2) = 1 - (0.15 + 0.30 + 0.20 + 0.10) = 1 - 0.75 = \\mathbf{0.25}$$"
+    "answer": 0.2387,
+    "tolerance": 0.0001,
+    "explain": "Let X = the change to one stat. **Rule:** the probabilities of a table add to 1. $$\\sum P(x) = 1$$ Substitute the five known rows: $$P(2) = 1 - (0.1838 + 0.3301 + 0.1387 + 0.0494 + 0.0593) = 1 - 0.7613 = \\mathbf{0.2387}$$"
   },
   {
-    "q": "2 (mandatory). P(X ≥ 2), at least 2 books? (4 decimals)",
+    "q": "2 (mandatory). P(X ≥ 2), a gain of at least 2? (4 decimals)",
     "type": "numeric",
-    "answer": 0.55,
-    "tolerance": 0.0006,
-    "explain": "\"At least 2\" includes 2: the values 2, 3, 4. **Rule:** the values are mutually exclusive, so add their rows. $$P(X \\ge 2) = P(2) + P(3) + P(4) = 0.25 + 0.20 + 0.10 = \\mathbf{0.55}$$"
+    "answer": 0.4861,
+    "tolerance": 0.0001,
+    "explain": "\"At least 2\" includes 2: the values 2, 3, 4, 5. **Rule:** the values are mutually exclusive, so add their rows. $$P(X \\ge 2) = 0.2387 + 0.1387 + 0.0494 + 0.0593 = \\mathbf{0.4861}$$"
   },
   {
-    "q": "3 (mandatory). P(X < 2), fewer than 2 books? (4 decimals)",
+    "q": "3 (mandatory). P(X < 2), a gain of fewer than 2? (4 decimals)",
     "type": "numeric",
-    "answer": 0.45,
-    "tolerance": 0.0006,
-    "explain": "\"Fewer than 2\" leaves 2 out: the values 0 and 1. $$P(X < 2) = P(0) + P(1) = 0.15 + 0.30 = \\mathbf{0.45}$$ Check by the complement of item 2: $$1 - 0.55 = 0.45$$"
+    "answer": 0.5139,
+    "tolerance": 0.0001,
+    "explain": "\"Fewer than 2\" leaves 2 out: the values 0 and 1. $$P(X < 2) = P(0) + P(1) = 0.1838 + 0.3301 = \\mathbf{0.5139}$$ Check by the complement of item 2: $$1 - 0.4861 = 0.5139$$"
   },
   {
-    "q": "4 (if time). μ and σ for the books table: enter σ. (3 significant digits)",
+    "q": "4 (if time). μ and σ for the stat-change table: enter σ. (3 significant digits)",
     "type": "numeric",
-    "answer": 1.21,
+    "answer": 1.36,
     "tolerance": 0.006,
-    "unit": "books",
-    "explain": "**Mean** (on the sheet): $$\\mu = \\sum x P(x) = 0(0.15) + 1(0.30) + 2(0.25) + 3(0.20) + 4(0.10) = 0 + 0.30 + 0.50 + 0.60 + 0.40 = 1.80 \\text{ books}$$ **Shortcut** (on the sheet): first the $x^2 P(x)$ column $$\\sum x^2 P(x) = 0 + 1(0.30) + 4(0.25) + 9(0.20) + 16(0.10) = 0.30 + 1.00 + 1.80 + 1.60 = 4.70$$ Then $$\\sigma^2 = 4.70 - 1.80^2 = 4.70 - 3.24 = 1.46$$ $$\\sigma = \\sqrt{1.46} = 1.2083 \\to \\mathbf{1.21} \\text{ books}$$"
+    "unit": "stat points",
+    "explain": "**Mean** (on the sheet): $$\\mu = \\sum x P(x) = 0(0.1838) + 1(0.3301) + 2(0.2387) + 3(0.1387) + 4(0.0494) + 5(0.0593)$$ $$= 0 + 0.3301 + 0.4774 + 0.4161 + 0.1976 + 0.2965 = 1.7177 \\text{ points}$$ **Shortcut** (on the sheet): first the $x^2 P(x)$ column $$\\sum x^2 P(x) = 0 + 1(0.3301) + 4(0.2387) + 9(0.1387) + 16(0.0494) + 25(0.0593)$$ $$= 0.3301 + 0.9548 + 1.2483 + 0.7904 + 1.4825 = 4.8061$$ Then, with μ unrounded, $$\\sigma^2 = 4.8061 - 1.7177^2 = 4.8061 - 2.95049 = 1.85561$$ $$\\sigma = \\sqrt{1.85561} = 1.3622 \\to \\mathbf{1.36} \\text{ points}$$"
   },
   {
-    "q": "5 (if time). A \\$2 raffle ticket wins a \\$500 grand prize with probability 0.001 or a \\$50 prize with probability 0.01; otherwise it wins nothing. Expected net payoff per ticket? (dollars; a loss is negative)",
+    "q": "5 (if time). One tap on a 15-star item, no Safeguard. Let X = the net change in stars: +1, 0, or −3 when the item is destroyed and its trace restores it at 12. E(X)? (3 significant digits)",
     "type": "numeric",
-    "answer": -1.00,
+    "answer": 0.237,
+    "tolerance": 0.0005,
+    "unit": "stars",
+    "explain": "Let X = stars after the tap minus stars before. Three rows: $$16 - 15 = +1 \\text{ with } P = 0.30$$ $$15 - 15 = 0 \\text{ with } P = 0.679$$ $$12 - 15 = -3 \\text{ with } P = 0.021$$ Check: $0.30 + 0.679 + 0.021 = 1$. **Rule:** $\\mu = \\sum x P(x)$. $$E(X) = 1(0.30) + 0(0.679) + (-3)(0.021) = 0.30 + 0 - 0.063 = \\mathbf{0.237} \\text{ stars}$$ \"An expected net gain of 0.237 stars per tap.\" The destroy row is a loss, like the cost row of a ticket."
+  },
+  {
+    "q": "6 (if time). One 14→15 tap on a Lv 150 item: X = stars gained, 1 with P = 0.30 and 0 with P = 0.70. The tap costs 67,400,800 mesos, computed from the wiki's formula $1000 + L^3 \\cdot 15^{2.7}/75$ at L = 150. E(X)? (stars per tap)",
+    "type": "numeric",
+    "answer": 0.30,
     "tolerance": 0.005,
-    "unit": "$",
-    "explain": "Let X = net payoff = prize − cost. Three rows: $$500 - 2 = 498 \\text{ with } P = 0.001$$ $$50 - 2 = 48 \\text{ with } P = 0.01$$ $$0 - 2 = -2 \\text{ with } P = 1 - 0.001 - 0.01 = 0.989$$ **Rule:** $\\mu = \\sum x P(x)$. $$E(X) = 498(0.001) + 48(0.01) + (-2)(0.989) = 0.498 + 0.48 - 1.978 = \\mathbf{-1.00} \\text{ dollars}$$ \"There is an expected loss of \\$1.00 per ticket.\""
+    "unit": "stars",
+    "explain": "Let X = stars gained per tap: 1 with P = 0.30, 0 with P = 0.70. The values are already net stars, so nothing to subtract. $$E(X) = 1(0.30) + 0(0.70) = \\mathbf{0.30} \\text{ stars per tap}$$ In mesos, each tap costs the same, so the expected cost per star gained is $$\\dfrac{67{,}400{,}800}{0.30} = 224{,}669{,}333 \\text{ mesos}$$ The cost is computed: $$1000 + \\dfrac{150^3 \\times 15^{2.7}}{75} = 67{,}400{,}847 \\to 67{,}400{,}800 \\text{ mesos}$$ rounded to the nearest 100."
   },
   {
-    "q": "6 (if time). A game: you win \\$5 with probability 0.3 and lose \\$2 with probability 0.7. Expected profit per play? (dollars)",
+    "q": "7 (if time). Same tap, once on each of 100 different 14-star Lv 150 items: expected total stars gained? (Then say the mesos spent.)",
     "type": "numeric",
-    "answer": 0.10,
-    "tolerance": 0.005,
-    "unit": "$",
-    "explain": "Let X = net profit per play: 5 with P = 0.3, −2 with P = 0.7. The amounts are already net (win or lose), so no cost to subtract. $$E(X) = 5(0.3) + (-2)(0.7) = 1.50 - 1.40 = \\mathbf{0.10} \\text{ dollars}$$ \"An expected profit of \\$0.10 per play.\""
-  },
-  {
-    "q": "7 (if time). Same game: expected total profit over 100 plays? (dollars)",
-    "type": "numeric",
-    "answer": 10,
+    "answer": 30,
     "tolerance": 0.05,
-    "unit": "$",
-    "explain": "Expected values add over plays: $$100 \\times E(X) = 100 \\times 0.10 = \\mathbf{10.0} \\text{ dollars}$$"
+    "unit": "stars",
+    "explain": "Expected values add over taps: $$100 \\times E(X) = 100 \\times 0.30 = \\mathbf{30.0} \\text{ stars}$$ The mesos are fixed, not random: $$100 \\times 67{,}400{,}800 = 6{,}740{,}080{,}000 \\text{ mesos}$$ about 6.74 billion for an expected 30 stars."
   },
   {
-    "q": "8 (if time). Books table, weeks independent: P(the student borrows the same number of books in two weeks)? (4 decimals)",
+    "q": "8 (if time). Stat-change table, two successful Chaos Scrolls of Goodness on two different items, independent: P(both give the same change)? (4 decimals)",
     "type": "numeric",
-    "answer": 0.225,
-    "tolerance": 0.0006,
-    "explain": "\"The same number\" is 0 and 0, or 1 and 1, ..., or 4 and 4: five cases that cannot happen together, so they add. Within a case the weeks are **independent**, so multiply: $$P(\\text{same}) = P(0)^2 + P(1)^2 + P(2)^2 + P(3)^2 + P(4)^2$$ $$= 0.15^2 + 0.30^2 + 0.25^2 + 0.20^2 + 0.10^2 = 0.0225 + 0.09 + 0.0625 + 0.04 + 0.01 = \\mathbf{0.2250}$$"
+    "answer": 0.2249,
+    "tolerance": 0.0001,
+    "explain": "\"The same change\" is 0 and 0, or 1 and 1, ..., or 5 and 5: six cases that cannot happen together, so they add. One scroll's result does not change the other's chances, so within a case the two are **independent** and multiply: $$P(\\text{same}) = P(0)^2 + P(1)^2 + \\dots + P(5)^2$$ $$= 0.1838^2 + 0.3301^2 + 0.2387^2 + 0.1387^2 + 0.0494^2 + 0.0593^2$$ $$= 0.033782 + 0.108966 + 0.056978 + 0.019238 + 0.002440 + 0.003516 = 0.224921 \\to \\mathbf{0.2249}$$"
   }
 ]
 ```
