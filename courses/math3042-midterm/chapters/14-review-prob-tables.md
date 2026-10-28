@@ -56,6 +56,10 @@ The values of X cannot happen together (today cannot have both 2 and 3 calls), s
 "At least 3" starts at 3. "More than 3" starts at 4. "Fewer than 2" stops at 1. Write the list of x values before adding.
 :::
 
+```diagram
+{ "type": "grid", "title": "At least 2 versus fewer than 2", "nodes": [ { "id": "hx", "label": "x", "row": 0, "col": 0 }, { "id": "hp", "label": "P(x)", "row": 0, "col": 1 }, { "id": "hg", "label": "group", "row": 0, "col": 2 }, { "id": "x0", "label": "0", "row": 1, "col": 0 }, { "id": "p0", "label": "0.067", "row": 1, "col": 1 }, { "id": "g0", "label": "fewer than 2", "row": 1, "col": 2 }, { "id": "x1", "label": "1", "row": 2, "col": 0 }, { "id": "p1", "label": "0.141", "row": 2, "col": 1 }, { "id": "g1", "label": "fewer than 2", "row": 2, "col": 2 }, { "id": "x2", "label": "2", "row": 3, "col": 0 }, { "id": "p2", "label": "0.274", "row": 3, "col": 1 }, { "id": "g2", "label": "at least 2", "row": 3, "col": 2 }, { "id": "x3", "label": "3", "row": 4, "col": 0 }, { "id": "p3", "label": "0.331", "row": 4, "col": 1 }, { "id": "g3", "label": "at least 2", "row": 4, "col": 2 }, { "id": "x4", "label": "4", "row": 5, "col": 0 }, { "id": "p4", "label": "0.187", "row": 5, "col": 1 }, { "id": "g4", "label": "at least 2", "row": 5, "col": 2 } ], "hi": ["x2", "p2", "g2", "x3", "p3", "g3", "x4", "p4", "g4"], "caption": "The five-row overbooking table from Unit 4 PP4 below. Lit rows: at least 2 starts at 2 and keeps 2, 3, 4. Unlit rows: fewer than 2 stops at 1. The two groups share no row and together fill the table, so each is 1 minus the other." }
+```
+
 ## The expected value μ = Σ x P(x)
 
 The **expected value** (the mean, μ, also written E(X)) is the long-run average of X over many days: multiply each value by its probability and add.
@@ -96,6 +100,10 @@ The shortcut subtracts two close numbers, so a rounded μ moves the answer. Cana
 
 $$P(2 \text{ today and } 0 \text{ tomorrow}) = P(2) \cdot P(0) = 0.41(0.02) = 0.0082$$
 
+```diagram
+{ "type": "grid", "title": "2 today and 0 tomorrow", "nodes": [ { "id": "h", "label": "today / tomorrow", "row": 0, "col": 0 }, { "id": "c0", "label": "0 calls", "sub": "P = 0.02", "row": 0, "col": 1 }, { "id": "c1", "label": "1 to 5 calls", "row": 0, "col": 2 }, { "id": "r0", "label": "0 calls", "sub": "P = 0.02", "row": 1, "col": 0 }, { "id": "a0", "label": "P(0) · P(0)", "row": 1, "col": 1 }, { "id": "b0", "label": "P(0) · P(1 to 5)", "row": 1, "col": 2 }, { "id": "r1", "label": "1 call", "sub": "P = 0.23", "row": 2, "col": 0 }, { "id": "a1", "label": "P(1) · P(0)", "row": 2, "col": 1 }, { "id": "b1", "label": "P(1) · P(1 to 5)", "row": 2, "col": 2 }, { "id": "r2", "label": "2 calls", "sub": "P = 0.41", "row": 3, "col": 0 }, { "id": "a2", "label": "0.41(0.02)", "sub": "= 0.0082", "row": 3, "col": 1 }, { "id": "b2", "label": "P(2) · P(1 to 5)", "row": 3, "col": 2 }, { "id": "r3", "label": "3 calls", "sub": "P = 0.17", "row": 4, "col": 0 }, { "id": "a3", "label": "P(3) · P(0)", "row": 4, "col": 1 }, { "id": "b3", "label": "P(3) · P(1 to 5)", "row": 4, "col": 2 }, { "id": "r4", "label": "4 calls", "sub": "P = 0.11", "row": 5, "col": 0 }, { "id": "a4", "label": "P(4) · P(0)", "row": 5, "col": 1 }, { "id": "b4", "label": "P(4) · P(1 to 5)", "row": 5, "col": 2 }, { "id": "r5", "label": "5 calls", "sub": "P = 0.06", "row": 6, "col": 0 }, { "id": "a5", "label": "P(5) · P(0)", "row": 6, "col": 1 }, { "id": "b5", "label": "P(5) · P(1 to 5)", "row": 6, "col": 2 } ], "hi": ["r2", "c0", "a2"], "caption": "Rows are today's outcome, columns tomorrow's. Since the days are independent, every cell is its row's probability times its column's. The question picks one cell: row 2 calls, column 0 calls." }
+```
+
 ## Expected value in dollars: X = prize − cost
 
 For a ticket or a game, let X = the **net payoff**: what you end with after paying. A winning row is prize minus cost; a losing row is minus the cost, because the cost is paid either way.
@@ -109,6 +117,10 @@ Q3c's ticket costs \$2.50 and pays \$100 with probability 0.021:
 $$E(X) = -2.50(0.979) + 97.50(0.021) = -2.4475 + 2.0475 = -0.40 \text{ dollars}$$
 
 Say the sign in words: **"There is an expected loss of \$0.40 per ticket."** A positive E(X) is "an expected profit of ...".
+
+```diagram
+{ "type": "flow", "title": "Expected winnings, Q3c", "nodes": [ { "id": "pr", "label": "Prize", "sub": "$100" }, { "id": "co", "label": "Minus the cost", "sub": "$2.50, paid either way" }, { "id": "x", "label": "Net payoff x", "sub": "97.50 or −2.50" }, { "id": "t", "label": "Times P(x)", "sub": "97.50(0.021), −2.50(0.979)" }, { "id": "mu", "label": "Sum = μ", "sub": "−0.40 dollars" } ], "edges": [ { "from": "pr", "to": "co" }, { "from": "co", "to": "x" }, { "from": "x", "to": "t" }, { "from": "t", "to": "mu" } ], "hi": ["x", "mu"], "caption": "Subtract the cost before multiplying: the losing row is −2.50, not 0." }
+```
 
 :::warn Net, not gross, when there is a cost
 Writing \$100 in the win row and never subtracting the \$2.50 gives + \$2.10, the wrong sign. When the game is free (Q12b), X is just the winnings.
@@ -320,4 +332,11 @@ Items 5 to 7 use Star Force, the GMS enhancement that adds stars to gear. From 1
     "explain": "\"The same change\" is 0 and 0, or 1 and 1, ..., or 5 and 5: six cases that cannot happen together, so they add. One scroll's result does not change the other's chances, so within a case the two are **independent** and multiply: $$P(\\text{same}) = P(0)^2 + P(1)^2 + \\dots + P(5)^2$$ $$= 0.1838^2 + 0.3301^2 + 0.2387^2 + 0.1387^2 + 0.0494^2 + 0.0593^2$$ $$= 0.033782 + 0.108966 + 0.056978 + 0.019238 + 0.002440 + 0.003516 = 0.224921 \\to \\mathbf{0.2249}$$"
   }
 ]
+```
+
+The completed stat-change table, with its bars, Σ P(x) = 1, μ and σ (check items 1 to 4 here after you answer them):
+
+```widget
+pmf-table
+{ "rows": [[0, "0.1838"], [1, "0.3301"], [2, "0.2387"], [3, "0.1387"], [4, "0.0494"], [5, "0.0593"]], "xlab": "X = change to one stat", "presets": false, "title": "Chaos Scroll of Goodness: change to one stat" }
 ```

@@ -53,6 +53,10 @@ R's geometric counts the **failures before** the first success, so "the first su
 
 **What the provided R sheet gives you.** The generic base R sheet names only `dbinom`, `pbinom`, `rbinom`, `dpois`, `ppois`, `rpois`, and it gives no argument order. Everything in the table above (every slot order, and all of `dhyper`, `phyper`, `rhyper`, `dgeom`, `pgeom`) must come from memory.
 
+```diagram
+{ "type": "grid", "title": "Prefix by family, slots in R's order", "nodes": [ { "id": "h0", "label": "family", "row": 0, "col": 0 }, { "id": "hd", "label": "d: exactly", "row": 0, "col": 1 }, { "id": "hp", "label": "p: at most", "row": 0, "col": 2 }, { "id": "hr", "label": "r: random", "row": 0, "col": 3 }, { "id": "b0", "label": "Binomial", "row": 1, "col": 0 }, { "id": "bd", "label": "dbinom(x, n, p)", "row": 1, "col": 1 }, { "id": "bp", "label": "pbinom(k, n, p)", "row": 1, "col": 2 }, { "id": "br", "label": "rbinom(reps, n, p)", "row": 1, "col": 3 }, { "id": "y0", "label": "Hypergeometric", "row": 2, "col": 0 }, { "id": "yd", "label": "dhyper(x, K, N-K, n)", "row": 2, "col": 1 }, { "id": "yp", "label": "phyper(k, K, N-K, n)", "row": 2, "col": 2 }, { "id": "yr", "label": "rhyper(reps, K, N-K, n)", "row": 2, "col": 3 }, { "id": "g0", "label": "Geometric", "row": 3, "col": 0 }, { "id": "gd", "label": "dgeom(x-1, p)", "row": 3, "col": 1 }, { "id": "gp", "label": "pgeom(x-1, p)", "row": 3, "col": 2 }, { "id": "gr", "label": "(none)", "row": 3, "col": 3 }, { "id": "o0", "label": "Poisson", "row": 4, "col": 0 }, { "id": "od", "label": "dpois(x, lambda)", "row": 4, "col": 1 }, { "id": "op", "label": "ppois(k, lambda)", "row": 4, "col": 2 }, { "id": "or", "label": "rpois(reps, lambda)", "row": 4, "col": 3 } ], "hi": ["yd", "yp", "yr", "gd", "gp"], "caption": "Lit cells are the slots the provided R sheet does not give: every hypergeometric and geometric call. The sheet gives none of the argument orders either, so learn every cell." }
+```
+
 ## The inequality table
 
 The p-function adds from the left, up to and including its cut point. Every other wording is built from it. Example cut at k = 5:
@@ -69,6 +73,10 @@ The p-function adds from the left, up to and including its cut point. Every othe
 :::warn At least k cuts at k − 1
 "At least 12" is $1 - P(X \le 11)$. Writing 12 in the p-call computes "at least 13".
 :::
+
+```diagram
+{ "type": "flow", "title": "Words to the p-call", "nodes": [ { "id": "w0", "label": "exactly k" }, { "id": "r0", "label": "d(k)", "kind": "pill" }, { "id": "w1", "label": "at most k" }, { "id": "r1", "label": "p(k)", "kind": "pill" }, { "id": "w2", "label": "fewer than k" }, { "id": "r2", "label": "p(k-1)", "kind": "pill" }, { "id": "w3", "label": "at least k" }, { "id": "r3", "label": "1 - p(k-1)", "kind": "pill" }, { "id": "w4", "label": "more than k" }, { "id": "r4", "label": "1 - p(k)", "kind": "pill" }, { "id": "w5", "label": "j to k", "sub": "inclusive" }, { "id": "r5", "label": "p(k) - p(j-1)", "kind": "pill" } ], "edges": [ { "from": "w0", "to": "r0" }, { "from": "w1", "to": "r1" }, { "from": "w2", "to": "r2" }, { "from": "w3", "to": "r3" }, { "from": "w4", "to": "r4" }, { "from": "w5", "to": "r5" } ], "hi": ["r2", "r3"], "caption": "Each word box points to its R call. Lit: the two that cut at k − 1, fewer than k and at least k." }
+```
 
 ## One breakdown per call shape
 
@@ -292,6 +300,14 @@ The game stories, with why each fits its family:
 - **Binomial.** An Intermediate scroll, the MapleStory Classic tier, succeeds 60 % of the time on every use, and one use does not change the next.
 - **Large-n binomial.** An Orb of Fusing, the PoE1 currency that rerolls socket links, six-links a six-socket item about 1 time in 1000, measured over n = 100 000 Fusings in a 2017 test on a 20 %-quality item; separate players each using one Fusing are separate trials at that rate.
 
+Name the distribution first. Practise on the cards before the variants:
+
+```widget
+dist-picker
+{ "scenarios": "lecture" }
+```
+
+
 ```quiz
 [
   {
@@ -351,4 +367,34 @@ The game stories, with why each fits its family:
     "explain": "\"Simulate\" is the r-function. The first slot of every r-function is how many random values to draw: 30 hours. `rpois(30, 2.4)` returns 30 random whole numbers averaging near 2.4. The binomial version, 1000 simulated batches of 20 Intermediate scrolls, is `rbinom(1000, 20, 0.6)`."
   }
 ]
+```
+
+Check each variant after you fill it: the bars, the substituted formula and the R line for its numbers.
+
+Variant 1, hypergeometric: 6 picks from 500 with 61 Night Lords, P(X ≤ 1).
+
+```widget
+hyper-vs-binom
+{ "N": 500, "K": 61, "n": 6, "x": 1, "presets": false, "title": "Variant 1: phyper(1, 61, 439, 6)" }
+```
+
+Variants 2 and 7, geometric: first success on tap 5 at p = 0.3.
+
+```widget
+geometric-calc
+{ "p": 0.3, "x": 5, "presets": false, "title": "Variant 2: dgeom(5-1, 0.3)" }
+```
+
+Variant 3, Poisson: 2.4 calls per hour, fewer than 3 is at most 2.
+
+```widget
+poisson-calc
+{ "rate": 2.4, "per": 1, "unit": "h", "interval": 1, "x": 2, "op": "le", "presets": false, "title": "Variant 3: ppois(2, 2.4)" }
+```
+
+Variant 4, binomial: 20 Intermediate scrolls at 0.6, more than 14 is at least 15.
+
+```widget
+binomial-calc
+{ "n": 20, "p": 0.6, "x": 15, "op": "ge", "presets": false, "title": "Variant 4: 1 - pbinom(14, 20, 0.6)" }
 ```
