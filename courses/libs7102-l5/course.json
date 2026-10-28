@@ -1,0 +1,118 @@
+{
+  "title": "LIBS 7102 · Lecture 5",
+  "subtitle": "Act utilitarianism II: dark patterns and Canadian law, how not to describe utilitarianism, Mill's three objections, Nozick and the proof, aggregation, negative responsibility, promises, punishment, justice, and Singer on impartiality and supererogation",
+  "description": "Lecture 5 of LIBS 7102: dark patterns, the FTC, the EU and Canada's PIPEDA, CASL and Bill C-27; consent and avuncular ethics; the essay revisions: not \"for the majority\", not cost-benefit, not \"right because it causes happiness\", the three-step procedure and why it is act utilitarianism; the doctrine of swine, too high for humanity and lack of time with Mill's replies and Sandel's doctors; psychological and normative hedonism, Nozick's experience machine and Mill's proof; aggregating utility, the strong doctrine of negative responsibility, trivial actions and the dying man's promise; rehabilitation, deterrence and vengeance, and Peter and Sarah's pay; Singer's Famine, Affluence and Morality, impartiality, the three kids and the threshold of supererogation; the fourteen objections. Practice answers U1, U2, U4 to U15 and a 22-item mock quiz.",
+  "intro": ":::exam Midterm facts\n**Midterm: Wednesday Oct 28, in class.** Closed book, two hours, on paper, 20 % of the course. You write four or five two-paragraph answers, choosing from about six (for example, answer 4 of 6). Questions cover lectures 1 to 5 and are taken from the practice list (rare) or very similar to it (typical), often paired with a computing case or asking you to argue a side. With Lecture 4 it feeds fifteen of the twenty-five listed practice questions; this lecture alone owns fourteen of them.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "mock-quiz-l5",
+        "note": "take it cold (about 20 min) to see what you already know"
+      },
+      {
+        "lesson": "dark-patterns-and-the-law",
+        "note": "write every case and practice answer before revealing"
+      },
+      {
+        "lesson": "how-not-to-describe-utilitarianism",
+        "note": "write every case and practice answer before revealing"
+      },
+      {
+        "lesson": "mills-three-objections",
+        "note": "write every case and practice answer before revealing"
+      },
+      {
+        "lesson": "hedonism-nozick-and-the-proof",
+        "note": "write every case and practice answer before revealing"
+      },
+      {
+        "lesson": "aggregation-responsibility-trivial-promises",
+        "note": "write every case and practice answer before revealing"
+      },
+      {
+        "lesson": "punishment-and-justice",
+        "note": "write every case and practice answer before revealing"
+      },
+      {
+        "lesson": "singer-impartiality-and-supererogation",
+        "note": "write every case and practice answer before revealing"
+      },
+      {
+        "lesson": "are-you-still-a-utilitarian",
+        "note": "write every case and practice answer before revealing"
+      },
+      {
+        "lesson": "mock-quiz-l5",
+        "note": "retake; aim for 90 % or better"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Dark patterns and the revisions",
+      "lessons": [
+        {
+          "id": "dark-patterns-and-the-law",
+          "title": "Dark patterns can be legal in Canada and still wrong, and act utilitarianism judges each one",
+          "file": "chapters/01-dark-patterns-and-the-law.md"
+        },
+        {
+          "id": "how-not-to-describe-utilitarianism",
+          "title": "Utilitarianism maximizes total utility, not happiness for the majority or benefits over costs",
+          "file": "chapters/02-how-not-to-describe-utilitarianism.md"
+        }
+      ]
+    },
+    {
+      "title": "2. The objections",
+      "lessons": [
+        {
+          "id": "mills-three-objections",
+          "title": "Mill answers three objections: the doctrine of swine, too high for humanity, lack of time",
+          "file": "chapters/03-mills-three-objections.md"
+        },
+        {
+          "id": "hedonism-nozick-and-the-proof",
+          "title": "Nozick's experience machine and Mill's proof put hedonism in doubt",
+          "file": "chapters/04-hedonism-nozick-and-the-proof.md"
+        },
+        {
+          "id": "aggregation-responsibility-trivial-promises",
+          "title": "Adding utility lets small pleasures outweigh great harms, and promises bind only when they pay",
+          "file": "chapters/05-aggregation-responsibility-trivial-promises.md"
+        },
+        {
+          "id": "punishment-and-justice",
+          "title": "Punishment and justice have only derivative value for a utilitarian",
+          "file": "chapters/06-punishment-and-justice.md"
+        },
+        {
+          "id": "singer-impartiality-and-supererogation",
+          "title": "Singer: distance does not matter, and nothing is beyond the call of duty",
+          "file": "chapters/07-singer-impartiality-and-supererogation.md"
+        }
+      ]
+    },
+    {
+      "title": "3. Closing",
+      "lessons": [
+        {
+          "id": "are-you-still-a-utilitarian",
+          "title": "Fourteen objections a utilitarian must be able to answer",
+          "file": "chapters/08-are-you-still-a-utilitarian.md"
+        }
+      ]
+    },
+    {
+      "title": "4. Mock quiz",
+      "lessons": [
+        {
+          "id": "mock-quiz-l5",
+          "title": "Mock quiz: Lecture 5",
+          "file": "chapters/09-mock-quiz-l5.md"
+        }
+      ]
+    }
+  ]
+}
