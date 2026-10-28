@@ -90,7 +90,7 @@ The shortcut subtracts two close numbers, so a rounded μ moves the answer. Cana
 
 ## Two independent days multiply
 
-**Independent** means one day's outcome does not change the other's chances. Then "this today AND that tomorrow" is a product (the multiplication rule, on the sheet with the probability rules):
+**Independent** means one day's outcome does not change the other's chances. Then "this today AND that tomorrow" is a product (the multiplication rule, on the sheet under Probability Rules: $P(A \cap B) = P(A) \cdot P(B)$ "if events A and B are independent"):
 
 $$P(2 \text{ today and } 0 \text{ tomorrow}) = P(2) \cdot P(0) = 0.41(0.02) = 0.0082$$
 

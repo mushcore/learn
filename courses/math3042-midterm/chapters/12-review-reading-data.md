@@ -17,15 +17,15 @@ Do if time is short: Q1, Q2, Q10 and new variants 1 to 3. The rest are marked "i
 
 ## The ideas, from zero
 
-**Mean.** Add the values, divide by how many: for 2, 4, 9 the mean is $15/3 = 5$. On the sheet, under Descriptive Statistics.
+**Mean.** Add the values, divide by how many: for 2, 4, 9 the mean is $15/3 = 5$. On the sheet, under Descriptive Statistics: $\bar{X} = \dfrac{\sum x}{n}$ for a sample, $\mu = \dfrac{\sum x}{N}$ for a population.
 
 **Median.** The middle value once the data are in order. Its position is $(n+1)/2$: for 2, 4, 9, position $(3+1)/2 = 2$, so the median is 4. For 150 values, $(150+1)/2 = 75.5$, halfway between the 75th and 76th. Not on the sheet: remember $(n+1)/2$.
 
 **Mode.** The most common value, or on a histogram the tallest bar.
 
-**Standard deviation (SD, $s$).** The typical distance of a value from the mean. Small SD means the values are close together: consistent, reliable. On the sheet.
+**Standard deviation (SD, $s$).** The typical distance of a value from the mean. Small SD means the values are close together: consistent, reliable. On the sheet, under Descriptive Statistics: $s = \sqrt{\dfrac{\sum (x - \bar{X})^2}{n - 1}}$ for a sample, $\sigma = \sqrt{\dfrac{\sum (x - \mu)^2}{N}}$ for a population. You will read $s$ from a table, not compute it.
 
-**Coefficient of variation (CV).** SD as a percentage of the mean, so two groups can be compared on one scale: $CV = s/\bar{X} \times 100\%$. For $s = 10.8$, $\bar X = 133.2$: $10.8/133.2 \times 100\% = 8.11\%$. On the sheet. Smaller CV = more consistent.
+**Coefficient of variation (CV).** SD as a percentage of the mean, so two groups can be compared on one scale: $CV = s/\bar{X} \times 100\%$. For $s = 10.8$, $\bar X = 133.2$: $10.8/133.2 \times 100\% = 8.11\%$. On the sheet, under Descriptive Statistics, as $CV = \dfrac{s}{\bar{X}} \times 100\%$. Smaller CV = more consistent.
 
 **Histogram shapes.** A histogram is bars over classes of the data; bar height is how many values fall in that class.
 
@@ -38,9 +38,9 @@ Do if time is short: Q1, Q2, Q10 and new variants 1 to 3. The rest are marked "i
 The tail drags the mean toward it; the median barely moves. Right tail: mean > median. Left tail: mean < median. Not on the sheet.
 :::
 
-**Empirical rule.** For bell-shaped data, about 68 % of values lie within 1 SD of the mean, 95 % within 2 SD, 99.7 % within 3 SD. On the sheet, under Empirical Rule. The trap: it holds **only** for bell shapes; skewed or bimodal data break it, and saying so is the mark.
+**Empirical rule.** For bell-shaped data, about 68 % of values lie within 1 SD of the mean, 95 % within 2 SD, 99.7 % within 3 SD. On the sheet, under Empirical Rule, as three lines: "68 % of data values are within one standard deviation of the mean", then 95 % within two, 99.7 % within three. The trap: it holds **only** for bell shapes; skewed or bimodal data break it, and saying so is the mark.
 
-**Z-score.** How many SDs a value sits from the mean: $Z = (x - \bar X)/s$. On the sheet. A value with $|Z| > 2$ is called unusual (not on the sheet).
+**Z-score.** How many SDs a value sits from the mean: $Z = (x - \bar X)/s$. On the sheet, under Descriptive Statistics, as $Z = \dfrac{x - \bar{X}}{s}$. A value with $|Z| > 2$ is called unusual (not on the sheet).
 
 **Quartiles and IQR.** $Q_1$ has 25 % of the data below it, $Q_2$ is the median, $Q_3$ has 75 % below. The interquartile range $IQR = Q_3 - Q_1$ is the spread of the middle half (remember this one). The fences $Q_1 - 1.5\,IQR$ and $Q_3 + 1.5\,IQR$ are on the sheet, under Outliers; a value outside a fence is an outlier.
 
