@@ -5,8 +5,15 @@
   "description": "Everything for the midterm in one place: the study order through the four unit modules, then the practice midterm worked question by question in the instructor's own rounding and wording, R on paper (the d, p, q and r families, turning an inequality into a p-function, writing a simulation function) from Labs 6 and 7, the three things the unit modules never teach (expected value in dollars, the variance shortcut on the formula sheet, Poisson across separate intervals), the sixteen Unit 4 practice problems worked, two mock midterms in the real 12-question, 46-mark format, and a one-page split of what the provided formula sheet gives you versus what you must know cold.",
   "intro": ":::quiz Midterm facts\n**Wednesday Oct 28 2026, 3:00 pm, room SW5-1840, 90 minutes.** Paper and pencil plus a scientific calculator with statistics functions; no computer. **Units 1 to 4, everything up to the Poisson distribution** (Unit 5 is out). R is on the exam: \"write an R command that does XYZ\". Worth **30 %** of the course. A **formula sheet and an R sheet are provided**; you cannot bring your own. The practice paper is 12 questions, 46 marks: about 10 marks of R commands, about 13 of written interpretation (a histogram, a summary table, side-by-side boxplots), the rest calculation. Rounding rule on the cover: a probability to four decimal places, anything else to three significant digits.\n:::",
   "plan": {
-    "title": "Two days to the midterm",
+    "title": "Ninety minutes to the midterm, from zero",
     "steps": [
+      { "lesson": "review-reading-data", "note": "15 minutes: the 13 interpretation marks; verdict, two numbers, the feature by name" },
+      { "lesson": "review-r-data", "note": "10 minutes: four R lines on paper, written from memory" },
+      { "lesson": "review-prob-tables", "note": "15 minutes: a table, μ = Σ x P(x), prize minus cost" },
+      { "lesson": "review-r-distributions", "note": "15 minutes: the d, p, r table and the inequality words" },
+      { "lesson": "review-complement-independence", "note": "15 minutes: 1 − P(none), independent events multiply" },
+      { "lesson": "review-poisson-plugin", "note": "10 minutes: λ = rate × interval, then the sheet's formula" },
+      { "lesson": "know-cold-sheet", "note": "last 10 minutes: rewrite the R table from memory" },
       { "lesson": "midterm-format", "note": "read the study order, then work through the unit lessons it lists (about ten hours: all of day one and the start of day two)" },
       { "lesson": "mock-midterm-a", "note": "take it cold, on paper, 90 minutes, formula sheet open, nothing else" },
       { "lesson": "practice-descriptive", "note": "Q1, Q2, Q10: write your paragraph before you open the model answer" },
@@ -21,6 +28,17 @@
     ]
   },
   "chapters": [
+    {
+      "title": "Midterm Review: the easiest half of the paper, from zero, in 90 minutes",
+      "lessons": [
+        { "id": "review-reading-data", "title": "Review 1: reading histograms, boxplots and summary tables (about 13 marks)", "file": "chapters/12-review-reading-data.md" },
+        { "id": "review-r-data", "title": "Review 2: R for data on paper: quantile, filter, favstats, bwplot (about 4 marks)", "file": "chapters/13-review-r-data.md" },
+        { "id": "review-prob-tables", "title": "Review 3: probability tables, expected value and expected winnings (about 5 to 7 marks)", "file": "chapters/14-review-prob-tables.md" },
+        { "id": "review-r-distributions", "title": "Review 4: R for distributions on paper: d, p and r (about 3 marks)", "file": "chapters/15-review-r-distributions.md" },
+        { "id": "review-complement-independence", "title": "Review 5: complement and independence (about 4 marks)", "file": "chapters/16-review-complement-independence.md" },
+        { "id": "review-poisson-plugin", "title": "Review 6: Poisson plug-in: rescale λ, then use the sheet (about 2 marks)", "file": "chapters/17-review-poisson-plugin.md" }
+      ]
+    },
     {
       "title": "1. The exam and the study order",
       "lessons": [
