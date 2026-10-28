@@ -81,7 +81,7 @@ The practice list asks two questions here; write each before you reveal the mode
     "q": "According to the course notes, why is conventional morality a very poor guide to ethical conduct?",
     "options": ["The customary attitudes it adopts may be flawed or only accidentally right", "Moral attitudes are relative to each society, so none is better than another", "Conventions are always wrong, so the opposite of convention is right", "Conventional people act only from self-interest"],
     "answer": 0,
-    "explain": "The second option is the relativist's position, which the course rejects. The notes say some tradition will easily withstand critical scrutiny, so conventions are not always wrong."
+    "explain": "\"Moral attitudes are relative to each society\" is the relativist's position, which the course rejects. The notes say some tradition will easily withstand critical scrutiny, so conventions are not always wrong."
   },
   {
     "type": "tf",

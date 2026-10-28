@@ -1,0 +1,88 @@
+{
+  "title": "LIBS 7102 · Lecture 3",
+  "subtitle": "Rejecting ethical relativism: the relativist's claims, why we should judge, Rachels's six claims and the cultural differences argument, shared values, objectivism vs absolutism, and tolerance",
+  "description": "Lecture 3 of LIBS 7102: Microsoft and Strontium and the relativist's two claims; hypermoralism, relativism and getting tolerance just right; \"do not judge\" and the appeal to hypocrisy; Rachels's six claims, descriptive vs normative relativism, why the cultural differences argument is invalid and the three unacceptable consequences; less disagreement than it seems and the values all cultures share; Pojman's definitions of objectivism and absolutism, being an objectivist vs being objective, circumstantialism and the four-box diagram; why an objectivist can be tolerant. Practice answers R1 to R5 and an 18-item mock quiz.",
+  "intro": ":::exam Midterm facts\n**Midterm: Wednesday Oct 28, in class.** Closed book, two hours, on paper, 20 % of the course. You write four or five two-paragraph answers, choosing from about six (for example, answer 4 of 6). Questions cover lectures 1 to 5 and are taken from the practice list (rare) or very similar to it (typical), often paired with a computing case or asking you to argue a side. It feeds the five relativism practice questions (R1 to R5), including the objectivism-vs-absolutism question the practice list warns about.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "mock-quiz-l3",
+        "note": "take it cold (about 20 min)"
+      },
+      {
+        "lesson": "rachels-six-claims-and-the-argument",
+        "note": "list the six claims, say which is descriptive, answer R1 and R5"
+      },
+      {
+        "lesson": "objectivism-absolutism-and-being-objective",
+        "note": "write Pojman's two definitions word for word, then answer R2"
+      },
+      {
+        "lesson": "tolerance-without-relativism",
+        "note": "answer R3 and R4 in two paragraphs each"
+      },
+      {
+        "lesson": "mock-quiz-l3",
+        "note": "retake; aim for 90 % or better"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. The relativist and why we judge",
+      "lessons": [
+        {
+          "id": "what-the-relativist-says",
+          "title": "The relativist says no culture's morality is better than another's",
+          "file": "chapters/01-what-the-relativist-says.md"
+        },
+        {
+          "id": "why-we-should-judge",
+          "title": "\"Do not judge\" defeats itself, and hypocrisy does not make a judgment wrong",
+          "file": "chapters/02-why-we-should-judge.md"
+        }
+      ]
+    },
+    {
+      "title": "2. Rachels",
+      "lessons": [
+        {
+          "id": "rachels-six-claims-and-the-argument",
+          "title": "Cultures differ in their moral codes, but relativism does not follow",
+          "file": "chapters/03-rachels-six-claims-and-the-argument.md"
+        },
+        {
+          "id": "less-disagreement-and-shared-values",
+          "title": "Cultures disagree less than they seem to and share core values",
+          "file": "chapters/04-less-disagreement-and-shared-values.md"
+        }
+      ]
+    },
+    {
+      "title": "3. Objectivism, absolutism, tolerance",
+      "lessons": [
+        {
+          "id": "objectivism-absolutism-and-being-objective",
+          "title": "Objectivism asks whether there is a moral fact; absolutism whether a rule is never broken",
+          "file": "chapters/05-objectivism-absolutism-and-being-objective.md"
+        },
+        {
+          "id": "tolerance-without-relativism",
+          "title": "An objectivist can be tolerant; a relativist cannot defend tolerance",
+          "file": "chapters/06-tolerance-without-relativism.md"
+        }
+      ]
+    },
+    {
+      "title": "4. Mock quiz",
+      "lessons": [
+        {
+          "id": "mock-quiz-l3",
+          "title": "Mock quiz: Lecture 3",
+          "file": "chapters/07-mock-quiz-l3.md"
+        }
+      ]
+    }
+  ]
+}

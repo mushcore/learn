@@ -113,7 +113,7 @@ Slide 32 asks whether we are speciesists *in the empirical sense* and *in the mo
     "q": "How does Singer answer Frankena's claim that humans are special because they can enjoy a good life?",
     "options": ["Every being can have a good life, and some humans fall below some animals in the relevant capacities yet keep their rights", "Humans can enjoy a good life, so only humans deserve rights", "Rights should be given by merit, so the most intelligent beings deserve the most", "Animals cannot suffer, so the question of a good life does not arise"],
     "answer": 0,
-    "explain": "Slide 31. The second option is Frankena's own view; the third is the merit basis Singer rejects on slide 28."
+    "explain": "Slide 31. \"Only humans deserve rights\" is Frankena's own view; rights by merit is the basis Singer rejects on slide 28."
   },
   {
     "type": "tf",
