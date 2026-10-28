@@ -23,7 +23,7 @@ Do if time is short: Q1, Q2, Q10 and new variants 1 to 3. The rest are marked "i
 
 **Mode.** The most common value, or on a histogram the tallest bar.
 
-**Standard deviation (SD, $s$).** The typical distance of a value from the mean. Small SD means the values are close together: consistent, reliable. On the sheet, under Descriptive Statistics: $s = \sqrt{\dfrac{\sum (x - \bar{X})^2}{n - 1}}$ for a sample, $\sigma = \sqrt{\dfrac{\sum (x - \mu)^2}{N}}$ for a population. You will read $s$ from a table, not compute it.
+**Standard deviation (SD, $s$).** The typical distance of a value from the mean. Small SD means the values are close together: consistent, reliable. On the sheet, under Descriptive Statistics: $s = \sqrt{\sum (x - \bar{X})^2 \,/\, (n - 1)}$ for a sample, $\sigma = \sqrt{\sum (x - \mu)^2 \,/\, N}$ for a population. You will read $s$ from a table, not compute it.
 
 **Coefficient of variation (CV).** SD as a percentage of the mean, so two groups can be compared on one scale: $CV = s/\bar{X} \times 100\%$. For $s = 10.8$, $\bar X = 133.2$: $10.8/133.2 \times 100\% = 8.11\%$. On the sheet, under Descriptive Statistics, as $CV = \dfrac{s}{\bar{X}} \times 100\%$. Smaller CV = more consistent.
 
