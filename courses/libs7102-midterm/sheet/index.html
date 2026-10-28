@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LIBS 7102 Midterm Skeletons</title>
+<style>
+  @page { size: letter; margin: 0.4in; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #fff; color: #000; }
+  body { font-family: Arial, Helvetica, sans-serif; font-size: 7.6pt; line-height: 1.12; }
+  .side { page-break-after: always; break-after: page; }
+  .side:last-child { page-break-after: auto; break-after: auto; }
+  .title { border-bottom: 1.2pt solid #000; margin-bottom: 3pt; }
+  .title b { font-size: 10.5pt; }
+  .title span { font-size: 7pt; }
+  .cols { columns: 2; column-gap: 0.16in; column-rule: 0.5pt solid #000; }
+  h2 { font-size: 8pt; margin: 3pt 0 1pt; padding: 0 2pt; background: #000; color: #fff; break-after: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  h2:first-child { margin-top: 0; }
+  ul, ol { margin: 0 0 1.5pt; padding-left: 11pt; }
+  li { margin: 0; break-inside: avoid; }
+  .box { border: 0.6pt solid #000; padding: 1pt 2pt 1pt 13pt; break-inside: avoid; }
+  .sk { break-inside: avoid; margin-bottom: 1.5pt; }
+  .sk .q { font-style: italic; }
+  .sk ul { padding-left: 9pt; }
+  @media screen {
+    body { max-width: 8.5in; margin: 0 auto; padding: 0.4in; }
+    .side { border-bottom: 2px dashed #888; padding-bottom: 0.3in; margin-bottom: 0.3in; }
+  }
+</style>
+</head>
+<body>
+<section class="side">
+<div class="title"><b>LIBS 7102 Midterm · Side 1: definitions, lists, lectures 1 and 3</b> <span>Closed book: read this the night before and the morning of. Wednesday Oct 28.</span></div>
+<div class="cols">
+<h2>Definitions, word for word</h2>
+<ul>
+<li><b>Valid (L1 s18):</b> the truth of the premises guarantees the truth of the conclusion; truth-preserving; valid regardless of whether premises or conclusion are true.</li>
+<li><b>Sound (L1 s21):</b> sound if and only if the argument is valid and all the premises are true; validity is necessary but not sufficient.</li>
+<li><b>Claims (L1 s28):</b> empirical: sensory tests alone settle it; value: approval/disapproval not reducible to an empirical claim (moral, aesthetic); conceptual: the meaning of the words alone settles it.</li>
+<li><b>No ought from is (L1 s14):</b> moral value cannot ever be established from empirical facts alone; every moral argument needs a value premise.</li>
+<li><b>No ought without can (L1 s14):</b> there can be no moral requirement to do something unless this is possible.</li>
+<li><b>Moral objectivism (Pojman, L3 s28):</b> there is a fact of the matter as to whether any given action is morally permissible or impermissible: a fact of the matter that does not depend solely on social custom or individual acceptance.</li>
+<li><b>Moral absolutism (Pojman, L3 s28):</b> there is at least one principle that ought never to be violated.</li>
+<li><b>ECI (L4 s15):</b> the pleasure or pain of one person should be of no more value than the pleasure or pain of another; not equal treatment or just distribution; may benefit only one.</li>
+<li><b>Right action (L4 s24):</b> an action is right if and only if there is no other available action the agent could have done instead that has higher utility; utility = pleasure − pain.</li>
+<li><b>The procedure (L5 s8):</b> 1) identify all affected by the available options; 2) for each option aggregate all utility (pleasure and pain, with ECI) on the actual outcome; 3) choose the option that maximizes utility.</li>
+</ul>
+<h2>Kohlberg&#x27;s stages (L2 s16)</h2>
+<ol class="box">
+<li>Obedience and punishment (preconventional)</li>
+<li>Individualism and exchange (preconventional)</li>
+<li>Good boy / good girl (conventional)</li>
+<li>Law and order (conventional)</li>
+<li>4.5 The cynic: questions the conventional, no belief in the postconventional</li>
+<li>Social contract and individual rights (postconventional)</li>
+<li>Universal moral principles (postconventional)</li>
+</ol>
+<h2>Rachels&#x27;s six claims (L3 s17)</h2>
+<ol class="box">
+<li>Different societies have different moral codes (descriptive: true, empirical)</li>
+<li>No objective standard judges one code better than another</li>
+<li>Our own society&#x27;s code has no special status</li>
+<li>No universal truth in ethics</li>
+<li>A society&#x27;s code determines what is right in that society</li>
+<li>It is arrogance to judge other peoples; we should be tolerant (2-6 normative: a mistake)</li>
+</ol>
+<h2>Bentham&#x27;s felicific calculus (L4 s18)</h2>
+<ul class="box">
+<li>intensity, duration, certainty, proximity, fecundity, purity, and extent (number of people affected)</li>
+</ul>
+<h2>Mill&#x27;s four changes (L4 s22)</h2>
+<ol class="box">
+<li>Quality as well as quantity of pleasure (Socrates dissatisfied)</li>
+<li>Psychological hedonism kept, Bentham&#x27;s psychological egoism rejected; internal sanctions: self-esteem, guilt, conscience</li>
+<li>A proof of the principle of utility</li>
+<li>Following social rules generally suffices; use utility when rules conflict</li>
+</ol>
+<h2>Mill&#x27;s three objections and replies (L5 s11-18)</h2>
+<ul class="box">
+<li>Doctrine of swine: pleasure is fit only for swine. Reply: higher pleasures, competent judges. Doubts: who is competent, what if they disagree, is quality non-hedonistic?</li>
+<li>Too high for humanity: always acting for the general interest demands too much. Reply: confuses the rule of action with its motive. Doubt: Sandel&#x27;s doctors</li>
+<li>Lack of time: no time to calculate. Reply: the whole past duration of the species; universal idiocy; experience</li>
+</ul>
+<h2>Nozick&#x27;s three reasons not to plug in (L5 s23)</h2>
+<ol class="box">
+<li>We want to do certain things, not just have the experience of doing them</li>
+<li>We want to be a certain sort of person</li>
+<li>The machine limits us to a man-made reality: no contact with any deeper reality</li>
+</ol>
+<h2>Fourteen objections (L5 s40)</h2>
+<ol class="box">
+<li>Doctrine of swine</li>
+<li>Lack of time</li>
+<li>Too much for humanity</li>
+<li>Psychological hedonism mistaken</li>
+<li>Normative hedonism mistaken</li>
+<li>Mill&#x27;s proof fails</li>
+<li>Aggregating utility: counter-intuitive results</li>
+<li>Strong doctrine of negative responsibility</li>
+<li>Trivial actions classed as wrong</li>
+<li>Promises of little importance</li>
+<li>Punishment need not be fair</li>
+<li>Justice of little importance</li>
+<li>Counter-intuitive view of supererogation</li>
+<li>Perfect impartiality: inappropriate or impossible demands</li>
+</ol>
+<h2>Skeletons: Lecture 1</h2>
+<div class="sk"><b>M</b> <span class="q">Here is an argument. Is it true?</span><ul><li>says an argument cannot be true or false; only its claims can (slides 16, 23)</li><li>judges it valid: true premises would guarantee the conclusion (slide 18)</li><li>types P1 conceptual, P2 empirical, P3 and C value (slide 28)</li></ul></div>
+<h2>Skeletons: Lecture 3: relativism</h2>
+<div class="sk"><b>R1</b> <span class="q">Distinguish descriptive ethical relativism from normative ethical relativism</span><ul><li>defines descriptive relativism as the empirical claim that moral codes differ between societies, and says it is true (slide 17, claim 1)</li><li>defines normative relativism as the claim that right and wrong are determined by one&#x27;s society&#x27;s code (claims 2–6), a mistake (slide 17)</li><li>says one is about what people believe, the other about what is right</li></ul></div>
+<div class="sk"><b>R2</b> <span class="q">Distinguish objectivism from absolutism (careful with using Google/ChatGPT for definitions as you may find entirely different definitions! Consider the definition of objectivism as discussed in class, and Pojman&#x27;s definition of absolutism as discussed in class)</span><ul><li>gives Pojman&#x27;s definition of objectivism: a fact of the matter not depending solely on social custom or individual acceptance (slide 28)</li><li>gives Pojman&#x27;s definition of absolutism: at least one principle that ought never to be violated (slide 28)</li><li>says the two are independent: objectivists can be absolutist (Kant) or non-absolutist (utilitarians), and a relativist can be absolutist (slides 28–29, 36)</li></ul></div>
+<div class="sk"><b>R3</b> <span class="q">Is it true that only a relativist can be tolerant?</span><ul><li>answers no: relativism is not a logical consequence of tolerance (slide 35)</li><li>says tolerance is itself a value an objectivist can hold as objectively valid</li><li>explains core values: tolerance is meaningful only outside one&#x27;s core (slide 35)</li></ul></div>
+<div class="sk"><b>R4</b> <span class="q">Suppose that a normative moral relativist argues that &quot;out of respect and tolerance, we ought not to criticize other cultures.&quot; Why is it problematic to argue this?</span><ul><li>states normative relativism: no universal moral truths; each society&#x27;s code determines right (slide 17)</li><li>says the claim is a universal ought binding every culture, which relativism denies exists: self-refuting</li><li>says a culture whose code endorses criticizing others would be right to do so by relativism&#x27;s own lights</li></ul></div>
+<div class="sk"><b>R5</b> <span class="q">Identify two important arguments that can be raised against normative ethical relativism. Briefly discuss.</span><ul><li>argument 1: the cultural differences argument is invalid, an ought from an is (slide 18)</li><li>notes that an invalid argument does not show the conclusion false, so a second argument is needed (slide 19)</li><li>argument 2: the reductio, naming at least two of the three consequences (no criticizing other societies, right = consult your society, no moral progress) (slide 19)</li></ul></div>
+</div>
+</section>
+<section class="side">
+<div class="title"><b>LIBS 7102 Midterm · Side 2: Kohlberg and utilitarianism skeletons</b> <span>Each answer: two paragraphs. Position and definitions in course words, then the example and the objection or reply.</span></div>
+<div class="cols">
+<h2>Skeletons: Lecture 2: Kohlberg</h2>
+<div class="sk"><b>K1</b> <span class="q">Name Kohlberg&#x27;s six stages of moral development and briefly describe each.</span><ul><li>groups the stages in three levels: preconventional 1–2, conventional 3–4, postconventional 5–6 (slide 16)</li><li>describes stages 1 and 2: punishment and might makes right; self-interest with fair exchange</li><li>describes stages 3 and 4: expectations and praise of others; laws for social order, authority seldom questioned</li></ul></div>
+<div class="sk"><b>K2</b> <span class="q">Can it be problematic to remain in the law and order stage (Kohlberg) of moral development?</span><ul><li>describes stage 4: laws obeyed because they are useful for social order; authority seldom questioned (slide 20)</li><li>says many adults never reach stages 5 and 6, or stall at 3 and 4 (slide 20, course notes)</li><li>explains the problem: following laws because they are laws cannot detect an unjust or flawed law or convention</li></ul></div>
+<div class="sk"><b>K3</b> <span class="q">What is the conventional level of moral development (Kohlberg), and why is it not the final level?</span><ul><li>defines the conventional level as stages 3 and 4: expectations of others, laws for social order (slides 19–20)</li><li>says it is not final because conventions may be flawed or only accidentally right (course notes)</li><li>states Singer&#x27;s view that equality is a moral ideal, not a fact: equal consideration of interests, not the same rights (slides 26–27)</li></ul></div>
+<div class="sk"><b>K4</b> <span class="q">Why does Kohlberg describe a stage 6 of moral development?</span><ul><li>states stage 5: laws improved through the social contract and democratic agreements (slide 22)</li><li>says democracy can fail: the tyranny of the majority (slide 23)</li><li>states stage 6: laws valid only insofar as grounded in justice (Martin Luther King)</li></ul></div>
+<h2>Skeletons: Lectures 4 and 5: utilitarianism</h2>
+<div class="sk"><b>U1</b> <span class="q">Does utilitarianism ask us to maximize happiness for the majority (over 50%)?</span><ul><li>answers no: utilitarianism maximizes total aggregated utility, however many are helped (l5 slide 6)</li><li>states ECI: each person&#x27;s pleasure and pain counts equally, but this is not equal treatment or just distribution (l4 slide 15)</li><li>gives the row −2 −1 −2 +500 +5 or an example where a minority&#x27;s large gain outweighs a majority&#x27;s small loss (l4 slide 16)</li></ul></div>
+<div class="sk"><b>U2</b> <span class="q">Does utilitarianism ask us to do what causes more pleasure than pain?</span><ul><li>answers no: right iff no available alternative has higher utility (l4 slide 24)</li><li>defines utility as net pleasure minus pain</li><li>says several options may give more pleasure than pain, and only the maximum is right (slide 7)</li></ul></div>
+<div class="sk"><b>U3</b> <span class="q">How can utilitarians know what to do, if moral evaluation is based on the actual consequences of actions they haven&#x27;t done yet?</span><ul><li>says utilitarians cannot know actual consequences in advance and the theory does not claim they can, while rightness still depends on the actual outcome, not the predicted one</li><li>states that utilitarianism is a criterion of right, not a decision procedure; no calculation is required before acting (week 4 notes)</li><li>gives Mill&#x27;s reply: experience (not universal idiocy) tells us what actions tend to cause pain, e.g. lying, corruption, torture (Lecture 5 slide 18)</li></ul></div>
+<div class="sk"><b>U4</b> <span class="q">Utilitarianism says that we should consider interests equally. Does this mean that it advocates justice?</span><ul><li>answers no: ECI counts interests equally in the sum but does not require equal treatment or just distribution</li><li>states slide 33&#x27;s point: equal consideration of interests, but utility is aggregated</li><li>says justice and rights have only derivative value (slide 32)</li></ul></div>
+<div class="sk"><b>U5</b> <span class="q">What arguments can be raised against normative hedonism?</span><ul><li>defines normative hedonism: pleasure the only intrinsic good, pain the only intrinsic bad (l4 slide 13)</li><li>describes the experience machine and its features, including permanent and indistinguishable from reality (slide 22)</li><li>says a normative hedonist should plug in, but most of us would not</li></ul></div>
+<div class="sk"><b>U6</b> <span class="q">What are the main advantages and disadvantages of Mill&#x27;s inclusion of quality in the measurement of utility?</span><ul><li>states Mill&#x27;s view: quality as well as quantity, against Bentham&#x27;s quantity only (l4 slide 22)</li><li>advantage: answers the doctrine of swine objection (slides 12–13)</li><li>explains the competent judges as the test of quality (l4 slide 25)</li></ul></div>
+<div class="sk"><b>U7</b> <span class="q">What is the &quot;Too high for humanity&quot; objection to utilitarianism, and how has Mill responded to it?</span><ul><li>states the objection: it demands too much to require that people always act from the motive of promoting the general interest (slide 14)</li><li>gives the neighbour example or an equivalent everyday act</li><li>states Mill&#x27;s reply: the objection confuses the rule of action with the motive of it; ethics gives the test of duty, not the sole motive (slide 15)</li></ul></div>
+<div class="sk"><b>U8</b> <span class="q">What is the &quot;Doctrine of swine&quot; objection to utilitarianism, and how has Mill responded to it?</span><ul><li>states the objection: a life with no higher end than pleasure is a doctrine worthy only of swine (slide 12)</li><li>says it targets the claim that pleasure is the only intrinsic good</li><li>states Mill&#x27;s reply: pleasures differ in quality as well as quantity (slide 13)</li></ul></div>
+<div class="sk"><b>U9</b> <span class="q">What is the &quot;Lack of time&quot; objection to utilitarianism, and how has Mill responded to it?</span><ul><li>states the objection: no time before acting to calculate the effects on general happiness (slide 17)</li><li>states the universal idiocy reply: any theory fails if its user is assumed to be an idiot (slide 18)</li><li>says experience shows some kinds of action (lying, corruption, torture) tend to cause pain, so no need to calculate every time (slide 18)</li></ul></div>
+<div class="sk"><b>U10</b> <span class="q">What is Mill&#x27;s justification (his &quot;Proof&quot;) for the principle of utility?</span><ul><li>gives the visible/desirable analogy in Mill&#x27;s words (l4 slide 26)</li><li>states the conclusion: happiness is desirable (good), and the general happiness is good for all; a desire-fulfilment theory of welfare (slide 24)</li><li>gives the two readings of &#x27;desirable&#x27;: circular if it means can be desired, wrong if it means good (slide 24)</li></ul></div>
+<div class="sk"><b>U11</b> <span class="q">Why can it be problematic to aggregate utility?</span><ul><li>defines aggregation: everyone&#x27;s pleasure and pain added into one total, ECI, maximize (slide 8)</li><li>states slide 25&#x27;s question: aggregate all utility, or respect individual rights at a cost to general happiness</li><li>says a great harm to one can be outweighed by many small gains, so rights have no weight of their own</li></ul></div>
+<div class="sk"><b>U12</b> <span class="q">How could advocating for perfect impartiality be a problem for utilitarianism?</span><ul><li>states impartiality: distance and emotional proximity do not matter; friend or stranger (slides 34 to 35)</li><li>uses the three kids or the 11 strangers versus family of 10</li><li>gives A2: no ought without can; almost no one can be that impartial</li></ul></div>
+<div class="sk"><b>U13</b> <span class="q">What does utilitarianism say about keeping promises?</span><ul><li>states that a promise is kept only when keeping it maximizes utility, so promises will rarely be kept (slide 28)</li><li>says there is no intrinsic obligation; only the pain of breaking it counts</li><li>uses the dying grandfather with the slide 30 utilities (bait +25 highest) or an equivalent</li></ul></div>
+<div class="sk"><b>U14</b> <span class="q">Are there supererogatory actions in utilitarianism?</span><ul><li>answers no for classical act utilitarianism: the maximizing action is always required (slide 37)</li><li>defines supererogation: beyond the call of duty, moral but optional</li><li>gives Singer&#x27;s strong version (comparable moral significance; marginal utility) and that he calls it correct (slide 36)</li></ul></div>
+<div class="sk"><b>U15</b> <span class="q">Punishment can produce utility through rehabilitation, deterrence or vengeance. Point out morally problematic aspects with each of these, within the framework of utilitarianism (consider the actions it could recommend)</span><ul><li>rehabilitation: not a right or good in itself; life in solitary confinement if that maximizes utility (slide 32)</li><li>deterrence: could recommend framing an innocent or convicting three to catch one guilty</li><li>vengeance: the pleasure of enough people justifies any punishment; guilt not intrinsically relevant</li></ul></div>
+</div>
+</section>
+</body>
+</html>

@@ -1,0 +1,92 @@
+{
+  "title": "LIBS 7102 · Midterm",
+  "subtitle": "Wednesday Oct 28, in class: four or five two-paragraph answers from about six, closed book, two hours, on paper; lectures 1 to 5",
+  "description": "The LIBS 7102 midterm in its own format. The rules and how to spend 120 minutes; how to write a two-paragraph answer the marker rewards, with one question answered three ways; a moral-reasoning drill of trick and analysis tasks; all twenty-five listed practice questions answered in writing against a marker's checklist; two mock midterms of six questions with computing cases, answer four; and a one-page answer-skeleton sheet to memorize the night before.",
+  "intro": ":::exam Midterm facts\n**Midterm: Wednesday Oct 28, in class.** Closed book, two hours, on paper, 20 % of the course. You write four or five two-paragraph answers, choosing from about six (for example, answer 4 of 6). Questions cover lectures 1 to 5 and are taken from the practice list (rare) or very similar to it (typical), often paired with a computing case or asking you to argue a side. It gathers every listed practice question from the five lecture modules.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "midterm-format-and-rules",
+        "note": "read the rules and the time split (5 min)"
+      },
+      {
+        "lesson": "moral-reasoning-drill",
+        "note": "do every item: this question scores all or nothing"
+      },
+      {
+        "lesson": "practice-list-drill",
+        "note": "write each listed answer before revealing; skip the ones you aced in the lecture modules"
+      },
+      {
+        "lesson": "mock-midterm-a",
+        "note": "answer four of six in 100 minutes, on paper if you can"
+      },
+      {
+        "lesson": "answer-skeletons",
+        "note": "read the skeletons and recite the lists; print the sheet"
+      },
+      {
+        "lesson": "mock-midterm-b",
+        "note": "if time is left, a second timed run"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. The exam",
+      "lessons": [
+        {
+          "id": "midterm-format-and-rules",
+          "title": "The midterm: four of six two-paragraph answers in two hours, closed book",
+          "file": "chapters/01-midterm-format-and-rules.md"
+        },
+        {
+          "id": "writing-two-paragraphs",
+          "title": "A full answer states the position in course words, then argues it with an example",
+          "file": "chapters/02-writing-two-paragraphs.md"
+        }
+      ]
+    },
+    {
+      "title": "2. Drills",
+      "lessons": [
+        {
+          "id": "moral-reasoning-drill",
+          "title": "Moral reasoning drill: the question that scores all or nothing",
+          "file": "chapters/03-moral-reasoning-drill.md"
+        },
+        {
+          "id": "practice-list-drill",
+          "title": "The 25 listed questions, answered in writing",
+          "file": "chapters/04-practice-list-drill.md"
+        }
+      ]
+    },
+    {
+      "title": "3. Mock midterms",
+      "lessons": [
+        {
+          "id": "mock-midterm-a",
+          "title": "Mock midterm A: six questions, answer four",
+          "file": "chapters/05-mock-midterm-a.md"
+        },
+        {
+          "id": "mock-midterm-b",
+          "title": "Mock midterm B: six questions, answer four",
+          "file": "chapters/06-mock-midterm-b.md"
+        }
+      ]
+    },
+    {
+      "title": "4. The night before",
+      "lessons": [
+        {
+          "id": "answer-skeletons",
+          "title": "Answer skeletons and the lists to know by heart",
+          "file": "chapters/07-answer-skeletons.md"
+        }
+      ]
+    }
+  ]
+}
