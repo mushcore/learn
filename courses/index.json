@@ -277,6 +277,12 @@
       "description": "Vasco Castela's lectures 1 to 5, one module per lecture, plus a Midterm module: moral reasoning drills, Kohlberg's stages, relativism and objectivism, act utilitarianism I and II, every listed practice question answered in writing against a marker's checklist, two mock midterms and a printable answer-skeleton sheet.",
       "modules": [
         {
+          "id": "libs7102-l2",
+          "title": "Lecture 2",
+          "subtitle": "Conventional morality: conflicts of interest, Piaget and Kohlberg's six stages with stage 4.5, why convention is not the final level, and Singer's \"All animals are equal\"",
+          "description": "Lecture 2 of LIBS 7102: the ten conflicts of interest and conventional morality at work; Piaget's two stages; Heinz and Kohlberg's six stages plus 4.5, each with the slide's wording and how it can go wrong; why stage 4 can be a problem and why stage 6 exists beyond democracy; Singer's \"All animals are equal\": equality as a moral ideal, equal consideration of interests, \"Can they suffer?\", speciesism and the reply to Frankena. Practice answers K1 to K4 and a 16-item mock quiz."
+        },
+        {
           "id": "libs7102-l4",
           "title": "Lecture 4",
           "subtitle": "Act utilitarianism I: from relativism to theories, the hats of hacking, Bentham, equal consideration of interests, the felicific calculus, Mill, the utilitarian procedure, and Jim, the trolley, the fat man, Strangelove and Andy",

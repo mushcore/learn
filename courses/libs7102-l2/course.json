@@ -1,0 +1,73 @@
+{
+  "title": "LIBS 7102 · Lecture 2",
+  "subtitle": "Conventional morality: conflicts of interest, Piaget and Kohlberg's six stages with stage 4.5, why convention is not the final level, and Singer's \"All animals are equal\"",
+  "description": "Lecture 2 of LIBS 7102: the ten conflicts of interest and conventional morality at work; Piaget's two stages; Heinz and Kohlberg's six stages plus 4.5, each with the slide's wording and how it can go wrong; why stage 4 can be a problem and why stage 6 exists beyond democracy; Singer's \"All animals are equal\": equality as a moral ideal, equal consideration of interests, \"Can they suffer?\", speciesism and the reply to Frankena. Practice answers K1 to K4 and a 16-item mock quiz.",
+  "intro": ":::exam Midterm facts\n**Midterm: Wednesday Oct 28, in class.** Closed book, two hours, on paper, 20 % of the course. You write four or five two-paragraph answers, choosing from about six (for example, answer 4 of 6). Questions cover lectures 1 to 5 and are taken from the practice list (rare) or very similar to it (typical), often paired with a computing case or asking you to argue a side. It feeds the four Kohlberg practice questions (K1 to K4).\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "mock-quiz-l2",
+        "note": "take it cold (about 15 min)"
+      },
+      {
+        "lesson": "piaget-and-kohlberg-six-stages",
+        "note": "write the six stages plus 4.5 from memory, then answer K1 and K2"
+      },
+      {
+        "lesson": "why-conventional-is-not-final",
+        "note": "answer K3 and K4 in two paragraphs each"
+      },
+      {
+        "lesson": "singer-all-animals-are-equal",
+        "note": "say why equal consideration is not equal treatment"
+      },
+      {
+        "lesson": "mock-quiz-l2",
+        "note": "retake; aim for 90 % or better"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Convention and Kohlberg",
+      "lessons": [
+        {
+          "id": "conflicts-of-interest-and-convention",
+          "title": "Conventional morality is doing what your co-workers and your boss would do",
+          "file": "chapters/01-conflicts-of-interest-and-convention.md"
+        },
+        {
+          "id": "piaget-and-kohlberg-six-stages",
+          "title": "Kohlberg's six stages run from fear of punishment to universal principles",
+          "file": "chapters/02-piaget-and-kohlberg-six-stages.md"
+        },
+        {
+          "id": "why-conventional-is-not-final",
+          "title": "Convention can be flawed or only accidentally right, so the levels go past it",
+          "file": "chapters/03-why-conventional-is-not-final.md"
+        }
+      ]
+    },
+    {
+      "title": "2. Singer",
+      "lessons": [
+        {
+          "id": "singer-all-animals-are-equal",
+          "title": "Singer: equality means equal consideration of interests, and the test is suffering",
+          "file": "chapters/04-singer-all-animals-are-equal.md"
+        }
+      ]
+    },
+    {
+      "title": "3. Mock quiz",
+      "lessons": [
+        {
+          "id": "mock-quiz-l2",
+          "title": "Mock quiz: Lecture 2",
+          "file": "chapters/05-mock-quiz-l2.md"
+        }
+      ]
+    }
+  ]
+}

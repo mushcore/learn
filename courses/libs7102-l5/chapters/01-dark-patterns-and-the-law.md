@@ -32,7 +32,7 @@ Slide 3 lists what Canada does have:
 
 ## A legal loophole does not make a practice ethical
 
-Slide 2 draws two lessons. First, *legal loophole doesn't mean a practice is ethical*. "No law forbids it" is an empirical claim and "so it is right" is a value conclusion; the step between them is the "ought from is" that lecture 1 calls incomplete. Taking the law as the measure of right is Kohlberg's stage 4, which lecture 2 showed can be *only accidentally right*. Second, *existing privacy regulation already has some teeth so there's no guarantee that you and/or your company wouldn't face legal consequences*: PIPEDA's consent guidelines already reach a deceptive consent screen.
+Slide 2 draws two lessons. First, *legal loophole doesn't mean a practice is ethical*. "No law forbids it" is an empirical claim and "so it is right" is a value conclusion; the step between them is the "ought from is" that lecture 1 calls incomplete. Taking the law as the measure of right is Kohlberg's stage 4, which [lecture 2](#/libs7102-l2/piaget-and-kohlberg-six-stages) showed can be *only accidentally right*. Second, *existing privacy regulation already has some teeth so there's no guarantee that you and/or your company wouldn't face legal consequences*: PIPEDA's consent guidelines already reach a deceptive consent screen.
 
 ## Slide 4 asks whether manipulating users for their own good can be right
 
