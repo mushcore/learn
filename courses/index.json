@@ -269,6 +269,20 @@
           "description": "The midterm in its own four question kinds. The rules and scope with a strategy for each kind; twenty new what-prints programs on timers, scope, hoisting, promises, chaining and async/await, each run in the browser after you commit to an answer; a short-answer bank (REST's constraints, GET vs POST, CORS and preflight, blocking vs non-blocking, localStorage vs sessionStorage, idempotency, readyState, monolith vs microservices, the four XHR steps, PHP's four steps vs Node's three) with key points to tick; coding questions (a Node server that returns the date in blue, an XHR GET, a callback rewritten as a promise chain, CORS headers, a query string); two forty-item mock midterms in the exam's mix; the cheat sheet as a lesson and a print-ready letter page; and a closed-book recall drill of every fixed list in the course."
         }
       ]
+    },
+    {
+      "id": "libs7102",
+      "code": "LIBS 7102",
+      "title": "Ethics for Computing Professionals",
+      "description": "Vasco Castela's lectures 1 to 5, one module per lecture, plus a Midterm module: moral reasoning drills, Kohlberg's stages, relativism and objectivism, act utilitarianism I and II, every listed practice question answered in writing against a marker's checklist, two mock midterms and a printable answer-skeleton sheet.",
+      "modules": [
+        {
+          "id": "libs7102-l4",
+          "title": "Lecture 4",
+          "subtitle": "Act utilitarianism I: from relativism to theories, the hats of hacking, Bentham, equal consideration of interests, the felicific calculus, Mill, the utilitarian procedure, and Jim, the trolley, the fat man, Strangelove and Andy",
+          "description": "Lecture 4 of LIBS 7102: why rejecting relativism needs a normative theory and why \"it depends\" is not relativism; white, black and grey hats and what utilitarianism looks at; Bentham's two sovereign masters, psychological and normative hedonism and the principle of utility; equal consideration of interests and the five-person row, not the majority; the seven dimensions of the felicific calculus and why no kind of action is wrong in itself; Mill's four changes, the Greatest Happiness Principle read correctly, the competent judges and the proof; how a utilitarian can know what to do; Williams's Jim, the trolley, the fat man, Strangelove's ICBM and Andy's lie, each put to you before the verdict. Practice answer U3 and a 20-item mock quiz."
+        }
+      ]
     }
   ]
 }

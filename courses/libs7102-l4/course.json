@@ -1,0 +1,132 @@
+{
+  "title": "LIBS 7102 · Lecture 4",
+  "subtitle": "Act utilitarianism I: from relativism to theories, the hats of hacking, Bentham, equal consideration of interests, the felicific calculus, Mill, the utilitarian procedure, and Jim, the trolley, the fat man, Strangelove and Andy",
+  "description": "Lecture 4 of LIBS 7102: why rejecting relativism needs a normative theory and why \"it depends\" is not relativism; white, black and grey hats and what utilitarianism looks at; Bentham's two sovereign masters, psychological and normative hedonism and the principle of utility; equal consideration of interests and the five-person row, not the majority; the seven dimensions of the felicific calculus and why no kind of action is wrong in itself; Mill's four changes, the Greatest Happiness Principle read correctly, the competent judges and the proof; how a utilitarian can know what to do; Williams's Jim, the trolley, the fat man, Strangelove's ICBM and Andy's lie, each put to you before the verdict. Practice answer U3 and a 20-item mock quiz.",
+  "intro": ":::exam Midterm facts\n**Midterm: Wednesday Oct 28, in class.** Closed book, two hours, on paper, 20 % of the course. You write four or five two-paragraph answers, choosing from about six (for example, answer 4 of 6). Questions cover lectures 1 to 5 and are taken from the practice list (rare) or very similar to it (typical), often paired with a computing case or asking you to argue a side. With Lecture 5 it feeds fifteen of the twenty-five listed practice questions, usually three of the six questions on the paper.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "mock-quiz-l4",
+        "note": "take it cold (about 20 min) to see what you already know"
+      },
+      {
+        "lesson": "from-relativism-to-theories",
+        "note": "write every case and practice answer before revealing"
+      },
+      {
+        "lesson": "hats-of-hacking",
+        "note": "write every case and practice answer before revealing"
+      },
+      {
+        "lesson": "bentham-and-the-principle-of-utility",
+        "note": "write every case and practice answer before revealing"
+      },
+      {
+        "lesson": "equal-consideration-of-interests",
+        "note": "write every case and practice answer before revealing"
+      },
+      {
+        "lesson": "felicific-calculus-and-no-intrinsic-wrong",
+        "note": "write every case and practice answer before revealing"
+      },
+      {
+        "lesson": "mill-refines-bentham",
+        "note": "write every case and practice answer before revealing"
+      },
+      {
+        "lesson": "the-utilitarian-algorithm",
+        "note": "write every case and practice answer before revealing"
+      },
+      {
+        "lesson": "jim-and-the-twenty",
+        "note": "write every case and practice answer before revealing"
+      },
+      {
+        "lesson": "trolley-fat-man-strangelove-andy",
+        "note": "write every case and practice answer before revealing"
+      },
+      {
+        "lesson": "mock-quiz-l4",
+        "note": "retake; aim for 90 % or better"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. From relativism to theories",
+      "lessons": [
+        {
+          "id": "from-relativism-to-theories",
+          "title": "Rejecting relativism leaves open which theory tells you what to do",
+          "file": "chapters/01-from-relativism-to-theories.md"
+        },
+        {
+          "id": "hats-of-hacking",
+          "title": "White, black and grey hats differ by permission and intent; utilitarianism looks only at outcomes",
+          "file": "chapters/02-hats-of-hacking.md"
+        }
+      ]
+    },
+    {
+      "title": "2. Bentham",
+      "lessons": [
+        {
+          "id": "bentham-and-the-principle-of-utility",
+          "title": "Bentham: pleasure and pain are our two sovereign masters, and utility is the test of right",
+          "file": "chapters/03-bentham-and-the-principle-of-utility.md"
+        },
+        {
+          "id": "equal-consideration-of-interests",
+          "title": "Equal consideration counts everyone's interests equally; it does not treat everyone equally",
+          "file": "chapters/04-equal-consideration-of-interests.md"
+        },
+        {
+          "id": "felicific-calculus-and-no-intrinsic-wrong",
+          "title": "Bentham measures pleasure on seven dimensions, so no kind of action is wrong in itself",
+          "file": "chapters/05-felicific-calculus-and-no-intrinsic-wrong.md"
+        }
+      ]
+    },
+    {
+      "title": "3. Mill and the procedure",
+      "lessons": [
+        {
+          "id": "mill-refines-bentham",
+          "title": "Mill adds quality to pleasure and a proof, and judges concrete actions",
+          "file": "chapters/06-mill-refines-bentham.md"
+        },
+        {
+          "id": "the-utilitarian-algorithm",
+          "title": "Right means maximizing actual utility, a test of actions, not a decision procedure",
+          "file": "chapters/07-the-utilitarian-algorithm.md"
+        }
+      ]
+    },
+    {
+      "title": "4. The cases",
+      "lessons": [
+        {
+          "id": "jim-and-the-twenty",
+          "title": "Jim and the twenty: Williams offers Jim one prisoner to shoot, or Pedro kills all twenty",
+          "file": "chapters/08-jim-and-the-twenty.md"
+        },
+        {
+          "id": "trolley-fat-man-strangelove-andy",
+          "title": "The trolley, the fat man, Strangelove and Andy: utilitarianism makes the outcome decide",
+          "file": "chapters/09-trolley-fat-man-strangelove-andy.md"
+        }
+      ]
+    },
+    {
+      "title": "5. Mock quiz",
+      "lessons": [
+        {
+          "id": "mock-quiz-l4",
+          "title": "Mock quiz: Lecture 4",
+          "file": "chapters/10-mock-quiz-l4.md"
+        }
+      ]
+    }
+  ]
+}
