@@ -782,7 +782,8 @@ function dragData(box, cfg) {
     });
 
     statOut.innerHTML = "";
-    for (const [l, v] of [["Mean", fmtNum(st.mean)], ["Median", fmtNum(st.median)], ["s", fmtNum(st.s)], ["IQR", fmtNum(st.iqr)]]) {
+    const cv = st.mean ? (st.s / Math.abs(st.mean)) * 100 : 0;
+    for (const [l, v] of [["Mean", fmtNum(st.mean)], ["Median", fmtNum(st.median)], ["s", fmtNum(st.s)], ["CV = s / x̄", fmtNum(cv, 2) + " %"], ["IQR", fmtNum(st.iqr)]]) {
       const c = el("div", "stat-cell");
       c.append(el("div", "stat-label", l), el("div", "stat-value", v));
       statOut.append(c);
