@@ -49,6 +49,11 @@ Vaal Orb, "not the Vaal version": $1 - \dfrac{1}{4} = \dfrac{3}{4} = 0.7500$.
 
 The sheet's "Probability Rules" block prints this one too, as the last line: $P(A') = 1 - P(A)$ "for any event $A$". Find it there rather than recalling it.
 
+```widget
+prob-rules
+{"preset": "heart or Ace", "title": "The complement is the region outside the circles: P(neither) = 1 − P(A ∪ B)"}
+```
+
 ### Independent events multiply
 
 Two events are **independent** when one happening does not change the chance of the other. In MapleStory Classic a scroll, the item that tries to add a stat to gear, passes 60 % at the Intermediate tier and 10 % at the Greater tier by meowdb's copy of the in-game item text. Each scroll is its own roll with the same printed rate, so the first passing does nothing to the second.
@@ -56,6 +61,10 @@ Two events are **independent** when one happening does not change the chance of 
 For independent events, the chance that both happen is the product. **On the sheet**, under Probability Rules: $P(A \cap B) = P(A)\,P(B)$ "if events A and B are independent" ($\cap$ means "and").
 
 Two Intermediate scrolls, both pass: $0.6 \times 0.6 = 0.3600$.
+
+```diagram
+{"type": "grid", "title": "Two Intermediate scrolls: the sample space", "nodes": [{"id": "r0c0", "label": "1st \\ 2nd", "row": 0, "col": 0}, {"id": "r0c1", "label": "Pass 0.6", "row": 0, "col": 1}, {"id": "r0c2", "label": "Fail 0.4", "row": 0, "col": 2}, {"id": "r1c0", "label": "Pass 0.6", "row": 1, "col": 0}, {"id": "r1c1", "label": "0.6 × 0.6", "row": 1, "col": 1}, {"id": "r1c2", "label": "0.6 × 0.4", "row": 1, "col": 2}, {"id": "r2c0", "label": "Fail 0.4", "row": 2, "col": 0}, {"id": "r2c1", "label": "0.4 × 0.6", "row": 2, "col": 1}, {"id": "r2c2", "label": "0.4 × 0.4", "row": 2, "col": 2}], "hi": ["r1c1"], "caption": "Rows are the first scroll, columns the second. Each cell multiplies its row and column; the lit cell is both pass, 0.3600."}
+```
 
 The same rule works for any number of independent events: multiply them all. Three Greater scrolls all pass: $0.1^3 = 0.0010$.
 
@@ -76,11 +85,20 @@ $$P(\text{at least one}) = 1 - P(\text{none}) = 1 - (1 - p)^n$$
 
 Three Greater scrolls at p = 0.1, at least one passes: $1 - 0.9^3 = 1 - 0.729 = 0.2710$.
 
+```diagram
+{"type": "tree", "title": "Three Intermediate scrolls: none pass, and everything else", "nodes": [{"id": "r", "label": "Scroll 1"}, {"id": "p1", "label": "Pass 0.6", "sub": "at least one", "parent": "r"}, {"id": "f1", "label": "Fail 0.4", "sub": "Scroll 2", "parent": "r"}, {"id": "p2", "label": "Pass 0.6", "sub": "at least one", "parent": "f1"}, {"id": "f2", "label": "Fail 0.4", "sub": "Scroll 3", "parent": "f1"}, {"id": "p3", "label": "Pass 0.6", "sub": "at least one", "parent": "f2"}, {"id": "f3", "label": "Fail 0.4", "sub": "none pass", "parent": "f2"}], "hi": ["f1", "f2", "f3"], "caption": "The lit path is the only way to get none: 0.4 × 0.4 × 0.4 = 0.0640. Every branch off it is \"at least one\" (what follows a pass does not matter), so P(at least one) = 1 − 0.0640."}
+```
+
 :::warn Two traps
 **Adding is wrong.** "At least one of 8 tickets at 2.1 %" is not $8 \times 0.021 = 0.168$: that counts the outcomes with two or more wins more than once. Use $1 - 0.979^8$.
 
 **Without replacement from a fixed list is not independent.** On the PoE1 Hardcore Allflame ladder, 69 of the 200 characters ranked 1–200 were dead. Pick 2 different characters from those 200: once the first is dead, only 68 dead are left in 199, so the second chance changes from $\frac{69}{200}$ to $\frac{68}{199}$. Multiply the *changing* fractions, $\frac{69}{200} \times \frac{68}{199} = 0.1179$, not $0.345 \times 0.345 = 0.1190$.
 :::
+
+```widget
+deal-play
+{"preset": "one deck (N = 52)", "title": "Without replacement the denominator shrinks: each card changes the next card's chance"}
+```
 
 ### When independence is a fair assumption
 
@@ -157,6 +175,11 @@ The pencil part is exact: 6 of the 36 equally likely pairs, (1,6), (2,5), (3,4),
 $$P(X = 7) = \dfrac{6}{36} = 0.1667$$
 
 The complement of the estimate matches the complement rule: $1 - 0.16789 = 0.83211$ against the exact $1 - \frac{1}{6} = 0.8333$.
+
+```widget
+sim-lab
+{"experiment": "dice2", "m": 10000, "target": 7, "title": "Prob.E: as m grows, the share of sums equal to 7 settles near 6/36, so the rest settles near 1 − 1/6"}
+```
 
 **Task 12** draws cards with `replace=TRUE` and `replace=FALSE`. The lab's answer: "using replace=FALSE tends to make the distribution somewhat narrower (less variability) but does not change the center". The two settings give different answers because only the first is independent.
 

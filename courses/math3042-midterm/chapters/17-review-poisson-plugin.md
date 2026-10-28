@@ -42,6 +42,10 @@ $$\lambda = \text{rate} \times \text{interval length}$$
 | 3 per page | half a page | $3 \times 0.5 = 1.5$ |
 | 1 per 20 years | 10 years | $\frac{1}{20} \times 10 = 0.5$ |
 
+```diagram
+{"type": "flow", "title": "Rescale λ: the help line's 20-minute question", "nodes": [{"id": "r", "label": "Rate per unit", "sub": "6 per hour"}, {"id": "t", "label": "× interval length", "sub": "20/60 hour"}, {"id": "l", "label": "λ for this question", "sub": "6 × 20/60 = 2"}], "edges": [{"from": "r", "to": "t"}, {"from": "t", "to": "l"}], "hi": ["l"], "caption": "The same three boxes for the floods: 1/20 per year, × 10 years, λ = 0.5."}
+```
+
 This rescaling is **not** on the sheet; it is the step that earns the first mark.
 
 :::warn λ must match the interval in the question
@@ -70,11 +74,19 @@ Press the $e^x$ key (on most calculators it is SHIFT then ln), then the negative
 - **At most 2**: add three terms, $P(0) + P(1) + P(2)$.
 - **More than 2**: $1 - [P(0) + P(1) + P(2)]$.
 
+```diagram
+{"type": "grid", "title": "Which terms each wording uses", "nodes": [{"id": "r0c0", "label": "Event", "row": 0, "col": 0}, {"id": "r0c1", "label": "P(0)", "row": 0, "col": 1}, {"id": "r0c2", "label": "P(1)", "row": 0, "col": 2}, {"id": "r0c3", "label": "P(2)", "row": 0, "col": 3}, {"id": "r0c4", "label": "Then", "row": 0, "col": 4}, {"id": "r1c0", "label": "exactly 2", "row": 1, "col": 0}, {"id": "r1c1", "label": "", "row": 1, "col": 1}, {"id": "r1c2", "label": "", "row": 1, "col": 2}, {"id": "r1c3", "label": "P(2)", "row": 1, "col": 3}, {"id": "r1c4", "label": "that term", "row": 1, "col": 4}, {"id": "r2c0", "label": "at most 2", "row": 2, "col": 0}, {"id": "r2c1", "label": "P(0)", "row": 2, "col": 1}, {"id": "r2c2", "label": "P(1)", "row": 2, "col": 2}, {"id": "r2c3", "label": "P(2)", "row": 2, "col": 3}, {"id": "r2c4", "label": "add the three", "row": 2, "col": 4}, {"id": "r3c0", "label": "at least 1", "row": 3, "col": 0}, {"id": "r3c1", "label": "P(0)", "row": 3, "col": 1}, {"id": "r3c2", "label": "", "row": 3, "col": 2}, {"id": "r3c3", "label": "", "row": 3, "col": 3}, {"id": "r3c4", "label": "1 − P(0)", "row": 3, "col": 4}, {"id": "r4c0", "label": "more than 2", "row": 4, "col": 0}, {"id": "r4c1", "label": "P(0)", "row": 4, "col": 1}, {"id": "r4c2", "label": "P(1)", "row": 4, "col": 2}, {"id": "r4c3", "label": "P(2)", "row": 4, "col": 3}, {"id": "r4c4", "label": "1 − the sum", "row": 4, "col": 4}], "hi": ["r1c3", "r2c1", "r2c2", "r2c3", "r3c1", "r4c1", "r4c2", "r4c3"], "caption": "Lit cells are the terms you compute. \"At least 1\" and \"more than 2\" compute the lit terms and subtract from 1."}
+```
+
 ### Separate intervals multiply
 
 Counts in intervals that do not overlap are independent, so "exactly 1 in this hour **and** exactly 1 in the next hour" is $P(1) \times P(1)$, each with the one-hour λ.
 
 That is not the same as "exactly 2 in the two hours", which uses the two-hour λ and also counts the 2-then-0 and 0-then-2 splits.
+
+```diagram
+{"type": "flow", "title": "Two separate hours, exactly 1 bus in each", "nodes": [{"id": "now", "label": "Now", "kind": "pill"}, {"id": "h1", "label": "Hour 1", "sub": "exactly 1 · λ = 2 · P(1)"}, {"id": "h2", "label": "Hour 2", "sub": "exactly 1 · λ = 2 · P(1)"}], "edges": [{"from": "now", "to": "h1"}, {"from": "h1", "to": "h2", "label": "then"}], "hi": ["h1", "h2"], "caption": "The hours do not overlap, so they are independent: P(1) × P(1) = 0.0733, each with the one-hour λ."}
+```
 
 ## Sample midterm question: Q11
 
@@ -266,4 +278,21 @@ The first three are mandatory; the rest are "if time".
     "explain": "`dpois(x, lambda)`: x = 3 is the count asked about; lambda is the rescaled mean for 20 minutes, $6 \\times \\frac{20}{60} = 2$. So `dpois(3, 2)`, which gives 0.1804. Writing `dpois(3, 6)` uses the one-hour rate and answers a different question."
   }
 ]
+```
+
+Check the variants with the rate composer, one per rescaled λ:
+
+```widget
+poisson-calc
+{"rate": 6, "per": 60, "unit": "min", "interval": 20, "x": 3, "op": "eq", "presets": false, "title": "Help line: 6 calls per 60 minutes over 20 minutes; set x to 0 for no calls"}
+```
+
+```widget
+poisson-calc
+{"rate": 3, "per": 1, "unit": "page", "interval": 0.5, "x": 2, "op": "le", "presets": false, "title": "Typist: 3 typos per page over half a page, at most 2"}
+```
+
+```widget
+poisson-calc
+{"rate": 2, "per": 60, "unit": "min", "interval": 90, "x": 1, "op": "eq", "presets": false, "title": "Buses: 2 per 60 minutes; interval 90 for the 90-minute λ, 60 for one hour"}
 ```

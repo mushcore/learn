@@ -49,6 +49,10 @@ Used when the paper hands you raw numbers (a small data set for a median, quarti
 | $\Sigma$x² | sum of squares | 232 |
 | minX, Q1, Med, Q3, maxX | five-number summary | 2, 4, 4.5, 6, 9 |
 
+```diagram
+{"type": "grid", "title": "The 1-Var Stats screen for 2, 4, 4, 4, 5, 7, 9, 5", "nodes": [{"id": "r0c0", "label": "Line", "row": 0, "col": 0}, {"id": "r0c1", "label": "Check value", "row": 0, "col": 1}, {"id": "r1c0", "label": "n", "row": 1, "col": 0}, {"id": "r1c1", "label": "8", "row": 1, "col": 1}, {"id": "r2c0", "label": "x̄", "row": 2, "col": 0}, {"id": "r2c1", "label": "5", "row": 2, "col": 1}, {"id": "r3c0", "label": "Sx", "row": 3, "col": 0}, {"id": "r3c1", "label": "2.138", "row": 3, "col": 1}, {"id": "r4c0", "label": "σx", "row": 4, "col": 0}, {"id": "r4c1", "label": "2", "row": 4, "col": 1}, {"id": "r5c0", "label": "Σx", "row": 5, "col": 0}, {"id": "r5c1", "label": "40", "row": 5, "col": 1}, {"id": "r6c0", "label": "Σx²", "row": 6, "col": 0}, {"id": "r6c1", "label": "232", "row": 6, "col": 1}, {"id": "r7c0", "label": "minX", "row": 7, "col": 0}, {"id": "r7c1", "label": "2", "row": 7, "col": 1}, {"id": "r8c0", "label": "Q1", "row": 8, "col": 0}, {"id": "r8c1", "label": "4", "row": 8, "col": 1}, {"id": "r9c0", "label": "Med", "row": 9, "col": 0}, {"id": "r9c1", "label": "4.5", "row": 9, "col": 1}, {"id": "r10c0", "label": "Q3", "row": 10, "col": 0}, {"id": "r10c1", "label": "6", "row": 10, "col": 1}, {"id": "r11c0", "label": "maxX", "row": 11, "col": 0}, {"id": "r11c1", "label": "9", "row": 11, "col": 1}], "hi": ["r3c0", "r3c1"], "caption": "Sx is the paper's s, with n − 1."}
+```
+
 The paper's $s$ is **Sx**. Use $\sigma$x only when the question says the data are the whole population.
 
 Q1 and Q3 here match the course's hand method (median of each half, dropping the middle value when $n$ is odd), so the fences $Q_1 - 1.5\,IQR$ and $Q_3 + 1.5\,IQR$ can come straight from these lines: $IQR = 6 - 4 = 2$, fences $1$ and $9$.
@@ -99,6 +103,10 @@ e^(−2) × 2 ^ 3 ÷ 3 prb !   enter   →   0.1804
 
 Type `(-)` for the negative sign, never the `−` key.
 
+```diagram
+{"type": "flow", "title": "e to the −2", "nodes": [{"id": "a", "label": "2nd ln"}, {"id": "b", "label": "(-)"}, {"id": "c", "label": "2"}, {"id": "d", "label": "enter"}, {"id": "e", "label": "0.1353", "kind": "pill"}], "edges": [{"from": "a", "to": "b"}, {"from": "b", "to": "c"}, {"from": "c", "to": "d"}, {"from": "d", "to": "e"}], "hi": ["b"], "caption": "The lit key is the negative sign, not the subtraction key."}
+```
+
 ## Binomial and Poisson from the DISTR menu
 
 This is the fastest route on Q11 and on any binomial count, and it also checks a hand calculation.
@@ -106,6 +114,10 @@ This is the fastest route on Q11 and on any binomial count, and it also checks a
 1. `2nd` `data` (stat-reg/distr), arrow right to the **DISTR** tab.
 2. Choose **Binompdf** for P(X = x) or **Binomcdf** for P(X ≤ x); **Poispdf** for P(X = x) or **Poiscdf** for P(X ≤ x).
 3. Answer the prompts in order: Binom asks n, p, then x; Pois asks $\lambda$, then x. Pick the single-value option if it offers a list. Move to CALC and press `enter`.
+
+```diagram
+{"type": "flow", "title": "The DISTR menu path", "nodes": [{"id": "a", "label": "2nd data"}, {"id": "b", "label": "DISTR tab", "sub": "arrow right"}, {"id": "c", "label": "Pick the call", "sub": "Binompdf · Binomcdf · Poispdf · Poiscdf"}, {"id": "d", "label": "Prompts", "sub": "n, p, x or λ, x"}, {"id": "e", "label": "CALC", "sub": "enter", "kind": "pill"}], "edges": [{"from": "a", "to": "b"}, {"from": "b", "to": "c"}, {"from": "c", "to": "d"}, {"from": "d", "to": "e"}], "hi": ["c"], "caption": "pdf is exactly x; cdf is at most x."}
+```
 
 | Call | Keys | Check |
 |---|---|---|
@@ -115,6 +127,10 @@ This is the fastest route on Q11 and on any binomial count, and it also checks a
 | P(X ≤ 2), $\lambda$ = 2 | Poiscdf λ=2 x=2 | 0.6767 |
 
 The cdf is "at most", the same as R's `p` functions, so the inequality table carries over: fewer than k is cdf(k − 1), at least k is 1 − cdf(k − 1), more than k is 1 − cdf(k). There is no hypergeometric or geometric entry; those are the nCr and power lines above.
+
+```diagram
+{"type": "grid", "title": "cdf is at most", "nodes": [{"id": "r0c0", "label": "Words", "row": 0, "col": 0}, {"id": "r0c1", "label": "Calculator", "row": 0, "col": 1}, {"id": "r1c0", "label": "at most k", "row": 1, "col": 0}, {"id": "r1c1", "label": "cdf(k)", "row": 1, "col": 1}, {"id": "r2c0", "label": "fewer than k", "row": 2, "col": 0}, {"id": "r2c1", "label": "cdf(k − 1)", "row": 2, "col": 1}, {"id": "r3c0", "label": "at least k", "row": 3, "col": 0}, {"id": "r3c1", "label": "1 − cdf(k − 1)", "row": 3, "col": 1}, {"id": "r4c0", "label": "more than k", "row": 4, "col": 0}, {"id": "r4c1", "label": "1 − cdf(k)", "row": 4, "col": 1}], "hi": ["r1c0", "r1c1"], "caption": "Every other wording is moved onto at most first."}
+```
 
 :::warn Write the formula anyway
 The marks are for the setup. Even when the DISTR menu gives the number, write "Let X = ...", the pmf from the sheet, and the substituted line, then the number. A bare 0.1804 earns one mark of three.
