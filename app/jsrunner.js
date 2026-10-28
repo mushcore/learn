@@ -72,8 +72,20 @@ function shimMain(cfg, serialize) {
   const prompts = cfg.prompts.slice();
   window.prompt = () => (prompts.length ? prompts.shift() : null);
 
-  window.addEventListener("error", (e) => emit({ type: "log", level: "error", text: e.message || "Uncaught error" }));
-  window.addEventListener("unhandledrejection", (e) => emit({ type: "log", level: "error", prefix: "Uncaught (in promise) " }, [e.reason]));
+  const onError = (e) => emit({ type: "log", level: "error", text: e.message || "Uncaught error" });
+  const onRejection = (e) => emit({ type: "log", level: "error", prefix: "Uncaught (in promise) " }, [e.reason]);
+  const listen = () => {
+    window.addEventListener("error", onError);
+    window.addEventListener("unhandledrejection", onRejection);
+  };
+  listen();
+  // document.write after the page has loaded (inside a timer, say) implicitly calls
+  // document.open(), which erases every listener on the window. Re-adding the same handler is a
+  // no-op, so listen() runs after every write, writeln and open.
+  for (const name of ["write", "writeln", "open"]) {
+    const orig = document[name];
+    document[name] = function (...a) { try { return orig.apply(this, a); } finally { listen(); } };
+  }
 
   // Pending work: a timer counts until it fires (or is cleared); an interval until cleared;
   // an XHR until loadend; a fetch until it settles.
