@@ -17,14 +17,14 @@ The midterm allows **one letter-sized sheet, both sides, written or typed, figur
 ### CSS (L1)
 
 - **Inline** (the `style` attribute), **internal** (`<style>` in the head), **external** (`<link rel="stylesheet" href="my.css">`). A rule-set = selector + declaration block `{ name: value; }`.
-- Selectors `p`, `#firstId`, `.firstClass`, `p.myClass` (only `<p>` elements with that class), `h1, h2` (grouping). Combinators: `div p` descendant, `>` child, `+` adjacent sibling, `~` general sibling. Specificity: id > class > element.
+- Selectors `p`, `#firstId`, `.firstClass`, `p.myClass` (only `<p>` elements with that class), `h1, h2` (grouping). **Combinators**: `div p` (space) descendant, `>` child, `+` adjacent sibling, `~` general sibling. Specificity: id > class > element.
 - Box model, inside out: **content → padding → border → margin** (slide example: width 300px, padding 20px, border 10px, margin 30px; padding and margin are transparent).
-- `display:none` frees the space; `visibility:hidden` keeps it; both stay in the DOM. position: **static** (default), relative, absolute, **fixed** (browser window), sticky.
+- `display:none` frees the space; `visibility:hidden` keeps it; both stay in the DOM. **position**: static (default, document flow), relative, absolute, fixed (browser window), sticky.
 - pt = 1/72 inch; **em** = the element's font-size; **%** = the parent. RGB 0–255; alpha 0 transparent to 1 opaque.
 
 ### JS values (L1)
 
-- Six primitives: Boolean, null, undefined, Number, String, Symbol; plus Object. Arrays are objects: `typeof []` is `"object"`.
+- **Six primitives**: Boolean, null, undefined, Number, String, Symbol; plus Object. Arrays are objects: `typeof []` is `"object"`.
 - `==` converts types; `===` does not (type first, then value).
 
 | `==` | `===` |
@@ -43,7 +43,9 @@ The midterm allows **one letter-sized sheet, both sides, written or typed, figur
 - Parameter = the name in the definition; argument = the value passed. Every function returns at least `undefined`: `console.log(console.log('Hi!'))` prints `Hi!` then `undefined`.
 - Arrow forms: `() => {}`, `val => "Hi " + val` (one parameter, parentheses optional), `(a, b) => a + b`.
 
-### Scope and hoisting (L1 s115–134, L3)
+### Scope and hoisting (L1 s115–134)
+
+**Hoisting** (s132): the engine treats every `var` declaration as if it were at the top of its function scope.
 
 | | `var` | `let` (and `const`) |
 |---|---|---|
@@ -73,7 +75,8 @@ Course style: **const first, then let, never var**.
 ### Event queue (L1 s161–162, L6 s17)
 
 - `setTimeout(f, t)` runs `f` once after `t` ms; `setInterval(f, t)` repeats.
-- Promise handlers "do NOT wait for all code in the program. They wait only for the current call stack to unwind."
+- The callback waits in the **event (callback) queue** and runs only when the **call stack is empty**, so the synchronous lines after `setTimeout` run first; 0 ms does not make it earlier.
+- Promise handlers (**microtasks**) "do NOT wait for all code in the program. They wait only for the current call stack to unwind."
 - Order: **1 call stack** (all synchronous code, executor bodies) → **2 microtasks** (every `.then`/`.catch`/`.finally` handler) → **3 timers** (one at a time, even at 0 ms; microtasks run again after each).
 
 ```js
@@ -90,13 +93,13 @@ console.log(4);           // 4 3 1 2
 
 ### OOP, style, hosting (L1)
 
-- `class Car extends Vehicle { constructor(b) { super(b); } }` is inheritance, **is-a**; composition is **has-a** (a Car is given an Engine, so the Engine can be swapped without changing Car). Template string: `` `Hi ${name}` ``.
+- **Inheritance**: `class Car extends Vehicle { constructor(b) { super(b); } }` is **is-a**; the subclass inherits properties and methods. **Composition** is **has-a** and more flexible: a Car is given an Engine, so the Engine can be swapped without changing Car. Template string: `` `Hi ${name}` ``.
 - One task per function, no needless globals, no hard-coded user-facing strings (keep `"Your score is %1 for today"` in a separate file).
-- **Shared** (hundreds of sites share; cheapest, maybe slowest; enough for the course), **VPS** (your own virtual server), **Dedicated** (one physical machine), **Cloud** (many machines act as one). The host must give a relational DB server, several Node.js apps at once, and an SSL certificate.
+- **Hosting**: **Shared** (hundreds of sites share; cheapest, maybe slowest; enough for the course), **VPS** (fewer sites, your own virtual server), **Dedicated** (one physical machine, all yours), **Cloud** (many machines act as one). The host must give a relational DB server, several Node.js apps at once, and an SSL certificate.
 
 ### JSON (L2 s26–29)
 
-An object has methods, prototypes and references, so it must be serialized to be sent. `JSON.stringify(obj)` turns an object into a string (**serialize**); `JSON.parse(str)` turns a string into an object (**deserialize**). `JSON.stringify({name: "John", age: 22})` gives `'{"name":"John","age":22}'`, whose `typeof` is `"string"`.
+An object has methods, prototypes and references, so it cannot travel over a network: serialize (flatten) it into a string. `JSON.stringify(obj)` turns an object into a string (**serialize**); `JSON.parse(str)` turns a string into an object (**deserialize**). `JSON.stringify({name: "John", age: 22})` gives `'{"name":"John","age":22}'`, whose `typeof` is `"string"`.
 
 ### Web Storage (L2 s30–44, L3 s7)
 
@@ -104,37 +107,24 @@ An object has methods, prototypes and references, so it must be serialized to be
 |---|---|
 | no expiration date | one session: lost when the browser **tab** closes |
 
-- **Per origin** (protocol + domain + port; the path does not matter; a subdomain is another origin): "same origin, same browser, same machine". About 5 MB.
-- **Strings only**: `getItem` returns a string or `null`. `setItem(k, v)`, `getItem(k)`, `removeItem(k)`, `clear()`. Store an object with `setItem("user", JSON.stringify(o))`; read it with `JSON.parse(localStorage.getItem("user"))`.
-- F12 → Application → Local Storage. Password: "No. Never." Auth token: "it can", with an XSS risk. A cart that follows you to every device lives on the server.
+- Both live in the browser, not on the server. **Per origin** (protocol + domain + port; the path does not matter; a subdomain is another origin): "same origin, same browser, same machine". About 5 MB.
+- **Strings only**: `getItem` returns a string or `null`. API: `setItem(k, v)`, `getItem(k)`, `removeItem(k)`, `clear()`.
+- F12 → Application → Local Storage. Password: "No. Never." (any script on the page can read it: XSS). Auth token: "it can", with an XSS risk. A cart that follows you to every device lives on the server.
+
+```js
+localStorage.setItem("list", JSON.stringify(books));  // page 1
+const s = localStorage.getItem("list");   // page 2: string or null
+const list = s ? JSON.parse(s) : [];      // handle the empty store
+```
 
 ### Architecture (L2 s4–22)
 
 - "Architecture is not code. It is the decisions you make before you write code." Order: **Monolithic → Layered → Microservices**.
-- **Monolithic**: all logic in one deployable unit, one machine, one stack. To add a feature: 1 shut down the entire application, 2 add the feature, 3 (may need to) recompile everything. Good for MVPs; hard to scale.
+- **Monolithic**: all logic in one deployable unit, one machine, one stack. To add a feature: 1 shut down the entire application, 2 add the feature, 3 (may need to) recompile everything. Best for prototyping, MVPs; hard to scale.
 - **Layered (n-tier)**, top to bottom: **Presentation** (UI, e.g. form page), **Business** (e.g. decision making, routing requests), **Application** (core functions, e.g. libraries), **Data access** (e.g. databases).
-- **Microservices**: "a collection of loosely coupled, independently deployable services". Pros: fix one service without shutting everything down; one function each, so separate teams; each on its own machine and stack. Cons: many API calls raise complexity; orchestration and monitoring needed.
+- **Microservices**: "a collection of loosely coupled, independently deployable services". Pros: fix one service (billing) and redeploy it alone while the rest keep running (Messenger stays up when Facebook is down); one function each, so separate teams; each on its own machine and stack. Cons: many API calls raise complexity; orchestration, monitoring and careful API design needed.
 - **Reliability** = works correctly under normal conditions. **Robustness** = handles bad input safely (invalid JSON → 400 Bad Request). **Resilience** = survives and recovers (the store still sells when recommendations fail).
-- SOA ≈ MSA "in this course". The course uses a simplified, API-centric MSA: client scripts send "AJAX API calls" to the API gateway (single entry point), which talks to the services and returns "JSON"; API calls follow REST; client and servers sit on different origins. Products mix patterns (Netflix); others: Event-Driven, Serverless, MVC, MVVM, Hexagonal, CQRS.
-
-## Side 2
-
-### Web API anatomy, GET vs POST (L3 s25–39)
-
-Four parts: **Headers**, **Data** (body, message), **Endpoint** (the URL the API server listens on), **HTTP Methods**: GET get, POST create, PUT update, DELETE delete. Query string: `?name1=value1&name2=value2`. A web server returns HTML (which can change any time); an API server returns JSON/XML (which does not). Map search → GET; online banking login → POST.
-
-| | GET | POST |
-|---|---|---|
-| Back / reload | harmless | data re-submitted (browser warns) |
-| Bookmarked | can be | cannot be |
-| Cached | can be cached | never cached |
-| History | parameters remain | not saved |
-| Data length | max URL length 2048 characters | no restrictions |
-| Data type | only ASCII | binary also allowed |
-| Security | less safe; never for passwords | "a little safer" |
-| Visibility | visible in the URL | not in the URL (body) |
-
-Which is secure? "**none!**" Data is not encrypted by default; use https. There is no standard limit on response size for either (L6 s54). **PUT** replaces the object; **PATCH** updates a property. **Idempotent** = applied many times without changing the result: PUT is, POST is not (it can place an order twice).
+- SOA ≈ MSA "in this course". The course uses a simplified, API-centric MSA: client scripts send "AJAX API calls" to the API gateway (single entry point), which talks to the services and returns "JSON"; API calls follow REST; client and servers sit on different origins. Others: Event-Driven, Serverless, MVC, MVVM.
 
 ### REST (L3 s44–53)
 
@@ -142,41 +132,65 @@ Representational State Transfer: an architectural **style, a set of constraints*
 
 | Constraint, in order | Meaning · benefit (example) |
 |---|---|
-| 1 Client–Server | UI on the client, data and logic on the server · separation, evolvability (GitHub) |
-| 2 Stateless | each request carries all the info: ask for page 51, not "the next page" · scalability |
+| 1 Client–Server | separation of concerns: UI on the client, data and logic on the server · evolvability (GitHub web, mobile, CLI) |
+| 2 Stateless | each request carries all the info, no session state: ask for page 51, not "the next page" · scalability |
 | 3 Cacheable | the server marks responses with Cache-Control, ETag, Expires · performance |
 | 4 Uniform Interface **(core)** | `/users/123`; nouns in the URL, verbs are HTTP methods · predictability |
-| 5 Layered System | the client can't tell a proxy or gateway from the server · flexibility, security (AWS API Gateway) |
+| 5 Layered System | the client can't tell the origin server from a proxy or gateway · flexibility, security (AWS API Gateway) |
 
-Code-on-Demand appears only on s53. The gateway is the single entry point; it does routing, authentication, auditing.
+Code-on-Demand is the optional sixth, on s53 only. The gateway is the single entry point; it does routing, authentication, auditing.
+
+## Side 2
+
+### Web API anatomy, GET vs POST (L3 s25–39)
+
+Four parts: 1 **Headers** (request: API-key; response: status, content-type), 2 **Data** (body, message), 3 **Endpoint** (the URL where the API server listens), 4 **HTTP Methods**: GET get, POST create, PUT update, DELETE delete. Query string: `?name1=value1&name2=value2`. A web server returns HTML (which can change any time); an API server returns JSON/XML (which does not). Map search → GET; online banking login → POST.
+
+| | GET | POST |
+|---|---|---|
+| Where | query string in the URL | request body |
+| Back / reload | harmless | data re-submitted (browser warns) |
+| Bookmark · cache · history | can · can · parameters remain | cannot · never · not saved |
+| Data length | max URL length 2048 characters | no restrictions |
+| Data type | only ASCII | binary also allowed |
+| Security / visibility | less safe; visible in the URL | "a little safer"; not in the URL |
+
+Which is secure? "**none!**" Data is not encrypted by default; use https. There is no standard limit on response size for either (L6 s54). **PUT** replaces the whole object; **PATCH** updates one property. **Idempotent** = applied many times, same result: PUT is, POST is not (a repeated POST can place an order twice). Saving a whole edited record is a PUT.
 
 ### Node.js (L4)
 
-- Open-source JavaScript runtime on Chrome V8 that runs JS **outside** the browser. "Single-threaded, non-blocking, asynchronous" *[real: the event loop is single-threaded; file work runs on a thread pool]*.
-- **PHP/ASP, 4 steps**: send the task → wait while the file is read → return the content → ready for the next request. **Node, 3 steps**: send the task → ready for the next request → return the content when the file is read.
-- Restaurant: Example 1, one waiter serves everyone = single-threaded **non-blocking** (JavaScript); Example 2, the waiter waits at the kitchen = single-threaded **blocking**; Example 3 = **multi-threaded** (100 requests → 100 threads).
-- Modules: `exports.area = function (r) {…};` then `const mo = require('./modules/math');` (`./` = same folder, `.js` optional). Built-in `http`, `url`, `fs`; `mysql` needs `npm install mysql`.
+- Open-source JavaScript runtime on Chrome V8 that runs JS **outside** the browser. "Single-threaded, non-blocking, asynchronous", memory efficient *[real: the event loop is single-threaded; a thread pool reads files]*.
+- **PHP/ASP, 4 steps**: send the task to the file system → wait while the file is read → return the content → ready for the next request. **Node, 3 steps**: send the task → ready for the next request → return the content when the file is read. Node eliminates the waiting.
+- **Restaurant**: Example 1, one waiter serves all tables = single-threaded **non-blocking** (Node); Example 2, the waiter waits at the kitchen = single-threaded **blocking** (the waiter is not used efficiently); Example 3, one waiter per table = **multi-threaded** (100 requests → 100 threads).
+- Modules: `exports.area = function (r) {…};` then `const mo = require('./modules/math');` (`./` = same folder, `.js` optional; the exported and the called names must match). Built-in `http`, `url`, `fs`; `mysql` needs `npm install mysql`.
 
 ```js
 const http = require('http');
 const url = require('url');
 const fs = require('fs');
-http.createServer(function (req, res) {
-  const q = url.parse(req.url, true);   // ?name=John → q.query.name
-  fs.readFile("." + q.pathname, function (err, data) {
-    if (err) {
-      res.writeHead(404, {'Content-Type': 'text/html'});
-      return res.end(q.pathname + " 404 Not Found!");
-    }
-    res.writeHead(200, {'Content-Type': 'text/html',
-                        'Access-Control-Allow-Origin': '*'});
-    res.write(data);
-    return res.end();
+const CORS = { "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type" };
+http.createServer(function (req, res) {    // res.writeHead, not req
+  if (req.method === "OPTIONS") {          // answer the preflight
+    res.writeHead(204, CORS);  return res.end(); }
+  const q = url.parse(req.url, true);  // true → q.query is an object
+  if (q.pathname === "/time") {
+    res.writeHead(200, {"Content-Type": "text/html"}); // status, not port
+    res.end('<p style="color:blue">' + new Date() + '</p>');
+  } else if (q.pathname === "/greet") {    // /greet?name=Ana&city=Burnaby
+    res.writeHead(200, {"Content-Type": "text/plain", ...CORS});
+    res.end("Hello " + q.query.name + " from " + q.query.city);
+  } else fs.readFile("." + q.pathname, function (err, data) {
+    if (err) { res.writeHead(404, {'Content-Type': 'text/html'});
+               return res.end(q.pathname + " 404 Not Found!"); }
+    res.writeHead(200, {'Content-Type': 'text/html'});
+    res.write(data);  return res.end();
   });
-}).listen(8888);           // try http://localhost:8888/file.txt
+}).listen(8888);             // http://localhost:8888/file.txt
 ```
 
-`url.parse('http://localhost:8888/default.htm?name=John&age=23', true)`: `host` 'localhost:8888', `pathname` '/default.htm', `search` '?name=John&age=23', `query` {name: 'John', age: '23'}. Status: 200 OK, 3xx redirection, 4xx client error (403 Forbidden, 404 Not Found), 5xx server error.
+`url.parse('http://localhost:8888/default.htm?name=John&age=23', true)`: `host` 'localhost:8888', `pathname` '/default.htm', `search` '?name=John&age=23', `query` {name: 'John', age: '23'} (strings). Without `true`, `query` is the string, so `q.query.name` is `undefined`. **Status**: 200 OK, 3xx redirection, 4xx client error (403 Forbidden, 404 Not Found), 5xx server error.
 
 ### AJAX with XMLHttpRequest (L5 s4–9, L6 s55)
 
@@ -187,7 +201,7 @@ xhttp.onreadystatechange = function () {     // 2 handler
     document.getElementById("demo").innerHTML = this.responseText;
   }
 };
-xhttp.open("GET", "http://localhost:8888/?name=John", true);  // 3
+xhttp.open("GET", "/api/echo?city=" + city, true);  // 3 (method, url, async)
 xhttp.send();                     // 4 send (async true: don't wait)
 ```
 
@@ -196,28 +210,29 @@ xhttp.send();                     // 4 send (async true: don't wait)
 | 0 | UNSENT | object created, `open()` not called |
 | 1 | OPENED | `open()` called |
 | 2 | HEADERS_RECEIVED | `send()` called, response headers available |
-| 3 | LOADING | response arriving, `responseText` updated; repeats for a chunked response |
+| 3 | LOADING | response arriving; repeats for a large, chunked response |
 | 4 | DONE | complete: success (2xx) or an error, so check `status` too |
 
-L6 s55: the w3schools list ("1 server connection established, 2 request received, 3 processing request") is **not accurate**; the names above are.
+L6 s55: the w3schools list ("2 request received, 3 processing request") is **not accurate**.
 
 ```js
 // POST: data in the body (GET: in the URL; a send() body is ignored)
 xhttp.open("POST", endPointRoot + "patients/", true);
-xhttp.setRequestHeader("Content-type",
-                       "application/x-www-form-urlencoded");
+xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 xhttp.send("name=John&age=23");
-let body = "";              // server: body arrives in chunks
+let body = "";      // server, req.method === "POST": body in chunks
 req.on('data', function (chunk) { body += chunk; });
-req.on('end', function () {
-  const name = new URLSearchParams(body).get("name"); });
+req.on('end', function () {                 // all data arrived
+  const name = new URLSearchParams(body).get("name");  // string
+  res.writeHead(200, {"Access-Control-Allow-Origin": "*"});
+  res.end("Saved " + name); });             // reply inside 'end'
 ```
 
 ### CORS (L5 s15–21)
 
-- "CORS is a security feature **implemented in web browsers** and is **configured by the contacted server** in the response's header." The default is the **Same-Origin Policy**: browsers block cross-origin requests unless the server explicitly allows it.
-- **Origin = domain + protocol + port** (80 is the default for HTTP, 443 for HTTPS). `"Access-Control-Allow-Origin": "*"` in `writeHead` allows all origins; `Access-Control-Allow-Methods` and `Access-Control-Allow-Headers` answer a preflight.
-- **Preflight** = a request with method **OPTIONS** that the browser sends first (for example before a JSON POST; not for form-urlencoded), answered with the Allow headers; then the real request goes out. Postman ignores CORS; a GET typed in the address bar needs no header; CORS is not encryption.
+- "CORS is a security feature **implemented in web browsers** and is **configured by the contacted server** in the response's header." The default is the **Same-Origin Policy** (page and server scripts on one origin): browsers block cross-origin requests unless the server explicitly allows it.
+- **Origin = domain + protocol + port** (80 is the default for HTTP, 443 for HTTPS). `"Access-Control-Allow-Origin": "*"` (or the exact origin) in `writeHead`; also `Access-Control-Allow-Methods` and `Access-Control-Allow-Headers`.
+- **Preflight** = a request with method **OPTIONS** that the browser sends first to ask whether the method and headers are allowed (for example `application/json`; not form-urlencoded or `text/plain`). Postman ignores CORS (it is not a browser); CORS is not encryption.
 
 ```text
 Page script → Browser: send() JSON
@@ -229,10 +244,21 @@ Server → Browser:      4 response + Allow-Origin  → script can read it
 
 ### Promises (L6)
 
-- States: **Pending** → **Fulfilled** (Resolved) via `resolve(v)`, or **Rejected** via `reject(e)`. Fulfilled + Rejected = **Settled**; a settled promise never changes again.
-- The executor runs **immediately** on `new Promise(...)` (promises are eager). resolve/reject change the state synchronously; handlers run **asynchronously, mutually exclusive, only once**; the first call wins and later ones are ignored.
-- `Promise.resolve().then(() => console.log(1)); console.log(2);` prints 2 then 1: handlers never run synchronously.
-- **Order**: synchronous lines (including the executor) → microtasks (handlers, in the order queued) → timers.
+States: **Pending** → **Fulfilled** (Resolved) via `resolve(v)`, or **Rejected** via `reject(e)`. Fulfilled + Rejected = **Settled**; a settled promise never changes again.
+
+**Why promises**: asynchronous work finishes later, after the function has returned, and a function returns one thing; a promise carries success (resolve) or failure (reject). **Callback hell** = nesting each call in the previous callback; a `.then` chain avoids it.
+
+1. **Order**: all synchronous code (executors included) → every **microtask** (handlers, in the order queued, including ones that microtasks queue) → **one timer**, then its microtasks, then the next timer.
+2. The **executor** (the slide spells it "executer") runs **immediately** on `new Promise(...)` (promises are eager).
+3. **Settle once**: the first resolve/reject wins; later calls are ignored. Handlers run asynchronously, mutually exclusive, only once.
+4. Handlers **never run synchronously**, even on an already settled promise: `Promise.resolve().then(f); console.log(2)` logs 2 first.
+5. `.then(s, f)` returns a **new promise**. **Returning a value** fulfils the next one (`return new Error()` fulfils too; a returned promise is waited for). **Throwing** rejects the next one.
+6. A rejection skips success handlers until the next `f` or `.catch`; a `.then`'s `f` watches the promise before it, not its own `s`.
+7. `.catch(f)` = `.then(null, f)`; the chain is fulfilled again with `f`'s return value.
+8. `.finally(f)` ≈ `.then(f, f)`: it runs either way, gets **no argument**, **passes the value or error through**, and does **not** handle the rejection.
+9. A non-function, `.then(42)` or `.then(g())`, is ignored: the value passes through.
+10. No handler → `Uncaught (in promise) …` in the console (slide: terminates the script *[real: the browser keeps running]*). Old Chrome shows the status "resolved" *[real: "fulfilled"]*.
+11. An **async** function always returns a promise. **await** (inside an async function) waits for a promise to resolve or reject and **pauses that function only**: the code after the call runs first. `try`/`catch` around `await` does what `.catch` does.
 
 ```js
 console.log("7");
@@ -243,38 +269,50 @@ console.log("1");
 p.then(m => console.log(m), e => console.log(e));
 console.log("8");                  // 7 2 5 1 8 4   ("3" never)
 
-new Promise(resolve => resolve(1))
-  .then(a => { console.log("First:", a);  return a * 2; })
-  .then(b => { console.log("Second:", b); return b * 3; })
-  .then(c => console.log("Final:", c));
-// First: 1   Second: 2   Final: 6
+const checkStock = qty => new Promise((resolve, reject) => {
+  if (qty <= 5) resolve("reserved " + qty);
+  else reject(new Error("only 5 left")); });
+const findPatientP = id => new Promise(resolve => findPatient(id, resolve));
+findPatientP(7)          // chain, no nesting (findVisitsP made the same way)
+  .then(p => { console.log(p.name); return findVisitsP(p); })
+  .then(v => console.log(v.length + " visits"))
+  .catch(e => console.log(e.message))
+  .finally(() => console.log("done"));
+async function show(id) {          // same with async/await
+  try { const p = await findPatientP(id);   // pauses show() only
+        console.log(p.name);
+        const v = await findVisitsP(p);  console.log(v.length + " visits");
+  } catch (e) { console.log(e.message); }
+}
+show(7);  console.log("after");    // "after" prints before p.name
 ```
-
-- `.then(onSuccess, onFailure)` returns a **new promise**, which is why chaining works. **Returning a value** resolves the next promise; **throwing** rejects it.
-- `.catch(f)` = `.then(null, f)`. `.finally(f)` ≈ `.then(f, f)`: it runs either way, gets no argument, passes the value or error on, and does **not** handle the rejection.
-- A rejection with no handler shows `Uncaught (in promise) …` in the console. Old Chrome shows the status "resolved" *[real: "fulfilled"]*.
-- An **async** function automatically returns a promise; **await** (inside an async function) waits for a promise to resolve or reject.
 
 ### Node to MySQL and CRUD (L5 s31–45, L7)
 
 ```js
 const mysql = require("mysql");      // npm install mysql
-const con = mysql.createConnection({ host: "localhost",
+const con = mysql.createConnection({ host: "localhost",   // 1 create
   user: "root", password: "", database: "webdev" });
-con.connect(function (err) {
+con.connect(function (err) {                               // 2 connect
   if (err) throw err;
   let sql = "INSERT INTO score(name, score) " +
             "values ('elon musk', 2900)";
-  con.query(sql, function (err, result) {
+  con.query(sql, function (err, result) {                  // 3 query
     if (err) throw err;
     console.log("1 record inserted");
   });
 });
 ```
 
-- Three steps: create a mysql object → connect → run a SQL statement. Credentials stay on the server; least privilege (for example a SELECT-only user).
-- **CRUD** = Create (a table or DB), Read, Update (records), Delete (a record, or drop a table). A database is **not** a DBMS.
-- **Primary key**: unique per row. **Foreign key**: "a primary key of another table presents in this table". 1:M patient → visits; M:M through an associative table. **Referential integrity**: deleting a patient leaves its visits meaningless.
+| CRUD | SQL | HTTP |
+|---|---|---|
+| Create (a table or DB) | INSERT (CREATE TABLE) | POST |
+| Read | SELECT | GET |
+| Update (records) | UPDATE | PUT (PATCH) |
+| Delete (a record, or Drop a table) | DELETE (DROP TABLE) | DELETE |
+
+- `mysql` runs in Node, not in the browser: credentials stay on the server, because page code is visible to every visitor; the page calls the API and the server runs `con.query`. **Least privilege**: one DB user per job, the read user has SELECT only (DROP or DELETE is refused). A database is **not** a DBMS.
+- **Primary key**: unique per row (Patient_ID in Patient). **Foreign key**: "a primary key of another table presents in this table" (Patient_ID in Visit). 1:M patient → visits; 1:1 = a UNIQUE foreign key; M:M through an associative table. **Referential integrity**: deleting a patient orphans its visits.
 
 ## Self-test
 
@@ -295,13 +333,16 @@ con.connect(function (err) {
     "explain": "Content sits in the middle, wrapped by padding (transparent), then the border, then the margin (transparent) that separates the box from its neighbours."
   },
   {
-    "type": "match",
-    "q": "Match each storage object to how long its data lasts.",
-    "pairs": [
-      ["`localStorage`", "no expiration date: still there next day, week or year"],
-      ["`sessionStorage`", "one session: lost when the browser tab is closed"]
+    "q": "What does this chain print?",
+    "code": "Promise.resolve(\"room 4\")\n  .finally((arg) => console.log(\"finally got\", arg))\n  .then((room) => console.log(\"then got\", room));",
+    "options": [
+      "finally got undefined, then then got room 4",
+      "finally got room 4, then then got room 4",
+      "finally got room 4, then then got undefined",
+      "finally got undefined, then then got undefined"
     ],
-    "explain": "Both are per origin and store strings only; the difference is lifetime. localStorage has no expiration date; sessionStorage lasts one session and is lost when the tab closes."
+    "answer": 0,
+    "explain": "Rule 8 on side 2: `.finally(f)` runs on either outcome but its callback gets no argument, so `arg` is `undefined`; it passes the value through, so the next `.then` still receives \"room 4\"."
   },
   {
     "type": "text",

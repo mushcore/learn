@@ -12,6 +12,10 @@
         "note": "the rules, the scope, and how to attack each question kind (5 min)"
       },
       {
+        "lesson": "mock-midterm-a",
+        "note": "take it cold and timed, about 100 minutes, no notes"
+      },
+      {
         "lesson": "output-order-drill",
         "note": "write every output before you run it; redo each one you missed"
       },
@@ -26,6 +30,14 @@
       {
         "lesson": "cheat-sheet",
         "note": "print the sheet; add in pen what you still missed"
+      },
+      {
+        "lesson": "mock-midterm-b",
+        "note": "the second paper; aim for 80 % or better"
+      },
+      {
+        "lesson": "recall-drill-all",
+        "note": "every fixed list from memory"
       }
     ]
   },
@@ -61,12 +73,32 @@
       ]
     },
     {
-      "title": "3. The sheet",
+      "title": "3. Mock midterms",
+      "lessons": [
+        {
+          "id": "mock-midterm-a",
+          "title": "Mock midterm A (40 items, exam mix)",
+          "file": "chapters/05-mock-midterm-a.md"
+        },
+        {
+          "id": "mock-midterm-b",
+          "title": "Mock midterm B (40 items, different programs)",
+          "file": "chapters/06-mock-midterm-b.md"
+        }
+      ]
+    },
+    {
+      "title": "4. The sheet and the closed-book drill",
       "lessons": [
         {
           "id": "cheat-sheet",
           "title": "The cheat sheet: both sides of one letter page",
           "file": "chapters/07-cheat-sheet.md"
+        },
+        {
+          "id": "recall-drill-all",
+          "title": "Recall drill: every fixed list in lectures 1 to 7 (closed book)",
+          "file": "chapters/08-recall-drill-all.md"
         }
       ]
     }
