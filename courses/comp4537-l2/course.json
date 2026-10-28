@@ -1,0 +1,79 @@
+{
+  "id": "comp4537-l2",
+  "lang": "js",
+  "title": "COMP 4537 · Lecture 2",
+  "subtitle": "Architectural patterns, JSON and Web Storage: monolithic, layered and microservices, the course's API-centric architecture, JSON.stringify and JSON.parse, localStorage and sessionStorage",
+  "description": "Lecture 2 of Amir Amintabar's Internet Software Architecture: architecture as the interaction/relation among components and the decisions made before code; the qualities patterns help evaluate (efficiency, maintenance, development and extension, robustness, security, modularity, deployment cost); monolithic, layered n-tier (presentation, business, application, data access) and microservices with their pros and cons; reliability vs robustness vs resilience; the course's simplified API-centric microservice architecture with an API gateway, services on different machines and JSON responses; the course outcomes; JSON as the serialized payload with JSON.stringify and JSON.parse; HTML Web Storage: localStorage vs sessionStorage, per-origin scope, the four localStorage calls, strings only, objects through JSON, the writer.html / reader.html pair, the DevTools Application tab and where data should and should not live. Diagrams of every pattern, a live storage simulator and editable writer and reader pages. Ends with a 20-item mock quiz.",
+  "intro": ":::quiz Midterm weight\nThe midterm is 30 % of the course and covers lectures 1 to 6 in full plus the database part of lecture 7. This lecture is 45 of roughly 500 in-scope slides, so expect a small share of the paper: a few multiple-choice items on the localStorage calls, origins and JSON in the shape of Quiz 5, and possibly one short answer from the bank (localStorage vs sessionStorage, or monolith vs microservices). Closed book except one letter-sized sheet, so the four layers, the three microservice pros and two cons, and the four storage calls must come from memory.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "mock-quiz-l2",
+        "note": "take it cold (about 15 min)"
+      },
+      {
+        "lesson": "web-storage",
+        "note": "the four calls, strings only, which origins share, local vs session; run writer and reader"
+      },
+      {
+        "lesson": "json-stringify-and-parse",
+        "note": "which call serializes and which deserializes; navigate a nested response"
+      },
+      {
+        "lesson": "architecture-and-its-patterns",
+        "note": "write monolith vs microservices as a short answer; name the four layers in order"
+      },
+      {
+        "lesson": "api-centric-microservices",
+        "note": "redraw the gateway figure from memory"
+      },
+      {
+        "lesson": "mock-quiz-l2",
+        "note": "retake; aim for 90 % or better"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Internet software architecture",
+      "lessons": [
+        {
+          "id": "architecture-and-its-patterns",
+          "title": "Monolithic, layered and microservice architectures",
+          "file": "chapters/01-architecture-and-its-patterns.md"
+        },
+        {
+          "id": "api-centric-microservices",
+          "title": "The course's API-centric microservice architecture",
+          "file": "chapters/02-api-centric-microservices.md"
+        }
+      ]
+    },
+    {
+      "title": "2. JSON and Web Storage",
+      "lessons": [
+        {
+          "id": "json-stringify-and-parse",
+          "title": "JSON.stringify serializes, JSON.parse deserializes",
+          "file": "chapters/03-json-stringify-and-parse.md"
+        },
+        {
+          "id": "web-storage",
+          "title": "localStorage and sessionStorage, per origin, strings only",
+          "file": "chapters/04-web-storage.md"
+        }
+      ]
+    },
+    {
+      "title": "3. Quiz prep",
+      "lessons": [
+        {
+          "id": "mock-quiz-l2",
+          "title": "Mock quiz: Lecture 2",
+          "file": "chapters/05-mock-quiz-l2.md"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "lang": "js",
+  "title": "COMP 4537 · Midterm",
+  "subtitle": "Exam week Oct 26–30: two hours on the Learning Hub, one double-sided letter cheat sheet; lectures 1 to 6 in full and the Node-to-MySQL part of lecture 7",
+  "description": "The midterm in its own four question kinds. The rules and scope with a strategy for each kind; twenty new what-prints programs on timers, scope, hoisting, promises, chaining and async/await, each run in the browser after you commit to an answer; a short-answer bank (REST's constraints, GET vs POST, CORS and preflight, blocking vs non-blocking, localStorage vs sessionStorage, idempotency, readyState, monolith vs microservices, the four XHR steps, PHP's four steps vs Node's three) with key points to tick; coding questions (a Node server that returns the date in blue, an XHR GET, a callback rewritten as a promise chain, CORS headers, a query string); two forty-item mock midterms in the exam's mix; the cheat sheet as a lesson and a print-ready letter page; and a closed-book recall drill of every fixed list in the course.",
+  "intro": ":::quiz Midterm facts\n**Exam week Oct 26–30 2026; check the Learning Hub for your day.** In person, on the Learning Hub on your own laptop, at most **two hours**, worth **30 % of the course**. One browser tab only; no developer tools. Closed book except **one letter-sized sheet, both sides, written or typed, figures allowed, your name top-left**; it may be collected. Scope: lectures 1 to 6 in full; lecture 7 only the Node.js database connection, sending queries from Node, and CRUD fundamentals. No complicated SQL, no hosting or deployment tools, no VS Code. Four kinds of question: multiple choice, coding, short answers, medium and long answers. Lecture 6 (promises) is the heaviest single topic.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "midterm-format-and-rules",
+        "note": "the rules, the scope, and how to attack each question kind (5 min)"
+      },
+      {
+        "lesson": "output-order-drill",
+        "note": "write every output before you run it; redo each one you missed"
+      },
+      {
+        "lesson": "short-answer-drill",
+        "note": "answer in writing, then tick the key points honestly"
+      },
+      {
+        "lesson": "coding-questions",
+        "note": "write the Node server, the XHR call and the promise chain from a blank editor"
+      },
+      {
+        "lesson": "cheat-sheet",
+        "note": "print the sheet; add in pen what you still missed"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. The exam",
+      "lessons": [
+        {
+          "id": "midterm-format-and-rules",
+          "title": "Two hours, one letter sheet, four kinds of question",
+          "file": "chapters/01-midterm-format-and-rules.md"
+        }
+      ]
+    },
+    {
+      "title": "2. Drills in the exam's question kinds",
+      "lessons": [
+        {
+          "id": "output-order-drill",
+          "title": "What prints: twenty programs on timers, scope, hoisting and promises",
+          "file": "chapters/02-output-order-drill.md"
+        },
+        {
+          "id": "short-answer-drill",
+          "title": "Short and medium answers: the definitions and comparisons the exam asks for",
+          "file": "chapters/03-short-answer-drill.md"
+        },
+        {
+          "id": "coding-questions",
+          "title": "Coding questions: Node servers, XHR, promise chains, CORS and query strings",
+          "file": "chapters/04-coding-questions.md"
+        }
+      ]
+    },
+    {
+      "title": "3. The sheet",
+      "lessons": [
+        {
+          "id": "cheat-sheet",
+          "title": "The cheat sheet: both sides of one letter page",
+          "file": "chapters/07-cheat-sheet.md"
+        }
+      ]
+    }
+  ]
+}

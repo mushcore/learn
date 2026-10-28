@@ -1,0 +1,104 @@
+{
+  "lang": "js",
+  "title": "COMP 4537 · Lecture 4",
+  "subtitle": "Servers and Node.js: what a server is, PHP's four steps against Node's three, the restaurant analogy, modules with require and exports, the http, url and fs built-in modules",
+  "description": "Lecture 4 of Amir Amintabar's COMP 4537: a server as a computer running 24/7 reachable over the internet, the client / web server / DB server / file server / mail server figure, what a server-side script can do, Node.js as an open-source cross-platform JavaScript runtime on Chrome V8, how PHP or ASP handles a file request in four steps and Node.js in three, the restaurant analogy (one non-blocking waiter, one blocking waiter, one waiter per table) and the 100-requests-100-threads figure; then VS Code debugging, the area examples and their wrong formulas, a math.js module loaded with require('./modules/math'), the http server with createServer, writeHead(200, ...), write, end and listen(8888), Access-Control-Allow-Origin, url.parse(adr, true) with host, pathname, search and query, the ?name=John server, and the fs file server with its 404 branch. A playback of the three restaurants and of a request passing through createServer's callback; every Node listing pinned with the output the slide shows. Ends with a 20-item mock quiz in the shape of Quiz 7.",
+  "intro": ":::quiz Midterm weight\nThe midterm is 30 % of the course and covers lectures 1 to 6 in full plus lecture 7's Node-to-MySQL part, so this lecture carries roughly a sixth of the exam's multiple-choice and short-answer marks. It also supplies the Node half of the coding questions: writing a small `http` server that reads a query string, returns HTML with `writeHead(200, ...)`, and answers 404 for a missing file. Quiz 7 drew six of its ten items from these slides. Closed book except one letter-sized double-sided sheet, so the PHP-vs-Node steps, the restaurant mapping and the `url.parse` fields must come from memory or the sheet.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "mock-quiz-l4",
+        "note": "take it cold (about 15 min)"
+      },
+      {
+        "lesson": "servers-and-server-side-scripting",
+        "note": "write PHP's four steps and Node's three from memory; mark the step where each is ready for the next request"
+      },
+      {
+        "lesson": "node-and-the-restaurant",
+        "note": "match Examples 1, 2 and 3 to non-blocking, blocking and multi-threaded"
+      },
+      {
+        "lesson": "the-http-module",
+        "note": "write the Hello World server by hand: require, createServer, writeHead(200, ...), end, listen(8888)"
+      },
+      {
+        "lesson": "url-and-query-strings",
+        "note": "what host, pathname, search and query return for one URL"
+      },
+      {
+        "lesson": "fs-and-the-file-server",
+        "note": "the readFile callback with its 404 branch"
+      },
+      {
+        "lesson": "mock-quiz-l4",
+        "note": "retake; aim for 90 % or better"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "Servers and Node.js",
+      "lessons": [
+        {
+          "id": "servers-and-server-side-scripting",
+          "title": "A server runs 24/7, and Node handles a file request in three steps",
+          "file": "chapters/01-servers-and-server-side-scripting.md",
+          "minutes": 14
+        },
+        {
+          "id": "node-and-the-restaurant",
+          "title": "Node.js on V8 and the restaurant analogy",
+          "file": "chapters/02-node-and-the-restaurant.md",
+          "minutes": 15
+        }
+      ]
+    },
+    {
+      "title": "Modules and the http server",
+      "lessons": [
+        {
+          "id": "node-modules",
+          "title": "Modules with require and exports",
+          "file": "chapters/03-node-modules.md",
+          "minutes": 15
+        },
+        {
+          "id": "the-http-module",
+          "title": "The http module: createServer, writeHead, end, listen",
+          "file": "chapters/04-the-http-module.md",
+          "minutes": 18
+        }
+      ]
+    },
+    {
+      "title": "The url and fs modules",
+      "lessons": [
+        {
+          "id": "url-and-query-strings",
+          "title": "url.parse and the query string",
+          "file": "chapters/05-url-and-query-strings.md",
+          "minutes": 15
+        },
+        {
+          "id": "fs-and-the-file-server",
+          "title": "The fs module and a file server that answers 404",
+          "file": "chapters/06-fs-and-the-file-server.md",
+          "minutes": 16
+        }
+      ]
+    },
+    {
+      "title": "Midterm prep",
+      "lessons": [
+        {
+          "id": "mock-quiz-l4",
+          "title": "Mock quiz: Lecture 4",
+          "file": "chapters/07-mock-quiz-l4.md",
+          "minutes": 20
+        }
+      ]
+    }
+  ]
+}

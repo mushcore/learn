@@ -213,6 +213,32 @@
           "description": "The instructor's practice midterm, worked: all 74 Part 1 questions grouped by lecture Part with explanations that teach the slide fact behind each one, the five written questions (pipeline rate and delay, CPU utilization from a job timeline with and without multiprogramming, 1 − pⁿ with a RAM budget, two parallel jobs with 50 % I/O wait, a direct-mapped cache trace) asked for your number first and then worked step by step, a mock Part 1 and a mock Part 2 in the real format with new questions, and the closed-book recall drill across all five Parts."
         }
       ]
+    },
+    {
+      "id": "comp4537",
+      "code": "COMP 4537",
+      "title": "Internet Software Architecture",
+      "description": "Amir Amintabar's lectures 1 to 7, one module per lecture, plus a Midterm module: JavaScript that runs in the page (scope, hoisting, the event loop, promises), HTML previews, XHR and CORS against live endpoints, Node servers, Node to MySQL, diagrams for every figure, and drills in the midterm's what-prints, short-answer and coding formats with a printable cheat sheet.",
+      "modules": [
+        {
+          "id": "comp4537-l6",
+          "title": "Lecture 6",
+          "subtitle": "Promises: idempotent PUT vs POST vs PATCH, callbacks, the three states, the executor, the event-loop order of Examples 1 to 12, chaining with then, catch and finally, async and await",
+          "description": "Lecture 6 of Amir Amintabar's course: a review of HTTP verbs (PUT replaces, PATCH updates a property, PUT is idempotent and POST is not), first-class functions and callbacks, why a function doing asynchronous work needs both a value and an outcome, then the JavaScript Promise: the boss-and-raise analogy, pending, fulfilled and rejected (fulfilled and rejected are settled), the annotated constructor with its five notes, the executor running immediately, settle-once, Promise.resolve, and the deck's Examples 1 to 12 with their log orders (synchronous code, then microtasks, then timers). Then chaining (returning a value fulfils the next promise, throwing rejects it), .catch as .then(null, f), .finally, unhandled rejections, the DevTools views of a promise before and after 5 seconds, async and await, two successive AJAX calls and callback hell, GET vs POST response size and the corrected readyState table. Event-loop and promise-chain playbacks for every example; twelve new output-order programs; a 30-item mock quiz."
+        },
+        {
+          "id": "comp4537-l5",
+          "title": "Lecture 5",
+          "subtitle": "AJAX with XMLHttpRequest, the GET demos, CORS and the Same-Origin Policy, POST bodies read in chunks, and connecting Node to MySQL",
+          "description": "Lecture 5 of Amir Amintabar's deck: sending requests from inside a page with XMLHttpRequest in four steps (create the object, set onreadystatechange, open(method, url, async), send()), readyState 0 to 4 (UNSENT, OPENED, HEADERS_RECEIVED, LOADING, DONE) with the Lecture 6 correction of the w3schools table, the status groups 2xx 3xx 4xx 5xx, Demo 1 and Demo 2 against a Node server on port 8888 run live against the app's echo endpoint, the CORS error and the Same-Origin Policy (origin = protocol + domain + port), Access-Control-Allow-Origin, Allow-Methods and Allow-Headers, the OPTIONS preflight and which content types trigger it, POST with application/x-www-form-urlencoded and a server that collects data chunks and answers on end, then CRUD, XAMPP and phpMyAdmin, npm install mysql, createConnection, connect, query and the INSERT of elon musk with 2900. Playback animations for the XHR lifecycle and the browser's CORS check; every request demo runs for real, including the one CORS blocks. Ends with a 20-item mock quiz in the shape of Quiz 10."
+        },
+        {
+          "id": "comp4537-midterm",
+          "title": "Midterm",
+          "subtitle": "Exam week Oct 26–30: two hours on the Learning Hub, one double-sided letter cheat sheet; lectures 1 to 6 in full and the Node-to-MySQL part of lecture 7",
+          "description": "The midterm in its own four question kinds. The rules and scope with a strategy for each kind; twenty new what-prints programs on timers, scope, hoisting, promises, chaining and async/await, each run in the browser after you commit to an answer; a short-answer bank (REST's constraints, GET vs POST, CORS and preflight, blocking vs non-blocking, localStorage vs sessionStorage, idempotency, readyState, monolith vs microservices, the four XHR steps, PHP's four steps vs Node's three) with key points to tick; coding questions (a Node server that returns the date in blue, an XHR GET, a callback rewritten as a promise chain, CORS headers, a query string); two forty-item mock midterms in the exam's mix; the cheat sheet as a lesson and a print-ready letter page; and a closed-book recall drill of every fixed list in the course."
+        }
+      ]
     }
   ]
 }

@@ -227,7 +227,7 @@ const ECHO_HEADERS = ["content-type", "origin", "accept", "x-requested-with"];
 function corsHeaders() {
   return {
     "access-control-allow-origin": "*",
-    "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
+    "access-control-allow-methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
     "access-control-allow-headers": "Content-Type, X-Requested-With",
   };
 }

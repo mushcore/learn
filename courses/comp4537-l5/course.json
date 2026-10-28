@@ -1,0 +1,88 @@
+{
+  "lang": "js",
+  "title": "COMP 4537 · Lecture 5",
+  "subtitle": "AJAX with XMLHttpRequest, the GET demos, CORS and the Same-Origin Policy, POST bodies read in chunks, and connecting Node to MySQL",
+  "description": "Lecture 5 of Amir Amintabar's deck: sending requests from inside a page with XMLHttpRequest in four steps (create the object, set onreadystatechange, open(method, url, async), send()), readyState 0 to 4 (UNSENT, OPENED, HEADERS_RECEIVED, LOADING, DONE) with the Lecture 6 correction of the w3schools table, the status groups 2xx 3xx 4xx 5xx, Demo 1 and Demo 2 against a Node server on port 8888 run live against the app's echo endpoint, the CORS error and the Same-Origin Policy (origin = protocol + domain + port), Access-Control-Allow-Origin, Allow-Methods and Allow-Headers, the OPTIONS preflight and which content types trigger it, POST with application/x-www-form-urlencoded and a server that collects data chunks and answers on end, then CRUD, XAMPP and phpMyAdmin, npm install mysql, createConnection, connect, query and the INSERT of elon musk with 2900. Playback animations for the XHR lifecycle and the browser's CORS check; every request demo runs for real, including the one CORS blocks. Ends with a 20-item mock quiz in the shape of Quiz 10.",
+  "intro": ":::quiz Midterm weight\nThe midterm is 30 % of the course and covers lectures 1 to 6 in full plus Lecture 7's Node-to-database part, so by lecture count this lecture is about one seventh of the exam. It weighs more than that in the written parts: three of the ten short-answer topics (CORS and preflight, the readyState values, the four XHR steps) and two of the five coding-question shapes (an XHR GET that shows the response, adding CORS headers to a Node server) come from here, and the Node-to-MySQL connection named in the scope note is taught here first. One letter-sized sheet, both sides, typed or written, is allowed: readyState 0 to 4, the four steps and the CORS headers belong on it.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "mock-quiz-l5",
+        "note": "take it cold (about 20 min)"
+      },
+      {
+        "lesson": "xmlhttprequest-four-steps",
+        "note": "write the four steps and readyState 0 to 4 with their names from memory, then check"
+      },
+      {
+        "lesson": "cors-and-the-same-origin-policy",
+        "note": "say what an origin is, who enforces CORS and who configures it, and which POST needs a preflight"
+      },
+      {
+        "lesson": "post-with-ajax",
+        "note": "GET puts the query in the URL, POST in the body; the server collects chunks and answers on end"
+      },
+      {
+        "lesson": "node-to-mysql",
+        "note": "write createConnection, connect and query from memory"
+      },
+      {
+        "lesson": "mock-quiz-l5",
+        "note": "retake; aim for 90 % or better"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. AJAX with XMLHttpRequest",
+      "lessons": [
+        {
+          "id": "xmlhttprequest-four-steps",
+          "title": "XMLHttpRequest in four steps, readyState 0 to 4 and the status codes",
+          "file": "chapters/01-xmlhttprequest-four-steps.md"
+        },
+        {
+          "id": "ajax-get-demos",
+          "title": "Demo 1 and Demo 2: a GET with and without a query string",
+          "file": "chapters/02-ajax-get-demos.md"
+        }
+      ]
+    },
+    {
+      "title": "2. CORS and POST",
+      "lessons": [
+        {
+          "id": "cors-and-the-same-origin-policy",
+          "title": "CORS, the Same-Origin Policy and the preflight request",
+          "file": "chapters/03-cors-and-the-same-origin-policy.md"
+        },
+        {
+          "id": "post-with-ajax",
+          "title": "POST with AJAX: the body, the Content-type header and data in chunks",
+          "file": "chapters/04-post-with-ajax.md"
+        }
+      ]
+    },
+    {
+      "title": "3. Node to MySQL",
+      "lessons": [
+        {
+          "id": "node-to-mysql",
+          "title": "Connecting Node to MySQL: createConnection, connect, query",
+          "file": "chapters/05-node-to-mysql.md"
+        }
+      ]
+    },
+    {
+      "title": "4. Quiz prep",
+      "lessons": [
+        {
+          "id": "mock-quiz-l5",
+          "title": "Mock quiz: Lecture 5",
+          "file": "chapters/06-mock-quiz-l5.md"
+        }
+      ]
+    }
+  ]
+}

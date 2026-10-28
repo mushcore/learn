@@ -1,0 +1,116 @@
+{
+  "lang": "js",
+  "title": "COMP 4537 · Lecture 6",
+  "subtitle": "Promises: idempotent PUT vs POST vs PATCH, callbacks, the three states, the executor, the event-loop order of Examples 1 to 12, chaining with then, catch and finally, async and await",
+  "description": "Lecture 6 of Amir Amintabar's course: a review of HTTP verbs (PUT replaces, PATCH updates a property, PUT is idempotent and POST is not), first-class functions and callbacks, why a function doing asynchronous work needs both a value and an outcome, then the JavaScript Promise: the boss-and-raise analogy, pending, fulfilled and rejected (fulfilled and rejected are settled), the annotated constructor with its five notes, the executor running immediately, settle-once, Promise.resolve, and the deck's Examples 1 to 12 with their log orders (synchronous code, then microtasks, then timers). Then chaining (returning a value fulfils the next promise, throwing rejects it), .catch as .then(null, f), .finally, unhandled rejections, the DevTools views of a promise before and after 5 seconds, async and await, two successive AJAX calls and callback hell, GET vs POST response size and the corrected readyState table. Event-loop and promise-chain playbacks for every example; twelve new output-order programs; a 30-item mock quiz.",
+  "intro": ":::quiz Midterm weight\nThe midterm is 30 % of the course and covers lectures 1 to 6 in full plus the Node-to-MySQL part of lecture 7. By slide count this lecture is about an eighth of that scope, but the exam's coding questions ask you to write the console output of short programs with timers and promises, and that skill is taught here: expect this lecture to carry more than its share. Quizzes 8 and 9 were both on it. Closed book except one letter-sized sheet, both sides: the ordering rule, the three states and the chaining rules belong on it.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "mock-quiz-l6",
+        "note": "take it cold (about 25 min)"
+      },
+      {
+        "lesson": "ordering-part-1",
+        "note": "synchronous, then microtasks, then timers: predict Examples 1 to 6 before running them"
+      },
+      {
+        "lesson": "ordering-part-2",
+        "note": "Examples 7 to 11 and the timer-inside-then shapes; step the event-loop playback on every miss"
+      },
+      {
+        "lesson": "chaining-then-catch-finally",
+        "note": "return fulfils, throw rejects, .catch recovers, .finally passes through"
+      },
+      {
+        "lesson": "output-order-practice",
+        "note": "write all twelve outputs on paper, then run"
+      },
+      {
+        "lesson": "promise-states-and-the-executor",
+        "note": "settle once; the executor runs immediately"
+      },
+      {
+        "lesson": "idempotency-put-patch-post",
+        "note": "PUT vs PATCH vs POST in one sentence each"
+      },
+      {
+        "lesson": "mock-quiz-l6",
+        "note": "retake; aim for 90 % or better"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Before promises",
+      "lessons": [
+        {
+          "id": "idempotency-put-patch-post",
+          "title": "PUT replaces, PATCH updates, and only PUT is idempotent",
+          "file": "chapters/01-idempotency-put-patch-post.md"
+        },
+        {
+          "id": "callbacks-and-first-class-functions",
+          "title": "Functions as values, callbacks, and why a function returns only one thing",
+          "file": "chapters/02-callbacks-and-first-class-functions.md"
+        }
+      ]
+    },
+    {
+      "title": "2. The Promise object",
+      "lessons": [
+        {
+          "id": "promise-states-and-the-executor",
+          "title": "Pending, fulfilled, rejected, and the executor that runs immediately",
+          "file": "chapters/03-promise-states-and-the-executor.md"
+        }
+      ]
+    },
+    {
+      "title": "3. Output order",
+      "lessons": [
+        {
+          "id": "ordering-part-1",
+          "title": "Synchronous code first, then the handlers: Examples 1 to 6",
+          "file": "chapters/04-ordering-part-1.md"
+        },
+        {
+          "id": "ordering-part-2",
+          "title": "Microtasks before timers: Examples 7 to 11 and the harder shapes",
+          "file": "chapters/05-ordering-part-2.md"
+        }
+      ]
+    },
+    {
+      "title": "4. Chaining and async functions",
+      "lessons": [
+        {
+          "id": "chaining-then-catch-finally",
+          "title": "then, catch and finally: return fulfils, throw rejects",
+          "file": "chapters/06-chaining-then-catch-finally.md"
+        },
+        {
+          "id": "async-await",
+          "title": "async functions return promises, await waits for one",
+          "file": "chapters/07-async-await.md"
+        }
+      ]
+    },
+    {
+      "title": "5. Practice",
+      "lessons": [
+        {
+          "id": "output-order-practice",
+          "title": "Output-order practice: twelve new programs",
+          "file": "chapters/08-output-order-practice.md"
+        },
+        {
+          "id": "mock-quiz-l6",
+          "title": "Mock quiz: Lecture 6",
+          "file": "chapters/09-mock-quiz-l6.md"
+        }
+      ]
+    }
+  ]
+}

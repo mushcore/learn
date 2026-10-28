@@ -1,0 +1,69 @@
+{
+  "lang": "js",
+  "title": "COMP 4537 · Lecture 7",
+  "subtitle": "Databases for API development: tables and keys, CRUD from Node.js to MySQL, reading SQL",
+  "description": "Lecture 7 of Amir Amintabar's COMP 4537: what a database and a DBMS are and the eight DBMS properties, relational (SQL) against NoSQL, a clinic's patient spreadsheet redesigned as Patient and Visit tables joined by Patient_ID, primary and foreign keys, 1:M, 1:1 and M:M through an associative table with a composite primary key, schema against data, the popular MySQL data types, referential integrity, AUTO_INCREMENT and CHECK. Then the part the midterm examines: a Node.js API server that connects to MySQL with the mysql module, creates its table if it does not exist, INSERTs on POST and SELECTs on GET through the (err, result) callback, serves a page on another origin with CORS headers, and follows the principle of least privilege with a SELECT-only database user (a bookstore's books table, in the shape of Lab 5). Ends with a reading reference for the lecture's SQL (WHERE operators, LIKE, IN, BETWEEN, ORDER BY, aggregates, GROUP BY and HAVING, subqueries, the cross product) and a 15-item mock quiz in the shape of Quiz 11.",
+  "intro": ":::quiz Midterm weight\nThe midterm is 30 % of the course, two hours, closed book except one letter-sized sheet written or typed on both sides. From this lecture the midterm covers only the Node.js database connection, sending queries from Node, and CRUD fundamentals: expect a small share of the exam, likely one or two questions (an MCQ on connecting or on least privilege, or a short answer on CRUD over HTTP), against lectures 1 to 6 in full. Writing SQL is not examined; reading the CREATE TABLE, INSERT and SELECT statements the labs used is. Quiz 11 tests the rest of this lecture.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "crud-from-node",
+        "note": "the three steps (createConnection, connect, query) and the (err, result) callback; write them from memory"
+      },
+      {
+        "lesson": "crud-from-node",
+        "note": "which HTTP method does which CRUD operation, and why the read endpoint uses a SELECT-only DB user"
+      },
+      {
+        "lesson": "databases-tables-and-keys",
+        "note": "primary key, foreign key, 1:M and M:M on the patient and author tables"
+      },
+      {
+        "lesson": "mock-quiz-l7",
+        "note": "take it cold, then reread the lesson behind every miss"
+      },
+      {
+        "lesson": "reading-sql",
+        "note": "only if time is left: WHERE before GROUP BY, HAVING after it"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Relational databases",
+      "lessons": [
+        {
+          "id": "databases-tables-and-keys",
+          "title": "Tables related by primary and foreign keys",
+          "file": "chapters/01-databases-tables-and-keys.md"
+        }
+      ]
+    },
+    {
+      "title": "2. Node.js and CRUD",
+      "lessons": [
+        {
+          "id": "crud-from-node",
+          "title": "CRUD from Node.js: connect, create, insert, select",
+          "file": "chapters/02-crud-from-node.md"
+        }
+      ]
+    },
+    {
+      "title": "3. SQL reference and quiz",
+      "lessons": [
+        {
+          "id": "reading-sql",
+          "title": "Reading the lecture's SQL",
+          "file": "chapters/03-reading-sql.md"
+        },
+        {
+          "id": "mock-quiz-l7",
+          "title": "Mock quiz: Lecture 7",
+          "file": "chapters/04-mock-quiz-l7.md"
+        }
+      ]
+    }
+  ]
+}

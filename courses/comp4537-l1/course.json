@@ -1,0 +1,136 @@
+{
+  "lang": "js",
+  "title": "COMP 4537 · Lecture 1",
+  "subtitle": "Review: why the web is hard, OOP in JavaScript, the course coding style, DevTools and hosting, HTML, CSS, JavaScript values, scope and hoisting, functions, objects and the DOM, timers, loops and arrays",
+  "description": "Lecture 1 of Amir Amintabar's COMP 4537 Internet Software Architecture: the web-vs-desktop challenges table and the device-and-network scenarios; classes, extends and super (Vehicle and Car), composition (Car has an Engine) and the Tesla and Ferrari exercise; the course coding style (const first, then let, never var; no hard-coded user-facing strings; one task per function); the seven DevTools regions; shared, VPS, dedicated and cloud hosting, SSL and index.html; the HTML review (DOCTYPE, the DOM tree, elements and attributes, id and class, the four-part URL); the three ways to style, selectors, combinators and specificity; the box model, display, visibility, position and units; JavaScript's four output methods, six primitives, == vs === and the falsy list; var, let and const scope, hoisting and window; functions, parameters and arguments, arrow functions; objects, constructors, Date and typeof; createElement, appendChild, getElementsByTagName, events and prompt; setTimeout and the 1 3 2 event queue; and loop tracing over arrays beyond the slide for the loop quiz. Every program runs in the browser; the box model, scope, DOM and event-queue figures play step by step. Ends with a 30-item mock quiz in the shape of the Learning Hub quizzes.",
+  "intro": ":::quiz Midterm weight\nThe midterm is 30 % of the course: in person on the Learning Hub, at most two hours, closed book except one letter-sized double-sided cheat sheet (typed or written, figures allowed, name top-left). Its scope is lectures 1 to 6 in full plus the Node-to-MySQL part of lecture 7, in four kinds of question: multiple choice, coding, short answer, medium and long answer. This lecture is the review lecture and covers about one lecture in seven of that scope, so expect roughly one question in six to come from here, mostly as what-prints items: scope and hoisting, the 1 3 2 timer order, == vs ===, typeof, a function with no return, and loop tracing. Five of the Learning Hub quizzes (1, 2, 3, 4 and 6) drew on these slides.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "mock-quiz-l1",
+        "note": "take it cold (about 25 min)"
+      },
+      {
+        "lesson": "scope-and-hoisting",
+        "note": "predict every var, let and const program before running it; redo the three-column figure from memory"
+      },
+      {
+        "lesson": "timers-and-the-event-queue",
+        "note": "why 1 3 2 even with 0 ms; a thrown error does not cancel a queued timer"
+      },
+      {
+        "lesson": "loops-and-arrays",
+        "note": "trace each loop shape by hand: < vs <=, counting down, break, i += 2, length -= 2"
+      },
+      {
+        "lesson": "js-values-and-types",
+        "note": "== vs ===, the six falsy values, typeof of an array"
+      },
+      {
+        "lesson": "functions-and-arrows",
+        "note": "every function returns something, at least undefined"
+      },
+      {
+        "lesson": "css-box-model-display-position",
+        "note": "content, padding, border, margin in order; display none vs visibility hidden"
+      },
+      {
+        "lesson": "mock-quiz-l1",
+        "note": "retake; aim for 90 % or better"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Architecture, OOP, coding style and hosting",
+      "lessons": [
+        {
+          "id": "web-vs-desktop",
+          "title": "A web app runs on networks, browsers and devices you do not control",
+          "file": "chapters/01-web-vs-desktop.md"
+        },
+        {
+          "id": "oop-in-javascript",
+          "title": "Inheritance is is-a, composition is has-a",
+          "file": "chapters/02-oop-in-javascript.md"
+        },
+        {
+          "id": "coding-style",
+          "title": "const first, never var, and no hard-coded user-facing strings",
+          "file": "chapters/03-coding-style.md"
+        },
+        {
+          "id": "devtools-and-hosting",
+          "title": "DevTools, the four kinds of hosting, and index.html",
+          "file": "chapters/04-devtools-and-hosting.md"
+        }
+      ]
+    },
+    {
+      "title": "2. HTML and CSS",
+      "lessons": [
+        {
+          "id": "html-structure",
+          "title": "HTML elements, attributes and the DOM tree",
+          "file": "chapters/05-html-structure.md"
+        },
+        {
+          "id": "css-selectors-and-specificity",
+          "title": "Inline, internal and external styles, selectors and specificity",
+          "file": "chapters/06-css-selectors-and-specificity.md"
+        },
+        {
+          "id": "css-box-model-display-position",
+          "title": "Content, padding, border, margin; display, position and units",
+          "file": "chapters/07-css-box-model-display-position.md"
+        }
+      ]
+    },
+    {
+      "title": "3. JavaScript values, scope and functions",
+      "lessons": [
+        {
+          "id": "js-values-and-types",
+          "title": "Four ways to output, six primitives, == vs ===",
+          "file": "chapters/08-js-values-and-types.md"
+        },
+        {
+          "id": "scope-and-hoisting",
+          "title": "var is function-scoped and hoisted; let and const are block-scoped",
+          "file": "chapters/09-scope-and-hoisting.md"
+        },
+        {
+          "id": "functions-and-arrows",
+          "title": "Every function returns something, at least undefined",
+          "file": "chapters/10-functions-and-arrows.md"
+        }
+      ]
+    },
+    {
+      "title": "4. Objects, the DOM, timers and loops",
+      "lessons": [
+        {
+          "id": "objects-and-the-dom",
+          "title": "Objects, constructors and building the DOM from JavaScript",
+          "file": "chapters/11-objects-and-the-dom.md"
+        },
+        {
+          "id": "timers-and-the-event-queue",
+          "title": "setTimeout runs after the script, even with 0 ms",
+          "file": "chapters/12-timers-and-the-event-queue.md"
+        },
+        {
+          "id": "loops-and-arrays",
+          "title": "Tracing for and while loops over arrays",
+          "file": "chapters/13-loops-and-arrays.md"
+        },
+        {
+          "id": "mock-quiz-l1",
+          "title": "Mock quiz: Lecture 1",
+          "file": "chapters/14-mock-quiz-l1.md"
+        }
+      ]
+    }
+  ]
+}

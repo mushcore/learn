@@ -1,0 +1,88 @@
+{
+  "lang": "js",
+  "title": "COMP 4537 · Lecture 3",
+  "subtitle": "Why API servers exist, the four parts of a web API, GET vs POST, Postman, and REST's constraints with the microservice gateway",
+  "description": "Lecture 3 of Amir Amintabar's COMP 4537: the review programs (var, let and const scope, the A/B/C hoisting scenarios, the 1 3 2 event-queue script) as predicts; why a monolithic web server that returns rendered HTML pages is a problem for other programs, told through the online movie store, IMDb scraping and the OMDb API server that returns JSON; the API as a documented contract; the anatomy of a web API (headers, data, endpoint, HTTP methods GET, POST, PUT, DELETE) shown on live requests to the app's echo endpoint; the full GET vs POST comparison table (cache, history, bookmark, the 2048-character URL, ASCII only, neither is secure); testing an API with Postman and httpbin; REST as an architectural style, microservices behind an API gateway, and the five RESTful constraints with their principle, benefit and example, plus Code-on-Demand. Ends with a 20-item mock quiz.",
+  "intro": ":::quiz Midterm weight\nThe midterm is 30 % of the course and covers lectures 1 to 6 in full plus the Node-to-MySQL part of lecture 7, so this lecture is roughly one seventh of the exam, about 10 to 15 %. Its facts reach the exam in all four question kinds: one-fact MCQs and true/false on the GET vs POST table and the four parts of a web API, what-prints items on the review programs, and short or medium answers on REST's five constraints and on GET vs POST. Learning Hub Quizzes 6 and 7 already asked which method can be bookmarked, which can carry a 1 GB request, whether GET is fine for credentials, which method edits a profile, and which GET/POST statement is false.\n:::",
+  "plan": {
+    "title": "If you only have tonight",
+    "steps": [
+      {
+        "lesson": "mock-quiz-l3",
+        "note": "take it cold (about 20 min)"
+      },
+      {
+        "lesson": "get-vs-post",
+        "note": "rebuild the eight-row comparison table from memory, then check every row"
+      },
+      {
+        "lesson": "rest-principles",
+        "note": "name the five constraints in order with one example each; know that Code-on-Demand is the sixth, on the benefits slide only"
+      },
+      {
+        "lesson": "anatomy-of-a-web-api",
+        "note": "the four parts in order and the method for each CRUD job"
+      },
+      {
+        "lesson": "review-predicts",
+        "note": "predict the four programs before running them"
+      },
+      {
+        "lesson": "mock-quiz-l3",
+        "note": "retake; aim for 90 % or better"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Review",
+      "lessons": [
+        {
+          "id": "review-predicts",
+          "title": "Four review programs: block scope, hoisting and the event queue",
+          "file": "chapters/01-review-predicts.md"
+        }
+      ]
+    },
+    {
+      "title": "2. Web APIs",
+      "lessons": [
+        {
+          "id": "why-apis",
+          "title": "Why API servers exist: the online movie store",
+          "file": "chapters/02-why-apis.md"
+        },
+        {
+          "id": "anatomy-of-a-web-api",
+          "title": "Headers, data, endpoint and HTTP method",
+          "file": "chapters/03-anatomy-of-a-web-api.md"
+        },
+        {
+          "id": "get-vs-post",
+          "title": "GET vs POST, and trying an API with Postman",
+          "file": "chapters/04-get-vs-post.md"
+        }
+      ]
+    },
+    {
+      "title": "3. REST",
+      "lessons": [
+        {
+          "id": "rest-principles",
+          "title": "REST's five constraints and the microservice gateway",
+          "file": "chapters/05-rest-principles.md"
+        }
+      ]
+    },
+    {
+      "title": "4. Midterm prep",
+      "lessons": [
+        {
+          "id": "mock-quiz-l3",
+          "title": "Mock quiz: Lecture 3",
+          "file": "chapters/06-mock-quiz-l3.md"
+        }
+      ]
+    }
+  ]
+}
