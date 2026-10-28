@@ -3,15 +3,19 @@ title: The sixteen Unit 4 practice problems, worked
 minutes: 20
 ---
 
-The sixteen Unit 4 practice problems, grouped by distribution, each part asked before its working. Answers follow the cover rule (a probability to four decimals, anything else to three significant digits); where the answer sheet rounds differently or slips in the last digit, the item says so.
+The sixteen Unit 4 practice problems, grouped by distribution, each part asked before its working.
+
+Answers follow the cover rule (a probability to four decimals, anything else to three significant digits); where the answer sheet rounds differently or slips in the last digit, the item says so.
 
 ## A probability table and its mean: PP2, PP4, PP5
 
-Taught in [Discrete distributions: tables, mean and SD](#/math3042-u4/discrete-distributions). For money, X is the net amount to one party: payout times the chance it is paid, minus the premium or price.
+Taught in [Discrete distributions: tables, mean and SD](#/math3042-u4/discrete-distributions).
+
+For money, X is the net amount to one party: payout times the chance it is paid, minus the premium or price.
 
 ### PP2. Life insurance
 
-The probability that a 30-year-old male survives the year is 0.9989; for a 50-year-old female it is 0.9971. (a) The male is charged a premium of $180 for a policy that pays $100,000 if he dies within the year. What is the expected cost of the policy to the insurance company? (b) What premium should the female be charged for a $75,000 policy so that the company's expected cost is the same?
+The probability that a 30-year-old male survives the year is 0.9989; for a 50-year-old female it is 0.9971. (a) The male is charged a premium of \$180 for a policy that pays \$100,000 if he dies within the year. What is the expected cost of the policy to the insurance company? (b) What premium should the female be charged for a \$75,000 policy so that the company's expected cost is the same?
 
 ```quiz
 [
@@ -21,7 +25,7 @@ The probability that a 30-year-old male survives the year is 0.9989; for a 50-ye
     "answer": -70,
     "tolerance": 0.01,
     "unit": "dollars",
-    "explain": "Let X = the company's net cost of the policy. The company pays 100,000 dollars with probability 1 − 0.9989 = 0.0011 and collects the 180-dollar premium either way. E(X) = 100,000(0.0011) − 180 = 110 − 180 = −70. The expected cost is −70 dollars: the company expects to gain 70 dollars per policy."
+    "explain": "Let X = the company's net cost of the policy. The company pays 100,000 dollars with probability $$1 - 0.9989 = 0.0011$$ and collects the 180-dollar premium either way. $$E(X) = 100{,}000(0.0011) - 180 = 110 - 180 = \\mathbf{-70}$$ The expected cost is −70 dollars: the company expects to gain 70 dollars per policy."
   },
   {
     "q": "PP2b. Premium for the female's 75,000-dollar policy that gives the same expected cost, in dollars.",
@@ -29,16 +33,18 @@ The probability that a 30-year-old male survives the year is 0.9989; for a 50-ye
     "answer": 287.5,
     "tolerance": 0.01,
     "unit": "dollars",
-    "explain": "Same expected cost means 75,000(1 − 0.9971) − P = −70. 75,000(0.0029) = 217.50, so 217.50 − P = −70 and P = 217.50 + 70 = 287.50 dollars. Check: 217.50 − 287.50 = −70."
+    "explain": "Same expected cost means $$75{,}000(1 - 0.9971) - P = -70$$ Since 75,000(0.0029) = 217.50: $$217.50 - P = -70 \\quad\\Rightarrow\\quad P = 217.50 + 70 = \\mathbf{287.50} \\text{ dollars}$$ Check: $$217.50 - 287.50 = -70$$"
   }
 ]
 ```
 
-$$E(X) = 100\,000(1 - 0.9989) - 180 = 110 - 180 = -70$$
+$$E(X) = 100\,000(1 - 0.9989) - 180 = 110 - 180 = \mathbf{-70}$$
 
-$$75\,000(0.0029) - P = -70 \;\Rightarrow\; P = 217.50 + 70 = 287.50$$
+$$75\,000(0.0029) - P = -70 \;\Rightarrow\; P = 217.50 + 70 = \mathbf{287.50}$$
 
-The expected cost is −70 dollars, an expected gain of $70 to the company per policy; the female's premium is $287.50. The money version of this pattern is in [Expected value in dollars](#/math3042-midterm/expected-dollars-shortcuts).
+The expected cost is −70 dollars, an expected gain of \$70 to the company per policy; the female's premium is \$287.50.
+
+The money version of this pattern is in [Expected value in dollars](#/math3042-midterm/expected-dollars-shortcuts).
 
 ```r
 100000*(1-0.9989) - 180
@@ -79,12 +85,12 @@ An airline overbooks a flight. X = the number of passengers who cannot board, wi
     "answer": 2.43,
     "tolerance": 0.05,
     "unit": "passengers",
-    "explain": "First check it is a distribution: 0.067 + 0.141 + 0.274 + 0.331 + 0.187 = 1.000. μ = Σ x·P(x) = 0(0.067) + 1(0.141) + 2(0.274) + 3(0.331) + 4(0.187) = 0 + 0.141 + 0.548 + 0.993 + 0.748 = 2.43 passengers."
+    "explain": "First check it is a distribution: $$0.067 + 0.141 + 0.274 + 0.331 + 0.187 = 1.000$$ Then the mean: $$\\mu = \\sum x P(x) = 0(0.067) + 1(0.141) + 2(0.274) + 3(0.331) + 4(0.187)$$ $$= 0 + 0.141 + 0.548 + 0.993 + 0.748 = \\mathbf{2.43} \\text{ passengers}$$"
   }
 ]
 ```
 
-$$\mu = \sum x\,P(x) = 0 + 0.141 + 0.548 + 0.993 + 0.748 = 2.43 \text{ passengers}$$
+$$\mu = \sum x\,P(x) = 0 + 0.141 + 0.548 + 0.993 + 0.748 = \mathbf{2.43} \text{ passengers}$$
 
 ```r
 x <- 0:4
@@ -121,10 +127,20 @@ sum(x*p)
 Two fair 12-sided dice are rolled. (a) X = the sum of the two dice: find μ and σ. (b) X = the minimum of the two dice: find μ and σ (the answer sheet calls this one "challenging to do by hand").
 
 :::info Independent pieces: variances add, SDs do not
-For independent X and Y, σ²(X + Y) = σ²(X) + σ²(Y); take the square root last. Two 6-sided dice: one die has σ² = 35/12 = 2.9167, so the sum has σ² = 5.8333 and σ = 2.42, not 2 × 1.71 = 3.42.
+For independent X and Y, take the square root last:
+
+$$\sigma^2(X + Y) = \sigma^2(X) + \sigma^2(Y)$$
+
+Two 6-sided dice: one die has $\sigma^2 = 35/12 = 2.9167$, so the sum has $\sigma^2 = 5.8333$ and $\sigma = 2.42$, not the sum of the SDs:
+
+$$2 \times 1.71 = 3.42$$
 :::
 
-For the minimum, start with two 6-sided dice. Click X = 2 in the grid: the 9 lit cells form an L, 4 + 4 + 1. On 12-sided dice the same L holds 2(12 − k) + 1 cells.
+For the minimum, start with two 6-sided dice. Click X = 2 in the grid: the 9 lit cells form an L, 4 + 4 + 1.
+
+On 12-sided dice the same L holds this many cells:
+
+$$2(12 - k) + 1$$
 
 ```widget
 pmf-table
@@ -138,35 +154,51 @@ pmf-table
     "type": "numeric",
     "answer": 13,
     "tolerance": 0.05,
-    "explain": "One die has mean (1 + 12)/2 = 6.5; the sum's mean is 6.5 + 6.5 = 13. Equivalently, the 144 outcomes are symmetric about 13."
+    "explain": "One die has mean $$\\dfrac{1 + 12}{2} = 6.5$$ The sum's mean is $$6.5 + 6.5 = \\mathbf{13}$$ Equivalently, the 144 outcomes are symmetric about 13."
   },
   {
     "q": "PP5a. Standard deviation of the sum (3 significant digits).",
     "type": "numeric",
     "answer": 4.88194,
     "tolerance": 0.05,
-    "explain": "One die, by the formula sheet's shortcut: Σx²P(x) = (1² + 2² + … + 12²)/12 = 650/12 = 54.1667, so σ² = 54.1667 − 6.5² = 11.9167 = 143/12. The two dice are independent, so variances add: σ² = 143/6 = 23.8333 and σ = √23.8333 = 4.88. Adding the standard deviations instead (2 × 3.45 = 6.90) is wrong. The answer sheet prints 4.9."
+    "explain": "One die, by the formula sheet's shortcut: $$\\sum x^2P(x) = \\dfrac{1^2 + 2^2 + \\ldots + 12^2}{12} = \\dfrac{650}{12} = 54.1667$$ $$\\sigma^2 = 54.1667 - 6.5^2 = 11.9167 = \\dfrac{143}{12}$$ The two dice are independent, so variances add: $$\\sigma^2 = \\dfrac{143}{6} = 23.8333 \\qquad \\sigma = \\sqrt{23.8333} = \\mathbf{4.88}$$ Adding the standard deviations instead (6.90) is wrong. The answer sheet prints 4.9."
   },
   {
     "q": "PP5b. Mean of the minimum of two 12-sided dice (3 significant digits).",
     "type": "numeric",
     "answer": 4.51389,
     "tolerance": 0.05,
-    "explain": "P(X = k) = (2(12 − k) + 1)/144: 23, 21, 19, …, 3, 1 out of 144 for k = 1 … 12. μ = Σ k·P(k) = (1·23 + 2·21 + … + 12·1)/144 = 650/144 = 4.51."
+    "explain": "The pmf: $$P(X = k) = \\dfrac{2(12 - k) + 1}{144}$$ That is 23, 21, 19, …, 3, 1 out of 144 for k = 1 … 12. $$\\mu = \\sum k P(k) = \\dfrac{1 \\cdot 23 + 2 \\cdot 21 + \\ldots + 12 \\cdot 1}{144} = \\dfrac{650}{144} = \\mathbf{4.51}$$"
   },
   {
     "q": "PP5b. Standard deviation of the minimum (3 significant digits).",
     "type": "numeric",
     "answer": 2.82348,
     "tolerance": 0.05,
-    "explain": "Σ k²·P(k) = 4082/144 = 28.3472. Shortcut: σ² = 28.3472 − 4.51389² = 28.3472 − 20.3752 = 7.9720, σ = √7.9720 = 2.82. Carry μ unrounded; the long form Σ (k − μ)²P(k) gives the same 7.9720."
+    "explain": "The k² column: $$\\sum k^2 P(k) = \\dfrac{4082}{144} = 28.3472$$ Shortcut: $$\\sigma^2 = 28.3472 - 4.51389^2 = 28.3472 - 20.3752 = 7.9720$$ $$\\sigma = \\sqrt{7.9720} = \\mathbf{2.82}$$ Carry μ unrounded; the long form gives the same 7.9720."
   }
 ]
 ```
 
-**(a)** μ = 6.5 + 6.5 = 13. One die: Σx²P(x) = (1² + 2² + … + 12²)/12 = 650/12 = 54.1667, so σ² = 54.1667 − 6.5² = 11.9167. Variances add: σ² = 11.9167 + 11.9167 = 23.8333, σ = 4.88 (the answer sheet rounds to 4.9). Adding the SDs, 3.45 + 3.45 = 6.90, is wrong.
+**(a)** Worked in steps:
 
-**(b)** The same L as the 6 × 6 grid above: in the 12 × 12 grid of outcomes, the minimum is k when one die shows k and the other shows k or more: 12 − k cells with the first die at k, 12 − k with the second at k, and the single cell (k, k). So P(X = k) = (2(12 − k) + 1)/144.
+1. The mean of the sum:
+   $$\mu = 6.5 + 6.5 = \mathbf{13}$$
+2. One die, by the shortcut:
+   $$\sum x^2P(x) = \dfrac{1^2 + 2^2 + \ldots + 12^2}{12} = \dfrac{650}{12} = 54.1667$$
+   $$\sigma^2 = 54.1667 - 6.5^2 = 11.9167$$
+3. Variances add:
+   $$\sigma^2 = 11.9167 + 11.9167 = 23.8333 \qquad \sigma = \mathbf{4.88}$$
+
+The answer sheet rounds to 4.9.
+
+Adding the SDs is wrong:
+
+$$3.45 + 3.45 = 6.90$$
+
+**(b)** The same L as the 6 × 6 grid above: in the 12 × 12 grid of outcomes, the minimum is k when one die shows k and the other shows k or more: 12 − k cells with the first die at k, 12 − k with the second at k, and the single cell (k, k). So:
+
+$$P(X = k) = \dfrac{2(12 - k) + 1}{144}$$
 
 | k | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -175,7 +207,7 @@ pmf-table
 | k·count | 23 | 42 | 57 | 68 | 75 | 78 | 77 | 72 | 63 | 50 | 33 | 12 |
 | k²·count | 23 | 84 | 171 | 272 | 375 | 468 | 539 | 576 | 567 | 500 | 363 | 144 |
 
-$$\mu = \frac{650}{144} = 4.51 \qquad \sigma^2 = \frac{4082}{144} - 4.51389^2 = 7.9720 \qquad \sigma = 2.82$$
+$$\mu = \frac{650}{144} = \mathbf{4.51} \qquad \sigma^2 = \frac{4082}{144} - 4.51389^2 = 7.9720 \qquad \sigma = \mathbf{2.82}$$
 
 ```r
 X.vals <- 2:24                          # sum of two dice
@@ -224,7 +256,9 @@ sqrt(sum((X.vals-mu)^2*p.vals))
 
 ## Binomial: PP1, PP3
 
-Taught in [Binomial: successes in n trials](#/math3042-u4/binomial). R: `dbinom(x, n, p)` for exactly x, `pbinom(k, n, p)` for k or fewer.
+Taught in [Binomial: successes in n trials](#/math3042-u4/binomial).
+
+R: `dbinom(x, n, p)` for exactly x, `pbinom(k, n, p)` for k or fewer.
 
 :::info R syntax
 | Code | What it does |
@@ -254,26 +288,33 @@ Taught in [Binomial: successes in n trials](#/math3042-u4/binomial). R: `dbinom(
     "type": "numeric",
     "answer": 0.2401,
     "tolerance": 0.0001,
-    "explain": "Let X = the number of undersized samples among the 4. Binomial: n = 4 fixed, each undersized or not, p = 0.7 each, independent. P(X = 4) = 4C4 (0.7)⁴(0.3)⁰ = 0.2401."
+    "explain": "Let X = the number of undersized samples among the 4. Binomial: n = 4 fixed, each undersized or not, p = 0.7 each, independent. $$P(X = 4) = {}_4C_4 (0.7)^4(0.3)^0 = \\mathbf{0.2401}$$"
   },
   {
     "q": "PP1b. P(none undersized), 4 decimals.",
     "type": "numeric",
     "answer": 0.0081,
     "tolerance": 0.0001,
-    "explain": "P(X = 0) = 4C0 (0.7)⁰(0.3)⁴ = 0.0081."
+    "explain": "$$P(X = 0) = {}_4C_0 (0.7)^0(0.3)^4 = \\mathbf{0.0081}$$"
   },
   {
     "q": "PP1c. P(three or fewer undersized), 4 decimals.",
     "type": "numeric",
     "answer": 0.7599,
     "tolerance": 0.0001,
-    "explain": "By the complement rule, P(X ≤ 3) = 1 − P(X = 4) = 1 − 0.2401 = 0.7599. Adding P(0) through P(3) gives the same number with four times the work."
+    "explain": "By the complement rule: $$P(X \\le 3) = 1 - P(X = 4) = 1 - 0.2401 = \\mathbf{0.7599}$$ Adding P(0) through P(3) gives the same number with four times the work."
   }
 ]
 ```
 
-X = the number of undersized samples, binomial with n = 4, p = 0.7. (a) $0.7^4 = 0.2401$. (b) $0.3^4 = 0.0081$. (c) Complement rule: $1 - P(X = 4) = 1 - 0.2401 = 0.7599$.
+X = the number of undersized samples, binomial with n = 4, p = 0.7.
+
+1. (a) All four:
+   $$0.7^4 = \mathbf{0.2401}$$
+2. (b) None:
+   $$0.3^4 = \mathbf{0.0081}$$
+3. (c) Complement rule:
+   $$1 - P(X = 4) = 1 - 0.2401 = \mathbf{0.7599}$$
 
 ```r
 dbinom(4, 4, 0.7)
@@ -314,23 +355,29 @@ A test has 10 multiple-choice questions with 4 choices each, and a student guess
     "type": "numeric",
     "answer": 0.0563135,
     "tolerance": 0.0001,
-    "explain": "Let X = the number of correct answers. Binomial, n = 10, p = 1/4. P(X = 0) = (0.75)¹⁰ = 0.0563 (the answer sheet prints 0.05631)."
+    "explain": "Let X = the number of correct answers. Binomial, n = 10, p = 1/4. $$P(X = 0) = 0.75^{10} = \\mathbf{0.0563}$$ The answer sheet prints 0.05631."
   },
   {
     "q": "PP3b. P(8 or more correct), 4 decimals.",
     "type": "numeric",
     "answer": 0.000415802,
     "tolerance": 0.00002,
-    "explain": "P(X ≥ 8) = P(8) + P(9) + P(10) = 45(0.25)⁸(0.75)² + 10(0.25)⁹(0.75) + (0.25)¹⁰ = 0.000386238 + 0.0000286102 + 0.000000954 = 0.000415802 → 0.0004. The answer sheet prints 4.158E−4, the same number to four significant digits. In R, 'at least 8' is 1 − pbinom(7, …), not pbinom(8, …)."
+    "explain": "Add the three top bars: $$P(X \\ge 8) = P(8) + P(9) + P(10) = 45(0.25)^8(0.75)^2 + 10(0.25)^9(0.75) + (0.25)^{10}$$ $$= 0.000386238 + 0.0000286102 + 0.000000954 = 0.000415802 \\to \\mathbf{0.0004}$$ The answer sheet prints 4.158E−4, the same number to four significant digits. In R, 'at least 8' is 1 − pbinom(7, …), not pbinom(8, …)."
   }
 ]
 ```
 
-(a) $P(0) = 0.75^{10} = 0.0563$. (b) At least 8 is 8, 9 or 10:
+(a) None correct:
 
-$$P(X \ge 8) = C(10,8)(0.25)^8(0.75)^2 + C(10,9)(0.25)^9(0.75) + (0.25)^{10} = 45(0.25)^8(0.75)^2 + 10(0.25)^9(0.75) + (0.25)^{10} = 0.000415802 \approx 0.0004$$
+$$P(0) = 0.75^{10} = \mathbf{0.0563}$$
 
-The answer sheet's 4.158E−4 is the same value in scientific notation; the cover rule gives 0.0004. Either way, scoring 8 or better by guessing is about 4 in 10,000.
+(b) At least 8 is 8, 9 or 10:
+
+$$P(X \ge 8) = C(10,8)(0.25)^8(0.75)^2 + C(10,9)(0.25)^9(0.75) + (0.25)^{10} = 45(0.25)^8(0.75)^2 + 10(0.25)^9(0.75) + (0.25)^{10} = 0.000415802 \approx \mathbf{0.0004}$$
+
+The answer sheet's 4.158E−4 is the same value in scientific notation; the cover rule gives 0.0004.
+
+Either way, scoring 8 or better by guessing is about 4 in 10,000.
 
 ```r
 dbinom(0, 10, 0.25)
@@ -395,28 +442,39 @@ Each job application has a 0.15 chance of leading to an interview, independently
     "answer": 6.66667,
     "tolerance": 0.05,
     "unit": "applications",
-    "explain": "Let X = the number of applications up to and including the first interview. Geometric with p = 0.15. μ = 1/p = 1/0.15 = 6.67 applications (the answer sheet prints 6.667)."
+    "explain": "Let X = the number of applications up to and including the first interview. Geometric with p = 0.15. $$\\mu = \\dfrac{1}{p} = \\dfrac{1}{0.15} = \\mathbf{6.67} \\text{ applications}$$ The answer sheet prints 6.667."
   },
   {
     "q": "PP6b. P(the fifth application is the first interview), 4 decimals.",
     "type": "numeric",
     "answer": 0.0783009,
     "tolerance": 0.0001,
-    "explain": "Four failures then a success: P(X = 5) = q⁴p = 0.85⁴ × 0.15 = 0.52201 × 0.15 = 0.0783."
+    "explain": "Four failures then a success: $$P(X = 5) = q^4p = 0.85^4 \\times 0.15 = 0.52201 \\times 0.15 = \\mathbf{0.0783}$$"
   },
   {
     "q": "PP6c. P(three or more applications needed), 4 decimals.",
     "type": "numeric",
     "answer": 0.7225,
     "tolerance": 0.0001,
-    "explain": "Three or more are needed exactly when the first two fail: P(X ≥ 3) = q² = 0.85² = 0.7225. By the complement: 1 − P(1) − P(2) = 1 − 0.15 − 0.1275 = 0.7225."
+    "explain": "Three or more are needed exactly when the first two fail: $$P(X \\ge 3) = q^2 = 0.85^2 = \\mathbf{0.7225}$$ By the complement: $$1 - P(1) - P(2) = 1 - 0.15 - 0.1275 = 0.7225$$"
   }
 ]
 ```
 
-X = applications up to and including the first interview, geometric with p = 0.15. (a) $\mu = 1/0.15 = 6.67$. (b) $P(X = 5) = 0.85^4(0.15) = 0.0783$. (c) $P(X \ge 3) = 1 - 0.15 - 0.85(0.15) = 0.85^2 = 0.7225$.
+X = applications up to and including the first interview, geometric with p = 0.15.
 
-R counts failures, not trials: the fifth application is 4 failures, so `dgeom(4, 0.15)`; P(X ≥ 3) = 1 − P(X ≤ 2), and P(X ≤ 2) is `pgeom(1, 0.15)`.
+1. (a) The mean:
+   $$\mu = \dfrac{1}{0.15} = \mathbf{6.67}$$
+2. (b) Fifth application first:
+   $$P(X = 5) = 0.85^4(0.15) = \mathbf{0.0783}$$
+3. (c) Three or more:
+   $$P(X \ge 3) = 1 - 0.15 - 0.85(0.15) = 0.85^2 = \mathbf{0.7225}$$
+
+R counts failures, not trials: the fifth application is 4 failures, so `dgeom(4, 0.15)`.
+
+For (c), take the complement, and P(X ≤ 2) is `pgeom(1, 0.15)`:
+
+$$P(X \ge 3) = 1 - P(X \le 2)$$
 
 ```r
 1/0.15
@@ -451,7 +509,11 @@ dgeom(4, 0.15)
 
 ## Hypergeometric: PP8, PP9, PP11, PP14, PP15
 
-Taught in [Hypergeometric: sampling without replacement](#/math3042-u4/hypergeometric). Every one samples without replacement from a small lot, so the three-C formula applies: $P(x) = C(K,x)\,C(N-K,n-x)/C(N,n)$. In R, `dhyper(x, K, N-K, n)` takes x, the successes in the population, the failures in the population, and the sample size.
+Taught in [Hypergeometric: sampling without replacement](#/math3042-u4/hypergeometric). Every one samples without replacement from a small lot, so the three-C formula applies:
+
+$$P(x) = \dfrac{C(K,x)\,C(N-K,n-x)}{C(N,n)}$$
+
+In R, `dhyper(x, K, N-K, n)` takes x, the successes in the population, the failures in the population, and the sample size.
 
 :::warn R's n is the failures
 In `dhyper` R's slot `n` holds the failures N − K; the course's sample size n goes in R's last slot, `k`.
@@ -482,21 +544,21 @@ A lot of 20 pieces of wood contains 4 that are below strength. Five pieces are e
     "type": "numeric",
     "answer": 0.469556,
     "tolerance": 0.0001,
-    "explain": "Let X = the number of below-strength pieces in the 5 examined. Hypergeometric, N = 20, K = 4, n = 5. P(1) = C(4,1)C(16,4)/C(20,5) = 4(1820)/15504 = 7280/15504 = 0.4696."
+    "explain": "Let X = the number of below-strength pieces in the 5 examined. Hypergeometric, N = 20, K = 4, n = 5. $$P(1) = \\dfrac{C(4,1)C(16,4)}{C(20,5)} = \\dfrac{4(1820)}{15504} = \\dfrac{7280}{15504} = \\mathbf{0.4696}$$"
   },
   {
     "q": "PP8b. P(at most 1), 4 decimals.",
     "type": "numeric",
     "answer": 0.75129,
     "tolerance": 0.0001,
-    "explain": "P(0) = C(4,0)C(16,5)/C(20,5) = 4368/15504 = 0.281734. P(X ≤ 1) = P(0) + P(1) = 0.281734 + 0.469556 = 0.7513."
+    "explain": "$$P(0) = \\dfrac{C(4,0)C(16,5)}{C(20,5)} = \\dfrac{4368}{15504} = 0.281734$$ $$P(X \\le 1) = P(0) + P(1) = 0.281734 + 0.469556 = \\mathbf{0.7513}$$"
   },
   {
     "q": "PP8c. P(at least 1), 4 decimals.",
     "type": "numeric",
     "answer": 0.718266,
     "tolerance": 0.0001,
-    "explain": "Complement: P(X ≥ 1) = 1 − P(0) = 1 − 0.281734 = 0.7183."
+    "explain": "Complement: $$P(X \\ge 1) = 1 - P(0) = 1 - 0.281734 = \\mathbf{0.7183}$$"
   }
 ]
 ```
@@ -551,29 +613,44 @@ A sample of 3 is taken from a lot of 24 batteries, 6 of which are defective. Fin
     "type": "numeric",
     "answer": 0.403162,
     "tolerance": 0.0001,
-    "explain": "Let X = the number of defectives in the sample of 3. Hypergeometric, N = 24, K = 6, n = 3. P(0) = C(18,3)/C(24,3) = 816/2024 = 0.4032."
+    "explain": "Let X = the number of defectives in the sample of 3. Hypergeometric, N = 24, K = 6, n = 3. $$P(0) = \\dfrac{C(18,3)}{C(24,3)} = \\dfrac{816}{2024} = \\mathbf{0.4032}$$"
   },
   {
     "q": "PP9b. P(exactly 1 defective), 4 decimals.",
     "type": "numeric",
     "answer": 0.453557,
     "tolerance": 0.0001,
-    "explain": "P(1) = C(6,1)C(18,2)/C(24,3) = 6(153)/2024 = 918/2024 = 0.4536."
+    "explain": "$$P(1) = \\dfrac{C(6,1)C(18,2)}{C(24,3)} = \\dfrac{6(153)}{2024} = \\dfrac{918}{2024} = \\mathbf{0.4536}$$"
   },
   {
     "q": "PP9c. P(at least 2 defectives), 4 decimals.",
     "type": "numeric",
     "answer": 0.143281,
     "tolerance": 0.00006,
-    "explain": "P(X ≥ 2) = 1 − P(0) − P(1) = 1 − 0.403162 − 0.453557 = 0.143281 → 0.1433. Directly: P(2) + P(3) = (270 + 20)/2024 = 290/2024 = 0.1433. The answer sheet prints 0.1432 because it subtracted the rounded parts (1 − 0.4032 − 0.4536); carry six digits until the last step."
+    "explain": "$$P(X \\ge 2) = 1 - P(0) - P(1) = 1 - 0.403162 - 0.453557 = 0.143281 \\to \\mathbf{0.1433}$$ Directly: $$P(2) + P(3) = \\dfrac{270 + 20}{2024} = \\dfrac{290}{2024} = 0.1433$$ The answer sheet prints 0.1432 because it subtracted the rounded parts; carry six digits until the last step."
   }
 ]
 ```
 
-N = 24, K = 6, N − K = 18, n = 3, C(24,3) = 2024. (a) $816/2024 = 0.4032$. (b) $6 \times 153/2024 = 0.4536$. (c) $1 - 0.403162 - 0.453557 = 0.143281 \approx 0.1433$, which the direct sum confirms: C(6,2)C(18,1) = 15 × 18 = 270 and C(6,3) = 20, so $(270 + 20)/2024 = 290/2024$.
+N = 24, K = 6, N − K = 18, n = 3, C(24,3) = 2024.
+
+1. (a) No defectives:
+   $$\dfrac{816}{2024} = \mathbf{0.4032}$$
+2. (b) Exactly one:
+   $$\dfrac{6 \times 153}{2024} = \mathbf{0.4536}$$
+3. (c) At least two, by the complement:
+   $$1 - 0.403162 - 0.453557 = 0.143281 \approx \mathbf{0.1433}$$
+
+The direct sum confirms it. C(6,2)C(18,1) = 270 and C(6,3) = 20, so:
+
+$$\dfrac{270 + 20}{2024} = \dfrac{290}{2024}$$
 
 :::warn The answer sheet's 0.1432 is a rounding slip
-The answer sheet gives 0.1432, from 1 − 0.4032 − 0.4536 with the parts already rounded. The exact value is 0.143281, which rounds to 0.1433.
+The answer sheet gives 0.1432, from the parts already rounded:
+
+$$1 - 0.4032 - 0.4536 = 0.1432$$
+
+The exact value is 0.143281, which rounds to 0.1433.
 :::
 
 ```r
@@ -615,21 +692,27 @@ In Lotto 6/49 you pick 6 numbers from 1 to 49 and 6 winning numbers are drawn. W
     "type": "numeric",
     "answer": 0.0176504,
     "tolerance": 0.0001,
-    "explain": "Let X = the number of your 6 numbers that are among the 6 drawn. Hypergeometric: N = 49, K = 6 winning numbers, N − K = 43, n = 6 picked. P(3) = C(6,3)C(43,3)/C(49,6) = 20(12341)/13983816 = 246820/13983816 = 0.0177 (the answer sheet prints 0.01765)."
+    "explain": "Let X = the number of your 6 numbers that are among the 6 drawn. Hypergeometric: N = 49, K = 6 winning numbers, N − K = 43, n = 6 picked. $$P(3) = \\dfrac{C(6,3)C(43,3)}{C(49,6)} = \\dfrac{20(12341)}{13983816} = \\dfrac{246820}{13983816} = \\mathbf{0.0177}$$ The answer sheet prints 0.01765."
   },
   {
     "q": "PP11. The same probability as \"1 in …\" (3 significant digits).",
     "type": "numeric",
     "answer": 56.6559,
     "tolerance": 0.05,
-    "explain": "1/0.0176504 = 56.656 → 1 in 56.7. The answer sheet prints \"1 in 56.6\", which truncates instead of rounding."
+    "explain": "$$\\dfrac{1}{0.0176504} = 56.656 \\to \\mathbf{1 \\text{ in } 56.7}$$ The answer sheet prints \"1 in 56.6\", which truncates instead of rounding."
   }
 ]
 ```
 
-$$P(3) = \frac{C(6,3)\,C(43,3)}{C(49,6)} = \frac{20 \times 12\,341}{13\,983\,816} = \frac{246\,820}{13\,983\,816} = 0.0177$$
+$$P(3) = \frac{C(6,3)\,C(43,3)}{C(49,6)} = \frac{20 \times 12\,341}{13\,983\,816} = \frac{246\,820}{13\,983\,816} = \mathbf{0.0177}$$
 
-That is 1 in $1/0.0176504 = 56.656$, so **1 in 56.7**. The answer sheet's "1 in 56.6" truncates the last digit.
+As "1 in …":
+
+$$\dfrac{1}{0.0176504} = 56.656$$
+
+So **1 in 56.7**.
+
+The answer sheet's "1 in 56.6" truncates the last digit.
 
 ```r
 dhyper(3, 6, 49-6, 6)
@@ -668,21 +751,21 @@ A lot of 50 items contains 6 defectives. A sample of 5 is taken. Find the probab
     "type": "numeric",
     "answer": 0.512568,
     "tolerance": 0.0001,
-    "explain": "Let X = the number of defectives in the sample of 5. Hypergeometric, N = 50, K = 6, n = 5. P(0) = C(44,5)/C(50,5) = 1086008/2118760 = 0.5126."
+    "explain": "Let X = the number of defectives in the sample of 5. Hypergeometric, N = 50, K = 6, n = 5. $$P(0) = \\dfrac{C(44,5)}{C(50,5)} = \\dfrac{1086008}{2118760} = \\mathbf{0.5126}$$"
   },
   {
     "q": "PP14b. P(not more than 1 defective), 4 decimals.",
     "type": "numeric",
     "answer": 0.896994,
     "tolerance": 0.0001,
-    "explain": "P(1) = C(6,1)C(44,4)/C(50,5) = 814506/2118760 = 0.384426. P(X ≤ 1) = 0.512568 + 0.384426 = 0.8970."
+    "explain": "$$P(1) = \\dfrac{C(6,1)C(44,4)}{C(50,5)} = \\dfrac{814506}{2118760} = 0.384426$$ $$P(X \\le 1) = 0.512568 + 0.384426 = \\mathbf{0.8970}$$"
   },
   {
     "q": "PP14c. P(more than 2 defectives), 4 decimals.",
     "type": "numeric",
     "answer": 0.00924409,
     "tolerance": 0.00005,
-    "explain": "P(2) = C(6,2)C(44,3)/C(50,5) = 198660/2118760 = 0.093762. P(X > 2) = 1 − P(X ≤ 2) = 1 − 0.896994 − 0.093762 = 0.009244 → 0.0092. The answer sheet prints 0.0093, which is off in the last digit even from its own rounded parts (1 − 0.8970 − 0.0938 = 0.0092)."
+    "explain": "$$P(2) = \\dfrac{C(6,2)C(44,3)}{C(50,5)} = \\dfrac{198660}{2118760} = 0.093762$$ $$P(X > 2) = 1 - P(X \\le 2) = 1 - 0.896994 - 0.093762 = 0.009244 \\to \\mathbf{0.0092}$$ The answer sheet prints 0.0093, which is off in the last digit even from its own rounded parts: $$1 - 0.8970 - 0.0938 = 0.0092$$"
   }
 ]
 ```
@@ -696,7 +779,13 @@ N = 50, K = 6, N − K = 44, n = 5, C(50,5) = 2,118,760.
 | (c) $P(X > 2)$ | $1 - 0.896994 - 198\,660/2\,118\,760 = 1 - 0.896994 - 0.093762$ | 0.0092 |
 
 :::warn The answer sheet's 0.0093 is wrong in the last digit
-"More than 2" is 1 − P(X ≤ 2) = 0.00924409, which rounds to 0.0092. The answer sheet prints 0.0093; even its rounded parts give 1 − 0.8970 − 0.0938 = 0.0092.
+"More than 2" rounds to 0.0092:
+
+$$1 - P(X \le 2) = 0.00924409$$
+
+The answer sheet prints 0.0093; even its rounded parts give 0.0092:
+
+$$1 - 0.8970 - 0.0938 = 0.0092$$
 :::
 
 ```r
@@ -741,12 +830,12 @@ A shipment of 15 gas detectors contains 2 defectives. A sample of 3 is tested. W
     "type": "numeric",
     "answer": 0.628571,
     "tolerance": 0.0001,
-    "explain": "Let X = the number of defectives among the 3. Hypergeometric, N = 15, K = 2, n = 3. P(0) = C(2,0)C(13,3)/C(15,3) = 286/455 = 0.6286. Sequential fractions give the same: (13/15)(12/14)(11/13) = 0.6286."
+    "explain": "Let X = the number of defectives among the 3. Hypergeometric, N = 15, K = 2, n = 3. $$P(0) = \\dfrac{C(2,0)C(13,3)}{C(15,3)} = \\dfrac{286}{455} = \\mathbf{0.6286}$$ Sequential fractions give the same: $$\\dfrac{13}{15} \\cdot \\dfrac{12}{14} \\cdot \\dfrac{11}{13} = 0.6286$$"
   }
 ]
 ```
 
-$$P(0) = \frac{C(13,3)}{C(15,3)} = \frac{286}{455} = 0.6286 = \frac{13}{15}\cdot\frac{12}{14}\cdot\frac{11}{13}$$
+$$P(0) = \frac{C(13,3)}{C(15,3)} = \frac{286}{455} = \mathbf{0.6286} = \frac{13}{15}\cdot\frac{12}{14}\cdot\frac{11}{13}$$
 
 ```r
 dhyper(0, 2, 15-2, 3)
@@ -771,7 +860,13 @@ dhyper(0, 2, 15-2, 3)
 
 ## Poisson: PP7, PP10, PP12, PP13, PP16
 
-Taught in [Poisson: counts per interval](#/math3042-u4/poisson). Each one starts by rescaling the rate to the interval asked about: λ = rate × interval. Separate intervals are independent, so their probabilities multiply.
+Taught in [Poisson: counts per interval](#/math3042-u4/poisson).
+
+Each one starts by rescaling the rate to the interval asked about:
+
+$$\lambda = \text{rate} \times \text{interval}$$
+
+Separate intervals are independent, so their probabilities multiply.
 
 ### PP7. Richmond homicides
 
@@ -784,40 +879,44 @@ Richmond averages 116 homicides per year. Find the probability of 0, 1, 2, 3 and
     "type": "numeric",
     "answer": 0.727742,
     "tolerance": 0.0001,
-    "explain": "Let X = the number of homicides in one day. Poisson with λ = 116/365 = 0.317808 per day. P(0) = e^(−0.317808) = 0.7277 (the answer sheet prints 0.728)."
+    "explain": "Let X = the number of homicides in one day. Poisson with $$\\lambda = \\dfrac{116}{365} = 0.317808 \\text{ per day}$$ $$P(0) = e^{-0.317808} = \\mathbf{0.7277}$$ The answer sheet prints 0.728."
   },
   {
     "q": "PP7. P(exactly 1), 4 decimals.",
     "type": "numeric",
     "answer": 0.231282,
     "tolerance": 0.0001,
-    "explain": "P(1) = λe^(−λ) = 0.317808 × 0.727742 = 0.2313 (sheet 0.231)."
+    "explain": "$$P(1) = \\lambda e^{-\\lambda} = 0.317808 \\times 0.727742 = \\mathbf{0.2313}$$ The sheet prints 0.231."
   },
   {
     "q": "PP7. P(exactly 2), 4 decimals.",
     "type": "numeric",
     "answer": 0.036752,
     "tolerance": 0.0001,
-    "explain": "P(2) = λ²e^(−λ)/2! = 0.317808² × 0.727742/2 = 0.0368."
+    "explain": "$$P(2) = \\dfrac{\\lambda^2 e^{-\\lambda}}{2!} = \\dfrac{0.317808^2 \\times 0.727742}{2} = \\mathbf{0.0368}$$"
   },
   {
     "q": "PP7. P(exactly 3), 4 decimals.",
     "type": "numeric",
     "answer": 0.003893,
     "tolerance": 0.00002,
-    "explain": "P(3) = λ³e^(−λ)/3! = 0.0039 (0.00389333; answer sheet 0.00389)."
+    "explain": "$$P(3) = \\dfrac{\\lambda^3 e^{-\\lambda}}{3!} = 0.00389333 \\to \\mathbf{0.0039}$$ The answer sheet prints 0.00389."
   },
   {
     "q": "PP7. P(exactly 4), 4 decimals.",
     "type": "numeric",
     "answer": 0.000309333,
     "tolerance": 0.00002,
-    "explain": "P(4) = λ⁴e^(−λ)/4! = 0.0003 (0.000309333; answer sheet 0.000309)."
+    "explain": "$$P(4) = \\dfrac{\\lambda^4 e^{-\\lambda}}{4!} = 0.000309333 \\to \\mathbf{0.0003}$$ The answer sheet prints 0.000309."
   }
 ]
 ```
 
-$\lambda = 116/365 = 0.317808$ homicides per day, then $P(x) = \lambda^x e^{-\lambda}/x!$.
+The daily rate, then the Poisson formula:
+
+$$\lambda = \dfrac{116}{365} = 0.317808 \text{ homicides per day}$$
+
+$$P(x) = \dfrac{\lambda^x e^{-\lambda}}{x!}$$
 
 | x | 0 | 1 | 2 | 3 | 4 |
 |---|---|---|---|---|---|
@@ -826,7 +925,11 @@ $\lambda = 116/365 = 0.317808$ homicides per day, then $P(x) = \lambda^x e^{-\la
 | expected days = 365 × P(x) | 265.6 | 84.4 | 13.4 | 1.4 | 0.1 |
 | actual days | 268 | 79 | not given | 1 | 0 |
 
-The model fits: 268 against 265.6 days with none, 79 against 84.4 with one. The stem's "0.294 %" for one day does not equal 1/365 = 0.274 %; it is reproduced as given.
+The model fits: 268 against 265.6 days with none, 79 against 84.4 with one.
+
+The stem's "0.294 %" for one day does not equal one day in 365; it is reproduced as given:
+
+$$\dfrac{1}{365} = 0.274\%$$
 
 ```r
 round(dpois(0:4, 116/365), 4)
@@ -862,22 +965,36 @@ A hospital averages 210 low-birth-weight babies per year. (a) What is the probab
     "type": "numeric",
     "answer": 0.113851,
     "tolerance": 0.0001,
-    "explain": "Let X = the number of low-birth-weight babies in one day. Poisson, λ = 210/365 = 0.575342. P(X > 1) = 1 − P(0) − P(1) = 1 − 0.562512 − 0.323637 = 0.113851 → 0.1139. The answer sheet prints 0.113, which truncates: to three significant digits it is 0.114."
+    "explain": "Let X = the number of low-birth-weight babies in one day. Poisson, $$\\lambda = \\dfrac{210}{365} = 0.575342$$ $$P(X > 1) = 1 - P(0) - P(1) = 1 - 0.562512 - 0.323637 = 0.113851 \\to \\mathbf{0.1139}$$ The answer sheet prints 0.113, which truncates: to three significant digits it is 0.114."
   },
   {
     "q": "PP10b. True or false: 2 low-birth-weight babies in one day would be unusual.",
     "type": "tf",
     "answer": false,
-    "explain": "μ = λ = 0.575342, σ = √0.575342 = 0.758513. Z = (2 − 0.575342)/0.758513 = 1.88. |Z| < 2, so 2 in a day is not unusual."
+    "explain": "μ = λ = 0.575342, and $$\\sigma = \\sqrt{0.575342} = 0.758513$$ $$Z = \\dfrac{2 - 0.575342}{0.758513} = \\mathbf{1.88}$$ |Z| < 2, so 2 in a day is not unusual."
   }
 ]
 ```
 
-$\lambda = 210/365 = 0.575342$ per day, $P(0) = 0.562512$, $P(1) = 0.323637$.
+The daily rate:
 
-$$P(X > 1) = 1 - 0.562512 - 0.323637 = 0.113851 \approx 0.1139$$
+$$\lambda = \dfrac{210}{365} = 0.575342 \text{ per day}$$
 
-The answer sheet's 0.113 is truncated; three significant digits would be 0.114. For (b), a Poisson has μ = λ and σ² = λ (formula sheet), so σ = √λ = √0.575342 = 0.7585. "Unusual" means |Z| > 2 ([z-scores](#/math3042/z-scores)): Z = (2 − 0.5753)/0.7585 = 1.88, under 2, so **No**, 2 in a day is not unusual.
+Then $P(0) = 0.562512$ and $P(1) = 0.323637$.
+
+$$P(X > 1) = 1 - 0.562512 - 0.323637 = 0.113851 \approx \mathbf{0.1139}$$
+
+The answer sheet's 0.113 is truncated; three significant digits would be 0.114.
+
+For (b), a Poisson has μ = λ and σ² = λ (formula sheet), so:
+
+$$\sigma = \sqrt{\lambda} = \sqrt{0.575342} = 0.7585$$
+
+"Unusual" means |Z| > 2 ([z-scores](#/math3042/z-scores)):
+
+$$Z = \dfrac{2 - 0.5753}{0.7585} = \mathbf{1.88}$$
+
+That is under 2, so **No**, 2 in a day is not unusual.
 
 ```r
 1 - ppois(1, 210/365)
@@ -916,12 +1033,20 @@ A sample of 1,000,000 cesium-137 atoms decays to 977,287 atoms over 365 days. Wh
     "type": "numeric",
     "answer": 0.0155236,
     "tolerance": 0.0001,
-    "explain": "Let X = the number of atoms that decay in one day. 1,000,000 − 977,287 = 22,713 decays in 365 days, so λ = 22,713/365 = 62.2274 per day. P(50) = 62.2274⁵⁰ e^(−62.2274)/50! = 0.0155."
+    "explain": "Let X = the number of atoms that decay in one day. Decays in 365 days: $$1{,}000{,}000 - 977{,}287 = 22{,}713$$ So $$\\lambda = \\dfrac{22{,}713}{365} = 62.2274 \\text{ per day}$$ $$P(50) = \\dfrac{62.2274^{50} e^{-62.2274}}{50!} = \\mathbf{0.0155}$$"
   }
 ]
 ```
 
-$\lambda = (1\,000\,000 - 977\,287)/365 = 22\,713/365 = 62.2274$ decays per day, and $P(50) = 62.2274^{50}e^{-62.2274}/50! = 0.0155$. On a calculator, divide $62.2274^{50}$ by $50!$ first (about $1.64 \times 10^{25}$), then multiply by $e^{-62.2274}$.
+The daily rate:
+
+$$\lambda = \dfrac{1\,000\,000 - 977\,287}{365} = \dfrac{22\,713}{365} = 62.2274 \text{ decays per day}$$
+
+Then:
+
+$$P(50) = \dfrac{62.2274^{50}e^{-62.2274}}{50!} = \mathbf{0.0155}$$
+
+On a calculator, divide $62.2274^{50}$ by \$50!$ first (about $1.64 \times 10^{25}$), then multiply by $e^{-62.2274}$.
 
 ```r
 dpois(50, 22713/365)
@@ -955,26 +1080,33 @@ Customers arrive at a cafeteria at 0.3 per minute. Find the probability of (a) e
     "type": "numeric",
     "answer": 0.224042,
     "tolerance": 0.0001,
-    "explain": "Let X = the number of customers in 10 minutes. λ = 0.3 × 10 = 3. P(2) = 3² e^(−3)/2! = 9(0.049787)/2 = 0.2240."
+    "explain": "Let X = the number of customers in 10 minutes. $$\\lambda = 0.3 \\times 10 = 3$$ $$P(2) = \\dfrac{3^2 e^{-3}}{2!} = \\dfrac{9(0.049787)}{2} = \\mathbf{0.2240}$$"
   },
   {
     "q": "PP13b. P(2 or more in 10 minutes), 4 decimals.",
     "type": "numeric",
     "answer": 0.800852,
     "tolerance": 0.0001,
-    "explain": "P(X ≥ 2) = 1 − P(0) − P(1) = 1 − 0.049787 − 0.149361 = 0.8009."
+    "explain": "$$P(X \\ge 2) = 1 - P(0) - P(1) = 1 - 0.049787 - 0.149361 = \\mathbf{0.8009}$$"
   },
   {
     "q": "PP13c. P(exactly 1 in a 5-minute span and exactly 1 in the next 5 minutes), 4 decimals.",
     "type": "numeric",
     "answer": 0.112021,
     "tolerance": 0.0001,
-    "explain": "Each 5-minute span has λ = 0.3 × 5 = 1.5, and P(1) = 1.5e^(−1.5) = 0.334695. The spans do not overlap, so they are independent: 0.334695² = 0.1120. This is half of (a): exactly 2 in 10 minutes also counts the 2-and-0 and 0-and-2 splits."
+    "explain": "Each 5-minute span has $$\\lambda = 0.3 \\times 5 = 1.5$$ and $$P(1) = 1.5e^{-1.5} = 0.334695$$ The spans do not overlap, so they are independent: $$0.334695^2 = \\mathbf{0.1120}$$ This is half of (a): exactly 2 in 10 minutes also counts the 2-and-0 and 0-and-2 splits."
   }
 ]
 ```
 
-(a) $\lambda = 0.3 \times 10 = 3$, $P(2) = 9e^{-3}/2 = 0.2240$. (b) $1 - e^{-3} - 3e^{-3} = 1 - 0.049787 - 0.149361 = 0.8009$. (c) $\lambda = 1.5$ per span; independent spans multiply: $(1.5e^{-1.5})^2 = 0.334695^2 = 0.1120$. It is half of (a) because the 10-minute count of 2 adds three splits, 2-and-0 (0.0560), 1-and-1 (0.1120) and 0-and-2 (0.0560); the splits table is in [Poisson across separate intervals](#/math3042-midterm/expected-dollars-shortcuts).
+1. (a) With $\lambda = 0.3 \times 10 = 3$:
+   $$P(2) = \dfrac{9e^{-3}}{2} = \mathbf{0.2240}$$
+2. (b) Two or more:
+   $$1 - e^{-3} - 3e^{-3} = 1 - 0.049787 - 0.149361 = \mathbf{0.8009}$$
+3. (c) $\lambda = 1.5$ per span; independent spans multiply:
+   $$(1.5e^{-1.5})^2 = 0.334695^2 = \mathbf{0.1120}$$
+
+Part (c) is half of (a) because the 10-minute count of 2 adds three splits, 2-and-0 (0.0560), 1-and-1 (0.1120) and 0-and-2 (0.0560); the splits table is in [Poisson across separate intervals](#/math3042-midterm/expected-dollars-shortcuts).
 
 ```r
 dpois(2, 3)
@@ -1018,33 +1150,42 @@ A "100-year flood" occurs on average once every 100 years. Find the probability 
     "type": "numeric",
     "answer": 0.393469,
     "tolerance": 0.0001,
-    "explain": "Let X = the number of 100-year floods in 50 years. λ = (1/100) × 50 = 0.5. P(X ≥ 1) = 1 − P(0) = 1 − e^(−0.5) = 1 − 0.606531 = 0.3935."
+    "explain": "Let X = the number of 100-year floods in 50 years. $$\\lambda = \\dfrac{1}{100} \\times 50 = 0.5$$ $$P(X \\ge 1) = 1 - P(0) = 1 - e^{-0.5} = 1 - 0.606531 = \\mathbf{0.3935}$$"
   },
   {
     "q": "PP16b. P(exactly 1 in 50 years), 4 decimals.",
     "type": "numeric",
     "answer": 0.303265,
     "tolerance": 0.0001,
-    "explain": "P(1) = 0.5e^(−0.5) = 0.5 × 0.606531 = 0.3033."
+    "explain": "$$P(1) = 0.5e^{-0.5} = 0.5 \\times 0.606531 = \\mathbf{0.3033}$$"
   },
   {
     "q": "PP16c. P(exactly 1 in the next 50 years and exactly 1 in the 50 after), 4 decimals.",
     "type": "numeric",
     "answer": 0.0919699,
     "tolerance": 0.0001,
-    "explain": "Two separate 50-year periods, each λ = 0.5, independent: 0.303265² = 0.0920."
+    "explain": "Two separate 50-year periods, each λ = 0.5, independent: $$0.303265^2 = \\mathbf{0.0920}$$"
   },
   {
     "q": "PP16d. P(exactly 2 in 100 years), 4 decimals.",
     "type": "numeric",
     "answer": 0.18394,
     "tolerance": 0.0001,
-    "explain": "Now λ = 1 for 100 years. P(2) = 1² e^(−1)/2! = 0.367879/2 = 0.1839. It is double (c) because the 2 floods may split 1 and 1, 2 and 0, or 0 and 2 between the halves."
+    "explain": "Now λ = 1 for 100 years. $$P(2) = \\dfrac{1^2 e^{-1}}{2!} = \\dfrac{0.367879}{2} = \\mathbf{0.1839}$$ It is double (c) because the 2 floods may split 1 and 1, 2 and 0, or 0 and 2 between the halves."
   }
 ]
 ```
 
-(a) $\lambda = 50/100 = 0.5$: $1 - e^{-0.5} = 0.3935$. (b) $0.5e^{-0.5} = 0.3033$. (c) $0.303265^2 = 0.0920$. (d) $\lambda = 1$: $e^{-1}/2! = 0.1839$. Parts (c) and (d) cover the same 100 years and give different answers because (c) fixes how the two floods split between the halves; the pattern is in [Poisson across separate intervals](#/math3042-midterm/expected-dollars-shortcuts).
+1. (a) With $\lambda = 50/100 = 0.5$:
+   $$1 - e^{-0.5} = \mathbf{0.3935}$$
+2. (b) Exactly one:
+   $$0.5e^{-0.5} = \mathbf{0.3033}$$
+3. (c) One in each half:
+   $$0.303265^2 = \mathbf{0.0920}$$
+4. (d) With $\lambda = 1$:
+   $$\dfrac{e^{-1}}{2!} = \mathbf{0.1839}$$
+
+Parts (c) and (d) cover the same 100 years and give different answers because (c) fixes how the two floods split between the halves; the pattern is in [Poisson across separate intervals](#/math3042-midterm/expected-dollars-shortcuts).
 
 ```r
 1 - dpois(0, 0.5)
@@ -1092,34 +1233,34 @@ dpois(2, 1)
     "type": "numeric",
     "answer": 1.125,
     "tolerance": 0.006,
-    "explain": "λ = rate × interval = (18/8 per hour) × 0.5 hour = 2.25 × 0.5 = 1.125."
+    "explain": "Rate times interval: $$\\lambda = \\dfrac{18}{8} \\text{ per hour} \\times 0.5 \\text{ hour} = 2.25 \\times 0.5 = \\mathbf{1.125}$$"
   },
   {
     "q": "Fill the slot so the line gives P(the 6th attempt is the first success) for p = 0.2, counting attempts as the course does.",
     "type": "fill",
     "code": "dgeom(___, 0.2)",
     "answer": ["5"],
-    "explain": "The course counts trials (6); R counts failures before the first success (5). `dgeom(5, 0.2)` = 0.8⁵ × 0.2 = 0.0655."
+    "explain": "The course counts trials (6); R counts failures before the first success (5). `dgeom(5, 0.2)` gives $$0.8^5 \\times 0.2 = \\mathbf{0.0655}$$"
   },
   {
     "q": "Fill the slot: P(more than 2 defectives) in a sample of 6 from a lot of 40 with 7 defective.",
     "type": "fill",
     "code": "1 - phyper(___, 7, 40-7, 6)",
     "answer": ["2"],
-    "explain": "More than 2 = 1 − P(X ≤ 2), so the cumulative stops at 2, as in PP14c's `1 - phyper(2, 6, 50-6, 5)`."
+    "explain": "More than 2 is the complement $$1 - P(X \\le 2)$$ so the cumulative stops at 2, as in PP14c's `1 - phyper(2, 6, 50-6, 5)`."
   },
   {
     "q": "True or false: P(exactly 1 event in each of two separate 1-hour spans) equals P(exactly 2 events in the 2 hours).",
     "type": "tf",
     "answer": false,
-    "explain": "The 2-hour count also includes the 2-and-0 and 0-and-2 splits, so it is larger. With λ = 1 per hour: 1-and-1 is (e^(−1))² = 0.1353, while 2 in 2 hours (λ = 2) is 2²e^(−2)/2! = 0.2707."
+    "explain": "The 2-hour count also includes the 2-and-0 and 0-and-2 splits, so it is larger. With λ = 1 per hour, 1-and-1 is $$(e^{-1})^2 = 0.1353$$ while 2 in 2 hours (λ = 2) is $$\\dfrac{2^2 e^{-2}}{2!} = 0.2707$$"
   },
   {
     "q": "Same pallet: 30 boards, 5 warped, the inspector takes 4. P(at least 1 warped board), 4 decimals.",
     "type": "numeric",
     "answer": 0.538405,
     "tolerance": 0.0001,
-    "explain": "Let X = the number of warped boards among the 4. Hypergeometric, N = 30, K = 5, n = 4. P(0) = C(25,4)/C(30,4) = 12650/27405 = 0.461595. P(X ≥ 1) = 1 − 0.461595 = 0.5384. In R: `1 - dhyper(0, 5, 30-5, 4)`. The binomial 1 − (25/30)⁴ = 0.5177 is the with-replacement answer and is wrong here."
+    "explain": "Let X = the number of warped boards among the 4. Hypergeometric, N = 30, K = 5, n = 4. $$P(0) = \\dfrac{C(25,4)}{C(30,4)} = \\dfrac{12650}{27405} = 0.461595$$ $$P(X \\ge 1) = 1 - 0.461595 = \\mathbf{0.5384}$$ In R: `1 - dhyper(0, 5, 30-5, 4)`. The binomial is the with-replacement answer and is wrong here: $$1 - \\left(\\dfrac{25}{30}\\right)^4 = 0.5177$$"
   }
 ]
 ```

@@ -3,7 +3,9 @@ title: Every lecture example, worked
 minutes: 30
 ---
 
-Every example in the Unit 3 notes, in the order it appears, with the answer line from the filled notes (posted 2026-10-12). Each lesson linked in the last column works the example in full; the quiz below is the same problems with the numbers changed.
+Every example in the Unit 3 notes, in the order it appears, with the answer line from the filled notes (posted 2026-10-12).
+
+Each lesson linked in the last column works the example in full; the quiz below is the same problems with the numbers changed.
 
 | Example | Rule | Answer line | Lesson |
 |---|---|---|---|
@@ -43,11 +45,17 @@ bayes-tree
 ```
 
 :::tip A complete answer
-Show the sample-space size or the formula name ($P$ or $C$), the substituted numbers, the arithmetic, and the final answer with the right number of decimals: $0.0085/0.0125 = 0.68$, not a bare 0.68.
+Show the sample-space size or the formula name ($P$ or $C$), the substituted numbers, the arithmetic, and the final answer with the right number of decimals:
+
+$$P(\text{Intel} \mid D) = \dfrac{0.0085}{0.0125} = \mathbf{0.68}$$
+
+not a bare 0.68.
 :::
 
 :::tip Counting positions with C
-With $n$ coins, the outcomes with exactly $k$ heads are the ways to choose which $k$ of the $n$ flips are heads: $C(n, k)$. Three coins, two heads: choose 2 of 3 positions, HHT, HTH, THH, which is $C(3, 2) = 3$, the 3 of lesson 1's 8 outcomes.
+With $n$ coins, the outcomes with exactly $k$ heads are the ways to choose which $k$ of the $n$ flips are heads: $C(n, k)$.
+
+Three coins, two heads: choose 2 of 3 positions, HHT, HTH, THH, which is $C(3, 2) = 3$, the 3 of lesson 1's 8 outcomes.
 :::
 
 ```quiz
@@ -57,140 +65,140 @@ With $n$ coins, the outcomes with exactly $k$ heads are the ways to choose which
     "type": "numeric",
     "answer": 0.375,
     "tolerance": 0.001,
-    "explain": "Choose which 2 of the 4 flips are heads: HHTT, HTHT, HTTH, THHT, THTH, TTHH, which is C(4, 2) = 6. |S| = 2⁴ = 16, so 6/16 = 0.375."
+    "explain": "Choose which 2 of the 4 flips are heads: HHTT, HTHT, HTTH, THHT, THTH, TTHH, which is $C(4, 2) = 6$. Then $|S| = 2^4 = 16$, so $$\\dfrac{6}{16} = \\mathbf{0.375}$$"
   },
   {
     "q": "Four coins: P(at least one head)? (4 decimals)",
     "type": "numeric",
     "answer": 0.9375,
     "tolerance": 0.001,
-    "explain": "Complement: no heads is 1 outcome of 16: 1 - 1/16 = 15/16 = 0.9375."
+    "explain": "Complement: no heads is 1 outcome of 16: $$1 - 1/16 = 15/16 = \\mathbf{0.9375}$$"
   },
   {
     "q": "Two dice: P(doubles)? (4 decimals)",
     "type": "numeric",
     "answer": 0.1667,
     "tolerance": 0.0003,
-    "explain": "Six doubles out of 36: 6/36 = 1/6."
+    "explain": "Six doubles out of 36: $$6/36 = 1/6 = \\mathbf{0.1667}$$"
   },
   {
     "q": "A die is rolled four times. How many outcomes are in the sample space?",
     "type": "numeric",
     "answer": 1296,
     "tolerance": 0,
-    "explain": "6^4 = 1296 by the fundamental counting rule."
+    "explain": "By the fundamental counting rule: $$6^4 = \\mathbf{1296}$$"
   },
   {
     "q": "Three cards with replacement: P(all three are face cards)? (5 decimals)",
     "type": "numeric",
     "answer": 0.01229,
     "tolerance": 0.00005,
-    "explain": "12 face cards: (12/52)^3 = 0.01229."
+    "explain": "12 face cards: $$\\left(\\dfrac{12}{52}\\right)^3 = \\mathbf{0.01229}$$"
   },
   {
     "q": "Three cards without replacement: P(all three are hearts)? (4 decimals)",
     "type": "numeric",
     "answer": 0.0129,
     "tolerance": 0.0003,
-    "explain": "(13/52)(12/51)(11/50) = 1716/132600 = 0.01294."
+    "explain": "$$\\dfrac{13}{52} \\cdot \\dfrac{12}{51} \\cdot \\dfrac{11}{50} = \\dfrac{1716}{132\\,600} = \\mathbf{0.01294}$$"
   },
   {
     "q": "Three cards WITH replacement: P(all three are hearts)? (4 decimals)",
     "type": "numeric",
     "answer": 0.0156,
     "tolerance": 0.0002,
-    "explain": "(13/52)^3 = (1/4)^3 = 1/64 = 0.0156, above the without-replacement 0.0129, the same contrast as the notes' 26^5/52^5 = 0.03125 against 0.0253 for five red cards."
+    "explain": "$$\\left(\\dfrac{13}{52}\\right)^3 = \\left(\\dfrac{1}{4}\\right)^3 = \\dfrac{1}{64} = \\mathbf{0.0156}$$ This is above the without-replacement 0.0129, the same contrast as the notes' $26^5/52^5 = 0.03125$ against 0.0253 for five red cards."
   },
   {
     "q": "How many ways can 6 runners finish first, second and third?",
     "type": "numeric",
     "answer": 120,
     "tolerance": 0,
-    "explain": "Order matters: P(6, 3) = 6 × 5 × 4 = 120."
+    "explain": "Order matters: $$P(6, 3) = 6 \\times 5 \\times 4 = \\mathbf{120}$$"
   },
   {
     "q": "How many 3-person committees can be formed from 8 people?",
     "type": "numeric",
     "answer": 56,
     "tolerance": 0,
-    "explain": "No order: C(8, 3) = 8!/(3! 5!) = 56."
+    "explain": "No order: $$C(8, 3) = \\dfrac{8!}{3!\\,5!} = \\mathbf{56}$$"
   },
   {
     "q": "Five cards: P(a heart flush, all five hearts)? (6 decimals)",
     "type": "numeric",
     "answer": 0.000495,
     "tolerance": 0.000003,
-    "explain": "Same count as the spade flush: C(13, 5)/C(52, 5) = 1287/2598960."
+    "explain": "Same count as the spade flush: $$\\dfrac{C(13, 5)}{C(52, 5)} = \\dfrac{1287}{2\\,598\\,960} = \\mathbf{0.000495}$$"
   },
   {
     "q": "Two dice: P(sum is at most 10)? (4 decimals)",
     "type": "numeric",
     "answer": 0.9167,
     "tolerance": 0.0003,
-    "explain": "Complement: sum 11 (two ways) or 12 (one way) = 3/36; 1 - 3/36 = 33/36 = 0.9167."
+    "explain": "Complement: sum 11 (two ways) or 12 (one way) is 3/36, so $$1 - 3/36 = 33/36 = \\mathbf{0.9167}$$"
   },
   {
     "q": "In a room of 30 people, P(at least two share a birthday)? (2 decimals)",
     "type": "numeric",
     "answer": 0.71,
     "tolerance": 0.01,
-    "explain": "1 - P(365, 30)/365^30 = 1 - 0.294 = 0.706. The widget in lesson 4 draws the whole curve."
+    "explain": "$$1 - \\dfrac{P(365, 30)}{365^{30}} = 1 - 0.294 = \\mathbf{0.706}$$ The widget in lesson 4 draws the whole curve."
   },
   {
     "q": "Top card: P(a King or a red card)? (4 decimals)",
     "type": "numeric",
     "answer": 0.5385,
     "tolerance": 0.0003,
-    "explain": "Not mutually exclusive (two red Kings): 4/52 + 26/52 - 2/52 = 28/52 = 0.5385, the same arithmetic as the instructor's red card or Ace."
+    "explain": "Not mutually exclusive (two red Kings): $$4/52 + 26/52 - 2/52 = 28/52 = \\mathbf{0.5385}$$ This is the same arithmetic as the instructor's red card or Ace."
   },
   {
     "q": "Top card: P(a black card or a diamond)? (4 decimals)",
     "type": "numeric",
     "answer": 0.75,
     "tolerance": 0.0003,
-    "explain": "Mutually exclusive (diamonds are red): 26/52 + 13/52 = 0.7500, the notes' black-or-heart example with the other red suit."
+    "explain": "Mutually exclusive (diamonds are red): $$26/52 + 13/52 = \\mathbf{0.7500}$$ This is the notes' black-or-heart example with the other red suit."
   },
   {
     "q": "From the handedness table, P(Android | Left)? (3 decimals)",
     "type": "numeric",
     "answer": 0.25,
     "tolerance": 0.002,
-    "explain": "Restrict to the Left row: 2 Android of 8 left-handers = 0.25."
+    "explain": "Restrict to the Left row, 2 Android of 8 left-handers: $$2/8 = \\mathbf{0.25}$$"
   },
   {
     "q": "From the table, P(Left | Android)? (3 decimals)",
     "type": "numeric",
     "answer": 0.286,
     "tolerance": 0.002,
-    "explain": "Restrict to the Android column: 2 of 7 = 0.286."
+    "explain": "Restrict to the Android column, 2 of 7: $$2/7 = \\mathbf{0.286}$$"
   },
   {
     "q": "Two cards without replacement: P(two Kings)? (5 decimals)",
     "type": "numeric",
     "answer": 0.00452,
     "tolerance": 0.00003,
-    "explain": "(4/52)(3/51) = 1/221, the same as two Aces."
+    "explain": "$$\\dfrac{4}{52} \\cdot \\dfrac{3}{51} = \\dfrac{1}{221} = \\mathbf{0.00452}$$ The same as two Aces."
   },
   {
     "q": "A class is 70% female; 4% of women and 12% of men are left-handed. P(left-handed)? (3 decimals)",
     "type": "numeric",
     "answer": 0.064,
     "tolerance": 0.001,
-    "explain": "0.70(0.04) + 0.30(0.12) = 0.028 + 0.036 = 0.064."
+    "explain": "$$0.70(0.04) + 0.30(0.12) = 0.028 + 0.036 = \\mathbf{0.064}$$"
   },
   {
     "q": "Same class: P(male | left-handed)? (3 decimals)",
     "type": "numeric",
     "answer": 0.5625,
     "tolerance": 0.002,
-    "explain": "Male path 0.30 × 0.12 = 0.036, over P(L) = 0.064 from the last question: 0.036 / 0.064 = 0.5625."
+    "explain": "Male path: $$0.30 \\times 0.12 = 0.036$$ Over $P(L) = 0.064$ from the last question: $$\\dfrac{0.036}{0.064} = \\mathbf{0.5625}$$"
   },
   {
     "q": "Suppliers: A 60% share with 2% defective, B 40% with 5% defective. P(a defective part came from B)? (3 decimals)",
     "type": "numeric",
     "answer": 0.625,
     "tolerance": 0.002,
-    "explain": "P(D) = 0.60(0.02) + 0.40(0.05) = 0.012 + 0.020 = 0.032; P(B | D) = 0.020/0.032 = 0.625."
+    "explain": "$$P(D) = 0.60(0.02) + 0.40(0.05) = 0.012 + 0.020 = 0.032$$ $$P(B \\mid D) = \\dfrac{0.020}{0.032} = \\mathbf{0.625}$$"
   }
 ]
 ```

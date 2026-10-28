@@ -2,11 +2,15 @@
 title: "Q1, Q2, Q10: reading a histogram, recommending from a summary table, true or false on boxplots"
 minutes: 25
 ---
-Three of the practice paper's questions, 13 marks between them, ask you to read a figure or a table and write a short argument. Write your own answer on paper first; each model answer opens only after you commit to a number or a verdict.
+Three of the practice paper's questions, 13 marks between them, ask you to read a figure or a table and write a short argument.
+
+Write your own answer on paper first; each model answer opens only after you commit to a number or a verdict.
 
 ## Q1 (5 marks). The following histogram summarizes the length (in cm) of flower petals from 150 different iris flowers.
 
-The paper shows "Histogram of Flower Petal Lengths" with bins 0.5 cm wide. Here it is redrawn from its bar heights. Look at the shape first: a cluster on the left, an empty bar, then the main peak.
+The paper shows "Histogram of Flower Petal Lengths" with bins 0.5 cm wide. Here it is redrawn from its bar heights.
+
+Look at the shape first: a cluster on the left, an empty bar, then the main peak.
 
 ```widget
 freq-hist
@@ -49,7 +53,7 @@ A long tail drags the mean toward it; the median, a position, barely moves. Left
     "answer": 66.67,
     "tolerance": 1,
     "unit": "%",
-    "explain": "Count the short ones and take the complement. There are 37 + 13 + 0 = 50 petals under 4 cm, so 150 − 50 = 100 are at least 4 cm long: 100/150 = 0.6667 or **66.67 %**. The key writes exactly that: \"There are 37+13=50 that are less than 4cm long, so 100/150 = 0.6667 or 66.67% are at least 4cm long.\""
+    "explain": "Count the short ones and take the complement. Petals under 4 cm: $$37 + 13 + 0 = 50$$ Petals at least 4 cm long, as a share of 150: $$\\dfrac{150 - 50}{150} = \\dfrac{100}{150} = \\mathbf{0.6667} \\text{ or } \\mathbf{66.67\\%}$$ The key writes exactly that: \"There are 37+13=50 that are less than 4cm long, so 100/150 = 0.6667 or 66.67% are at least 4cm long.\""
   },
   {
     "q": "**Q1b.** The mean petal length is approximately? (cm)",
@@ -57,7 +61,7 @@ A long tail drags the mean toward it; the median, a position, barely moves. Left
     "answer": 5.25,
     "tolerance": 0.25,
     "unit": "cm",
-    "explain": "Any value from 5.0 to 5.5 is a fair reading; the key gives **5.25 cm** with the note \"must be below the median\". The 50 petals under 3.5 cm sit far to the left of everything else and pull the mean down, so the mean lies below the median class. The class-midpoint estimate agrees: Σ midpoint × f = 2.75(37) + 3.25(13) + 4.25(1) + 4.75(4) + 5.25(11) + 5.75(21) + 6.25(21) + 6.75(17) + 7.25(16) + 7.75(5) + 8.25(4) = 779.5, and 779.5/150 = 5.20 cm."
+    "explain": "Any value from 5.0 to 5.5 is a fair reading; the key gives **5.25 cm** with the note \"must be below the median\". The 50 petals under 3.5 cm sit far to the left of everything else and pull the mean down, so the mean lies below the median class. The class-midpoint estimate agrees. Sum of midpoint × frequency: $$2.75(37) + 3.25(13) + 4.25(1) + 4.75(4) + 5.25(11) + 5.75(21) + 6.25(21) + 6.75(17) + 7.25(16) + 7.75(5) + 8.25(4) = 779.5$$ Mean: $$\\bar{X} = \\dfrac{779.5}{150} = \\mathbf{5.20} \\text{ cm}$$"
   },
   {
     "q": "**Q1b.** The median petal length is approximately? (cm)",
@@ -65,18 +69,20 @@ A long tail drags the mean toward it; the median, a position, barely moves. Left
     "answer": 5.75,
     "tolerance": 0.25,
     "unit": "cm",
-    "explain": "Put the 150 petals in order from shortest to longest. 150 is even, so there are two middle values, at positions 150/2 = 75 and 76, and the median is between them. The Cumulative column is a running total, so it gives the last position each class reaches: 5.0–5.5 ends at position 66, and the 21 petals in 5.5–6.0 take the next positions, 67 to 87 (66 + 21 = 87). Positions 75 and 76 both fall in 67 to 87, so the median lies in **5.5–6.0**. The key takes the class midpoint, **5.75 cm**; interpolating inside the class gives 5.73 cm. Anything in 5.5 to 6.0 earns the mark."
+    "explain": "Put the 150 petals in order from shortest to longest. 150 is even, so there are two middle values, and the median is between them: $$\\dfrac{150}{2} = 75 \\text{ and } 76$$ The Cumulative column is a running total, so it gives the last position each class reaches: 5.0–5.5 ends at position 66, and the 21 petals in 5.5–6.0 take the next positions, 67 to 87: $$66 + 21 = 87$$ Positions 75 and 76 both fall in 67 to 87, so the median lies in **5.5–6.0**. The key takes the class midpoint, **5.75 cm**; interpolating inside the class gives 5.73 cm. Anything in 5.5 to 6.0 earns the mark."
   },
   {
     "q": "**Q1c.** Write your justification on paper, then type the one feature of this histogram that rules out the empirical rule.",
     "type": "text",
     "answer": ["bimodal", "bimodal distribution", "two peaks", "left-skewed", "left skewed", "skewed left", "skewed", "asymmetric", "not symmetric", "not bell-shaped", "not bell shaped"],
-    "explain": "Model answer (verbatim from the key): \"No. We can see from the histogram that the distribution is bimodal, with a second frequency peak on the left, making the distribution asymmetric and left-skewed. The empirical rule requires an approximately normal (bell-shaped) distribution.\" The two marks are the verdict with the reason (the rule needs a bell shape) and a named feature you can point to: the second peak of 37 + 13 petals at 2.5–3.5 cm, separated from the main peak at 5.5–6.5 cm by an empty 3.5–4.0 class."
+    "explain": "Model answer (verbatim from the key): \"No. We can see from the histogram that the distribution is bimodal, with a second frequency peak on the left, making the distribution asymmetric and left-skewed. The empirical rule requires an approximately normal (bell-shaped) distribution.\" The two marks are the verdict with the reason (the rule needs a bell shape) and a named feature you can point to: the second peak of 50 petals at 2.5–3.5 cm, separated from the main peak at 5.5–6.5 cm by an empty 3.5–4.0 class."
   }
 ]
 ```
 
-The first mark on 1b is for a mean below the median; the second is for a median in the right class. The empirical rule (68 %, 95 %, 99.7 % within 1, 2, 3 standard deviations) is a property of bell-shaped data, which is why the verdict in 1c rests on shape and nothing else.
+The first mark on 1b is for a mean below the median; the second is for a median in the right class.
+
+The empirical rule (68 %, 95 %, 99.7 % within 1, 2, 3 standard deviations) is a property of bell-shaped data, which is why the verdict in 1c rests on shape and nothing else.
 
 The midpoint mean as a table, one row per class (the empty 3.5–4.0 class adds nothing):
 
@@ -109,7 +115,7 @@ Taught in [the empirical rule](#/math3042/empirical-rule), [skewness](#/math3042
     "q": "**Q2.** Write your recommendation on paper (verdict, two centre measures, two spread measures), then pick the tablet you recommend.",
     "options": ["tablet Y", "tablet X"],
     "answer": 0,
-    "explain": "Model answer: I recommend **tablet Y**. The two tablets have comparable average battery life: tablet X has the higher mean (135.5 vs 133.2 min, about 2 minutes more) while tablet Y has the higher median (135.7 vs 130.2 min, about 6 minutes more), and both centres are well above 120 minutes. Tablet Y's battery life is much less variable: its standard deviation is 10.8 min against 34.7, its variance 116.6 against 1204.1, and its range 37.0 against 80.7 min. So a larger proportion of Y's batteries will last beyond 120 minutes, which makes tablet Y the more reliable choice for lasting at least 2 hours.\n\nWhy the smaller SD wins: 120 minutes is (120 − 133.2)/10.8 = −1.22 SDs below Y's mean but only (120 − 135.5)/34.7 = −0.45 SDs below X's, so far more of X's batteries fall short of 2 hours."
+    "explain": "Model answer: I recommend **tablet Y**. The two tablets have comparable average battery life: tablet X has the higher mean (135.5 vs 133.2 min, about 2 minutes more) while tablet Y has the higher median (135.7 vs 130.2 min, about 6 minutes more), and both centres are well above 120 minutes. Tablet Y's battery life is much less variable: its standard deviation is 10.8 min against 34.7, its variance 116.6 against 1204.1, and its range 37.0 against 80.7 min. So a larger proportion of Y's batteries will last beyond 120 minutes, which makes tablet Y the more reliable choice for lasting at least 2 hours.\n\nWhy the smaller SD wins: 120 minutes is 1.22 SDs below Y's mean, $$Z_Y = \\dfrac{120 - 133.2}{10.8} = \\mathbf{-1.22}$$ but only 0.45 SDs below X's, $$Z_X = \\dfrac{120 - 135.5}{34.7} = \\mathbf{-0.45}$$ so far more of X's batteries fall short of 2 hours."
   }
 ]
 ```
@@ -118,7 +124,9 @@ Taught in [the empirical rule](#/math3042/empirical-rule), [skewness](#/math3042
 The posted solution says "the mean battery life is about 3 minutes higher for Tablet Y, the median for Tablet X is about 6 minutes higher". The table says the opposite: X has the higher mean (135.5 vs 133.2) and Y the higher median (135.7 vs 130.2). The recommendation, Y, is right. The blank practice PDF also carries an older hidden answer that recommends X and calls Y the more variable tablet; that version is wrong.
 :::
 
-Three things carry the marks. The verdict comes first. Each comparison cites both numbers, not just "Y is less variable". And the word that decides the question is *reliable*: reliability is about spread, so the spread measures win the argument once the centres are shown to be close. The minimums do not settle it on their own, since both (91.9 and 108.2) are under 120.
+Three things carry the marks. The verdict comes first. Each comparison cites both numbers, not just "Y is less variable". And the word that decides the question is *reliable*: reliability is about spread, so the spread measures win the argument once the centres are shown to be close.
+
+The minimums do not settle it on their own, since both (91.9 and 108.2) are under 120.
 
 ### Batteries under 2 hours, tablet X against tablet Y
 
@@ -129,7 +137,11 @@ normal-curve
 { "mu": 135.5, "sigma": 34.7, "x": 120, "presets": { "Tablet X": [135.5, 34.7, 120], "Tablet Y": [133.2, 10.8, 120] } }
 ```
 
-The same comparison in one number is the [coefficient of variation](#/math3042/cv): CV = s / x̄ × 100 % puts the spread of each tablet on the same relative scale. Measures of centre and spread are taught in [the mean](#/math3042/mean), [median and mode](#/math3042/median-mode) and [range and standard deviation](#/math3042/range-sd).
+The same comparison in one number is the [coefficient of variation](#/math3042/cv), which puts the spread of each tablet on the same relative scale:
+
+$$CV = \dfrac{s}{\bar{X}} \times 100\%$$
+
+Measures of centre and spread are taught in [the mean](#/math3042/mean), [median and mode](#/math3042/median-mode) and [range and standard deviation](#/math3042/range-sd).
 
 ## Q10 (4 marks). The chart below shows the inflation-adjusted price of gold ($ per oz) since 2019, grouped by year (2019 to 2025).
 
@@ -157,7 +169,7 @@ The paper shows horizontal side-by-side boxplots titled "Price of Gold Since 201
     "q": "**Q10a.** The median price of gold has more than doubled from 2019 to 2025.",
     "type": "tf",
     "answer": true,
-    "explain": "Model answer (key): \"TRUE. The median price in 2019 was below 1500 $ per oz while the median price in 2025 was approximately 3300 $ per oz, which is more than double.\" With the readings: 2 × 1420 = 2840, and the 2025 median of about 3280 is above that (3280/1420 = 2.31). Use the median line inside each box, not the box edges or the whiskers."
+    "explain": "Model answer (key): \"TRUE. The median price in 2019 was below 1500 $ per oz while the median price in 2025 was approximately 3300 $ per oz, which is more than double.\" With the readings, double the 2019 median: $$2 \\times 1420 = 2840$$ The 2025 median of about 3280 is above that: $$\\dfrac{3280}{1420} = \\mathbf{2.31}$$ Use the median line inside each box, not the box edges or the whiskers."
   },
   {
     "q": "**Q10b.** The variability of the price of gold has steadily increased from 2019 to 2025.",
@@ -172,7 +184,9 @@ A TRUE/FALSE part is worth 2 marks: one for the word, one for the explanation th
 
 ### The box width is the IQR
 
-A different, smaller gold data set (ten daily closing prices from Lab 2, in CA$ per oz), used only to show that the box width is the IQR. The box runs from Q1 to Q3, so its width is the IQR; the whiskers and any circled outliers are not part of it.
+A different, smaller gold data set (ten daily closing prices from Lab 2, in CA$ per oz), used only to show that the box width is the IQR.
+
+The box runs from Q1 to Q3, so its width is the IQR; the whiskers and any circled outliers are not part of it.
 
 ```widget
 boxplot
@@ -189,7 +203,7 @@ Taught in [IQR, boxplots and outliers](#/math3042/iqr-boxplot-outliers).
     "answer": 36.67,
     "tolerance": 1,
     "unit": "%",
-    "explain": "The cumulative column reaches 55 at the end of the 4.5–5.0 class: 37 + 13 + 0 + 1 + 4 = 55. 55/150 = 0.3667 or 36.67 %."
+    "explain": "The cumulative column reaches 55 at the end of the 4.5–5.0 class: $$37 + 13 + 0 + 1 + 4 = 55$$ As a share of 150: $$\\dfrac{55}{150} = \\mathbf{0.3667} \\text{ or } \\mathbf{36.67\\%}$$"
   },
   {
     "q": "A histogram has a long tail to the left. Which is true of its mean and median?",
@@ -203,7 +217,7 @@ Taught in [IQR, boxplots and outliers](#/math3042/iqr-boxplot-outliers).
     "answer": 8.11,
     "tolerance": 0.05,
     "unit": "%",
-    "explain": "CV = s / x̄ × 100 % = 10.8 / 133.2 × 100 % = 8.11 %. Tablet X: 34.7 / 135.5 × 100 % = 25.6 %. Y's spread is about a third of X's relative to the same centre."
+    "explain": "Tablet Y: $$CV = \\dfrac{s}{\\bar{X}} \\times 100\\% = \\dfrac{10.8}{133.2} \\times 100\\% = \\mathbf{8.11\\%}$$ Tablet X: $$CV = \\dfrac{34.7}{135.5} \\times 100\\% = 25.6\\%$$ Y's spread is about a third of X's relative to the same centre."
   },
   {
     "q": "Every tablet Y battery in the experiment lasted at least 2 hours.",

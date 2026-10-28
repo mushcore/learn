@@ -193,9 +193,9 @@ button, a, [role="button"] { -webkit-tap-highlight-color: transparent; }
 .lesson h2 { font-family: var(--display); font-weight: 600; font-size: 22px; margin: 44px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--rule); }
 .lesson h3 { font-family: var(--display); font-weight: 600; font-size: 17px; color: var(--blue); margin: 28px 0 8px; }
 .lesson h4 { font-family: var(--display); font-size: 15px; margin: 20px 0 6px; }
-.lesson p { color: var(--ink-2); margin: 10px 0; overflow-wrap: anywhere; }
-.lesson ul, .lesson ol { color: var(--ink-2); padding-left: 24px; margin: 10px 0; }
-.lesson li { margin: 5px 0; overflow-wrap: anywhere; }
+.lesson p { color: var(--ink-2); margin: 18px 0; overflow-wrap: anywhere; }
+.lesson ul, .lesson ol { color: var(--ink-2); padding-left: 24px; margin: 18px 0; }
+.lesson li { margin: 8px 0; overflow-wrap: anywhere; }
 .lesson li::marker { color: var(--ink-dim); }
 .lesson a { color: var(--blue); }
 .lesson strong { color: var(--ink); font-weight: 650; }
@@ -224,7 +224,7 @@ button, a, [role="button"] { -webkit-tap-highlight-color: transparent; }
 /* math */
 .math { font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif; font-size: 1.08em; color: var(--ink); }
 .math .frac, .math .sqrt, .math .ovl { white-space: nowrap; }
-.math.display { display: block; text-align: center; margin: 16px 0; font-size: 1.25em; overflow-x: auto; white-space: nowrap; padding: 4px 0; }
+.math.display { display: block; text-align: center; margin: 16px 0; font-size: 1.25em; overflow-x: auto; white-space: normal; line-height: 1.8; padding: 4px 0; }
 .math .ovl { text-decoration: overline; }
 .math .hat::after { content: "\0302"; }
 .math .txt { font-family: var(--body); font-size: 0.9em; }

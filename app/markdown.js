@@ -118,6 +118,7 @@ export function inline(text) {
     slots.push(code != null ? `<code>${highlight(inlineLang, code)}</code>` : dmath != null ? mathify(dmath, true) : mathify(math));
     return `\u0000${slots.length - 1}\u0000`;
   });
+  s = s.replace(/\\\$/g, "$"); // `\$` is a literal dollar sign (money), never a math delimiter
   s = escapeHtml(s);
   s = s.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
   s = s.replace(/(^|[\s(])\*([^*\s][^*]*?)\*(?=[\s).,;:!?]|$)/g, "$1<em>$2</em>");

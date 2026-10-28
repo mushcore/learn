@@ -4,7 +4,9 @@ minutes: 22
 ---
 <!-- facts: gms.starforce.rates-15-plus, gms.starforce.star-catch, classic.scroll.tiers -->
 
-Tap forty items once each at 15 stars: how many successes should you expect, and when is a count unusual? For a binomial variable the parameters collapse to $\mu = np$ and $\sigma = \sqrt{npq}$, and a Z-score says whether an observed count is unusual.
+Tap forty items once each at 15 stars: how many successes should you expect, and when is a count unusual?
+
+For a binomial variable the parameters collapse to two shortcut formulas, and a Z-score says whether an observed count is unusual.
 
 ## The shortcut formulas
 
@@ -16,9 +18,21 @@ $$\mu = \sum x \cdot P(x), \qquad \sigma^2 = \sum (x - \mu)^2 \cdot P(x)$$
 
 $$\mu = np, \qquad \sigma^2 = npq, \qquad \sigma = \sqrt{npq}$$
 
-The mean is the number of trials times the success probability: 50 visitors at 25 % each should average 12.5 sales. Each visitor contributes, on average, 0.25 of a sale (1 with probability 0.25, 0 otherwise). Fifty visitors add fifty of those: 50 × 0.25 = 12.5. The variance is $npq$, and $\sigma$ is its square root, not $npq$ itself.
+The mean is the number of trials times the success probability: 50 visitors at 25 % each should average 12.5 sales.
 
-The rolling-3s table from the last lesson checks the shortcut against the definition: $\sum x P(x) = 0(0.4019) + 1(0.4019) + 2(0.1608) + 3(0.0322) + 4(0.0032) + 5(0.0001) = 0.8334$, and $np = 5 \cdot \frac16 = 0.8333$. Same number, one line instead of six.
+Each visitor contributes, on average, 0.25 of a sale (1 with probability 0.25, 0 otherwise). Fifty visitors add fifty of those:
+
+$$50 \times 0.25 = \mathbf{12.5} \text{ sales}$$
+
+The variance is $npq$, and $\sigma$ is its square root, not $npq$ itself.
+
+The rolling-3s table from the last lesson checks the shortcut against the definition:
+
+$$\sum x P(x) = 0(0.4019) + 1(0.4019) + 2(0.1608) + 3(0.0322) + 4(0.0032) + 5(0.0001) = 0.8334$$
+
+$$np = 5 \cdot \tfrac16 = 0.8333$$
+
+Same number, one line instead of six.
 
 ## Online shoppers: μ and σ
 
@@ -29,16 +43,22 @@ The rolling-3s table from the last lesson checks the shortcut against the defini
     "type": "numeric",
     "answer": 3.06,
     "tolerance": 0.01,
-    "explain": "σ = √(npq) = √(50 × 0.25 × 0.75) = √9.375 = 3.06. The variance is 9.375; take its root."
+    "explain": "$$\\sigma = \\sqrt{npq} = \\sqrt{50 × 0.25 × 0.75} = \\sqrt{9.375} = \\mathbf{3.06}$$ The variance is 9.375; take its root."
   }
 ]
 ```
 
 $n = 50$, $p = 0.25$, $q = 0.75$:
 
-$$\mu = 50(0.25) = 12.5, \qquad \sigma = \sqrt{50(0.25)(0.75)} = \sqrt{9.375} = 3.06$$
+$$\mu = 50(0.25) = \mathbf{12.5}, \qquad \sigma = \sqrt{50(0.25)(0.75)} = \sqrt{9.375} = \mathbf{3.06}$$
 
-On the histogram the peak sits at 12 and 13, and $\mu \pm 2\sigma = 12.5 \pm 6.1$ runs from 6.4 to 18.6, which is where nearly all the bar area is.
+On the histogram the peak sits at 12 and 13.
+
+Two standard deviations either side of the mean:
+
+$$\mu \pm 2\sigma = 12.5 \pm 6.1 = 6.4 \text{ to } 18.6$$
+
+That is where nearly all the bar area is.
 
 ```r
 n <- 50
@@ -93,14 +113,20 @@ An observed count $x$ is converted to a Z-score exactly as a data value was in U
 
 $$Z = \frac{x - \mu}{\sigma}$$
 
-$|Z| > 2$ is **unusual**. A value between $-2$ and $2$ is within the range chance alone produces, even when it is on the low side of $\mu$. The tail probability is a second test: the count is unusual when the tail beyond it is below 0.025. Each side has its own tail and its own R call:
+$|Z| > 2$ is **unusual**.
+
+A value between $-2$ and $2$ is within the range chance alone produces, even when it is on the low side of $\mu$.
+
+The tail probability is a second test: the count is unusual when the tail beyond it is below 0.025. Each side has its own tail and its own R call:
 
 | Side | Z test | Tail test | Tail in R (binomial) | Example: shoppers, $\mu = 12.5$, $\sigma = 3.06$ |
 |---|---|---|---|---|
 | low | $Z < -2$ | $P(X \le x) < 0.025$ | `pbinom(x, n, p)` | $x = 6$: $Z = (6 - 12.5)/3.06 = -2.12$, tail `pbinom(6, 50, 0.25)` = 0.0194: unusually low |
 | high | $Z > 2$ | $P(X \ge x) < 0.025$ | `1 - pbinom(x-1, n, p)` | $x = 20$: $Z = (20 - 12.5)/3.06 = 2.45$, tail `1 - pbinom(19, 50, 0.25)` = 0.0139: unusually high |
 
-Both tests are taught and agree in every lecture example of this unit. Right at the edge they can split (shoppers $x = 19$: $Z = 2.12$ but the tail is 0.0287), so use the test the question names.
+Both tests are taught and agree in every lecture example of this unit.
+
+Right at the edge they can split (shoppers $x = 19$: $Z = 2.12$ but the tail is 0.0287), so use the test the question names.
 
 :::info R syntax
 | Code | What it does |
@@ -121,19 +147,27 @@ Both tests are taught and agree in every lecture example of this unit. Right at 
 
 ## Forty items tapped once at 15→16
 
-Star Force, the GMS enhancement that adds stars to gear, succeeds 30 % at 15→16, with 67.90 % maintain and 2.10 % destroy [GMS, v.264 Star Force 15→16, checked 2026-10-27]: Nexon's v.264 published rates, without the Star Catch bonus that v.271 builds in. Tap each of 40 items once at 15 stars and let X = the number of successes. One tap per item keeps p fixed and the items independent, and X counts successes only, so maintain and destroy are both just "not a success": X is binomial with $n = 40$, $p = 0.30$.
+Star Force, the GMS enhancement that adds stars to gear, succeeds 30 % at 15→16, with 67.90 % maintain and 2.10 % destroy: Nexon's v.264 published rates, without the Star Catch bonus that v.271 builds in.
+
+Tap each of 40 items once at 15 stars and let X = the number of successes.
+
+One tap per item keeps p fixed and the items independent, and X counts successes only, so maintain and destroy are both just "not a success": X is binomial with $n = 40$, $p = 0.30$.
 
 ```quiz
 [
-  {"q": "40 items, one tap each at 15→16, p = 0.30. The mean number of successes μ = ? (1 decimal)", "type": "numeric", "answer": 12.0, "tolerance": 0.05, "explain": "μ = np = 40 × 0.30 = 12.0 successes."},
-  {"q": "Same 40 taps. σ = ? (2 decimals)", "type": "numeric", "answer": 2.9, "tolerance": 0.05, "explain": "σ = √(npq) = √(40 × 0.30 × 0.70) = √8.4 = 2.8983 ≈ 2.90. q = 0.70 is maintain plus destroy, 0.6790 + 0.0210."},
-  {"q": "The 40 taps give 19 successes. Z = ? (2 decimals)", "type": "numeric", "answer": 2.42, "tolerance": 0.01, "explain": "Z = (x − μ)/σ = (19 − 12)/2.8983 = 2.42 (2.41 with σ rounded to 2.90; either is accepted). Above 2: unusually high."}
+  {"q": "40 items, one tap each at 15→16, p = 0.30. The mean number of successes μ = ? (1 decimal)", "type": "numeric", "answer": 12.0, "tolerance": 0.05, "explain": "$$\\mu = np = 40 × 0.30 = \\mathbf{12.0} \\text{ successes}$$"},
+  {"q": "Same 40 taps. σ = ? (2 decimals)", "type": "numeric", "answer": 2.9, "tolerance": 0.05, "explain": "$$\\sigma = \\sqrt{npq} = \\sqrt{40 × 0.30 × 0.70} = \\sqrt{8.4} = 2.8983 \\approx \\mathbf{2.90}$$ q = 0.70 is maintain plus destroy: $$0.6790 + 0.0210 = 0.70$$"},
+  {"q": "The 40 taps give 19 successes. Z = ? (2 decimals)", "type": "numeric", "answer": 2.42, "tolerance": 0.01, "explain": "$$Z = \\dfrac{x − μ}{σ} = \\dfrac{19 − 12}{2.8983} = \\mathbf{2.42}$$ 2.41 with σ rounded to 2.90; either is accepted. Above 2: unusually high."}
 ]
 ```
 
-$$\mu = 40(0.30) = 12, \qquad \sigma = \sqrt{40(0.30)(0.70)} = \sqrt{8.4} = 2.90, \qquad Z = \frac{19 - 12}{2.90} = 2.41$$
+With $n = 40$, $p = 0.30$, $q = 0.70$:
 
-$Z > 2$: 19 successes is **unusually high** for a 30 % rate. The tail agrees: $P(X \ge 19) = 0.0148$, below 0.025.
+$$\mu = 40(0.30) = 12, \qquad \sigma = \sqrt{40(0.30)(0.70)} = \sqrt{8.4} = 2.90, \qquad Z = \frac{19 - 12}{2.90} = \mathbf{2.41}$$
+
+$Z > 2$: 19 successes is **unusually high** for a 30 % rate.
+
+The tail agrees: $P(X \ge 19) = 0.0148$, below 0.025.
 
 ```r
 n <- 40
@@ -194,9 +228,11 @@ binomial-calc
 
 *For a certain model of laser printer, the probability of a unit needing repairs in the first year is 10%. In an attempt to reduce this rate, modifications were made to the printer design and a year later a study of 200 randomly selected modified laser printers was conducted.*
 
-**(a)** *Assuming the modifications had no effect on the printer reliability, find the mean and standard deviation of the number of laser printers that need repair among 200.* $X$ = the number needing repair is binomial with $n = 200$, $p = 0.10$:
+**(a)** *Assuming the modifications had no effect on the printer reliability, find the mean and standard deviation of the number of laser printers that need repair among 200.*
 
-$$\mu = 200(0.10) = 20, \qquad \sigma = \sqrt{200(0.10)(0.90)} = \sqrt{18} = 4.24$$
+$X$ = the number needing repair is binomial with $n = 200$, $p = 0.10$:
+
+$$\mu = 200(0.10) = \mathbf{20}, \qquad \sigma = \sqrt{200(0.10)(0.90)} = \sqrt{18} = \mathbf{4.24}$$
 
 **(b)** *Suppose that in the sample of 200 laser printers, 14 needed repair. Assuming the modifications had no effect, is this rate unusually low?*
 
@@ -207,16 +243,24 @@ $$\mu = 200(0.10) = 20, \qquad \sigma = \sqrt{200(0.10)(0.90)} = \sqrt{18} = 4.2
     "type": "numeric",
     "answer": -1.41,
     "tolerance": 0.01,
-    "explain": "μ = 200(0.10) = 20, σ = √(200 × 0.10 × 0.90) = √18 = 4.24, Z = (14 − 20)/4.24 = −1.41."
+    "explain": "$$\\mu = 200(0.10) = 20, \\quad \\sigma = \\sqrt{200 × 0.10 × 0.90} = \\sqrt{18} = 4.24$$ $$Z = \\dfrac{14 − 20}{4.24} = \\mathbf{−1.41}$$"
   }
 ]
 ```
 
-$$Z = \frac{14 - 20}{4.24} = -1.41$$
+Standardize the 14 repairs:
 
-$-1.41$ is not beyond $-2$: **not unusual**. The tail agrees: $P(X \le 14) = 0.0929$, above 0.025.
+$$Z = \frac{14 - 20}{4.24} = \mathbf{-1.41}$$
 
-**(c)** *Does this sample provide good evidence that the modifications improved the reliability of this model of laser printer?* No: 14 repairs is within what the old 10 % rate produces by chance alone, so the sample is consistent with no improvement. This does not show the modifications failed. It only shows that 14 repairs could easily happen under the old 10 % rate, so the sample cannot prove an improvement.
+$-1.41$ is not beyond $-2$: **not unusual**.
+
+The tail agrees: $P(X \le 14) = 0.0929$, above 0.025.
+
+**(c)** *Does this sample provide good evidence that the modifications improved the reliability of this model of laser printer?*
+
+No: 14 repairs is within what the old 10 % rate produces by chance alone, so the sample is consistent with no improvement.
+
+This does not show the modifications failed. It only shows that 14 repairs could easily happen under the old 10 % rate, so the sample cannot prove an improvement.
 
 ```widget
 binomial-calc
@@ -282,16 +326,18 @@ pbinom(14, 200, 0.1)
 
 ## Fifty Greater scrolls and thirty Intermediate scrolls: unusual counts?
 
-In MapleStory Classic a Greater scroll succeeds 10 % of the time and an Intermediate scroll 60 %, by meowdb's copy of the in-game item text [Classic, Classic World scroll tiers, checked 2026-10-27]. Each use has the same fixed rate and uses are independent.
+In MapleStory Classic a Greater scroll succeeds 10 % of the time and an Intermediate scroll 60 %, by meowdb's copy of the in-game item text.
+
+Each use has the same fixed rate and uses are independent.
 
 ```quiz
 [
-  {"q": "50 Greater scrolls are used, p = 0.10 each, and X = the number that succeed. μ = ? (1 decimal)", "type": "numeric", "answer": 5.0, "tolerance": 0.05, "explain": "X is binomial with n = 50, p = 0.10: μ = np = 50 × 0.10 = 5.0 successes."},
-  {"q": "Same 50 Greater scrolls. σ = ? (2 decimals)", "type": "numeric", "answer": 2.12, "tolerance": 0.05, "explain": "σ = √(npq) = √(50 × 0.10 × 0.90) = √4.5 = 2.1213 ≈ 2.12. The variance is 4.5; σ is its square root."},
-  {"q": "The 50 Greater scrolls give 11 successes. Z = ? (2 decimals)", "type": "numeric", "answer": 2.83, "tolerance": 0.01, "explain": "Z = (x − μ)/σ = (11 − 5)/2.1213 = 2.83. Above 2: 11 successes is unusually high for a 10 % scroll."},
-  {"type": "fill", "q": "Complete the R line for the high-side tail P(X ≥ 11) on the 50 Greater scrolls.", "code": "1 - pbinom(___, 50, 0.1)", "answer": ["10"], "explain": "pbinom(10, …) is P(X ≤ 10), so 1 − pbinom(10, 50, 0.1) = P(X ≥ 11) = 0.009354602, below 0.025. Using 11 would drop the X = 11 bar from the tail."},
-  {"q": "30 Intermediate scrolls, p = 0.60 each. σ = ? (2 decimals)", "type": "numeric", "answer": 2.68, "tolerance": 0.05, "explain": "μ = 30 × 0.60 = 18; σ = √(30 × 0.60 × 0.40) = √7.2 = 2.6833 ≈ 2.68."},
-  {"q": "13 successes from 30 Intermediate scrolls is unusually low.", "type": "tf", "answer": false, "explain": "Z = (13 − 18)/2.6833 = −1.86, not beyond −2: low, but within what a 60 % rate produces by chance. The tail agrees: P(X ≤ 13) = 0.0481, above 0.025."}
+  {"q": "50 Greater scrolls are used, p = 0.10 each, and X = the number that succeed. μ = ? (1 decimal)", "type": "numeric", "answer": 5.0, "tolerance": 0.05, "explain": "X is binomial with n = 50, p = 0.10: $$\\mu = np = 50 × 0.10 = \\mathbf{5.0} \\text{ successes}$$"},
+  {"q": "Same 50 Greater scrolls. σ = ? (2 decimals)", "type": "numeric", "answer": 2.12, "tolerance": 0.05, "explain": "$$\\sigma = \\sqrt{npq} = \\sqrt{50 × 0.10 × 0.90} = \\sqrt{4.5} = 2.1213 \\approx \\mathbf{2.12}$$ The variance is 4.5; σ is its square root."},
+  {"q": "The 50 Greater scrolls give 11 successes. Z = ? (2 decimals)", "type": "numeric", "answer": 2.83, "tolerance": 0.01, "explain": "$$Z = \\dfrac{x − μ}{σ} = \\dfrac{11 − 5}{2.1213} = \\mathbf{2.83}$$ Above 2: 11 successes is unusually high for a 10 % scroll."},
+  {"type": "fill", "q": "Complete the R line for the high-side tail P(X ≥ 11) on the 50 Greater scrolls.", "code": "1 - pbinom(___, 50, 0.1)", "answer": ["10"], "explain": "pbinom(10, …) is P(X ≤ 10), so $$1 − \\text{pbinom}(10, 50, 0.1) = P(X ≥ 11) = 0.009354602$$ That is below 0.025. Using 11 would drop the X = 11 bar from the tail."},
+  {"q": "30 Intermediate scrolls, p = 0.60 each. σ = ? (2 decimals)", "type": "numeric", "answer": 2.68, "tolerance": 0.05, "explain": "$$\\mu = 30 × 0.60 = 18, \\quad \\sigma = \\sqrt{30 × 0.60 × 0.40} = \\sqrt{7.2} = 2.6833 \\approx \\mathbf{2.68}$$"},
+  {"q": "13 successes from 30 Intermediate scrolls is unusually low.", "type": "tf", "answer": false, "explain": "$$Z = \\dfrac{13 − 18}{2.6833} = \\mathbf{−1.86}$$ Not beyond −2: low, but within what a 60 % rate produces by chance. The tail agrees: P(X ≤ 13) = 0.0481, above 0.025."}
 ]
 ```
 
@@ -302,13 +348,13 @@ In MapleStory Classic a Greater scroll succeeds 10 % of the time and an Intermed
     "type": "numeric",
     "answer": 12.5,
     "tolerance": 0.05,
-    "explain": "μ = np = 50 × 0.25 = 12.5, the centre of the probability histogram."
+    "explain": "$$\\mu = np = 50 × 0.25 = \\mathbf{12.5}$$ It is the centre of the probability histogram."
   },
   {
     "q": "For a binomial variable, σ = npq.",
     "type": "tf",
     "answer": false,
-    "explain": "npq is the variance σ². The standard deviation is σ = √(npq): for the printers √18 = 4.24, not 18."
+    "explain": "npq is the variance σ². The standard deviation is σ = √(npq). For the printers: $$\\sigma = \\sqrt{18} = 4.24, \\text{ not } 18$$"
   },
   {
     "q": "200 modified printers, 10 % repair rate if the modifications did nothing. Which Z-score belongs to 14 repairs?",
@@ -321,7 +367,7 @@ In MapleStory Classic a Greater scroll succeeds 10 % of the time and an Intermed
     "type": "numeric",
     "answer": 2.5,
     "tolerance": 0.05,
-    "explain": "μ = 100(0.2) = 20, σ = √(100 × 0.2 × 0.8) = √16 = 4, Z = (30 − 20)/4 = 2.5: beyond 2, unusually high."
+    "explain": "$$\\mu = 100(0.2) = 20, \\quad \\sigma = \\sqrt{100 × 0.2 × 0.8} = \\sqrt{16} = 4$$ $$Z = \\dfrac{30 − 20}{4} = \\mathbf{2.5}$$ Beyond 2: unusually high."
   },
   {
     "q": "14 repairs out of 200 gave Z = −1.41. The right conclusion is...",
@@ -334,7 +380,7 @@ In MapleStory Classic a Greater scroll succeeds 10 % of the time and an Intermed
     "type": "numeric",
     "answer": 4.36,
     "tolerance": 0.01,
-    "explain": "σ = √(400 × 0.05 × 0.95) = √19 = 4.36; μ = 400 × 0.05 = 20."
+    "explain": "$$\\sigma = \\sqrt{400 × 0.05 × 0.95} = \\sqrt{19} = \\mathbf{4.36}$$ $$\\mu = 400 × 0.05 = 20$$"
   },
   {
     "q": "Using the tail-probability test accepted on Quiz 4, a count x is unusually low when...",
@@ -347,7 +393,7 @@ In MapleStory Classic a Greater scroll succeeds 10 % of the time and an Intermed
     "type": "numeric",
     "answer": 0.83,
     "tolerance": 0.01,
-    "explain": "μ = np = 5 × 1/6 = 0.83, the same as Σ x P(x) over the six-row table (0.8334)."
+    "explain": "$$\\mu = np = 5 × 1/6 = \\mathbf{0.83}$$ It matches Σ x P(x) over the six-row table (0.8334)."
   }
 ]
 ```

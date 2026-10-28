@@ -3,7 +3,9 @@ title: Formula sheet (Unit 4)
 minutes: 8
 ---
 
-Everything from Unit 4 and Lab 5 on one page: the definitions, the general formulas, one row per distribution, the two rules, the worked numbers from the notes, and the R. No new explanations here; if a line does not make sense, go back to its lesson.
+Everything from Unit 4 and Lab 5 on one page: the definitions, the general formulas, one row per distribution, the two rules, the worked numbers from the notes, and the R.
+
+No new explanations here; if a line does not make sense, go back to its lesson.
 
 ## Definitions
 
@@ -43,11 +45,35 @@ Lay the table out as $x$, $P(x)$, $x P(x)$, $(x - \mu)^2 P(x)$; total the last t
 | R: $P(X \le x)$ | `pbinom(x, n, p)` | `phyper(x, K, N-K, n)` | `pgeom(x-1, p)` | `ppois(x, lambda)` |
 | R: $P(X \ge x)$ | `1 - pbinom(x-1, n, p)` | `1 - phyper(x-1, K, N-K, n)` | `1 - pgeom(x-2, p)` $= q^{x-1}$ | `1 - ppois(x-1, lambda)` |
 
-Shortcuts: $P(X \ge x) = 1 - P(X \le x - 1)$, which in R is `1 - p*(x-1, …)` except the geometric, whose R count of failures makes it `1 - pgeom(x-2, p)`; geometric $P(X \ge x) = q^{x-1}$ (the first $x - 1$ trials all fail) and $P(X > x) = q^x$; $nCx = \dfrac{n!}{(n-x)!\,x!}$ on the Sharp as `n 2ndF nCr x`; $e^{-\lambda}$ as `lambda +/- 2ndF e^x`.
+Shortcuts:
 
-**5 % rule**: if $n \le 0.05\,N$ the binomial with $p = K/N$ gives practically the same probabilities as the hypergeometric (superdeck: $5/520 = 0.96\%$, 0.0460 vs 0.0465). At $n/N = 5/52 = 9.6\%$ or $10/90 = 11\%$ it does not (0.0399 vs 0.0465; $\sigma$ 1.49 vs 1.57).
+$$P(X \ge x) = 1 - P(X \le x - 1)$$
 
-**Unusual**: compute $\mu$ and $\sigma$ from the row above, then $Z = (x - \mu)/\sigma$; beyond $\pm 2$ is unusual. The tail check says the same. Low side: $P(X \le x)$ = `pbinom(x, …)` / `phyper(x, …)` / `ppois(x, …)`. High side: $P(X \ge x)$ = `1 - p*(x-1, …)` (geometric `x-2`). Unusual if below 0.025. Not unusual means consistent with chance, not evidence of no effect.
+In R that is `1 - p*(x-1, …)`, except the geometric, whose R count of failures makes it `1 - pgeom(x-2, p)`.
+
+Geometric tails (the first $x - 1$ trials all fail):
+
+$$P(X \ge x) = q^{x-1} \qquad P(X > x) = q^x$$
+
+Combinations, on the Sharp as `n 2ndF nCr x`:
+
+$$nCx = \dfrac{n!}{(n-x)!\,x!}$$
+
+$e^{-\lambda}$ on the Sharp is `lambda +/- 2ndF e^x`.
+
+**5 % rule**: if $n \le 0.05\,N$ the binomial with $p = K/N$ gives practically the same probabilities as the hypergeometric (superdeck: $5/520 = 0.96\%$, 0.0460 vs 0.0465).
+
+At $n/N = 5/52 = 9.6\%$ or $10/90 = 11\%$ it does not (0.0399 vs 0.0465; $\sigma$ 1.49 vs 1.57).
+
+**Unusual**: compute $\mu$ and $\sigma$ from the row above, then:
+
+$$Z = \dfrac{x - \mu}{\sigma}$$
+
+Beyond $\pm 2$ is unusual.
+
+The tail check says the same. Low side: $P(X \le x)$ = `pbinom(x, …)` / `phyper(x, …)` / `ppois(x, …)`. High side: $P(X \ge x)$ = `1 - p*(x-1, …)` (geometric `x-2`). Unusual if below 0.025.
+
+Not unusual means consistent with chance, not evidence of no effect.
 
 **Poisson $\lambda$**: rescale to the interval asked about before substituting (1 per 2 s is $60/2 = 30$ per minute; 3 per hour is 1 per 20 minutes).
 
@@ -68,7 +94,9 @@ Shortcuts: $P(X \ge x) = 1 - P(X \le x - 1)$, which in R is `1 - p*(x-1, …)` e
 | help line $p = 0.25$: $P(3)$, $E[X]$, $\sigma$, $P(X \ge 4)$ | $0.75^2(0.25) = 0.1406$; $1/0.25 = 4$; $\sqrt{0.75/0.25^2} = \sqrt{12} = 3.46$; $1 - 0.25 - 0.1875 - 0.1406 = 0.75^3 = 0.4219$ |
 | web server 1 per 2 s: $\lambda$, $P(20)$, $P(\le 20)$, $Z(20)$ | $30$ per minute; $30^{20} e^{-30}/20! = 0.0134$; $0.0353$; $(20 - 30)/5.48 = -1.83$, not unusual |
 
-Histograms: binomial shoppers peaks at 12–13, nothing past 25; Mac users peaks at 4 then 5; geometric is always decreasing (mode 1, mean 4); Poisson $\lambda = 30$ peaks at 29–30, bell-shaped with a slight right skew. Probability histogram in R: `barplot(p.vals, names.arg=X.vals, space=0, col="pink", xlab, ylab, main)`.
+Histograms: binomial shoppers peaks at 12–13, nothing past 25; Mac users peaks at 4 then 5; geometric is always decreasing (mode 1, mean 4); Poisson $\lambda = 30$ peaks at 29–30, bell-shaped with a slight right skew.
+
+Probability histogram in R: `barplot(p.vals, names.arg=X.vals, space=0, col="pink", xlab, ylab, main)`.
 
 ## R (demo notebook and Lab 5)
 
@@ -99,10 +127,10 @@ Histograms: binomial shoppers peaks at 12–13, nothing past 25; Mac users peaks
 
 ```quiz
 [
-  {"q": "Rapid fire: the binomial $\\sigma$ is...", "options": ["$npq$", "$\\sqrt{npq}$", "$\\sqrt{np}$", "$np$"], "answer": 1, "explain": "σ² = npq; root it. Shoppers: √9.375 = 3.06."},
+  {"q": "Rapid fire: the binomial $\\sigma$ is...", "options": ["$npq$", "$\\sqrt{npq}$", "$\\sqrt{np}$", "$np$"], "answer": 1, "explain": "σ² = npq; root it. Shoppers: $$\\sigma = \\sqrt{9.375} = \\mathbf{3.06}$$"},
   {"q": "Geometric $P(X = x)$ = ?", "options": ["$q^x p$", "$p^{x-1} q$", "$q^{x-1} p$", "$nCx\\,q^{x-1} p$"], "answer": 2, "explain": "x − 1 failures then one success, in that order, so no nCx."},
   {"q": "The hypergeometric variance carries the extra factor...", "options": ["$(N - n)/(N - 1)$", "$n/N$", "$K/N$", "$1/p$"], "answer": 0, "explain": "The finite-population correction, below 1, so σ is smaller than the binomial's 1.57 (Mac users: 1.49)."},
   {"q": "Which R function gives the lecture's $P(X = 3)$ for a geometric with $p = 0.25$?", "type": "text", "answer": ["dgeom(2, 0.25)", "dgeom(2,0.25)", "dgeom(2, p)", "dgeom(2,p)"], "explain": "R counts failures before the first success, so the lecture's x = 3 is R's 2."},
-  {"q": "Poisson with $\\lambda = 16$: $\\sigma$ = ?", "options": ["16", "8", "256", "4"], "answer": 3, "explain": "σ = √λ = √16 = 4."}
+  {"q": "Poisson with $\\lambda = 16$: $\\sigma$ = ?", "options": ["16", "8", "256", "4"], "answer": 3, "explain": "$$\\sigma = \\sqrt{\\lambda} = \\sqrt{16} = \\mathbf{4}$$"}
 ]
 ```

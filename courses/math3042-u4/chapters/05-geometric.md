@@ -4,25 +4,39 @@ minutes: 22
 ---
 <!-- facts: gms.starforce.rates-0-14, gms.starforce.star-catch, classic.cashshop.mfc-rates, classic.cashshop.mfc-price, gms.box.divine-wishing-bell, poe1.fusing.six-link-measured -->
 
-Star Force, the enhancement that adds stars to gear, fails a 14→15 tap more often than it lands, so the player taps until it does. The geometric distribution counts those taps: the binomial's trials, with the trial count as the variable.
+Star Force, the enhancement that adds stars to gear, fails a 14→15 tap more often than it lands, so the player taps until it does.
+
+The geometric distribution counts those taps: the binomial's trials, with the trial count as the variable.
 
 ## X = the number of trials it takes to obtain the first "success"
 
-Slide wording: the Geometric Distribution is *based on the same assumptions as the binomial distribution: $n$ trials each with probability of success $p$*. What changes is the variable: $X$ = *the number of trials it takes to obtain the first "success"*. Its possible values are 1, 2, 3, … with no upper limit, because there is no fixed $n$: the trials stop when the first success arrives. A binomial $X$ runs from 0 to $n$; a geometric $X$ starts at 1 (the first trial can itself be the success) and is unbounded.
+Slide wording: the Geometric Distribution is *based on the same assumptions as the binomial distribution: $n$ trials each with probability of success $p$*.
+
+What changes is the variable: $X$ = *the number of trials it takes to obtain the first "success"*.
+
+Its possible values are 1, 2, 3, … with no upper limit, because there is no fixed $n$: the trials stop when the first success arrives.
+
+A binomial $X$ runs from 0 to $n$; a geometric $X$ starts at 1 (the first trial can itself be the success) and is unbounded.
 
 ## Taps until the first 14→15 success
 
-A 14→15 tap succeeds 30 % [GMS, the wiki's Star Force table 14→15, checked 2026-10-27] of the time. Below 15 stars on a non-Superior item every tap has that same p, a failure keeps the star and nothing is destroyed, so X = the number of taps to the first success is geometric. From 15 stars up a tap can also destroy the item, a third outcome, and the count stops being geometric. The wiki's table leaves out the Star Catch bonus that v.271 builds into every tap, so live success is slightly higher.
+A 14→15 tap succeeds 30 % of the time.
+
+Below 15 stars on a non-Superior item every tap has that same p, a failure keeps the star and nothing is destroyed, so X = the number of taps to the first success is geometric.
+
+From 15 stars up a tap can also destroy the item, a third outcome, and the count stops being geometric.
+
+The wiki's table leaves out the Star Catch bonus that v.271 builds into every tap, so live success is slightly higher.
 
 ```quiz
 [
-  {"q": "A 14→15 tap succeeds with p = 0.30. P(the first success is on the 3rd tap) = ? (4 decimals)", "type": "numeric", "answer": 0.147, "tolerance": 0.0001, "explain": "Fail, fail, succeed: q · q · p = 0.70 × 0.70 × 0.30 = 0.49 × 0.30 = 0.1470."}
+  {"q": "A 14→15 tap succeeds with p = 0.30. P(the first success is on the 3rd tap) = ? (4 decimals)", "type": "numeric", "answer": 0.147, "tolerance": 0.0001, "explain": "Fail, fail, succeed: $$q · q · p = 0.70 × 0.70 × 0.30 = 0.49 × 0.30 = \\mathbf{0.1470}$$"}
 ]
 ```
 
 Two failed taps, each with $q = 0.70$, then the success with $p = 0.30$:
 
-$$P(3) = 0.70 \times 0.70 \times 0.30 = 0.1470$$
+$$P(3) = 0.70 \times 0.70 \times 0.30 = \mathbf{0.1470}$$
 
 R's version of this comes in "R counts failures" below.
 
@@ -44,14 +58,14 @@ geometric-calc
     "type": "numeric",
     "answer": 0.1406,
     "tolerance": 0.0002,
-    "explain": "Fail, fail, succeed: 0.75 × 0.75 × 0.25 = 0.1406."
+    "explain": "Fail, fail, succeed: $$0.75 × 0.75 × 0.25 = \\mathbf{0.1406}$$"
   }
 ]
 ```
 
 If you first gain access on the 3rd call, then you had to have: *failure on the first call*, probability $q = 0.75$; *failure on the second call*, probability $q = 0.75$; *success on the third call*, probability $p = 0.25$. The calls are independent, so the three probabilities multiply:
 
-$$P(3) = 0.75 \times 0.75 \times 0.25 = 0.5625 \times 0.25 = 0.1406$$
+$$P(3) = 0.75 \times 0.75 \times 0.25 = 0.5625 \times 0.25 = \mathbf{0.1406}$$
 
 ## The formula: x − 1 failures, then one success
 
@@ -59,11 +73,17 @@ Slide wording: *suppose every trial of a random experiment has probability $p$ o
 
 $$P(X = x) = q^{x-1} \cdot p, \qquad \mu = \frac{1}{p}, \qquad \sigma^2 = \frac{1 - p}{p^2}$$
 
-$x$ is the trial number of the first success, so $x - 1$ failures come before it (one factor of $q$ each) and the single success supplies the one factor of $p$. The exponent is $x - 1$, never $x$: $P(3)$ has two 0.75s in it, not three.
+$x$ is the trial number of the first success, so $x - 1$ failures come before it (one factor of $q$ each) and the single success supplies the one factor of $p$.
 
-A 1-in-4 chance needs about 4 tries: $\mu = 1/p$. (The notes' derivation is at the end of the lesson, for the curious.)
+The exponent is $x - 1$, never $x$: $P(3)$ has two 0.75s in it, not three.
 
-**Back to the taps**, $p = 0.30$: $\mu = \dfrac{1}{0.30} = 3.33$ taps and $\sigma = \sqrt{\dfrac{0.70}{0.30^2}} = \sqrt{7.78} = 2.79$.
+A 1-in-4 chance needs about 4 tries: $\mu = 1/p$.
+
+The notes' derivation is at the end of the lesson, for the curious.
+
+**Back to the taps**, $p = 0.30$:
+
+$$\mu = \dfrac{1}{0.30} = \mathbf{3.33} \text{ taps}, \qquad \sigma = \sqrt{\dfrac{0.70}{0.30^2}} = \sqrt{7.78} = \mathbf{2.79}$$
 
 ## Failure, failure, success, drawn as boxes
 
@@ -72,13 +92,15 @@ geometric-calc
 { "p": 0.25, "x": 3, "preset": "help line (p = 0.25)", "title": "The help line: q^(x-1) p with the chain of calls drawn, the bars for x = 1..15, and the R lines" }
 ```
 
-Every added box is another $q$, so the bars fall by the factor $q = 0.75$ each step. At $p = 0.05$ the mean $1/p$ is 20 while the tallest bar stays at $x = 1$.
+Every added box is another $q$, so the bars fall by the factor $q = 0.75$ each step.
+
+At $p = 0.05$ the mean $1/p$ is 20 while the tallest bar stays at $x = 1$.
 
 ## E[X] and σ for the help line
 
 *Let $X$ = the number of times you must call until you get access.*
 
-$$E[X] = \frac{1}{p} = \frac{1}{0.25} = 4 \text{ calls}, \qquad \sigma_X = \sqrt{\frac{1 - p}{p^2}} = \sqrt{\frac{0.75}{0.0625}} = \sqrt{12} = 3.46$$
+$$E[X] = \frac{1}{p} = \frac{1}{0.25} = 4 \text{ calls}, \qquad \sigma_X = \sqrt{\frac{1 - p}{p^2}} = \sqrt{\frac{0.75}{0.0625}} = \sqrt{12} = \mathbf{3.46}$$
 
 The standard deviation is almost as large as the mean: the distribution has a long right tail of unlucky callers.
 
@@ -122,11 +144,19 @@ c(mu, sig)
 
 ## P(X ≥ 4): the complement, or three failures in a row
 
-"At least 4 calls" is everything except 1, 2 or 3 calls, where $P(1) = 0.25$, $P(2) = 0.75 \times 0.25 = 0.1875$ and $P(3) = 0.1406$:
+"At least 4 calls" is everything except 1, 2 or 3 calls.
 
-$$P(X \ge 4) = 1 - P(1) - P(2) - P(3) = 1 - 0.25 - 0.1875 - 0.1406 = 0.4219$$
+The three excluded probabilities:
 
-The shortcut gives the same number: needing at least 4 calls means the first three all failed, $q^3 = 0.75^3 = 0.421875$.
+$$P(1) = 0.25, \qquad P(2) = 0.75 \times 0.25 = 0.1875, \qquad P(3) = 0.1406$$
+
+Subtract them from 1:
+
+$$P(X \ge 4) = 1 - P(1) - P(2) - P(3) = 1 - 0.25 - 0.1875 - 0.1406 = \mathbf{0.4219}$$
+
+The shortcut gives the same number: needing at least 4 calls means the first three all failed.
+
+$$q^3 = 0.75^3 = \mathbf{0.421875}$$
 
 ```diagram
 { "type": "flow", "title": "At least 4 calls: the first three all fail", "nodes": [
@@ -138,12 +168,22 @@ The shortcut gives the same number: needing at least 4 calls means the first thr
 ], "edges": [ { "from": "c1", "to": "c2" }, { "from": "c2", "to": "c3" }, { "from": "c3", "to": "c4" }, { "from": "c4", "to": "c5" } ], "hi": ["c1", "c2", "c3"], "caption": "X ≥ 4 ⇔ calls 1–3 all fail: 0.75³ = 0.4219. X ≤ 3 is the opposite event: 1 − 0.75³ = 0.5781." }
 ```
 
-So the two tail shortcuts have different exponents. $P(X \ge x) = q^{x-1}$: only the first $x - 1$ trials must fail. $P(X \le x) = 1 - q^x$: the opposite of "the first $x$ all fail". Help line: $P(X \ge 4) = 0.75^3$, $P(X \le 4) = 1 - 0.75^4 = 0.6836$.
+So the two tail shortcuts have different exponents.
+
+$P(X \ge x) = q^{x-1}$: only the first $x - 1$ trials must fail.
+
+$P(X \le x) = 1 - q^x$: the opposite of "the first $x$ all fail".
+
+Help line:
+
+$$P(X \ge 4) = 0.75^3, \qquad P(X \le 4) = 1 - 0.75^4 = 0.6836$$
 
 ## R counts failures: dgeom(x − 1, p)
 
 :::warn R's geometric counts failures, not trials
-R's geometric variable is the number of **failures before** the first success, so the lecture's $X = x$ is R's $x - 1$. Every `dgeom` and `pgeom` call in this course carries that shift, and "at least" carries a shift of 2.
+R's geometric variable is the number of **failures before** the first success, so the lecture's $X = x$ is R's $x - 1$.
+
+Every `dgeom` and `pgeom` call in this course carries that shift, and "at least" carries a shift of 2.
 :::
 
 ```diagram
@@ -156,7 +196,11 @@ R's geometric variable is the number of **failures before** the first success, s
 ], "hi": ["a0", "a1", "a2", "a3"], "caption": "Only 'at least' shifts by 2: help line P(X ≥ 4) = 0.75³ = 1 - pgeom(2, 0.25) = 0.4219." }
 ```
 
-Worked row, help line: $P(X \ge 4) = 0.75^3 = 0.4219$, which is `1 - pgeom(2, p)` with $p = 0.25$, the last line of the block below.
+Worked row, help line:
+
+$$P(X \ge 4) = 0.75^3 = 0.4219$$
+
+That is `1 - pgeom(2, p)` with $p = 0.25$, the last line of the block below.
 
 ```r
 q^2 * p                    # P(X = 3) by the formula
@@ -234,13 +278,17 @@ barplot(p.vals, names.arg=X.vals, col="pink", space=0,
 - `barplot(…)`: "Take the heights (`p.vals`), labels (`names.arg=X.vals`), colour (`col="pink"`), no gaps (`space=0`) and text labels (`xlab=`, `ylab=`, `main=`), and draw the bars (`barplot`)."
 :::
 
-Each bar is 0.75 times the one before it, so the histogram is strictly decreasing: the **mode is 1** even though the mean is 4. The ten bars add to 0.9437; the missing 0.0563 is $q^{10}$, the tail beyond 10 calls.
+Each bar is 0.75 times the one before it, so the histogram is strictly decreasing: the **mode is 1** even though the mean is 4.
+
+The ten bars add to 0.9437; the missing 0.0563 is $q^{10}$, the tail beyond 10 calls.
 
 ## Practice Problem 23: the "success" can be a miss
 
-An expert hits the target 95% of the time; what is the probability the first miss is on the 15th shot? The event we are waiting for is a miss, so success = miss with $p = 0.05$, $q = 0.95$ and $x = 15$:
+An expert hits the target 95% of the time; what is the probability the first miss is on the 15th shot?
 
-$$P(X = 15) = 0.95^{14} \times 0.05 = 0.4877 \times 0.05 = 0.0244$$
+The event we are waiting for is a miss, so success = miss with $p = 0.05$, $q = 0.95$ and $x = 15$:
+
+$$P(X = 15) = 0.95^{14} \times 0.05 = 0.4877 \times 0.05 = \mathbf{0.0244}$$
 
 ```widget
 geometric-calc
@@ -253,12 +301,12 @@ A Mystery Fashion Crate (a Classic cash-shop box) and a Divine Wishing Bell (a G
 
 ```quiz
 [
-  {"q": "Camping Boots come out of a Mystery Fashion Crate at 3.00 % [Classic, Grand Launch Cash Shop crate rates, checked 2026-10-27]. X = crates opened until the first Camping Boots. P(X = 10) = ? (4 decimals)", "type": "numeric", "answer": 0.0228, "tolerance": 0.0001, "explain": "Geometric with p = 0.03, q = 0.97. Nine misses, then the boots: q⁹ · p = 0.97⁹ × 0.03 = 0.760231 × 0.03 = 0.0228."},
-  {"type": "fill", "q": "Complete the R call for the same P(X = 10), first Camping Boots on the 10th crate.", "code": "dgeom(___, 0.03)", "answer": ["9"], "explain": "R counts the failures before the first success, so the lecture's X = 10 is R's 10 − 1 = 9: dgeom(9, 0.03) = 0.02280693."},
-  {"q": "A crate costs 3,500 NX [Classic, Grand Launch Cash Shop price, checked 2026-10-27] bought one at a time. Expected NX spent to get the first Camping Boots = ? (to the NX)", "type": "numeric", "answer": 116667, "tolerance": 1, "explain": "E[X] = 1/p = 1/0.03 = 33.3333 crates. Each crate costs 3,500 NX, so the expected spend is 3,500 × 33.3333 = 116,667 NX."},
-  {"q": "A Divine Wishing Bell gives a 100% 17-Star Enhancement (Lv. 150) at 0.50 % and a 100% 17-Star Enhancement (Lv. 160) at 0.20 % [GMS, Divine Wishing Bell rates post 2026-01-20, checked 2026-10-27]. p = P(one bell gives either 17-Star Enhancement) = ? (4 decimals)", "type": "numeric", "answer": 0.007, "tolerance": 0.0001, "explain": "One bell gives exactly one reward, so the two rows are mutually exclusive and add: 0.0050 + 0.0020 = 0.0070."},
-  {"q": "With p = 0.007 per bell, P(no 17-Star Enhancement in the first 100 bells) = P(X ≥ 101) = ? (4 decimals)", "type": "numeric", "answer": 0.4954, "tolerance": 0.0001, "explain": "X ≥ 101 means the first 100 bells all miss: q¹⁰⁰ = 0.993¹⁰⁰ = 0.4954. In R, 1 - pgeom(99, 0.007): 100 − 1 = 99 failures, since R counts failures. About half of players who open 100 bells still have none."},
-  {"q": "A 2017 test on a 20 %-quality item measured a six-link chance of about 1 in 1000 per Orb of Fusing [PoE1, 2017 test cited by the wiki at 3.29, n = 100 000 Fusings, checked 2026-10-27]. Taking p = 0.001, P(six-linked within 1500 Fusings) = P(X ≤ 1500) = ? (4 decimals)", "type": "numeric", "answer": 0.777, "tolerance": 0.0001, "explain": "P(X ≤ x) = 1 − q^x = 1 − 0.999¹⁵⁰⁰ = 1 − 0.2230 = 0.7770, the wiki's \"about a 77% chance\". In R, pgeom(1499, 0.001). The test predates the 3.29 socket rework, so treat it as the 2017 rate."}
+  {"q": "Camping Boots come out of a Mystery Fashion Crate at 3.00 %. X = crates opened until the first Camping Boots. P(X = 10) = ? (4 decimals)", "type": "numeric", "answer": 0.0228, "tolerance": 0.0001, "explain": "Geometric with p = 0.03, q = 0.97. Nine misses, then the boots: $$q^9 · p = 0.97^9 × 0.03 = 0.760231 × 0.03 = \\mathbf{0.0228}$$"},
+  {"type": "fill", "q": "Complete the R call for the same P(X = 10), first Camping Boots on the 10th crate.", "code": "dgeom(___, 0.03)", "answer": ["9"], "explain": "R counts the failures before the first success, so the lecture's X = 10 is R's 10 − 1 = 9. dgeom(9, 0.03) returns 0.02280693."},
+  {"q": "A crate costs 3,500 NX bought one at a time. Expected NX spent to get the first Camping Boots = ? (to the NX)", "type": "numeric", "answer": 116667, "tolerance": 1, "explain": "$$E[X] = 1/p = 1/0.03 = 33.3333 \\text{ crates}$$ Each crate costs 3,500 NX, so the expected spend is: $$3500 × 33.3333 = \\mathbf{116\\,667} \\text{ NX}$$"},
+  {"q": "A Divine Wishing Bell gives a 100% 17-Star Enhancement (Lv. 150) at 0.50 % and a 100% 17-Star Enhancement (Lv. 160) at 0.20 %. p = P(one bell gives either 17-Star Enhancement) = ? (4 decimals)", "type": "numeric", "answer": 0.007, "tolerance": 0.0001, "explain": "One bell gives exactly one reward, so the two rows are mutually exclusive and add: $$0.0050 + 0.0020 = \\mathbf{0.0070}$$"},
+  {"q": "With p = 0.007 per bell, P(no 17-Star Enhancement in the first 100 bells) = P(X ≥ 101) = ? (4 decimals)", "type": "numeric", "answer": 0.4954, "tolerance": 0.0001, "explain": "X ≥ 101 means the first 100 bells all miss: $$q^{100} = 0.993^{100} = \\mathbf{0.4954}$$ In R, 1 - pgeom(99, 0.007): 99 failures, since R counts failures. About half of players who open 100 bells still have none."},
+  {"q": "A 2017 test on a 20 %-quality item measured a six-link chance of about 1 in 1000 per Orb of Fusing. Taking p = 0.001, P(six-linked within 1500 Fusings) = P(X ≤ 1500) = ? (4 decimals)", "type": "numeric", "answer": 0.777, "tolerance": 0.0001, "explain": "$$P(X ≤ x) = 1 − q^x = 1 − 0.999^{1500} = 1 − 0.2230 = \\mathbf{0.7770}$$ That is the wiki's \"about a 77% chance\". In R, pgeom(1499, 0.001). The test predates the 3.29 socket rework, so treat it as the 2017 rate."}
 ]
 ```
 
@@ -269,7 +317,7 @@ A Mystery Fashion Crate (a Classic cash-shop box) and a Divine Wishing Bell (a G
     "type": "numeric",
     "answer": 0.1024,
     "tolerance": 0.0003,
-    "explain": "Three failures then the success: 0.8^3 × 0.2 = 0.512 × 0.2 = 0.1024. The exponent is x − 1 = 3."
+    "explain": "Three failures then the success: $$0.8^3 × 0.2 = 0.512 × 0.2 = \\mathbf{0.1024}$$ The exponent is x − 1 = 3."
   },
   {
     "q": "For the help line (X = number of calls until access, p = 0.25), which R call gives P(X = 3)?",
@@ -287,7 +335,7 @@ A Mystery Fashion Crate (a Classic cash-shop box) and a Divine Wishing Bell (a G
     "q": "Write P(X = 3) for the help line (occupied 75 % of the time) as the geometric formula with the numbers substituted. Use ^ for powers, * between factors, no spaces.",
     "type": "text",
     "answer": ["0.75^2*0.25", "(0.75)^2*0.25", "(0.75)^2*(0.25)", "0.75^2*(0.25)", "0.25*0.75^2", "0.75*0.75*0.25", "(1-0.25)^2*0.25", "0.75^(3-1)*0.25"],
-    "explain": "q^(x−1) · p with q = 0.75, p = 0.25, x = 3: 0.75² · 0.25 = 0.1406. Two failures, so the exponent is 2."
+    "explain": "q^(x−1) · p with q = 0.75, p = 0.25, x = 3: $$0.75^2 · 0.25 = \\mathbf{0.1406}$$ Two failures, so the exponent is 2."
   },
   {
     "q": "You keep calling the help line until you get through, but each failed call makes the next one more likely to connect (callers ahead of you give up). Which geometric assumption fails?",
@@ -300,14 +348,14 @@ A Mystery Fashion Crate (a Classic cash-shop box) and a Divine Wishing Bell (a G
     "type": "numeric",
     "answer": 5,
     "tolerance": 0.01,
-    "explain": "μ = 1/p = 1/0.2 = 5 trials on average."
+    "explain": "$$\\mu = 1/p = 1/0.2 = \\mathbf{5} \\text{ trials on average}$$"
   },
   {
     "q": "A geometric X with p = 0.2. P(X ≥ 3)? (2 decimals)",
     "type": "numeric",
     "answer": 0.64,
     "tolerance": 0.002,
-    "explain": "At least 3 trials means the first two both failed: q^2 = 0.8^2 = 0.64. The long way, 1 − 0.2 − 0.16 = 0.64, agrees."
+    "explain": "At least 3 trials means the first two both failed: $$q^2 = 0.8^2 = \\mathbf{0.64}$$ The long way agrees: $$1 − 0.2 − 0.16 = 0.64$$"
   },
   {
     "q": "The possible values of a geometric random variable are...",
@@ -326,24 +374,30 @@ A Mystery Fashion Crate (a Classic cash-shop box) and a Divine Wishing Bell (a G
     "type": "numeric",
     "answer": 0.1157,
     "tolerance": 0.0003,
-    "explain": "p = 1/6, q = 5/6: (5/6)^2 × (1/6) = 25/216 = 0.1157."
+    "explain": "p = 1/6, q = 5/6: $$(5/6)^2 × (1/6) = 25/216 = \\mathbf{0.1157}$$"
   },
   {
     "q": "What does `1 - pgeom(2, 0.25)` compute for the lecture's X?",
     "options": ["P(X = 3)", "P(X ≤ 2)", "P(X ≥ 3)", "P(X ≥ 4)"],
     "answer": 3,
-    "explain": "pgeom(2, p) is P(at most 2 failures) = P(X ≤ 3), so its complement is P(X ≥ 4) = 0.421875 = 0.75^3."
+    "explain": "pgeom(2, p) is P(at most 2 failures) = P(X ≤ 3), so its complement is P(X ≥ 4): $$0.75^3 = 0.421875$$"
   },
   {
     "q": "A geometric X with p = 0.2. σ? (2 decimals)",
     "type": "numeric",
     "answer": 4.47,
     "tolerance": 0.02,
-    "explain": "σ² = (1 − p)/p² = 0.8/0.04 = 20, so σ = √20 = 4.47. Take the square root of the variance, not of 1 − p alone."
+    "explain": "$$\\sigma^2 = \\dfrac{1 − p}{p^2} = \\dfrac{0.8}{0.04} = 20, \\quad \\sigma = \\sqrt{20} = \\mathbf{4.47}$$ Take the square root of the variance, not of 1 − p alone."
   }
 ]
 ```
 
 :::info For the curious: where μ = 1/p comes from
-The notes derive $\mu = 1/p$ from the definition $\mu = \sum x P(x)$ and say *you are not expected to be able to perform a derivation like the following*. The chain: $\sum_{x \ge 1} x q^{x-1} p = p \cdot \frac{d}{dq}\left[\sum_{x \ge 1} q^x\right] = p \cdot \frac{d}{dq}\left[\frac{q}{1-q}\right] = p \cdot \frac{1}{(1-q)^2} = \frac{p}{p^2} = \frac{1}{p}$ (sum of a geometric series, quotient rule, then $1 - q = p$).
+The notes derive $\mu = 1/p$ from the definition $\mu = \sum x P(x)$ and say *you are not expected to be able to perform a derivation like the following*.
+
+The chain:
+
+$$\sum_{x \ge 1} x q^{x-1} p = p \cdot \frac{d}{dq}\left[\sum_{x \ge 1} q^x\right] = p \cdot \frac{d}{dq}\left[\frac{q}{1-q}\right] = p \cdot \frac{1}{(1-q)^2} = \frac{p}{p^2} = \frac{1}{p}$$
+
+The steps are the sum of a geometric series, the quotient rule, then $1 - q = p$.
 :::

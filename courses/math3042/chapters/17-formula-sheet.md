@@ -21,7 +21,9 @@ Everything from Unit 1 on one page: a lookup reference, with no new explanations
 | $P_k$ | $k$-th percentile | $x$, $y$ in $r$ | correlation pair values |
 | $X$ in $p = X/N$ | count in the category (population) | $x$ in $\hat{p} = x/n$ | count in the category (sample) |
 
-A **statistic** describes a sample ($\bar{X}, s, \hat{p}, r$). A **parameter** describes a population ($\mu, \sigma, p, \rho$).
+A **statistic** describes a sample ($\bar{X}, s, \hat{p}, r$).
+
+A **parameter** describes a population ($\mu, \sigma, p, \rho$).
 
 ## Which one?
 
@@ -37,44 +39,72 @@ A **statistic** describes a sample ($\bar{X}, s, \hat{p}, r$). A **parameter** d
 
 ## Proportions
 
-$\hat{p} = \dfrac{x}{n}$ (sample) $\qquad p = \dfrac{X}{N}$ (population)
+$$\hat{p} = \dfrac{x}{n} \text{ (sample)}$$
+
+$$p = \dfrac{X}{N} \text{ (population)}$$
 
 $x$ = count of individuals in the category, $n$ = sample size.
 
 ## Mean
 
-$\bar{X} = \dfrac{\Sigma X}{n}$ (sample) $\qquad \mu = \dfrac{\Sigma X}{N}$ (population)
+$$\bar{X} = \dfrac{\Sigma X}{n} \text{ (sample)}$$
 
-**Grouped mean:** $\bar{X} = \dfrac{\Sigma f_i X_i}{\Sigma f_i}$ — $X_i$ is the class mark (midpoint), $f_i$ its frequency.
+$$\mu = \dfrac{\Sigma X}{N} \text{ (population)}$$
+
+**Grouped mean:**
+
+$$\bar{X} = \dfrac{\Sigma f_i X_i}{\Sigma f_i}$$
+
+$X_i$ is the class mark (midpoint), $f_i$ its frequency.
 
 ## Median / mode
 
-- Sort the data. Odd $n$: median is the value at position $(n+1)/2$. Even $n$: median is the average of the values at positions $n/2$ and $n/2 + 1$.
-- Mode: the most frequently occurring value. R has no base `mode()` statistical function — build a frequency table and take the max. `names(which.max(table(x)))` and `levels(x)[which.max(table(x))]` (for a factor) give the same answer.
+- Sort the data.
+- Odd $n$: median is the value at position:
+  $$\dfrac{n+1}{2}$$
+- Even $n$: median is the average of the values at positions $n/2$ and $n/2 + 1$.
+- Mode: the most frequently occurring value.
+- R has no base `mode()` statistical function — build a frequency table and take the max. `names(which.max(table(x)))` and `levels(x)[which.max(table(x))]` (for a factor) give the same answer.
 
 ## Range and standard deviation
 
-$R = \max - \min$
+$$R = \max - \min$$
 
-$s = \sqrt{\dfrac{\Sigma(X-\bar{X})^2}{n-1}}$ (sample) $\qquad \sigma = \sqrt{\dfrac{\Sigma(X-\mu)^2}{N}}$ (population)
+$$s = \sqrt{\dfrac{\Sigma(X-\bar{X})^2}{n-1}} \text{ (sample)}$$
 
-**Grouped:** $s = \sqrt{\dfrac{\Sigma f_i(X_i-\bar{X})^2}{\Sigma f_i - 1}}$
+$$\sigma = \sqrt{\dfrac{\Sigma(X-\mu)^2}{N}} \text{ (population)}$$
 
-Sample $s$ divides by $n-1$ so that $s^2$ is an unbiased estimator of $\sigma^2$. $s$ and $\sigma$ share units with $X$; unlike $R$ and $IQR$, they depend on **every** data value.
+**Grouped:**
+
+$$s = \sqrt{\dfrac{\Sigma f_i(X_i-\bar{X})^2}{\Sigma f_i - 1}}$$
+
+Sample $s$ divides by $n-1$ so that $s^2$ is an unbiased estimator of $\sigma^2$.
+
+$s$ and $\sigma$ share units with $X$; unlike $R$ and $IQR$, they depend on **every** data value.
 
 ## Coefficient of variation
 
-$CV = \dfrac{s}{\bar{X}} \times 100\%$ (sample) $\qquad CV = \dfrac{\sigma}{\mu} \times 100\%$ (population)
+$$CV = \dfrac{s}{\bar{X}} \times 100\% \text{ (sample)}$$
+
+$$CV = \dfrac{\sigma}{\mu} \times 100\% \text{ (population)}$$
 
 Use $CV$, not raw $s$, whenever you compare variability between two data sets with **different means**.
 
 ## Z-score
 
-$Z = \dfrac{X - \mu}{\sigma}$ (population) $\qquad Z = \dfrac{X - \bar{X}}{s}$ (sample)
+$$Z = \dfrac{X - \mu}{\sigma} \text{ (population)}$$
 
-Going backwards: $X = \mu + Z\sigma \qquad X = \bar{X} + Zs$
+$$Z = \dfrac{X - \bar{X}}{s} \text{ (sample)}$$
 
-**Unusual:** $Z < -2$ or $Z > +2$ (about the outer 5%). This is a different rule from "outlier" — see fences below.
+Going backwards:
+
+$$X = \mu + Z\sigma$$
+
+$$X = \bar{X} + Zs$$
+
+**Unusual:** $Z < -2$ or $Z > +2$ (about the outer 5%).
+
+This is a different rule from "outlier" — see fences below.
 
 ## Empirical rule (requires bell-shaped/normal data)
 
@@ -90,11 +120,25 @@ Going backwards: $X = \mu + Z\sigma \qquad X = \bar{X} + Zs$
 |---|---|---|---|---|---|---|---|
 | % of data **below** | 0.15% | 2.5% | 16% | 50% | 84% | 97.5% | 99.85% |
 
-**The eight slices** from left to right: 0.15, 2.35, 13.5, 34, 34, 13.5, 2.35, 0.15 (%). $34 = 68/2$, $13.5 = (95 - 68)/2$, $2.35 = (99.7 - 95)/2$, $0.15 = (100 - 99.7)/2$. Any tail is a sum of slices: "% below $Z=+2$" $= 0.15 + 2.35 + 13.5 + 34 + 34 + 13.5 = 97.5\%$.
+**The eight slices** from left to right: 0.15, 2.35, 13.5, 34, 34, 13.5, 2.35, 0.15 (%).
+
+$$34 = \dfrac{68}{2}$$
+
+$$13.5 = \dfrac{95 - 68}{2}$$
+
+$$2.35 = \dfrac{99.7 - 95}{2}$$
+
+$$0.15 = \dfrac{100 - 99.7}{2}$$
+
+Any tail is a sum of slices, for example "% below $Z=+2$":
+
+$$0.15 + 2.35 + 13.5 + 34 + 34 + 13.5 = \mathbf{97.5\%}$$
 
 ## Chebyshev's rule (works for ANY distribution shape)
 
-Fraction of data with $-k < Z < k$ is **at least** $1 - \dfrac{1}{k^2}$.
+Fraction of data with $-k < Z < k$ is **at least**:
+
+$$1 - \dfrac{1}{k^2}$$
 
 | $k$ | Minimum % (Chebyshev) |
 |---|---|
@@ -103,7 +147,9 @@ Fraction of data with $-k < Z < k$ is **at least** $1 - \dfrac{1}{k^2}$.
 | 2.5 | 84% |
 | 3 | 88.9% |
 
-"At least" is a guaranteed floor, not an estimate — use Chebyshev when the shape is unknown or not normal; use the empirical rule (sharper) only when the data is bell-shaped.
+"At least" is a guaranteed floor, not an estimate.
+
+Use Chebyshev when the shape is unknown or not normal; use the empirical rule (sharper) only when the data is bell-shaped.
 
 ## Quartiles by hand
 
@@ -111,25 +157,39 @@ Fraction of data with $-k < Z < k$ is **at least** $1 - \dfrac{1}{k^2}$.
 2. If $n$ is **odd**, exclude the middle value; if $n$ is **even**, don't exclude anything.
 3. $Q_1$ = median of the lower half. $Q_3$ = median of the upper half.
 
-R's `quantile()` interpolates differently and may not match the hand method exactly — both are valid ("about 10 different ways to define quartiles"). On paper, use the hand method; when a question gives $Q_1$ and $Q_3$, use the ones given.
+R's `quantile()` interpolates differently and may not match the hand method exactly — both are valid ("about 10 different ways to define quartiles").
+
+On paper, use the hand method; when a question gives $Q_1$ and $Q_3$, use the ones given.
 
 ## Percentiles
 
-$P_k$ separates the lowest $k\%$ from the upper $(100-k)\%$. $Q_1 = P_{25}$, $Q_2 = P_{50}$, $Q_3 = P_{75}$.
+$P_k$ separates the lowest $k\%$ from the upper $(100-k)\%$.
+
+$Q_1 = P_{25}$, $Q_2 = P_{50}$, $Q_3 = P_{75}$.
 
 In R: `quantile(data$X, k/100)` — the percentage is a **decimal** (`0.33`, not `33`).
 
 ## IQR, fences, outliers
 
-$IQR = Q_3 - Q_1$ — the range of the middle 50%. Advantage/disadvantage: ignores extreme values (same fact, both sides).
+$$IQR = Q_3 - Q_1$$
 
-$\text{lower fence} = Q_1 - 1.5 \times IQR \qquad \text{upper fence} = Q_3 + 1.5 \times IQR$
+The range of the middle 50%.
 
-Beyond a fence = **outlier**. Outlier (fence rule) $\ne$ Unusual (Z-score rule) — different formulas, often but not always agree.
+Advantage/disadvantage: ignores extreme values (same fact, both sides).
+
+$$\text{lower fence} = Q_1 - 1.5 \times IQR$$
+
+$$\text{upper fence} = Q_3 + 1.5 \times IQR$$
+
+Beyond a fence = **outlier**.
+
+Outlier (fence rule) $\ne$ Unusual (Z-score rule) — different formulas, often but not always agree.
 
 ## Skewness (Pearson)
 
-$Sk = \dfrac{3(\bar{X} - Q_2)}{s}$ (sample) $\qquad Sk = \dfrac{3(\mu - Q_2)}{\sigma}$ (population)
+$$Sk = \dfrac{3(\bar{X} - Q_2)}{s} \text{ (sample)}$$
+
+$$Sk = \dfrac{3(\mu - Q_2)}{\sigma} \text{ (population)}$$
 
 | Sign of $Sk$ | Shape | Mean vs. median |
 |---|---|---|
@@ -141,7 +201,7 @@ $Sk = \dfrac{3(\bar{X} - Q_2)}{s}$ (sample) $\qquad Sk = \dfrac{3(\mu - Q_2)}{\s
 
 ## Correlation
 
-$r = \dfrac{n\Sigma xy - \Sigma x \Sigma y}{\sqrt{n\Sigma x^2 - (\Sigma x)^2}\sqrt{n\Sigma y^2 - (\Sigma y)^2}}$
+$$r = \dfrac{n\Sigma xy - \Sigma x \Sigma y}{\sqrt{n\Sigma x^2 - (\Sigma x)^2}\sqrt{n\Sigma y^2 - (\Sigma y)^2}}$$
 
 | $r$ value | Interpretation |
 |---|---|
@@ -182,7 +242,7 @@ Properties: $-1 \le r \le 1$; unaffected by unit changes; unaffected by swapping
     "answer": 84,
     "tolerance": 0.5,
     "unit": "%",
-    "explain": "$1 - 1/2.5^2 = 1 - 1/6.25 = 1 - 0.16 = 0.84 = 84\\%$."
+    "explain": "$$1 - \\dfrac{1}{2.5^2} = 1 - \\dfrac{1}{6.25} = 1 - 0.16 = 0.84 = \\mathbf{84\\%}$$"
   },
   {
     "q": "Under the empirical rule, what percent of a normal distribution lies **below** $Z = -1$?",
@@ -190,7 +250,7 @@ Properties: $-1 \le r \le 1$; unaffected by unit changes; unaffected by swapping
     "answer": 16,
     "tolerance": 0.5,
     "unit": "%",
-    "explain": "From the cumulative table: $Z=-1 \\to 16\\%$ below, the slices $0.15 + 2.35 + 13.5 = 16\\%$."
+    "explain": "From the cumulative table, $Z=-1 \\to 16\\%$ below. As slices: $$0.15 + 2.35 + 13.5 = \\mathbf{16\\%}$$"
   },
   {
     "q": "The upper outlier fence is $Q_3 + 1.5 \\times IQR$.",

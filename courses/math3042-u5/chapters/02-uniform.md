@@ -24,7 +24,7 @@ $$\mu = \frac{a + b}{2}, \qquad \sigma = \frac{b - a}{\sqrt{12}}$$
 
 ## Classic's base multiplier B, uniform on [0.8, 1.0]
 
-In MapleStory Classic, meowdb's reconstructed damage formula multiplies every hit by a base multiplier B drawn as `uniform(0.8, 1.0)` [Classic, meowdb's Classic World formulas page, no version shown, checked 2026-10-27]. The formula draws B afresh on each hit from a flat density whose two ends are known, which is exactly a uniform on $[a, b] = [0.8, 1.0]$, with height $1/0.2 = 5$. Only B is uniform: the hit's final damage combines B with a second uniform draw, the stat term, so the damage number itself is not flat between its minimum and maximum.
+In MapleStory Classic, meowdb's reconstructed damage formula multiplies every hit by a base multiplier B drawn as `uniform(0.8, 1.0)`. The formula draws B afresh on each hit from a flat density whose two ends are known, which is exactly a uniform on $[a, b] = [0.8, 1.0]$, with height $1/0.2 = 5$. Only B is uniform: the hit's final damage combines B with a second uniform draw, the stat term, so the damage number itself is not flat between its minimum and maximum.
 
 ```quiz
 [

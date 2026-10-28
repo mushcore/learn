@@ -4,7 +4,9 @@ minutes: 27
 ---
 <!-- facts: poe1.ladder.hc-dead-by-rank, gms.data.ranking-overall-legendary-2026-10-27 -->
 
-Pick 20 characters from the top of a ladder and count the dead: every pick changes $p$ for the next, so the binomial formula is wrong. The hypergeometric distribution is the exact formula, and the 5 % rule says when the binomial is close enough.
+Pick 20 characters from the top of a ladder and count the dead: every pick changes $p$ for the next, so the binomial formula is wrong.
+
+The hypergeometric distribution is the exact formula, and the 5 % rule says when the binomial is close enough.
 
 ## Binomial versus hypergeometric
 
@@ -24,7 +26,9 @@ Pick 20 characters from the top of a ladder and count the dead: every pick chang
 
 $$P(x) = \frac{C(K, x) \cdot C(N - K,\ n - x)}{C(N, n)}, \qquad x = 0, 1, 2, \ldots, n$$
 
-$C(N, n)$ counts every possible sample, $C(K, x)$ the ways to pick the $x$ successes, $C(N - K, n - x)$ the ways to pick the $n - x$ failures. For two jacks in five cards the deck splits into two piles:
+$C(N, n)$ counts every possible sample, $C(K, x)$ the ways to pick the $x$ successes, $C(N - K, n - x)$ the ways to pick the $n - x$ failures.
+
+For two jacks in five cards the deck splits into two piles:
 
 ```diagram
 { "type": "tree", "title": "Two jacks in five cards: every letter of the formula", "nodes": [
@@ -46,7 +50,11 @@ The same five letters for the three examples of this lesson:
 
 $$\mu = n \cdot \frac{K}{N}, \qquad \sigma^2 = n \cdot \frac{K}{N} \cdot \frac{N - K}{N} \cdot \frac{N - n}{N - 1}$$
 
-With $p = K/N$ these are the binomial's $np$ and $npq$ times a correction factor $\frac{N - n}{N - 1}$, which is below 1 whenever $n > 1$: sampling without replacement has the same mean and a smaller spread.
+With $p = K/N$ these are the binomial's $np$ and $npq$, the variance times a correction factor that is below 1 whenever $n > 1$:
+
+$$\dfrac{N - n}{N - 1} < 1$$
+
+Sampling without replacement has the same mean and a smaller spread.
 
 ## Two jacks in five cards, without and with replacement
 
@@ -57,16 +65,20 @@ With $p = K/N$ these are the binomial's $np$ and $npq$ times a correction factor
     "type": "numeric",
     "answer": 0.0399,
     "tolerance": 0.0002,
-    "explain": "C(4, 2) · C(48, 3) / C(52, 5) = 6 × 17 296 / 2 598 960 = 103 776 / 2 598 960 = 0.0399."
+    "explain": "$$\\dfrac{C(4, 2) · C(48, 3)}{C(52, 5)} = \\dfrac{6 × 17\\,296}{2\\,598\\,960} = \\dfrac{103\\,776}{2\\,598\\,960} = \\mathbf{0.0399}$$"
   }
 ]
 ```
 
-*Suppose you sample 5 cards from a deck of 52 cards. Let $X$ = the number of Jacks you get in the sample (there are 4 Jacks in the deck). What is $P(X = 2)$?* $N = 52$, $K = 4$, $n = 5$, $x = 2$:
+*Suppose you sample 5 cards from a deck of 52 cards. Let $X$ = the number of Jacks you get in the sample (there are 4 Jacks in the deck). What is $P(X = 2)$?*
 
-$$P(X = 2) = \frac{C(4, 2) \cdot C(48, 3)}{C(52, 5)} = \frac{6 \times 17\,296}{2\,598\,960} = \frac{103\,776}{2\,598\,960} = 0.0399$$
+Substitute $N = 52$, $K = 4$, $n = 5$, $x = 2$:
 
-With replacement (last lesson's binomial, $p = 4/52$): $C(5, 2)(4/52)^2(48/52)^3 = 0.0465$.
+$$P(X = 2) = \frac{C(4, 2) \cdot C(48, 3)}{C(52, 5)} = \frac{6 \times 17\,296}{2\,598\,960} = \frac{103\,776}{2\,598\,960} = \mathbf{0.0399}$$
+
+With replacement (last lesson's binomial, $p = 4/52$):
+
+$$C(5, 2)(4/52)^2(48/52)^3 = \mathbf{0.0465}$$
 
 ```widget
 hyper-vs-binom
@@ -127,7 +139,11 @@ dbinom(2, 5, 4/52)
 :::
 
 :::warn R's dhyper slots are not the course's letters
-`dhyper(x, K, N - K, n)` takes four arguments: the value $x$, the successes, the failures and the sample size, never $N$. R names them x, m, n, k, so R's n is the failures, not the sample size. `dhyper(2, 4, 48, 5)` is right. `dhyper(2, 4, 52, 5)` silently describes a deck of 4 + 52 = 56 cards and returns a wrong answer with no error.
+`dhyper(x, K, N - K, n)` takes four arguments: the value $x$, the successes, the failures and the sample size, never $N$.
+
+R names them x, m, n, k, so R's n is the failures, not the sample size.
+
+`dhyper(2, 4, 48, 5)` is right. `dhyper(2, 4, 52, 5)` silently describes a deck of 4 + 52 = 56 cards and returns a wrong answer with no error.
 :::
 
 :::info R syntax
@@ -149,11 +165,15 @@ dbinom(2, 5, 4/52)
 
 ## The superdeck: ten decks shuffled together
 
-*Now, suppose you combine 10 decks of cards into one "superdeck". If you randomly select 5 cards, what is the probability of getting 2 Jacks?* $N = 520$, $K = 40$, $n = 5$:
+*Now, suppose you combine 10 decks of cards into one "superdeck". If you randomly select 5 cards, what is the probability of getting 2 Jacks?*
 
-$$P(X = 2) = \frac{C(40, 2) \cdot C(480, 3)}{C(520, 5)} = \frac{780 \times 18\,316\,960}{310\,784\,578\,104} = 0.0460$$
+Substitute $N = 520$, $K = 40$, $n = 5$:
 
-The binomial uses $p = 40/520 = 4/52$, so it still gives 0.0465. The answers closed up because $n/N$ fell from $5/52 = 9.6\%$ to $5/520 = 0.96\%$.
+$$P(X = 2) = \frac{C(40, 2) \cdot C(480, 3)}{C(520, 5)} = \frac{780 \times 18\,316\,960}{310\,784\,578\,104} = \mathbf{0.0460}$$
+
+The binomial uses $p = 40/520 = 4/52$, so it still gives 0.0465.
+
+The answers closed up because $n/N$ fell from $5/52 = 9.6\%$ to $5/520 = 0.96\%$.
 
 ```r
 N <- 520
@@ -197,27 +217,43 @@ dbinom(2, 5, K/N)
 2. If $n/N \le 0.05$, use the binomial with $p = K/N$; otherwise use the hypergeometric.
 3. Why it works: each draw changes the next $p$ by about $1/N$, so $n$ draws change it by about $n/N$. A small $n/N$ leaves $p$ almost fixed.
 
-One deck: $5/52 = 9.6\%$, and the binomial is off (0.0399 against 0.0465). Superdeck: $5/520 = 0.96\%$, and the two agree (0.0460 against 0.0465).
+One deck: $5/52 = 9.6\%$, and the binomial is off (0.0399 against 0.0465).
+
+Superdeck: $5/520 = 0.96\%$, and the two agree (0.0460 against 0.0465).
 :::
 
 ## Twenty characters from the Hardcore Allflame top 200
 
-On Hardcore Allflame, the PoE1 ladder where a character that dies is flagged dead, 69 of the characters ranked 1–200 were dead when the official ladder API was read [PoE1, 3.29 Hardcore Allflame ladder, checked 2026-10-27]. Pick 20 of those 200 at random, nobody twice; X = the number dead. This is a fixed list of $N = 200$ with $K = 69$ dead, drawn without replacement, so $p$ changes after each draw: 69/200, then 68/199 after a dead pick. A Star Force tap or a scroll use keeps its rate however many came before: that is why those were binomial.
+On Hardcore Allflame, the PoE1 ladder where a character that dies is flagged dead, 69 of the characters ranked 1–200 were dead when the official ladder API was read.
+
+Pick 20 of those 200 at random, nobody twice; X = the number dead.
+
+This is a fixed list of $N = 200$ with $K = 69$ dead, drawn without replacement, so $p$ changes after each draw: 69/200, then 68/199 after a dead pick.
+
+A Star Force tap or a scroll use keeps its rate however many came before: that is why those were binomial.
 
 ```quiz
 [
-  {"q": "N = 200 characters, K = 69 dead, a sample of n = 20 without replacement. P(exactly 7 dead) = ? (4 decimals)", "type": "numeric", "answer": 0.1942, "tolerance": 0.0001, "explain": "C(69, 7) · C(131, 13) / C(200, 20) = 1 078 897 248 × 2.9041 × 10¹⁷ / 1.6136 × 10²⁷ = 3.1333 × 10²⁶ / 1.6136 × 10²⁷ = 0.1942. The failures slot is N − K = 131 alive characters, of which n − x = 13 are picked."},
-  {"q": "Same draw. The 5 % rule lets the binomial with p = 69/200 stand in.", "type": "tf", "answer": false, "explain": "n/N = 20/200 = 10 %, above 5 %. The binomial gives 0.1842 for X = 7 against the exact 0.1942."}
+  {"q": "N = 200 characters, K = 69 dead, a sample of n = 20 without replacement. P(exactly 7 dead) = ? (4 decimals)", "type": "numeric", "answer": 0.1942, "tolerance": 0.0001, "explain": "$$\\dfrac{C(69, 7) · C(131, 13)}{C(200, 20)} = \\dfrac{1\\,078\\,897\\,248 × 2.9041 × 10^{17}}{1.6136 × 10^{27}} = \\dfrac{3.1333 × 10^{26}}{1.6136 × 10^{27}} = \\mathbf{0.1942}$$ The failures slot is N − K = 131 alive characters, of which n − x = 13 are picked."},
+  {"q": "Same draw. The 5 % rule lets the binomial with p = 69/200 stand in.", "type": "tf", "answer": false, "explain": "$$n/N = 20/200 = 10\\%$$ That is above 5 %. The binomial gives 0.1842 for X = 7 against the exact 0.1942."}
 ]
 ```
 
-$$P(X = 7) = \frac{C(69, 7) \cdot C(131, 13)}{C(200, 20)} = \frac{3.1333 \times 10^{26}}{1.6136 \times 10^{27}} = 0.1942$$
+Substitute $N = 200$, $K = 69$, $n = 20$, $x = 7$:
 
-$\mu = 20 \cdot \frac{69}{200} = 6.9$, and the correction factor shrinks the spread:
+$$P(X = 7) = \frac{C(69, 7) \cdot C(131, 13)}{C(200, 20)} = \frac{3.1333 \times 10^{26}}{1.6136 \times 10^{27}} = \mathbf{0.1942}$$
 
-$$\sigma^2 = 20 \cdot \tfrac{69}{200} \cdot \tfrac{131}{200} \cdot \tfrac{180}{199} = 4.5195 \times 0.9045 = 4.0880, \qquad \sigma = 2.02$$
+The mean:
 
-The binomial, without the factor, gives $\sqrt{4.5195} = 2.13$.
+$$\mu = 20 \cdot \frac{69}{200} = \mathbf{6.9}$$
+
+The correction factor shrinks the spread:
+
+$$\sigma^2 = 20 \cdot \tfrac{69}{200} \cdot \tfrac{131}{200} \cdot \tfrac{180}{199} = 4.5195 \times 0.9045 = 4.0880, \qquad \sigma = \mathbf{2.02}$$
+
+The binomial, without the factor, gives:
+
+$$\sqrt{4.5195} = 2.13$$
 
 ```r
 dhyper(7, 69, 131, 20)
@@ -255,7 +291,11 @@ hyper-vs-binom
 
 ## Mac users: N = 90, K = 40, n = 10
 
-*Suppose a class of 90 students has 40 Apple Mac users. To conduct a market research survey, you randomly select a sample of 10 students. Let $X$ = the number of Apple Mac users in the sample.* Without replacement, *$X$ is a hypergeometric variable with parameters* $N = 90$, $K = 40$, $n = 10$. $n/N = 10/90 = 11\%$ fails the 5 % rule, so the binomial will not do.
+*Suppose a class of 90 students has 40 Apple Mac users. To conduct a market research survey, you randomly select a sample of 10 students. Let $X$ = the number of Apple Mac users in the sample.*
+
+Without replacement, *$X$ is a hypergeometric variable with parameters* $N = 90$, $K = 40$, $n = 10$.
+
+$n/N = 10/90 = 11\%$ fails the 5 % rule, so the binomial will not do.
 
 **(a)** *What is the probability that 4 students in the sample are Apple Mac users?*
 
@@ -266,14 +306,18 @@ hyper-vs-binom
     "type": "numeric",
     "answer": 0.2539,
     "tolerance": 0.0002,
-    "explain": "C(40, 4) · C(50, 6) / C(90, 10) = 91 390 × 15 890 700 / 5.7206 × 10¹² = 0.2539."
+    "explain": "$$\\dfrac{C(40, 4) · C(50, 6)}{C(90, 10)} = \\dfrac{91\\,390 × 15\\,890\\,700}{5.7206 × 10^{12}} = \\mathbf{0.2539}$$"
   }
 ]
 ```
 
-$$P(4) = \frac{C(40, 4) \cdot C(50, 6)}{C(90, 10)} = \frac{91\,390 \times 15\,890\,700}{5.7206 \times 10^{12}} = \frac{1.4523 \times 10^{12}}{5.7206 \times 10^{12}} = 0.2539$$
+Substitute $K = 40$, $N - K = 50$, $n = 10$, $x = 4$:
 
-**(b)** *What is the probability that 4 or fewer of them are Apple Mac users?* Five terms of the same formula. The whole table, from the R output below:
+$$P(4) = \frac{C(40, 4) \cdot C(50, 6)}{C(90, 10)} = \frac{91\,390 \times 15\,890\,700}{5.7206 \times 10^{12}} = \frac{1.4523 \times 10^{12}}{5.7206 \times 10^{12}} = \mathbf{0.2539}$$
+
+**(b)** *What is the probability that 4 or fewer of them are Apple Mac users?*
+
+Five terms of the same formula. The whole table, from the R output below:
 
 | $x$ | **0** | **1** | **2** | **3** | **4** | 5 | 6 | 7 | **8** | **9** | **10** |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -281,21 +325,33 @@ $$P(4) = \frac{C(40, 4) \cdot C(50, 6)}{C(90, 10)} = \frac{91\,390 \times 15\,89
 
 (b) adds the bold left cells; (e) adds the bold right ones.
 
-$$P(X \le 4) = P(0) + P(1) + P(2) + P(3) + P(4) = 0.0018 + 0.0175 + 0.0732 + 0.1725 + 0.2539 = 0.5189$$
+For (b):
+
+$$P(X \le 4) = P(0) + P(1) + P(2) + P(3) + P(4) = 0.0018 + 0.0175 + 0.0732 + 0.1725 + 0.2539 = \mathbf{0.5189}$$
 
 **(c)** *What are the mean and standard deviation of $X$?*
 
-$$\mu = 10 \cdot \frac{40}{90} = 4.44, \qquad \sigma^2 = 10 \cdot \frac{40}{90} \cdot \frac{50}{90} \cdot \frac{80}{89} = 2.2194, \qquad \sigma = \sqrt{2.2194} = 1.49$$
+$$\mu = 10 \cdot \frac{40}{90} = \mathbf{4.44}, \qquad \sigma^2 = 10 \cdot \frac{40}{90} \cdot \frac{50}{90} \cdot \frac{80}{89} = 2.2194, \qquad \sigma = \sqrt{2.2194} = \mathbf{1.49}$$
 
-The binomial would give $\sqrt{10(0.444)(0.556)} = 1.57$; the correction factor is $80/89 = 0.899$.
+The binomial would give a larger spread:
 
-**(d)** *Generate a probability histogram of $X$.* The printed histogram peaks at 4 (0.2539) with 5 just behind (0.2437).
+$$\sqrt{10(0.444)(0.556)} = 1.57$$
+
+The correction factor is $80/89 = 0.899$.
+
+**(d)** *Generate a probability histogram of $X$.*
+
+The printed histogram peaks at 4 (0.2539) with 5 just behind (0.2437).
 
 **(e)** *If you found $X = 8$ Mac users, would this be considered unusual?*
 
-$$Z = \frac{8 - 4.44}{1.49} = 2.39$$
+$$Z = \frac{8 - 4.44}{1.49} = \mathbf{2.39}$$
 
-Beyond 2: **unusual**. The tail agrees, $P(X \ge 8) = 0.0165 + 0.0024 + 0.0001 = 0.019 < 0.025$.
+Beyond 2: **unusual**.
+
+The tail agrees:
+
+$$P(X \ge 8) = 0.0165 + 0.0024 + 0.0001 = 0.019 < 0.025$$
 
 ```widget
 hyper-vs-binom
@@ -386,16 +442,18 @@ Z
 
 ## Night Lords among 20 of the GMS top 500
 
-Nexon's North America overall ranking lists 61 Night Lords, a GMS thief job, among its top 500 characters [GMS, v.271 overall ranking 2026-10-27, checked 2026-10-27]. Pick 20 of the 500 at random without replacement; X = the number of Night Lords.
+Nexon's North America overall ranking lists 61 Night Lords, a GMS thief job, among its top 500 characters.
+
+Pick 20 of the 500 at random without replacement; X = the number of Night Lords.
 
 ```quiz
 [
   {"q": "20 picked from the 500. Does the 5 % rule hold?", "options": ["Yes: n/N = 20/500 = 4 %, so the binomial with p = 61/500 is a fair stand-in", "No: n/N = 20/500 = 4 % is above 5 %", "No: n/N = 61/500 = 12.2 %", "No: the rule needs sampling with replacement"], "answer": 0, "explain": "The rule compares the sample size with the population: n/N = 20/500 = 0.04 = 4 %, at most 5 %. 61/500 is p, not n/N."},
-  {"q": "P(X = 2) by the hypergeometric formula = ? (4 decimals)", "type": "numeric", "answer": 0.2761, "tolerance": 0.0001, "explain": "N = 500, K = 61, n = 20: C(61, 2) · C(439, 18) / C(500, 20) = 1830 × 4.0235 × 10³¹ / 2.6672 × 10³⁵ = 0.2761."},
-  {"type": "fill", "q": "Complete the R call for P(X = 2) Night Lords in the 20.", "code": "dhyper(2, 61, ___, 20)", "answer": ["439"], "explain": "dhyper(x, K, N − K, n): the successes K = 61, then the failures N − K = 500 − 61 = 439, then the sample size 20. It returns 0.2760602."},
-  {"q": "P(X = 2) by the binomial stand-in, p = 61/500 = 0.122 = ? (4 decimals)", "type": "numeric", "answer": 0.2719, "tolerance": 0.0001, "explain": "C(20, 2) · 0.122² · 0.878¹⁸ = 190 × 0.014884 × 0.096139 = 0.2719, within 0.005 of the exact 0.2761 because n/N is only 4 %. In R, dbinom(2, 20, 61/500)."},
-  {"q": "μ = expected Night Lords among the 20 = ? (2 decimals)", "type": "numeric", "answer": 2.44, "tolerance": 0.05, "explain": "μ = n · K/N = 20 × 61/500 = 2.44, the same as the binomial's np."},
-  {"q": "Picking 50 of the 500 instead of 20, the 5 % rule still holds.", "type": "tf", "answer": false, "explain": "n/N = 50/500 = 10 %, above 5 %. For X = 5 the hypergeometric gives 0.1694 and the binomial 0.1641."}
+  {"q": "P(X = 2) by the hypergeometric formula = ? (4 decimals)", "type": "numeric", "answer": 0.2761, "tolerance": 0.0001, "explain": "N = 500, K = 61, n = 20: $$\\dfrac{C(61, 2) · C(439, 18)}{C(500, 20)} = \\dfrac{1830 × 4.0235 × 10^{31}}{2.6672 × 10^{35}} = \\mathbf{0.2761}$$"},
+  {"type": "fill", "q": "Complete the R call for P(X = 2) Night Lords in the 20.", "code": "dhyper(2, 61, ___, 20)", "answer": ["439"], "explain": "dhyper(x, K, N − K, n): the successes K = 61, then the failures $$N − K = 500 − 61 = 439$$ then the sample size 20. It returns 0.2760602."},
+  {"q": "P(X = 2) by the binomial stand-in, p = 61/500 = 0.122 = ? (4 decimals)", "type": "numeric", "answer": 0.2719, "tolerance": 0.0001, "explain": "$$C(20, 2) · 0.122^2 · 0.878^{18} = 190 × 0.014884 × 0.096139 = \\mathbf{0.2719}$$ That is within 0.005 of the exact 0.2761 because n/N is only 4 %. In R, dbinom(2, 20, 61/500)."},
+  {"q": "μ = expected Night Lords among the 20 = ? (2 decimals)", "type": "numeric", "answer": 2.44, "tolerance": 0.05, "explain": "$$\\mu = n · K/N = 20 × 61/500 = \\mathbf{2.44}$$ It is the same as the binomial's np."},
+  {"q": "Picking 50 of the 500 instead of 20, the 5 % rule still holds.", "type": "tf", "answer": false, "explain": "$$n/N = 50/500 = 10\\%$$ That is above 5 %. For X = 5 the hypergeometric gives 0.1694 and the binomial 0.1641."}
 ]
 ```
 
@@ -412,7 +470,7 @@ Nexon's North America overall ranking lists 61 Night Lords, a GMS thief job, amo
     "type": "numeric",
     "answer": 0.3973,
     "tolerance": 0.0002,
-    "explain": "C(8,2) · C(12,3) / C(20,5) = 28 × 220 / 15 504 = 6160/15 504 = 0.3973. In R: dhyper(2, 8, 12, 5)."
+    "explain": "$$\\dfrac{C(8,2) · C(12,3)}{C(20,5)} = \\dfrac{28 × 220}{15\\,504} = \\dfrac{6160}{15\\,504} = \\mathbf{0.3973}$$ In R: dhyper(2, 8, 12, 5)."
   },
   {
     "q": "In $P(x) = C(K, x) \\cdot C(N - K, n - x) / C(N, n)$, the factor $C(N - K, n - x)$ counts...",
@@ -431,21 +489,21 @@ Nexon's North America overall ranking lists 61 Night Lords, a GMS thief job, amo
     "type": "numeric",
     "answer": 4.44,
     "tolerance": 0.01,
-    "explain": "μ = n · K/N = 10 × 40/90 = 4.44, the same as the binomial's np with p = 40/90."
+    "explain": "$$\\mu = n · K/N = 10 × 40/90 = \\mathbf{4.44}$$ It is the same as the binomial's np with p = 40/90."
   },
   {
     "q": "Same class. σ = ? (2 decimals)",
     "type": "numeric",
     "answer": 1.49,
     "tolerance": 0.01,
-    "explain": "σ² = 10 (40/90)(50/90)(80/89) = 2.2194, σ = 1.49. Without the correction factor 80/89 the binomial gives 1.57."
+    "explain": "$$\\sigma^2 = 10 (40/90)(50/90)(80/89) = 2.2194, \\quad \\sigma = \\mathbf{1.49}$$ Without the correction factor 80/89 the binomial gives 1.57."
   },
   {
     "q": "Same class. Z for a sample with 8 Mac users = ? (2 decimals)",
     "type": "numeric",
     "answer": 2.39,
     "tolerance": 0.02,
-    "explain": "Z = (8 − 4.44)/1.49 = 2.39, beyond 2: unusually high. The tail P(X ≥ 8) = 0.019 is below 0.025 too."
+    "explain": "$$Z = \\dfrac{8 − 4.44}{1.49} = \\mathbf{2.39}$$ Beyond 2: unusually high. The tail P(X ≥ 8) = 0.019 is below 0.025 too."
   },
   {
     "type": "fill",
@@ -465,7 +523,7 @@ Nexon's North America overall ranking lists 61 Night Lords, a GMS thief job, amo
     "q": "Write P(X = 4) for the Mac users (N = 90, K = 40, n = 10) as the hypergeometric formula with the numbers substituted. Use C(n,x), * and /, no spaces.",
     "type": "text",
     "answer": ["C(40,4)*C(50,6)/C(90,10)", "C(40,4)C(50,6)/C(90,10)", "(C(40,4)*C(50,6))/C(90,10)", "40C4*50C6/90C10", "(40C4*50C6)/90C10", "choose(40,4)*choose(50,6)/choose(90,10)"],
-    "explain": "C(K, x) · C(N − K, n − x) / C(N, n) = C(40,4)·C(50,6)/C(90,10) = 0.2539."
+    "explain": "$$\\dfrac{C(K, x) · C(N − K, n − x)}{C(N, n)} = \\dfrac{C(40,4) · C(50,6)}{C(90,10)} = \\mathbf{0.2539}$$"
   },
   {
     "q": "You survey 10 of the 90 students, but each student is put back in the pool after answering and may be picked again. Which hypergeometric condition fails?",
@@ -477,7 +535,7 @@ Nexon's North America overall ranking lists 61 Night Lords, a GMS thief job, amo
     "q": "For the same N, K and n (with n > 1), the hypergeometric σ is always smaller than the binomial σ with p = K/N.",
     "type": "tf",
     "answer": true,
-    "explain": "σ²_hyper = npq × (N − n)/(N − 1), and the correction factor is below 1 whenever n > 1: Mac users 1.49 against 1.57. The means are equal."
+    "explain": "$$\\sigma^2_{\\text{hyper}} = npq × \\dfrac{N − n}{N − 1}$$ The correction factor is below 1 whenever n > 1: Mac users 1.49 against 1.57. The means are equal."
   },
   {
     "q": "Five cards from one deck gave P(2 jacks) = 0.0399 (hypergeometric) against 0.0465 (binomial); from a 10-deck superdeck the hypergeometric answer is 0.0460. Why did it move toward the binomial?",

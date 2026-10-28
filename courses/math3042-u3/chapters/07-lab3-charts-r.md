@@ -3,7 +3,11 @@ title: Lab 3: charts of the survey data
 minutes: 22
 ---
 
-Lab 3 redoes Unit 2's charts in R on a real data frame, `survey` from the MASS package (237 statistics students: writing hand, heights, pulse, hand spans), and its eight tasks are the shape of the RStudio part of a quiz: reproduce a given chart, with a title computed from the data rather than typed. Packages: `MASS`, `lattice`, `dplyr`.
+Lab 3 redoes Unit 2's charts in R on a real data frame, `survey` from the MASS package (237 statistics students: writing hand, heights, pulse, hand spans).
+
+Its eight tasks are the shape of the RStudio part of a quiz: reproduce a given chart, with a title computed from the data rather than typed.
+
+Packages: `MASS`, `lattice`, `dplyr`.
 
 ## Pie charts
 
@@ -98,7 +102,9 @@ freq.tab
 - `freq.tab`: "Look up freq.tab (`freq.tab`) and print it."
 :::
 
-`freq.tab` is a named vector: `freq.tab[1]` and `freq.tab["Left"]` print `Left 18` with the name; `freq.tab[["Left"]]` prints just `18`. `pie(freq.tab)` uses the names as labels. To put the counts on the labels, build new ones with `paste0()`:
+`freq.tab` is a named vector: `freq.tab[1]` and `freq.tab["Left"]` print `Left 18` with the name; `freq.tab[["Left"]]` prints just `18`.
+
+`pie(freq.tab)` uses the names as labels. To put the counts on the labels, build new ones with `paste0()`:
 
 ```r
 new.labels <- paste0(names(freq.tab), "\n(", freq.tab,")")
@@ -127,7 +133,9 @@ new.labels
 - `new.labels`: "Look up new.labels (`new.labels`) and print it."
 :::
 
-`\n` is a line break inside the label. Task 2's chart, with the title composed from the data:
+`\n` is a line break inside the label.
+
+Task 2's chart, with the title composed from the data:
 
 ```r
 new.labels <- paste0( names(freq.tab), "\n(", freq.tab, " students)")
@@ -156,7 +164,9 @@ pie( freq.tab, new.labels, radius=1.0,
 - `pie( freq.tab, new.labels, … )`: "Add up the counts (`sum(freq.tab)`), glue that total into the title string (`paste0`), combine the two colours (`c("grey","pink")`), then draw the pie of freq.tab with those labels, radius, title and colours (`pie`)."
 :::
 
-`sum(freq.tab)` is 236 (one student has no writing hand recorded), and `paste0` glues the pieces into "Writing Hand of Students (n = 236)". Do not hard-code the 236: the lab says so twice.
+`sum(freq.tab)` is 236 (one student has no writing hand recorded), and `paste0` glues the pieces into "Writing Hand of Students (n = 236)".
+
+Do not hard-code the 236: the lab says so twice.
 
 ```widget
 cat-charts
@@ -196,7 +206,9 @@ Bars are better than slices for comparing two categories, and `horiz = TRUE` is 
 
 ## Stem plots
 
-`head(cbind(survey$Height))` shows the raw values as a column, `NA` included. The first lines `stem(survey$Height)` prints:
+`head(cbind(survey$Height))` shows the raw values as a column, `NA` included.
+
+The first lines `stem(survey$Height)` prints:
 
 ```text
   The decimal point is 1 digit(s) to the right of the |
@@ -241,7 +253,9 @@ Task 4's plot, `stem(survey$Height, scale=2)`, starts:
 
 ## Frequency distributions and cumulative frequencies
 
-`range(survey$Height)` prints `NA NA`: missing values poison the range. Drop them first, then cut the interval into classes of width 5 and count:
+`range(survey$Height)` prints `NA NA`: missing values poison the range.
+
+Drop them first, then cut the interval into classes of width 5 and count:
 
 :::info R syntax
 | Code | What it does |
@@ -312,7 +326,9 @@ cbind(heights.freq)
 - `cbind(heights.freq)`: "Take the counts (`heights.freq`), bind them into one column (`cbind`) and print it."
 :::
 
-`cut()` assigns each height to a class labelled `[150,155)`, closed on the left and open on the right because of `right=FALSE`, exactly Unit 2's convention; `table()` counts. Task 5 repeats it for male and female heights with the same limits (`subset(survey, Sex == "Male")$Height`, NAs dropped, `breaks=seq(overall.min, overall.max+5, by=5)`) and concludes that female heights are noticeably smaller while the spread looks similar.
+`cut()` assigns each height to a class labelled `[150,155)`, closed on the left and open on the right because of `right=FALSE`, exactly Unit 2's convention; `table()` counts.
+
+Task 5 repeats it for male and female heights with the same limits (`subset(survey, Sex == "Male")$Height`, NAs dropped, `breaks=seq(overall.min, overall.max+5, by=5)`) and concludes that female heights are noticeably smaller while the spread looks similar.
 
 :::info R syntax
 | Code | What it does |
@@ -332,7 +348,9 @@ cbind(heights.freq)
 - `breaks=seq(overall.min, overall.max+5, by=5)`: "Add 5 to overall.max (`overall.max+5`), count from overall.min up to it in fives (`seq`, `by=5`), then pass that as the break points (`breaks=`)."
 :::
 
-The ogive takes three steps: running totals, a 0 in front, then the plot. Task 7's version of the plot:
+The ogive takes three steps: running totals, a 0 in front, then the plot.
+
+Task 7's version of the plot:
 
 ```r
 cumul.freq <- cumsum(heights.freq)
@@ -408,10 +426,14 @@ The padding is what makes the pairs line up: `lower.limits` is `seq(150, 200, by
 ], "hi": ["y1", "y6"], "caption": "Eleven x values, eleven padded counts: 0 at 150, and 126 at 175 means 126 heights below 175 cm." }
 ```
 
-So 0 sits at 150 and each class's count sits at that class's right boundary: 6 at 155, 126 at 175 (126 students are under 175 cm), 208 at 200. Task 7's arguments only style the plot (`type="b"` joins the points with lines) and compute the title, "Ogive of 208 student heights".
+So 0 sits at 150 and each class's count sits at that class's right boundary: 6 at 155, 126 at 175 (126 students are under 175 cm), 208 at 200.
+
+Task 7's arguments only style the plot (`type="b"` joins the points with lines) and compute the title, "Ogive of 208 student heights".
 
 :::warn Lab 3's ogive and Unit 2's
-Both put each cumulative value at the right end of its class, with a 0 at the start. Two things differ:
+Both put each cumulative value at the right end of its class, with a 0 at the start.
+
+Two things differ:
 
 | | Lab 3 (R) | Unit 2 (pencil) |
 |---|---|---|
@@ -425,7 +447,7 @@ The variable is called `lower.limits` because each boundary is also the next cla
 
 They repeat Lab 2's.
 
-- **Class width**: $n = 250$, min 51.3, max 135.4. The ideal width is the range over $\sqrt{n}$, $R/\sqrt{n}$, rounded to a convenient value; the number of classes is then the range over the width, rounded up.
+- **Class width**: $n = 250$, min 51.3, max 135.4. The ideal width is the range over $\sqrt{n}$, written $R/\sqrt{n}$, rounded to a convenient value; the number of classes is then the range over the width, rounded up.
 - **Old Faithful waiting times**: a stem plot from 43 to 96 minutes, with one cluster in the 50s and most waits between 75 and 85.
 - **Boxplots of heights by sex**: the female box's upper quartile (Q3) sits below the male box's lower quartile (Q1).
 
@@ -459,8 +481,8 @@ Read it as: female Q3 < male Q1, so three quarters of the women are below a heig
 
 ```quiz
 [
-  { "q": "A data set has $n = 250$, minimum 51.3 and maximum 135.4. What is the ideal class width $R/\\sqrt{n}$? (2 decimals)", "type": "numeric", "answer": 5.32, "tolerance": 0.01, "explain": "R = 135.4 − 51.3 = 84.1 and √250 = 15.81, so 84.1/15.81 = 5.32. Round to a convenient 5.3 (16 classes) or 5 (17 classes)." },
-  { "q": "With width 5.3, how many classes cover 51.3 to 135.4?", "type": "numeric", "answer": 16, "tolerance": 0, "explain": "84.1/5.3 = 15.9, rounded up to 16 classes. Width 5 needs 84.1/5 = 16.8, so 17." },
+  { "q": "A data set has $n = 250$, minimum 51.3 and maximum 135.4. What is the ideal class width $R/\\sqrt{n}$? (2 decimals)", "type": "numeric", "answer": 5.32, "tolerance": 0.01, "explain": "$$R = 135.4 - 51.3 = 84.1$$ $$\\sqrt{250} = 15.81$$ $$\\dfrac{84.1}{15.81} = \\mathbf{5.32}$$ Round to a convenient 5.3 (16 classes) or 5 (17 classes)." },
+  { "q": "With width 5.3, how many classes cover 51.3 to 135.4?", "type": "numeric", "answer": 16, "tolerance": 0, "explain": "$$\\dfrac{84.1}{5.3} = 15.9 \\to \\mathbf{16} \\text{ classes}$$ Width 5 needs $$\\dfrac{84.1}{5} = 16.8 \\to 17$$" },
   { "q": "The Old Faithful waiting-time stem plot runs from 43 to 96 minutes with most values between 75 and 85 and a second cluster in the 50s. Its shape is...", "options": ["bimodal", "symmetric and unimodal", "uniform", "skewed right with one peak"], "answer": 0, "explain": "Two clusters, two peaks: short waits after short eruptions and long waits after long ones." },
   { "q": "In side-by-side boxplots, the female Q3 is below the male Q1. Which sentence follows?", "options": ["75% of female students are shorter than the shortest 25% of male students", "every female student is shorter than every male student", "the medians are equal", "50% of female students are taller than the tallest male"], "answer": 0, "explain": "75% of females lie below the female Q3; the shortest 25% of males lie below the male Q1, which is higher still. The boxplot says nothing about every individual." }
 ]
@@ -468,12 +490,20 @@ Read it as: female Q3 < male Q1, so three quarters of the women are below a heig
 
 The class width, step by step:
 
-1. $R = 135.4 - 51.3 = 84.1$.
-2. $\sqrt{250} = 15.81$.
-3. $84.1 / 15.81 = 5.32$.
-4. Width 5.3 → $84.1/5.3 = 15.9$ → 16 classes (width 5 gives $84.1/5 = 16.8$ → 17).
+1. Range:
+   $$R = 135.4 - 51.3 = 84.1$$
+2. Root of $n$:
+   $$\sqrt{250} = 15.81$$
+3. Ideal width:
+   $$\dfrac{84.1}{15.81} = \mathbf{5.32}$$
+4. Classes at width 5.3:
+   $$\dfrac{84.1}{5.3} = 15.9 \to \mathbf{16} \text{ classes}$$
+5. Classes at width 5:
+   $$\dfrac{84.1}{5} = 16.8 \to \mathbf{17} \text{ classes}$$
 
-The Old Faithful plot has two clusters, so it is bimodal. For the boxplots, the instructor's sentences are *75% of female students are shorter than the shortest 25% of male students* and, when the male median sits above the female maximum, *50% of the male students are taller than the tallest female student*.
+The Old Faithful plot has two clusters, so it is bimodal.
+
+For the boxplots, the instructor's sentences are *75% of female students are shorter than the shortest 25% of male students* and, when the male median sits above the female maximum, *50% of the male students are taller than the tallest female student*.
 
 ## Histograms and scatter plots
 
@@ -514,9 +544,15 @@ hist(numerical.heights,
 - `cut(..., right=FALSE)`: "Take the values and breaks (`...`), make the classes left-closed (`right=FALSE`), then sort each value into its class (`cut`)."
 :::
 
-The lab's solution spells the variable `numerical.Heights`; R names are case-sensitive, so use the spelling you defined. `length()` gives 209, every non-missing height. The table above summed to 208 because `cut(..., right=FALSE)` leaves the one 200 cm student outside `[195,200)`; `hist()` closes its last bin, so the histogram counts that student.
+The lab's solution spells the variable `numerical.Heights`; R names are case-sensitive, so use the spelling you defined.
 
-Scatter plots use lattice's model formula, `xyplot(Wr.Hnd ~ Height, data=survey, col="black")`, a spread-out cloud with little correlation. Task 8 draws two: `xyplot(Pulse ~ Height, ...)` and `xyplot(Wr.Hnd ~ NW.Hnd, ...)`, each with `pch=19`, a hex colour and `main=paste0("... (n = ", nrow(survey), ")")`. Writing hand against non-writing hand is the far stronger linear relation (the two spans are nearly equal for everyone; $r \approx 0.95$), while pulse against height is a cloud ($r \approx -0.07$). `cor(x, y, use="complete.obs")` confirms it with the NAs skipped.
+`length()` gives 209, every non-missing height. The table above summed to 208 because `cut(..., right=FALSE)` leaves the one 200 cm student outside `[195,200)`; `hist()` closes its last bin, so the histogram counts that student.
+
+Scatter plots use lattice's model formula, `xyplot(Wr.Hnd ~ Height, data=survey, col="black")`, a spread-out cloud with little correlation.
+
+Task 8 draws two: `xyplot(Pulse ~ Height, ...)` and `xyplot(Wr.Hnd ~ NW.Hnd, ...)`, each with `pch=19`, a hex colour and `main=paste0("... (n = ", nrow(survey), ")")`.
+
+Writing hand against non-writing hand is the far stronger linear relation (the two spans are nearly equal for everyone; $r \approx 0.95$), while pulse against height is a cloud ($r \approx -0.07$). `cor(x, y, use="complete.obs")` confirms it with the NAs skipped.
 
 :::info R syntax
 | Code | What it does |
@@ -552,10 +588,10 @@ A data frame `trips` has a categorical `Mode` (Bike 12, Bus 41, Car 27, Walk 20)
 ```quiz
 [
   {"type": "fill", "q": "Fill the blank so each pie label shows the count under the name.", "code": "freq.tab <- table(trips$Mode)\nnew.labels <- paste0(names(freq.tab), \"\\n(\", ___, \")\")\nnew.labels\n## [1] \"Bike\\n(12)\" \"Bus\\n(41)\"  \"Car\\n(27)\"  \"Walk\\n(20)\"", "answer": ["freq.tab"], "explain": "`paste0()` works element by element: each name, a line break, then the matching count from `freq.tab`."},
-  {"q": "`main=paste0(\"Travel Mode (n = \", sum(freq.tab), \")\")`. What does the title read?", "options": ["Travel Mode (n = 100)", "Travel Mode (n = 4)", "Travel Mode (n = sum(freq.tab))", "Travel Mode (n = 41)"], "answer": 0, "explain": "`sum(freq.tab)` adds the counts, $12 + 41 + 27 + 20 = 100$; `length(freq.tab)` would be the 4 categories."},
+  {"q": "`main=paste0(\"Travel Mode (n = \", sum(freq.tab), \")\")`. What does the title read?", "options": ["Travel Mode (n = 100)", "Travel Mode (n = 4)", "Travel Mode (n = sum(freq.tab))", "Travel Mode (n = 41)"], "answer": 0, "explain": "`sum(freq.tab)` adds the counts: $$12 + 41 + 27 + 20 = \\mathbf{100}$$ `length(freq.tab)` would be the 4 categories."},
   {"type": "fill", "q": "`range(trips$Minutes)` prints `NA NA`. Fill the blank that keeps only the recorded values.", "code": "minutes <- trips$Minutes[ ___(trips$Minutes) ]\nrange(minutes)", "answer": ["!is.na"], "explain": "`is.na()` is TRUE for missing values; `!` flips it, so the logical index keeps every recorded value."},
   {"type": "fill", "q": "Fill the argument that makes each class closed on the left.", "code": "table(cut(minutes, breaks=seq(0, 50, by=10), right=___))\n## [0,10) [10,20) [20,30) [30,40) [40,50)\n##       3       8      12       5       2", "answer": ["FALSE", "F"], "explain": "`right=FALSE` gives classes like [10,20): 10 is in, 20 starts the next class, Unit 2's convention."},
-  {"q": "`cumsum()` of those frequencies is 3, 11, 23, 28, 30. How many trips took less than 30 minutes?", "type": "numeric", "answer": 23, "tolerance": 0, "explain": "Classes [0,10), [10,20), [20,30) all lie below 30: $3 + 8 + 12 = 23$, the third cumulative count."},
+  {"q": "`cumsum()` of those frequencies is 3, 11, 23, 28, 30. How many trips took less than 30 minutes?", "type": "numeric", "answer": 23, "tolerance": 0, "explain": "Classes [0,10), [10,20), [20,30) all lie below 30: $$3 + 8 + 12 = \\mathbf{23}$$ This is the third cumulative count."},
   {"q": "Lab 3's ogive is `plot(seq(0, 50, by=10), c(0, cumsum(freqs)))`. At which $x$ is the point with height 23 drawn?", "type": "numeric", "answer": 30, "tolerance": 0, "explain": "The padded counts 0, 3, 11, 23, 28, 30 pair with 0, 10, 20, 30, 40, 50: each count sits at its class's right boundary, so 23 (everything below 30) is at $x = 30$."}
 ]
 ```

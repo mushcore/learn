@@ -17,7 +17,7 @@ minutes: 15
 - tables with `| a | b |` + `|---|---|` separator; `\|` inside a cell is a literal pipe
 - inline: `` `code` ``, `**bold**`, `*italic*`, `[text](url)`
 - inline math between `$...$` (LaTeX subset): `\frac{a}{b}` / `\dfrac`, `\sqrt{x}`, `\bar{X}`, `\hat{p}`, `\tilde{X}`, `\text{words}`, `\mathbf{x}`,
-  `^{..}`, `_{..}`, `\sum \int \mu \sigma \varphi \rho \pm \times \cdot \le \ge \ne \approx \sim \propto \infty \in \ldots \to \min \max \ln \%`, set notation `\cap \cup \emptyset \setminus \mid \subseteq`, `\quad`/`\qquad` spacing. Front-matter values may be quoted (`title: "FDM: carriers"`); the quotes are stripped. Display math: `$$...$$` on its own line (centred, larger). The opening `$` must be followed by a non-space and the closing `$` preceded by a non-space, so R's `df$col` in prose is safe (put R code in backticks anyway).
+  `^{..}`, `_{..}`, `\sum \int \mu \sigma \varphi \rho \pm \times \cdot \le \ge \ne \approx \sim \propto \infty \in \ldots \to \min \max \ln \%`, set notation `\cap \cup \emptyset \setminus \mid \subseteq`, `\quad`/`\qquad` spacing. Front-matter values may be quoted (`title: "FDM: carriers"`); the quotes are stripped. Display math: `$$...$$` on its own line (centred, larger). The opening `$` must be followed by a non-space and the closing `$` preceded by a non-space, so R's `df$col` in prose is safe (put R code in backticks anyway). **Money is written `\$2.50`** (`\\$2.50` inside quiz JSON strings): the backslash makes it a literal dollar sign, otherwise a second `$` or a `$$` later in the same paragraph or `explain` pairs with it and swallows the prose as math. Display math wraps at phone width, so a long sum stays on one `$$` line.
 :::tip Optional title
 Body markdown (paragraphs, lists).
 :::

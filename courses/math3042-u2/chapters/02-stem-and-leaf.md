@@ -3,7 +3,9 @@ title: Stem-and-leaf plots
 minutes: 14
 ---
 
-Categorical data gets pies and bars. For a **numerical** variable the notes list six charts, three with the instructor's margin note:
+Categorical data gets pies and bars.
+
+For a **numerical** variable the notes list six charts, three with the instructor's margin note:
 
 | Chart | Instructor's note |
 |---|---|
@@ -16,7 +18,9 @@ Categorical data gets pies and bars. For a **numerical** variable the notes list
 
 ## What a stem-and-leaf plot is
 
-The notes' definition: **"Essentially, a stem-and-leaf plot is a frequency distribution of $X$."** It shows how many values land in each range, like a histogram on its side, while keeping every individual value visible.
+The notes' definition: **"Essentially, a stem-and-leaf plot is a frequency distribution of $X$."**
+
+It shows how many values land in each range, like a histogram on its side, while keeping every individual value visible.
 
 ### Cutting a value into stem and leaf
 
@@ -38,7 +42,9 @@ $X$ = Height (in cm) for the first 20 students in `BCIT.students`:
 159 187 163 178 158 170 169 183 170 146
 ```
 
-The stems are 14 to 18. Assigning and sorting the leaves gives the instructor's plot:
+The stems are 14 to 18.
+
+Assigning and sorting the leaves gives the instructor's plot:
 
 ```text
 14 | 6
@@ -48,9 +54,17 @@ The stems are 14 to 18. Assigning and sorting the leaves gives the instructor's 
 18 | 3 7 7
 ```
 
-Check one line: the 150s are 154, 153, 159, 158, so stem 15 gets leaves 4, 3, 9, 8, sorted to 3 4 8 9. The leaves count $1 + 4 + 6 + 6 + 3 = 20$, one per student, and each reads back to its value (17 | 5 is 175).
+Check one line: the 150s are 154, 153, 159, 158, so stem 15 gets leaves 4, 3, 9, 8, sorted to 3 4 8 9.
 
-His interpretation under the plot: **"The centre is around 170 cm (the mode is 170 cm)."** Stems 16 and 17 tie for the longest line with six leaves, and 170 appears four times, more than any other value.
+The leaves count one per student:
+
+$$1 + 4 + 6 + 6 + 3 = \mathbf{20}$$
+
+Each leaf reads back to its value (17 | 5 is 175).
+
+His interpretation under the plot: **"The centre is around 170 cm (the mode is 170 cm)."**
+
+Stems 16 and 17 tie for the longest line with six leaves, and 170 appears four times, more than any other value.
 
 ```widget
 stem-leaf
@@ -111,10 +125,14 @@ Two notes from the lecture:
 
 ### Reading the key line
 
-The first line R prints, *"The decimal point is 1 digit(s) to the right of the |"*, turns stems and leaves back into numbers. The instructor circled the first row: **"therefore 14 | 1 represents 141 cm."**
+The first line R prints, *"The decimal point is 1 digit(s) to the right of the |"*, turns stems and leaves back into numbers.
+
+The instructor circled the first row: **"therefore 14 | 1 represents 141 cm."**
 
 :::tip Reading the key line
-Read the bar as a decimal point, then move it as the key says: "k digit(s) to the right" moves it right k places, "to the left" moves it left k places. $14 \mid 1$ reads as 14.1; the key says right 1, so the value is 141.
+Read the bar as a decimal point, then move it as the key says: "k digit(s) to the right" moves it right k places, "to the left" moves it left k places.
+
+$14 \mid 1$ reads as 14.1; the key says right 1, so the value is 141.
 :::
 
 ```diagram
@@ -146,7 +164,9 @@ stem( BCIT.students$Height.CM, scale=0.5)
 
 The notes' rule: *"If a numerical variable has more than three digits of precision, it might be necessary to reduce the number of digits by rounding before making the stem-and-leaf plot."*
 
-The `eruptions` variable of the built-in `faithful` data frame (272 Old Faithful eruption durations) has four digits, such as $X = 2.283$; all four would produce far too many stems. So **round each $X$ first, then cut it**:
+The `eruptions` variable of the built-in `faithful` data frame (272 Old Faithful eruption durations) has four digits, such as $X = 2.283$; all four would produce far too many stems.
+
+So **round each $X$ first, then cut it**:
 
 ```text
 2.283  →  round  →  2.28  →  stem 22, leaf 8
@@ -193,7 +213,11 @@ The decimal point is 1 digit(s) to the left of the |
 - "Take the Old Faithful data (`faithful`), pull out its eruptions column (`$eruptions`), and print its stem-and-leaf plot (`stem`)."
 :::
 
-The key now says the decimal point is one digit to the **left** of the bar: 16 | 0 reads as 16.0, moved left 1 to 1.60, and 22 | 8 is 2.28. Here R went the other way from the heights and put **two** stems on each line (16 covers 1.60–1.79), because 272 values over 1.6–5.1 would otherwise give too many lines. The 16 line, `16 | 070355555588`, is two sorted runs:
+The key now says the decimal point is one digit to the **left** of the bar: 16 | 0 reads as 16.0, moved left 1 to 1.60, and 22 | 8 is 2.28.
+
+Here R went the other way from the heights and put **two** stems on each line (16 covers 1.60–1.79), because 272 values over 1.6–5.1 would otherwise give too many lines.
+
+The 16 line, `16 | 070355555588`, is two sorted runs:
 
 ```diagram
 {"type": "grid", "nodes": [{"id": "r0c0", "label": "Run", "row": 0, "col": 0}, {"id": "r0c1", "label": "Stem", "row": 0, "col": 1}, {"id": "r0c2", "label": "Leaves", "row": 0, "col": 2}, {"id": "r0c3", "label": "Values", "row": 0, "col": 3}, {"id": "r1c0", "label": "first", "row": 1, "col": 0}, {"id": "r1c1", "label": "16", "row": 1, "col": 1}, {"id": "r1c2", "label": "0 7", "row": 1, "col": 2}, {"id": "r1c3", "label": "1.60, 1.67", "row": 1, "col": 3}, {"id": "r2c0", "label": "second", "row": 2, "col": 0}, {"id": "r2c1", "label": "17", "row": 2, "col": 1}, {"id": "r2c2", "label": "0 3 5 5 5 5 5 5 8 8", "row": 2, "col": 2}, {"id": "r2c3", "label": "1.70, 1.73, 1.75 (six), 1.78 (two)", "row": 2, "col": 3}], "hi": ["r2c1", "r2c2"], "caption": "The line 16 | 070355555588 holds two stems: the leaves restart at 0 where 16 ticks to 17."}
@@ -201,15 +225,21 @@ The key now says the decimal point is one digit to the **left** of the bar: 16 |
 
 The leaves restart at 0 where the stem ticks from 16 to 17; each run is sorted.
 
-The instructor's conclusion: **"Most eruptions are around 1.8 or 4.4"**, two clusters with a gap from about 2.6 to 3.4. The histogram lesson shows the same two humps.
+The instructor's conclusion: **"Most eruptions are around 1.8 or 4.4"**, two clusters with a gap from about 2.6 to 3.4.
+
+The histogram lesson shows the same two humps.
 
 :::tip The unit is minutes
-`faithful$eruptions` is in minutes (1.6 to 5.1 min). One R call in the notes labels the axis "Eruptions (sec)"; the numbers are the same, and "eruptions shorter than 4.0 minutes" means $X < 4.0$.
+`faithful$eruptions` is in minutes (1.6 to 5.1 min).
+
+One R call in the notes labels the axis "Eruptions (sec)"; the numbers are the same, and "eruptions shorter than 4.0 minutes" means $X < 4.0$.
 :::
 
 ## Bar plots for integer data: usually a bad choice
 
-An **integer** variable like Age can "occasionally" be bar-plotted like a category. **"Don't forget the `table` step!"**: `barplot()` wants counts, not raw values.
+An **integer** variable like Age can "occasionally" be bar-plotted like a category.
+
+**"Don't forget the `table` step!"**: `barplot()` wants counts, not raw values.
 
 ```r
 barplot( table(BCIT.students$Age), xlab="Age", ylab="Frequency" )

@@ -4,7 +4,9 @@ minutes: 20
 ---
 <!-- facts: poe1.fusing.six-link-measured -->
 
-Nobody can list equally likely outcomes for a six-link, yet players quote its chance: someone ran the experiment many times and counted. That is the second route to a probability, and the law of large numbers says it agrees with counting outcomes in the limit.
+Nobody can list equally likely outcomes for a six-link, yet players quote its chance: someone ran the experiment many times and counted.
+
+That is the second route to a probability, and the law of large numbers says it agrees with counting outcomes in the limit.
 
 ## The relative frequency definition
 
@@ -14,23 +16,39 @@ $$P(A) \approx \frac{x}{n}$$
 
 The filled notes label the fraction *x (# success)* over *n (# trials)* and call it the *relative freq definition*.
 
-**The law of large numbers**: if you perform the random experiment enough times, $x/n$ must approach the exact classical probability $P(A)$. For a small $n$ the fraction wanders; as $n$ grows it settles.
+**The law of large numbers**: if you perform the random experiment enough times, $x/n$ must approach the exact classical probability $P(A)$.
+
+For a small $n$ the fraction wanders; as $n$ grows it settles.
 
 ## The PoE1 six-link chance is a relative frequency
 
-An Orb of Fusing, the currency that rerolls the links between an item's sockets, has no published six-link probability. A 2017 test used n = 100 000 Fusings on a six-socket item of 20 % quality and found the chance about 0.1 %, 1 in 1000 [PoE1, 3.0-era test still cited at 3.29 (poewiki), checked 2026-10-27]. GGG once said "very close to 1/1500". That was before quality started to improve the result (1 % per 1 % quality), so this lesson uses the measured 1 in 1000. The test's count of six-links is not reported, only the rate and n.
+An Orb of Fusing, the currency that rerolls the links between an item's sockets, has no published six-link probability.
+
+A 2017 test used n = 100 000 Fusings on a six-socket item of 20 % quality and found the chance about 0.1 %, 1 in 1000.
+
+GGG once said "very close to 1/1500". That was before quality started to improve the result (1 % per 1 % quality), so this lesson uses the measured 1 in 1000.
+
+The test's count of six-links is not reported, only the rate and n.
 
 ```quiz
 [
-  {"q": "From the test, the relative-frequency estimate of $P(\\text{six-link})$ for one Fusing on that item? (4 decimals)", "type": "numeric", "answer": 0.001, "tolerance": 6e-05, "explain": "$P(A) \\approx x/n$, and the test reports $x/n$ as about 1 in 1000: $0.0010$."}
+  {"q": "From the test, the relative-frequency estimate of $P(\\text{six-link})$ for one Fusing on that item? (4 decimals)", "type": "numeric", "answer": 0.001, "tolerance": 6e-05, "explain": "$P(A) \\approx x/n$, and the test reports $x/n$ as about 1 in 1000: $$P(\\text{six-link}) \\approx \\dfrac{1}{1000} = \\mathbf{0.0010}$$"}
 ]
 ```
 
-$P(\text{six-link}) \approx x/n \approx 1/1000 = 0.0010$. There is no list of equally likely link outcomes to count, so the classical definition has nothing to work on; repetition is the only route, and n = 100 000 is large enough for $x/n$ to have settled. The figure is from 2017 on a 20 %-quality item, and 3.29 reworked sockets, so today's rate may differ.
+$$P(\text{six-link}) \approx \dfrac{x}{n} \approx \dfrac{1}{1000} = \mathbf{0.0010}$$
+
+There is no list of equally likely link outcomes to count, so the classical definition has nothing to work on; repetition is the only route, and n = 100 000 is large enough for $x/n$ to have settled.
+
+The figure is from 2017 on a 20 %-quality item, and 3.29 reworked sockets, so today's rate may differ.
 
 ## Boxcars, both ways
 
-In the casino game Craps two dice are rolled; "boxcars" is both sixes. **Classically**: there are $6 \times 6 = 36$ equally likely outcomes (the grid below), and exactly one of them is (6, 6), so $P(B) = 1/36 = 0.0278$.
+In the casino game Craps two dice are rolled; "boxcars" is both sixes.
+
+**Classically**: there are $6 \times 6 = 36$ equally likely outcomes (the grid below), and exactly one of them is (6, 6), so
+
+$$P(B) = \dfrac{1}{36} = \mathbf{0.0278}$$
 
 ```widget
 sample-space
@@ -98,11 +116,21 @@ prob.B
 - `prob.B`: "Look up prob.B (`prob.B`) and print it."
 :::
 
-`sample(c(1,2,3,4,5,6), n.dice, replace=TRUE)` rolls two dice (`replace=TRUE` lets both show the same number, lesson 8). `success` is `TRUE` or `FALSE`, and adding it to `X.success` counts the TRUEs. This run printed 0.02799; the run in the filled notes printed 0.0281. Both are near the exact $1/36 = 0.0278$, and every run lands on a slightly different third decimal. The demo notebook's `prob.B.classical <- 1/(6^2)` prints 0.02777778.
+`sample(c(1,2,3,4,5,6), n.dice, replace=TRUE)` rolls two dice (`replace=TRUE` lets both show the same number, lesson 8).
+
+`success` is `TRUE` or `FALSE`, and adding it to `X.success` counts the TRUEs.
+
+This run printed 0.02799; the run in the filled notes printed 0.0281. Both are near the exact value, and every run lands on a slightly different third decimal:
+
+$$\dfrac{1}{36} = 0.0278$$
+
+The demo notebook's `prob.B.classical <- 1/(6^2)` prints 0.02777778.
 
 ### x/n settling as n grows
 
-Each step adds a batch of trials on a log schedule (1, 2, 5, 10 … 100 000). Early points swing between 0 and large fractions; by $n = 10^4$ the trace sits within a few thousandths of 1/36.
+Each step adds a batch of trials on a log schedule (1, 2, 5, 10 … 100 000).
+
+Early points swing between 0 and large fractions; by $n = 10^4$ the trace sits within a few thousandths of 1/36.
 
 ```widget
 lln-sim
@@ -112,7 +140,11 @@ lln-sim
 The notes' phrase is exact: the relative frequency **must** approach $P(A)$, but only as $n$ becomes large; ten trials of boxcars will usually show zero successes.
 
 :::tip Two definitions, one number
-Classical: count outcomes, exact, needs equally likely outcomes you can list. Relative frequency: run trials, approximate, works for any experiment you can repeat. Lab 4 lives entirely in the second world; the pencil part of the quiz in the first.
+Classical: count outcomes, exact, needs equally likely outcomes you can list.
+
+Relative frequency: run trials, approximate, works for any experiment you can repeat.
+
+Lab 4 lives entirely in the second world; the pencil part of the quiz in the first.
 :::
 
 ## Reading the six-link test as x/n
@@ -121,7 +153,7 @@ The test's 1 in 1000 over n = 100 000 Fusings, and GGG's older 1/1500, are the t
 
 ```quiz
 [
-  {"q": "GGG's older figure, 1/1500, as a probability? (4 decimals)", "type": "numeric", "answer": 0.0007, "tolerance": 6e-05, "explain": "$1/1500 = 0.000667$, which rounds to $0.0007$, against the test's $0.0010$."},
+  {"q": "GGG's older figure, 1/1500, as a probability? (4 decimals)", "type": "numeric", "answer": 0.0007, "tolerance": 6e-05, "explain": "$$1/1500 = 0.000667 \\approx \\mathbf{0.0007}$$ against the test's $0.0010$."},
   {"q": "Why does the lesson use the test's 1 in 1000 rather than GGG's 1/1500?", "options": ["GGG's figure predates the change that made item quality improve the result", "1/1500 is a classical probability and 1 in 1000 is not", "the test counted every Fusing ever used", "larger probabilities are always more accurate"], "answer": 0, "explain": "Each 1 % of quality now improves the result by 1 %, and the test used a 20 %-quality item; GGG's statement came before that change. Neither figure is classical: no one listed equally likely outcomes."},
   {"q": "With n = 100 000 Fusings, the test's 1 in 1000 is the classical probability of a six-link.", "type": "tf", "answer": false, "explain": "However large $n$ is, $x/n$ is a relative frequency, an estimate of $P(A)$. The classical definition needs a list of equally likely outcomes, which nobody has for links."},
   {"q": "A player Fuses 10 times with no six-link, so for them $x/n = 0/10 = 0$. This shows the six-link chance is 0.", "type": "tf", "answer": false, "explain": "Ten trials of an event near $0.001$ will almost always show no success, the same as ten trials of boxcars. The law of large numbers needs a large $n$."},
@@ -132,7 +164,7 @@ The test's 1 in 1000 over n = 100 000 Fusings, and GGG's older 1/1500, are the t
 ```quiz
 [
   {
-    "q": "The relative frequency definition of probability says $P(A) \\approx$ ...",
+    "q": "The relative frequency definition of probability says $P(A) \\approx$...",
     "options": ["$|A| / |S|$", "$x / n$, where A occurred x times in n trials", "$n / x$", "$1 - x$"],
     "answer": 1,
     "explain": "Successes over trials. It is an approximation that improves with n."
@@ -148,14 +180,14 @@ The test's 1 in 1000 over n = 100 000 Fusings, and GGG's older 1/1500, are the t
     "type": "numeric",
     "answer": 0.0278,
     "tolerance": 0.0003,
-    "explain": "One outcome, (6, 6), out of 36 equally likely: 1/36 = 0.02778."
+    "explain": "One outcome, (6, 6), out of 36 equally likely: $$1/36 = \\mathbf{0.02778}$$"
   },
   {
     "q": "How many equally likely outcomes does rolling two dice have?",
     "type": "numeric",
     "answer": 36,
     "tolerance": 0,
-    "explain": "6 × 6: the notes' grid of dice pairs. (1, 2) and (2, 1) are different outcomes."
+    "explain": "$$6 \\times 6 = \\mathbf{36}$$ The notes' grid of dice pairs. (1, 2) and (2, 1) are different outcomes."
   },
   {
     "q": "In the simulation, what does `X.success <- X.success + success` do when `success` is a logical?",

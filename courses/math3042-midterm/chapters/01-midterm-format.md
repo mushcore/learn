@@ -19,7 +19,9 @@ The midterm is a 90-minute paper exam in four question shapes, and each shape ha
 | Provided | A formula sheet and an R sheet; "you can't bring your own" |
 | Rounding | "If your answer is a probability, round it to four digits after the decimal point. Otherwise, round to three significant digits." |
 
-The formula sheet gives every descriptive formula, the probability rules, Bayes, $P(n,r)$ and $C(n,r)$, and the four distributions with $\mu$ and $\sigma^2$. The R sheet is the generic Base R cheat sheet. It names `dbinom`, `pbinom`, `dpois` and `ppois` but gives no argument order, and it has no `dhyper`, `phyper`, `rhyper`, no geometric functions, no `sample()`, no `lower.tail`, no `filter` and no `bwplot`. Those come from memory; [R on paper](#/math3042-midterm/r-on-paper) lists them.
+The formula sheet gives every descriptive formula, the probability rules, Bayes, $P(n,r)$ and $C(n,r)$, and the four distributions with $\mu$ and $\sigma^2$.
+
+The R sheet is the generic Base R cheat sheet. It names `dbinom`, `pbinom`, `dpois` and `ppois` but gives no argument order, and it has no `dhyper`, `phyper`, `rhyper`, no geometric functions, no `sample()`, no `lower.tail`, no `filter` and no `bwplot`. Those come from memory; [R on paper](#/math3042-midterm/r-on-paper) lists them.
 
 ## The practice paper: 12 questions, 46 marks
 
@@ -38,11 +40,13 @@ The formula sheet gives every descriptive formula, the probability rules, Bayes,
 | 11 | 5 (2+3) | Poisson with a rescaled rate; the next event between 10 and 20 years | U4 |
 | 12 | 5 (1+2+2) | Cards without replacement, expected winnings, two games | U3/U4 |
 
-Ten marks are R written by hand (Q7 to Q9), about thirteen are written interpretation (Q1, Q2, Q10), and the remaining 23 are calculation. There is no multiple choice; true or false appears only as "TRUE or FALSE and briefly explain".
+Ten marks are R written by hand (Q7 to Q9), about thirteen are written interpretation (Q1, Q2, Q10), and the remaining 23 are calculation.
+
+There is no multiple choice; true or false appears only as "TRUE or FALSE and briefly explain".
 
 ## Four question shapes, four ways to answer
 
-**Calculation.** Define X in words ("Let X = the number of major floods in the next 10 years"). Name the rule ("Since tickets are independent", "Using Bayes' Rule"). Write the formula in symbols, substitute, then give the number with its unit, rounded by the cover rule: "0.8438 or 84.38 %", "an expected loss of $0.40 per ticket".
+**Calculation.** Define X in words ("Let X = the number of major floods in the next 10 years"). Name the rule ("Since tickets are independent", "Using Bayes' Rule"). Write the formula in symbols, substitute, then give the number with its unit, rounded by the cover rule: "0.8438 or 84.38 %", "an expected loss of \$0.40 per ticket".
 
 **Interpretation.** Verdict first, then two or more numbers from the figure or table, then the feature by name: "bimodal", "left-skewed", "the IQR is the width of the box", "route B is more consistent: its standard deviation is 4.2 minutes against route A's 9.6". A paragraph without numbers earns part marks at best.
 
@@ -72,7 +76,9 @@ Ten marks are R written by hand (Q7 to Q9), about thirteen are written interpret
 In `dhyper` R's `n` is the failures N − K; the course's sample size n goes in R's `k`.
 :::
 
-**R function.** `name <- function(n) { ... return(...) }`. The body must simulate with an r-function or `sample()`. A function whose body only returns the long-run proportion, such as `return(0.045)` for a 4.5 % chance, computes the average instead of simulating and scores zero (practice Q9).
+**R function.** `name <- function(n) { ... return(...) }`. The body must simulate with an r-function or `sample()`.
+
+A function whose body only returns the long-run proportion, such as `return(0.045)` for a 4.5 % chance, computes the average instead of simulating and scores zero (practice Q9).
 
 :::info R syntax
 | Code | What it does |
@@ -237,7 +243,7 @@ Take Mock A cold after the unit lessons and before the practice paper, so the pr
     "answer": 10,
     "tolerance": 0,
     "unit": "marks",
-    "explain": "Q7 (4) + Q8 (3) + Q9 (3) = 10 marks: `quantile`, `filter` and `bwplot`; `rhyper`, `dhyper` and `phyper`; a simulation function and a line that uses it."
+    "explain": "Q7, Q8 and Q9 carry 4, 3 and 3 marks: $$4 + 3 + 3 = \\mathbf{10} \\text{ marks}$$ They are `quantile`, `filter` and `bwplot`; `rhyper`, `dhyper` and `phyper`; a simulation function and a line that uses it."
   }
 ]
 ```

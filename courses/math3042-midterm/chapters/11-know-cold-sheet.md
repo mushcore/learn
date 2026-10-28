@@ -3,7 +3,9 @@ title: The formula sheet gives you this; you must know this cold
 minutes: 15
 ---
 
-Left: printed on the provided formula sheet. Right: printed nowhere. Round a probability to 4 decimals, anything else to 3 significant digits.
+Left: printed on the provided formula sheet. Right: printed nowhere.
+
+Round a probability to 4 decimals, anything else to 3 significant digits.
 
 | Unit 1: describing data: the formula sheet gives you | You must know cold |
 |---|---|
@@ -45,7 +47,9 @@ The R sheet has only bare binomial and Poisson names. Geometric: R counts failur
 | each of two periods | `p(k)^2` |
 | a doubled interval | `ppois(k, 2*lambda)` |
 
-Simulate: `sample(0:1, n, replace = TRUE, prob = c(0.955, 0.045))`; `f <- function(n) { X <- rbinom(1, n, p); return(X/n) }`. Data: `quantile(df$col, 0.20)`; `library(dplyr)`, `filter(df, col < 250)`; `library(mosaic)`, `bwplot(y ~ g, data = df, main = "", xlab = "", ylab = "")` or `boxplot(y ~ g, data = df)`.
+Simulate: `sample(0:1, n, replace = TRUE, prob = c(0.955, 0.045))`; `f <- function(n) { X <- rbinom(1, n, p); return(X/n) }`.
+
+Data: `quantile(df$col, 0.20)`; `library(dplyr)`, `filter(df, col < 250)`; `library(mosaic)`, `bwplot(y ~ g, data = df, main = "", xlab = "", ylab = "")` or `boxplot(y ~ g, data = df)`.
 
 :::quiz Twenty recall prompts
 Cover the Answer column, answer each prompt, then uncover.
@@ -81,21 +85,21 @@ Cover the Answer column, answer each prompt, then uncover.
     "type": "fill",
     "code": "dgeom(___, 0.3)",
     "answer": ["6"],
-    "explain": "R counts failures before the first success: 7 calls is 6 failures, so `dgeom(6, 0.3)` = 0.7⁶ × 0.3 = 0.0353."
+    "explain": "R counts failures before the first success: 7 calls is 6 failures, so `dgeom(6, 0.3)` gives $$0.7^6 \\times 0.3 = \\mathbf{0.0353}$$"
   },
   {
     "q": "P(at least 4 of 15 laptops fail), each fails with probability 0.1 independently. Fill the slot.",
     "type": "fill",
     "code": "1 - pbinom(___, 15, 0.1)",
     "answer": ["3"],
-    "explain": "At least 4 = 1 − P(X ≤ 3), so the cumulative stops at 3."
+    "explain": "At least 4 is the complement $$1 - P(X \\le 3)$$ so the cumulative stops at 3."
   },
   {
     "q": "A box of 25 USB keys holds 4 faulty ones; 6 are taken. P(exactly 2 faulty). Fill the population-failures slot as R expects it.",
     "type": "fill",
     "code": "dhyper(2, 4, ___, 6)",
     "answer": ["25-4", "25 - 4", "21"],
-    "explain": "`dhyper(x, K, N-K, n)`: x = 2, successes in the population K = 4, failures in the population N − K = 25 − 4 = 21, sample size n = 6."
+    "explain": "`dhyper(x, K, N-K, n)`: x = 2, successes in the population K = 4, failures in the population $$N - K = 25 - 4 = 21$$ sample size n = 6."
   },
   {
     "q": "Same box: P(more than 1 faulty) without the `1 -`. Fill the slot.",
@@ -109,14 +113,14 @@ Cover the Answer column, answer each prompt, then uncover.
     "type": "numeric",
     "answer": 3,
     "tolerance": 0.05,
-    "explain": "λ = rate × interval = 2 per hour × 1.5 hours = 3."
+    "explain": "Rate times interval: $$\\lambda = 2 \\text{ per hour} \\times 1.5 \\text{ hours} = \\mathbf{3}$$"
   },
   {
     "q": "Five independent tries, each succeeds with probability 0.1. P(at least one success), 4 decimals.",
     "type": "numeric",
     "answer": 0.40951,
     "tolerance": 0.0001,
-    "explain": "Let X = the number of successes. P(at least one) = 1 − P(none) = 1 − 0.9⁵ = 1 − 0.59049 = 0.4095."
+    "explain": "Let X = the number of successes. $$P(\\text{at least one}) = 1 - P(\\text{none}) = 1 - 0.9^5 = 1 - 0.59049 = \\mathbf{0.4095}$$"
   },
   {
     "q": "Ten cards are dealt from a 52-card deck and the hearts are counted. Name the distribution.",

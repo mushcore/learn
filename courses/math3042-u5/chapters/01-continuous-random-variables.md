@@ -50,7 +50,7 @@ This is the opposite of Unit 4. For a binomial $X$, $P(X \le 4)$ includes the ba
 
 ## Classic's multiplier B at one exact value
 
-In MapleStory Classic, meowdb's reconstructed damage formula draws a base multiplier B as `uniform(0.8, 1.0)` on every hit [Classic, meowdb's Classic World formulas page, no version shown, checked 2026-10-27]. B is drawn from an interval, not from a list, so it is continuous like the weight: any single value of B is an interval of width zero.
+In MapleStory Classic, meowdb's reconstructed damage formula draws a base multiplier B as `uniform(0.8, 1.0)` on every hit. B is drawn from an interval, not from a list, so it is continuous like the weight: any single value of B is an interval of width zero.
 
 ```quiz
 [
@@ -78,7 +78,7 @@ Slide wording: "In this course, we will consider the following continuous probab
 
 ## Endpoints for B and for a PoE1 Fireball hit
 
-B is uniform on [0.8, 1.0] with P(B ≤ 0.95) = 0.75. A PoE1 level 20 Fireball's hit damage D is a whole number rolled uniformly from 1095 to 1643 [PoE1, 3.29 Allflame, poewiki Luck page, checked 2026-10-27].
+B is uniform on [0.8, 1.0] with P(B ≤ 0.95) = 0.75. A PoE1 level 20 Fireball's hit damage D is a whole number rolled uniformly from 1095 to 1643.
 
 ```quiz
 [

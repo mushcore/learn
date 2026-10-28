@@ -20,7 +20,9 @@ Two names from the notes:
 
 ## Why it matters in CST
 
-Statistics and probability show up throughout *data science* (including *machine learning*), plus business, politics, and medicine. Sometimes it is the core feature of software you build: the notes give the example of the **Whoop app**, which evaluates your physical recovery from sleep data and heart-rate measurements.
+Statistics and probability show up throughout *data science* (including *machine learning*), plus business, politics, and medicine.
+
+Sometimes it is the core feature of software you build: the notes give the example of the **Whoop app**, which evaluates your physical recovery from sleep data and heart-rate measurements.
 
 ## The survey example
 
@@ -79,7 +81,9 @@ That returns every recorded pulse value as a vector.
 - **Population** — the entire group you actually care about.
 - **Sample** — a subset of the population that you actually managed to measure.
 
-Quite often you cannot measure $X$ for the whole population, so you measure a sample instead. That single fact is why the course draws a hard line between two kinds of numbers:
+Quite often you cannot measure $X$ for the whole population, so you measure a sample instead.
+
+That single fact is why the course draws a hard line between two kinds of numbers:
 
 - **Parameters** summarize $X$ for the **whole population**.
 - **Statistics** summarize $X$ for a **sample**.
@@ -90,7 +94,9 @@ Quite often you cannot measure $X$ for the whole population, so you measure a sa
 
 ## Symbol table
 
-The same concept gets two symbols depending on whether it describes a sample or the population. This table comes back constantly for the rest of the course.
+The same concept gets two symbols depending on whether it describes a sample or the population.
+
+This table comes back constantly for the rest of the course.
 
 | Concept | Sample (statistic) | Population (parameter) |
 |---|---|---|

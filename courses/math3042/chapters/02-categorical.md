@@ -3,7 +3,9 @@ title: "Categorical data: proportion & mode"
 minutes: 12
 ---
 
-For a **categorical** (non-numerical) variable $X$, you cannot average the values — "average eye colour" is meaningless. What you *can* do is **count** how many individuals fall into each category, then turn those counts into a **proportion**.
+For a **categorical** (non-numerical) variable $X$, you cannot average the values — "average eye colour" is meaningless.
+
+What you *can* do is **count** how many individuals fall into each category, then turn those counts into a **proportion**.
 
 ## Proportion
 
@@ -11,7 +13,9 @@ $$
 \hat{p} = \frac{x}{n}
 $$
 
-where $x$ is the number of individuals in that category and $n$ is the sample size. That is the **sample** proportion. The **population** proportion uses capital letters:
+where $x$ is the number of individuals in that category and $n$ is the sample size. That is the **sample** proportion.
+
+The **population** proportion uses capital letters:
 
 $$
 p = \frac{X}{N}
@@ -36,7 +40,9 @@ A sample of BCIT students gives these counts for $X$ = Eye Colour:
 | Green | 10 |
 | Other | 15 |
 
-Sample size: $n = 95 + 130 + 52 + 10 + 15 = 302$.
+Sample size:
+
+$$n = 95 + 130 + 52 + 10 + 15 = \mathbf{302}$$
 
 Sample proportion of Brown-eyed students:
 
@@ -51,7 +57,9 @@ proportion
 
 ## The mode
 
-For a **non-numerical** variable, the **mode** is just its most frequent value. No formula needed — count the categories and pick the biggest.
+For a **non-numerical** variable, the **mode** is just its most frequent value.
+
+No formula needed — count the categories and pick the biggest.
 
 In the eye-colour example, Brown has the highest frequency (130 out of 302), so **the modal value is Brown**.
 
@@ -96,7 +104,9 @@ Eye.Color.Freq[["Brown"]] / n.sample     # 0.4305...
 - `Eye.Color.Freq[["Brown"]] / n.sample`: "Take the counts (`Eye.Color.Freq`), pull out the bare Brown count (`[["Brown"]]`), fetch the sample size (`n.sample`), and divide the first by the second (`/`)."
 :::
 
-Frequencies straight from raw data use `table()`. From Lab 1, the `TenMileRace` data set's `sex` column:
+Frequencies straight from raw data use `table()`.
+
+From Lab 1, the `TenMileRace` data set's `sex` column:
 
 ```r
 table(TenMileRace$sex)
@@ -145,12 +155,12 @@ A sample of BCIT students reported how they get to campus: Bus 74, Car 41, SkyTr
 
 ```quiz
 [
-  {"q": "What is the sample size $n$?", "type": "numeric", "answer": 240, "tolerance": 0, "explain": "Add the frequencies: $74 + 41 + 88 + 12 + 25 = 240$."},
-  {"q": "Compute the sample proportion of SkyTrain riders. (4 decimals)", "type": "numeric", "answer": 0.3667, "tolerance": 6e-05, "explain": "$\\hat{p}(\\text{SkyTrain}) = x/n = 88/240 = 0.366667 \\approx 0.3667$, or 36.67%."},
+  {"q": "What is the sample size $n$?", "type": "numeric", "answer": 240, "tolerance": 0, "explain": "Add the frequencies: $$n = 74 + 41 + 88 + 12 + 25 = 240$$"},
+  {"q": "Compute the sample proportion of SkyTrain riders. (4 decimals)", "type": "numeric", "answer": 0.3667, "tolerance": 6e-05, "explain": "Divide the SkyTrain count by $n$: $$\\hat{p}(\\text{SkyTrain}) = \\dfrac{x}{n} = \\dfrac{88}{240} = 0.366667 \\approx 0.3667$$ That is 36.67%."},
   {"q": "Which symbol labels the number you just computed?", "type": "text", "answer": ["p̂", "p hat", "p-hat", "phat", "\\hat{p}", "p^"], "explain": "It describes a sample, so it is the statistic $\\hat{p} = x/n$ (read p-hat). The population proportion would be $p = X/N$."},
-  {"q": "What proportion of the sample takes the Bus or walks? (4 decimals)", "type": "numeric", "answer": 0.4125, "tolerance": 6e-05, "explain": "Both categories share the same $n$, so add the counts first: $(74 + 25)/240 = 99/240 = 0.4125$."},
+  {"q": "What proportion of the sample takes the Bus or walks? (4 decimals)", "type": "numeric", "answer": 0.4125, "tolerance": 6e-05, "explain": "Both categories share the same $n$, so add the counts first: $$\\dfrac{74 + 25}{240} = \\dfrac{99}{240} = 0.4125$$"},
   {"q": "What is the modal way of getting to campus?", "type": "text", "answer": ["SkyTrain", "Sky Train", "skytrain"], "explain": "SkyTrain has the largest frequency, 88. The mode is the category name, not the count 88."},
-  {"type": "fill", "q": "Fill the blank so the line prints the proportion of cyclists.", "code": "Commute.Freq <- c(Bus = 74, Car = 41, SkyTrain = 88, Bike = 12, Walk = 25)\nCommute.Freq[[\"Bike\"]] / ___(Commute.Freq)\n## [1] 0.05", "answer": ["sum"], "explain": "`sum(Commute.Freq)` is $n = 240$, and `Commute.Freq[[\"Bike\"]]` is the bare count 12, so the line prints $12/240 = 0.05$."}
+  {"type": "fill", "q": "Fill the blank so the line prints the proportion of cyclists.", "code": "Commute.Freq <- c(Bus = 74, Car = 41, SkyTrain = 88, Bike = 12, Walk = 25)\nCommute.Freq[[\"Bike\"]] / ___(Commute.Freq)\n## [1] 0.05", "answer": ["sum"], "explain": "`sum(Commute.Freq)` is $n = 240$, and `Commute.Freq[[\"Bike\"]]` is the bare count 12, so the line prints $$\\dfrac{12}{240} = 0.05$$"}
 ]
 ```
 
@@ -161,7 +171,7 @@ A sample of BCIT students reported how they get to campus: Bus 74, Car 41, SkyTr
     "type": "numeric",
     "answer": 0.1722,
     "tolerance": 0.001,
-    "explain": "$\\hat{p}(\\text{Blue}) = 52/302 = 0.1722 = 17.22\\%$."
+    "explain": "$$\\hat{p}(\\text{Blue}) = \\dfrac{52}{302} = 0.1722 = 17.22\\%$$"
   },
   {
     "q": "What is $\\hat{p}(\\text{Brown})$ as a percentage?",
@@ -169,14 +179,14 @@ A sample of BCIT students reported how they get to campus: Bus 74, Car 41, SkyTr
     "answer": 43.05,
     "tolerance": 0.1,
     "unit": "%",
-    "explain": "$130/302 = 0.4305 = 43.05\\%$."
+    "explain": "$$\\hat{p}(\\text{Brown}) = \\dfrac{130}{302} = 0.4305 = 43.05\\%$$"
   },
   {
     "q": "What proportion of the sample has either Black or Brown eyes?",
     "type": "numeric",
     "answer": 0.7450,
     "tolerance": 0.001,
-    "explain": "$(95+130)/302 = 225/302 = 0.7450 = 74.50\\%$. You can add category proportions together because they share the same $n$."
+    "explain": "$$\\dfrac{95 + 130}{302} = \\dfrac{225}{302} = 0.7450 = 74.50\\%$$ You can add category proportions together because they share the same $n$."
   },
   {
     "q": "What is the modal eye colour in this sample?",

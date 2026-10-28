@@ -4,15 +4,21 @@ minutes: 20
 ---
 <!-- facts: gms.data.ranking-level-hero-2026-10-27, poe1.data.divine-chaos-allflame -->
 
-Is a level-300 Hero unusual among the top 500, or a Divine Orb price unusual for its month? A **Z-score** answers for a single, specific value: it converts $X$ into "how many standard deviations from the mean," the per-value version of the empirical rule's bands.
+Is a level-300 Hero unusual among the top 500, or a Divine Orb price unusual for its month?
+
+A **Z-score** answers for a single, specific value: it converts $X$ into "how many standard deviations from the mean," the per-value version of the empirical rule's bands.
 
 ## The formula
 
 $$Z = \frac{X - \mu}{\sigma}$$
 
-That's the population version; for a sample use $Z = \dfrac{X - \bar{X}}{s}$ instead — same idea, matched to the data you have.
+That's the population version; for a sample use this instead, the same idea matched to the data you have:
 
-**"Z = how many standard deviations something is from the mean."** $Z$ has no units, so it works the same whether $X$ is in cm, kg, or IQ points.
+$$Z = \frac{X - \bar{X}}{s}$$
+
+**"Z = how many standard deviations something is from the mean."**
+
+$Z$ has no units, so it works the same whether $X$ is in cm, kg, or IQ points.
 
 - $Z > 0$: $X$ is above the mean.
 - $Z < 0$: $X$ is below the mean.
@@ -22,11 +28,19 @@ That's the population version; for a sample use $Z = \dfrac{X - \bar{X}}{s}$ ins
 
 Women's heights: $\mu = 164.7$ cm, $\sigma = 7.1$ cm.
 
-$X = 175$: $Z = \frac{175 - 164.7}{7.1} = \frac{10.3}{7.1} = \mathbf{1.45}$
+$X = 175$:
 
-$X = 178.9$: $Z = \frac{178.9 - 164.7}{7.1} = \frac{14.2}{7.1} = \mathbf{2.0}$
+$$Z = \frac{175 - 164.7}{7.1} = \frac{10.3}{7.1} = \mathbf{1.45}$$
 
-$X = 155$ (below the mean): $Z = \frac{155 - 164.7}{7.1} = \frac{-9.7}{7.1} = \mathbf{-1.37}$; a negative $Z$ means the value sits below the mean.
+$X = 178.9$:
+
+$$Z = \frac{178.9 - 164.7}{7.1} = \frac{14.2}{7.1} = \mathbf{2.0}$$
+
+$X = 155$ (below the mean):
+
+$$Z = \frac{155 - 164.7}{7.1} = \frac{-9.7}{7.1} = \mathbf{-1.37}$$
+
+A negative $Z$ means the value sits below the mean.
 
 ```diagram
 { "type": "grid", "title": "Women's heights: μ = 164.7 cm, σ = 7.1 cm", "nodes": [
@@ -35,7 +49,9 @@ $X = 155$ (below the mean): $Z = \frac{155 - 164.7}{7.1} = \frac{-9.7}{7.1} = \m
 ], "hi": ["x6", "z6"], "caption": "Each 7.1 cm step is one unit of Z: 178.9 cm is two steps above 164.7, so Z = 2." }
 ```
 
-$Z = 2.0$ lands exactly on an empirical-rule boundary, so the eight slices of lesson 7 give the percentage of women **below** 178.9 cm: $0.15 + 2.35 + 13.5 + 34 + 34 + 13.5 = \mathbf{97.5\%}$.
+$Z = 2.0$ lands exactly on an empirical-rule boundary, so the eight slices of lesson 7 give the percentage of women **below** 178.9 cm:
+
+$$0.15 + 2.35 + 13.5 + 34 + 34 + 13.5 = \mathbf{97.5\%}$$
 
 ```widget
 normal-curve
@@ -44,7 +60,9 @@ normal-curve
 
 ### Standardizing 178.9 cm into Z = 2.0
 
-Subtracting $\mu = 164.7$ slides the whole curve left until its centre sits at 0; dividing by $\sigma = 7.1$ then squeezes it into the standard normal, where 178.9 cm lands at $Z = 2.0$. The shaded area never changes, only the axis.
+Subtracting $\mu = 164.7$ slides the whole curve left until its centre sits at 0; dividing by $\sigma = 7.1$ then squeezes it into the standard normal, where 178.9 cm lands at $Z = 2.0$.
+
+The shaded area never changes, only the axis.
 
 ```widget
 standardize-play
@@ -55,11 +73,11 @@ standardize-play
 
 Rearrange the formula to find the raw value that corresponds to a given Z-score:
 
-$X = \mu + Z\sigma$ (population) or $X = \bar{X} + Zs$ (sample)
+$$X = \mu + Z\sigma \quad \text{(population)} \qquad X = \bar{X} + Zs \quad \text{(sample)}$$
 
 On an IQ test ($\mu = 100$, $\sigma = 15$), what score has $Z = 3.2$?
 
-$X = 100 + 3.2 \times 15 = 100 + 48 = \mathbf{148}$
+$$X = 100 + 3.2 \times 15 = 100 + 48 = \mathbf{148}$$
 
 ## The empirical rule, restated in Z
 
@@ -73,21 +91,27 @@ Because $Z$ measures distance from the mean in units of $\sigma$, the empirical 
 
 ## Unusual values
 
-**Unusual: $Z < -2$ or $Z > +2$.** Since 95% of values sit inside $-2 < Z < 2$, the remaining 5% (split into two 2.5% tails) is "unusual" — not impossible, just rare.
+**Unusual: $Z < -2$ or $Z > +2$.**
+
+Since 95% of values sit inside $-2 < Z < 2$, the remaining 5% (split into two 2.5% tails) is "unusual" — not impossible, just rare.
 
 :::quiz Outlier ≠ Unusual
-**"Outlier ≠ Unusual."** Unusual uses the Z-score. It is not the same as an *outlier*, which uses quartiles (lesson 11); the two rules usually, but not always, agree.
+**"Outlier ≠ Unusual."**
+
+Unusual uses the Z-score. It is not the same as an *outlier*, which uses quartiles (lesson 11); the two rules usually, but not always, agree.
 :::
 
 ### Worked example: LeBron James
 
 Men's heights: $\mu = 178.4$ cm, $\sigma = 7.6$ cm. LeBron James is 203 cm tall.
 
-$Z = \frac{203 - 178.4}{7.6} = \frac{24.6}{7.6} = \mathbf{3.24}$
+$$Z = \frac{203 - 178.4}{7.6} = \frac{24.6}{7.6} = \mathbf{3.24}$$
 
 $3.24 > 2$, so LeBron's height **is unusual**: a rare value, not a mistake.
 
-The cutoffs for "unusual" male heights are $\mu \pm 2\sigma$: below $178.4 - 15.2 = \mathbf{163.2}$ cm or above $178.4 + 15.2 = \mathbf{193.6}$ cm.
+The cutoffs for "unusual" male heights are $\mu \pm 2\sigma$, below or above:
+
+$$178.4 - 15.2 = \mathbf{163.2} \text{ cm} \qquad 178.4 + 15.2 = \mathbf{193.6} \text{ cm}$$
 
 ```widget
 normal-curve
@@ -96,21 +120,41 @@ normal-curve
 
 ## A level-300 Hero against the top 500
 
-Nexon's North America ranking lists the top 500 Heroes, a MapleStory warrior job, at levels 293 to 300 [GMS, v.271 Hero ranking, checked 2026-10-27]: 85 at 293, 102 at 294, 200 at 295, 59 at 296, 24 at 297, 13 at 298, 11 at 299 and 6 at 300. The 500 are a sample cut from 227 326 ranked Heroes, so use $\bar{X}$ and $s$: from the counts, $\bar{X} = 294.896$ and $s = 1.43991$. Computing Z needs no bell shape: it only measures distance from this list's mean in units of this list's $s$. Turning Z into a percentage, such as "the top 2.5%", is what needs the bell.
+Nexon's North America ranking lists the top 500 Heroes, a MapleStory warrior job, at levels 293 to 300: 85 at 293, 102 at 294, 200 at 295, 59 at 296, 24 at 297, 13 at 298, 11 at 299 and 6 at 300.
+
+The 500 are a sample cut from 227 326 ranked Heroes, so use $\bar{X}$ and $s$: from the counts, $\bar{X} = 294.896$ and $s = 1.43991$.
+
+Computing Z needs no bell shape: it only measures distance from this list's mean in units of this list's $s$. Turning Z into a percentage, such as "the top 2.5%", is what needs the bell.
 
 ```quiz
 [
-  {"q": "Top 500 Heroes: $\\bar{X} = 294.896$, $s = 1.43991$. Z-score of a level-300 Hero? (2 decimals)", "type": "numeric", "answer": 3.54, "tolerance": 0.01, "explain": "$Z = (X - \\bar{X})/s = (300 - 294.896)/1.43991 = 5.104/1.43991 = 3.54$. That is above +2, so a level-300 Hero is unusual even within the top 500."}
+  {"q": "Top 500 Heroes: $\\bar{X} = 294.896$, $s = 1.43991$. Z-score of a level-300 Hero? (2 decimals)", "type": "numeric", "answer": 3.54, "tolerance": 0.01, "explain": "$$Z = \\dfrac{X - \\bar{X}}{s} = \\dfrac{300 - 294.896}{1.43991} = \\dfrac{5.104}{1.43991} = \\mathbf{3.54}$$ That is above +2, so a level-300 Hero is unusual even within the top 500."}
 ]
 ```
 
-$Z = \dfrac{300 - 294.896}{1.43991} = \dfrac{5.104}{1.43991} = \mathbf{3.54}$
+$$Z = \dfrac{300 - 294.896}{1.43991} = \dfrac{5.104}{1.43991} = \mathbf{3.54}$$
 
-$3.54 > 2$, so level 300 is **unusual** even here. The high cutoff is $\bar{X} + 2s = 294.896 + 2.880 = 297.78$, so all 30 Heroes at levels 298 to 300 are unusual. The lowest level, 293, gives $Z = (293 - 294.896)/1.43991 = -1.32$: usual. Nobody on the list is unusually low, because it stops at rank 500. Z still works on this lopsided list; it just reports the lopsidedness.
+$3.54 > 2$, so level 300 is **unusual** even here.
+
+The high cutoff is:
+
+$$\bar{X} + 2s = 294.896 + 2.880 = \mathbf{297.78}$$
+
+So all 30 Heroes at levels 298 to 300 are unusual.
+
+The lowest level, 293, is usual:
+
+$$Z = \dfrac{293 - 294.896}{1.43991} = \mathbf{-1.32}$$
+
+Nobody on the list is unusually low, because it stops at rank 500.
+
+Z still works on this lopsided list; it just reports the lopsidedness.
 
 ## Pencil problem: body temperature
 
-$\mu = 98.20$, $\sigma = 0.62$. The "usual" range is $\mu \pm 2\sigma = 98.20 \pm 1.24$, i.e. **96.96 to 99.44**.
+$\mu = 98.20$, $\sigma = 0.62$. The "usual" range is:
+
+$$\mu \pm 2\sigma = 98.20 \pm 1.24 = \mathbf{96.96} \text{ to } \mathbf{99.44}$$
 
 - $101.00$: well above 99.44 → **unusual**.
 - $96.90$: below 96.96 → **unusual**.
@@ -118,15 +162,19 @@ $\mu = 98.20$, $\sigma = 0.62$. The "usual" range is $\mu \pm 2\sigma = 98.20 \p
 
 ## Z-scores for a month of Allflame Divine prices
 
-The Divine Orb is PoE1's high-value currency, priced in Chaos Orbs. Take poe.ninja's daily Divine price for the last 30 days of the Allflame league, 2026-09-28 to 2026-10-27 [PoE1, 3.29 Allflame Divine price, checked 2026-10-27]: $\bar{X} = 329.22$ chaos and $s = 46.5915$ chaos. The window opens with poe.ninja's 163.8-chaos reading for 28 September, a receive-side-only dip (that day's pay side works out to about 300 chaos), likely a recording artifact. The 27 October price is 270.0, and the window's high is 379.0.
+The Divine Orb is PoE1's high-value currency, priced in Chaos Orbs. Take poe.ninja's daily Divine price for the last 30 days of the Allflame league, 2026-09-28 to 2026-10-27: $\bar{X} = 329.22$ chaos and $s = 46.5915$ chaos.
+
+The window opens with poe.ninja's 163.8-chaos reading for 28 September, a receive-side-only dip (that day's pay side works out to about 300 chaos), likely a recording artifact.
+
+The 27 October price is 270.0, and the window's high is 379.0.
 
 ```quiz
 [
-  {"q": "Allflame Divine, last 30 days: $\\bar{X} = 329.22$, $s = 46.5915$ chaos. Z-score of poe.ninja's 163.8-chaos reading? (2 decimals)", "type": "numeric", "answer": -3.55, "tolerance": 0.01, "explain": "$Z = (X - \\bar{X})/s = (163.8 - 329.22)/46.5915 = -165.42/46.5915 = -3.55$: three and a half standard deviations below the window's mean."},
+  {"q": "Allflame Divine, last 30 days: $\\bar{X} = 329.22$, $s = 46.5915$ chaos. Z-score of poe.ninja's 163.8-chaos reading? (2 decimals)", "type": "numeric", "answer": -3.55, "tolerance": 0.01, "explain": "$$Z = \\dfrac{X - \\bar{X}}{s} = \\dfrac{163.8 - 329.22}{46.5915} = \\dfrac{-165.42}{46.5915} = \\mathbf{-3.55}$$ Three and a half standard deviations below the window's mean."},
   {"q": "Is the 163.8-chaos reading usual or unusual for this window?", "type": "text", "answer": ["unusual", "Unusual", "it is unusual"], "explain": "$Z = -3.55 < -2$, so it is unusual: far below every other day in the window, which runs 265.0 to 379.0. A Z-score this far out is how you catch a likely recording error before trusting it."},
-  {"q": "Z-score of the 27 October price, 270.0 chaos? (2 decimals)", "type": "numeric", "answer": -1.27, "tolerance": 0.01, "explain": "$Z = (270.0 - 329.22)/46.5915 = -59.22/46.5915 = -1.27$: below the mean but inside $-2 < Z < 2$, so usual."},
-  {"q": "Above what price is a day unusually high for this window? (chaos, 1 decimal)", "type": "numeric", "answer": 422.4, "tolerance": 0.05, "unit": "chaos", "explain": "Unusual means $Z > 2$: $X = \\bar{X} + 2s = 329.22 + 2(46.5915) = 329.22 + 93.183 = 422.4$ chaos. The window's high of 379.0 is below it, so no day is unusually high. The low cutoff is $329.22 - 93.183 = 236.0$ chaos."},
-  {"q": "Which price has $Z = -1.5$ in this window? (chaos, 1 decimal)", "type": "numeric", "answer": 259.3, "tolerance": 0.05, "unit": "chaos", "explain": "$X = \\bar{X} + Zs = 329.22 + (-1.5)(46.5915) = 329.22 - 69.887 = 259.3$ chaos."}
+  {"q": "Z-score of the 27 October price, 270.0 chaos? (2 decimals)", "type": "numeric", "answer": -1.27, "tolerance": 0.01, "explain": "$$Z = \\dfrac{270.0 - 329.22}{46.5915} = \\dfrac{-59.22}{46.5915} = \\mathbf{-1.27}$$ Below the mean but inside $-2 < Z < 2$, so usual."},
+  {"q": "Above what price is a day unusually high for this window? (chaos, 1 decimal)", "type": "numeric", "answer": 422.4, "tolerance": 0.05, "unit": "chaos", "explain": "Unusual means $Z > 2$: $$X = \\bar{X} + 2s = 329.22 + 2(46.5915) = 329.22 + 93.183 = \\mathbf{422.4} \\text{ chaos}$$ The window's high of 379.0 is below it, so no day is unusually high. The low cutoff is: $$329.22 - 93.183 = 236.0 \\text{ chaos}$$"},
+  {"q": "Which price has $Z = -1.5$ in this window? (chaos, 1 decimal)", "type": "numeric", "answer": 259.3, "tolerance": 0.05, "unit": "chaos", "explain": "$$X = \\bar{X} + Zs = 329.22 + (-1.5)(46.5915) = 329.22 - 69.887 = \\mathbf{259.3} \\text{ chaos}$$"}
 ]
 ```
 
@@ -137,7 +185,7 @@ The Divine Orb is PoE1's high-value currency, priced in Chaos Orbs. Take poe.nin
     "type": "numeric",
     "answer": 2.15,
     "tolerance": 0.02,
-    "explain": "$Z = (180 - 164.7)/7.1 = 15.3/7.1 = 2.15$: 2.15 standard deviations above the mean."
+    "explain": "$$Z = \\dfrac{180 - 164.7}{7.1} = \\dfrac{15.3}{7.1} = \\mathbf{2.15}$$ 2.15 standard deviations above the mean."
   },
   {
     "q": "Same population. What percentage of women are shorter than 150.5 cm?",
@@ -145,14 +193,14 @@ The Divine Orb is PoE1's high-value currency, priced in Chaos Orbs. Take poe.nin
     "answer": 2.5,
     "tolerance": 0.5,
     "unit": "%",
-    "explain": "$Z = (150.5 - 164.7)/7.1 = -14.2/7.1 = -2.0$ exactly. Below $-2\\sigma$ are the two lowest slices of lesson 7: $0.15 + 2.35 = 2.5\\%$. Above 178.9 cm ($Z = +2$) is the matching 2.5%."
+    "explain": "$$Z = \\dfrac{150.5 - 164.7}{7.1} = \\dfrac{-14.2}{7.1} = -2.0$$ Below $-2\\sigma$ are the two lowest slices of lesson 7: $$0.15 + 2.35 = \\mathbf{2.5\\%}$$ Above 178.9 cm ($Z = +2$) is the matching 2.5%."
   },
   {
     "q": "IQ is $\\mu = 100$, $\\sigma = 15$. What IQ score corresponds to $Z = 3.2$?",
     "type": "numeric",
     "answer": 148,
     "tolerance": 1,
-    "explain": "$X = \\mu + Z\\sigma = 100 + 3.2(15) = 148$."
+    "explain": "$$X = \\mu + Z\\sigma = 100 + 3.2(15) = \\mathbf{148}$$"
   },
   {
     "q": "A Z-score is considered unusual when it is less than $-2$ or greater than $+2$.",
@@ -177,20 +225,20 @@ The Divine Orb is PoE1's high-value currency, priced in Chaos Orbs. Take poe.nin
     "type": "numeric",
     "answer": 3.24,
     "tolerance": 0.02,
-    "explain": "$Z = (203 - 178.4)/7.6 = 24.6/7.6 = 3.24$."
+    "explain": "$$Z = \\dfrac{203 - 178.4}{7.6} = \\dfrac{24.6}{7.6} = \\mathbf{3.24}$$"
   },
   {
     "q": "Body temperatures: $\\mu = 98.20$, $\\sigma = 0.62$. Is $96.98°$ usual or unusual?",
     "options": ["Usual", "Unusual", "Cannot tell without more data", "It is an outlier but not unusual"],
     "answer": 0,
-    "explain": "Usual range is $\\mu \\pm 2\\sigma = 96.96$ to $99.44$. $96.98$ falls just inside it, so it is usual."
+    "explain": "Usual range: $$\\mu \\pm 2\\sigma = 98.20 \\pm 1.24 = 96.96 \\text{ to } 99.44$$ $96.98$ falls just inside it, so it is usual."
   },
   {
     "q": "Body temperatures: $\\mu = 98.20$, $\\sigma = 0.62$. What is the lower cutoff for a 'usual' temperature? (2 decimals)",
     "type": "numeric",
     "answer": 96.96,
     "tolerance": 0.01,
-    "explain": "$\\mu - 2\\sigma = 98.20 - 1.24 = 96.96$."
+    "explain": "$$\\mu - 2\\sigma = 98.20 - 1.24 = \\mathbf{96.96}$$"
   },
   {
     "q": "The Z-score formula for a sample uses $\\bar{X}$ and $s$; the population version uses $\\mu$ and $\\sigma$.",
@@ -198,6 +246,6 @@ The Divine Orb is PoE1's high-value currency, priced in Chaos Orbs. Take poe.nin
     "answer": true,
     "explain": "$Z = (X - \\bar{X})/s$ for a sample, $Z = (X - \\mu)/\\sigma$ for a population — same idea, matched to the data you have."
   },
-  {"type": "shade", "q": "Women's heights are normal with $\\mu=164.7$ cm, $\\sigma=7.1$ cm. Shade the region below $X = 178.9$ cm ($Z = 2$).", "mu": 164.7, "sigma": 7.1, "answer": 97.5, "tolerance": 1, "region": "below", "hi": 2, "explain": "$Z=2$, so shade to $+2\\sigma$: the slices $0.15 + 2.35 + 13.5 + 34 + 34 + 13.5 = 97.5\\%$."}
+  {"type": "shade", "q": "Women's heights are normal with $\\mu=164.7$ cm, $\\sigma=7.1$ cm. Shade the region below $X = 178.9$ cm ($Z = 2$).", "mu": 164.7, "sigma": 7.1, "answer": 97.5, "tolerance": 1, "region": "below", "hi": 2, "explain": "$Z=2$, so shade to $+2\\sigma$, the slices: $$0.15 + 2.35 + 13.5 + 34 + 34 + 13.5 = \\mathbf{97.5\\%}$$"}
 ]
 ```

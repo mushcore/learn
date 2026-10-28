@@ -60,20 +60,20 @@ freq-hist
     "answer": 9.93,
     "tolerance": 0.05,
     "unit": "min",
-    "explain": "Use the class midpoints x = 2, 6, 10, 14, 18, 22 and the grouped-mean formula X̄ = Σ[f·x]/Σf.\n\nΣ f·x = 9(2) + 17(6) + 14(10) + 10(14) + 6(18) + 4(22) = 18 + 102 + 140 + 140 + 108 + 88 = 596; Σf = 60.\n\nX̄ = 596/60 = **9.93 minutes**. Averaging the six midpoints without the frequencies gives 12.0."
+    "explain": "Use the class midpoints x = 2, 6, 10, 14, 18, 22 and the grouped-mean formula: $$\\bar{X} = \\dfrac{\\sum f x}{\\sum f}$$\n\n$$\\sum f x = 9(2) + 17(6) + 14(10) + 10(14) + 6(18) + 4(22) = 18 + 102 + 140 + 140 + 108 + 88 = 596$$ and Σf = 60.\n\n$$\\bar{X} = \\dfrac{596}{60} = \\mathbf{9.93} \\text{ minutes}$$ Averaging the six midpoints without the frequencies gives 12.0."
   },
   {
     "q": "**Q1b (1 mark).** Which class contains the median? Type it as lower–upper, for example 0-4.",
     "type": "text",
     "answer": ["8-12", "8–12", "8 - 12", "8 to 12", "8-12 min"],
-    "explain": "Put the 60 sessions in order from shortest to longest. 60 is even, so there are two middle values, at positions 60/2 = 30 and 31. Keep a running total of the frequencies to see which positions each class fills: 0–4 fills 1 to 9, 4–8 fills 10 to 26 (9 + 17), and 8–12 fills 27 to 40 (26 + 14). Positions 30 and 31 both fall in 27 to 40, so the median is in the **8–12 minute** class."
+    "explain": "Put the 60 sessions in order from shortest to longest. 60 is even, so there are two middle values: $$\\dfrac{60}{2} = 30 \\text{ and } 31$$ Keep a running total of the frequencies to see which positions each class fills: 0–4 fills 1 to 9, 4–8 fills 10 to 26, and 8–12 fills 27 to 40: $$9 + 17 = 26 \\qquad 26 + 14 = 40$$ Positions 30 and 31 both fall in 27 to 40, so the median is in the **8–12 minute** class."
   },
   {
     "q": "**Q1c (1 mark).** From the raw data, R reports X̄ = 9.87, Q2 = 8.90 and s = 5.62. Compute Pearson's coefficient of skewness. (3 significant digits)",
     "type": "numeric",
     "answer": 0.518,
     "tolerance": 0.005,
-    "explain": "Sk = 3(X̄ − Q2)/s = 3(9.87 − 8.90)/5.62 = 3(0.97)/5.62 = 2.91/5.62 = **0.518**. Leaving out the 3 gives 0.173. Use the stem's raw-data mean 9.87, not the grouped estimate 9.93: midpoints only approximate each session (with 9.93 you would get 0.550)."
+    "explain": "$$Sk = \\dfrac{3(\\bar{X} - Q_2)}{s} = \\dfrac{3(9.87 - 8.90)}{5.62} = \\dfrac{3(0.97)}{5.62} = \\dfrac{2.91}{5.62} = \\mathbf{0.518}$$ Leaving out the 3 gives 0.173. Use the stem's raw-data mean 9.87, not the grouped estimate 9.93: midpoints only approximate each session (with 9.93 you would get 0.550)."
   },
   {
     "q": "**Q1d (1 mark).** What shape does Sk = 0.518, together with the table, indicate? Type the direction of the skew (left or right).",
@@ -96,7 +96,7 @@ Over 40 trips each, an Expo Line ride from Waterfront to King George took a mean
     "answer": 6.15,
     "tolerance": 0.05,
     "unit": "%",
-    "explain": "CV = s/X̄ × 100 % = 2.4/39.0 × 100 % = **6.15 %**. Dividing the other way, 39.0/2.4, gives 16.25, which is not a CV."
+    "explain": "$$CV = \\dfrac{s}{\\bar{X}} \\times 100\\% = \\dfrac{2.4}{39.0} \\times 100\\% = \\mathbf{6.15\\%}$$ Dividing the other way gives 16.25, which is not a CV."
   },
   {
     "q": "**Q2a (2 of 2 marks).** The coefficient of variation of the 99 B-Line trip times? (percent, 3 significant digits)",
@@ -104,14 +104,14 @@ Over 40 trips each, an Expo Line ride from Waterfront to King George took a mean
     "answer": 13.0,
     "tolerance": 0.05,
     "unit": "%",
-    "explain": "CV = s/X̄ × 100 % = 4.1/31.5 × 100 % = **13.0 %**. The bus trip times are about twice as variable relative to their mean as the train's (13.0 % against 6.15 %), so the **bus** trip is the more variable one."
+    "explain": "$$CV = \\dfrac{s}{\\bar{X}} \\times 100\\% = \\dfrac{4.1}{31.5} \\times 100\\% = \\mathbf{13.0\\%}$$ The bus trip times are about twice as variable relative to their mean as the train's (13.0 % against 6.15 %), so the **bus** trip is the more variable one."
   },
   {
     "q": "**Q2b (1 mark).** One Expo Line trip took 45.6 minutes. Compute its Z-score. (2 decimals)",
     "type": "numeric",
     "answer": 2.75,
     "tolerance": 0.05,
-    "explain": "Z = (X − X̄)/s = (45.6 − 39.0)/2.4 = 6.6/2.4 = **2.75**. Use the Expo Line's own mean and s; dividing by the bus's 4.1 gives 1.61."
+    "explain": "$$Z = \\dfrac{X - \\bar{X}}{s} = \\dfrac{45.6 - 39.0}{2.4} = \\dfrac{6.6}{2.4} = \\mathbf{2.75}$$ Use the Expo Line's own mean and s; dividing by the bus's 4.1 gives 1.61."
   },
   {
     "q": "Q2b: the 45.6-minute Expo Line trip is unusual.",
@@ -134,7 +134,7 @@ The CPU temperatures of 400 laptops in a COMP lab, measured under a full load, h
     "answer": 84,
     "tolerance": 0.5,
     "unit": "%",
-    "explain": "57 and 87 are 15 °C from the mean, so k = 15/6 = 2.5 standard deviations. Chebyshev's theorem: at least (1 − 1/k²) × 100 % = (1 − 1/2.5²) × 100 % = (1 − 1/6.25) × 100 % = (1 − 0.16) × 100 % = **84 %**."
+    "explain": "57 and 87 are 15 °C from the mean, so $$k = \\dfrac{15}{6} = 2.5 \\text{ standard deviations}$$ Chebyshev's theorem: at least $$\\left(1 - \\dfrac{1}{k^2}\\right) \\times 100\\% = \\left(1 - \\dfrac{1}{2.5^2}\\right) \\times 100\\% = \\left(1 - \\dfrac{1}{6.25}\\right) \\times 100\\% = (1 - 0.16) \\times 100\\% = \\mathbf{84\\%}$$"
   },
   {
     "q": "**Q3b (1 mark).** So at least how many of the 400 laptops are between 57 °C and 87 °C?",
@@ -142,7 +142,7 @@ The CPU temperatures of 400 laptops in a COMP lab, measured under a full load, h
     "answer": 336,
     "tolerance": 0.5,
     "unit": "laptops",
-    "explain": "0.84 × 400 = **336 laptops** at least. Chebyshev gives a minimum for any distribution; the true count may be higher."
+    "explain": "$$0.84 \\times 400 = \\mathbf{336} \\text{ laptops}$$ at least. Chebyshev gives a minimum for any distribution; the true count may be higher."
   },
   {
     "q": "**Q3c (1 mark).** If the temperatures are bell-shaped, about how many of the 400 laptops are between 60 °C and 84 °C?",
@@ -150,7 +150,7 @@ The CPU temperatures of 400 laptops in a COMP lab, measured under a full load, h
     "answer": 380,
     "tolerance": 0.5,
     "unit": "laptops",
-    "explain": "60 and 84 are 72 ∓ 12, two standard deviations from the mean. Empirical rule: about 95 % of a bell-shaped distribution is within two standard deviations, so 0.95 × 400 = **380 laptops**. Chebyshev at k = 2 only promises 75 % (300 laptops); the extra 20 percentage points come from assuming the bell shape."
+    "explain": "60 and 84 are 72 ∓ 12, two standard deviations from the mean. Empirical rule: about 95 % of a bell-shaped distribution is within two standard deviations, so $$0.95 \\times 400 = \\mathbf{380} \\text{ laptops}$$ Chebyshev at k = 2 only promises 75 % (300 laptops); the extra 20 percentage points come from assuming the bell shape."
   }
 ]
 ```
@@ -185,7 +185,7 @@ The response times (ms) of 11 calls to a COMP 4537 web API, sorted:
     "answer": 10,
     "tolerance": 0.01,
     "unit": "ms",
-    "explain": "IQR = Q3 − Q1 = 57 − 47 = **10 ms**, the width of the box. The range, 91 − 42 = 49, is a different measure."
+    "explain": "$$IQR = Q_3 - Q_1 = 57 - 47 = \\mathbf{10} \\text{ ms}$$ That is the width of the box. The range is a different measure: $$91 - 42 = 49$$"
   },
   {
     "q": "**Q4c (1 mark, part 1).** Upper fence = ? (ms)",
@@ -193,7 +193,7 @@ The response times (ms) of 11 calls to a COMP 4537 web API, sorted:
     "answer": 72,
     "tolerance": 0.01,
     "unit": "ms",
-    "explain": "Upper fence = Q3 + 1.5 × IQR = 57 + 1.5(10) = 57 + 15 = **72 ms**."
+    "explain": "$$\\text{Upper fence} = Q_3 + 1.5 \\times IQR = 57 + 1.5(10) = 57 + 15 = \\mathbf{72} \\text{ ms}$$"
   },
   {
     "q": "**Q4c (1 mark, part 2).** Lower fence = ? (ms)",
@@ -201,7 +201,7 @@ The response times (ms) of 11 calls to a COMP 4537 web API, sorted:
     "answer": 32,
     "tolerance": 0.01,
     "unit": "ms",
-    "explain": "Lower fence = Q1 − 1.5 × IQR = 47 − 15 = **32 ms**."
+    "explain": "$$\\text{Lower fence} = Q_1 - 1.5 \\times IQR = 47 - 15 = \\mathbf{32} \\text{ ms}$$"
   },
   {
     "q": "**Q4d (1 mark).** Which value, if any, is an outlier? Type the value, or none.",
@@ -222,7 +222,7 @@ The response times (ms) of 11 calls to a COMP 4537 web API, sorted:
     "answer": 5040,
     "tolerance": 0.5,
     "unit": "codes",
-    "explain": "Order matters (1234 and 4321 are different codes) and there is no repetition, so this is a permutation: P(10, 4) = 10!/(10 − 4)! = 10 × 9 × 8 × 7 = **5040 codes**. Allowing repeats would give 10⁴ = 10 000."
+    "explain": "Order matters (1234 and 4321 are different codes) and there is no repetition, so this is a permutation: $$P(10, 4) = \\dfrac{10!}{(10 - 4)!} = 10 \\times 9 \\times 8 \\times 7 = \\mathbf{5040} \\text{ codes}$$ Allowing repeats would give 10⁴ = 10 000."
   },
   {
     "q": "**Q5b (1 mark).** A 3-person organizing committee is chosen from 9 CST student representatives. How many committees are possible?",
@@ -230,14 +230,14 @@ The response times (ms) of 11 calls to a COMP 4537 web API, sorted:
     "answer": 84,
     "tolerance": 0.5,
     "unit": "committees",
-    "explain": "A committee has no order, so this is a combination: C(9, 3) = 9!/((9 − 3)! 3!) = (9 × 8 × 7)/(3 × 2 × 1) = 504/6 = **84 committees**. P(9, 3) = 504 counts each committee 3! = 6 times."
+    "explain": "A committee has no order, so this is a combination: $$C(9, 3) = \\dfrac{9!}{(9 - 3)!\\,3!} = \\dfrac{9 \\times 8 \\times 7}{3 \\times 2 \\times 1} = \\dfrac{504}{6} = \\mathbf{84} \\text{ committees}$$ P(9, 3) = 504 counts each committee 3! = 6 times."
   },
   {
     "q": "**Q5c (2 marks).** A 5-card hand is dealt from a standard deck. What is the probability that it contains **exactly 2 hearts**? (4 decimals)",
     "type": "numeric",
     "answer": 0.2743,
     "tolerance": 0.0001,
-    "explain": "Hands with exactly 2 hearts over all hands: choose the 2 hearts from 13 and the other 3 cards from the 39 non-hearts.\n\nP = C(13, 2) · C(39, 3) / C(52, 5) = 78 × 9139 / 2 598 960 = 712 842 / 2 598 960 = **0.2743**.\n\nThis is the hypergeometric three-C formula. The with-replacement binomial C(5,2)(0.25)²(0.75)³ = 0.2637 is a different experiment."
+    "explain": "Hands with exactly 2 hearts over all hands: choose the 2 hearts from 13 and the other 3 cards from the 39 non-hearts.\n\n$$P = \\dfrac{C(13, 2) \\cdot C(39, 3)}{C(52, 5)} = \\dfrac{78 \\times 9139}{2\\,598\\,960} = \\dfrac{712\\,842}{2\\,598\\,960} = \\mathbf{0.2743}$$\n\nThis is the hypergeometric three-C formula. The with-replacement binomial is a different experiment: $$C(5,2)(0.25)^2(0.75)^3 = 0.2637$$"
   }
 ]
 ```
@@ -262,27 +262,27 @@ One student is chosen at random. Let L: Linux is their main OS; T: they are in T
     "type": "numeric",
     "answer": 0.32,
     "tolerance": 0.0001,
-    "explain": "P(L) = 64/200 = **0.3200**, the Linux column total over the grand total."
+    "explain": "$$P(L) = \\dfrac{64}{200} = \\mathbf{0.3200}$$ That is the Linux column total over the grand total."
   },
   {
     "q": "**Q6b (1 mark).** P(L | T), the probability that a Term 3 student uses Linux? (4 decimals)",
     "type": "numeric",
     "answer": 0.44,
     "tolerance": 0.0001,
-    "explain": "Given T, restrict to the Term 3 row: P(L | T) = P(L ∩ T)/P(T) = (22/200)/(50/200) = 22/50 = **0.4400**. Dividing by the Linux total instead, 22/64 = 0.3438, is P(T | L)."
+    "explain": "Given T, restrict to the Term 3 row: $$P(L \\mid T) = \\dfrac{P(L \\cap T)}{P(T)} = \\dfrac{22/200}{50/200} = \\dfrac{22}{50} = \\mathbf{0.4400}$$ Dividing by the Linux total instead, 22/64 = 0.3438, is P(T | L)."
   },
   {
     "q": "**Q6c (1 mark).** Are L and T independent? Justify on paper, then type Yes or No.",
     "type": "text",
     "answer": ["No", "no"],
-    "explain": "**No.** L and T are independent only if P(L | T) = P(L). Here P(L | T) = 0.44 but P(L) = 0.32, so knowing a student is in Term 3 changes the probability they use Linux. Equivalently P(L ∩ T) = 22/200 = 0.11 is not P(L)P(T) = 0.32 × 0.25 = 0.08."
+    "explain": "**No.** L and T are independent only if P(L | T) = P(L). Here P(L | T) = 0.44 but P(L) = 0.32, so knowing a student is in Term 3 changes the probability they use Linux. Equivalently $$P(L \\cap T) = \\dfrac{22}{200} = 0.11$$ is not $$P(L)P(T) = 0.32 \\times 0.25 = 0.08$$"
   },
   {
     "q": "**Q6d (1 mark).** P(L ∪ T), the probability that the student uses Linux or is in Term 3? (4 decimals)",
     "type": "numeric",
     "answer": 0.46,
     "tolerance": 0.0001,
-    "explain": "L and T are not mutually exclusive (22 students are both), so use the general addition rule: P(L ∪ T) = P(L) + P(T) − P(L ∩ T) = 64/200 + 50/200 − 22/200 = 92/200 = **0.4600**. Leaving out the overlap gives 114/200 = 0.57."
+    "explain": "L and T are not mutually exclusive (22 students are both), so use the general addition rule: $$P(L \\cup T) = P(L) + P(T) - P(L \\cap T) = \\dfrac{64}{200} + \\dfrac{50}{200} - \\dfrac{22}{200} = \\dfrac{92}{200} = \\mathbf{0.4600}$$ Leaving out the overlap gives 114/200 = 0.57."
   }
 ]
 ```
@@ -304,35 +304,35 @@ On a congested Wi-Fi link, each packet independently needs to be retransmitted w
     "type": "numeric",
     "answer": 0.2151,
     "tolerance": 0.0001,
-    "explain": "Binomial with n = 12, p = 0.18, q = 0.82: P(x) = C(n, x) p^x q^(n−x).\n\nP(X = 3) = C(12, 3)(0.18)³(0.82)⁹ = 220 × 0.005832 × 0.167620 = **0.2151**.\n\nWithout C(12, 3) you get one particular order of the 3 retransmissions, 0.0010."
+    "explain": "Binomial with n = 12, p = 0.18, q = 0.82: $$P(x) = C(n, x)\\, p^x q^{n-x}$$\n\n$$P(X = 3) = C(12, 3)(0.18)^3(0.82)^9 = 220 \\times 0.005832 \\times 0.167620 = \\mathbf{0.2151}$$\n\nWithout C(12, 3) you get one particular order of the 3 retransmissions, 0.0010."
   },
   {
     "q": "**Q7c (1 mark).** P(X ≥ 2) by the complement rule? (4 decimals)",
     "type": "numeric",
     "answer": 0.6641,
     "tolerance": 0.0001,
-    "explain": "P(X ≥ 2) = 1 − P(X ≤ 1) = 1 − [P(0) + P(1)].\n\nP(0) = 0.82¹² = 0.0924201; P(1) = C(12, 1)(0.18)(0.82)¹¹ = 0.243448.\n\nP(X ≥ 2) = 1 − (0.0924201 + 0.243448) = **0.6641**. Subtracting only P(0) gives 0.9076, which is P(X ≥ 1)."
+    "explain": "$$P(X \\ge 2) = 1 - P(X \\le 1) = 1 - [P(0) + P(1)]$$\n\n$$P(0) = 0.82^{12} = 0.0924201 \\qquad P(1) = C(12, 1)(0.18)(0.82)^{11} = 0.243448$$\n\n$$P(X \\ge 2) = 1 - (0.0924201 + 0.243448) = \\mathbf{0.6641}$$ Subtracting only P(0) gives 0.9076, which is P(X ≥ 1)."
   },
   {
     "q": "**Q7d (1 mark, part 1).** μ = ? (expected number of retransmissions)",
     "type": "numeric",
     "answer": 2.16,
     "tolerance": 0.01,
-    "explain": "μ = np = 12 × 0.18 = **2.16** packets."
+    "explain": "$$\\mu = np = 12 \\times 0.18 = \\mathbf{2.16} \\text{ packets}$$"
   },
   {
     "q": "**Q7d (1 mark, part 2).** σ = ? (2 decimals)",
     "type": "numeric",
     "answer": 1.33,
     "tolerance": 0.05,
-    "explain": "σ = √(npq) = √(12 × 0.18 × 0.82) = √1.7712 = **1.33** packets. Stopping at npq gives the variance, 1.77."
+    "explain": "$$\\sigma = \\sqrt{npq} = \\sqrt{12 \\times 0.18 \\times 0.82} = \\sqrt{1.7712} = \\mathbf{1.33} \\text{ packets}$$ Stopping at npq gives the variance, 1.77."
   },
   {
     "q": "**Q7e (1 mark).** On one burst, 7 of the 12 packets needed retransmission. Compute Z. (2 decimals)",
     "type": "numeric",
     "answer": 3.64,
     "tolerance": 0.05,
-    "explain": "Z = (x − μ)/σ = (7 − 2.16)/1.33086 = 4.84/1.33086 = **3.64**. Dividing by the variance 1.77 instead of σ gives 2.73."
+    "explain": "$$Z = \\dfrac{x - \\mu}{\\sigma} = \\dfrac{7 - 2.16}{1.33086} = \\dfrac{4.84}{1.33086} = \\mathbf{3.64}$$ Dividing by the variance 1.77 instead of σ gives 2.73."
   },
   {
     "q": "Q7e: 7 retransmissions out of 12 is unusual if the link's rate is really 0.18.",
@@ -354,27 +354,27 @@ A box of 40 USB drives from a surplus sale contains 6 faulty drives. A COMP 2721
     "type": "numeric",
     "answer": 0.4229,
     "tolerance": 0.0001,
-    "explain": "Hypergeometric (without replacement from a finite population) with N = 40, K = 6, n = 5: P(x) = C(K, x) C(N − K, n − x)/C(N, n).\n\nP(X = 1) = C(6, 1) C(34, 4)/C(40, 5) = 6 × 46 376 / 658 008 = 278 256 / 658 008 = **0.4229**.\n\nIn R: `dhyper(1, 6, 34, 5)`."
+    "explain": "Hypergeometric (without replacement from a finite population) with N = 40, K = 6, n = 5: $$P(x) = \\dfrac{C(K, x)\\, C(N - K, n - x)}{C(N, n)}$$\n\n$$P(X = 1) = \\dfrac{C(6, 1)\\, C(34, 4)}{C(40, 5)} = \\dfrac{6 \\times 46\\,376}{658\\,008} = \\dfrac{278\\,256}{658\\,008} = \\mathbf{0.4229}$$\n\nIn R: `dhyper(1, 6, 34, 5)`."
   },
   {
     "q": "**Q8b (1 mark).** μ, the expected number of faulty drives among the 5? (3 significant digits)",
     "type": "numeric",
     "answer": 0.75,
     "tolerance": 0.01,
-    "explain": "μ = n·K/N = 5 × 6/40 = **0.750** drives."
+    "explain": "$$\\mu = \\dfrac{nK}{N} = \\dfrac{5 \\times 6}{40} = \\mathbf{0.750} \\text{ drives}$$"
   },
   {
     "q": "**Q8c (1 mark).** True or false: the binomial with p = 6/40 is a good approximation for this box.",
     "type": "tf",
     "answer": false,
-    "explain": "**FALSE.** The 5 % rule allows the binomial only when n ≤ 5 % of N. Here n/N = 5/40 = 12.5 %, so each draw changes the probability noticeably and the hypergeometric is needed. (The binomial gives 0.3915 against the exact 0.4229.)"
+    "explain": "**FALSE.** The 5 % rule allows the binomial only when n ≤ 5 % of N. Here $$\\dfrac{n}{N} = \\dfrac{5}{40} = 12.5\\%$$ so each draw changes the probability noticeably and the hypergeometric is needed. (The binomial gives 0.3915 against the exact 0.4229.)"
   },
   {
     "q": "**Q8d (1 mark).** The department's warehouse holds 2000 drives, 300 of them faulty, and 5 are taken at random. Use the binomial approximation for P(X = 1). (4 decimals)",
     "type": "numeric",
     "answer": 0.3915,
     "tolerance": 0.0001,
-    "explain": "n/N = 5/2000 = 0.25 % ≤ 5 %, so the binomial with p = K/N = 300/2000 = 0.15 applies.\n\nP(X = 1) = C(5, 1)(0.15)(0.85)⁴ = 5 × 0.15 × 0.522006 = **0.3915**.\n\nThe exact hypergeometric, `dhyper(1, 300, 1700, 5)`, is 0.3921: close, as the 5 % rule promises."
+    "explain": "$$\\dfrac{n}{N} = \\dfrac{5}{2000} = 0.25\\% \\le 5\\%$$ so the binomial applies with $$p = \\dfrac{K}{N} = \\dfrac{300}{2000} = 0.15$$\n\n$$P(X = 1) = C(5, 1)(0.15)(0.85)^4 = 5 \\times 0.15 \\times 0.522006 = \\mathbf{0.3915}$$\n\nThe exact hypergeometric, `dhyper(1, 300, 1700, 5)`, is 0.3921: close, as the 5 % rule promises."
   }
 ]
 ```
@@ -390,14 +390,14 @@ Each attempt to book a study room online at the busiest time succeeds with proba
     "type": "numeric",
     "answer": 0.0961,
     "tolerance": 0.0001,
-    "explain": "Geometric: trials up to the first success, P(x) = q^(x−1) p with p = 0.35, q = 0.65.\n\nP(X = 4) = 0.65³ × 0.35 = 0.274625 × 0.35 = **0.0961**: three failures, then the success. The exponent is x − 1 = 3; using 0.65⁴ gives 0.0625, which is P(X = 5)."
+    "explain": "Geometric: trials up to the first success, with p = 0.35, q = 0.65: $$P(x) = q^{x-1} p$$\n\n$$P(X = 4) = 0.65^3 \\times 0.35 = 0.274625 \\times 0.35 = \\mathbf{0.0961}$$ Three failures, then the success. The exponent is x − 1 = 3; using 0.65⁴ gives 0.0625, which is P(X = 5)."
   },
   {
     "q": "**Q9b (1 mark).** P(X ≥ 4), needing at least four attempts? (4 decimals)",
     "type": "numeric",
     "answer": 0.2746,
     "tolerance": 0.0001,
-    "explain": "Complement rule: P(X ≥ 4) = 1 − [P(1) + P(2) + P(3)] = 1 − [0.35 + 0.65(0.35) + 0.65²(0.35)] = 1 − (0.35 + 0.2275 + 0.147875) = 1 − 0.725375 = **0.2746**.\n\nShortcut: X ≥ 4 means the first three attempts all failed, 0.65³ = 0.274625."
+    "explain": "Complement rule: $$P(X \\ge 4) = 1 - [P(1) + P(2) + P(3)] = 1 - [0.35 + 0.65(0.35) + 0.65^2(0.35)]$$ $$= 1 - (0.35 + 0.2275 + 0.147875) = 1 - 0.725375 = \\mathbf{0.2746}$$\n\nShortcut: X ≥ 4 means the first three attempts all failed: $$0.65^3 = 0.274625$$"
   },
   {
     "q": "**Q9c (1 mark).** μ, the expected number of attempts? (3 significant digits)",
@@ -405,7 +405,7 @@ Each attempt to book a study room online at the busiest time succeeds with proba
     "answer": 2.86,
     "tolerance": 0.05,
     "unit": "attempts",
-    "explain": "μ = 1/p = 1/0.35 = **2.86 attempts**. q/p = 1.86 is the mean number of failures before the success, R's convention, not the course's."
+    "explain": "$$\\mu = \\dfrac{1}{p} = \\dfrac{1}{0.35} = \\mathbf{2.86} \\text{ attempts}$$ q/p = 1.86 is the mean number of failures before the success, R's convention, not the course's."
   }
 ]
 ```
@@ -422,28 +422,28 @@ BCIT Lost and Found receives on average 292 lost-laptop reports per year (365 da
     "answer": 0.8,
     "tolerance": 0.001,
     "unit": "per day",
-    "explain": "Let X = the number of lost-laptop reports in one day. X is Poisson with λ = 292/365 = **0.8** reports per day."
+    "explain": "Let X = the number of lost-laptop reports in one day. X is Poisson with $$\\lambda = \\dfrac{292}{365} = \\mathbf{0.8} \\text{ reports per day}$$"
   },
   {
     "q": "**Q10b (1 mark).** P(X = 0), no reports on a given day? (4 decimals)",
     "type": "numeric",
     "answer": 0.4493,
     "tolerance": 0.0001,
-    "explain": "P(X = x) = e^(−λ) λ^x / x!, so P(0) = e^(−0.8)(0.8)⁰/0! = e^(−0.8) = **0.4493**."
+    "explain": "The Poisson formula: $$P(X = x) = \\dfrac{e^{-\\lambda} \\lambda^x}{x!}$$ So $$P(0) = \\dfrac{e^{-0.8}(0.8)^0}{0!} = e^{-0.8} = \\mathbf{0.4493}$$"
   },
   {
     "q": "**Q10c (1 mark).** P(X ≥ 2), at least two reports on a given day? (4 decimals)",
     "type": "numeric",
     "answer": 0.1912,
     "tolerance": 0.0001,
-    "explain": "P(X ≥ 2) = 1 − [P(0) + P(1)] = 1 − [e^(−0.8) + 0.8e^(−0.8)] = 1 − 1.8(0.449329) = 1 − 0.808792 = **0.1912**."
+    "explain": "$$P(X \\ge 2) = 1 - [P(0) + P(1)] = 1 - [e^{-0.8} + 0.8e^{-0.8}] = 1 - 1.8(0.449329) = 1 - 0.808792 = \\mathbf{0.1912}$$"
   },
   {
     "q": "**Q10d (1 mark).** P(exactly 1 report on Monday and exactly 1 on Tuesday)? (4 decimals)",
     "type": "numeric",
     "answer": 0.1292,
     "tolerance": 0.0001,
-    "explain": "The two days are independent intervals, so multiply: P(1) = 0.8e^(−0.8) = 0.359463, and P(1 on Monday) · P(1 on Tuesday) = 0.359463² = **0.1292**.\n\nP(exactly 2 over the two days), with λ = 1.6, is 0.2584; it also counts 2 on Monday and 0 on Tuesday."
+    "explain": "The two days are independent intervals, so multiply: $$P(1) = 0.8e^{-0.8} = 0.359463$$ $$P(1 \\text{ Monday}) \\cdot P(1 \\text{ Tuesday}) = 0.359463^2 = \\mathbf{0.1292}$$\n\nP(exactly 2 over the two days), with λ = 1.6, is 0.2584; it also counts 2 on Monday and 0 on Tuesday."
   }
 ]
 ```
@@ -472,21 +472,21 @@ Write a single R command for each part. The data frame in part d is `ChickWeight
     "type": "fill",
     "code": "ppois(3, ___)",
     "answer": ["2*0.8", "1.6", "0.8*2", "2 * 0.8"],
-    "explain": "Over two days λ = 2 × 0.8 = 1.6: `ppois(3, 2*0.8)`. At most 3 in total is one interval of two days; `ppois(3, 0.8)^2` would be at most 3 on each day, a different event."
+    "explain": "Over two days $$\\lambda = 2 \\times 0.8 = 1.6$$ so the command is `ppois(3, 2*0.8)`. At most 3 in total is one interval of two days; `ppois(3, 0.8)^2` would be at most 3 on each day, a different event."
   },
   {
     "q": "Q11b: the value `ppois(3, 2*0.8)` returns. (4 decimals)",
     "type": "numeric",
     "answer": 0.9212,
     "tolerance": 0.0001,
-    "explain": "P(X ≤ 3) with λ = 1.6 = e^(−1.6)(1 + 1.6 + 1.6²/2 + 1.6³/6) = 0.201897 × 4.562667 = **0.9212**. The each-day version `ppois(3, 0.8)^2` is 0.9819."
+    "explain": "With λ = 1.6: $$P(X \\le 3) = e^{-1.6}\\left(1 + 1.6 + \\dfrac{1.6^2}{2} + \\dfrac{1.6^3}{6}\\right) = 0.201897 \\times 4.562667 = \\mathbf{0.9212}$$ The each-day version `ppois(3, 0.8)^2` is 0.9819."
   },
   {
     "q": "**Q11c (1 mark).** For Q9 (p = 0.35), a command that computes the probability the room is booked **within the first 5 attempts**. Fill the blank.",
     "type": "fill",
     "code": "pgeom(___, 0.35)",
     "answer": ["5-1", "4", "5 - 1"],
-    "explain": "The course counts trials; R's `pgeom` counts failures before the first success. Within 5 attempts means at most 4 failures: `pgeom(5-1, 0.35)` = 1 − 0.65⁵ = 0.8840. `pgeom(5, 0.35)` = 0.9246 is within 6 attempts."
+    "explain": "The course counts trials; R's `pgeom` counts failures before the first success. Within 5 attempts means at most 4 failures, and `pgeom(5-1, 0.35)` gives $$1 - 0.65^5 = \\mathbf{0.8840}$$ `pgeom(5, 0.35)` = 0.9246 is within 6 attempts."
   },
   {
     "q": "**Q11d (1 mark, part 1).** A command that prints the summary statistics (min, Q1, median, Q3, max, mean, sd, n) of `weight` for each `Diet`. Write it on paper, then type the function name.",
@@ -518,30 +518,30 @@ The number of failed nightly builds per week for a team's project has this distr
     "type": "numeric",
     "answer": 1.25,
     "tolerance": 0.01,
-    "explain": "μ = Σ[x P(x)] = 0(0.30) + 1(0.35) + 2(0.20) + 3(0.10) + 4(0.05) = 0.35 + 0.40 + 0.30 + 0.20 = **1.25** failed builds per week."
+    "explain": "$$\\mu = \\sum x P(x) = 0(0.30) + 1(0.35) + 2(0.20) + 3(0.10) + 4(0.05) = 0.35 + 0.40 + 0.30 + 0.20 = \\mathbf{1.25}$$ failed builds per week."
   },
   {
     "q": "**Q12a (2 marks, part 2).** σ by the shortcut formula σ² = Σ[x² P(x)] − μ². (3 significant digits)",
     "type": "numeric",
     "answer": 1.13,
     "tolerance": 0.05,
-    "explain": "Σ[x² P(x)] = 0(0.30) + 1(0.35) + 4(0.20) + 9(0.10) + 16(0.05) = 0.35 + 0.80 + 0.90 + 0.80 = 2.85.\n\nσ² = 2.85 − 1.25² = 2.85 − 1.5625 = 1.2875; σ = √1.2875 = **1.13**.\n\nThe long form Σ(x − μ)²P(x) gives the same 1.2875. Forgetting to subtract μ² gives √2.85 = 1.69."
+    "explain": "$$\\sum x^2 P(x) = 0(0.30) + 1(0.35) + 4(0.20) + 9(0.10) + 16(0.05) = 0.35 + 0.80 + 0.90 + 0.80 = 2.85$$\n\n$$\\sigma^2 = 2.85 - 1.25^2 = 2.85 - 1.5625 = 1.2875 \\qquad \\sigma = \\sqrt{1.2875} = \\mathbf{1.13}$$\n\nThe long form gives the same 1.2875. Forgetting to subtract μ² gives √2.85 = 1.69."
   },
   {
-    "q": "**Q12b (1 mark).** A laptop-protection plan charges a $95 annual premium and pays 1200 dollars if the laptop is lost or destroyed; the probability of a claim in a year is 0.045. What is the plan's expected profit per policy per year? (dollars)",
+    "q": "**Q12b (1 mark).** A laptop-protection plan charges a \\$95 annual premium and pays 1200 dollars if the laptop is lost or destroyed; the probability of a claim in a year is 0.045. What is the plan's expected profit per policy per year? (dollars)",
     "type": "numeric",
     "answer": 41.00,
     "tolerance": 0.01,
     "unit": "$",
-    "explain": "Let X = the plan's net gain on one policy. With no claim it keeps the premium, 95 (probability 0.955); with a claim it nets 95 − 1200 = −1105 (probability 0.045).\n\nE(X) = 95(0.955) + (−1105)(0.045) = 90.725 − 49.725 = 41.00, the same as premium − payout × P(claim) = 95 − 1200(0.045) = 95 − 54. **The plan expects to gain $41.00 per policy**, which is an expected cost of −41.00 to the plan."
+    "explain": "Let X = the plan's net gain on one policy. With no claim it keeps the premium, 95 (probability 0.955); with a claim it nets −1105, the premium less the payout (probability 0.045): $$95 - 1200 = -1105$$\n\n$$E(X) = 95(0.955) + (-1105)(0.045) = 90.725 - 49.725 = \\mathbf{41.00}$$ The same as $$\\text{premium} - \\text{payout} \\times P(\\text{claim}) = 95 - 1200(0.045) = 95 - 54$$ **The plan expects to gain \\$41.00 per policy**, which is an expected cost of −41.00 to the plan."
   },
   {
-    "q": "**Q12c (1 mark).** What premium would give the plan an expected profit of exactly $25 per policy? (dollars)",
+    "q": "**Q12c (1 mark).** What premium would give the plan an expected profit of exactly \\$25 per policy? (dollars)",
     "type": "numeric",
     "answer": 79.00,
     "tolerance": 0.01,
     "unit": "$",
-    "explain": "Expected profit = premium − 1200(0.045) = premium − 54. Setting premium − 54 = 25 gives a **premium of $79.00**. Check: 79 − 54 = 25."
+    "explain": "Expected profit: $$\\text{premium} - 1200(0.045) = \\text{premium} - 54$$ Set it to 25: $$\\text{premium} - 54 = 25 \\quad\\Rightarrow\\quad \\text{premium} = \\mathbf{79.00}$$ **A premium of \\$79.00.** Check: $$79 - 54 = 25$$"
   }
 ]
 ```

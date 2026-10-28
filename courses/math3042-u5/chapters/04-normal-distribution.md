@@ -67,7 +67,7 @@ Property 3 of the last lesson still holds, $P(a \le X \le b) = F(b) - F(a)$, but
 
 ## Ten PoE1 Fireball hits add up to a near-bell
 
-The PoE1 wiki's Luck page works through a level 20 Fireball, a fire spell, whose hit damage is a whole number rolled uniformly from 1095 to 1643, average 1369 [PoE1, 3.29 Allflame, poewiki Luck page, checked 2026-10-27]. Its Damage page adds that the number is rolled per hit, not per skill use, so ten hits are ten separate uniform rolls and S, their total, is a sum of ten independent flat draws. No single hit is normal; the question is how close the sum comes to a bell.
+The PoE1 wiki's Luck page works through a level 20 Fireball, a fire spell, whose hit damage is a whole number rolled uniformly from 1095 to 1643, average 1369. Its Damage page adds that the number is rolled per hit, not per skill use, so ten hits are ten separate uniform rolls and S, their total, is a sum of ten independent flat draws. No single hit is normal; the question is how close the sum comes to a bell.
 
 ```quiz
 [
@@ -102,7 +102,7 @@ The widget's 73.23 % below 14 000 is the normal curve's area; the exact share of
 
 ## Twenty PoE1 Spark hits and their approximating bell
 
-The same wiki page's level 20 Spark, a lightning spell, rolls each hit uniformly from 63 to 1198, average 630.5 [PoE1, 3.29 Allflame, poewiki Luck page, checked 2026-10-27]. T is the total of 20 Spark hits, each rolled separately.
+The same wiki page's level 20 Spark, a lightning spell, rolls each hit uniformly from 63 to 1198, average 630.5. T is the total of 20 Spark hits, each rolled separately.
 
 ```quiz
 [

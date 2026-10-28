@@ -8,7 +8,13 @@ The R sheet names a few distribution functions but never their arguments, and th
 
 ## d is P(X = x), p is P(X ≤ q), q is a quantile, r is a random draw
 
-Every distribution has four functions that share a first letter. `d` gives one bar, $P(X = x)$. `p` gives the cumulative $P(X \le q)$, the bars from 0 up to and including q. `q` goes backwards from a probability to the value. `r` draws random values. In Lab 6's words, "size means n, prob means p". Lab 6 opens with a 12-sided die rolled 30 times, X = the number of 8s:
+Every distribution has four functions that share a first letter.
+
+`d` gives one bar, $P(X = x)$. `p` gives the cumulative $P(X \le q)$, the bars from 0 up to and including q. `q` goes backwards from a probability to the value. `r` draws random values.
+
+In Lab 6's words, "size means n, prob means p".
+
+Lab 6 opens with a 12-sided die rolled 30 times, X = the number of 8s:
 
 ```r
 choose(30,3)*(1/12)^3*(11/12)^27   # P(X = 3) by the formula
@@ -55,7 +61,9 @@ binomial-calc
 
 ## Twelve signatures to know cold
 
-R's argument names reuse the course's letters for other things. Each cell reads "R's name → what you put there, in the course's symbols"; `reps` is how many random values an `r` function draws.
+R's argument names reuse the course's letters for other things.
+
+Each cell reads "R's name → what you put there, in the course's symbols"; `reps` is how many random values an `r` function draws.
 
 | Position | binomial | hypergeometric | geometric | Poisson |
 |---|---|---|---|---|
@@ -187,7 +195,11 @@ dist-picker
 
 ## Seven scrolls, taps to 14→15, twenty ladder picks: one call each
 
-In MapleStory Classic an Intermediate scroll succeeds 60 % [Classic, Classic World Intermediate scroll, checked 2026-10-27] by meowdb's copy of the in-game item text. Star Force, the GMS enhancement that adds stars to gear, succeeds 30 % at 14→15 on the wiki's table [GMS, the wiki's Star Force table 14→15, checked 2026-10-27], without the Star Catch bonus that v.271 builds in. On the PoE1 Hardcore Allflame ladder 69 of the characters ranked 1–200 were dead [PoE1, 3.29 Hardcore Allflame ladder, checked 2026-10-27].
+In MapleStory Classic an Intermediate scroll succeeds 60 % by meowdb's copy of the in-game item text.
+
+Star Force, the GMS enhancement that adds stars to gear, succeeds 30 % at 14→15 on the wiki's table, without the Star Catch bonus that v.271 builds in.
+
+On the PoE1 Hardcore Allflame ladder 69 of the characters ranked 1–200 were dead.
 
 | Story | Numbers | Why this model | Model |
 |---|---|---|---|
@@ -198,10 +210,10 @@ In MapleStory Classic an Intermediate scroll succeeds 60 % [Classic, Classic Wor
 ```quiz
 [
   { "q": "Seven Intermediate scrolls at p = 0.6, X = the number that succeed. P(at most 4 succeed).", "type": "fill", "code": "pbinom(___, 7, 0.6)", "answer": ["4"], "explain": "`p` includes its argument, so X ≤ 4 is `pbinom(4, 7, 0.6)` = 0.580096, which rounds to 0.5801. It is the complement of Unit 4's P(X ≥ 5) = 0.4199." },
-  { "q": "Taps to the first 14→15 success, p = 0.30. P(the first success is on the 4th tap).", "type": "fill", "code": "dgeom(___, 0.30)", "answer": ["3", "4-1", "4 - 1"], "explain": "The course counts taps (trials); R counts failures before the success. Tap 4 is 3 failures, then the success: `dgeom(3, 0.30)` = 0.7³ × 0.3 = 0.343 × 0.3 = 0.1029." },
-  { "q": "Same taps. P(the first success comes within the first 5 taps) = P(X ≤ 5)? (4 decimals)", "type": "numeric", "answer": 0.8319, "tolerance": 0.0001, "explain": "Within 5 taps is the complement of 5 failures in a row: 1 − q⁵ = 1 − 0.7⁵ = 1 − 0.16807 = 0.83193, so 0.8319. In R, `pgeom(5-1, 0.30)` = `pgeom(4, 0.30)`: R counts failures, so 5 taps is at most 4 failures." },
-  { "q": "Twenty of the Hardcore Allflame top 200 (69 dead), nobody picked twice, X = the number dead. P(at most 5 dead).", "type": "fill", "code": "phyper(5, 69, ___, 20)", "answer": ["131", "200-69", "200 - 69"], "explain": "Slots: x = 5, successes in the population 69 dead, failures in the population 200 − 69 = 131 alive, sample size 20. `phyper(5, 69, 131, 20)` = 0.2477983, so 0.2478." },
-  { "q": "Simulate 1000 values of X = taps to the first 14→15 success, in the course's trial count. Write the full command on paper, then type the name of the function you used.", "type": "text", "answer": ["rgeom"], "explain": "`rgeom(1000, 0.30) + 1`: reps = 1000 draws, p = 0.30. `rgeom` returns failures before the first success, so the `+ 1` turns each into a tap count starting at 1. Their mean settles near 1/p = 3.33 taps." }
+  { "q": "Taps to the first 14→15 success, p = 0.30. P(the first success is on the 4th tap).", "type": "fill", "code": "dgeom(___, 0.30)", "answer": ["3", "4-1", "4 - 1"], "explain": "The course counts taps (trials); R counts failures before the success. Tap 4 is 3 failures, then the success, so `dgeom(3, 0.30)` gives $$0.7^3 \\times 0.3 = 0.343 \\times 0.3 = \\mathbf{0.1029}$$" },
+  { "q": "Same taps. P(the first success comes within the first 5 taps) = P(X ≤ 5)? (4 decimals)", "type": "numeric", "answer": 0.8319, "tolerance": 0.0001, "explain": "Within 5 taps is the complement of 5 failures in a row: $$1 - q^5 = 1 - 0.7^5 = 1 - 0.16807 = 0.83193 \\to \\mathbf{0.8319}$$ In R, `pgeom(5-1, 0.30)` = `pgeom(4, 0.30)`: R counts failures, so 5 taps is at most 4 failures." },
+  { "q": "Twenty of the Hardcore Allflame top 200 (69 dead), nobody picked twice, X = the number dead. P(at most 5 dead).", "type": "fill", "code": "phyper(5, 69, ___, 20)", "answer": ["131", "200-69", "200 - 69"], "explain": "Slots: x = 5, successes in the population 69 dead, failures in the population $$200 - 69 = 131 \\text{ alive}$$ sample size 20. `phyper(5, 69, 131, 20)` = 0.2477983, so 0.2478." },
+  { "q": "Simulate 1000 values of X = taps to the first 14→15 success, in the course's trial count. Write the full command on paper, then type the name of the function you used.", "type": "text", "answer": ["rgeom"], "explain": "`rgeom(1000, 0.30) + 1`: reps = 1000 draws, p = 0.30. `rgeom` returns failures before the first success, so the `+ 1` turns each into a tap count starting at 1. Their mean settles near $$\\dfrac{1}{p} = \\dfrac{1}{0.30} = \\mathbf{3.33} \\text{ taps}$$" }
 ]
 ```
 
@@ -334,7 +346,9 @@ The examples in the table are the labs' own commands and outputs.
 - `ppois(40,lambda)-ppois(29,lambda)`: "Compute P(X ≤ 40) and P(X ≤ 29) (`ppois`, `ppois`), then subtract the second from the first (`-`)."
 :::
 
-`lower.tail = FALSE` turns `p` into the upper tail, $P(X > k)$, so `1 - phyper(11, 42, 116+154, 20)` and `phyper(11, 42, 116+154, 20, lower.tail = FALSE)` are the same answer. The upper tail starts *above* k in both forms.
+`lower.tail = FALSE` turns `p` into the upper tail, $P(X > k)$, so `1 - phyper(11, 42, 116+154, 20)` and `phyper(11, 42, 116+154, 20, lower.tail = FALSE)` are the same answer.
+
+The upper tail starts *above* k in both forms.
 
 :::info R syntax
 | Code | What it does |
@@ -388,7 +402,11 @@ ppois(68, 2*34)      # at most 68 in the two years together
 - `ppois(68, 2*34)`: "Multiply 2 by 34 (`2*34`) for the mean, take 68 (`68`), then compute P(X ≤ 68) (`ppois`)."
 :::
 
-Year 1 = 20 failures, year 2 = 48: the total 68 passes `ppois(68, 68)`, but year 2 breaks "at most 34 in each year". So the doubled-interval event contains the each-year event and is more likely (0.5322 against 0.2975). Independent periods multiply; a question about the total over a longer interval rescales λ instead.
+Year 1 = 20 failures, year 2 = 48: the total 68 passes `ppois(68, 68)`, but year 2 breaks "at most 34 in each year".
+
+So the doubled-interval event contains the each-year event and is more likely (0.5322 against 0.2975).
+
+Independent periods multiply; a question about the total over a longer interval rescales λ instead.
 
 ## The formula typed into R, without the sheet
 
@@ -604,30 +622,32 @@ mean(y ~ g, data = df)                        # mean of y for each group
 
 ## Thirty rolls of a 12-sided die, X = the number of 8s
 
-Lab 6's die again: n = 30, p = 1/12. Write each command on paper before filling the slot.
+Lab 6's die again: n = 30, p = 1/12.
+
+Write each command on paper before filling the slot.
 
 ```quiz
 [
   { "q": "P(exactly 4 eights).", "type": "fill", "code": "dbinom(___, 30, 1/12)", "answer": ["4"], "explain": "`d` is one bar: `dbinom(4, 30, 1/12)` = 0.1376." },
   { "q": "P(fewer than 4 eights).", "type": "fill", "code": "pbinom(___, 30, 1/12)", "answer": ["3"], "explain": "X < 4 is X ≤ 3: `pbinom(3, 30, 1/12)` = 0.7625." },
-  { "q": "P(at least 4 eights).", "type": "fill", "code": "1 - pbinom(___, 30, 1/12)", "answer": ["3"], "explain": "X ≥ 4 is the complement of X ≤ 3: `1 - pbinom(3, 30, 1/12)` = 1 − 0.7625 = 0.2375." },
-  { "q": "P(between 1 and 5 eights, inclusive).", "type": "fill", "code": "pbinom(5, 30, 1/12) - pbinom(___, 30, 1/12)", "answer": ["0"], "explain": "p(b) − p(a − 1) with a = 1, b = 5: `pbinom(5, 30, 1/12) - pbinom(0, 30, 1/12)` = 0.8916." },
+  { "q": "P(at least 4 eights).", "type": "fill", "code": "1 - pbinom(___, 30, 1/12)", "answer": ["3"], "explain": "X ≥ 4 is the complement of X ≤ 3, so `1 - pbinom(3, 30, 1/12)` gives $$1 - 0.7625 = \\mathbf{0.2375}$$" },
+  { "q": "P(between 1 and 5 eights, inclusive).", "type": "fill", "code": "pbinom(5, 30, 1/12) - pbinom(___, 30, 1/12)", "answer": ["0"], "explain": "The pattern $$p(b) - p(a - 1)$$ with a = 1, b = 5: `pbinom(5, 30, 1/12) - pbinom(0, 30, 1/12)` = 0.8916." },
   { "q": "P(more than 4 eights) without writing `1 -`.", "type": "fill", "code": "pbinom(4, 30, 1/12, lower.tail = ___)", "answer": ["FALSE", "F"], "explain": "`lower.tail = FALSE` gives P(X > 4), the same as `1 - pbinom(4, 30, 1/12)` = 0.0999." },
-  { "q": "Simulate the 30-roll experiment 1000 times, giving the number of 8s in each. Write the full command on paper, then type the name of the function you used.", "type": "text", "answer": ["rbinom"], "explain": "`rbinom(1000, 30, 1/12)`: reps = 1000 draws, size n = 30, prob p = 1/12. Their mean settles near μ = np = 30/12 = 2.5." }
+  { "q": "Simulate the 30-roll experiment 1000 times, giving the number of 8s in each. Write the full command on paper, then type the name of the function you used.", "type": "text", "answer": ["rbinom"], "explain": "`rbinom(1000, 30, 1/12)`: reps = 1000 draws, size n = 30, prob p = 1/12. Their mean settles near $$\\mu = np = \\dfrac{30}{12} = \\mathbf{2.5}$$" }
 ]
 ```
 
 ```quiz
 [
-  { "q": "Lab 6 T2d: `1 - pbinom(6, 30, 1/12)` returned 0.01023. What does `pbinom(6, 30, 1/12)` return? (4 decimals)", "type": "numeric", "answer": 0.9898, "tolerance": 0.0001, "explain": "`pbinom(6, …)` is P(X ≤ 6), the complement of P(X > 6): 1 − 0.01023 = 0.98977, which rounds to 0.9898 (the lab's output)." },
-  { "q": "Lab 7 T4: N = 999 with K = 333 successes, a sample of n = 300. `phyper(109, 333, 666, 300)` returns 0.9175. What is P(X ≥ 110)? (4 decimals)", "type": "numeric", "answer": 0.0825, "tolerance": 0.0001, "explain": "X ≥ 110 is the complement of X ≤ 109: `1 - phyper(109, 333, 666, 300)` = 1 − 0.9175 = 0.0825 (the lab prints 0.08254)." },
-  { "q": "A fair die is rolled until the first 6. P(the first 6 is on roll 4).", "type": "fill", "code": "dgeom(___, 1/6)", "answer": ["3", "4-1", "4 - 1"], "explain": "The course counts trials, R counts failures before the success: roll 4 is 3 failures, `dgeom(3, 1/6)` = (5/6)³(1/6) = 0.0965." },
+  { "q": "Lab 6 T2d: `1 - pbinom(6, 30, 1/12)` returned 0.01023. What does `pbinom(6, 30, 1/12)` return? (4 decimals)", "type": "numeric", "answer": 0.9898, "tolerance": 0.0001, "explain": "`pbinom(6, …)` is P(X ≤ 6), the complement of P(X > 6): $$1 - 0.01023 = 0.98977 \\to \\mathbf{0.9898}$$ That is the lab's output." },
+  { "q": "Lab 7 T4: N = 999 with K = 333 successes, a sample of n = 300. `phyper(109, 333, 666, 300)` returns 0.9175. What is P(X ≥ 110)? (4 decimals)", "type": "numeric", "answer": 0.0825, "tolerance": 0.0001, "explain": "X ≥ 110 is the complement of X ≤ 109: `1 - phyper(109, 333, 666, 300)` gives $$1 - 0.9175 = \\mathbf{0.0825}$$ The lab prints 0.08254." },
+  { "q": "A fair die is rolled until the first 6. P(the first 6 is on roll 4).", "type": "fill", "code": "dgeom(___, 1/6)", "answer": ["3", "4-1", "4 - 1"], "explain": "The course counts trials, R counts failures before the success: roll 4 is 3 failures, and `dgeom(3, 1/6)` gives $$\\left(\\dfrac{5}{6}\\right)^3 \\left(\\dfrac{1}{6}\\right) = \\mathbf{0.0965}$$" },
   { "q": "Simulate 1000 values of X = the day of the first parking ticket, p = 0.1, in the course's trial count.", "type": "fill", "code": "rgeom(1000, 0.1) ___", "answer": ["+ 1", "+1"], "explain": "`rgeom` returns failures before the first success; adding 1 turns each into the trial number, so values start at 1." },
-  { "q": "Transformers fail at 34 per year. P(at most 60 failures over the next two years).", "type": "fill", "code": "ppois(60, ___)", "answer": ["68", "2*34", "34*2", "2 * 34", "34 * 2"], "explain": "One count over a doubled interval rescales λ: 2 × 34 = 68, so `ppois(60, 68)` = 0.1824. Squaring a one-year probability would answer a different question." },
-  { "q": "Ten cards are dealt from a 52-card deck. P(exactly 3 hearts).", "type": "fill", "code": "dhyper(3, 13, ___, 10)", "answer": ["39", "52-13", "52 - 13"], "explain": "Slots: x = 3, successes in the population 13, failures in the population 52 − 13 = 39, sample size 10. `dhyper(3, 13, 39, 10)` = 0.2781." },
+  { "q": "Transformers fail at 34 per year. P(at most 60 failures over the next two years).", "type": "fill", "code": "ppois(60, ___)", "answer": ["68", "2*34", "34*2", "2 * 34", "34 * 2"], "explain": "One count over a doubled interval rescales λ: $$\\lambda = 2 \\times 34 = 68$$ so `ppois(60, 68)` = 0.1824. Squaring a one-year probability would answer a different question." },
+  { "q": "Ten cards are dealt from a 52-card deck. P(exactly 3 hearts).", "type": "fill", "code": "dhyper(3, 13, ___, 10)", "answer": ["39", "52-13", "52 - 13"], "explain": "Slots: x = 3, successes in the population 13, failures in the population $$52 - 13 = 39$$ sample size 10. `dhyper(3, 13, 39, 10)` = 0.2781." },
   { "q": "Same deal: P(more than 4 hearts) with one `phyper` call and no `1 -`.", "type": "fill", "code": "phyper(4, 13, 39, 10, lower.tail = ___)", "answer": ["FALSE", "F"], "explain": "`lower.tail = FALSE` returns P(X > 4) = 0.0568, the same as `1 - phyper(4, 13, 39, 10)`." },
   { "q": "Write a function that takes n, the number of COMP 2121 quiz questions a student guesses on (4 choices each), and returns the simulated proportion guessed right. Write it on paper, then type the name of the function that does the random draw.", "type": "text", "answer": ["rbinom", "sample"], "explain": "`guess_prop <- function(n) { X <- rbinom(1, n, 0.25); return(X/n) }` or `guess_prop <- function(n) { X <- sample(0:1, n, replace = TRUE, prob = c(0.75, 0.25)); return(sum(X)/n) }`. Returning `n*0.25/n` computes the average instead of simulating and scores zero." },
   { "q": "The data frame `survey` has a column `Pulse`. Write the command for its 90th percentile on paper, then type the function name.", "type": "text", "answer": ["quantile"], "explain": "`quantile(survey$Pulse, 0.90)`. The `$` picks the column; 0.90 is the proportion for the 90th percentile. If the column has missing values, add `na.rm = TRUE`." },
-  { "q": "`pgeom(9, 1/6)` is the probability that the first 6 comes within the first 10 rolls.", "type": "tf", "answer": true, "explain": "P(X ≤ 10) in trials is `pgeom(10-1, 1/6)` = 1 − (5/6)¹⁰ = 0.8385 (Lab 7 T7a)." }
+  { "q": "`pgeom(9, 1/6)` is the probability that the first 6 comes within the first 10 rolls.", "type": "tf", "answer": true, "explain": "P(X ≤ 10) in trials is `pgeom(10-1, 1/6)`: $$1 - \\left(\\dfrac{5}{6}\\right)^{10} = \\mathbf{0.8385}$$ (Lab 7 T7a)." }
 ]
 ```

@@ -4,7 +4,11 @@ minutes: 32
 ---
 <!-- facts: gms.starforce.rates-15-plus, gms.starforce.star-catch, classic.scroll.chaos-outcomes -->
 
-How often does a Star Force tap at 15 stars destroy the item (Star Force, the GMS enhancement that adds stars to gear)? Lab 4 answers such questions by simulation: run the experiment $m$ times with `sample()`, count the event, and estimate $P(E) \approx k/m$. Package: `mosaic`.
+How often does a Star Force tap at 15 stars destroy the item (Star Force, the GMS enhancement that adds stars to gear)?
+
+Lab 4 answers such questions by simulation: run the experiment $m$ times with `sample()`, count the event, and estimate $P(E) \approx k/m$.
+
+Package: `mosaic`.
 
 :::warn Lab 4's letters are not lesson 2's
 Lesson 2 wrote $x/n$. Lab 4 uses other letters, and its $n$ means something new:
@@ -53,7 +57,11 @@ sample.int(6, 100, replace=TRUE, prob = c(0.1, 0.1, 0.1, 0.1, 0.1, 0.5))   # a l
 - `sample.int(6, 100, replace=TRUE, prob = c(…))`: "Combine the six weights (`c()`), pass them as the weights (`prob =`), allow repeats (`replace=TRUE`), then draw 100 values from 1 to 6 (`sample.int`)."
 :::
 
-The first argument is the sample space, the second how many draws. `replace=TRUE` puts each value back, which is how independent dice behave; without it the values are always distinct, which is how cards behave. `prob=` gives unequal probabilities.
+The first argument is the sample space, the second how many draws.
+
+`replace=TRUE` puts each value back, which is how independent dice behave; without it the values are always distinct, which is how cards behave.
+
+`prob=` gives unequal probabilities.
 
 Counting an event is a comparison inside `sum()`. Roll 100 dice, then count the sixes:
 
@@ -115,8 +123,8 @@ myfunc <- function(x) {
 }
 myfunc(4)                                            # 16
 
-pick.a.number <- function(n) { return( sample.int(n, 1) ) }        # Task 3
-Flip.Once <- function(){ return( sample(c("H","T"), 1) ) }         # Task 4
+pick.a.number <- function(n) { return( sample.int(n, 1)) }        # Task 3
+Flip.Once <- function(){ return( sample(c("H","T"), 1)) }         # Task 4
 
 Flip.Coins <- function(n){                                          # Task 5
   res.coins <- character(n)
@@ -133,7 +141,7 @@ Flip.Coins <- function(n){                                          # Task 5
 | `myfunc <- function(x) { … }` | `<-` is assignment. `function(x)` makes a function with one argument `x`; the braces hold its body. |
 | `return(x^2)` | Hands back the result to the caller. `^` raises to a power. |
 | `myfunc(4)` | Calls the function with `x` = 4. |
-| `pick.a.number <- function(n) { return( sample.int(n, 1) ) }` | The function's own `n` is passed on as `sample.int`'s n (the largest integer); size = 1 draw. Dots are just part of names. |
+| `pick.a.number <- function(n) { return( sample.int(n, 1)) }` | The function's own `n` is passed on as `sample.int`'s n (the largest integer); size = 1 draw. Dots are just part of names. |
 | `Flip.Once <- function(){ … }` | Empty brackets: the function takes no arguments. It returns one draw from `c("H","T")`. |
 | `res.coins <- character(n)` | Makes a vector of `n` empty strings for the loop to fill. |
 | `for (i in 1:n){ … }` | `1:n` is the whole numbers 1 to n; the body runs once for each `i`. |
@@ -174,7 +182,9 @@ To keep a loop's results, allocate a vector first (`numeric(100)`, `character(n)
 
 ## Estimating a probability
 
-If $E$ occurs $k$ times in $m$ simulated trials, $P(E) \approx k/m$. Task 6 estimates P(heads):
+If $E$ occurs $k$ times in $m$ simulated trials, $P(E) \approx k/m$.
+
+Task 6 estimates P(heads):
 
 ```r
 Prob.Heads <- function(m){
@@ -212,7 +222,7 @@ Task 7 rolls two dice and asks for P(sum = 7):
 Prob.E <- function(m){
   k.success <- 0
   for (i in 1:m){
-    X <- sum( sample.int(6, 2, replace=TRUE) )
+    X <- sum( sample.int(6, 2, replace=TRUE))
     if (X == 7){ k.success <- k.success + 1 }
   }
   return (k.success/m)
@@ -225,7 +235,7 @@ Prob.E(10^5)                                         # 0.16789
 |---|---|
 | `k.success <- 0` | Starts a counter at 0. |
 | `sample.int(6, 2, replace=TRUE)` | n = 6, size = 2 draws with replacement: two dice. |
-| `X <- sum( … )` | Adds the two faces. |
+| `X <- sum( …)` | Adds the two faces. |
 | `if (X == 7){ k.success <- k.success + 1 }` | Runs the braces only when the condition is `TRUE`: adds 1 to the counter when the sum is 7. |
 | `return (k.success/m)` | Returns successes over trials; the space before the bracket makes no difference. |
 | `Prob.E(10^5)` | Calls it with m = 100 000. |
@@ -241,7 +251,9 @@ Prob.E(10^5)                                         # 0.16789
 - `Prob.E(10^5)`: "Compute 10 to the power 5 (`10^5`), pass it as m (`Prob.E`) and print the estimate."
 :::
 
-The exact answer is the pencil problem: six of the 36 outcomes sum to 7 ((1,6), (2,5), (3,4), (4,3), (5,2), (6,1)), so $6/36 = 0.1667$.
+The exact answer is the pencil problem: six of the 36 outcomes sum to 7 ((1,6), (2,5), (3,4), (4,3), (5,2), (6,1)), so
+
+$$P(\text{sum} = 7) = \dfrac{6}{36} = \mathbf{0.1667}$$
 
 ```widget
 sim-lab
@@ -250,7 +262,9 @@ sim-lab
 
 ## replicate(): the loop without the loop
 
-When a loop's body never uses `i` except to store the result, `replicate(m, expression)` runs the expression $m$ times and returns the results as a vector. Line up Task 6's loop with Task 8's rewrite:
+When a loop's body never uses `i` except to store the result, `replicate(m, expression)` runs the expression $m$ times and returns the results as a vector.
+
+Line up Task 6's loop with Task 8's rewrite:
 
 | step | for loop (Task 6) | replicate (Task 8) |
 |---|---|---|
@@ -267,7 +281,7 @@ Prob.Heads <- function(m){
   return(k/m)
 }
 Prob.E <- function(m){
-  X.vals <- replicate(m, sum( sample.int(6, 2, replace=TRUE) ))
+  X.vals <- replicate(m, sum( sample.int(6, 2, replace=TRUE)))
   k <- sum(X.vals == 7)
   return (k/m)
 }
@@ -278,7 +292,7 @@ Prob.E <- function(m){
 |---|---|
 | `coins <- replicate(m, Flip.Once())` | `replicate(n, expr)` evaluates the expression `m` times and collects the results in a vector; here n is the number of repeats. |
 | `k <- sum(coins == "H")` | Counts the heads, as above. |
-| `X.vals <- replicate(m, sum( sample.int(6, 2, replace=TRUE) ))` | `m` sums of two dice, one per repeat. |
+| `X.vals <- replicate(m, sum( sample.int(6, 2, replace=TRUE)))` | `m` sums of two dice, one per repeat. |
 | `k <- sum(X.vals == 7)` | Counts the sums equal to 7. |
 | `return(k/m)`, `return (k/m)` | Returns the estimate k/m. |
 
@@ -297,11 +311,13 @@ Same estimates (0.50364, 0.16849), less code, and much faster, which Task 9 need
 
 ## Star Force at 15 stars: three outcomes in one sample() call
 
-A tap from 15 stars succeeds 30.00 %, keeps the star 67.90 % and destroys the item 2.10 % [GMS, v.264 Star Force 15→16, checked 2026-10-27]: Nexon's v.264 published rates, without the Star Catch bonus that v.271 builds in. Three outcomes with published weights summing to 1 is exactly what `sample(..., prob =)` draws.
+A tap from 15 stars succeeds 30.00 %, keeps the star 67.90 % and destroys the item 2.10 %: Nexon's v.264 published rates, without the Star Catch bonus that v.271 builds in.
+
+Three outcomes with published weights summing to 1 is exactly what `sample(..., prob =)` draws.
 
 ```r
 Tap.Once <- function(){
-  return( sample(c("success","maintain","destroy"), 1, prob = c(0.30, 0.679, 0.021)) )
+  return( sample(c("success","maintain","destroy"), 1, prob = c(0.30, 0.679, 0.021)))
 }
 m <- 10^5
 taps <- replicate(m, Tap.Once())
@@ -335,7 +351,7 @@ sum(taps == "destroy")/m
 ```quiz
 [
   {"q": "As $m$ grows, what does `sum(taps == \"destroy\")/m` settle to?", "options": ["the weight given to \"destroy\" in `prob =`", "1/3, because there are three outcomes", "0, because destroys are rare", "nothing: it keeps jumping around however large $m$ is"], "answer": 0, "explain": "The estimate $k/m$ settles to the probability the simulation was built with, the \"destroy\" weight $0.021$: the law of large numbers. The three outcomes are not equally likely, so 1/3 is wrong."},
-  {"q": "How many destroys do you expect in $m = 10^5$ taps?", "type": "numeric", "answer": 2100, "tolerance": 0, "explain": "$10^5 \\times 0.021 = 2100$, beside 30 000 successes and 67 900 maintains."}
+  {"q": "How many destroys do you expect in $m = 10^5$ taps?", "type": "numeric", "answer": 2100, "tolerance": 0, "explain": "$$10^5 \\times 0.021 = \\mathbf{2100}$$ This sits beside 30 000 successes and 67 900 maintains."}
 ]
 ```
 
@@ -343,7 +359,9 @@ No run is printed: each run is one random draw near the exact 0.0210.
 
 ### One tap, m times: the success bar settles at 0.30
 
-The simulator has no three-outcome tap, so it uses one coin (n = 1) whose heads chance is p = 0.30. Heads = success; maintain and destroy are both tails, X = 0.
+The simulator has no three-outcome tap, so it uses one coin (n = 1) whose heads chance is p = 0.30.
+
+Heads = success; maintain and destroy are both tails, X = 0.
 
 ```widget
 sim-lab
@@ -393,11 +411,29 @@ for (i in 1:length(ms)){
 | 10 000 | 0.0056 |
 | 100 000 | 0.0019 |
 
-Each tenfold increase in $m$ divides the spread by about $\sqrt{10} \approx 3.2$: the law of large numbers with a rate attached. The reason: for a fair coin the spread of $k/m$ is about $0.5/\sqrt{m}$, so $m = 100$ gives $0.5/10 = 0.05$ and $m = 1000$ gives $0.5/31.6 = 0.016$, as in the table. Multiplying $m$ by 10 under the root divides the spread by $\sqrt{10}$.
+Each tenfold increase in $m$ divides the spread by about $\sqrt{10} \approx 3.2$: the law of large numbers with a rate attached.
+
+The reason: for a fair coin the spread of $k/m$ is about
+
+$$\dfrac{0.5}{\sqrt{m}}$$
+
+So $m = 100$ gives
+
+$$\dfrac{0.5}{\sqrt{100}} = \dfrac{0.5}{10} = \mathbf{0.05}$$
+
+and $m = 1000$ gives
+
+$$\dfrac{0.5}{\sqrt{1000}} = \dfrac{0.5}{31.6} = \mathbf{0.016}$$
+
+as in the table.
+
+Multiplying $m$ by 10 under the root divides the spread by $\sqrt{10}$.
 
 ## The distribution of X
 
-Task 10, `Roll.Dice(m)`, draws `barplot(prop.table(table(die.vals)), ...)` for $m$ = 100, 1000, 10 000: the bars flatten towards $1/6$ each as $m$ grows. `prop.table()` turns counts into relative frequencies.
+Task 10, `Roll.Dice(m)`, draws `barplot(prop.table(table(die.vals)),...)` for $m$ = 100, 1000, 10 000: the bars flatten towards $1/6$ each as $m$ grows.
+
+`prop.table()` turns counts into relative frequencies.
 
 :::info R syntax
 | Code | What it does |
@@ -405,20 +441,22 @@ Task 10, `Roll.Dice(m)`, draws `barplot(prop.table(table(die.vals)), ...)` for $
 | `Roll.Dice(m)` | The lab's function, called with `m` = the number of rolls. |
 | `table(die.vals)` | Counts how many times each die value appears. |
 | `prop.table(…)` | Divides each count by the total, giving relative frequencies. |
-| `barplot(…, ...)` | One bar per die value with those heights; `...` stands for the labelling arguments. |
+| `barplot(…,...)` | One bar per die value with those heights; `...` stands for the labelling arguments. |
 
 **Left to right**
 
 - `Roll.Dice(m)`: "Call Roll.Dice (`Roll.Dice`) with m rolls (`m`)."
-- `barplot(prop.table(table(die.vals)), ...)`: "Draw bars (`barplot`) of the proportions (`prop.table`) of the counts (`table`) of die.vals (`die.vals`), with the other arguments (`...`)."
+- `barplot(prop.table(table(die.vals)),...)`: "Draw bars (`barplot`) of the proportions (`prop.table`) of the counts (`table`) of die.vals (`die.vals`), with the other arguments (`...`)."
 
 **Right to left**, the order R runs it
 
 - `Roll.Dice(m)`: "Take m (`m`) and run Roll.Dice on it (`Roll.Dice`)."
-- `barplot(prop.table(table(die.vals)), ...)`: "Take die.vals (`die.vals`), count each value (`table`), turn the counts into proportions (`prop.table`), then draw them as bars (`barplot`)."
+- `barplot(prop.table(table(die.vals)),...)`: "Take die.vals (`die.vals`), count each value (`table`), turn the counts into proportions (`prop.table`), then draw them as bars (`barplot`)."
 :::
 
-Task 11, `Roll.Some.Dice(m, n)`, rolls $n$ dice per trial with $X$ = the number of 3s. For $n$ = 1, 2, 5, 10, 100 the shape moves from two bars to a bell: **as $n$ increases the distribution of $X$ becomes closer and closer to a normal distribution, with its peak near $n/6$** ($X \approx 1$ for 10 dice, $X \approx 16$ for 100).
+Task 11, `Roll.Some.Dice(m, n)`, rolls $n$ dice per trial with $X$ = the number of 3s.
+
+For $n$ = 1, 2, 5, 10, 100 the shape moves from two bars to a bell: **as $n$ increases the distribution of $X$ becomes closer and closer to a normal distribution, with its peak near $n/6$** ($X \approx 1$ for 10 dice, $X \approx 16$ for 100).
 
 :::info R syntax
 | Code | What it does |
@@ -442,8 +480,12 @@ sim-lab
 Task 12, `Draw.Cards(m, n, replace)`, draws $n$ cards per trial and counts the red ones, $X$.
 
 - The deck: `deck <- c(rep("R", 26), rep("B", 26))`, 26 red and 26 black.
-- The plot: a mosaic `histogram(X.vals, type="d", breaks=seq(-0.5, n+0.5, by=1), ...)`, one bar per whole number.
-- The conclusions, from runs with n = 1, 5, 10, 20, 50, with and without replacement: the shape again approaches normal as $n$ grows, and **`replace=FALSE` makes the distribution narrower (less variability) without moving its centre, which is always $n/2$**. Each red card drawn leaves fewer reds, so the next draw leans to black and long runs correct themselves. Any one card is still red with 26/52, so the centre stays at $n/2$.
+- The plot: a mosaic `histogram(X.vals, type="d", breaks=seq(-0.5, n+0.5, by=1),...)`, one bar per whole number.
+- The conclusions, from runs with n = 1, 5, 10, 20, 50, with and without replacement: the shape again approaches normal as $n$ grows, and **`replace=FALSE` makes the distribution narrower (less variability) without moving its centre, which is always $n/2$**.
+
+Each red card drawn leaves fewer reds, so the next draw leans to black and long runs correct themselves.
+
+Any one card is still red with 26/52, so the centre stays at $n/2$.
 
 :::info R syntax
 | Code | What it does |
@@ -459,13 +501,13 @@ Task 12, `Draw.Cards(m, n, replace)`, draws $n$ cards per trial and counts the r
 
 - `Draw.Cards(m, n, replace)`: "Call Draw.Cards (`Draw.Cards`) with m trials (`m`), n cards (`n`) and the replace setting (`replace`)."
 - `deck <- c(rep("R", 26), rep("B", 26))`: "Store under the name deck (`deck <-`) the combination (`c()`) of R (`"R"`) repeated (`rep`) 26 times and B (`"B"`) repeated (`rep`) 26 times."
-- `histogram(X.vals, type="d", breaks=seq(-0.5, n+0.5, by=1), ...)`: "A histogram (`histogram`) of X.vals (`X.vals`) as densities (`type="d"`) with edges (`breaks=`) from -0.5 to n plus 0.5 (`n+0.5`) in steps of 1 (`seq`, `by=1`), with the other arguments (`...`)."
+- `histogram(X.vals, type="d", breaks=seq(-0.5, n+0.5, by=1),...)`: "A histogram (`histogram`) of X.vals (`X.vals`) as densities (`type="d"`) with edges (`breaks=`) from -0.5 to n plus 0.5 (`n+0.5`) in steps of 1 (`seq`, `by=1`), with the other arguments (`...`)."
 
 **Right to left**, the order R runs it
 
 - `Draw.Cards(m, n, replace)`: "Take m, n and replace (`m, n, replace`), then run Draw.Cards on them (`Draw.Cards`)."
 - `deck <- c(rep("R", 26), rep("B", 26))`: "Make 26 Rs (`rep("R", 26)`) and 26 Bs (`rep("B", 26)`), join them (`c()`), then store the deck (`deck <-`)."
-- `histogram(X.vals, type="d", breaks=seq(-0.5, n+0.5, by=1), ...)`: "Add 0.5 to n (`n+0.5`), build the edges (`seq`), then draw the density histogram of X.vals with them (`histogram`, `type="d"`)."
+- `histogram(X.vals, type="d", breaks=seq(-0.5, n+0.5, by=1),...)`: "Add 0.5 to n (`n+0.5`), build the edges (`seq`), then draw the density histogram of X.vals with them (`histogram`, `type="d"`)."
 :::
 
 ```widget
@@ -475,7 +517,9 @@ sim-lab
 
 ## Quiz 4 Part 2 as given: a match simulated, then "is X unusual?"
 
-The RStudio half of Quiz 4 was this lab applied to a game. Both posted versions follow one pattern: simulate one game with `sample()`, wrap the match in a function, repeat it $m$ times, count the event, draw the distribution of $X$ with half-integer breaks, and judge an observed $X$ with a Z-score or a tail probability.
+The RStudio half of Quiz 4 was this lab applied to a game.
+
+Both posted versions follow one pattern: simulate one game with `sample()`, wrap the match in a function, repeat it $m$ times, count the event, draw the distribution of $X$ with half-integer breaks, and judge an observed $X$ with a Z-score or a tail probability.
 
 **V1: Alice and Bob play checkers.** Alice wins a game with probability 0.6; a match is 13 games.
 
@@ -563,14 +607,18 @@ sum(X.vals <= 3)/m.trials        ## 0.0081
 - `sum(X.vals <= 3)/m.trials`: "Compare each count with 3 (`X.vals <= 3`), count the TRUEs (`sum`), then divide by m.trials (`/`) and print."
 :::
 
-`breaks=seq(-0.5, n+0.5, by=1)` (Task 12) gives each integer value of $X$ its own bar, and `freq = FALSE` makes the heights relative frequencies. The 0.77156 estimates a number Unit 4 computes exactly (binomial: 0.7712).
+`breaks=seq(-0.5, n+0.5, by=1)` (Task 12) gives each integer value of $X$ its own bar, and `freq = FALSE` makes the heights relative frequencies.
+
+The 0.77156 estimates a number Unit 4 computes exactly (binomial: 0.7712).
 
 The verdict on $X = 3$ wins, in four steps:
 
-1. From the simulation, $\mu = 7.80$ and $\sigma = 1.77$.
-2. $Z = (3 - 7.80)/1.77 = -2.71$ ($-2.72$ unrounded, from R's $-2.719164$).
+1. From the simulation: $\mu = 7.80$ and $\sigma = 1.77$.
+2. Z-score ($-2.72$ unrounded, from R's $-2.719164$):
+   $$Z = \dfrac{3 - 7.80}{1.77} = \mathbf{-2.71}$$
 3. $|Z| > 2$, so 3 wins is *unusual*, the solution's word.
-4. Or by the tail: $P(X \le 3) = 0.0081 < 0.025$, so unusual.
+4. Or by the tail, so unusual:
+   $$P(X \le 3) = 0.0081 < 0.025$$
 
 ```diagram
 { "type": "grid", "nodes": [
@@ -595,14 +643,20 @@ The verdict on $X = 3$ wins, in four steps:
 
 ### Alice's 13-game match, simulated
 
-The same match in the simulator: 13 games, Alice wins each with probability 0.6. The bars centre near $13 \times 0.6 = 7.8$; the bars for $X = 7$ to 13 add to about 0.77, against the exact 0.7712.
+The same match in the simulator: 13 games, Alice wins each with probability 0.6. The bars centre near
+
+$$13 \times 0.6 = \mathbf{7.8}$$
+
+The bars for $X = 7$ to 13 add to about 0.77, against the exact 0.7712.
 
 ```widget
 sim-lab
 { "experiment": "coins", "n": 13, "p": 0.6, "m": 10000, "title": "13 games, P(Alice wins a game) = 0.6: X = games Alice wins" }
 ```
 
-**V1, Q2: Alice takes pity.** Before each game a die is rolled; a 6 means Alice throws the game. One game is a function, a match is `replicate()` of it, the trials are `replicate()` of the match. Three levels of repetition, outermost first:
+**V1, Q2: Alice takes pity.** Before each game a die is rolled; a 6 means Alice throws the game.
+
+One game is a function, a match is `replicate()` of it, the trials are `replicate()` of the match. Three levels of repetition, outermost first:
 
 ```diagram
 { "type": "layers", "nodes": [
@@ -618,14 +672,14 @@ Simulate.Game <- function() {
   if (die.roll == 6){
     return("B")
   }else{
-    return( sample(c("A", "B"), 1, prob=c(0.6, 0.4)) )
+    return( sample(c("A", "B"), 1, prob=c(0.6, 0.4)))
   }
 }
 Simulate.Match <- function(n.games){
-  return( replicate(n.games, Simulate.Game()) )
+  return( replicate(n.games, Simulate.Game()))
 }
 Simulate.Trials <- function(m.trials){
-  return( sum(replicate(m.trials, sum(Simulate.Match(13) == "A") >= 7)) )
+  return( sum(replicate(m.trials, sum(Simulate.Match(13) == "A") >= 7)))
 }
 m.trials <- 10^5
 p.Alice <- Simulate.Trials(m.trials)/m.trials
@@ -638,7 +692,7 @@ p.Alice                          ## 0.49895
 | `die.roll <- sample(1:6, 1)` | x = the integers 1 to 6, size = 1: one die roll. |
 | `if (die.roll == 6){ return("B") }else{ … }` | `if` runs the first braces when the roll is 6; `else` runs the second braces otherwise. |
 | `sample(c("A", "B"), 1, prob=c(0.6, 0.4))` | One game: x = the outcomes, size = 1, weights 0.6 and 0.4. |
-| `Simulate.Match <- function(n.games){ return( replicate(n.games, Simulate.Game()) ) }` | Plays `n.games` games and returns their outcomes as a vector. |
+| `Simulate.Match <- function(n.games){ return( replicate(n.games, Simulate.Game())) }` | Plays `n.games` games and returns their outcomes as a vector. |
 | `sum(Simulate.Match(13) == "A") >= 7` | Counts Alice's wins in one 13-game match, then tests whether she won the match: `TRUE` or `FALSE`. |
 | `sum(replicate(m.trials, …))` | Repeats the match test `m.trials` times and counts the `TRUE`s. |
 | `p.Alice <- Simulate.Trials(m.trials)/m.trials` | Turns the count into a proportion; the next line prints it. |
@@ -670,7 +724,11 @@ The one-liner `sum(replicate(m.trials, sum(Simulate.Match(13) == "A") >= 7))`, i
 - `p.Alice`: "Look up p.Alice (`p.Alice`) and print it."
 :::
 
-Alice now wins a game with probability $(5/6)(0.6) = 0.5$ (AND rule): a fair coin.
+Alice now wins a game with probability (AND rule):
+
+$$\dfrac{5}{6} \times 0.6 = \mathbf{0.5}$$
+
+A fair coin.
 
 **V3: Chad and Deb play blackjack.** Ace to 10 four times each, plus twelve face cards worth 10.
 
@@ -686,7 +744,7 @@ Deb.score <- function(){
 
 p.Chad.Wins <- function(m){
   k.Chad <- sum(replicate(m, Chad.score() > Deb.score()))
-  return( k.Chad/m )
+  return( k.Chad/m)
 }
 print(paste0("The probability that Chad wins is ", round(p.Chad.Wins(10^5),4)*100, "%"))
 ## [1] "The probability that Chad wins is 54.62%"
@@ -743,23 +801,31 @@ Z <- (5 - Chad.params$mean)/Chad.params$sig; Z   ## -1.816618
 - `Z <- (5 - Chad.params$mean)/Chad.params$sig; Z`: "Read the mean out of the list (`Chad.params$mean`), subtract it from 5 (`5 -`), read sig (`Chad.params$sig`), divide (`/`), store it as Z (`Z <-`); then (`;`) print Z (`Z`)."
 :::
 
-`list(mean=, sig=)` returns two numbers, read back as `Chad.params$mean`; two cards score 2 to 20, hence half-integer breaks starting at 1.5, one bar per score. Typed answer: *No, Chad's score X = 5 is not unusual since it is less than two standard deviations away from its mean.* Q2 lets Chad hit on 18 or less (bust above 21 scores 0): 51.73%, lower.
+`list(mean=, sig=)` returns two numbers, read back as `Chad.params$mean`; two cards score 2 to 20, hence half-integer breaks starting at 1.5, one bar per score.
+
+Typed answer: *No, Chad's score X = 5 is not unusual since it is less than two standard deviations away from its mean.*
+
+Q2 lets Chad hit on 18 or less (bust above 21 scores 0): 51.73%, lower.
 
 :::quiz Two accepted ways to say "unusual"
-Either $|Z| > 2$ (Alice: $Z = -2.72$ unrounded, unusual; Chad: $Z = -1.82$, not unusual) or a tail probability below 0.025 (Alice: $P(X \le 3) = 0.0081 < 0.0250$). State the number and the cut-off with the verdict.
+Either $|Z| > 2$ (Alice: $Z = -2.72$ unrounded, unusual; Chad: $Z = -1.82$, not unusual) or a tail probability below 0.025 (Alice: $P(X \le 3) = 0.0081 < 0.0250$).
+
+State the number and the cut-off with the verdict.
 :::
 
 ## Simulate a Classic Chaos scroll on 20 items
 
-A Classic Chaos scroll (the 10 % tier whose failures can destroy the item) succeeds 10 % of the time, and a failure destroys the item 50 % of the time [Classic, meowdb's copy of the in-game item text, unchanged since Closed Online Test 2, checked 2026-10-27]. One use is success, fail with the item kept, or fail with it destroyed; $X$ counts the destroyed items when 20 items get one use each.
+A Classic Chaos scroll (the 10 % tier whose failures can destroy the item) succeeds 10 % of the time, and a failure destroys the item 50 % of the time.
+
+One use is success, fail with the item kept, or fail with it destroyed; $X$ counts the destroyed items when 20 items get one use each.
 
 ```quiz
 [
-  {"type": "fill", "q": "Fill the missing weight.", "code": "Chaos.Once <- function(){\n  return( sample(c(\"success\",\"kept\",\"destroyed\"), 1, prob = c(0.10, ___, 0.45)) )\n}", "answer": ["0.45"], "explain": "AND rule: $P(\\text{fail} \\cap \\text{kept}) = 0.90 \\times 0.50 = 0.45$, and the three weights $0.10 + 0.45 + 0.45$ sum to 1."},
-  {"q": "What exact proportion does `sum(replicate(m, Chaos.Once()) == \"destroyed\")/m` settle to? (4 decimals)", "type": "numeric", "answer": 0.45, "tolerance": 0.0001, "explain": "The \"destroyed\" weight, $0.90 \\times 0.50 = 0.4500$; one run with $m = 10^5$ is one draw near 45 000 destroyed."},
-  {"type": "fill", "q": "Fill the upper break so every value of $X$ from 0 to 20 gets its own bar.", "code": "X.vals <- replicate(10^5, sum(replicate(20, Chaos.Once()) == \"destroyed\"))\nhist(X.vals, breaks=seq(-0.5, ___, by=1), freq=FALSE)", "answer": ["20.5"], "explain": "Half-integer breaks from −0.5 to $n + 0.5 = 20.5$ centre a bar on each integer; `freq=FALSE` makes the heights relative frequencies."},
-  {"q": "`mean(X.vals)` and `sd(X.vals)` settle near 9 and 2.22 (computed: $np = 20 \\times 0.45$ and $\\sqrt{np(1-p)} = \\sqrt{20 \\times 0.45 \\times 0.55}$). Compute $Z$ for 15 destroyed items. (2 decimals)", "type": "numeric", "answer": 2.7, "tolerance": 0.006, "explain": "$Z = (15 - 9)/2.2249 = 2.6968$, or $6/2.22 = 2.7027$; both round to 2.70."},
-  {"q": "Is $X = 15$ destroyed items out of 20 unusual?", "options": ["yes, because $|Z| > 2$", "no, because $|Z| < 2$", "no, because 15 is below 20", "it cannot be judged without the exact binomial"], "answer": 0, "explain": "$|Z| = 2.70 > 2$, so yes, unusual. The other accepted test is a tail probability below 0.025."}
+  {"type": "fill", "q": "Fill the missing weight.", "code": "Chaos.Once <- function(){\n  return( sample(c(\"success\",\"kept\",\"destroyed\"), 1, prob = c(0.10, ___, 0.45)))\n}", "answer": ["0.45"], "explain": "AND rule: $$P(\\text{fail} \\cap \\text{kept}) = 0.90 \\times 0.50 = \\mathbf{0.45}$$ The three weights sum to 1: $$0.10 + 0.45 + 0.45 = 1$$"},
+  {"q": "What exact proportion does `sum(replicate(m, Chaos.Once()) == \"destroyed\")/m` settle to? (4 decimals)", "type": "numeric", "answer": 0.45, "tolerance": 0.0001, "explain": "The \"destroyed\" weight: $$0.90 \\times 0.50 = \\mathbf{0.4500}$$ One run with $m = 10^5$ is one draw near 45 000 destroyed."},
+  {"type": "fill", "q": "Fill the upper break so every value of $X$ from 0 to 20 gets its own bar.", "code": "X.vals <- replicate(10^5, sum(replicate(20, Chaos.Once()) == \"destroyed\"))\nhist(X.vals, breaks=seq(-0.5, ___, by=1), freq=FALSE)", "answer": ["20.5"], "explain": "Half-integer breaks from −0.5 to $$n + 0.5 = \\mathbf{20.5}$$ centre a bar on each integer; `freq=FALSE` makes the heights relative frequencies."},
+  {"q": "`mean(X.vals)` and `sd(X.vals)` settle near 9 and 2.22 (computed: $np = 20 \\times 0.45$ and $\\sqrt{np(1-p)} = \\sqrt{20 \\times 0.45 \\times 0.55}$). Compute $Z$ for 15 destroyed items. (2 decimals)", "type": "numeric", "answer": 2.7, "tolerance": 0.006, "explain": "$$Z = \\dfrac{15 - 9}{2.2249} = 2.6968$$ or $$\\dfrac{6}{2.22} = 2.7027$$ Both round to $\\mathbf{2.70}$."},
+  {"q": "Is $X = 15$ destroyed items out of 20 unusual?", "options": ["yes, because $|Z| > 2$", "no, because $|Z| < 2$", "no, because 15 is below 20", "it cannot be judged without the exact binomial"], "answer": 0, "explain": "$$|Z| = 2.70 > 2$$ So yes, unusual. The other accepted test is a tail probability below 0.025."}
 ]
 ```
 
@@ -787,14 +853,14 @@ A Classic Chaos scroll (the 10 % tier whose failures can destroy the item) succe
     "q": "In `Prob.Heads`, the estimate returned is...",
     "options": ["the number of heads k", "k/m, the relative frequency of heads in m trials", "m/k", "0.5"],
     "answer": 1,
-    "explain": "P(E) ≈ k/m: successes over trials, close to 0.5 for a fair coin and 10^5 trials."
+    "explain": "$$P(E) \\approx \\dfrac{k}{m}$$ Successes over trials, close to 0.5 for a fair coin and $10^5$ trials."
   },
   {
     "q": "What is the exact P(sum of two dice = 7) that `Prob.E(10^5)` (0.16789) estimates? (4 decimals)",
     "type": "numeric",
     "answer": 0.1667,
     "tolerance": 0.0003,
-    "explain": "Six of 36 outcomes sum to 7: 6/36 = 0.1667."
+    "explain": "Six of 36 outcomes sum to 7: $$6/36 = \\mathbf{0.1667}$$"
   },
   {
     "q": "`replicate(m, sum(sample.int(6, 2, replace=TRUE)))` returns...",
@@ -806,7 +872,7 @@ A Classic Chaos scroll (the 10 % tier whose failures can destroy the item) succe
     "q": "Task 9 found s = 0.051 for m = 100 and s = 0.017 for m = 1000. What happens to the variability of the estimate as m grows tenfold?",
     "options": ["it stays the same", "it shrinks by about a factor of 3 (√10)", "it shrinks by a factor of 10", "it grows"],
     "answer": 1,
-    "explain": "0.143, 0.051, 0.017, 0.0056, 0.0019: each step divides by roughly 3.2 = √10."
+    "explain": "0.143, 0.051, 0.017, 0.0056, 0.0019: each step divides by roughly $$\\sqrt{10} \\approx 3.2$$"
   },
   {
     "q": "`prop.table(table(die.vals))` gives...",
@@ -824,7 +890,7 @@ A Classic Chaos scroll (the 10 % tier whose failures can destroy the item) succe
     "q": "In `Draw.Cards`, drawing without replacement compared with drawing with replacement...",
     "options": ["moves the centre of the distribution", "makes the distribution narrower (less variability) without changing the centre n/2", "makes it wider", "has no effect"],
     "answer": 1,
-    "explain": "The lab's second conclusion. Removing cards makes the remaining draws lean back towards balance, tightening the spread; the mean stays at n/2 = 26/52 × n."
+    "explain": "The lab's second conclusion. Removing cards makes the remaining draws lean back towards balance, tightening the spread; the mean stays at $$\\dfrac{26}{52} \\times n = \\dfrac{n}{2}$$"
   },
   {
     "type": "fill",

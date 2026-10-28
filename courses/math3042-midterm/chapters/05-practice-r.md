@@ -2,7 +2,11 @@
 title: "Q7 to Q9: quantile, filter and bwplot; rhyper, dhyper, phyper; a simulation function"
 minutes: 25
 ---
-Ten of the practice paper's 46 marks are R written by hand. Each answer is a full, runnable line with real argument values, the `library()` call when a package is needed, `$` for a column and `data =` for a formula. Write every command on paper before you open the model answer.
+Ten of the practice paper's 46 marks are R written by hand.
+
+Each answer is a full, runnable line with real argument values, the `library()` call when a package is needed, `$` for a column and `data =` for a formula.
+
+Write every command on paper before you open the model answer.
 
 ## Q7 (4 marks). This question uses the data from the Gestation dataframe, which is part of the library mosaicData.
 
@@ -31,7 +35,9 @@ race       mother's race: "asian", "black", "mex", "mixed", or "white"
 …
 ```
 
-The excerpt is the only place the column names appear: `wt` for **birth weight**, `gestation` for the length of **gestation**, `race` for the mother's **race**. Copy them exactly; R is case-sensitive.
+The excerpt is the only place the column names appear: `wt` for **birth weight**, `gestation` for the length of **gestation**, `race` for the mother's **race**.
+
+Copy them exactly; R is case-sensitive.
 
 **a. [1]** Give an R command (or commands) that would output the 20th percentile birth weight.
 
@@ -73,7 +79,9 @@ quantile(Gestation$wt, 0.20)
 - "Take the Gestation data (`Gestation`), pull out its wt column (`$wt`), and find the weight with 20 % of the values below it (`0.20`, `quantile`)."
 :::
 
-The column is reached with `$`. A bare `quantile(wt, 0.20)` fails because no object called `wt` exists outside the data frame.
+The column is reached with `$`.
+
+A bare `quantile(wt, 0.20)` fails because no object called `wt` exists outside the data frame.
 
 :::info R syntax
 | Code | What it does |
@@ -230,9 +238,13 @@ boxplot(wt ~ race, data = Gestation, main = "Boxplots of Birth Weights by Race",
 - "Build the formula weight by race (`wt ~ race`), look its names up in Gestation (`data = Gestation`), take the title and labels (`main =`, `xlab =`, `ylab =`), then draw the boxplots (`boxplot`)."
 :::
 
-With a formula, `data = Gestation` replaces the `$`. The R sheet provided at the exam lists neither `filter` nor `bwplot`; both come from memory.
+With a formula, `data = Gestation` replaces the `$`.
 
-Taught in [Lab 2: grouped data in R](#/math3042-u2/lab2-grouped) and [R essentials](#/math3042/r-essentials). The full set of data-frame commands is in [R on paper](#/math3042-midterm/r-on-paper).
+The R sheet provided at the exam lists neither `filter` nor `bwplot`; both come from memory.
+
+Taught in [Lab 2: grouped data in R](#/math3042-u2/lab2-grouped) and [R essentials](#/math3042/r-essentials).
+
+The full set of data-frame commands is in [R on paper](#/math3042-midterm/r-on-paper).
 
 ## Q8 (3 marks). Three international flights, flights 311, 811 and 911, arrived at YVR and the passengers are now all mixed together in the immigration area.
 
@@ -265,7 +277,7 @@ The instructor writes the failures as an unevaluated sum such as `116+154`, whic
     "q": "**Q8a.** Write the full command on paper, then type the name of the function you used.",
     "type": "text",
     "answer": ["rhyper"],
-    "explain": "`rhyper(1, 154, 42+116, 20)`. \"Simulates\" means an r-function. One simulation, 154 successes (on flight 911), 42 + 116 failures (on the other two flights), 20 drawn."
+    "explain": "`rhyper(1, 154, 42+116, 20)`. \"Simulates\" means an r-function. One simulation, 154 successes (on flight 911), the 42 and 116 passengers of the other two flights as failures, 20 drawn."
   },
   {
     "type": "fill",
@@ -298,7 +310,9 @@ rhyper(1, 154, 42+116, 20)
 - "Add 42 and 116 (`42+116`) to get the failures, take the 154 successes (`154`), the sample of 20 (`20`) and one simulation (`1`), then draw the random count (`rhyper`)."
 :::
 
-The output is random, a single whole number near the hypergeometric mean μ = nK/N = 20 × 154/312 = 9.87.
+The output is random, a single whole number near the hypergeometric mean:
+
+$$\mu = \dfrac{nK}{N} = \dfrac{20 \times 154}{312} = \mathbf{9.87}$$
 
 **b. [1]** Computes the probability that exactly 9 of the 20 passengers were on flight 311.
 
@@ -338,7 +352,9 @@ dhyper(9, 42, 116+154, 20)
 - "Add 116 and 154 (`116+154`) to get the failures, take the count 9 (`9`), the 42 successes (`42`) and the sample of 20 (`20`), then compute P(X = 9) (`dhyper`)."
 :::
 
-It returns about 0.0002997: nine from a flight that holds 13 % of the room is far above the expected 20 × 42/312 = 2.7.
+It returns about 0.0002997: nine from a flight that holds 13 % of the room is far above the expected count:
+
+$$\mu = \dfrac{20 \times 42}{312} = \mathbf{2.7}$$
 
 **c. [1]** Computes the probability that at least 12 of the 20 passengers were on flight 311.
 
@@ -348,7 +364,7 @@ It returns about 0.0002997: nine from a flight that holds 13 % of the room is fa
     "q": "**Q8c.** Write the full command on paper, then type the name of the function you used.",
     "type": "text",
     "answer": ["phyper"],
-    "explain": "`1 - phyper(11, 42, 116+154, 20)` or `phyper(11, 42, 116+154, 20, lower.tail = FALSE)`. P(X ≥ 12) = 1 − P(X ≤ 11); the p-function is cumulative from the left, so the cut is at 11, not 12."
+    "explain": "`1 - phyper(11, 42, 116+154, 20)` or `phyper(11, 42, 116+154, 20, lower.tail = FALSE)`. $$P(X \\ge 12) = 1 - P(X \\le 11)$$ The p-function is cumulative from the left, so the cut is at 11, not 12."
   },
   {
     "type": "fill",
@@ -407,11 +423,15 @@ phyper(11, 42, 116+154, 20, lower.tail = FALSE)
 - "Add 116 and 154 (`116+154`), switch to the upper tail (`lower.tail = FALSE`), and compute P(X > 11) (`phyper`, `11`) for 42 successes (`42`) and 20 drawn (`20`)."
 :::
 
-Both return about 4.45 × 10⁻⁷. The question asks only for the command; no number is needed.
+Both return about 4.45 × 10⁻⁷.
 
-Taught in [hypergeometric](#/math3042-u4/hypergeometric) and [choosing the distribution](#/math3042-u4/choosing-distribution). Every d, p, q, r signature and the inequality table are in [R on paper](#/math3042-midterm/r-on-paper).
+The question asks only for the command; no number is needed.
 
-## Q9 (3 marks). Rather than paying the $3.50 fare to take the SkyTrain, a student may decide to sneak on and risk paying the $173 fine if caught.
+Taught in [hypergeometric](#/math3042-u4/hypergeometric) and [choosing the distribution](#/math3042-u4/choosing-distribution).
+
+Every d, p, q, r signature and the inequality table are in [R on paper](#/math3042-midterm/r-on-paper).
+
+## Q9 (3 marks). Rather than paying the \$3.50 fare to take the SkyTrain, a student may decide to sneak on and risk paying the \$173 fine if caught.
 
 > Suppose that each time they sneak on there is a 4.5% chance of getting caught and having to pay the fine.
 
@@ -510,7 +530,9 @@ skytrain_sneaking2 <- function(n) {
 - `return(sum(caught)/n)`: "Add up caught (`caught`, `sum`), divide by n (`/`, `n`), then hand the result back (`return`)."
 :::
 
-`sum(caught)/n` and `mean(caught)` are the same number: the mean of a vector of zeros and ones is the proportion of ones. The key writes `skytrain_sneaking=function(n){ ... }`; `=` and `<-` both assign.
+`sum(caught)/n` and `mean(caught)` are the same number: the mean of a vector of zeros and ones is the proportion of ones.
+
+The key writes `skytrain_sneaking=function(n){ ... }`; `=` and `<-` both assign.
 
 :::info R syntax
 | Code | What it does |
@@ -537,14 +559,14 @@ skytrain_sneaking2 <- function(n) {
     "q": "**Q9b.** Write the command on paper, then type the name of the function it calls.",
     "type": "text",
     "answer": ["skytrain_sneaking", "skytrain_sneaking2", "skytrain_sneaking(20)", "skytrain_sneaking2(20)"],
-    "explain": "`20*3.50 - skytrain_sneaking(20)*20*173`. Twenty fares avoided is 20 × 3.50 = 70 dollars saved. The function returns the proportion caught, so proportion × 20 is the number of fines, each 173 dollars. The result is random; a negative value means the student lost money."
+    "explain": "`20*3.50 - skytrain_sneaking(20)*20*173`. Twenty fares avoided: $$20 \\times 3.50 = 70 \\text{ dollars saved}$$ The function returns the proportion caught, so proportion × 20 is the number of fines, each 173 dollars. The result is random; a negative value means the student lost money."
   },
   {
     "type": "fill",
     "q": "Fill the fine.",
     "code": "20*3.50 - skytrain_sneaking(20)*20*___",
     "answer": ["173"],
-    "explain": "Each time caught costs the $173 fine. Proportion caught × 20 tries = number of fines; × 173 = dollars paid."
+    "explain": "Each time caught costs the \\$173 fine: $$\\text{proportion caught} \\times 20 \\text{ tries} = \\text{number of fines}$$ $$\\text{number of fines} \\times 173 = \\text{dollars paid}$$"
   }
 ]
 ```
@@ -570,9 +592,13 @@ skytrain_sneaking2 <- function(n) {
 - "Run the function with n = 20 (`skytrain_sneaking(20)`), multiply the proportion by 20 and by 173 (`*20*173`), work out 20 times 3.50 (`20*3.50`), then subtract the fines from the fares (`-`)."
 :::
 
-Part b reuses part a: call the function with n = 20, then turn the proportion into dollars. Calling it once gives one random student; the expected value comes next.
+Part b reuses part a: call the function with n = 20, then turn the proportion into dollars.
 
-Taught in [Lab 4: simulations](#/math3042-u3/lab4-simulations) and [binomial](#/math3042-u4/binomial). Simulation functions and `replicate` are in [R on paper](#/math3042-midterm/r-on-paper).
+Calling it once gives one random student; the expected value comes next.
+
+Taught in [Lab 4: simulations](#/math3042-u3/lab4-simulations) and [binomial](#/math3042-u4/binomial).
+
+Simulation functions and `replicate` are in [R on paper](#/math3042-midterm/r-on-paper).
 
 ```quiz
 [
@@ -582,14 +608,14 @@ Taught in [Lab 4: simulations](#/math3042-u3/lab4-simulations) and [binomial](#/
     "answer": -85.70,
     "tolerance": 0.005,
     "unit": "$",
-    "explain": "Fares avoided: 20 × 3.50 = 70 dollars. Expected number caught: 20 × 0.045 = 0.9, so expected fines 0.9 × 173 = 155.70 dollars. Expected saving 70 − 155.70 = −85.70: an expected loss of 85.70 dollars. Simulated runs of Q9b scatter around this."
+    "explain": "Fares avoided: $$20 \\times 3.50 = 70 \\text{ dollars}$$ Expected number caught: $$20 \\times 0.045 = 0.9$$ Expected fines: $$0.9 \\times 173 = 155.70 \\text{ dollars}$$ Expected saving: $$70 - 155.70 = \\mathbf{-85.70} \\text{ dollars}$$ An expected loss of 85.70 dollars. Simulated runs of Q9b scatter around this."
   },
   {
     "type": "fill",
     "q": "Probability that exactly 5 of the 20 passengers were on flight 811. Fill the successes slot.",
     "code": "dhyper(5, ___, 42+154, 20)",
     "answer": ["116"],
-    "explain": "Flight 811 had 116 passengers: those are the successes. The failures are the other two flights, 42 + 154 = 196."
+    "explain": "Flight 811 had 116 passengers: those are the successes. The failures are the other two flights: $$42 + 154 = 196$$"
   },
   {
     "type": "fill",
@@ -615,7 +641,7 @@ Taught in [Lab 4: simulations](#/math3042-u3/lab4-simulations) and [binomial](#/
     "q": "In `skytrain_sneaking2`, `mean(caught)` returns the same value as `sum(caught)/n`.",
     "type": "tf",
     "answer": true,
-    "explain": "`caught` holds n zeros and ones. Its mean is (number of ones)/n, the proportion caught, which is what `sum(caught)/n` computes."
+    "explain": "`caught` holds n zeros and ones. Its mean is the proportion caught, $$\\dfrac{\\text{number of ones}}{n}$$ which is what `sum(caught)/n` computes."
   },
   {
     "q": "`rhyper(1, 154, 42+116, 20)` returns the same number every time it is run.",

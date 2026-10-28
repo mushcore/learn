@@ -437,7 +437,7 @@ Without `set.seed` each run prints different numbers; with the seed every run re
 
 ## punif and runif on Classic's multiplier B
 
-In MapleStory Classic, meowdb's reconstructed damage formula draws a base multiplier B as `uniform(0.8, 1.0)` on every hit [Classic, meowdb's Classic World formulas page, no version shown, checked 2026-10-27]. B is a named uniform with both limits known, so 0.8 and 1.0 are `punif`'s `min` and `max` exactly. The final damage number mixes in a second uniform draw and is not itself uniform; only B is.
+In MapleStory Classic, meowdb's reconstructed damage formula draws a base multiplier B as `uniform(0.8, 1.0)` on every hit. B is a named uniform with both limits known, so 0.8 and 1.0 are `punif`'s `min` and `max` exactly. The final damage number mixes in a second uniform draw and is not itself uniform; only B is.
 
 ```quiz
 [

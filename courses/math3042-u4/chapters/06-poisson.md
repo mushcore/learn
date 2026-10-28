@@ -4,11 +4,17 @@ minutes: 18
 ---
 <!-- facts: none; no bank entry gives a measured count per time interval, and fixed respawn timers are not Poisson -->
 
-Requests at a web server, jobs at a CPU, bit errors on a line: there is no fixed number of trials and no probability per trial, only a rate. The Poisson distribution gives the probability of $x$ events in an interval from one number, the mean $\lambda$.
+Requests at a web server, jobs at a CPU, bit errors on a line: there is no fixed number of trials and no probability per trial, only a rate.
+
+The Poisson distribution gives the probability of $x$ events in an interval from one number, the mean $\lambda$.
 
 ## Events that occur randomly throughout a time interval
 
-Slide wording: the Poisson Distribution is *named after the French mathematician Siméon Poisson (1781–1840). This distribution is one of the most important probability distributions in engineering and computer science. It arises whenever we are modelling events that occur randomly throughout a given time interval.* The notes' two examples are both from this program: $X$ = *the number of jobs arriving for service at a CPU per second*, and $X$ = *the number of bits arriving in error at a network node per minute*.
+Slide wording: the Poisson Distribution is *named after the French mathematician Siméon Poisson (1781–1840).*
+
+*This distribution is one of the most important probability distributions in engineering and computer science. It arises whenever we are modelling events that occur randomly throughout a given time interval.*
+
+The notes' two examples are both from this program: $X$ = *the number of jobs arriving for service at a CPU per second*, and $X$ = *the number of bits arriving in error at a network node per minute*.
 
 ## The assumptions
 
@@ -17,7 +23,9 @@ Slide wording: the Poisson Distribution is *named after the French mathematician
 - *Occurrences are independent of each other.*
 - *The mean number of occurrences is known:* $\lambda$ = *mean number of occurrences during the time interval.*
 
-There is no $n$ and no $p$. The single parameter $\lambda$ belongs to a specific interval, and it must be the interval the question asks about.
+There is no $n$ and no $p$.
+
+The single parameter $\lambda$ belongs to a specific interval, and it must be the interval the question asks about.
 
 ## The formula
 
@@ -25,13 +33,21 @@ There is no $n$ and no $p$. The single parameter $\lambda$ belongs to a specific
 
 $$P(X = x) = \frac{\lambda^x}{x!}\,e^{-\lambda}, \qquad x = 0, 1, 2, \ldots$$
 
-*Here $e = 2.71828\ldots$ is Euler's constant from calculus.* $\lambda^x$ is the mean raised to the count, $x!$ is the factorial of the count, and $e^{-\lambda}$ is the same for every $x$ (the calculator's $e^x$ key with a negative argument). The values are unbounded: a Poisson count can be any non-negative integer.
+*Here $e = 2.71828\ldots$ is Euler's constant from calculus.*
+
+$\lambda^x$ is the mean raised to the count, $x!$ is the factorial of the count, and $e^{-\lambda}$ is the same for every $x$ (the calculator's $e^x$ key with a negative argument).
+
+The values are unbounded: a Poisson count can be any non-negative integer.
 
 *The mean and variance of $X$ are*
 
 $$\mu = \lambda, \qquad \sigma^2 = \lambda$$
 
-so $\sigma = \sqrt{\lambda}$. One number sets the centre and the spread together.
+so the standard deviation is:
+
+$$\sigma = \sqrt{\lambda}$$
+
+One number sets the centre and the spread together.
 
 A small case first, $\lambda = 2$ events per interval:
 
@@ -39,7 +55,13 @@ A small case first, $\lambda = 2$ events per interval:
 |---|---|---|---|---|---|
 | $\frac{2^x}{x!}e^{-2}$ | 0.1353 | 0.2707 | 0.2707 | 0.1804 | 0.0902 |
 
-$e^{-2} = 0.1353$ is $P(0)$; each next bar is the last one times $\lambda/x$. For example $P(3) = \frac{2^3}{3!}e^{-2} = \frac{8}{6} \times 0.1353 = 0.1804$, which is $P(2) \times \frac{2}{3}$.
+$e^{-2} = 0.1353$ is $P(0)$; each next bar is the last one times $\lambda/x$.
+
+For example:
+
+$$P(3) = \frac{2^3}{3!}e^{-2} = \frac{8}{6} \times 0.1353 = \mathbf{0.1804}$$
+
+That is $P(2) \times 2/3$.
 
 ```widget
 poisson-calc
@@ -52,9 +74,11 @@ poisson-calc
 
 The rate is given per 2 seconds; the question is about one minute. Rescale in three steps:
 
-1. Rate per one unit: 1 request ÷ 2 s = 0.5 per s.
-2. Times the interval length in the same unit: 0.5 × 60 s = 30.
-3. $\lambda = 30$ for one minute (the demo writes it as `lambda <- 1/2 * 60`).
+1. Rate per one unit:
+   $$1 \text{ request} \div 2 \text{ s} = 0.5 \text{ per s}$$
+2. Times the interval length in the same unit:
+   $$0.5 \times 60 \text{ s} = 30$$
+3. The mean for one minute: $\lambda = \mathbf{30}$ (the demo writes it as `lambda <- 1/2 * 60`).
 
 ```diagram
 { "type": "flow", "title": "Rescaling the rate to the interval", "nodes": [
@@ -73,13 +97,14 @@ The same three steps rescale the tickets, CPU and accident rates later in the un
     "type": "numeric",
     "answer": 0.0134,
     "tolerance": 0.0002,
-    "explain": "λ = 60/2 = 30 for a minute; 30^20/20! × e^(−30) = 1.433 × 10¹¹ × 9.358 × 10⁻¹⁴ = 0.0134."
+    "explain": "λ = 60/2 = 30 for a minute: $$\\dfrac{30^{20}}{20!} × e^{−30} = 1.433 × 10^{11} × 9.358 × 10^{−14} = \\mathbf{0.0134}$$"
   }
 ]
 ```
 
+Substitute $\lambda = 30$, $x = 20$:
 
-$$P(X = 20) = \frac{30^{20}}{20!}\,e^{-30} = \frac{3.487 \times 10^{29}}{2.433 \times 10^{18}} \times 9.358 \times 10^{-14} = 1.433 \times 10^{11} \times 9.358 \times 10^{-14} = 0.0134$$
+$$P(X = 20) = \frac{30^{20}}{20!}\,e^{-30} = \frac{3.487 \times 10^{29}}{2.433 \times 10^{18}} \times 9.358 \times 10^{-14} = 1.433 \times 10^{11} \times 9.358 \times 10^{-14} = \mathbf{0.0134}$$
 
 On a calculator, compute $30^{20} \div 20!$ first (it is about $1.4 \times 10^{11}$, well within range), then multiply by $e^{-30}$.
 
@@ -117,7 +142,13 @@ dpois(20, lambda)
 
 ## 20 or fewer: a cumulative probability
 
-*What is the probability that 20 or fewer requests will arrive in a given minute?* This is $P(X \le 20) = P(0) + P(1) + \cdots + P(20)$, twenty-one terms of the formula. Nobody adds them by hand; `ppois` does:
+*What is the probability that 20 or fewer requests will arrive in a given minute?*
+
+This is twenty-one terms of the formula:
+
+$$P(X \le 20) = P(0) + P(1) + \cdots + P(20)$$
+
+Nobody adds them by hand; `ppois` does:
 
 ```r
 ppois(20, lambda)
@@ -144,11 +175,19 @@ $P(X \le 20) = 0.0353$, almost three times $P(X = 20)$ alone: the terms for 15 t
 
 ## Is 20 requests unusual?
 
-*Is getting 20 requests in a given minute unusual in the statistical sense?* Use the parameters: $\mu = \lambda = 30$, $\sigma = \sqrt{30} = 5.48$.
+*Is getting 20 requests in a given minute unusual in the statistical sense?*
 
-$$Z = \frac{x - \mu}{\sigma} = \frac{20 - 30}{5.48} = -1.83$$
+Use the parameters:
 
-$|Z| < 2$, so 20 requests is **not unusual**: a quiet minute, but within two standard deviations of the mean. The tail probability agrees: $P(X \le 20) = 0.0353$ is above the 0.025 cutoff Quiz 4 accepted as the alternative test.
+$$\mu = \lambda = 30, \qquad \sigma = \sqrt{30} = 5.48$$
+
+Then standardize the count:
+
+$$Z = \frac{x - \mu}{\sigma} = \frac{20 - 30}{5.48} = \mathbf{-1.83}$$
+
+$|Z| < 2$, so 20 requests is **not unusual**: a quiet minute, but within two standard deviations of the mean.
+
+The tail probability agrees: $P(X \le 20) = 0.0353$ is above the 0.025 cutoff Quiz 4 accepted as the alternative test.
 
 ```r
 mu <- lambda
@@ -194,11 +233,15 @@ poisson-calc
 { "rate": 1, "per": 2, "unit": "s", "interval": 60, "x": 20, "op": "eq", "preset": "web server", "title": "The web server: 1 request per 2 s over a 60 s interval gives lambda = 30; P(X = 20) with the formula substituted" }
 ```
 
-Over a 10 s interval $\lambda$ falls to 5 and the bars shift left. The presets "CPU jobs (4 per second)" and "bit errors (3 per minute)" are the notes' two examples with a rate attached.
+Over a 10 s interval $\lambda$ falls to 5 and the bars shift left.
+
+The presets "CPU jobs (4 per second)" and "bit errors (3 per minute)" are the notes' two examples with a rate attached.
 
 ### Requests arriving over one minute
 
-The requests land at random times, about one every 2 s, so the count climbs near $t/2$ without matching it exactly. Each finished minute adds its count to the histogram, which builds toward the $\lambda = 30$ bars.
+The requests land at random times, about one every 2 s, so the count climbs near $t/2$ without matching it exactly.
+
+Each finished minute adds its count to the histogram, which builds toward the $\lambda = 30$ bars.
 
 ```widget
 arrivals-play
@@ -250,10 +293,20 @@ round(p.vals[c(20, 25, 30, 35, 40) + 1], 4)
 
 The `+ 1` is because `p.vals[1]` is $P(0)$.
 
-Each bar is the previous one times $\lambda/x$ (from the formula), so the bars rise while $x < 30$ and fall once $x > 30$. The peak is at 29 and 30, equal because $P(30)/P(29) = 30/30 = 1$. After it the bars fall a little more slowly than they rose: bell-shaped and slightly right-skewed, with nothing visible past 50. For a large $\lambda$ the Poisson looks like the binomial histograms of the earlier lessons, centred on $\lambda$ with spread $\sqrt{\lambda}$.
+Each bar is the previous one times $\lambda/x$ (from the formula), so the bars rise while $x < 30$ and fall once $x > 30$.
+
+The peak is at 29 and 30, equal because:
+
+$$\dfrac{P(30)}{P(29)} = \dfrac{30}{30} = 1$$
+
+After it the bars fall a little more slowly than they rose: bell-shaped and slightly right-skewed, with nothing visible past 50.
+
+For a large $\lambda$ the Poisson looks like the binomial histograms of the earlier lessons, centred on $\lambda$ with spread $\sqrt{\lambda}$.
 
 :::quiz λ must match the interval in the question
-Convert the rate before using it: 3 per hour over 20 minutes is $\lambda = 1$, not 3. And $\sigma$ is $\sqrt{\lambda}$, not $\lambda$.
+Convert the rate before using it: 3 per hour over 20 minutes is $\lambda = 1$, not 3.
+
+And $\sigma$ is $\sqrt{\lambda}$, not $\lambda$.
 :::
 
 ## Help-desk tickets in a 20-minute window
@@ -263,11 +316,11 @@ A help desk receives 18 tickets per hour on average, at random and independently
 ```quiz
 [
   {"q": "Name the distribution of X (one word).", "type": "text", "answer": ["poisson", "poisson distribution"], "explain": "X counts occurrences over an interval, the tickets arrive with uniform probability and independently, and the mean count is known: Poisson."},
-  {"q": "λ for the 20-minute window = ?", "type": "numeric", "answer": 6.0, "tolerance": 0.001, "explain": "Rescale the rate to the interval asked: 18 per hour × 20/60 hour = 6 tickets per 20 minutes. Using 18 would answer a question about a whole hour."},
-  {"q": "P(X = 4) = ? (4 decimals)", "type": "numeric", "answer": 0.1339, "tolerance": 6e-05, "explain": "λ^x e^(−λ)/x! = 6⁴ e^(−6)/4! = 1296 × 0.002479/24 = 0.1339."},
+  {"q": "λ for the 20-minute window = ?", "type": "numeric", "answer": 6.0, "tolerance": 0.001, "explain": "Rescale the rate to the interval asked: $$18 \\text{ per hour} × \\tfrac{20}{60} \\text{ hour} = \\mathbf{6} \\text{ tickets per 20 minutes}$$ Using 18 would answer a question about a whole hour."},
+  {"q": "P(X = 4) = ? (4 decimals)", "type": "numeric", "answer": 0.1339, "tolerance": 6e-05, "explain": "$$\\dfrac{λ^x e^{−λ}}{x!} = \\dfrac{6^4 e^{−6}}{4!} = \\dfrac{1296 × 0.002479}{24} = \\mathbf{0.1339}$$"},
   {"type": "fill", "q": "Complete the R call for P(X = 4).", "code": "dpois(___, ___)", "answer": ["4", "6"], "explain": "dpois(x, lambda): the count 4, then λ = 6 for the 20-minute window. It returns 0.1338526."},
-  {"q": "P(at most 2 tickets) = ? (4 decimals)", "type": "numeric", "answer": 0.062, "tolerance": 6e-05, "explain": "P(0) + P(1) + P(2) = e^(−6)(1 + 6 + 6²/2) = 0.002479 × 25 = 0.0620. In R, ppois(2, 6)."},
-  {"q": "Is a window with 12 tickets unusual? Z = ? (2 decimals)", "type": "numeric", "answer": 2.45, "tolerance": 0.01, "explain": "μ = λ = 6 and σ = √λ = √6 = 2.4495, so Z = (12 − 6)/2.4495 = 2.45. Above 2: 12 tickets is unusually high."}
+  {"q": "P(at most 2 tickets) = ? (4 decimals)", "type": "numeric", "answer": 0.062, "tolerance": 6e-05, "explain": "$$P(0) + P(1) + P(2) = e^{−6}(1 + 6 + 6^2/2) = 0.002479 × 25 = \\mathbf{0.0620}$$ In R, ppois(2, 6)."},
+  {"q": "Is a window with 12 tickets unusual? Z = ? (2 decimals)", "type": "numeric", "answer": 2.45, "tolerance": 0.01, "explain": "$$\\mu = λ = 6, \\quad \\sigma = \\sqrt{6} = 2.4495$$ $$Z = \\dfrac{12 − 6}{2.4495} = \\mathbf{2.45}$$ Above 2: 12 tickets is unusually high."}
 ]
 ```
 
@@ -278,20 +331,20 @@ A help desk receives 18 tickets per hour on average, at random and independently
     "type": "numeric",
     "answer": 1,
     "tolerance": 0.001,
-    "explain": "Rescale the rate to the interval: 3 per 60 minutes is 3 × 20/60 = 1 per 20 minutes."
+    "explain": "Rescale the rate to the interval, 3 per 60 minutes: $$3 × \\tfrac{20}{60} = \\mathbf{1} \\text{ per 20 minutes}$$"
   },
   {
     "q": "With λ = 1, P(X = 2)? (4 decimals)",
     "type": "numeric",
     "answer": 0.1839,
     "tolerance": 0.0003,
-    "explain": "1^2/2! × e^(−1) = 0.5 × 0.3679 = 0.1839."
+    "explain": "$$\\dfrac{1^2}{2!} × e^{−1} = 0.5 × 0.3679 = \\mathbf{0.1839}$$"
   },
   {
     "q": "Write P(X = 20) for the web server (λ = 30 per minute) as the Poisson formula with the numbers substituted. Use ^ for powers, ! for factorial, e^(-30) for the exponential, no spaces.",
     "type": "text",
     "answer": ["30^20/20!*e^(-30)", "30^20*e^(-30)/20!", "(30^20/20!)*e^(-30)", "e^(-30)*30^20/20!", "30^20/20!*e^-30", "30^20*e^-30/20!", "(30^20*e^(-30))/20!", "e^-30*30^20/20!"],
-    "explain": "λ^x/x! · e^(−λ) with λ = 30, x = 20: 30²⁰/20! · e^(−30) = 0.0134."
+    "explain": "λ^x/x! · e^(−λ) with λ = 30, x = 20: $$\\dfrac{30^{20}}{20!} · e^{−30} = \\mathbf{0.0134}$$"
   },
   {
     "q": "A café counts customers per hour, but most arrive in the ten minutes before noon. Which Poisson assumption fails?",
@@ -303,7 +356,7 @@ A help desk receives 18 tickets per hour on average, at random and independently
     "q": "For a Poisson variable the mean and the variance are equal.",
     "type": "tf",
     "answer": true,
-    "explain": "μ = λ and σ² = λ, so σ = √λ: for the web server, 30 and √30 = 5.48."
+    "explain": "μ = λ and σ² = λ, so σ = √λ. For the web server: $$\\mu = 30, \\quad \\sigma = \\sqrt{30} = 5.48$$"
   },
   {
     "q": "Which R call gives the probability of 20 or fewer requests in a minute when λ = 30?",
@@ -316,33 +369,33 @@ A help desk receives 18 tickets per hour on average, at random and independently
     "type": "numeric",
     "answer": 0.0183,
     "tolerance": 0.0003,
-    "explain": "λ = 4, x = 0: 4^0/0! × e^(−4) = e^(−4) = 0.0183. Remember 0! = 1."
+    "explain": "λ = 4, x = 0: $$\\dfrac{4^0}{0!} × e^{−4} = e^{−4} = \\mathbf{0.0183}$$ Remember 0! = 1."
   },
   {
     "q": "Bit errors arrive at a node at 3 per minute. P(at most 1 error in a minute)? (4 decimals)",
     "type": "numeric",
     "answer": 0.1991,
     "tolerance": 0.0003,
-    "explain": "P(0) + P(1) = e^(−3) + 3e^(−3) = 4 × 0.0498 = 0.1991; ppois(1, 3) in R."
+    "explain": "$$P(0) + P(1) = e^{−3} + 3e^{−3} = 4 × 0.0498 = \\mathbf{0.1991}$$ In R, ppois(1, 3)."
   },
   {
     "q": "A Poisson variable has λ = 25. Its standard deviation is...",
     "options": ["25", "5", "625", "12.5"],
     "answer": 1,
-    "explain": "σ² = λ = 25, so σ = √25 = 5."
+    "explain": "σ² = λ = 25, so: $$\\sigma = \\sqrt{25} = \\mathbf{5}$$"
   },
   {
     "q": "With λ = 25 (σ = 5), the Z-score of x = 36 is? (1 decimal)",
     "type": "numeric",
     "answer": 2.2,
     "tolerance": 0.05,
-    "explain": "Z = (36 − 25)/5 = 2.2, beyond 2, so 36 events would be unusually many."
+    "explain": "$$Z = \\dfrac{36 − 25}{5} = \\mathbf{2.2}$$ Beyond 2, so 36 events would be unusually many."
   },
   {
     "q": "A server averages one request every 2 seconds. For a 10-second window, λ = ?",
     "options": ["0.5", "2", "5", "10"],
     "answer": 2,
-    "explain": "Half a request per second times 10 seconds: λ = 5. The 0.5 is the per-second rate; the question's interval is 10 s."
+    "explain": "Half a request per second times 10 seconds: $$\\lambda = 0.5 × 10 = \\mathbf{5}$$ The 0.5 is the per-second rate; the question's interval is 10 s."
   },
   {
     "q": "Which of these is NOT one of the Poisson assumptions?",

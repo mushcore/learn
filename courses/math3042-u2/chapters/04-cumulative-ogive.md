@@ -3,7 +3,9 @@ title: Cumulative frequencies & ogives
 minutes: 17
 ---
 
-A frequency table counts the values **in** each class; a percentile asks how many lie **below** a point. Running totals answer it, and plotting them gives the **ogive** (**"oh-jive"**).
+A frequency table counts the values **in** each class; a percentile asks how many lie **below** a point.
+
+Running totals answer it, and plotting them gives the **ogive** (**"oh-jive"**).
 
 ## Two definitions
 
@@ -12,10 +14,16 @@ A frequency table counts the values **in** each class; a percentile asks how man
 
 ## Building the table (Old Faithful, $n = 272$)
 
-Start from the histogram lesson's frequency distribution (width 0.200, first class 1.6 to 1.799). The instructor's two rules beside the table:
+Start from the histogram lesson's frequency distribution (width 0.200, first class 1.6 to 1.799).
 
-- Each cumulative frequency is the **previous cumulative frequency plus this class's frequency**: 12, then $12 + 39 = 51$, then $51 + 20 = 71$. Dividing by $n$ gives $12/272 = 0.044$, $51/272 = 0.1875$, $71/272 = 0.2610$.
-- **"Last cumulative frequency = $n$."** The running total must end at 272 and the last cumulative relative frequency at $272/272 = 1.000$: the arithmetic check.
+The instructor's two rules beside the table:
+
+- Each cumulative frequency is the **previous cumulative frequency plus this class's frequency**:
+  $$12, \qquad 12 + 39 = 51, \qquad 51 + 20 = \mathbf{71}$$
+  Dividing by $n$ gives the cumulative relative frequencies:
+  $$\dfrac{12}{272} = 0.044, \qquad \dfrac{51}{272} = 0.1875, \qquad \dfrac{71}{272} = \mathbf{0.2610}$$
+- **"Last cumulative frequency = $n$."** The running total must end at 272 and the last cumulative relative frequency at 1.000, the arithmetic check:
+  $$\dfrac{272}{272} = \mathbf{1.000}$$
 
 The complete table, with the extra row on top that the ogive needs:
 
@@ -41,13 +49,27 @@ The complete table, with the extra row on top that the ogive needs:
 | 4.8 | 4.999 | 11 | 268 | 0.985 |
 | 5.0 | 5.199 | 4 | 272 | 1.000 |
 
-The instructor labelled the **Upper Class Limit** column **"X-axis"** and the **Cumul Rel Freq** column **"Y-axis"**: those two columns are the ogive. The top row (upper limit 1.599, cumulative 0) is *"one additional point at the beginning of the curve to indicate the 0.0 point"*. 1.599 is the first lower limit 1.600 minus one unit of precision: the upper limit of an imaginary empty class before the first.
+The instructor labelled the **Upper Class Limit** column **"X-axis"** and the **Cumul Rel Freq** column **"Y-axis"**: those two columns are the ogive.
+
+The top row (upper limit 1.599, cumulative 0) is *"one additional point at the beginning of the curve to indicate the 0.0 point"*.
+
+1.599 is the first lower limit 1.600 minus one unit of precision: the upper limit of an imaginary empty class before the first.
 
 ## Reading the table
 
-**"How many eruptions had a duration of less than 4.0 minutes?"** **134**, the cumulative frequency of the class ending at 3.999 ("total # up to 3.999").
+**"How many eruptions had a duration of less than 4.0 minutes?"**
 
-**"Estimate the median eruption time using the cumulative relative frequencies."** The median has 50% below it. In the last column 0.493 at 3.999 is under 0.5 and 0.607 at 4.199 is over it, so **"$Q_2$ is somewhere between 4.0 and 4.199."** (R's exact median is 4.000, at the bottom of that class.) Any percentile $P_p$ is located the same way.
+**134**, the cumulative frequency of the class ending at 3.999 ("total # up to 3.999").
+
+**"Estimate the median eruption time using the cumulative relative frequencies."**
+
+The median has 50% below it.
+
+In the last column 0.493 at 3.999 is under 0.5 and 0.607 at 4.199 is over it, so **"$Q_2$ is somewhere between 4.0 and 4.199."**
+
+R's exact median is 4.000, at the bottom of that class.
+
+Any percentile $P_p$ is located the same way.
 
 ### In R
 
@@ -102,7 +124,13 @@ cbind(cumul.rel.freq.dist)
 
 > An ogive ("oh-jive") shows the cumulative relative frequencies plotted against the upper class limits.
 
-The points are $(1.599, 0.000)$, $(1.799, 0.044)$, $(1.999, 0.188)$, ..., $(5.199, 1.000)$, joined by straight segments. A cumulative total never decreases, so the curve only rises or stays flat, ending at 1.0. The horizontal axis is the **upper** class limits, because a class's whole count lies below its upper limit. The instructor's caption: **"Shows all percentiles at once."**
+The points are $(1.599, 0.000)$, $(1.799, 0.044)$, $(1.999, 0.188)$, ..., $(5.199, 1.000)$, joined by straight segments.
+
+A cumulative total never decreases, so the curve only rises or stays flat, ending at 1.0.
+
+The horizontal axis is the **upper** class limits, because a class's whole count lies below its upper limit.
+
+The instructor's caption: **"Shows all percentiles at once."**
 
 ```r
 upper.class.limits <- seq(1.599, 5.199, 0.2)
@@ -156,7 +184,9 @@ abline(h = 0.357, lty=3)
 - `abline(…)` lines: "Set the position and the dotted style (`v =` or `h =`, `lty=3`), then draw each line on the plot (`abline`)."
 :::
 
-`type="b"` draws **b**oth points and lines. `c(0, cumul.rel.freq.dist)` prepends the 0 for the 1.599 point; `abline()` draws the dotted guide lines used below.
+`type="b"` draws **b**oth points and lines.
+
+`c(0, cumul.rel.freq.dist)` prepends the 0 for the 1.599 point; `abline()` draws the dotted guide lines used below.
 
 ### Reading the ogive, the two directions
 
@@ -173,10 +203,22 @@ abline(h = 0.357, lty=3)
 The ogive is straight between two table points, so a value between them is found by proportion.
 
 1. Find the two upper limits around $X$: 3.999 (0.493) and 4.199 (0.607).
-2. How far along: $(4.1 - 3.999)/0.2 = 0.505$.
-3. Height: $0.493 + 0.505 \times (0.607 - 0.493) = 0.493 + 0.058 = 0.551$, about 55%.
+2. How far along:
+   $$\dfrac{4.1 - 3.999}{0.2} = \mathbf{0.505}$$
+3. Height, about 55%:
+   $$0.493 + 0.505 \times (0.607 - 0.493) = 0.493 + 0.058 = \mathbf{0.551}$$
 
-Reverse, for $P_{30}$: 0.30 lies between 0.261 (at 2.199) and 0.327 (at 2.399). How far along: $(0.30 - 0.261)/(0.327 - 0.261) = 0.039/0.066 = 0.59$, so $X = 2.199 + 0.59 \times 0.2 = 2.32$. The instructor's 2.35 is read by eye off the drawn curve; both count.
+Reverse, for $P_{30}$: 0.30 lies between 0.261 (at 2.199) and 0.327 (at 2.399).
+
+How far along:
+
+$$\dfrac{0.30 - 0.261}{0.327 - 0.261} = \dfrac{0.039}{0.066} = 0.59$$
+
+So the value is:
+
+$$X = 2.199 + 0.59 \times 0.2 = \mathbf{2.32}$$
+
+The instructor's 2.35 is read by eye off the drawn curve; both count.
 :::
 
 ```diagram
@@ -186,7 +228,17 @@ Reverse, for $P_{30}$: 0.30 lies between 0.261 (at 2.199) and 0.327 (at 2.399). 
 The ogive is the graph of the percentile function from Unit 1 ([Quartiles & percentiles](#/math3042/quartiles-percentiles)), read in either direction.
 
 :::tip Between two values
-Fraction from $a$ to $b$ = (height at $b$) − (height just below $a$). With classes, that is the upper limit of the last class you want minus the upper limit of the class before the first one you want. Eruptions from 3.0 to 4.199: $0.607$ (at 4.199) $- 0.357$ (at 2.999) $= 0.250$. Check by counts: $(1 + 4 + 6 + 10 + 16 + 31)/272 = 68/272 = 0.250$.
+Fraction from $a$ to $b$ = (height at $b$) − (height just below $a$).
+
+With classes, that is the upper limit of the last class you want minus the upper limit of the class before the first one you want.
+
+Eruptions from 3.0 to 4.199:
+
+$$0.607 \text{ (at 4.199)} - 0.357 \text{ (at 2.999)} = \mathbf{0.250}$$
+
+Check by counts:
+
+$$\dfrac{1 + 4 + 6 + 10 + 16 + 31}{272} = \dfrac{68}{272} = \mathbf{0.250}$$
 :::
 
 ```diagram
@@ -199,7 +251,9 @@ ogive
 
 ### The running total drawn class by class
 
-Each step adds one class's frequency to the running total (12, 51, 71, ...) and plots the new point at that class's upper limit. A class adds zero or more values, so no segment can point down.
+Each step adds one class's frequency to the running total (12, 51, 71, ...) and plots the new point at that class's upper limit.
+
+A class adds zero or more values, so no segment can point down.
 
 ```widget
 ogive-play
@@ -212,26 +266,26 @@ Fifty delivery times in minutes were grouped into classes 10–14, 15–19, 20�
 
 ```quiz
 [
-  {"q": "Cumulative relative frequency of the class 20–24? (3 decimals)", "type": "numeric", "answer": 0.66, "tolerance": 0.0006, "explain": "Cumulative frequency $4 + 11 + 18 = 33$; divide by $n = 50$: $33/50 = 0.660$."},
+  {"q": "Cumulative relative frequency of the class 20–24? (3 decimals)", "type": "numeric", "answer": 0.66, "tolerance": 0.0006, "explain": "Cumulative frequency: $$4 + 11 + 18 = 33$$ Divide by $n = 50$: $$\\dfrac{33}{50} = \\mathbf{0.660}$$"},
   {"q": "How many deliveries took less than 25 minutes?", "type": "numeric", "answer": 33, "tolerance": 0, "explain": "Everything up to and including the class ending at 24: the cumulative frequency 33."},
-  {"q": "The ogive gets one extra point at height 0. What is its $x$-coordinate?", "type": "numeric", "answer": 9, "tolerance": 0, "explain": "The upper limit just before the first class: 10 − 1 = 9, so the curve starts at (9, 0) and then plots (14, 0.08), (19, 0.30), …"},
+  {"q": "The ogive gets one extra point at height 0. What is its $x$-coordinate?", "type": "numeric", "answer": 9, "tolerance": 0, "explain": "The upper limit just before the first class: $$10 - 1 = \\mathbf{9}$$ So the curve starts at (9, 0) and then plots (14, 0.08), (19, 0.30), …"},
   {"q": "Which class contains the median?", "options": ["20–24", "15–19", "25–29", "30–34"], "answer": 0, "explain": "The cumulative relative frequencies are 0.08, 0.30, 0.66, 0.84, 0.96, 1.00. 0.5 is first passed in the class 20–24 (0.30 below it, 0.66 at its upper limit)."},
-  {"q": "What percentage of deliveries took 15 to 29 minutes?", "type": "numeric", "answer": 76, "tolerance": 0.5, "unit": "%", "explain": "Height at 29 (the last class wanted, 25–29) minus height at 14 (the class before the first one wanted, 15–19): $0.84 - 0.08 = 0.76$, i.e. 76%. Check by counts: $(11 + 18 + 9)/50 = 38/50 = 0.76$."},
+  {"q": "What percentage of deliveries took 15 to 29 minutes?", "type": "numeric", "answer": 76, "tolerance": 0.5, "unit": "%", "explain": "Height at 29 (the last class wanted, 25–29) minus height at 14 (the class before the first one wanted, 15–19): $$0.84 - 0.08 = \\mathbf{0.76}$$ That is 76%. Check by counts: $$\\dfrac{11 + 18 + 9}{50} = \\dfrac{38}{50} = 0.76$$"},
   {"type": "fill", "q": "Fill the function that turns frequencies into running totals.", "code": "freqs <- c(4, 11, 18, 9, 6, 2)\n___(freqs)\n## [1]  4 15 33 42 48 50", "answer": ["cumsum"], "explain": "`cumsum()` adds each frequency to the previous total; the last value equals $n = 50$, the arithmetic check."}
 ]
 ```
 
 ```quiz
 [
-  {"q": "Old Faithful classes have frequencies 12, 39, 20, 18, ... What is the cumulative frequency of the third class (2.0 to 2.199)?", "type": "numeric", "answer": 71, "tolerance": 0, "explain": "$12 + 39 = 51$, then $51 + 20 = 71$."},
-  {"q": "What is the cumulative relative frequency of the second class (1.8 to 1.999)? (3 decimals)", "type": "numeric", "answer": 0.188, "tolerance": 0.001, "explain": "Cumulative frequency 51, divided by $n = 272$: $51/272 = 0.1875 \\approx 0.188$."},
+  {"q": "Old Faithful classes have frequencies 12, 39, 20, 18, ... What is the cumulative frequency of the third class (2.0 to 2.199)?", "type": "numeric", "answer": 71, "tolerance": 0, "explain": "$$12 + 39 = 51, \\qquad 51 + 20 = \\mathbf{71}$$"},
+  {"q": "What is the cumulative relative frequency of the second class (1.8 to 1.999)? (3 decimals)", "type": "numeric", "answer": 0.188, "tolerance": 0.001, "explain": "Cumulative frequency 51, divided by $n = 272$: $$\\dfrac{51}{272} = 0.1875 \\approx \\mathbf{0.188}$$"},
   {"q": "The last cumulative frequency in any table must equal...", "options": ["$n$, the total number of individuals", "the largest single frequency", "the number of classes", "100"], "answer": 0, "explain": "The running total ends when every individual has been counted: 272 here. The last cumulative relative frequency is therefore 1.000."},
   {"q": "How many Old Faithful eruptions lasted less than 4.0 minutes?", "type": "numeric", "answer": 134, "tolerance": 0, "explain": "The cumulative frequency of the class ending at 3.999 is 134: 'total # up to 3.999'."},
   {"q": "Using cumulative relative frequencies 0.493 at 3.999 and 0.607 at 4.199, the median eruption time is...", "options": ["somewhere between 4.0 and 4.199", "exactly 3.999", "somewhere between 3.8 and 3.999", "about 0.5 minutes"], "answer": 0, "explain": "0.5 is first reached inside the class 4.0-4.199 (0.493 is below 0.5, 0.607 is above), so Q2 lies in that class."},
   {"q": "An ogive plots cumulative relative frequency against the lower class limits.", "type": "tf", "answer": false, "explain": "Against the UPPER class limits: a class's whole count is below its upper limit. One extra point (1.599, 0) is added at the start."},
   {"q": "Why is the point (1.599, 0) added to the Old Faithful ogive?", "options": ["To show that 0% of the data lies below the first class", "Because 1.599 is the median", "R requires an even number of points", "To make the curve pass through the origin"], "answer": 0, "explain": "The notes: 'we insert one additional point at the beginning of the curve to indicate the 0.0 point of cumulative relative frequency.'"},
   {"q": "From the ogive, about what percentage of eruptions last less than 3.0 minutes?", "type": "numeric", "answer": 35, "tolerance": 2, "unit": "%", "explain": "Up from 3.0 to the curve, across: approximately 35%, so $P_{35} = 3.0$ (the table gives 0.357 at 2.999)."},
-  {"q": "Which eruption duration has 30% of eruptions below it and 70% above it (the 30th percentile)?", "type": "numeric", "answer": 2.35, "tolerance": 0.15, "unit": "min", "explain": "Across from 0.30 to the curve, then down: about 2.35, i.e. $P_{30} = 2.35$. By proportion between 0.261 (at 2.199) and 0.327 (at 2.399): $2.199 + 0.59 \\times 0.2 = 2.32$; both count."},
+  {"q": "Which eruption duration has 30% of eruptions below it and 70% above it (the 30th percentile)?", "type": "numeric", "answer": 2.35, "tolerance": 0.15, "unit": "min", "explain": "Across from 0.30 to the curve, then down: about 2.35, i.e. $P_{30} = 2.35$. By proportion between 0.261 (at 2.199) and 0.327 (at 2.399): $$2.199 + 0.59 \\times 0.2 = 2.32$$ Both count."},
   {"q": "Which R function turns the frequencies 12, 39, 20, ... into the running totals 12, 51, 71, ...?", "options": ["`cumsum()`", "`sum()`", "`cut()`", "`table()`"], "answer": 0, "explain": "`cumsum()` computes cumulative sums; `cut()` assigns values to classes and `table()` counts them, then `cumsum()` accumulates."},
   {"q": "In `plot(upper.class.limits, ogive.values, type=\"b\", ...)`, what does `type=\"b\"` draw?", "options": ["Both the points and the lines connecting them", "Bars", "Only the points", "A box plot"], "answer": 0, "explain": "'b' is for both; 'p' would give points only and 'l' lines only."},
   {"q": "On an ogive the curve can go down between two consecutive points.", "type": "tf", "answer": false, "explain": "Cumulative frequency never decreases (a class adds zero or more individuals), so the ogive only rises or stays flat, ending at 1.0."}

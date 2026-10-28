@@ -3,7 +3,9 @@ title: Formula sheet (Unit 3)
 minutes: 8
 ---
 
-Everything from Unit 3 and Labs 3 and 4 on one page: the definitions, the rules, the worked numbers from the notes, and the R. No new explanations here; if a line does not make sense, go back to its lesson.
+Everything from Unit 3 and Labs 3 and 4 on one page: the definitions, the rules, the worked numbers from the notes, and the R.
+
+No new explanations here; if a line does not make sense, go back to its lesson.
 
 ## Definitions
 
@@ -22,12 +24,21 @@ Everything from Unit 3 and Labs 3 and 4 on one page: the definitions, the rules,
 
 ## Counting
 
-| Rule | Formula | Use when |
-|---|---|---|
-| fundamental counting rule | $n_1 \times n_2 \times \cdots \times n_k$ (often $n^r$) | one choice from each set; repeats allowed (dice, coins, cards with replacement) |
-| factorial | $n! = n(n-1)\cdots 1$ | all $n$ items in order |
-| permutations | $P(n, r) = \dfrac{n!}{(n-r)!}$ | ordered sequence of $r$ from $n$, no repeats (calculator `nPr`) |
-| combinations | $C(n, r) = \dfrac{n!}{r!\,(n-r)!} = \dfrac{P(n, r)}{r!}$ | unordered hand or committee of $r$ from $n$ (calculator `nCr`) |
+**Fundamental counting rule**: one choice from each set; repeats allowed (dice, coins, cards with replacement), often $n^r$:
+
+$$n_1 \times n_2 \times \cdots \times n_k$$
+
+**Factorial**: all $n$ items in order:
+
+$$n! = n(n-1)\cdots 1$$
+
+**Permutations**: ordered sequence of $r$ from $n$, no repeats (calculator `nPr`):
+
+$$P(n, r) = \dfrac{n!}{(n-r)!}$$
+
+**Combinations**: unordered hand or committee of $r$ from $n$ (calculator `nCr`):
+
+$$C(n, r) = \dfrac{n!}{r!\,(n-r)!} = \dfrac{P(n, r)}{r!}$$
 
 Deck: 52 cards, 26 red (hearts, diamonds) and 26 black (spades, clubs), 4 suits of 13, 4 of each rank, 12 face cards.
 
@@ -46,14 +57,29 @@ Deck: 52 cards, 26 red (hearts, diamonds) and 26 black (spades, clubs), 4 suits 
 
 ## Rules
 
-| Rule | the question says… | Formula |
-|---|---|---|
-| complement | not, at least one, fewer than | $P(\bar{A}) = 1 - P(A)$ (use for "at least one", "less than the maximum") |
-| addition | or, either | $P(A \cup B) = P(A) + P(B) - P(A \cap B)$; mutually exclusive: $P(A) + P(B)$ |
-| conditional | given, if, among | $P(B \mid A) = \dfrac{\lvert A \cap B \rvert}{\lvert A \rvert} = \dfrac{P(A \cap B)}{P(A)}$ |
-| multiplication | and, both, then, all | $P(A \cap B) = P(A)\,P(B \mid A)$; independent: $P(A)\,P(B)$ |
-| total probability | a random one, with branch shares and rates given | $P(B) = \sum_i P(A_i)\,P(B \mid A_i)$ |
-| Bayes | what fraction of the defective (positive, dead) ones came from … | $P(A_i \mid B) = \dfrac{P(A_i)\,P(B \mid A_i)}{\sum_j P(A_j)\,P(B \mid A_j)}$ |
+**Complement** (the question says: not, at least one, fewer than, less than the maximum):
+
+$$P(\bar{A}) = 1 - P(A)$$
+
+**Addition** (or, either); mutually exclusive drops the last term:
+
+$$P(A \cup B) = P(A) + P(B) - P(A \cap B)$$
+
+**Conditional** (given, if, among):
+
+$$P(B \mid A) = \dfrac{\lvert A \cap B \rvert}{\lvert A \rvert} = \dfrac{P(A \cap B)}{P(A)}$$
+
+**Multiplication** (and, both, then, all); independent: $P(A)\,P(B)$:
+
+$$P(A \cap B) = P(A)\,P(B \mid A)$$
+
+**Total probability** (a random one, with branch shares and rates given):
+
+$$P(B) = \sum_i P(A_i)\,P(B \mid A_i)$$
+
+**Bayes** (what fraction of the defective, positive or dead ones came from …):
+
+$$P(A_i \mid B) = \dfrac{P(A_i)\,P(B \mid A_i)}{\sum_j P(A_j)\,P(B \mid A_j)}$$
 
 | Example | Answer |
 |---|---|
@@ -66,7 +92,9 @@ Deck: 52 cards, 26 red (hearts, diamonds) and 26 black (spades, clubs), 4 suits 
 | left-handed: $P(L)$, $P(F \mid L)$ | $0.6(0.05) + 0.4(0.15) = 0.09$; $0.03/0.09 = 1/3$ |
 | CPUs: $P(D)$, $P(\text{Intel} \mid D)$ | $0.0085 + 0.0030 + 0.0010 = 0.0125$; $0.0085/0.0125 = 0.68$ |
 
-Two-way table: a conditional is the cell over the **row** total (given the row) or over the **column** total (given the column). Tree: multiply along a path; add the paths ending in $B$ for $P(B)$; divide one path by that sum for the posterior.
+Two-way table: a conditional is the cell over the **row** total (given the row) or over the **column** total (given the column).
+
+Tree: multiply along a path; add the paths ending in $B$ for $P(B)$; divide one path by that sum for the posterior.
 
 ## R (Lab 3, Lab 4, demo notebook)
 
@@ -89,7 +117,11 @@ Two-way table: a conditional is the cell over the **row** total (given the row) 
 | `prop.table(table(x))`, `barplot(...)`, `histogram(x, type="d", breaks=seq(-0.5, n+0.5, by=1))` | relative-frequency bar plot; mosaic density histogram of an integer $X$ |
 | `factorial(4)`, `choose(52, 4)`, `choose(52, 4) * factorial(4)` | $4!$, $C(52, 4)$, $P(52, 4)$ |
 
-Lab 4 conclusions: the estimate's variability falls by about $\sqrt{10}$ per tenfold increase in $m$; as $n$ grows the distribution of $X$ (number of 3s, number of red cards) approaches a normal shape with centre $n/6$ or $n/2$; sampling without replacement narrows it without moving the centre.
+Lab 4 conclusions: the estimate's variability falls by about $\sqrt{10}$ per tenfold increase in $m$.
+
+As $n$ grows the distribution of $X$ (number of 3s, number of red cards) approaches a normal shape with centre $n/6$ or $n/2$.
+
+Sampling without replacement narrows it without moving the centre.
 
 ```quiz
 [

@@ -58,7 +58,7 @@ freq-hist
     "answer": 21,
     "tolerance": 1,
     "unit": "%",
-    "explain": "Add the bars from 60 minutes up: 15 + 11 + 7 + 5 + 3 + 1 = 42, so 42/200 = 0.21 or **21 %** commute at least 60 minutes. Equivalently 200 − 158 = 42, where 158 is the cumulative count through 60 minutes. Starting one bar too early, at 50–60, gives 63 (31.5 %): it adds the 21 students who commute 50 to 59 minutes, who are under an hour."
+    "explain": "Add the bars from 60 minutes up: $$15 + 11 + 7 + 5 + 3 + 1 = 42$$ As a share: $$\\dfrac{42}{200} = \\mathbf{0.21} \\text{ or } \\mathbf{21\\%}$$ commute at least 60 minutes. Equivalently $$200 - 158 = 42$$ where 158 is the cumulative count through 60 minutes. Starting one bar too early, at 50–60, gives 63 (31.5 %): it adds the 21 students who commute 50 to 59 minutes, who are under an hour."
   },
   {
     "q": "**Q1b (1 of 2 marks).** Based on the histogram, the **median** commute is approximately how many minutes?",
@@ -66,7 +66,7 @@ freq-hist
     "answer": 35,
     "tolerance": 5,
     "unit": "min",
-    "explain": "Put the 200 commutes in order from shortest to longest. 200 is even, so there are two middle values, at positions 200/2 = 100 and 101. Keep a running total of the bars to see which positions each class fills: 0–10 fills 1 to 8, 10–20 fills 9 to 30 (8 + 22), 20–30 fills 31 to 71 (30 + 41), and 30–40 fills 72 to 108 (71 + 37). Positions 100 and 101 both fall in 72 to 108, so the median is in the **30–40 minute class**, so the median is about **35 minutes** (any value in 30 to 40 is accepted)."
+    "explain": "Put the 200 commutes in order from shortest to longest. 200 is even, so there are two middle values: $$\\dfrac{200}{2} = 100 \\text{ and } 101$$ Keep a running total of the bars to see which positions each class fills: 0–10 fills 1 to 8, 10–20 fills 9 to 30, 20–30 fills 31 to 71, and 30–40 fills 72 to 108: $$8 + 22 = 30 \\qquad 30 + 41 = 71 \\qquad 71 + 37 = 108$$ Positions 100 and 101 both fall in 72 to 108, so the median is in the **30–40 minute class**, so the median is about **35 minutes** (any value in 30 to 40 is accepted)."
   },
   {
     "q": "**Q1b (2 of 2 marks).** Based on the histogram, the **mean** commute is approximately how many minutes?",
@@ -74,7 +74,7 @@ freq-hist
     "answer": 42.25,
     "tolerance": 4,
     "unit": "min",
-    "explain": "The long right tail (bars out to 120 minutes) pulls the mean **above** the median, so the mean is somewhere in the low 40s. A grouped-mean check with class midpoints: Σ f·x = 8(5) + 22(15) + 41(25) + 37(35) + 29(45) + 21(55) + 15(65) + 11(75) + 7(85) + 5(95) + 3(105) + 1(115) = 8450, and 8450/200 = **42.25 minutes** (about 42; 38 to 46 accepted). An answer equal to the median misses the skew."
+    "explain": "The long right tail (bars out to 120 minutes) pulls the mean **above** the median, so the mean is somewhere in the low 40s. A grouped-mean check with class midpoints: $$\\sum f x = 8(5) + 22(15) + 41(25) + 37(35) + 29(45) + 21(55) + 15(65) + 11(75) + 7(85) + 5(95) + 3(105) + 1(115) = 8450$$ $$\\bar{X} = \\dfrac{8450}{200} = \\mathbf{42.25} \\text{ minutes}$$ About 42; 38 to 46 accepted. An answer equal to the median misses the skew."
   },
   {
     "q": "**Q1c (2 marks).** Is it reasonable to use the empirical rule on this dataset? Justify your answer with reference to specific features of the histogram. Write the paragraph on paper, then type your verdict (Yes or No).",
@@ -112,7 +112,7 @@ You are recommending one of two Wi-Fi routers for the BCIT library's study rooms
 
 ## Q3 (4 marks). Instant Win cards at a campus fundraiser
 
-Each Instant Win card sold at a BCIT Student Association fundraiser has a 4 % chance of winning a $75 transit credit, independently of every other card.
+Each Instant Win card sold at a BCIT Student Association fundraiser has a 4 % chance of winning a \$75 transit credit, independently of every other card.
 
 ```quiz
 [
@@ -121,22 +121,22 @@ Each Instant Win card sold at a BCIT Student Association fundraiser has a 4 % ch
     "type": "numeric",
     "answer": 0.7828,
     "tolerance": 0.0001,
-    "explain": "Denote a win by W and a loss by L; we want P(LLLLLL). Since cards are independent, P(LLLLLL) = P(L)⁶ = (1 − 0.04)⁶ = 0.96⁶ = **0.7828** or 78.28 %."
+    "explain": "Denote a win by W and a loss by L; we want P(LLLLLL). Since cards are independent: $$P(LLLLLL) = P(L)^6 = (1 - 0.04)^6 = 0.96^6 = \\mathbf{0.7828} \\text{ or } 78.28\\%$$"
   },
   {
     "q": "**Q3b (1 mark).** A student buys 6 cards. What is the probability that she wins **at least one** prize? (4 decimals)",
     "type": "numeric",
     "answer": 0.2172,
     "tolerance": 0.0001,
-    "explain": "Complement rule: P(at least one win) = 1 − P(no wins) = 1 − 0.7828 = **0.2172** or 21.72 %. Multiplying 6 × 0.04 = 0.24 double-counts the ways to win twice."
+    "explain": "Complement rule: $$P(\\text{at least one win}) = 1 - P(\\text{no wins}) = 1 - 0.7828 = \\mathbf{0.2172} \\text{ or } 21.72\\%$$ Multiplying $6 \\times 0.04 = 0.24$ double-counts the ways to win twice."
   },
   {
-    "q": "**Q3c (2 marks).** Cards cost $5.00 each. What is the expected profit or loss per card for a student who plays? (dollars; a loss is negative)",
+    "q": "**Q3c (2 marks).** Cards cost \\$5.00 each. What is the expected profit or loss per card for a student who plays? (dollars; a loss is negative)",
     "type": "numeric",
     "answer": -2.00,
     "tolerance": 0.01,
     "unit": "$",
-    "explain": "Let X = net profit on one card (prize − cost). A win nets 75.00 − 5.00 = 70.00 dollars with probability 0.04; a loss nets −5.00 dollars with probability 0.96.\n\nX = −5.00 with P(X) = 0.96\nX = 70.00 with P(X) = 0.04\n\nE(X) = Σ x P(x) = −5.00(0.96) + 70.00(0.04) = −4.80 + 2.80 = −2.00. **There is an expected loss of $2.00 per card.** Putting the gross prize 75.00 in the win row gives −1.80: it forgets that a winner also paid 5.00 for the card."
+    "explain": "Let X = net profit on one card (prize − cost). A win nets $$75.00 - 5.00 = 70.00 \\text{ dollars}$$ with probability 0.04; a loss nets −5.00 dollars with probability 0.96.\n\nX = −5.00 with P(X) = 0.96\nX = 70.00 with P(X) = 0.04\n\n$$E(X) = \\sum x P(x) = -5.00(0.96) + 70.00(0.04) = -4.80 + 2.80 = \\mathbf{-2.00}$$ **There is an expected loss of \\$2.00 per card.** Putting the gross prize 75.00 in the win row gives −1.80: it forgets that a winner also paid 5.00 for the card."
   }
 ]
 ```
@@ -152,7 +152,7 @@ Three COMP 3760 lab sets, A, B and C, are combined for a guest lecture. The sets
     "type": "numeric",
     "answer": 0.3348,
     "tolerance": 0.0001,
-    "explain": "Total students = 28 + 35 + 41 = 104. P(same set) = P(both A) + P(both B) + P(both C), and these are mutually exclusive, so\n\nP(same set) = (28/104)(27/103) + (35/104)(34/103) + (41/104)(40/103) = (756 + 1190 + 1640)/10712 = 3586/10712 = **0.3348** or 33.48 %.\n\nThe second fraction loses one from both the top (one student of that set is gone) and the bottom (one student is gone). With replacement, (28² + 35² + 41²)/104² = 0.3412, which is a different question."
+    "explain": "Total students: $$28 + 35 + 41 = 104$$ The three ways to match: $$P(\\text{same set}) = P(\\text{both A}) + P(\\text{both B}) + P(\\text{both C})$$ and these are mutually exclusive, so\n\n$$P(\\text{same set}) = \\dfrac{28}{104} \\cdot \\dfrac{27}{103} + \\dfrac{35}{104} \\cdot \\dfrac{34}{103} + \\dfrac{41}{104} \\cdot \\dfrac{40}{103} = \\dfrac{756 + 1190 + 1640}{10712} = \\dfrac{3586}{10712} = \\mathbf{0.3348} \\text{ or } 33.48\\%$$\n\nThe second fraction loses one from both the top (one student of that set is gone) and the bottom (one student is gone). With replacement, which is a different question: $$\\dfrac{28^2 + 35^2 + 41^2}{104^2} = 0.3412$$"
   }
 ]
 ```
@@ -168,7 +168,7 @@ At a BCIT hackathon, 70 % of the submissions are written in Python and 30 % in J
     "type": "numeric",
     "answer": 0.3840,
     "tolerance": 0.0001,
-    "explain": "Let Y: Python, P(Y) = 0.70; J: Java, P(J) = 0.30; T: passed every test, P(T | Y) = 0.55, P(T | J) = 0.80.\n\nUsing Bayes' Rule: P(J | T) = P(T | J)P(J) / [P(T | J)P(J) + P(T | Y)P(Y)] = 0.80(0.30) / [0.80(0.30) + 0.55(0.70)] = 0.24 / (0.24 + 0.385) = 0.24/0.625 = **0.3840**.\n\nSo there is a 38.40 % chance it is a Java submission. Answering 0.24 stops at the numerator, P(J and T)."
+    "explain": "Let Y: Python, P(Y) = 0.70; J: Java, P(J) = 0.30; T: passed every test, P(T | Y) = 0.55, P(T | J) = 0.80.\n\nUsing Bayes' Rule: $$P(J \\mid T) = \\dfrac{P(T \\mid J)P(J)}{P(T \\mid J)P(J) + P(T \\mid Y)P(Y)}$$ $$= \\dfrac{0.80(0.30)}{0.80(0.30) + 0.55(0.70)} = \\dfrac{0.24}{0.24 + 0.385} = \\dfrac{0.24}{0.625} = \\mathbf{0.3840}$$\n\nSo there is a 38.40 % chance it is a Java submission. Answering 0.24 stops at the numerator, P(J and T)."
   }
 ]
 ```
@@ -188,21 +188,21 @@ The number of bug reports a COMP 2800 project team receives per day has this dis
     "type": "numeric",
     "answer": 0.54,
     "tolerance": 0.0001,
-    "explain": "P(X ≥ 2) = P(2) + P(3) + P(4) + P(5) = 0.24 + 0.16 + 0.09 + 0.05 = **0.5400** or 54 %. Equivalently 1 − P(0) − P(1) = 1 − 0.15 − 0.31 = 0.54."
+    "explain": "$$P(X \\ge 2) = P(2) + P(3) + P(4) + P(5) = 0.24 + 0.16 + 0.09 + 0.05 = \\mathbf{0.5400} \\text{ or } 54\\%$$ Equivalently $$1 - P(0) - P(1) = 1 - 0.15 - 0.31 = 0.54$$"
   },
   {
     "q": "**Q6b (1 mark).** What is the expected number of bug reports per day?",
     "type": "numeric",
     "answer": 1.88,
     "tolerance": 0.01,
-    "explain": "E(X) = Σ[x P(x)] = 0(0.15) + 1(0.31) + 2(0.24) + 3(0.16) + 4(0.09) + 5(0.05) = 0.31 + 0.48 + 0.48 + 0.36 + 0.25 = **1.88** bug reports per day. The average of the values 0 to 5, 2.5, ignores the probabilities."
+    "explain": "$$E(X) = \\sum x P(x) = 0(0.15) + 1(0.31) + 2(0.24) + 3(0.16) + 4(0.09) + 5(0.05)$$ $$= 0.31 + 0.48 + 0.48 + 0.36 + 0.25 = \\mathbf{1.88} \\text{ bug reports per day}$$ The average of the values 0 to 5, 2.5, ignores the probabilities."
   },
   {
     "q": "**Q6c (1 mark).** Assuming days are independent, what is the probability of **no** bug reports on Monday and **at least 4** on Tuesday? (4 decimals)",
     "type": "numeric",
     "answer": 0.0210,
     "tolerance": 0.0001,
-    "explain": "Since days are independent, P(0 on Monday and X ≥ 4 on Tuesday) = P(0) · [P(4) + P(5)] = 0.15 × (0.09 + 0.05) = 0.15 × 0.14 = **0.0210** or 2.10 %. Using only P(4) gives 0.0135, which is exactly 4 reports."
+    "explain": "Since days are independent: $$P(0 \\text{ Monday and } X \\ge 4 \\text{ Tuesday}) = P(0) \\cdot [P(4) + P(5)] = 0.15 \\times (0.09 + 0.05) = 0.15 \\times 0.14 = \\mathbf{0.0210} \\text{ or } 2.10\\%$$ Using only P(4) gives 0.0135, which is exactly 4 reports."
   }
 ]
 ```
@@ -276,20 +276,20 @@ The three lab sets of Q4 (A 28 students, B 35, C 41) are mixed together, and 15 
     "q": "**Q8a (1 mark).** Simulates this scenario and determines the number of the 15 students who are from **set C**. Write it on paper, then type the function name.",
     "type": "text",
     "answer": ["rhyper"],
-    "explain": "`rhyper(1, 41, 28+35, 15)`\nThe slots are: how many simulations (1), successes in the population (41 from set C), failures in the population (28 + 35, left as a sum), sample size (15). On average it returns about 15(41/104) = 5.91 students."
+    "explain": "`rhyper(1, 41, 28+35, 15)`\nThe slots are: how many simulations (1), successes in the population (41 from set C), failures in the population (28+35, left as a sum), sample size (15). On average it returns about $$15 \\cdot \\dfrac{41}{104} = 5.91 \\text{ students}$$"
   },
   {
     "q": "**Q8b (1 mark).** Computes the probability that **exactly 5** of the 15 students are from **set A**. Type the function name.",
     "type": "text",
     "answer": ["dhyper"],
-    "explain": "`dhyper(5, 28, 35+41, 15)`\nx = 5, successes in the population = 28 (set A), failures in the population = 35 + 41, sample size = 15. It returns 0.19663, so about 0.1966."
+    "explain": "`dhyper(5, 28, 35+41, 15)`\nx = 5, successes in the population = 28 (set A), failures in the population = 35+41 (sets B and C), sample size = 15. It returns 0.19663, so about 0.1966."
   },
   {
     "q": "Q8b: fill the failures-in-the-population slot.",
     "type": "fill",
     "code": "dhyper(5, 28, ___, 15)",
     "answer": ["35+41", "76", "35 + 41", "41+35"],
-    "explain": "The third slot is the number of failures in the population, everyone not in set A: 35 + 41 = 76. Writing the population total 104 there describes a population of 132 students."
+    "explain": "The third slot is the number of failures in the population, everyone not in set A: $$35 + 41 = 76$$ Writing the population total 104 there describes a population of 132 students."
   },
   {
     "q": "**Q8c (1 mark).** Computes the probability that **at least 7** of the 15 students are from **set B**. Type the function name.",
@@ -309,7 +309,7 @@ The three lab sets of Q4 (A 28 students, B 35, C 41) are mixed together, and 15 
 
 ## Q9 (3 marks). Skipping the CI pipeline
 
-Running a team's continuous-integration tests costs $0.80 of cloud time per push. A developer who skips the tests risks breaking the main branch; each untested push has a 6 % chance of breaking it, which costs $40 of team time to repair.
+Running a team's continuous-integration tests costs \$0.80 of cloud time per push. A developer who skips the tests risks breaking the main branch; each untested push has a 6 % chance of breaking it, which costs \$40 of team time to repair.
 
 ```quiz
 [
@@ -331,14 +331,14 @@ Running a team's continuous-integration tests costs $0.80 of cloud time per push
     "type": "fill",
     "code": "broken <- sample(0:1, n, replace = TRUE, prob = c(___, 0.06))",
     "answer": ["0.94", ".94"],
-    "explain": "`prob` lists the probabilities in the same order as the values `0:1`: a safe push (0) has 1 − 0.06 = 0.94, a broken build (1) has 0.06. `replace = TRUE` lets the same value come up on every push."
+    "explain": "`prob` lists the probabilities in the same order as the values `0:1`: a safe push (0) has $$1 - 0.06 = 0.94$$ and a broken build (1) has 0.06. `replace = TRUE` lets the same value come up on every push."
   },
   {
     "q": "**Q9b (1 mark).** Use your function to compute the total dollars saved by a developer who skips the tests on 50 pushes. Fill the blank.",
     "type": "fill",
     "code": "50*0.80 - broken_builds(50)*50*___",
     "answer": ["40"],
-    "explain": "`50*0.80 - broken_builds(50)*50*40`: the fees skipped, 50 × 0.80 = 40 dollars, minus the number of broken builds (proportion × 50) times the 40-dollar repair. The output is random."
+    "explain": "`50*0.80 - broken_builds(50)*50*40`: the fees skipped, $$50 \\times 0.80 = 40 \\text{ dollars}$$ minus the number of broken builds (the proportion times 50) times the 40-dollar repair. The output is random."
   },
   {
     "q": "Q9b, expected value for reference: on average, how many dollars does skipping the tests on 50 pushes save? (dollars; a loss is negative)",
@@ -346,7 +346,7 @@ Running a team's continuous-integration tests costs $0.80 of cloud time per push
     "answer": -80.00,
     "tolerance": 0.01,
     "unit": "$",
-    "explain": "Expected broken builds = 50(0.06) = 3, costing 3 × 40 = 120 dollars; fees skipped = 50 × 0.80 = 40 dollars. Expected saving = 40 − 120 = −80: **an expected loss of $80.00** over 50 pushes. A single simulation can come out positive (no broken builds) or far worse."
+    "explain": "Expected broken builds: $$50(0.06) = 3$$ costing $$3 \\times 40 = 120 \\text{ dollars}$$ Fees skipped: $$50 \\times 0.80 = 40 \\text{ dollars}$$ Expected saving: $$40 - 120 = \\mathbf{-80}$$ **An expected loss of \\$80.00** over 50 pushes. A single simulation can come out positive (no broken builds) or far worse."
   }
 ]
 ```
@@ -373,13 +373,13 @@ For each statement, write TRUE or FALSE and briefly explain your answer.
     "q": "**Q10a (2 marks).** \"The median daily passenger count more than quadrupled from 2021 to 2023.\"",
     "type": "tf",
     "answer": true,
-    "explain": "**TRUE.** The median in 2021 was about 13 thousand passengers per day and in 2023 about 61 thousand. Four times 13 is 52, and 61 is above 52 (61/13 ≈ 4.7), so the median more than quadrupled."
+    "explain": "**TRUE.** The median in 2021 was about 13 thousand passengers per day and in 2023 about 61 thousand. Four times 2021's median: $$4 \\times 13 = 52$$ 61 is above 52: $$\\dfrac{61}{13} \\approx 4.7$$ So the median more than quadrupled."
   },
   {
     "q": "**Q10b (2 marks).** \"2020 had the most variable daily passenger counts of any year, as measured by the interquartile range.\"",
     "type": "tf",
     "answer": false,
-    "explain": "**FALSE.** The IQR is the width of the box, Q3 − Q1. In 2020 it is about 22 − 9 = 13 thousand, while 2022 has the widest box, about 54 − 38 = 16 thousand, and 2021 is also wider (24 − 9 = 15). 2020 has by far the longest **whiskers** (a range of about 66 thousand, from the busy months before the pandemic), but that is the range, not the IQR."
+    "explain": "**FALSE.** The IQR is the width of the box, Q3 − Q1. In 2020 it is about $$22 - 9 = 13 \\text{ thousand}$$ while 2022 has the widest box, about $$54 - 38 = 16 \\text{ thousand}$$ and 2021 is also wider: $$24 - 9 = 15 \\text{ thousand}$$ 2020 has by far the longest **whiskers** (a range of about 66 thousand, from the busy months before the pandemic), but that is the range, not the IQR."
   }
 ]
 ```
@@ -395,14 +395,14 @@ On average, the SkyTrain Expo Line has a major service disruption (over 30 minut
     "type": "numeric",
     "answer": 0.1804,
     "tolerance": 0.0001,
-    "explain": "Let X = the number of major disruptions in the next 6 months. Under the given assumptions this is a Poisson variable with mean λ = (4 per year) × 0.5 year = 2. Therefore\n\nP(X = 3) = e^(−λ) λ^x / x! = e^(−2) · 2³/3! = 0.135335 × 8/6 = **0.1804**.\n\nWith the yearly λ = 4 left unscaled the answer would be 0.1954, the probability for a whole year."
+    "explain": "Let X = the number of major disruptions in the next 6 months. Under the given assumptions this is a Poisson variable with mean $$\\lambda = 4 \\text{ per year} \\times 0.5 \\text{ year} = 2$$ Therefore\n\n$$P(X = 3) = \\dfrac{e^{-\\lambda} \\lambda^x}{x!} = \\dfrac{e^{-2} \\cdot 2^3}{3!} = \\dfrac{0.135335 \\times 8}{6} = \\mathbf{0.1804}$$\n\nWith the yearly λ = 4 left unscaled the answer would be 0.1954, the probability for a whole year."
   },
   {
     "q": "**Q11b (3 marks).** What is the probability that **the next** major disruption happens between 3 and 9 months from now? (4 decimals)",
     "type": "numeric",
     "answer": 0.3181,
     "tolerance": 0.0001,
-    "explain": "The event means no disruption in the next 3 months (λ = 4 × 3/12 = 1), and then at least one in the 6 months after that (λ = 4 × 6/12 = 2), which is independent of the first 3 months. Therefore\n\nP(next disruption in 3 to 9 months) = P(X = 0 in 3 months) · (1 − P(X = 0 in the next 6 months)) = e^(−1) · (1 − e^(−2)) = 0.367879 × 0.864665 = **0.3181**.\n\nThe second window is 9 − 3 = 6 months long. Using 9 months there (1 − e^(−3)) gives 0.3496, which counts the first 3 months twice."
+    "explain": "The event means no disruption in the next 3 months, $$\\lambda = 4 \\times \\dfrac{3}{12} = 1$$ and then at least one in the 6 months after that, $$\\lambda = 4 \\times \\dfrac{6}{12} = 2$$ which is independent of the first 3 months. Therefore\n\n$$P(\\text{next in 3 to 9 months}) = P(X = 0 \\text{ in 3 months}) \\cdot (1 - P(X = 0 \\text{ in the next 6 months}))$$ $$= e^{-1} \\cdot (1 - e^{-2}) = 0.367879 \\times 0.864665 = \\mathbf{0.3181}$$\n\nThe second window is 6 months long, 9 − 3. Using 9 months there, $1 - e^{-3}$, gives 0.3496, which counts the first 3 months twice."
   }
 ]
 ```
@@ -412,8 +412,8 @@ On average, the SkyTrain Expo Line has a major service disruption (over 30 minut
 The rules of a game:
 
 - You draw 2 cards, without replacement, from a standard deck.
-- If both cards are face cards (J, Q or K), you win $30.
-- If exactly one card is a face card, you win $3.
+- If both cards are face cards (J, Q or K), you win \$30.
+- If exactly one card is a face card, you win \$3.
 - Otherwise, you win nothing.
 
 After each game the cards are replaced and the deck is reshuffled.
@@ -421,11 +421,11 @@ After each game the cards are replaced and the deck is reshuffled.
 ```quiz
 [
   {
-    "q": "**Q12a (1 mark).** If you play once, what is the probability that you win exactly $3? (4 decimals)",
+    "q": "**Q12a (1 mark).** If you play once, what is the probability that you win exactly \\$3? (4 decimals)",
     "type": "numeric",
     "answer": 0.3620,
     "tolerance": 0.0001,
-    "explain": "There are 12 face cards and 40 others. Exactly one face card happens as face-then-other or other-then-face, two mutually exclusive orders:\n\nP(win 3) = (12/52)(40/51) + (40/52)(12/51) = 2 × 480/2652 = 960/2652 = **0.3620**.\n\nCounting only one order gives 0.1810. As hands: C(12,1)C(40,1)/C(52,2) = 480/1326, the same 0.3620."
+    "explain": "There are 12 face cards and 40 others. Exactly one face card happens as face-then-other or other-then-face, two mutually exclusive orders:\n\n$$P(\\text{win 3}) = \\dfrac{12}{52} \\cdot \\dfrac{40}{51} + \\dfrac{40}{52} \\cdot \\dfrac{12}{51} = 2 \\times \\dfrac{480}{2652} = \\dfrac{960}{2652} = \\mathbf{0.3620}$$\n\nCounting only one order gives 0.1810. As hands, the same 0.3620: $$\\dfrac{C(12,1)C(40,1)}{C(52,2)} = \\dfrac{480}{1326}$$"
   },
   {
     "q": "**Q12b (2 marks).** If you play repeatedly, how much do you win per game on average? (dollars)",
@@ -433,14 +433,14 @@ After each game the cards are replaced and the deck is reshuffled.
     "answer": 2.58,
     "tolerance": 0.01,
     "unit": "$",
-    "explain": "P(win 30) = (12/52)(11/51) = 132/2652 = 0.0497738. Let X = the winnings to the player. E(X) = 30 · P(30) + 3 · P(3) + 0 · P(0) = 30(0.0497738) + 3(0.361991) + 0 = 1.49321 + 1.08597 = **$2.58** per game. The question says \"win\", so these are gross winnings; there is no cost to subtract."
+    "explain": "$$P(\\text{win 30}) = \\dfrac{12}{52} \\cdot \\dfrac{11}{51} = \\dfrac{132}{2652} = 0.0497738$$ Let X = the winnings to the player. $$E(X) = 30 \\cdot P(30) + 3 \\cdot P(3) + 0 \\cdot P(0) = 30(0.0497738) + 3(0.361991) + 0$$ $$= 1.49321 + 1.08597 = \\mathbf{2.58} \\text{ dollars per game}$$ The question says \"win\", so these are gross winnings; there is no cost to subtract."
   },
   {
     "q": "**Q12c (2 marks).** If you play twice, what is the probability that you win **at least $33** in total? (4 decimals)",
     "type": "numeric",
     "answer": 0.0385,
     "tolerance": 0.0001,
-    "explain": "Each game pays 0, 3 or 30. A total of at least 33 needs a 30 in one game and at least 3 in the other: (30, 3), (3, 30) or (30, 30). The games are independent and these cases are mutually exclusive, so\n\nP(total ≥ 33) = 2 · P(30) · P(3) + P(30)² = 2(0.0497738)(0.361991) + 0.0497738² = 0.0360353 + 0.0024774 = **0.0385**.\n\nP(at least one 30 in two games) = 2(0.0497738) − 0.0497738² = 0.0971 also counts (30, 0), which totals only 30."
+    "explain": "Each game pays 0, 3 or 30. A total of at least 33 needs a 30 in one game and at least 3 in the other: (30, 3), (3, 30) or (30, 30). The games are independent and these cases are mutually exclusive, so\n\n$$P(\\text{total} \\ge 33) = 2 \\cdot P(30) \\cdot P(3) + P(30)^2 = 2(0.0497738)(0.361991) + 0.0497738^2$$ $$= 0.0360353 + 0.0024774 = \\mathbf{0.0385}$$\n\nThe chance of at least one 30 in two games also counts (30, 0), which totals only 30: $$2(0.0497738) - 0.0497738^2 = 0.0971$$"
   }
 ]
 ```

@@ -4,7 +4,9 @@ minutes: 18
 ---
 <!-- facts: poe1.ladder.ruthless-levels, classic.monster.training-hp, gms.data.ranking-level-hero-2026-10-27 -->
 
-The top 200 of a PoE1 ladder are most often level 92 with a tail to 99, and one boss carries almost half the HP of twelve monsters: which value is "typical"? The **median** and **mode** each answer the question differently, and each has a situation where it beats the mean outright.
+The top 200 of a PoE1 ladder are most often level 92 with a tail to 99, and one boss carries almost half the HP of twelve monsters: which value is "typical"?
+
+The **median** and **mode** each answer the question differently, and each has a situation where it beats the mean outright.
 
 ## Median: the middle value
 
@@ -73,7 +75,9 @@ stat-calc
 
 ## Mode: the most frequent value
 
-The mode is the value (or values) that occur **most often** in a data set. Unlike the mean and median, a data set can have:
+The mode is the value (or values) that occur **most often** in a data set.
+
+Unlike the mean and median, a data set can have:
 
 - **no mode** (every value is unique — nothing repeats),
 - **one mode** (one value clearly occurs most),
@@ -103,7 +107,7 @@ In R: `as.double(names(which.max(table(survey$Pulse))))` → `80`.
 
 ## Ruthless ladder ranks 1-200: three centres from one level table
 
-The official PoE1 Ruthless Allflame ladder listed these levels for ranks 1-200 on 27 October 2026 [PoE1, 3.29 Allflame Ruthless ladder, checked 2026-10-27]:
+The official PoE1 Ruthless Allflame ladder listed these levels for ranks 1-200 on 27 October 2026:
 
 | Level | 92 | 93 | 94 | 95 | 96 | 97 | 99 |
 |---|---|---|---|---|---|---|---|
@@ -114,16 +118,22 @@ The counts pile up at 92 with a thin tail to 99 (a shape called right-skewed, le
 ```quiz
 [
   {"q": "What is the mode of the 200 levels?", "type": "numeric", "answer": 92, "tolerance": 0, "explain": "Level 92 has the largest count, 88, so the mode is 92."},
-  {"q": "What is the median $Q_2$ of the 200 levels?", "type": "numeric", "answer": 93, "tolerance": 0, "explain": "Sort the 200 levels from lowest to highest. 200 is even, so there are two middle values, at positions 100 and 101, and the median is their average. Running totals of the counts say which level fills which positions: the 88 level-92 characters fill positions 1 to 88, and the 53 level-93 characters fill the next 53, positions 89 to 141 (88 + 53 = 141). Positions 100 and 101 both fall in 89 to 141, so both are 93, and $Q_2 = (93 + 93)/2 = 93$."},
-  {"q": "The 200 levels sum to 18626. Compute $\\bar{X}$. (2 decimals)", "type": "numeric", "answer": 93.13, "tolerance": 0.005, "explain": "$\\bar{X} = 18626/200 = 93.13$."}
+  {"q": "What is the median $Q_2$ of the 200 levels?", "type": "numeric", "answer": 93, "tolerance": 0, "explain": "Sort the 200 levels from lowest to highest. 200 is even, so there are two middle values, at positions 100 and 101, and the median is their average. Running totals of the counts say which level fills which positions: the 88 level-92 characters fill positions 1 to 88, and the 53 level-93 characters fill the next 53, positions 89 to 141: $$88 + 53 = 141$$ Positions 100 and 101 both fall in 89 to 141, so both are 93, and $$Q_2 = \\dfrac{93 + 93}{2} = 93$$"},
+  {"q": "The 200 levels sum to 18626. Compute $\\bar{X}$. (2 decimals)", "type": "numeric", "answer": 93.13, "tolerance": 0.005, "explain": "$$\\bar{X} = \\dfrac{18626}{200} = 93.13$$"}
 ]
 ```
 
 **Mode.** Level 92 has the biggest count, 88 characters, so the mode is 92.
 
-**Median.** Picture the 200 levels written out in a line from lowest to highest: 88 copies of 92, then 53 copies of 93, and so on. The median is the middle of that line. With $n = 200$ there is no single middle value, because 200 is even: the two middle values sit at positions $n/2 = 100$ and $n/2 + 1 = 101$, and the median is their average.
+**Median.** Picture the 200 levels written out in a line from lowest to highest: 88 copies of 92, then 53 copies of 93, and so on.
 
-To find which level sits at position 100 without writing all 200 out, keep a running total of the counts (the cumulative count). Each level fills the positions from just after the previous total up to its own total:
+The median is the middle of that line.
+
+With $n = 200$ there is no single middle value, because 200 is even: the two middle values sit at positions $n/2 = 100$ and $n/2 + 1 = 101$, and the median is their average.
+
+To find which level sits at position 100 without writing all 200 out, keep a running total of the counts (the cumulative count).
+
+Each level fills the positions from just after the previous total up to its own total:
 
 | Level | Characters | Cumulative count | Positions it fills |
 |---|---|---|---|
@@ -131,15 +141,27 @@ To find which level sits at position 100 without writing all 200 out, keep a run
 | 93 | 53 | $88 + 53 = 141$ | 89 to 141 |
 | 94 | 29 | $141 + 29 = 170$ | 142 to 170 |
 
-Position 100 comes after position 88, the last 92, and before position 141, the last 93, so it holds a 93. Position 101 is in the same block, so it is also 93. The median is the average of the two: $Q_2 = (93 + 93)/2 = 93$. You can stop at level 93; the higher levels are all past position 141.
+Position 100 comes after position 88, the last 92, and before position 141, the last 93, so it holds a 93. Position 101 is in the same block, so it is also 93.
 
-**Mean.** Multiply each level by its count and add: $\sum X = 92(88) + 93(53) + 94(29) + 95(15) + 96(7) + 97(7) + 99(1) = 18626$, and $\bar{X} = 18626/200 = 93.13$.
+The median is the average of the two:
+
+$$Q_2 = \dfrac{93 + 93}{2} = \mathbf{93}$$
+
+You can stop at level 93; the higher levels are all past position 141.
+
+**Mean.** Multiply each level by its count and add:
+
+$$\sum X = 92(88) + 93(53) + 94(29) + 95(15) + 96(7) + 97(7) + 99(1) = 18626$$
+
+Then divide by $n = 200$:
+
+$$\bar{X} = \dfrac{18626}{200} = \mathbf{93.13}$$
 
 Mode $<$ median $<$ mean: the seven characters at 97 and the one at 99 pull the mean up, while the median only sees that they sit above the middle.
 
 ### Every 8th rank in the calculator
 
-The calculator below holds every 8th rank (8, 16, ..., 200): 25 levels, mode 92, median 93, mean 93.04.
+The calculator below holds every 8th rank (8, 16,..., 200): 25 levels, mode 92, median 93, mean 93.04.
 
 ```widget
 stat-calc
@@ -148,21 +170,39 @@ stat-calc
 
 ## Twelve Classic training monsters: one boss
 
-meowdb's monster table for MapleStory Classic lists these HP values for twelve Victoria Island training monsters, sorted: 45, 115, 142, 172, 233, 403, 510, 842, 982, 1336, 3218 and 7420, the last being Mano, a field boss [Classic, Classic World Grand Launch build, meowdb monster table, checked 2026-10-27].
+meowdb's monster table for MapleStory Classic lists these HP values for twelve Victoria Island training monsters, sorted: 45, 115, 142, 172, 233, 403, 510, 842, 982, 1336, 3218 and 7420, the last being Mano, a field boss.
 
 ```quiz
 [
-  {"q": "Compute the median HP of the twelve monsters.", "type": "numeric", "answer": 456.5, "tolerance": 0, "explain": "$n = 12$ is even, so average the 6th and 7th values: $(403 + 510)/2 = 456.5$ HP, a value no monster has."}
+  {"q": "Compute the median HP of the twelve monsters.", "type": "numeric", "answer": 456.5, "tolerance": 0, "explain": "$n = 12$ is even, so average the 6th and 7th values: $$Q_2 = \\dfrac{403 + 510}{2} = 456.5 \\text{ HP}$$ No monster has that value."}
 ]
 ```
 
-$n = 12$, so $Q_2 = (403 + 510)/2 = 456.5$ HP. The mean is $15418/12 = 1284.83$ HP, above nine of the twelve monsters, because Mano's 7420 alone is almost half the sum. There is no mode: no HP value repeats.
+With $n = 12$, the median averages the 6th and 7th values:
+
+$$Q_2 = \dfrac{403 + 510}{2} = \mathbf{456.5} \text{ HP}$$
+
+The mean divides the HP total by 12:
+
+$$\bar{X} = \dfrac{15418}{12} = \mathbf{1284.83} \text{ HP}$$
+
+That mean is above nine of the twelve monsters, because Mano's 7420 alone is almost half the sum.
+
+There is no mode: no HP value repeats.
 
 ## Why bother with the median at all?
 
-The mean is sensitive to **every** value, including extreme ones, so one huge outlier can drag it a long way. The median only cares about rank order, so it barely moves.
+The mean is sensitive to **every** value, including extreme ones, so one huge outlier can drag it a long way.
 
-Look back at $19, 19, 20, 22, 23, 25, 50$: the mean is $\frac{19+19+20+22+23+25+50}{7} \approx 25.4$ — pulled upward by the `50`. The median stayed at `22`, a much better description of where most of the data actually sits.
+The median only cares about rank order, so it barely moves.
+
+Look back at $19, 19, 20, 22, 23, 25, 50$. The mean is:
+
+$$\bar{X} = \dfrac{19 + 19 + 20 + 22 + 23 + 25 + 50}{7} = \dfrac{178}{7} \approx \mathbf{25.4}$$
+
+The `50` pulls it upward.
+
+The median stayed at `22`, a much better description of where most of the data actually sits.
 
 This is the central idea of skewness (lesson 12): when a distribution is skewed or has outliers, the mean and median pull apart, and the median is usually the more trustworthy "typical value."
 
@@ -178,16 +218,20 @@ drag-data
 
 ## Medians and modes of three more game lists
 
-Nexon's North America ranking of the top 500 Heroes, counted by level from 293 up, reads 293: 85, 294: 102, 295: 200, 296: 59, 297: 24, 298: 13, 299: 11, 300: 6 [GMS, v.271 Hero job ranking, checked 2026-10-27]. Ruthless Allflame ranks 4601-4800 read 17: 66, 18: 96, 19: 38 [PoE1, 3.29 Allflame Ruthless ladder, checked 2026-10-27]. Drop Mano from the twelve Classic monsters and eleven HP values remain.
+Nexon's North America ranking of the top 500 Heroes, counted by level from 293 up, reads 293: 85, 294: 102, 295: 200, 296: 59, 297: 24, 298: 13, 299: 11, 300: 6.
+
+Ruthless Allflame ranks 4601-4800 read 17: 66, 18: 96, 19: 38.
+
+Drop Mano from the twelve Classic monsters and eleven HP values remain.
 
 ```quiz
 [
   {"q": "Top 500 Heroes: what is the mode level?", "type": "numeric", "answer": 295, "tolerance": 0, "explain": "Level 295 has the largest count, 200 of the 500 Heroes, so the mode is 295."},
-  {"q": "Top 500 Heroes: what is the median level $Q_2$?", "type": "numeric", "answer": 295, "tolerance": 0, "explain": "$n = 500$ is even, so average the 250th and 251st values. Cumulative counts from the bottom: 85 at 293, $85 + 102 = 187$ at 294, $187 + 200 = 387$ at 295. Positions 188 to 387 are 295, so $Q_2 = (295 + 295)/2 = 295$. Here mode and median agree; the mean, 294.896, is pulled below them by the 187 Heroes at 293 and 294."},
-  {"q": "Ruthless ranks 4601-4800: what is the median level?", "type": "numeric", "answer": 18, "tolerance": 0, "explain": "$n = 200$: average the 100th and 101st values. Cumulative counts: 66 at 17, $66 + 96 = 162$ at 18, so positions 67 to 162 are 18 and $Q_2 = 18$."},
+  {"q": "Top 500 Heroes: what is the median level $Q_2$?", "type": "numeric", "answer": 295, "tolerance": 0, "explain": "$n = 500$ is even, so average the 250th and 251st values. Cumulative counts from the bottom: 85 at 293, then at 294 $$85 + 102 = 187$$ and at 295 $$187 + 200 = 387$$ Positions 188 to 387 are 295, so $$Q_2 = \\dfrac{295 + 295}{2} = 295$$ Here mode and median agree; the mean, 294.896, is pulled below them by the 187 Heroes at 293 and 294."},
+  {"q": "Ruthless ranks 4601-4800: what is the median level?", "type": "numeric", "answer": 18, "tolerance": 0, "explain": "$n = 200$: average the 100th and 101st values. Cumulative counts: 66 at 17, then at 18 $$66 + 96 = 162$$ so positions 67 to 162 are 18 and $Q_2 = 18$."},
   {"q": "Without Mano, the HP values are 45, 115, 142, 172, 233, 403, 510, 842, 982, 1336, 3218. What is the median?", "type": "numeric", "answer": 403, "tolerance": 0, "explain": "$n = 11$ is odd, so the median is the 6th sorted value: 403 HP. Removing the boss moved the median from 456.5 to 403, a small step."},
-  {"q": "Same eleven monsters: compute $\\bar{X}$. (2 decimals)", "type": "numeric", "answer": 727.09, "tolerance": 0.005, "explain": "$\\sum X = 15418 - 7420 = 7998$, so $\\bar{X} = 7998/11 = 727.09$ HP. Removing Mano dropped the mean by 557.74 HP while the median moved only 53.5."},
-  {"type": "fill", "q": "Fill the blank with what R prints.", "code": "hp <- c(45, 115, 142, 172, 233, 403, 510, 842, 982, 1336, 3218, 7420)\nmedian(hp)\n## [1] ___", "answer": ["456.5"], "explain": "`median()` sorts, then averages the 6th and 7th of the twelve values: $(403 + 510)/2 = 456.5$."}
+  {"q": "Same eleven monsters: compute $\\bar{X}$. (2 decimals)", "type": "numeric", "answer": 727.09, "tolerance": 0.005, "explain": "Subtract Mano from the total: $$\\sum X = 15418 - 7420 = 7998$$ Then divide by 11: $$\\bar{X} = \\dfrac{7998}{11} = 727.09 \\text{ HP}$$ Removing Mano dropped the mean by 557.74 HP while the median moved only 53.5."},
+  {"type": "fill", "q": "Fill the blank with what R prints.", "code": "hp <- c(45, 115, 142, 172, 233, 403, 510, 842, 982, 1336, 3218, 7420)\nmedian(hp)\n## [1] ___", "answer": ["456.5"], "explain": "`median()` sorts, then averages the 6th and 7th of the twelve values: $$\\dfrac{403 + 510}{2} = 456.5$$"}
 ]
 ```
 
@@ -205,7 +249,7 @@ Nexon's North America ranking of the top 500 Heroes, counted by level from 293 u
     "type": "numeric",
     "answer": 7,
     "tolerance": 0.05,
-    "explain": "Sorted: 3, 6, 8, 15. Middle two are 6 and 8; median = (6+8)/2 = 7."
+    "explain": "Sorted: 3, 6, 8, 15. Middle two are 6 and 8, so the median is $$\\dfrac{6 + 8}{2} = 7$$"
   },
   {
     "q": "For 19, 19, 20, 22, 23, 25, 50, what is $Q_2$?",
@@ -219,14 +263,14 @@ Nexon's North America ranking of the top 500 Heroes, counted by level from 293 u
     "type": "numeric",
     "answer": 25,
     "tolerance": 0.05,
-    "explain": "n = 6 (even); average the 3rd and 4th values: (23+27)/2 = 25."
+    "explain": "n = 6 (even); average the 3rd and 4th values: $$Q_2 = \\dfrac{23 + 27}{2} = 25$$"
   },
   {
     "q": "First 10 Old Faithful eruptions sorted: 1.800, 1.950, 2.283, 2.883, 3.333, 3.600, 3.600, 4.350, 4.533, 4.700. What is the median?",
     "type": "numeric",
     "answer": 3.4665,
     "tolerance": 0.01,
-    "explain": "n = 10 (even); average the 5th and 6th values: (3.333 + 3.600)/2 = 3.4665."
+    "explain": "n = 10 (even); average the 5th and 6th values: $$Q_2 = \\dfrac{3.333 + 3.600}{2} = 3.4665$$"
   },
   {
     "q": "With an even sample size, the median is always one of the actual data values.",

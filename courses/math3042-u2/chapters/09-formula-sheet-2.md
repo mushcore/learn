@@ -3,7 +3,11 @@ title: Formula & recipe sheet (Unit 2)
 minutes: 8
 ---
 
-Everything from Unit 2 and Lab 2 on one page: the recipes, the definitions, and the R commands. No new explanations here; if a line does not make sense, go back to its chapter. The Unit 1 formulas it leans on ($Q_1$, $Q_3$, fences, $Sk$, $CV$, $Z$) are restated at the bottom.
+Everything from Unit 2 and Lab 2 on one page: the recipes, the definitions, and the R commands.
+
+No new explanations here; if a line does not make sense, go back to its chapter.
+
+The Unit 1 formulas it leans on ($Q_1$, $Q_3$, fences, $Sk$, $CV$, $Z$) are restated at the bottom.
 
 ## Which chart for which data
 
@@ -28,10 +32,14 @@ Interpretation: the longest line is where the data piles up (centre, mode); two 
 
 ## Histogram recipe (7 steps)
 
-1. Initial number of classes $= \sqrt{n}$.
-2. Ideal class width $= \dfrac{R}{\sqrt{n}} = \dfrac{\max - \min}{\sqrt{n}}$.
+1. Initial number of classes:
+   $$\sqrt{n}$$
+2. Ideal class width:
+   $$\dfrac{R}{\sqrt{n}} = \dfrac{\max - \min}{\sqrt{n}}$$
 3. Pick a nice width at the **precision of $X$** near $R/\sqrt{n}$ (up or down); check that the number of classes comes out near $\sqrt{n}$.
-4. First lower class limit = minimum $X$ (may be rounded down). Classes $= \lfloor(\max - \text{first lower})/\text{width}\rfloor + 1$; last break $=$ first lower $+$ classes × width.
+4. First lower class limit = minimum $X$ (may be rounded down). Number of classes and last break:
+   $$\text{classes} = \left\lfloor \dfrac{\max - \text{first lower}}{\text{width}} \right\rfloor + 1$$
+   $$\text{last break} = \text{first lower} + \text{classes} \times \text{width}$$
 5. Lower limits go up by the width; each **upper limit = next lower limit − one unit of precision**.
 6. Count the values in each class: the **frequency distribution** ($\Sigma f = n$).
 7. Draw one rectangle per class, height = frequency, no gaps.
@@ -56,15 +64,21 @@ Choosing the actual width, every worked example:
 | Mirage prices | 0.1 | 49.2 | 50.0 (up) | 12 | 11.7 |
 | Monster levels | 1 | 8.49 | 10 (up) | 8 | 9.3 |
 
-`right = FALSE`: a class is $[\text{lower}, \text{next lower})$, e.g. $18 \le X < 20$. Features: equal widths, no gaps, every value in exactly one class, frequency = height.
+`right = FALSE`: a class is $[\text{lower}, \text{next lower})$, e.g. $18 \le X < 20$.
 
-Pitfalls: far too many classes (width ÷ 10) gives a jagged shape with empty classes; far too few (width × 10) hides the shape. $\sqrt{n}$ avoids both.
+Features: equal widths, no gaps, every value in exactly one class, frequency = height.
+
+Pitfalls: far too many classes (width ÷ 10) gives a jagged shape with empty classes; far too few (width × 10) hides the shape.
+
+$\sqrt{n}$ avoids both.
 
 ## Cumulative frequencies and the ogive
 
-- **Relative frequency** of a class $= f / n$.
+- **Relative frequency** of a class:
+  $$\dfrac{f}{n}$$
 - **Cumulative frequency** of a class $=$ the number of values in that class **and every class before it**; the last one equals $n$.
-- **Cumulative relative frequency** $=$ cumulative frequency $/ n$; the last one equals 1.000.
+- **Cumulative relative frequency**; the last one equals 1.000:
+  $$\dfrac{\text{cumulative frequency}}{n}$$
 - **Ogive**: plot cumulative relative frequency (Y) against the **upper class limits** (X), joined by lines, with one extra point at 0 just before the first class (1.599, 0).
 
 Reading an ogive:
@@ -76,24 +90,40 @@ Reading an ogive:
 | What fraction is between $a$ and $b$? | (fraction below $b$) − (fraction just below $a$); with classes: height at the last class's upper limit − height at the upper limit of the class before the first |
 | Top $k\%$? | scores above $P_{100-k}$ |
 
-- Between two table points $(x_1, h_1)$ and $(x_2, h_2)$: $X = x_1 + \dfrac{p - h_1}{h_2 - h_1}\times\text{width}$ (and the same proportion the other way for a height).
-- `percent_rank(x)` $=$ (values below $x$)$/(n-1)$; ties share the lower rank.
+- Between two table points $(x_1, h_1)$ and $(x_2, h_2)$, and the same proportion the other way for a height:
+  $$X = x_1 + \dfrac{p - h_1}{h_2 - h_1} \times \text{width}$$
+- `percent_rank(x)`; ties share the lower rank:
+  $$\dfrac{\text{values below } x}{n - 1}$$
 
-Old Faithful readings: $P_{35} \approx 3.0$, $P_{55} \approx 4.1$, $P_{30} \approx 2.35$; 134 eruptions (0.493) are below 4.0, so the median is in 4.0–4.199.
+Old Faithful readings: $P_{35} \approx 3.0$, $P_{55} \approx 4.1$, $P_{30} \approx 2.35$.
+
+134 eruptions (0.493) are below 4.0, so the median is in 4.0–4.199.
 
 ## Scatter plot
 
-One point $(X, Y)$ per individual. Downward trend ↔ $r < 0$; upward ↔ $r > 0$. mtcars: $Y$ = mpg, $X$ = wt, `cor(mtcars$wt, mtcars$mpg)` = −0.868, line of best fit (regression line) `mpg = -5.344*wt + 37.285`.
+One point $(X, Y)$ per individual.
+
+Downward trend ↔ $r < 0$; upward ↔ $r > 0$.
+
+mtcars: $Y$ = mpg, $X$ = wt, `cor(mtcars$wt, mtcars$mpg)` = −0.868, line of best fit (regression line) `mpg = -5.344*wt + 37.285`.
 
 ## Unit 1 formulas used inside Unit 2
 
-- $Q_1, Q_2, Q_3$: sort, split into halves (R's `quantile()` interpolates; small differences are fine). $IQR = Q_3 - Q_1$.
-- Fences: $Q_1 - 1.5 \times IQR$ and $Q_3 + 1.5 \times IQR$; beyond a fence = **outlier**.
-- $Sk = \dfrac{3(\bar{X} - Q_2)}{s}$; $Sk > 0$ skewed right, $|Sk| > 1$ highly skewed.
-- $CV = s/\bar{X}$ (as a ratio, e.g. 0.71; ×100 for a percent): smaller $CV$ = more relatively consistent.
-- $Z = \dfrac{X - \bar{X}}{s}$ (R: `scale(x)`); unusual if $|Z| > 2$.
-- Empirical rule percentiles (normal data): $P_{2.5} = \mu - 2\sigma$, $P_{16} = \mu - \sigma$, $P_{50} = \mu$, $P_{84} = \mu + \sigma$, $P_{97.5} = \mu + 2\sigma$.
-- Chebyshev (any shape): at least $1 - 1/k^2$ within $\pm k$ sd (75% for $k=2$, 88.9% for $k=3$). Skewed data can satisfy Chebyshev and still break the empirical rule (quine Days: 0.781, 0.945, 0.979 vs 0.68, 0.95, 0.997).
+- $Q_1, Q_2, Q_3$: sort, split into halves (R's `quantile()` interpolates; small differences are fine). Interquartile range:
+  $$IQR = Q_3 - Q_1$$
+- Fences; beyond a fence = **outlier**:
+  $$Q_1 - 1.5 \times IQR \quad \text{and} \quad Q_3 + 1.5 \times IQR$$
+- Skewness; $Sk > 0$ skewed right, $|Sk| > 1$ highly skewed:
+  $$Sk = \dfrac{3(\bar{X} - Q_2)}{s}$$
+- Coefficient of variation (as a ratio, e.g. 0.71; ×100 for a percent); smaller $CV$ = more relatively consistent:
+  $$CV = \dfrac{s}{\bar{X}}$$
+- Z-score (R: `scale(x)`); unusual if $|Z| > 2$:
+  $$Z = \dfrac{X - \bar{X}}{s}$$
+- Empirical rule percentiles (normal data):
+  $$P_{2.5} = \mu - 2\sigma, \quad P_{16} = \mu - \sigma, \quad P_{50} = \mu, \quad P_{84} = \mu + \sigma, \quad P_{97.5} = \mu + 2\sigma$$
+- Chebyshev (any shape): at least this fraction within $\pm k$ sd (75% for $k=2$, 88.9% for $k=3$):
+  $$1 - \dfrac{1}{k^2}$$
+  Skewed data can satisfy Chebyshev and still break the empirical rule (quine Days: 0.781, 0.945, 0.979 vs 0.68, 0.95, 0.997).
 
 ## R commands
 
@@ -123,9 +153,9 @@ One point $(X, Y)$ per individual. Downward trend ↔ $r < 0$; upward ↔ $r > 0
 ```quiz
 [
   {"q": "Rapid fire: ideal class width formula?", "options": ["$R/\\sqrt{n}$", "$\\sqrt{n}/R$", "$R/n$", "$n/R$"], "answer": 0, "explain": "Range divided by the square root of the sample size, then rounded to the data's precision and a nice number."},
-  {"q": "Upper class limit = next lower limit minus...", "options": ["one unit of the data's precision", "the class width", "1 always", "half the class width"], "answer": 0, "explain": "Whole-number data: 20 − 1 = 19. Three-decimal data: 1.800 − 0.001 = 1.799."},
+  {"q": "Upper class limit = next lower limit minus...", "options": ["one unit of the data's precision", "the class width", "1 always", "half the class width"], "answer": 0, "explain": "Whole-number data: $$20 - 1 = 19$$ Three-decimal data: $$1.800 - 0.001 = 1.799$$"},
   {"q": "An ogive's X axis holds the...", "options": ["upper class limits", "lower class limits", "class marks", "frequencies"], "answer": 0, "explain": "Cumulative relative frequency is plotted at each upper class limit, plus a 0 point before the first class."},
-  {"q": "The last cumulative relative frequency is always...", "type": "numeric", "answer": 1, "tolerance": 0, "explain": "Everything is at or below the last upper limit: $n/n = 1$."},
+  {"q": "The last cumulative relative frequency is always...", "type": "numeric", "answer": 1, "tolerance": 0, "explain": "Everything is at or below the last upper limit: $$\\dfrac{n}{n} = \\mathbf{1}$$"},
   {"q": "`favstats(Days ~ Eth, data=quine)` gives one row per...", "options": ["level of Eth (A and N)", "student", "day", "quartile"], "answer": 0, "explain": "The model formula groups Days by the categorical variable on the right of the ~."},
   {"q": "Which R function turns a vector of values into their Z-scores?", "type": "text", "answer": ["scale", "scale()", "scale(x)"], "explain": "`scale(x)` subtracts the mean and divides by the sample sd for every value."}
 ]

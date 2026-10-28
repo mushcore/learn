@@ -50,7 +50,7 @@ Each of the $n = 146$ rows is **one child**: `Days` absent, plus the categories 
 
 ```r
 X.vals <- c(9, 10, 8, 10, 11, 12, 11, 11)
-summary( X.vals )
+summary( X.vals)
 ```
 ```text
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
@@ -61,20 +61,22 @@ summary( X.vals )
 | Code | What it does |
 |---|---|
 | `X.vals <- c(9, 10, 8, 10, 11, 12, 11, 11)` | `<-` is assignment; `c()` combines the eight numbers into one vector stored as `X.vals`. The dot is just part of the name. |
-| `summary( X.vals )` | Prints six labelled statistics of the vector. Spaces inside the parentheses do not matter. |
+| `summary( X.vals)` | Prints six labelled statistics of the vector. Spaces inside the parentheses do not matter. |
 
 **Left to right**
 
 - `X.vals <- c(9, 10, 8, 10, 11, 12, 11, 11)`: "Store under the name X.vals (`X.vals <-`) the combination (`c`) of the eight numbers 9 to 11 (`9, 10, 8, 10, 11, 12, 11, 11`)."
-- `summary( X.vals )`: "Print the six-number summary (`summary`) of X.vals (`X.vals`)."
+- `summary( X.vals)`: "Print the six-number summary (`summary`) of X.vals (`X.vals`)."
 
 **Right to left**, the order R runs it
 
 - `X.vals <- c(9, 10, 8, 10, 11, 12, 11, 11)`: "Take the eight numbers (`9, 10, 8, 10, 11, 12, 11, 11`), combine them into one vector (`c`), and store it as X.vals (`X.vals <-`)."
-- `summary( X.vals )`: "Take X.vals (`X.vals`) and print its six-number summary (`summary`)."
+- `summary( X.vals)`: "Take X.vals (`X.vals`) and print its six-number summary (`summary`)."
 :::
 
-The **mean sits in the middle**: minimum, $Q_1$, median, mean, $Q_3$, maximum. `sd()` is separate.
+The **mean sits in the middle**: minimum, $Q_1$, median, mean, $Q_3$, maximum.
+
+`sd()` is separate.
 
 ### Task 2: summary of `Days`
 
@@ -137,7 +139,9 @@ favstats(~Days, data=quine)
 - "Take the quine data (`data=quine`), find the variable Days named in the formula (`~Days`), and print its favourite statistics (`favstats`)."
 :::
 
-`~Days` is a **model formula**. With a variable on the left and a group on the right it gives statistics **per group**, read "Days **by** Lrn":
+`~Days` is a **model formula**.
+
+With a variable on the left and a group on the right it gives statistics **per group**, read "Days **by** Lrn":
 
 | Formula | Left of ~ | Right of ~ | Result |
 |---|---|---|---|
@@ -170,7 +174,9 @@ favstats(Days~Lrn, data=quine)
 - "Take the quine data (`data=quine`), split Days (`Days`) by (`~`) the levels of Lrn (`Lrn`), and print the favourite statistics of each group (`favstats`)."
 :::
 
-The instructor's conclusion: "slow" learners had a greater mean days absent (17.3) than "average" learners (15.8). `Y~G1+G2` gives one result per combination of two categorical variables.
+The instructor's conclusion: "slow" learners had a greater mean days absent (17.3) than "average" learners (15.8).
+
+`Y~G1+G2` gives one result per combination of two categorical variables.
 
 ```widget
 group-stats
@@ -208,7 +214,9 @@ Boys were absent about three days more.
 
 ### Task 4: $Sk$ overall and by sex
 
-Unit 1's $Sk = \dfrac{3(\bar{X} - Q_2)}{s}$, ungrouped and grouped:
+Unit 1's skewness, ungrouped and grouped:
+
+$$Sk = \dfrac{3(\bar{X} - Q_2)}{s}$$
 
 ```r
 Sk.all <- 3*(mean(~Days, data=quine) - median(~Days, data=quine))/sd(~Days, data=quine)
@@ -226,7 +234,7 @@ Sk.grouped
 | Code | What it does |
 |---|---|
 | `mean(~Days, data=quine)`, `median(…)`, `sd(…)` | The `mosaic` formula versions: each returns one number for the whole `Days` column. |
-| `3*( … - … )/sd(…)` | `*` multiplies, `-` subtracts, `/` divides; the parentheses force the subtraction first. |
+| `3*( … - …)/sd(…)` | `*` multiplies, `-` subtracts, `/` divides; the parentheses force the subtraction first. |
 | `Sk.all <- …` | Stores the result; it prints nothing. |
 | `Sk.all` | Typing a name alone prints its value. |
 | `Sk.grouped <- 3*(mean(Days~Sex, …) - median(Days~Sex, …))/sd(Days~Sex, …)` | Same formula with `Days~Sex`: each call returns an F and an M value, and the arithmetic works element by element. |
@@ -247,7 +255,13 @@ Sk.grouped
 - `Sk.grouped`: "Look up Sk.grouped (`Sk.grouped`) and print it."
 :::
 
-By hand: $3(16.4589 - 11)/16.25322 = 1.0076$, **highly skewed right** ($Sk > 1$). Girls (0.98) are slightly more skewed than boys (0.71).
+By hand:
+
+$$Sk = \dfrac{3(16.4589 - 11)}{16.25322} = \mathbf{1.0076}$$
+
+That is **highly skewed right** ($Sk > 1$).
+
+Girls (0.98) are slightly more skewed than boys (0.71).
 
 ## Task 5: `histogram()` of `Days`
 
@@ -280,7 +294,9 @@ histogram(~Days, data=quine,
 - "Count the rows of quine (`nrow(quine)`), glue that number between the two text pieces (`paste0`) to make the title (`main=`), build the edges 0, 5, …, 85 (`seq(0, 85, by=5)`) as the bins (`breaks=`), set the colour (`col="#FF7256"`) and count scale (`type="count"`), take Days (`~Days`) from quine (`data=quine`), and draw the histogram (`histogram`)."
 :::
 
-`"#FF7256"` is "coral" as a hex RGB code. The instructor's answer: **the long right tail is consistent with the high skewness ($Sk = 1.01$) for the entire sample.**
+`"#FF7256"` is "coral" as a hex RGB code.
+
+The instructor's answer: **the long right tail is consistent with the high skewness ($Sk = 1.01$) for the entire sample.**
 
 ## Task 6: `bwplot()` of `Days`
 
@@ -307,7 +323,9 @@ bwplot(~Days, data=quine, horizontal=TRUE,
 - "Count the rows of quine (`nrow(quine)`), glue that number into the title text (`paste0`, `main=`), set the x-axis label (`xlab="Days Absent"`) and sideways layout (`horizontal=TRUE`), take Days (`~Days`) from quine (`data=quine`), and draw the box plot (`bwplot`)."
 :::
 
-`bwplot` marks the median with a **dot**; the box is 5 to 22.75, the whiskers end at 0 and 48, and circles run out to 81. (48 is the largest Days value inside the upper fence, 49.375, which Task 7 computes; the circles are the 8 values beyond it.)
+`bwplot` marks the median with a **dot**; the box is 5 to 22.75, the whiskers end at 0 and 48, and circles run out to 81.
+
+(48 is the largest Days value inside the upper fence, 49.375, which Task 7 computes; the circles are the 8 values beyond it.)
 
 ### Task 7: how many outliers?
 
@@ -336,7 +354,7 @@ sum(is.outlier)
 | `lower.fence <- Q1 - 1.5*(Q3 - Q1)` | Q1 minus 1.5 times the IQR; the parentheses compute the IQR first. |
 | `upper.fence <- Q3 + 1.5*(Q3 - Q1)` | Q3 plus 1.5 times the IQR. |
 | `quine$Days > upper.fence` | `>` compares every value of the column with the fence, giving a vector of `TRUE`/`FALSE`, one per child. `<` works the same way. |
-| `( … ) \| ( … )` | `\|` is element-wise OR: `TRUE` where either comparison is `TRUE`. The line break is fine because the line ends with `\|`. |
+| `( …) \| ( …)` | `\|` is element-wise OR: `TRUE` where either comparison is `TRUE`. The line break is fine because the line ends with `\|`. |
 | `is.outlier <- …` | Stores the logical vector. |
 | `sum(is.outlier)` | `TRUE` counts as 1 and `FALSE` as 0, so the sum is the number of outliers. |
 
@@ -359,7 +377,15 @@ sum(is.outlier)
 - `sum(is.outlier)`: "Take is.outlier (`is.outlier`), add up its TRUEs as ones (`sum`), and print the count."
 :::
 
-By hand: $IQR = 17.75$, lower fence $5 - 26.625 = -21.625$ (unreachable), upper fence $22.75 + 26.625 = 49.375$. Eight children exceed it: 53, 53, 54, 57, 60, 67, 69 and 81. `sum()` of a logical vector **counts the `TRUE`s**.
+By hand, with $IQR = 17.75$ and $1.5 \times IQR = 26.625$:
+
+$$\text{lower fence} = 5 - 26.625 = -21.625, \qquad \text{upper fence} = 22.75 + 26.625 = \mathbf{49.375}$$
+
+The lower fence is unreachable.
+
+Eight children exceed the upper fence: 53, 53, 54, 57, 60, 67, 69 and 81.
+
+`sum()` of a logical vector **counts the `TRUE`s**.
 
 ## Comparing groups
 
@@ -460,16 +486,18 @@ group-stats
 
 ### Task 9: the most consistent group
 
-Most consistent means smallest $CV = s/\bar{X}$:
+Most consistent means the smallest coefficient of variation:
+
+$$CV = \dfrac{s}{\bar{X}}$$
 
 ```r
 CV.grouped <- sd(Days~Eth+Sex, data=quine) /
               mean(Days~Eth+Sex, data=quine)
 
 sprintf("The most consistent group is %s.",
-        names(which.min( CV.grouped )))
+        names(which.min( CV.grouped)))
 sprintf("The least consistent group is %s.",
-        names(which.max( CV.grouped )))
+        names(which.max( CV.grouped)))
 ```
 ```text
 [1] "The most consistent group is A.M."
@@ -480,10 +508,10 @@ sprintf("The least consistent group is %s.",
 | Code | What it does |
 |---|---|
 | `CV.grouped <- sd(…) / mean(…)` | Divides the four group sds by the four group means element by element; the names stay attached. The line break is fine after `/`. |
-| `which.min( CV.grouped )` | The position of the smallest value, carrying its name. |
+| `which.min( CV.grouped)` | The position of the smallest value, carrying its name. |
 | `names(…)` | Pulls out just the name, such as `"A.M"`. |
 | `sprintf("… %s.", …)` | Builds a string: `%s` is replaced by the next argument as text. Printed with `[1]` and quotes. |
-| `which.max( CV.grouped )` | The position of the largest value; the second `sprintf()` line works the same way. |
+| `which.max( CV.grouped)` | The position of the largest value; the second `sprintf()` line works the same way. |
 
 **Left to right**
 
@@ -498,7 +526,11 @@ sprintf("The least consistent group is %s.",
 - `sprintf("The least consistent group is %s.", …)`: "Take CV.grouped (`CV.grouped`), find the position of its largest value (`which.max`), get that position's label (`names`), and drop it into the blank (`%s`) of the sentence (`sprintf`)."
 :::
 
-The CVs are about A.F 0.94, A.M 0.71, N.F 0.89, N.M 1.18. `names(which.min(...))` labels the smallest. The task says `Age` and `Sex`; the posted solution uses `Eth` and `Sex`.
+The CVs are about A.F 0.94, A.M 0.71, N.F 0.89, N.M 1.18.
+
+`names(which.min(...))` labels the smallest.
+
+The task says `Age` and `Sex`; the posted solution uses `Eth` and `Sex`.
 
 ## Percentiles: `quantile()` and `probs=`
 
@@ -550,7 +582,9 @@ quantile(~Days, probs=0.9, data=quine)
 - "Take Days (`~Days`) from quine (`data=quine`), and print its value at the 0.9 point (`probs=0.9`, `quantile`)."
 :::
 
-Ninety percent were absent 40 days or fewer. Several at once:
+Ninety percent were absent 40 days or fewer.
+
+Several at once:
 
 ```r
 quantile(~Days, probs=c(0.1, 0.9), data=quine)
@@ -610,7 +644,9 @@ quantile(Days~Lrn, data=quine, prob=c(0.2, 0.4, 0.6, 0.8))
 - "Combine the four proportions (`c(0.2, 0.4, 0.6, 0.8)`) as the percentages wanted (`prob=`), take quine (`data=quine`), split Days (`Days`) by (`~`) Lrn (`Lrn`), and print each group's percentiles (`quantile`)."
 :::
 
-Learner status makes little difference. By `Sex` and by `Eth`:
+Learner status makes little difference.
+
+By `Sex` and by `Eth`:
 
 ```r
 quantile(Days~Sex, data=quine, prob=c(0.2, 0.4, 0.6, 0.8))
@@ -652,7 +688,7 @@ The instructor's answer: **`Eth` is the categorical variable that leads to the g
 ```
 
 ```r
-head( percent_rank(quine$Days) )
+head( percent_rank(quine$Days))
 ```
 ```text
 [1] 0.08965517 0.47586207 0.55862069 0.17931034 0.17931034 0.53793103
@@ -662,7 +698,7 @@ head( percent_rank(quine$Days) )
 | Code | What it does |
 |---|---|
 | `percent_rank(quine$Days)` | From `dplyr`: one rank between 0 and 1 for every element of the vector. It takes a plain vector, not a formula. |
-| `head( … )` | Shows only the first six elements. |
+| `head( …)` | Shows only the first six elements. |
 
 **Left to right**
 
@@ -674,17 +710,29 @@ head( percent_rank(quine$Days) )
 :::
 
 :::tip percent_rank by hand
-`percent_rank(x)` $= \dfrac{\text{number of values below } x}{n - 1}$. Ties share the lower rank. The smallest value always gets 0 and the largest 1. Tiny case, 2 5 5 7 11 ($n = 5$, so divide by 4):
+`percent_rank(x)` is the fraction of the other values that lie below $x$:
+
+$$\dfrac{\text{number of values below } x}{n - 1}$$
+
+Ties share the lower rank.
+
+The smallest value always gets 0 and the largest 1.
+
+Tiny case, 2 5 5 7 11 ($n = 5$, so divide by 4):
 :::
 
 ```diagram
 {"type": "grid", "nodes": [{"id": "r0c0", "label": "value", "row": 0, "col": 0}, {"id": "r0c1", "label": "2", "row": 0, "col": 1}, {"id": "r0c2", "label": "5", "row": 0, "col": 2}, {"id": "r0c3", "label": "5", "row": 0, "col": 3}, {"id": "r0c4", "label": "7", "row": 0, "col": 4}, {"id": "r0c5", "label": "11", "row": 0, "col": 5}, {"id": "r1c0", "label": "values below", "row": 1, "col": 0}, {"id": "r1c1", "label": "0", "row": 1, "col": 1}, {"id": "r1c2", "label": "1", "row": 1, "col": 2}, {"id": "r1c3", "label": "1", "row": 1, "col": 3}, {"id": "r1c4", "label": "3", "row": 1, "col": 4}, {"id": "r1c5", "label": "4", "row": 1, "col": 5}, {"id": "r2c0", "label": "rank = below/4", "row": 2, "col": 0}, {"id": "r2c1", "label": "0", "row": 2, "col": 1}, {"id": "r2c2", "label": "0.25", "row": 2, "col": 2}, {"id": "r2c3", "label": "0.25", "row": 2, "col": 3}, {"id": "r2c4", "label": "0.75", "row": 2, "col": 4}, {"id": "r2c5", "label": "1", "row": 2, "col": 5}], "hi": ["r2c2", "r2c3"], "caption": "n = 5, so divide by n − 1 = 4. The two 5s tie and share the lower rank, 0.25."}
 ```
 
-The first quine child (2 days): 13 values are below 2, and $n - 1 = 145$, so $13/145 = 0.0897$. As whole numbers:
+The first quine child (2 days): 13 values are below 2, and $n - 1 = 145$, so:
+
+$$\dfrac{13}{145} = \mathbf{0.0897}$$
+
+As whole numbers:
 
 ```r
-head( round(100*percent_rank(quine$Days) ))
+head( round(100*percent_rank(quine$Days)))
 ```
 ```text
 [1]  9 48 56 18 18 54
@@ -694,8 +742,8 @@ head( round(100*percent_rank(quine$Days) ))
 | Code | What it does |
 |---|---|
 | `100*percent_rank(quine$Days)` | Multiplies every rank by 100 to make percentages. |
-| `round( … )` | `round(x, digits)` with only x given: digits defaults to 0, so whole numbers. |
-| `head( … )` | The first six, as above. |
+| `round( …)` | `round(x, digits)` with only x given: digits defaults to 0, so whole numbers. |
+| `head( …)` | The first six, as above. |
 
 **Left to right**
 
@@ -714,7 +762,7 @@ Ranks of the male `F0` students only:
 
 ```r
 is.F0.Male <- (quine$Sex=="M") & (quine$Age=="F0")
-cbind(round(100*percent_rank( quine$Days )[is.F0.Male]))
+cbind(round(100*percent_rank( quine$Days)[is.F0.Male]))
 ```
 ```text
       [,1]
@@ -741,11 +789,11 @@ cbind(round(100*percent_rank( quine$Days )[is.F0.Male]))
 | Code | What it does |
 |---|---|
 | `quine$Sex=="M"` | `==` tests equality for every element, giving `TRUE`/`FALSE` per child. Text values go in quotes. |
-| `( … ) & ( … )` | `&` is element-wise AND: `TRUE` only where both tests are `TRUE`. |
+| `( …) & ( …)` | `&` is element-wise AND: `TRUE` only where both tests are `TRUE`. |
 | `is.F0.Male <- …` | Stores the logical vector, one value per row of `quine`. |
-| `percent_rank( quine$Days )[is.F0.Male]` | Ranks for all 146 children, then keeps the F0-boy positions: `[ ]` with a logical vector keeps only the positions that are `TRUE`. |
+| `percent_rank( quine$Days)[is.F0.Male]` | Ranks for all 146 children, then keeps the F0-boy positions: `[ ]` with a logical vector keeps only the positions that are `TRUE`. |
 | `round(100*…)` | Turns those ranks into whole percents. |
-| `cbind( … )` | Turns the vector into a one-column matrix, so it prints one value per line. `[1,]` labels rows and `[,1]` the column. |
+| `cbind( …)` | Turns the vector into a one-column matrix, so it prints one value per line. `[1,]` labels rows and `[,1]` the column. |
 
 **Left to right**
 
@@ -758,15 +806,23 @@ cbind(round(100*percent_rank( quine$Days )[is.F0.Male]))
 - `cbind(…)`: "Take quine's Days (`quine$Days`), compute the percent ranks of all children (`percent_rank`), keep the male F0 positions (`[is.F0.Male]`), multiply by 100 (`100*`), round (`round`), and print as one column (`cbind`)."
 :::
 
-`&` is AND; `x[logical]` keeps the `TRUE` positions. Seventeen boys are in form F0; one (rank 99) is near the top for absences.
+`&` is AND; `x[logical]` keeps the `TRUE` positions.
 
-These are ranks among all 146 children, then filtered. Rank 99 means more absences than 99% of the whole sample. The first six match `head()` above because quine's first rows are F0 boys. To rank inside the subgroup instead: `percent_rank(quine$Days[is.F0.Male])`.
+Seventeen boys are in form F0; one (rank 99) is near the top for absences.
+
+These are ranks among all 146 children, then filtered.
+
+Rank 99 means more absences than 99% of the whole sample.
+
+The first six match `head()` above because quine's first rows are F0 boys.
+
+To rank inside the subgroup instead: `percent_rank(quine$Days[is.F0.Male])`.
 
 :::info R syntax
 | Code | What it does |
 |---|---|
 | `quine$Days[is.F0.Male]` | Keeps the Days values of the 17 F0 boys first. |
-| `percent_rank( … )` | Then ranks those 17 values among themselves. |
+| `percent_rank( …)` | Then ranks those 17 values among themselves. |
 
 **Left to right**
 
@@ -794,7 +850,7 @@ subset( quine, percent_rank(Days) > 0.75)
 :::info R syntax
 | Code | What it does |
 |---|---|
-| `subset( quine, … )` | `subset(x, subset)`: x is the data frame, the second argument is a condition; returns the rows where it is `TRUE`. |
+| `subset( quine, …)` | `subset(x, subset)`: x is the data frame, the second argument is a condition; returns the rows where it is `TRUE`. |
 | `percent_rank(Days) > 0.75` | Inside `subset()` column names work directly, so `Days` needs no `quine$`. The row names on the left are the original row numbers. |
 
 **Left to right**
@@ -806,13 +862,15 @@ subset( quine, percent_rank(Days) > 0.75)
 - "Take the Days column (`Days`), compute its percent ranks (`percent_rank`), test each against 0.75 (`> 0.75`), and keep the rows of quine (`quine`) where the test is TRUE (`subset`)."
 :::
 
-`subset()` keeps the rows where the condition is `TRUE`. Thirty-seven rows come back, 25 of them `A`.
+`subset()` keeps the rows where the condition is `TRUE`.
+
+Thirty-seven rows come back, 25 of them `A`.
 
 ### Task 12: the bottom quarter
 
 ```r
-P25.students <- subset( quine, percent_rank( Days ) < 0.25 )
-round(prop.table( table(P25.students$Sex )),3)
+P25.students <- subset( quine, percent_rank( Days) < 0.25)
+round(prop.table( table(P25.students$Sex)),3)
 ```
 ```text
     F     M
@@ -822,10 +880,10 @@ round(prop.table( table(P25.students$Sex )),3)
 :::info R syntax
 | Code | What it does |
 |---|---|
-| `P25.students <- subset( quine, percent_rank( Days ) < 0.25 )` | Keeps the rows ranked below 0.25 and stores them as a new data frame. |
-| `table(P25.students$Sex )` | Counts how many rows have each value of `Sex`. |
-| `prop.table( … )` | Divides each count by the total, so the values add to 1. |
-| `round( … ,3)` | `round(x, digits)`: digits = 3 decimal places. |
+| `P25.students <- subset( quine, percent_rank( Days) < 0.25)` | Keeps the rows ranked below 0.25 and stores them as a new data frame. |
+| `table(P25.students$Sex)` | Counts how many rows have each value of `Sex`. |
+| `prop.table( …)` | Divides each count by the total, so the values add to 1. |
+| `round( …,3)` | `round(x, digits)`: digits = 3 decimal places. |
 
 **Left to right**
 
@@ -842,10 +900,12 @@ round(prop.table( table(P25.students$Sex )),3)
 
 ## Z-scores with `scale()`
 
-`scale()` computes $Z = (X - \bar{X})/s$ for every element:
+`scale()` computes the Z-score of every element:
+
+$$Z = \dfrac{X - \bar{X}}{s}$$
 
 ```r
-head( scale( quine$Days ) )
+head( scale( quine$Days))
 ```
 ```text
            [,1]
@@ -860,8 +920,8 @@ head( scale( quine$Days ) )
 :::info R syntax
 | Code | What it does |
 |---|---|
-| `scale( quine$Days )` | Subtracts the mean and divides by the sd for every element. It returns a one-column matrix, hence the `[1,]` and `[,1]` labels. |
-| `head( … )` | On a matrix, shows the first six rows. |
+| `scale( quine$Days)` | Subtracts the mean and divides by the sd for every element. It returns a one-column matrix, hence the `[1,]` and `[,1]` labels. |
+| `head( …)` | On a matrix, shows the first six rows. |
 
 **Left to right**
 
@@ -872,14 +932,18 @@ head( scale( quine$Days ) )
 - "Take quine (`quine`), pull out Days (`$Days`), turn every value into a Z-score (`scale`), and show the first six rows (`head`)."
 :::
 
-The first child: $(2 - 16.4589)/16.25322 = -0.8896$, 0.89 sd **below** the mean.
+The first child:
+
+$$Z = \dfrac{2 - 16.4589}{16.25322} = \mathbf{-0.8896}$$
+
+That is 0.89 sd **below** the mean.
 
 ### Task 13: counts beyond k sd
 
 Children more than 1, 2 and 3 sd from the mean:
 
 ```r
-Z.scores <- scale( quine$Days )
+Z.scores <- scale( quine$Days)
 sum(abs(Z.scores) > 1)
 sum(abs(Z.scores) > 2)
 sum(abs(Z.scores) > 3)
@@ -893,25 +957,33 @@ sum(abs(Z.scores) > 3)
 :::info R syntax
 | Code | What it does |
 |---|---|
-| `Z.scores <- scale( quine$Days )` | Stores the Z-scores. |
+| `Z.scores <- scale( quine$Days)` | Stores the Z-scores. |
 | `sum(abs(Z.scores) > k)` | `abs()` drops the sign, `>` gives `TRUE`/`FALSE` per child, and `sum()` counts the `TRUE`s. The three lines do this for k = 1, 2, 3. |
 
 **Left to right**
 
-- `Z.scores <- scale( quine$Days )`: "Store under the name Z.scores (`Z.scores <-`) the standardized values (`scale`) of the Days column (`Days`) of quine (`quine$`)."
+- `Z.scores <- scale( quine$Days)`: "Store under the name Z.scores (`Z.scores <-`) the standardized values (`scale`) of the Days column (`Days`) of quine (`quine$`)."
 - `sum(abs(Z.scores) > k)`, k = 1, 2, 3: "Print the count (`sum`) of the size without sign (`abs`) of each Z-score (`Z.scores`) that is above (`>`) k (`1`, `2`, `3`)."
 
 **Right to left**, the order R runs it
 
-- `Z.scores <- scale( quine$Days )`: "Take quine (`quine`), pull out Days (`$Days`), standardize it (`scale`), and store it as Z.scores (`Z.scores <-`)."
+- `Z.scores <- scale( quine$Days)`: "Take quine (`quine`), pull out Days (`$Days`), standardize it (`scale`), and store it as Z.scores (`Z.scores <-`)."
 - `sum(abs(Z.scores) > k)`, k = 1, 2, 3: "Take Z.scores (`Z.scores`), drop the signs (`abs`), test each against k (`> 1`, `> 2`, `> 3`), and count the TRUEs (`sum`)."
 :::
 
-`abs()` makes "above or below" one comparison. **Unusual** means $|Z| > 2$, so `sum(abs(Z.scores) > 2)` = 8 counts the unusual children. **Outlier** means beyond a fence (Task 7), which also gives 8. The counts match here by coincidence; the SFU rainfall in Mock Quiz 2 has a day that is an outlier but not unusual.
+`abs()` makes "above or below" one comparison.
+
+**Unusual** means $|Z| > 2$, so `sum(abs(Z.scores) > 2)` = 8 counts the unusual children.
+
+**Outlier** means beyond a fence (Task 7), which also gives 8.
+
+The counts match here by coincidence; the SFU rainfall in Mock Quiz 2 has a day that is an outlier but not unusual.
 
 ### Task 14: Chebyshev and the empirical rule
 
-Fractions **within** $\pm k$ sd against Chebyshev's $1 - 1/k^2$ (0, 0.75, 0.889):
+Fractions **within** $\pm k$ sd against Chebyshev's lower bound, 0, 0.75 and 0.889 for $k = 1, 2, 3$:
+
+$$1 - \dfrac{1}{k^2}$$
 
 ```r
 n.students <- nrow(quine)
@@ -982,19 +1054,23 @@ p3 # too low
 {"type": "grid", "nodes": [{"id": "r0c0", "label": "k", "row": 0, "col": 0}, {"id": "r0c1", "label": "Observed within ±k", "row": 0, "col": 1}, {"id": "r0c2", "label": "Chebyshev: at least", "row": 0, "col": 2}, {"id": "r0c3", "label": "Empirical: about", "row": 0, "col": 3}, {"id": "r0c4", "label": "Verdict", "row": 0, "col": 4}, {"id": "r1c0", "label": "1", "row": 1, "col": 0}, {"id": "r1c1", "label": "0.781", "row": 1, "col": 1}, {"id": "r1c2", "label": "0", "row": 1, "col": 2}, {"id": "r1c3", "label": "0.68", "row": 1, "col": 3}, {"id": "r1c4", "label": "too many", "row": 1, "col": 4}, {"id": "r2c0", "label": "2", "row": 2, "col": 0}, {"id": "r2c1", "label": "0.945", "row": 2, "col": 1}, {"id": "r2c2", "label": "0.75", "row": 2, "col": 2}, {"id": "r2c3", "label": "0.95", "row": 2, "col": 3}, {"id": "r2c4", "label": "close", "row": 2, "col": 4}, {"id": "r3c0", "label": "3", "row": 3, "col": 0}, {"id": "r3c1", "label": "0.979", "row": 3, "col": 1}, {"id": "r3c2", "label": "0.889", "row": 3, "col": 2}, {"id": "r3c3", "label": "0.997", "row": 3, "col": 3}, {"id": "r3c4", "label": "too few", "row": 3, "col": 4}], "hi": ["r1c3", "r3c3"], "caption": "Every observed value clears Chebyshev's floor; the empirical rule misses at k = 1 and k = 3."}
 ```
 
-Chebyshev holds, as it must; the empirical rule misses at $k = 1$ and $3$: **the empirical rule does not hold for `Days`, since it is not a normally distributed variable. It cannot be, since it is significantly skewed, as shown by $Sk$ earlier.**
+Chebyshev holds, as it must; the empirical rule misses at $k = 1$ and $3$.
+
+**The empirical rule does not hold for `Days`, since it is not a normally distributed variable. It cannot be, since it is significantly skewed, as shown by $Sk$ earlier.**
 
 ## favstats, fences and Z-scores for three leagues' Divine prices
 
-poe.ninja's daily price of a Divine Orb, a high-value currency item, in Chaos Orbs covers all of Keepers (123 days) and Mirage (137) and the first 96 days of Allflame [PoE1, 3.27 Keepers, 3.28 Mirage and 3.29 Allflame Divine price series from poe.ninja, checked 2026-10-27]. `divine` stacks the three price columns unedited, one row per league-day, with `league` as the factor.
+poe.ninja's daily price of a Divine Orb, a high-value currency item, in Chaos Orbs covers all of Keepers (123 days) and Mirage (137) and the first 96 days of Allflame.
+
+`divine` stacks the three price columns unedited, one row per league-day, with `league` as the factor.
 
 ```quiz
 [
-  {"type": "fill", "q": "Fill the blank to get one row of statistics per league.", "code": "af <- read.csv(\"poe1-ninja-divine-chaos-allflame.csv\")\nke <- read.csv(\"poe1-ninja-divine-chaos-keepers.csv\")\nmi <- read.csv(\"poe1-ninja-divine-chaos-mirage.csv\")\ndivine <- data.frame(price = c(af$receive_value_chaos, ke$receive_value_chaos, mi$receive_value_chaos),\n                     league = rep(c(\"Allflame\", \"Keepers\", \"Mirage\"), times = c(96, 123, 137)))\nfavstats(price ~ ___, data=divine)\n##     league   min     Q1 median    Q3   max     mean        sd   n missing\n## 1 Allflame 75.90 193.30    300 350.0 400.0 268.9917  89.49155  96       0\n## 2  Keepers 44.85 142.15    150 176.5 271.3 157.7333  37.52127 123       0\n## 3   Mirage 36.30 274.70    368 500.0 612.0 379.6226 140.83837 137       0", "answer": ["league"], "explain": "`Y ~ G` gives the statistics of Y separately for each level of G: price by league. The three rows come out in alphabetical order, Allflame, Keepers, Mirage, and n = 96 + 123 + 137 = 356 rows in all."},
-  {"q": "From the Allflame row, compute Pearson's $Sk$. (2 decimals)", "type": "numeric", "answer": -1.04, "tolerance": 0.006, "explain": "$Sk = 3(\\bar{X} - Q_2)/s = 3(268.9917 - 300)/89.49155 = -93.0249/89.49155 = -1.0395$: highly skewed left. The cheap first weeks of the league pull the mean below the median."},
-  {"q": "From the Keepers row, compute the upper fence. (3 decimals)", "type": "numeric", "answer": 228.025, "tolerance": 0.001, "explain": "$IQR = 176.5 - 142.15 = 34.35$; upper fence $= 176.5 + 1.5(34.35) = 176.5 + 51.525 = 228.025$ chaos. Keepers' maximum 271.3 is beyond it, so the box plot shows outliers on the right; the lower fence is $142.15 - 51.525 = 90.625$, above the minimum 44.85."},
-  {"q": "Keepers' first day was priced at 44.85 chaos. Compute its Z-score within the Keepers league, as `scale()` on that league would. (2 decimals)", "type": "numeric", "answer": -3.01, "tolerance": 0.006, "explain": "$Z = (X - \\bar{X})/s = (44.85 - 157.7333)/37.52127 = -112.8833/37.52127 = -3.0085$: more than 3 sd below the Keepers mean, so unusual."},
-  {"q": "`CV <- sd(price~league, data=divine)/mean(price~league, data=divine)`, then `names(which.min(CV))`. Which league is printed?", "type": "text", "answer": ["Keepers"], "explain": "$CV = s/\\bar{X}$: Allflame $89.49155/268.9917 = 0.333$, Keepers $37.52127/157.7333 = 0.238$, Mirage $140.83837/379.6226 = 0.371$. The smallest is Keepers, the most consistent league relative to its own price level."},
+  {"type": "fill", "q": "Fill the blank to get one row of statistics per league.", "code": "af <- read.csv(\"poe1-ninja-divine-chaos-allflame.csv\")\nke <- read.csv(\"poe1-ninja-divine-chaos-keepers.csv\")\nmi <- read.csv(\"poe1-ninja-divine-chaos-mirage.csv\")\ndivine <- data.frame(price = c(af$receive_value_chaos, ke$receive_value_chaos, mi$receive_value_chaos),\n                     league = rep(c(\"Allflame\", \"Keepers\", \"Mirage\"), times = c(96, 123, 137)))\nfavstats(price ~ ___, data=divine)\n##     league   min     Q1 median    Q3   max     mean        sd   n missing\n## 1 Allflame 75.90 193.30    300 350.0 400.0 268.9917  89.49155  96       0\n## 2  Keepers 44.85 142.15    150 176.5 271.3 157.7333  37.52127 123       0\n## 3   Mirage 36.30 274.70    368 500.0 612.0 379.6226 140.83837 137       0", "answer": ["league"], "explain": "`Y ~ G` gives the statistics of Y separately for each level of G: price by league. The three rows come out in alphabetical order, Allflame, Keepers, Mirage, with $$n = 96 + 123 + 137 = \\mathbf{356}$$ rows in all."},
+  {"q": "From the Allflame row, compute Pearson's $Sk$. (2 decimals)", "type": "numeric", "answer": -1.04, "tolerance": 0.006, "explain": "$$Sk = \\dfrac{3(\\bar{X} - Q_2)}{s} = \\dfrac{3(268.9917 - 300)}{89.49155} = \\dfrac{-93.0249}{89.49155} = \\mathbf{-1.0395}$$ Highly skewed left. The cheap first weeks of the league pull the mean below the median."},
+  {"q": "From the Keepers row, compute the upper fence. (3 decimals)", "type": "numeric", "answer": 228.025, "tolerance": 0.001, "explain": "$$IQR = 176.5 - 142.15 = 34.35$$ $$\\text{upper fence} = 176.5 + 1.5(34.35) = 176.5 + 51.525 = \\mathbf{228.025} \\text{ chaos}$$ Keepers' maximum 271.3 is beyond it, so the box plot shows outliers on the right. The lower fence, above the minimum 44.85, is $$142.15 - 51.525 = 90.625$$"},
+  {"q": "Keepers' first day was priced at 44.85 chaos. Compute its Z-score within the Keepers league, as `scale()` on that league would. (2 decimals)", "type": "numeric", "answer": -3.01, "tolerance": 0.006, "explain": "$$Z = \\dfrac{X - \\bar{X}}{s} = \\dfrac{44.85 - 157.7333}{37.52127} = \\dfrac{-112.8833}{37.52127} = \\mathbf{-3.0085}$$ More than 3 sd below the Keepers mean, so unusual."},
+  {"q": "`CV <- sd(price~league, data=divine)/mean(price~league, data=divine)`, then `names(which.min(CV))`. Which league is printed?", "type": "text", "answer": ["Keepers"], "explain": "Divide each league's sd by its mean, $CV = s/\\bar{X}$: $$\\text{Allflame } \\dfrac{89.49155}{268.9917} = 0.333, \\qquad \\text{Keepers } \\dfrac{37.52127}{157.7333} = \\mathbf{0.238}, \\qquad \\text{Mirage } \\dfrac{140.83837}{379.6226} = 0.371$$ The smallest is Keepers, the most consistent league relative to its own price level."},
   {"q": "Side-by-side box plots of price by league: write the full mosaic command on paper, then type the name of the function you used.", "type": "text", "answer": ["bwplot", "boxplot"], "explain": "`library(mosaic)` then `bwplot(price ~ league, data=divine, main=paste0(\"Divine price by league (n = \", nrow(divine), \")\"))`. Base R's `boxplot(price ~ league, data=divine)` draws the same boxes."}
 ]
 ```
@@ -1019,14 +1095,14 @@ poe.ninja's daily price of a Divine Orb, a high-value currency item, in Chaos Or
     "type": "numeric",
     "answer": 1.01,
     "tolerance": 0.02,
-    "explain": "$Sk = 3(16.4589 - 11)/16.25322 = 16.3767/16.25322 = 1.0076 \\approx 1.01$: highly skewed right."
+    "explain": "$$Sk = \\dfrac{3(16.4589 - 11)}{16.25322} = \\dfrac{16.3767}{16.25322} = 1.0076 \\approx \\mathbf{1.01}$$ Highly skewed right."
   },
   {
     "q": "$Q_1 = 5$ and $Q_3 = 22.75$ for `Days`. What is the upper fence for outliers? (3 decimals)",
     "type": "numeric",
     "answer": 49.375,
     "tolerance": 0.01,
-    "explain": "$IQR = 17.75$, $1.5 \\times IQR = 26.625$, upper fence $= 22.75 + 26.625 = 49.375$. Eight children exceed it."
+    "explain": "$$IQR = 17.75, \\qquad 1.5 \\times IQR = 26.625, \\qquad \\text{upper fence} = 22.75 + 26.625 = \\mathbf{49.375}$$ Eight children exceed it."
   },
   {
     "q": "What does `sum(is.outlier)` return when `is.outlier` is a logical vector?",
@@ -1056,13 +1132,13 @@ poe.ninja's daily price of a Divine Orb, a high-value currency item, in Chaos Or
     "q": "`round(100*percent_rank(quine$Days))` gives 9 for the first child (2 days absent). What does 9 mean?",
     "options": ["The child was absent 9 days", "The child's Days value is larger than about 9% of all Days values", "9% of children were absent exactly 2 days", "The child is in the top 9% for absences"],
     "answer": 1,
-    "explain": "A percentile rank is the percentage of values below this one: 13 of the other 145 children had fewer days, $13/145 = 0.0897 \\approx 9\\%$."
+    "explain": "A percentile rank is the percentage of values below this one: 13 of the other 145 children had fewer days: $$\\dfrac{13}{145} = 0.0897 \\approx \\mathbf{9\\%}$$"
   },
   {
     "q": "The first value of `scale(quine$Days)` is $-0.8896$. This means the first child's Days value is about 0.89 standard deviations **above** the mean.",
     "type": "tf",
     "answer": false,
-    "explain": "`scale()` returns $Z = (X - \\bar{X})/s$; a negative Z is below the mean: $(2 - 16.46)/16.25 = -0.89$."
+    "explain": "`scale()` returns Z-scores, and a negative Z is below the mean: $$Z = \\dfrac{X - \\bar{X}}{s} = \\dfrac{2 - 16.46}{16.25} = \\mathbf{-0.89}$$"
   },
   {
     "q": "For `Days`, the fraction within $\\pm 1$ sd is 0.781, within $\\pm 2$ sd is 0.945, within $\\pm 3$ sd is 0.979. Which is true?",

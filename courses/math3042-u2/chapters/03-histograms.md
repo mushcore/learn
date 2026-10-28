@@ -4,7 +4,9 @@ minutes: 24
 ---
 <!-- facts: poe1.data.divine-chaos-mirage, classic.data.monsters -->
 
-Histograms are **"most common and important"** (the instructor's margin note): a bar chart for numerical data that groups values into equal-width classes and gives every possible $X$ value a place on the axis. A league of daily Divine Orb prices is that kind of list.
+Histograms are **"most common and important"** (the instructor's margin note): a bar chart for numerical data that groups values into equal-width classes and gives every possible $X$ value a place on the axis.
+
+A league of daily Divine Orb prices is that kind of list.
 
 ## Three steps
 
@@ -24,7 +26,7 @@ hist( BCIT.students$Age, col="lightblue")
 | Code | What it does |
 |---|---|
 | `BCIT.students$Age` | `$` picks the `Age` column of the data frame by name. |
-| `hist( … )` | Draws a histogram of a numeric vector, its first argument `x`. With no `breaks=` given, R chooses the classes itself. |
+| `hist( …)` | Draws a histogram of a numeric vector, its first argument `x`. With no `breaks=` given, R chooses the classes itself. |
 | `col="lightblue"` | The rectangle fill colour, a colour name in quotes. |
 
 **Left to right**
@@ -36,7 +38,13 @@ hist( BCIT.students$Age, col="lightblue")
 - "Take the student data (`BCIT.students`), pull out its Age column (`$Age`), set the fill colour (`col="lightblue"`), and draw the histogram with classes R picks (`hist`)."
 :::
 
-That gives classes 18–20, 20–22, ..., the biggest rectangle (about 110 students) over 20–22, and a nearly empty tail out to 42. R's default classes are closed on the right, (18, 20], (20, 22], …, so 22-year-olds count in 20–22. The recipe below uses left-closed classes, which moves them to 22–23. That is why its tallest class differs. The notes' seven-step recipe chooses the classes yourself.
+That gives classes 18–20, 20–22,..., the biggest rectangle (about 110 students) over 20–22, and a nearly empty tail out to 42.
+
+R's default classes are closed on the right, (18, 20], (20, 22], …, so 22-year-olds count in 20–22.
+
+The recipe below uses left-closed classes, which moves them to 22–23. That is why its tallest class differs.
+
+The notes' seven-step recipe chooses the classes yourself.
 
 ## The recipe, worked on Age ($n = 302$, min 18, max 42)
 
@@ -44,7 +52,9 @@ That gives classes 18–20, 20–22, ..., the biggest rectangle (about 110 stude
 
 $$\sqrt{n} = \sqrt{302} = 17.4$$
 
-√n classes holding about √n values each: 302 students → about 17 classes of about 17 students. Quadrupling $n$ only doubles the number of classes.
+√n classes holding about √n values each: 302 students → about 17 classes of about 17 students.
+
+Quadrupling $n$ only doubles the number of classes.
 
 **2. Initial class width: range divided by $\sqrt{n}$.**
 
@@ -52,10 +62,14 @@ $$\text{class width} = \frac{R}{\sqrt{n}} = \frac{42 - 18}{17.4} = 1.38$$
 
 The instructor calls this **"the ideal class width."**
 
-**3. Round the class width to match the precision of $X$:** $1.38 \to 2$, the **"actual class width."** Ages are whole years, so the width is a whole number; a width of 1 would be the bar plot again.
+**3. Round the class width to match the precision of $X$:** $1.38 \to 2$, the **"actual class width."**
+
+Ages are whole years, so the width is a whole number; a width of 1 would be the bar plot again.
 
 :::tip Choosing the actual width
-Pick a nice number at $X$'s precision near $R/\sqrt{n}$, up or down. Then check that the number of classes comes out near $\sqrt{n}$.
+Pick a nice number at $X$'s precision near $R/\sqrt{n}$, up or down.
+
+Then check that the number of classes comes out near $\sqrt{n}$.
 
 | Data | precision | $R/\sqrt{n}$ | actual width | classes | $\sqrt{n}$ |
 |---|---|---|---|---|---|
@@ -68,7 +82,9 @@ The Mirage prices and the monster levels below follow the same rule.
 
 **4. First lower class limit = the minimum $X$ (you may round it down):** $18$.
 
-**5. Determine all class limits.** Add the width for each next lower limit: 18, 20, 22, ... Each **upper limit is one unit of precision below the next lower limit**: 19, 21, 23, ..., so classes never overlap and leave no gaps.
+**5. Determine all class limits.** Add the width for each next lower limit: 18, 20, 22,...
+
+Each **upper limit is one unit of precision below the next lower limit**: 19, 21, 23,..., so classes never overlap and leave no gaps.
 
 ```diagram
 {"type": "grid", "nodes": [{"id": "r0c0", "label": "", "row": 0, "col": 0}, {"id": "r0c1", "label": "Class 1", "row": 0, "col": 1}, {"id": "r0c2", "label": "Class 2", "row": 0, "col": 2}, {"id": "r0c3", "label": "Class 3", "row": 0, "col": 3}, {"id": "r1c0", "label": "Recipe limits", "row": 1, "col": 0}, {"id": "r1c1", "label": "18–19", "row": 1, "col": 1}, {"id": "r1c2", "label": "20–21", "row": 1, "col": 2}, {"id": "r1c3", "label": "22–23", "row": 1, "col": 3}, {"id": "r2c0", "label": "R boundaries", "row": 2, "col": 0}, {"id": "r2c1", "label": "[18, 20)", "row": 2, "col": 1}, {"id": "r2c2", "label": "[20, 22)", "row": 2, "col": 2}, {"id": "r2c3", "label": "[22, 24)", "row": 2, "col": 3}, {"id": "r3c0", "label": "Ages counted", "row": 3, "col": 0}, {"id": "r3c1", "label": "18, 19", "row": 3, "col": 1}, {"id": "r3c2", "label": "20, 21", "row": 3, "col": 2}, {"id": "r3c3", "label": "22, 23", "row": 3, "col": 3}, {"id": "r4c0", "label": "Frequency", "row": 4, "col": 0}, {"id": "r4c1", "label": "35", "row": 4, "col": 1}, {"id": "r4c2", "label": "94", "row": 4, "col": 2}, {"id": "r4c3", "label": "104", "row": 4, "col": 3}], "hi": ["r1c1", "r2c1"], "caption": "Upper limit 19 and boundary 20 describe the same edge: 19 is the last value in, 20 the first value out."}
@@ -80,7 +96,9 @@ The Mirage prices and the monster levels below follow the same rule.
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Frequency | 35 | 94 | 104 | 53 | 10 | 2 | 1 | 0 | 1 | 0 | 1 | 0 | 1 |
 
-$\Sigma f = 302$ (the widget below prints the full table). The empty classes (32–33, 36–37, 40–41) stay on the chart, which is what the bar plot hid.
+$\Sigma f = 302$ (the widget below prints the full table).
+
+The empty classes (32–33, 36–37, 40–41) stay on the chart, which is what the bar plot hid.
 
 **7. Plot a rectangle for each class, showing the frequency:**
 
@@ -110,13 +128,23 @@ hist(BCIT.students$Age,
 - "Take the ages (`BCIT.students$Age`), build the boundaries 18, 20, …, 44 (`seq`), combine the tick settings (`c(15,45, 15)`), set the left-closed classes, labels and title (`right = FALSE`, `xlab=`, `ylab=`, `main=`), and draw the histogram (`hist`)."
 :::
 
-`breaks=seq(18, 44, by=2)` gives the boundaries 18, 20, ..., 44. Where 44 and thirteen come from:
+`breaks=seq(18, 44, by=2)` gives the boundaries 18, 20,..., 44. Where 44 and thirteen come from:
 
 $$\text{classes} = \left\lfloor \dfrac{\max - \text{first lower limit}}{\text{width}} \right\rfloor + 1, \qquad \text{last break} = \text{first lower limit} + \text{classes} \times \text{width}$$
 
-$\lfloor x \rfloor$ means "round down to a whole number". Age: $\lfloor (42 - 18)/2 \rfloor + 1 = 12 + 1 = 13$ classes, last break $18 + 13 \times 2 = 44$. Check: the last class $[42, 44)$ holds the maximum 42.
+$\lfloor x \rfloor$ means "round down to a whole number".
 
-`right = FALSE` makes each class **include its left boundary and exclude its right one**: **"this rectangle represents students with $18 \le X < 20$, not including 20."** The default `right = TRUE` would give $(18, 20]$. `xaxp=c(15, 45, 15)` puts a tick every 2 years.
+Age:
+
+$$\text{classes} = \left\lfloor \dfrac{42 - 18}{2} \right\rfloor + 1 = 12 + 1 = \mathbf{13}, \qquad \text{last break} = 18 + 13 \times 2 = \mathbf{44}$$
+
+Check: the last class $[42, 44)$ holds the maximum 42.
+
+`right = FALSE` makes each class **include its left boundary and exclude its right one**: **"this rectangle represents students with $18 \le X < 20$, not including 20."**
+
+The default `right = TRUE` would give $(18, 20]$.
+
+`xaxp=c(15, 45, 15)` puts a tick every 2 years.
 
 ### The Age recipe on the 302 students
 
@@ -138,15 +166,27 @@ The notes' six properties:
 
 ## Second worked example: Old Faithful ($n = 272$)
 
-`faithful$eruptions` runs from 1.6 to 5.1 minutes with three decimals. The instructor's margin work:
+`faithful$eruptions` runs from 1.6 to 5.1 minutes with three decimals.
+
+The instructor's margin work:
 
 $$\sqrt{n} = \sqrt{272} = 16.5$$
 $$\text{range of } X = \max - \min = 5.1 - 1.6 = 3.5$$
 $$\text{ideal class width} = \frac{\text{range}}{\sqrt{n}} = \frac{3.5}{16.5} = 0.21212$$
 
-**"The class width must have the same number of decimal places as the $X$ data (3 digits). We also should round down to a 'nice' number. → actual class width = 0.200."** Lower limits start at 1.600; the first class is 1.600 to 1.799, where 1.799 is **"the last possible $X$ value before the next lower limit."** Classes: $\lfloor (5.1 - 1.6)/0.2 \rfloor + 1 = \lfloor 17.5 \rfloor + 1 = 18$, last break $1.6 + 18 \times 0.2 = 5.2$.
+**"The class width must have the same number of decimal places as the $X$ data (3 digits). We also should round down to a 'nice' number. → actual class width = 0.200."**
 
-From 1.600–1.799 up to 5.000–5.199, the 18 class frequencies are 12, 39, 20, 18, 3, 3, 2, 1, 4, 6, 10, 16, 31, 29, 35, 28, 11, 4. They sum to 272. The histogram *"is a direct visual representation of the frequency distribution"*:
+Lower limits start at 1.600; the first class is 1.600 to 1.799, where 1.799 is **"the last possible $X$ value before the next lower limit."**
+
+Classes and last break:
+
+$$\text{classes} = \left\lfloor \dfrac{5.1 - 1.6}{0.2} \right\rfloor + 1 = \lfloor 17.5 \rfloor + 1 = \mathbf{18}, \qquad \text{last break} = 1.6 + 18 \times 0.2 = \mathbf{5.2}$$
+
+From 1.600–1.799 up to 5.000–5.199, the 18 class frequencies are 12, 39, 20, 18, 3, 3, 2, 1, 4, 6, 10, 16, 31, 29, 35, 28, 11, 4.
+
+They sum to 272.
+
+The histogram *"is a direct visual representation of the frequency distribution"*:
 
 ```r
 hist( faithful$eruptions,
@@ -175,12 +215,16 @@ hist( faithful$eruptions,
 - "Take the Old Faithful data (`faithful`), pull out its eruptions column (`$eruptions`), build the boundaries 1.6 to 5.2 (`seq`), set the left-closed classes, label, title and colour (`right=FALSE`, `xlab=`, `main=`, `col=`), and draw the histogram (`hist`)."
 :::
 
-Conclusion from the notes: **eruption durations cluster around two different values, 2.0 and 4.5**. The shape is bimodal, and the mean (3.49) sits in the valley between the peaks.
+Conclusion from the notes: **eruption durations cluster around two different values, 2.0 and 4.5**.
+
+The shape is bimodal, and the mean (3.49) sits in the valley between the peaks.
 
 ### Values on a boundary
 
 :::warn On the quiz use the notes' (R's) counts
-Six of the notes' frequencies differ from an exact hand count. The notes' numbers are what R printed.
+Six of the notes' frequencies differ from an exact hand count.
+
+The notes' numbers are what R printed.
 :::
 
 | Class | Notes (R) | Exact hand count |
@@ -215,14 +259,20 @@ hist-builder
 
 ## Too many classes, too few classes
 
-**Using too many classes is bad.** A width of 0.020 instead of 0.200 (about 175 classes) **"shows a jagged shape and lots of empty classes."**
+**Using too many classes is bad.**
+
+A width of 0.020 instead of 0.200 (about 175 classes) **"shows a jagged shape and lots of empty classes."**
 
 ```widget
 hist-builder
 { "preset": "Old Faithful eruptions (n = 272)", "width": 0.02, "title": "Width 0.020: too many classes" }
 ```
 
-**Using too few classes is also bad.** A width of 2.000 (two classes, 1.6–3.6 and 3.6–5.6) **"doesn't show enough detail about the shape of the distribution."** **"Using $\sqrt{n}$ avoids these problems."**
+**Using too few classes is also bad.**
+
+A width of 2.000 (two classes, 1.6–3.6 and 3.6–5.6) **"doesn't show enough detail about the shape of the distribution."**
+
+**"Using $\sqrt{n}$ avoids these problems."**
 
 ```widget
 hist-builder
@@ -231,12 +281,14 @@ hist-builder
 
 ## The recipe on 137 days of Mirage Divine prices
 
-poe.ninja recorded a Divine Orb price in Chaos Orbs, PoE1's base currency, for each of the 137 days of the Mirage league, from 36.3 to 612.0 chaos [PoE1, 3.28 Mirage Divine price series from poe.ninja, checked 2026-10-27]. A real $n$ and a real range give the recipe's $\sqrt{n}$ and width with nothing invented.
+poe.ninja recorded a Divine Orb price in Chaos Orbs, PoE1's base currency, for each of the 137 days of the Mirage league, from 36.3 to 612.0 chaos.
+
+A real $n$ and a real range give the recipe's $\sqrt{n}$ and width with nothing invented.
 
 ```quiz
 [
-  {"q": "Mirage: $n = 137$, min 36.3, max 612.0. Initial number of classes $\\sqrt{n}$? (1 decimal)", "type": "numeric", "answer": 11.7, "tolerance": 0.05, "explain": "$\\sqrt{137} = 11.70$."},
-  {"q": "Ideal class width $R/\\sqrt{n}$, using $\\sqrt{n} = 11.7$? (2 decimals)", "type": "numeric", "answer": 49.21, "tolerance": 0.03, "explain": "$R = 612.0 - 36.3 = 575.7$ chaos, and $575.7/11.7 = 49.21$ (49.19 with the unrounded $\\sqrt{137}$)."}
+  {"q": "Mirage: $n = 137$, min 36.3, max 612.0. Initial number of classes $\\sqrt{n}$? (1 decimal)", "type": "numeric", "answer": 11.7, "tolerance": 0.05, "explain": "$$\\sqrt{137} = \\mathbf{11.70}$$"},
+  {"q": "Ideal class width $R/\\sqrt{n}$, using $\\sqrt{n} = 11.7$? (2 decimals)", "type": "numeric", "answer": 49.21, "tolerance": 0.03, "explain": "$$R = 612.0 - 36.3 = 575.7 \\text{ chaos}, \\qquad \\dfrac{575.7}{11.7} = \\mathbf{49.21}$$ With the unrounded $\\sqrt{137}$ it is 49.19."}
 ]
 ```
 
@@ -244,7 +296,8 @@ $$\sqrt{137} = 11.7, \qquad \frac{R}{\sqrt{n}} = \frac{612.0 - 36.3}{11.7} = \fr
 
 - **Step 3, width:** 50.0, one decimal, the nice number near 49.2 (up).
 - **Step 4, first lower limit:** 30.0, the minimum 36.3 rounded down.
-- **Step 5, classes:** 30.0–79.9, 80.0–129.9, …, 580.0–629.9. $\lfloor (612.0 - 30.0)/50 \rfloor + 1 = 11 + 1 = 12$, close to 11.7; last break $30 + 12 \times 50 = 630$.
+- **Step 5, classes:** 30.0–79.9, 80.0–129.9, …, 580.0–629.9, twelve classes, close to 11.7:
+  $$\left\lfloor \dfrac{612.0 - 30.0}{50} \right\rfloor + 1 = 11 + 1 = \mathbf{12}, \qquad \text{last break} = 30 + 12 \times 50 = \mathbf{630}$$
 - **Step 6, frequencies:** 1, 3, 8, 5, 18, 26, 13, 10, 7, 19, 14, 13, $\Sigma f = 137$.
 
 Four days at exactly 280.0 count in 280.0–329.9: `right = FALSE` keeps a lower limit in its own class.
@@ -295,32 +348,34 @@ hist-tally-play
 
 ## Choose classes for 87 Classic monster levels
 
-meowdb's Classic monster table lists 92 monsters; dropping the 5 with 0 EXP (four Lv 200 test mobs and the training dummy) leaves 87, with whole-number levels from 1 to 80 [Classic, meowdb monster table, Grand Launch build, checked 2026-10-27]. Eight of them are exactly Lv 30.
+meowdb's Classic monster table lists 92 monsters; dropping the 5 with 0 EXP (four Lv 200 test mobs and the training dummy) leaves 87, with whole-number levels from 1 to 80.
+
+Eight of them are exactly Lv 30.
 
 ```quiz
 [
-  {"q": "Initial number of classes $\\sqrt{n}$? (1 decimal)", "type": "numeric", "answer": 9.3, "tolerance": 0.05, "explain": "$\\sqrt{87} = 9.327 \\approx 9.3$."},
-  {"q": "Ideal class width $R/\\sqrt{n}$, using $\\sqrt{n} = 9.3$? (2 decimals)", "type": "numeric", "answer": 8.49, "tolerance": 0.03, "explain": "$R = 80 - 1 = 79$ levels, and $79/9.3 = 8.49$ (8.47 with the unrounded $\\sqrt{87}$)."},
-  {"q": "Which actual class width fits the recipe?", "options": ["10", "8.49", "8.5", "79"], "answer": 0, "explain": "Levels are whole numbers, so the width is a whole number, and 10 is the nice number near 8.49 (rounded up). Check: from a first lower limit of 1, $\\lfloor (80 - 1)/10 \\rfloor + 1 = 8$ classes, 1–10 up to 71–80, close to $\\sqrt{n} = 9.3$."},
+  {"q": "Initial number of classes $\\sqrt{n}$? (1 decimal)", "type": "numeric", "answer": 9.3, "tolerance": 0.05, "explain": "$$\\sqrt{87} = 9.327 \\approx \\mathbf{9.3}$$"},
+  {"q": "Ideal class width $R/\\sqrt{n}$, using $\\sqrt{n} = 9.3$? (2 decimals)", "type": "numeric", "answer": 8.49, "tolerance": 0.03, "explain": "$$R = 80 - 1 = 79 \\text{ levels}, \\qquad \\dfrac{79}{9.3} = \\mathbf{8.49}$$ With the unrounded $\\sqrt{87}$ it is 8.47."},
+  {"q": "Which actual class width fits the recipe?", "options": ["10", "8.49", "8.5", "79"], "answer": 0, "explain": "Levels are whole numbers, so the width is a whole number, and 10 is the nice number near 8.49 (rounded up). Check: from a first lower limit of 1 the classes run 1–10 up to 71–80, close to $\\sqrt{n} = 9.3$: $$\\left\\lfloor \\dfrac{80 - 1}{10} \\right\\rfloor + 1 = \\mathbf{8} \\text{ classes}$$"},
   {"q": "Start the first class at the minimum, 1, with width 10. What is its upper class limit?", "type": "numeric", "answer": 10, "tolerance": 0, "explain": "The next lower limit is 11; the upper limit is one unit of precision (1 level) below it: 10."},
   {"q": "With `breaks=seq(1, 81, by=10)` and `right=FALSE`, the eight Lv 30 monsters are counted in which class?", "options": ["21 to 30", "31 to 40", "half in each", "neither"], "answer": 0, "explain": "The classes are [21, 31) and [31, 41); 30 is below 31, so all eight count in 21–30. With a first lower limit of 0 instead, the break at 30 would move all eight up into 30–39."},
-  {"type": "fill", "q": "Fill the last break so the classes run past the maximum level 80.", "code": "hist(lv, breaks=seq(1, ___, by=10), right=FALSE,\n     xlab=\"Level\", ylab=\"Frequency\",\n     main=paste0(\"Classic monster levels (n = \", length(lv), \")\"))", "answer": ["81"], "explain": "Boundaries 1, 11, …, 71, 81: the class [71, 81) holds the maximum 80, so the sequence must reach 81. Classes $= \\lfloor (80 - 1)/10 \\rfloor + 1 = 7 + 1 = 8$; last break $= 1 + 8 \\times 10 = 81$."}
+  {"type": "fill", "q": "Fill the last break so the classes run past the maximum level 80.", "code": "hist(lv, breaks=seq(1, ___, by=10), right=FALSE,\n     xlab=\"Level\", ylab=\"Frequency\",\n     main=paste0(\"Classic monster levels (n = \", length(lv), \")\"))", "answer": ["81"], "explain": "Boundaries 1, 11, …, 71, 81: the class [71, 81) holds the maximum 80, so the sequence must reach 81. Classes and last break: $$\\left\\lfloor \\dfrac{80 - 1}{10} \\right\\rfloor + 1 = 7 + 1 = \\mathbf{8}, \\qquad 1 + 8 \\times 10 = \\mathbf{81}$$"}
 ]
 ```
 
 ```quiz
 [
-  {"q": "For the Age data ($n = 302$, min 18, max 42), what is the initial number of classes from the $\\sqrt{n}$ rule? (1 decimal)", "type": "numeric", "answer": 17.4, "tolerance": 0.05, "explain": "$\\sqrt{302} = 17.4$."},
-  {"q": "Same data: what is the ideal (initial) class width $R/\\sqrt{n}$? (2 decimals)", "type": "numeric", "answer": 1.38, "tolerance": 0.01, "explain": "$R = 42 - 18 = 24$; $24 / 17.4 = 1.38$."},
+  {"q": "For the Age data ($n = 302$, min 18, max 42), what is the initial number of classes from the $\\sqrt{n}$ rule? (1 decimal)", "type": "numeric", "answer": 17.4, "tolerance": 0.05, "explain": "$$\\sqrt{302} = \\mathbf{17.4}$$"},
+  {"q": "Same data: what is the ideal (initial) class width $R/\\sqrt{n}$? (2 decimals)", "type": "numeric", "answer": 1.38, "tolerance": 0.01, "explain": "$$R = 42 - 18 = 24, \\qquad \\dfrac{24}{17.4} = \\mathbf{1.38}$$"},
   {"q": "Why does the instructor use 2 as the actual class width for Age instead of 1.38?", "options": ["The width must match the precision of X (whole years), rounded to a nice number", "R only accepts even numbers", "Because 1.38 rounds to 2 by the usual rule", "So that there are exactly 302 classes"], "answer": 0, "explain": "Step 3: round the class width to match the precision of X. Ages are integers, so the width is a whole number; 2 is the nice choice (width 1 would just be the bar plot)."},
-  {"q": "With lower limits 18, 20, 22, ... and width 2, what is the upper class limit of the class that starts at 20?", "type": "numeric", "answer": 21, "tolerance": 0, "explain": "Each upper limit is one unit of precision (1 year) below the next lower limit: $22 - 1 = 21$."},
+  {"q": "With lower limits 18, 20, 22,... and width 2, what is the upper class limit of the class that starts at 20?", "type": "numeric", "answer": 21, "tolerance": 0, "explain": "Each upper limit is one unit of precision (1 year) below the next lower limit: $$22 - 1 = \\mathbf{21}$$"},
   {"q": "`hist(x, breaks=seq(18, 44, by=2), right=FALSE)`: a student who is exactly 20 years old is counted in which class?", "options": ["20 to 21 (the class [20, 22))", "18 to 19 (the class [18, 20))", "Both classes", "Neither; boundary values are dropped"], "answer": 0, "explain": "right=FALSE makes each class [lower, next lower): 18-19 is 18 ≤ X < 20, 'not including 20', so 20 starts the next class."},
-  {"q": "Old Faithful: $n = 272$, min 1.6, max 5.1. What is the ideal class width? (5 decimals)", "type": "numeric", "answer": 0.21212, "tolerance": 0.0005, "explain": "$\\sqrt{272} = 16.5$; range $= 5.1 - 1.6 = 3.5$; $3.5 / 16.5 = 0.21212$."},
+  {"q": "Old Faithful: $n = 272$, min 1.6, max 5.1. What is the ideal class width? (5 decimals)", "type": "numeric", "answer": 0.21212, "tolerance": 0.0005, "explain": "$$\\sqrt{272} = 16.5, \\qquad \\text{range} = 5.1 - 1.6 = 3.5, \\qquad \\dfrac{3.5}{16.5} = \\mathbf{0.21212}$$"},
   {"q": "The instructor rounds 0.21212 to which actual class width, and why?", "options": ["0.200: same number of decimal places as the data (3) and rounded down to a nice number", "0.2: one decimal is enough", "0.212: round to three decimals", "0.25: a quarter is nicer"], "answer": 0, "explain": "'The class width must have the same number of decimal places as the X data (3 digits); we also should round down to a nice number → actual class width = 0.200.'"},
-  {"q": "In the Old Faithful table the class starting at 1.600 has upper limit 1.799. What is 1.799?", "options": ["The last possible X value before the next lower limit, 1.800", "The midpoint of the class", "The mean of the class", "A rounding error"], "answer": 0, "explain": "Upper limit = next lower limit minus one unit of precision (0.001): 1.800 - 0.001 = 1.799, so classes touch without overlapping."},
+  {"q": "In the Old Faithful table the class starting at 1.600 has upper limit 1.799. What is 1.799?", "options": ["The last possible X value before the next lower limit, 1.800", "The midpoint of the class", "The mean of the class", "A rounding error"], "answer": 0, "explain": "Upper limit = next lower limit minus one unit of precision (0.001): $$1.800 - 0.001 = \\mathbf{1.799}$$ So classes touch without overlapping."},
   {"q": "Which of these is NOT one of the six features of a histogram from the notes?", "options": ["Classes may have different widths to fit the data", "There are no gaps between classes", "Each X value falls into exactly one class", "Frequency is shown as the height of the rectangle"], "answer": 0, "explain": "Classes have EQUAL width. The other three are on the list, along with X on the horizontal axis and the axis divided into classes."},
   {"q": "Drawing the Old Faithful histogram with a class width of 0.020 instead of 0.200 gives which problem?", "options": ["A jagged shape with lots of empty classes (too many classes)", "Not enough detail about the shape (too few classes)", "A perfect picture; more classes is always better", "The frequencies no longer add to 272"], "answer": 0, "explain": "Too many classes: individual values show as spikes and many classes are empty. Too few (width 2.000) hides the shape. √n avoids both."},
   {"q": "Which conclusion does the Old Faithful histogram support?", "options": ["Durations cluster around two values, about 2.0 and 4.5 minutes", "Durations are bell-shaped around 3.5 minutes", "Most eruptions last exactly 3.0 minutes", "Durations are uniform between 1.6 and 5.1"], "answer": 0, "explain": "Two humps (bimodal) with a near-empty valley around 2.6-3.4. The mean 3.49 falls in the valley."},
-  {"type": "match", "q": "Match each step of the recipe to its Age-data value.", "pairs": [["initial number of classes √n", "17.4"], ["ideal class width R/√n", "1.38"], ["actual class width", "2"], ["first lower class limit", "18"], ["upper limit of the first class", "19"], ["frequency of the class 22 to 23", "104"]], "explain": "√302 = 17.4; (42-18)/17.4 = 1.38 → 2; start at the minimum 18; upper = 20 - 1 = 19; the tallest class 22-23 holds 104 students."}
+  {"type": "match", "q": "Match each step of the recipe to its Age-data value.", "pairs": [["initial number of classes √n", "17.4"], ["ideal class width R/√n", "1.38"], ["actual class width", "2"], ["first lower class limit", "18"], ["upper limit of the first class", "19"], ["frequency of the class 22 to 23", "104"]], "explain": "$$\\sqrt{302} = 17.4, \\qquad \\dfrac{42 - 18}{17.4} = 1.38 \\to 2$$ Start at the minimum 18; upper = 20 - 1 = 19; the tallest class 22-23 holds 104 students."}
 ]
 ```

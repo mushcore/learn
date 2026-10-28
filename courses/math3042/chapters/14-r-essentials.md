@@ -4,7 +4,9 @@ minutes: 21
 ---
 <!-- facts: gms.data.ranking-overall-legendary-2026-10-27 -->
 
-The R mechanics from **Lab 1** (`Lab_01_Notebook.Solutions.pdf`, `demo_notebook_Unit_01.Rmd`) and what each one returns. The same calls then run on Nexon's ranking of the top 500 GMS characters.
+The R mechanics from **Lab 1** (`Lab_01_Notebook.Solutions.pdf`, `demo_notebook_Unit_01.Rmd`) and what each one returns.
+
+The same calls then run on Nexon's ranking of the top 500 GMS characters.
 
 | The question asks for | Command shape | Example |
 |---|---|---|
@@ -66,7 +68,7 @@ The R mechanics from **Lab 1** (`Lab_01_Notebook.Solutions.pdf`, `demo_notebook_
 
 ## R Notebooks
 
-A `.Rmd` file mixes **text chunks** (plain markdown, with LaTeX between `$...$` for formulas) and **code chunks** (fenced with ```` ```{r} ```` ... ```` ``` ````).
+A `.Rmd` file mixes **text chunks** (plain markdown, with LaTeX between `$...$` for formulas) and **code chunks** (fenced with ```` ```{r} ````... ```` ``` ````).
 
 - **Run Current Chunk**: `Ctrl+Shift+Enter` — runs just the chunk your cursor is in and shows its output inline.
 - **Preview**: renders the notebook to HTML using whatever output the chunks *already produced* — it does **not** re-run any code.
@@ -181,13 +183,13 @@ TenMileRace[1, "time"]
 
 **Left to right**
 
-- `TenMileRace[1, 2]`: "From the race data (`TenMileRace`), the cell (`[ , ]`) in row 1 (`1`) and column 2 (`2`)."
-- `TenMileRace[1, "time"]`: "From the race data (`TenMileRace`), the cell (`[ , ]`) in row 1 (`1`) of the time column (`"time"`)."
+- `TenMileRace[1, 2]`: "From the race data (`TenMileRace`), the cell (`[, ]`) in row 1 (`1`) and column 2 (`2`)."
+- `TenMileRace[1, "time"]`: "From the race data (`TenMileRace`), the cell (`[, ]`) in row 1 (`1`) of the time column (`"time"`)."
 
 **Right to left**, the order R runs it
 
-- `TenMileRace[1, 2]`: "Take row 1 (`1`) and column 2 (`2`), look them up (`[ , ]`) in the race data (`TenMileRace`), and print the cell."
-- `TenMileRace[1, "time"]`: "Take row 1 (`1`) and the column named time (`"time"`), look them up (`[ , ]`) in the race data (`TenMileRace`), and print the cell."
+- `TenMileRace[1, 2]`: "Take row 1 (`1`) and column 2 (`2`), look them up (`[, ]`) in the race data (`TenMileRace`), and print the cell."
+- `TenMileRace[1, "time"]`: "Take row 1 (`1`) and the column named time (`"time"`), look them up (`[, ]`) in the race data (`TenMileRace`), and print the cell."
 :::
 
 A vector of rows picks several rows at once:
@@ -207,14 +209,16 @@ TenMileRace[c(1,2,3,4,5), "time"]
 
 **Left to right**
 
-- "From the race data (`TenMileRace`), the cells (`[ , ]`) in rows 1 to 5 (`c(1,2,3,4,5)`) of the time column (`"time"`)."
+- "From the race data (`TenMileRace`), the cells (`[, ]`) in rows 1 to 5 (`c(1,2,3,4,5)`) of the time column (`"time"`)."
 
 **Right to left**, the order R runs it
 
-- "Combine the row numbers 1 to 5 into a vector (`c(1,2,3,4,5)`), take the time column (`"time"`), look them up (`[ , ]`) in the race data (`TenMileRace`), and print the five values."
+- "Combine the row numbers 1 to 5 into a vector (`c(1,2,3,4,5)`), take the time column (`"time"`), look them up (`[, ]`) in the race data (`TenMileRace`), and print the five values."
 :::
 
-`$` pulls out a whole column as a vector. `TenMileRace` has 8636 rows, so printing the whole column would flood the console; `head()` shows just the first several:
+`$` pulls out a whole column as a vector.
+
+`TenMileRace` has 8636 rows, so printing the whole column would flood the console; `head()` shows just the first several:
 
 ```r
 head(TenMileRace$time, 5)
@@ -246,7 +250,7 @@ Comparing a column to a value gives a **Boolean (logical) vector** — one `TRUE
 TenMileRace$time < 3000
 ```
 ```text
-[1] FALSE FALSE FALSE FALSE FALSE ...
+[1] FALSE FALSE FALSE FALSE FALSE...
 ```
 
 :::info R syntax
@@ -311,16 +315,16 @@ TenMileRace[TenMileRace$time < 3000, "time"]
 :::info R syntax
 | Code | What it does |
 |---|---|
-| `TenMileRace[ … , "time"]` | `[row, column]` indexing: the row slot holds a condition, the column slot names `time`. |
+| `TenMileRace[ …, "time"]` | `[row, column]` indexing: the row slot holds a condition, the column slot names `time`. |
 | `TenMileRace$time < 3000` | In the row slot, a logical vector keeps the rows where it is `TRUE` and drops the rest. |
 
 **Left to right**
 
-- "From the race data (`TenMileRace`), the cells (`[ , ]`) in the rows where the time (`TenMileRace$time`) is less than (`<`) 3000 (`3000`), in the time column (`"time"`)."
+- "From the race data (`TenMileRace`), the cells (`[, ]`) in the rows where the time (`TenMileRace$time`) is less than (`<`) 3000 (`3000`), in the time column (`"time"`)."
 
 **Right to left**, the order R runs it
 
-- "Take the time column (`TenMileRace$time`), compare every value with 3000 (`< 3000`) to get a TRUE/FALSE per row, use that to pick rows (`[ , ]`) of the race data (`TenMileRace`), and keep only the time column (`"time"`)."
+- "Take the time column (`TenMileRace$time`), compare every value with 3000 (`< 3000`) to get a TRUE/FALSE per row, use that to pick rows (`[, ]`) of the race data (`TenMileRace`), and keep only the time column (`"time"`)."
 :::
 
 ## Subsetting: subset(), &, |, !, %in%
@@ -416,7 +420,9 @@ filter(TenMileRace, sex == "F", net > 10000)
 - `filter(TenMileRace, sex == "F", net > 10000)`: "Inside the race data (`TenMileRace`), check each sex against F (`sex == "F"`) and each net time against 10000 (`net > 10000`), then keep the rows where both are TRUE (`filter`)."
 :::
 
-A practical trick: US state codes are 2 characters, so a `state` value longer than 2 characters means the runner registered from outside the US. `state` is a *factor*, R's categorical type (see "Factors" below), so `as.character()` converts it to plain text first so `nchar()` can measure it:
+A practical trick: US state codes are 2 characters, so a `state` value longer than 2 characters means the runner registered from outside the US.
+
+`state` is a *factor*, R's categorical type (see "Factors" below), so `as.character()` converts it to plain text first so `nchar()` can measure it:
 
 ```r
 non.usa.runners <- subset(TenMileRace, nchar(as.character(state)) > 2)
@@ -506,8 +512,8 @@ my.subset <- subset(TenMileRace, state %in% c("VA", "MD", "DC"))
 table(my.subset$state)
 ```
 ```text
- AK  AL  AR  AZ  CA  CO  CT  DC  DE  ...  MD  ...  VA  ...  WV
-  0   0   0   0   0   0   0 1642   0  ... 2166  ... 3689 ...   0
+ AK  AL  AR  AZ  CA  CO  CT  DC  DE ...  MD ...  VA ...  WV
+  0   0   0   0   0   0   0 1642   0 ... 2166 ... 3689...   0
 ```
 
 :::info R syntax
@@ -554,7 +560,9 @@ table(droplevels(my.subset$state))
 - "Take my.subset (`my.subset`), pull out its state column (`$state`), drop the levels with no rows (`droplevels`), and count the rows in each remaining level (`table`)."
 :::
 
-`which.max()` finds the level with the biggest count. Restrict to two-character (US) state codes first, then ask which level has the most runners:
+`which.max()` finds the level with the biggest count.
+
+Restrict to two-character (US) state codes first, then ask which level has the most runners:
 
 ```r
 usa.runners <- droplevels(subset(TenMileRace, nchar(as.character(state)) == 2))
@@ -589,7 +597,9 @@ levels(usa.runners$state)[which.max(us.state.tab)]
 - `levels(usa.runners$state)[which.max(us.state.tab)]`: "Take the state table (`us.state.tab`) and find the position of its biggest count (`which.max`); list the level names of usa.runners' state column (`levels(usa.runners$state)`), and pick the name at that position (`[ ]`)."
 :::
 
-The idiom works because `table()` lists counts in level order, so the k-th count belongs to the k-th level. The lesson 4 form gives the same answer, `"VA"`: `names(which.max(us.state.tab))`.
+The idiom works because `table()` lists counts in level order, so the k-th count belongs to the k-th level.
+
+The lesson 4 form gives the same answer, `"VA"`: `names(which.max(us.state.tab))`.
 
 :::info R syntax
 | Code | What it does |
@@ -608,7 +618,9 @@ The idiom works because `table()` lists counts in level order, so the k-th count
 
 ## rank()
 
-`rank()` converts values to their position when sorted; ties share a rank. `ties.method="min"` gives tied values the **lowest** rank in their tied group:
+`rank()` converts values to their position when sorted; ties share a rank.
+
+`ties.method="min"` gives tied values the **lowest** rank in their tied group:
 
 ```r
 rank(c(50,200,50,400,200,700), ties.method="min")
@@ -676,7 +688,9 @@ max(TenMileRace$net)
 - `mean(…)`, `median(…)`, `min(…)`, `max(…)`: "On each line, take the race data (`TenMileRace`), pull out its net column (`$net`), and compute the average (`mean`), the middle value (`median`), the smallest (`min`) or the largest (`max`)."
 :::
 
-`sd()` always computes the **sample** standard deviation, dividing by $n-1$ like the by-hand formula (plywood example in the pencil problems: `sd(X.vals)` → 0.006560179). There is no built-in population-sd function; write `sqrt(sum((x-mean(x))^2)/length(x))` for that.
+`sd()` always computes the **sample** standard deviation, dividing by $n-1$ like the by-hand formula (plywood example in the pencil problems: `sd(X.vals)` → 0.006560179).
+
+There is no built-in population-sd function; write `sqrt(sum((x-mean(x))^2)/length(x))` for that.
 
 :::info R syntax
 | Code | What it does |
@@ -765,7 +779,11 @@ cor(circuit.df$Resistance, circuit.df$Fail.time)
 
 ## The GMS top 500 as a data frame
 
-Nexon's North America overall ranking lists the level, job and world of the top 500 GMS characters [GMS, v.271 overall ranking 2026-10-27, checked 2026-10-27]. It is a real rows-and-columns table with a categorical column, `job_name`, and numeric ones, the shape `subset()` and `table()` work on. `read.csv()` reads `job_name` as text, so `==` and `%in%` compare it directly.
+Nexon's North America overall ranking lists the level, job and world of the top 500 GMS characters.
+
+It is a real rows-and-columns table with a categorical column, `job_name`, and numeric ones, the shape `subset()` and `table()` work on.
+
+`read.csv()` reads `job_name` as text, so `==` and `%in%` compare it directly.
 
 ```r
 top500 <- read.csv("gms-ranking-overall-legendary-2026-10-27.csv")
@@ -806,7 +824,7 @@ table(top500$level)
 ```quiz
 [
   {"q": "From the table, what does `nrow(subset(top500, level == 300))` print?", "type": "numeric", "answer": 126, "tolerance": 0, "explain": "`subset()` keeps the rows where `level == 300` is TRUE; the table already counted them: 126."},
-  {"q": "What does `sum(top500$level >= 299)` print?", "type": "numeric", "answer": 227, "tolerance": 0, "explain": "The logical vector is TRUE for levels 299 and 300; `sum()` counts the TRUEs: $101 + 126 = 227$."}
+  {"q": "What does `sum(top500$level >= 299)` print?", "type": "numeric", "answer": 227, "tolerance": 0, "explain": "The logical vector is TRUE for levels 299 and 300; `sum()` counts the TRUEs: $$101 + 126 = \\mathbf{227}$$"}
 ]
 ```
 
@@ -916,11 +934,15 @@ hist(TenMileRace$net, breaks=seq(2800, 10600, by=200), right=FALSE, col='pink')
 - "Take the net time column (`TenMileRace$net`), build the edges 2800, 3000, …, 10600 (`seq(2800, 10600, by=200)`) and pass them as the bins (`breaks=`), make each bin left-closed (`right=FALSE`), set the colour to pink (`col='pink'`), and draw the histogram (`hist`)."
 :::
 
-`right=FALSE` means each class interval includes its **left** endpoint but excludes its right endpoint: the bin `[3000, 3200)` includes a value of exactly 3000, and a value of exactly 3200 falls into the *next* bin. The default, `right=TRUE`, is the opposite: `(3000, 3200]`.
+`right=FALSE` means each class interval includes its **left** endpoint but excludes its right endpoint: the bin `[3000, 3200)` includes a value of exactly 3000, and a value of exactly 3200 falls into the *next* bin.
+
+The default, `right=TRUE`, is the opposite: `(3000, 3200]`.
 
 ## Packages
 
-`library(pkg)` loads an already-installed package into your session; `install.packages("pkg")` downloads and installs one you don't have yet. The safe pattern used in the lab checks first so you don't re-download every time:
+`library(pkg)` loads an already-installed package into your session; `install.packages("pkg")` downloads and installs one you don't have yet.
+
+The safe pattern used in the lab checks first so you don't re-download every time:
 
 ```r
 if (!require("mosaicData", quietly=TRUE)) {
@@ -935,7 +957,7 @@ library(mosaicData)
 | `require("mosaicData", quietly=TRUE)` | Tries to load the package and returns `TRUE` if it worked, `FALSE` if it is not installed. |
 | `quietly=TRUE` | Named argument: suppresses the loading messages. |
 | `!` | NOT: turns `FALSE` into `TRUE`, so the condition holds when the package is missing. |
-| `if ( … ) { … }` | Runs the lines inside the braces only when the condition in brackets is `TRUE`. |
+| `if ( …) { … }` | Runs the lines inside the braces only when the condition in brackets is `TRUE`. |
 | `install.packages("mosaicData")` | Downloads and installs the package; the name goes in quotes. |
 | `library(mosaicData)` | Loads the now-installed package. |
 
@@ -975,7 +997,7 @@ library(mosaicData)
 [
   {"type": "fill", "q": "Fill the comparison so `sum()` counts the levels held by more than 100 characters.", "code": "counts <- c(74, 199, 101, 126)\nsum(counts ___ 100)\n## [1] 3", "answer": [">"], "explain": "`counts > 100` is FALSE TRUE TRUE TRUE; `sum()` counts the TRUEs: 199, 101 and 126 make 3."},
   {"type": "fill", "q": "Fill the position that picks out the number of level 298 characters.", "code": "counts[___]\n## [1] 199", "answer": ["2"], "explain": "R counts from 1: level 297 is position 1, so level 298's count, 199, is position 2."},
-  {"q": "What does `sd(counts)` print? (4 decimals)", "type": "numeric", "answer": 53.7091, "tolerance": 0.0001, "explain": "$\\bar{X} = 500/4 = 125$; deviations $-51, 74, -24, 1$; $\\sum(X - \\bar{X})^2 = 2601 + 5476 + 576 + 1 = 8654$; `sd` divides by $n - 1 = 3$: $\\sqrt{8654/3} = 53.7091$ (R prints 53.70909)."},
+  {"q": "What does `sd(counts)` print? (4 decimals)", "type": "numeric", "answer": 53.7091, "tolerance": 0.0001, "explain": "1. Mean: $$\\bar{X} = \\dfrac{500}{4} = 125$$ 2. Deviations $-51, 74, -24, 1$, squared and summed: $$\\sum(X - \\bar{X})^2 = 2601 + 5476 + 576 + 1 = 8654$$ 3. `sd` divides by $n - 1 = 3$: $$s = \\sqrt{\\dfrac{8654}{3}} = \\mathbf{53.7091}$$ R prints 53.70909."},
   {"type": "fill", "q": "Fill the operator that tests membership in a set of jobs.", "code": "sum(top500$job_name ___ c(\"Bishop\", \"Hero\", \"Shadower\"))\n## [1] 100", "answer": ["%in%"], "explain": "`%in%` gives TRUE for each row whose job is any of the three: 30 Bishops, 37 Heroes and 33 Shadowers make 100."},
   {"q": "`rank(counts, ties.method=\"min\")` prints which vector?", "options": ["1 4 2 3", "4 1 3 2", "1 2 3 4", "74 199 101 126"], "answer": 0, "explain": "Sorted: 74, 101, 126, 199. So 74 is rank 1, 199 is rank 4, 101 is rank 2 and 126 is rank 3, printed in the original order: 1 4 2 3."}
 ]

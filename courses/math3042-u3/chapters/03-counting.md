@@ -4,14 +4,22 @@ minutes: 30
 ---
 <!-- facts: classic.server.identity, classic.jobs.second-job-paths, poe2.classes.ascendancy-structure, poe2.gems.support-sockets -->
 
-Classical probability is a ratio of two counts, and even the job choices on one MapleStory Classic account are too many to list. Section 3.2 gives three counting tools and one decision: does order matter, and may an item be chosen twice?
+Classical probability is a ratio of two counts, and even the job choices on one MapleStory Classic account are too many to list.
+
+Section 3.2 gives three counting tools and one decision: does order matter, and may an item be chosen twice?
 
 ## The fundamental counting rule
 
-If sets $S_1, S_2, \ldots, S_k$ contain $n_1, n_2, \ldots, n_k$ elements, there are $n_1 \times n_2 \times \cdots \times n_k$ ways to choose one element from each. Roll a die five times: each roll has 6 outcomes, so $|S| = 6^5 = 7776$.
+If sets $S_1, S_2, \ldots, S_k$ contain $n_1, n_2, \ldots, n_k$ elements, there are $n_1 \times n_2 \times \cdots \times n_k$ ways to choose one element from each.
+
+Roll a die five times: each roll has 6 outcomes, so
+
+$$|S| = 6^5 = \mathbf{7776}$$
 
 :::info The deck
-Every card example in this unit uses a standard 52-card deck. Each suit has 13 ranks: A, 2 to 10, J, Q, K.
+Every card example in this unit uses a standard 52-card deck.
+
+Each suit has 13 ranks: A, 2 to 10, J, Q, K.
 
 | suit | colour | cards | face cards (J, Q, K) |
 |---|---|---|---|
@@ -24,7 +32,9 @@ Every card example in this unit uses a standard 52-card deck. Each suit has 13 r
 There are 4 cards of each rank (four Aces, four Kings …).
 :::
 
-**Five cards with replacement, first three red and last two Kings.** With replacement, each draw is from the full deck and the draws are independent. Line the draws up and count each one:
+**Five cards with replacement, first three red and last two Kings.** With replacement, each draw is from the full deck and the draws are independent.
+
+Line the draws up and count each one:
 
 | draw | 1 | 2 | 3 | 4 | 5 |
 |---|---|---|---|---|---|
@@ -33,19 +43,27 @@ There are 4 cards of each rank (four Aces, four Kings …).
 
 The wanted row multiplies to $|A|$ and the possible row to $|S|$:
 
-$$P(A) = \frac{|A|}{|S|} = \frac{26 \times 26 \times 26 \times 4 \times 4}{52 \times 52 \times 52 \times 52 \times 52} = \frac{281\,216}{380\,204\,032} = 0.00074$$
+$$P(A) = \frac{|A|}{|S|} = \frac{26 \times 26 \times 26 \times 4 \times 4}{52 \times 52 \times 52 \times 52 \times 52} = \frac{281\,216}{380\,204\,032} = \mathbf{0.00074}$$
 
-Each column is also one fraction: $26/52 = 1/2$ three times and $4/52 = 1/13$ twice, so cancelling first gives the same $(1/2)^3 (1/13)^2 = 1/1352$.
+Each column is also one fraction: $26/52 = 1/2$ three times and $4/52 = 1/13$ twice, so cancelling first gives the same answer:
+
+$$\left(\dfrac{1}{2}\right)^3 \left(\dfrac{1}{13}\right)^2 = \dfrac{1}{1352}$$
 
 **Five cards without replacement, all red.** Now each draw removes a card: 26 red of 52, then 25 of 51, 24 of 50, 23 of 49, 22 of 48:
 
-$$P(A) = \frac{26 \times 25 \times 24 \times 23 \times 22}{52 \times 51 \times 50 \times 49 \times 48} = \frac{7\,893\,600}{311\,875\,200} = 0.0253$$
+$$P(A) = \frac{26 \times 25 \times 24 \times 23 \times 22}{52 \times 51 \times 50 \times 49 \times 48} = \frac{7\,893\,600}{311\,875\,200} = \mathbf{0.0253}$$
 
-Numerator and denominator are the counting rule applied to shrinking sets. The filled notes put the with-replacement version, $26^5 / 52^5$, beside it for contrast.
+Numerator and denominator are the counting rule applied to shrinking sets.
+
+The filled notes put the with-replacement version, $26^5 / 52^5$, beside it for contrast.
 
 ## Factorials, permutations, combinations
 
-Start with three letters, A, B and C, and choose 2. In order, there are $3 \times 2 = 6$ sequences. Ignoring order, there are only 3 pairs, because each pair shows up in two orders.
+Start with three letters, A, B and C, and choose 2. In order, there are
+
+$$3 \times 2 = 6 \text{ sequences}$$
+
+Ignoring order, there are only 3 pairs, because each pair shows up in two orders.
 
 ```diagram
 { "type": "grid", "nodes": [
@@ -72,7 +90,9 @@ The same picture holds for any $n$ and $r$:
 | permutations | $P(n, r) = \dfrac{n!}{(n-r)!} = n(n-1)\cdots(n-r+1)$ | **ordered** sequences of $r$ items chosen from $n$, no repeats |
 | combinations | $C(n, r) = \dfrac{P(n, r)}{r!} = \dfrac{n!}{r!\,(n-r)!}$ | **unordered** groups (hands, committees) of $r$ from $n$ |
 
-$P(n, r)$ is the counting rule with the set shrinking by one each step. $C(n, r)$ divides by $r!$ because every unordered group of $r$ was counted $r!$ times among the ordered sequences.
+$P(n, r)$ is the counting rule with the set shrinking by one each step.
+
+$C(n, r)$ divides by $r!$ because every unordered group of $r$ was counted $r!$ times among the ordered sequences.
 
 ```widget
 counting-calc
@@ -81,7 +101,13 @@ counting-calc
 
 ### Where the ÷ r! comes from
 
-Each position is filled from a set one smaller than the last, $52 \cdot 51 \cdot 50 \cdot 49$ for four cards in sequence. The last step gathers the $4! = 24$ orderings of the same four cards into one hand, which turns $P(52, 4)$ into $C(52, 4)$.
+Each position is filled from a set one smaller than the last, for four cards in sequence:
+
+$$P(52, 4) = 52 \cdot 51 \cdot 50 \cdot 49$$
+
+The last step gathers the $4! = 24$ orderings of the same four cards into one hand, which turns $P(52, 4)$ into $C(52, 4)$:
+
+$$C(52, 4) = \dfrac{P(52, 4)}{4!}$$
 
 ```widget
 perm-fill-play
@@ -96,10 +122,14 @@ perm-fill-play
 | no | yes | $P(n, r)$ | 9 front-row seats |
 | no | no | $C(n, r)$ | a 4-card hand |
 
-A probability is then favourable count over total count, both computed the same way: $C$ above and below the line, or $P$ above and below. Mixing them, $C$ above and $P$ below, is the error to avoid.
+A probability is then favourable count over total count, both computed the same way: $C$ above and below the line, or $P$ above and below.
+
+Mixing them, $C$ above and $P$ below, is the error to avoid.
 
 :::quiz Sequence versus hand
-"Sequence", "arrange", "in order", "first and second" mean $P$. "Hand", "committee", "select a group", "choose" mean $C$. The same four cards give 24 sequences but one hand; $C \le P$, equal only when $r \le 1$.
+"Sequence", "arrange", "in order", "first and second" mean $P$. "Hand", "committee", "select a group", "choose" mean $C$.
+
+The same four cards give 24 sequences but one hand; $C \le P$, equal only when $r \le 1$.
 :::
 
 ## The notes' examples
@@ -128,7 +158,9 @@ All of these are presets in the calculator above. Decide P, C or $n^r$ for each 
 ]
 ```
 
-On the calculator: $C(52, 4)$ is `52  2nd F  nCr  4`; `nPr` gives permutations and `n!` factorials. In R: `factorial(4)`, `choose(52, 4) * factorial(4)` for $P(52, 4)$, `choose(52, 4)` for $C(52, 4)$.
+On the calculator: $C(52, 4)$ is `52  2nd F  nCr  4`; `nPr` gives permutations and `n!` factorials.
+
+In R: `factorial(4)`, `choose(52, 4) * factorial(4)` for $P(52, 4)$, `choose(52, 4)` for $C(52, 4)$.
 
 :::info R syntax
 | Code | What it does |
@@ -152,13 +184,15 @@ On the calculator: $C(52, 4)$ is `52  2nd F  nCr  4`; `nPr` gives permutations a
 
 ## Three Classic characters, ten 2nd-job paths
 
-A MapleStory Classic account holds up to 3 characters, and at Lv. 30 each takes one of 10 2nd-job paths [Classic, Grand Launch Release Notes 2026-10-20 (Nexon), checked 2026-10-27]: 3 each for Warrior and Magician, 2 each for Bowman and Thief. Both counts are Nexon's, so all three ways of choosing are sourced: with repeats, in order without repeats, and as a set.
+A MapleStory Classic account holds up to 3 characters, and at Lv. 30 each takes one of 10 2nd-job paths: 3 each for Warrior and Magician, 2 each for Bowman and Thief.
+
+Both counts are Nexon's, so all three ways of choosing are sourced: with repeats, in order without repeats, and as a set.
 
 ```quiz
 [
-  {"q": "Each of the 3 characters takes a path, repeats allowed. How many assignments (character 1, 2, 3)?", "type": "numeric", "answer": 1000, "tolerance": 0, "explain": "Counting rule, 10 choices per slot: $10 \\times 10 \\times 10 = 10^3 = 1000$."},
-  {"q": "All three paths different, in character-slot order. How many?", "type": "numeric", "answer": 720, "tolerance": 0, "explain": "The set shrinks by one per slot: $P(10, 3) = 10 \\times 9 \\times 8 = 720$."},
-  {"q": "Which 3 different paths the account covers, order ignored. How many sets?", "type": "numeric", "answer": 120, "tolerance": 0, "explain": "$C(10, 3) = P(10, 3)/3! = 720/6 = 120$."}
+  {"q": "Each of the 3 characters takes a path, repeats allowed. How many assignments (character 1, 2, 3)?", "type": "numeric", "answer": 1000, "tolerance": 0, "explain": "Counting rule, 10 choices per slot: $$10 \\times 10 \\times 10 = 10^3 = \\mathbf{1000}$$"},
+  {"q": "All three paths different, in character-slot order. How many?", "type": "numeric", "answer": 720, "tolerance": 0, "explain": "The set shrinks by one per slot: $$P(10, 3) = 10 \\times 9 \\times 8 = \\mathbf{720}$$"},
+  {"q": "Which 3 different paths the account covers, order ignored. How many sets?", "type": "numeric", "answer": 120, "tolerance": 0, "explain": "$$C(10, 3) = P(10, 3)/3! = 720/6 = \\mathbf{120}$$"}
 ]
 ```
 
@@ -173,19 +207,23 @@ counting-calc
 
 ## Count PoE2 ascendancies, gem sockets and Classic job sets
 
-PoE2 has 8 playable classes, each with its own regular ascendancies [PoE2, 0.5.5e Forbidden Rites, Character class (poe2wiki), checked 2026-10-27]: six classes offer 3 each and the Ranger and Druid 2 each. A PoE2 skill gem has 2 to 5 support sockets [PoE2, 0.5.5e Forbidden Rites, Gem socket (poe2wiki), checked 2026-10-27].
+PoE2 has 8 playable classes, each with its own regular ascendancies: six classes offer 3 each and the Ranger and Druid 2 each.
+
+A PoE2 skill gem has 2 to 5 support sockets.
 
 :::tip When the second choice depends on the first
-The product rule needs the same number of second choices for every first choice. When the number of second choices depends on the first, the product rule stops working: count each first choice's branches and add them.
+The product rule needs the same number of second choices for every first choice.
+
+When the number of second choices depends on the first, the product rule stops working: count each first choice's branches and add them.
 :::
 
 ```quiz
 [
-  {"q": "A new PoE2 character picks a class, then one of that class's ascendancies. How many (class, ascendancy) outcomes are there?", "type": "numeric", "answer": 22, "tolerance": 0, "explain": "The classes do not all offer the same number, so the product rule does not apply; the groups are disjoint, so add them: $6 \\times 3 + 2 \\times 2 = 18 + 4 = 22$."},
-  {"q": "Two PoE2 characters, first and second, must have different ascendancies. How many ordered pairs?", "type": "numeric", "answer": 462, "tolerance": 0, "explain": "Order matters, no repeats: $P(22, 2) = 22 \\times 21 = 462$."},
-  {"q": "The same two characters, but only the pair of ascendancies counts, not which came first. How many pairs?", "type": "numeric", "answer": 231, "tolerance": 0, "explain": "$C(22, 2) = P(22, 2)/2! = 462/2 = 231$."},
-  {"q": "Three PoE2 skill gems each sit at one support-socket count from 2 to 5. How many (gem 1, gem 2, gem 3) socket configurations?", "type": "numeric", "answer": 64, "tolerance": 0, "explain": "2, 3, 4 or 5 is 4 choices per gem, repeats allowed: $4^3 = 64$."},
-  {"q": "A Classic account's 3 characters cover 3 different 2nd-job paths. Suppose every set of 3 paths is equally likely. $P(\\text{all three paths belong to the same 1st job})$? (4 decimals)", "type": "numeric", "answer": 0.0167, "tolerance": 6e-05, "explain": "Sets over sets. Only Warrior and Magician have 3 paths: $C(3, 3) + C(3, 3) = 2$ favourable sets; Bowman and Thief have $C(2, 3) = 0$. Total $C(10, 3) = 120$. $P = 2/120 = 0.0167$."},
+  {"q": "A new PoE2 character picks a class, then one of that class's ascendancies. How many (class, ascendancy) outcomes are there?", "type": "numeric", "answer": 22, "tolerance": 0, "explain": "The classes do not all offer the same number, so the product rule does not apply; the groups are disjoint, so add them: $$6 \\times 3 + 2 \\times 2 = 18 + 4 = \\mathbf{22}$$"},
+  {"q": "Two PoE2 characters, first and second, must have different ascendancies. How many ordered pairs?", "type": "numeric", "answer": 462, "tolerance": 0, "explain": "Order matters, no repeats: $$P(22, 2) = 22 \\times 21 = \\mathbf{462}$$"},
+  {"q": "The same two characters, but only the pair of ascendancies counts, not which came first. How many pairs?", "type": "numeric", "answer": 231, "tolerance": 0, "explain": "$$C(22, 2) = P(22, 2)/2! = 462/2 = \\mathbf{231}$$"},
+  {"q": "Three PoE2 skill gems each sit at one support-socket count from 2 to 5. How many (gem 1, gem 2, gem 3) socket configurations?", "type": "numeric", "answer": 64, "tolerance": 0, "explain": "2, 3, 4 or 5 is 4 choices per gem, repeats allowed: $$4^3 = \\mathbf{64}$$"},
+  {"q": "A Classic account's 3 characters cover 3 different 2nd-job paths. Suppose every set of 3 paths is equally likely. $P(\\text{all three paths belong to the same 1st job})$? (4 decimals)", "type": "numeric", "answer": 0.0167, "tolerance": 6e-05, "explain": "Sets over sets. Only Warrior and Magician have 3 paths: $$C(3, 3) + C(3, 3) = 2 \\text{ favourable sets}$$ Bowman and Thief have $C(2, 3) = 0$. Total $C(10, 3) = 120$. $$P = \\dfrac{2}{120} = \\mathbf{0.0167}$$"},
   {"type": "fill", "q": "Fill the blank so R prints the number of 3-path sets for a Classic account.", "code": "choose(10, ___)\n## [1] 120", "answer": ["3"], "explain": "$C(10, 3)$: 10 paths, 3 characters, order ignored. `choose(10, 3) * factorial(3)` would give $P(10, 3) = 720$."}
 ]
 ```
@@ -197,89 +235,89 @@ The product rule needs the same number of second choices for every first choice.
     "type": "numeric",
     "answer": 7776,
     "tolerance": 0,
-    "explain": "6 choices at each of 5 rolls: 6^5 = 7776 (the fundamental counting rule)."
+    "explain": "6 choices at each of 5 rolls (the fundamental counting rule): $$6^5 = \\mathbf{7776}$$"
   },
   {
     "q": "Five cards drawn with replacement. P(all five are hearts)? (5 decimals)",
     "type": "numeric",
     "answer": 0.000977,
     "tolerance": 0.000005,
-    "explain": "With replacement every draw is from the full deck: 13/52 = 1/4 each time, so (1/4)^5 = 13^5 / 52^5 = 371 293 / 380 204 032 = 0.000977."
+    "explain": "With replacement every draw is from the full deck: $13/52 = 1/4$ each time, so $$\\left(\\dfrac{1}{4}\\right)^5 = \\dfrac{13^5}{52^5} = \\dfrac{371\\,293}{380\\,204\\,032} = \\mathbf{0.000977}$$"
   },
   {
     "q": "Two cards drawn without replacement. P(both are Aces)? (4 decimals)",
     "type": "numeric",
     "answer": 0.0045,
     "tolerance": 0.00005,
-    "explain": "4 Aces of 52, then 3 of the remaining 51: (4 × 3)/(52 × 51) = 12/2652 = 0.004525."
+    "explain": "4 Aces of 52, then 3 of the remaining 51: $$\\dfrac{4 \\times 3}{52 \\times 51} = \\dfrac{12}{2652} = \\mathbf{0.004525}$$"
   },
   {
     "q": "Five cards drawn WITH replacement, all red? (5 decimals)",
     "type": "numeric",
     "answer": 0.03125,
     "tolerance": 0.00003,
-    "explain": "The deck is whole for every draw: 26^5 / 52^5 = (1/2)^5 = 0.03125. Without replacement the same event is 0.0253, smaller because each red card drawn thins the reds that remain."
+    "explain": "The deck is whole for every draw: $$\\dfrac{26^5}{52^5} = \\left(\\dfrac{1}{2}\\right)^5 = \\mathbf{0.03125}$$ Without replacement the same event is 0.0253, smaller because each red card drawn thins the reds that remain."
   },
   {
     "q": "How many ways can the four Aces be arranged in a sequence?",
     "type": "numeric",
     "answer": 24,
     "tolerance": 0,
-    "explain": "4! = 4 × 3 × 2 × 1 = 24. As a permutation, P(4, 4) = 4!/(4 − 4)! = 24/0! = 24/1, which is why 0! = 1 by definition."
+    "explain": "$$4! = 4 \\times 3 \\times 2 \\times 1 = \\mathbf{24}$$ As a permutation, $$P(4, 4) = \\dfrac{4!}{(4 - 4)!} = \\dfrac{24}{0!} = \\dfrac{24}{1}$$ which is why $0! = 1$ by definition."
   },
   {
     "q": "$P(52, 4)$ = ?",
     "type": "numeric",
     "answer": 6497400,
     "tolerance": 0,
-    "explain": "n = 52 available, r = 4 selected: P(52, 4) = 52!/48! = 52 × 51 × 50 × 49 = 6 497 400 ordered sequences."
+    "explain": "$n = 52$ available, $r = 4$ selected: $$P(52, 4) = \\dfrac{52!}{48!} = 52 \\times 51 \\times 50 \\times 49 = \\mathbf{6\\,497\\,400} \\text{ ordered sequences}$$"
   },
   {
     "q": "$C(52, 4)$ = ?",
     "type": "numeric",
     "answer": 270725,
     "tolerance": 0,
-    "explain": "The number of sequences over the number of sequences with the same four cards: P(52, 4) / 4! = 6 497 400 / 24 = 270 725 hands, the calculator's 52 nCr 4."
+    "explain": "The number of sequences over the number of sequences with the same four cards: $$\\dfrac{P(52, 4)}{4!} = \\dfrac{6\\,497\\,400}{24} = \\mathbf{270\\,725} \\text{ hands}$$ This is the calculator's 52 nCr 4."
   },
   {
     "q": "A class has 90 students and the front row has 9 seats. The number of ways to fill the row is...",
     "options": ["$C(90, 9)$", "$P(90, 9) = 90 \\cdot 89 \\cdots 82$", "$90^9$", "$9!$"],
     "answer": 1,
-    "explain": "The seats are distinct positions, so order matters and nobody sits twice: P(90, 9) = 2.56 × 10^17 (using calculator); written out, 90 · 89 ⋯ 82 = 256 284 917 589 254 400."
+    "explain": "The seats are distinct positions, so order matters and nobody sits twice (using calculator): $$P(90, 9) = 2.56 \\times 10^{17}$$ Written out: $$90 \\cdot 89 \\cdots 82 = 256\\,284\\,917\\,589\\,254\\,400$$"
   },
   {
     "q": "How many sequences of 3 cards, drawn without replacement, are all diamonds?",
     "type": "numeric",
     "answer": 1716,
     "tolerance": 0,
-    "explain": "n = 13 diamonds, r = 3 in order: P(13, 3) = 13 × 12 × 11 = 1716."
+    "explain": "$n = 13$ diamonds, $r = 3$ in order: $$P(13, 3) = 13 \\times 12 \\times 11 = \\mathbf{1716}$$"
   },
   {
     "q": "P(a sequence of 3 cards is all diamonds)? (4 decimals)",
     "type": "numeric",
     "answer": 0.0129,
     "tolerance": 0.0001,
-    "explain": "Sequences over sequences: P(13, 3) / P(52, 3) = 1716 / 132 600 = 0.0129."
+    "explain": "Sequences over sequences: $$\\dfrac{P(13, 3)}{P(52, 3)} = \\dfrac{1716}{132\\,600} = \\mathbf{0.0129}$$"
   },
   {
     "q": "A five-person committee from 20 instructors can be formed in how many ways?",
     "type": "numeric",
     "answer": 15504,
     "tolerance": 0,
-    "explain": "A committee has no order: C(20, 5) = 20!/(15! 5!) = (20 · 19 · 18 · 17 · 16)/(5 · 4 · 3 · 2 · 1) = 15 504."
+    "explain": "A committee has no order: $$C(20, 5) = \\dfrac{20!}{15!\\,5!} = \\dfrac{20 \\cdot 19 \\cdot 18 \\cdot 17 \\cdot 16}{5 \\cdot 4 \\cdot 3 \\cdot 2 \\cdot 1} = \\mathbf{15\\,504}$$"
   },
   {
     "q": "P(spade flush) when five cards are dealt? (6 decimals)",
     "type": "numeric",
     "answer": 0.000495,
     "tolerance": 0.000003,
-    "explain": "Favourable hands C(13, 5) = 1287 over all hands C(52, 5) = 2 598 960: 0.000495, which the notes round to 0.0005 (about one hand in 2020). P(13, 5)/P(52, 5) gives the same ratio because the 5! cancels."
+    "explain": "Favourable hands over all hands: $$\\dfrac{C(13, 5)}{C(52, 5)} = \\dfrac{1287}{2\\,598\\,960} = \\mathbf{0.000495}$$ The notes round this to 0.0005 (about one hand in 2020). P(13, 5)/P(52, 5) gives the same ratio because the 5! cancels."
   },
   {
     "q": "$C(n, r)$ is always less than or equal to $P(n, r)$.",
     "type": "tf",
     "answer": true,
-    "explain": "C = P / r!, and r! ≥ 1, with equality only for r = 0 or 1. Each unordered group was counted r! times among the ordered sequences."
+    "explain": "$C = P / r!$, and $r! \\ge 1$, with equality only for r = 0 or 1. Each unordered group was counted r! times among the ordered sequences."
   },
   {
     "type": "match",

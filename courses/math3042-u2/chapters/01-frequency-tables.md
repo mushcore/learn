@@ -4,7 +4,9 @@ minutes: 15
 ---
 <!-- facts: poe2.data.ascendancy-counts-forbidden-rites, poe1.ladder.class-counts -->
 
-poe.ninja's PoE2 build ladder tracks 124 117 characters [PoE2, 0.5.5e Forbidden Rites build ladder, checked 2026-10-27], and the only summary of their base class is a count per class. Unit 1 summarized data with **numbers**; Unit 2 summarizes it with **pictures**, starting with categorical data: a count per category and the two charts that display those counts.
+poe.ninja's PoE2 build ladder tracks 124 117 characters, and the only summary of their base class is a count per class.
+
+Unit 1 summarized data with **numbers**; Unit 2 summarizes it with **pictures**, starting with categorical data: a count per category and the two charts that display those counts.
 
 ## The data set for the whole unit
 
@@ -40,10 +42,14 @@ BCIT.students <- read.csv(file.path("Data", "BCIT.students.csv"), row.names = 1)
 - "Join the folder Data and the file name into one path (`file.path`), read that file into a data frame with column 1 as the row labels (`read.csv`, `row.names = 1`), and store it under the name BCIT.students (`BCIT.students <-`)."
 :::
 
-`row.names = 1` makes the first column the row labels, not data. `BCIT.students$Eye.Colour` is then the eye-colour column, like `TenMileRace$net` in Lab 1.
+`row.names = 1` makes the first column the row labels, not data.
+
+`BCIT.students$Eye.Colour` is then the eye-colour column, like `TenMileRace$net` in Lab 1.
 
 :::warn The printed notes' version does not run
-The printed notes show `read.csv("Data\BCIT.students.txt", row.names = 1, sep="")`. `file.path()` above joins the folder and file name with the right separator, as the demo notebook does.
+The printed notes show `read.csv("Data\BCIT.students.txt", row.names = 1, sep="")`.
+
+`file.path()` above joins the folder and file name with the right separator, as the demo notebook does.
 
 - `\B` is not an escape R knows, so the string fails.
 - `sep=""` splits on spaces, not commas.
@@ -71,7 +77,7 @@ The printed notes show `read.csv("Data\BCIT.students.txt", row.names = 1, sep=""
 A **frequency** is a count. `table()` counts how many individuals fall in each category:
 
 ```r
-freq.tab <- table( BCIT.students$Eye.Colour )
+freq.tab <- table( BCIT.students$Eye.Colour)
 freq.tab
 ```
 ```text
@@ -83,24 +89,34 @@ Black  Blue Brown Green Other
 | Code | What it does |
 |---|---|
 | `BCIT.students$Eye.Colour` | `$` picks one column of a data frame by name: here the eye-colour column, one value per student. |
-| `table( … )` | Counts how many times each distinct value appears, giving one count per category. |
+| `table( …)` | Counts how many times each distinct value appears, giving one count per category. |
 | `freq.tab <- …` | Stores the counts under the name `freq.tab`; assignment prints nothing. |
 | `freq.tab` | A name on its own line prints its value: each category name above its count. |
 
 **Left to right**
 
-- `freq.tab <- table( BCIT.students$Eye.Colour )`: "Store under the name freq.tab (`freq.tab <-`) the count per category (`table`) of the Eye.Colour column (`Eye.Colour`) of the student data (`BCIT.students$`)."
+- `freq.tab <- table( BCIT.students$Eye.Colour)`: "Store under the name freq.tab (`freq.tab <-`) the count per category (`table`) of the Eye.Colour column (`Eye.Colour`) of the student data (`BCIT.students$`)."
 - `freq.tab`: "Print the table (`freq.tab`)."
 
 **Right to left**, the order R runs it
 
-- `freq.tab <- table( BCIT.students$Eye.Colour )`: "Take the student data (`BCIT.students`), pull out its Eye.Colour column (`$Eye.Colour`), count each category (`table`), and store the counts as freq.tab (`freq.tab <-`)."
+- `freq.tab <- table( BCIT.students$Eye.Colour)`: "Take the student data (`BCIT.students`), pull out its Eye.Colour column (`$Eye.Colour`), count each category (`table`), and store the counts as freq.tab (`freq.tab <-`)."
 - `freq.tab`: "Look up freq.tab (`freq.tab`) and print it."
 :::
 
-**R lists the categories alphabetically**, not by size and not in the order they appear in the data. The counts sum to $n$: $95 + 52 + 130 + 10 + 15 = 302$.
+**R lists the categories alphabetically**, not by size and not in the order they appear in the data.
 
-The instructor's note on the chart: **"Brown is the modal colour (i.e. mode)."** The **mode** is the category with the highest frequency, and it is the only measure of centre a categorical variable has. Dividing a count by $n$ gives the Unit 1 sample proportion: $\hat{p}(\text{Brown}) = 130/302 = 0.4305$ ([Categorical data: proportion & mode](#/math3042/categorical)).
+The counts sum to $n$:
+
+$$95 + 52 + 130 + 10 + 15 = \mathbf{302}$$
+
+The instructor's note on the chart: **"Brown is the modal colour (i.e. mode)."**
+
+The **mode** is the category with the highest frequency, and it is the only measure of centre a categorical variable has.
+
+Dividing a count by $n$ gives the Unit 1 sample proportion ([Categorical data: proportion & mode](#/math3042/categorical)):
+
+$$\hat{p}(\text{Brown}) = \dfrac{130}{302} = \mathbf{0.4305}$$
 
 ### R detail: a table is a "named vector"
 
@@ -145,7 +161,9 @@ Brown
 - `names(freq.tab)`: "Look up the table (`freq.tab`), then return its element names (`names`)."
 :::
 
-Single brackets keep the name attached; **double square brackets drop it** and return the bare `[1] 130`. Position 3 is Brown only because of the alphabetical order: Black (1), Blue (2), Brown (3), Green (4), Other (5).
+Single brackets keep the name attached; **double square brackets drop it** and return the bare `[1] 130`.
+
+Position 3 is Brown only because of the alphabetical order: Black (1), Blue (2), Brown (3), Green (4), Other (5).
 
 ## Step 2a: the pie chart
 
@@ -169,19 +187,37 @@ pie(freq.tab, radius=1.0, main="Eye Colour in BCIT Students (n = 302)")
 - "Take the counts (`freq.tab`), set the radius to 1.0 (`radius=1.0`) and the title (`main=`), then draw the pie (`pie`)."
 :::
 
-One slice per category. Each slice's angle is the category's relative frequency times 360°. Brown: $130/302 = 0.4305$, and $0.4305 \times 360° = 155.0°$. Green: $10/302 \times 360° = 11.9°$. Check: the five angles in the pie add to 360°.
+One slice per category.
+
+Each slice's angle is the category's relative frequency times 360°. Brown:
+
+$$\dfrac{130}{302} = 0.4305, \qquad 0.4305 \times 360° = \mathbf{155.0°}$$
+
+Green:
+
+$$\dfrac{10}{302} \times 360° = \mathbf{11.9°}$$
+
+Check: the five angles in the pie add to 360°.
 
 :::tip Pie angle
-angle $= \dfrac{f}{n} \times 360°$, where $f$ is the category's count and $n$ the sample size.
+$$\text{angle} = \dfrac{f}{n} \times 360°$$
+
+Here $f$ is the category's count and $n$ the sample size.
 :::
 
 ```diagram
 {"type": "flow", "nodes": [{"id": "c", "label": "Brown count", "sub": "f = 130"}, {"id": "p", "label": "Relative freq", "sub": "130 / 302 = 0.4305"}, {"id": "a", "label": "Angle", "sub": "0.4305 × 360° = 155.0°"}], "edges": [{"from": "c", "to": "p", "label": "÷ n"}, {"from": "p", "to": "a", "label": "× 360°"}], "hi": ["a"], "caption": "Angle = f/n × 360°: Brown's 130 of 302 students take 155.0° of the circle."}
 ```
 
-The instructor's annotation: **"shows relative frequency."** A pie answers "what fraction of the sample is Brown?" at a glance. It is bad at precise comparison: you cannot read off whether Black (95) beats Blue (52).
+The instructor's annotation: **"shows relative frequency."**
 
-R draws the slices in alphabetical order, counter-clockwise from 3 o'clock, in its default colours (white, light blue, misty rose, light cyan, lavender). `radius=1.0` fills the plotting area; `main=` is the title.
+A pie answers "what fraction of the sample is Brown?" at a glance.
+
+It is bad at precise comparison: you cannot read off whether Black (95) beats Blue (52).
+
+R draws the slices in alphabetical order, counter-clockwise from 3 o'clock, in its default colours (white, light blue, misty rose, light cyan, lavender).
+
+`radius=1.0` fills the plotting area; `main=` is the title.
 
 ## Step 2b: the bar chart
 
@@ -208,11 +244,16 @@ barplot(freq.tab, col="lightgreen",
 - "Take the counts (`freq.tab`), set the colour (`col="lightgreen"`), the axis labels (`xlab=`, `ylab=`) and the title (`main=`), then draw the bars (`barplot`)."
 :::
 
-One bar per category with **height equal to the frequency**. The instructor's annotations: the y-axis shows **"absolute freq."**, and the chart **"shows absolute frequency, better for comparisons."** All bars share one axis, so Brown (130) against Black (95) is read exactly.
+One bar per category with **height equal to the frequency**.
+
+The instructor's annotations: the y-axis shows **"absolute freq."**, and the chart **"shows absolute frequency, better for comparisons."**
+
+All bars share one axis, so Brown (130) against Black (95) is read exactly.
 
 The rule from the notes:
 
 > A pie chart is better at showing what fraction a sample forms out of the whole sample.
+
 > A bar chart is better at showing how two categories compare to each other.
 
 Both charts are drawn from the same frequency table.
@@ -223,12 +264,14 @@ cat-charts
 
 ## 124 117 PoE2 characters by base class
 
-Every PoE2 character belongs to exactly one of eight base classes. Counting characters per base class gives one categorical variable: 8 categories, $n = 124\,117$ tracked characters (not every player).
+Every PoE2 character belongs to exactly one of eight base classes.
+
+Counting characters per base class gives one categorical variable: 8 categories, $n = 124\,117$ tracked characters (not every player).
 
 ```quiz
 [
-  {"q": "Mercenary holds 44 833 of the 124 117 characters. Its relative frequency $\\hat{p}$ = ? (4 decimals)", "type": "numeric", "answer": 0.3612, "tolerance": 0.0001, "explain": "$\\hat{p} = 44\\,833/124\\,117 = 0.3612$, or 36.12 % of the ladder."},
-  {"q": "How many degrees of `pie()`'s circle does the Mercenary slice take? (1 decimal)", "type": "numeric", "answer": 130.0, "tolerance": 0.06, "unit": "°", "explain": "Angle = relative frequency × 360°: $0.36122 \\times 360° = 130.0°$."}
+  {"q": "Mercenary holds 44 833 of the 124 117 characters. Its relative frequency $\\hat{p}$ = ? (4 decimals)", "type": "numeric", "answer": 0.3612, "tolerance": 0.0001, "explain": "$$\\hat{p} = \\dfrac{44\\,833}{124\\,117} = \\mathbf{0.3612}$$ That is 36.12 % of the ladder."},
+  {"q": "How many degrees of `pie()`'s circle does the Mercenary slice take? (1 decimal)", "type": "numeric", "answer": 130.0, "tolerance": 0.06, "unit": "°", "explain": "Angle = relative frequency × 360°: $$0.36122 \\times 360° = \\mathbf{130.0°}$$"}
 ]
 ```
 
@@ -244,7 +287,9 @@ Every PoE2 character belongs to exactly one of eight base classes. Counting char
 | Witch | 12 792 | 0.1031 | 10.31 % | 37.1° |
 | total | 124 117 | 1.0000 | 100.00 % | 360° |
 
-Mercenary is the modal base class. poe.ninja publishes counts, not rows, so the table is typed as a named vector in `table()`'s alphabetical order:
+Mercenary is the modal base class.
+
+poe.ninja publishes counts, not rows, so the table is typed as a named vector in `table()`'s alphabetical order:
 
 ```r
 base.tab <- c(Druid=10771, Huntress=11400, Mercenary=44833, Monk=15356,
@@ -339,13 +384,15 @@ A pie chart can be drawn straight from percentages when a question gives those i
 
 ## Count the ascendancies of 800 Hardcore ladder characters
 
-Four pages of the PoE1 Hardcore Allflame ladder hold 800 characters, one row each in `hc`; the largest of 21 ascendancy counts are Luminary 162, Chieftain 110 and Elementalist 109 [PoE1, 3.29 Hardcore Allflame ladder, checked 2026-10-27]. `hc.tab <- table(hc$ascendancy)`, and `top3` is the table for those three only.
+Four pages of the PoE1 Hardcore Allflame ladder hold 800 characters, one row each in `hc`; the largest of 21 ascendancy counts are Luminary 162, Chieftain 110 and Elementalist 109.
+
+`hc.tab <- table(hc$ascendancy)`, and `top3` is the table for those three only.
 
 :::info R syntax
 | Code | What it does |
 |---|---|
 | `hc$ascendancy` | `$` picks the `ascendancy` column of the data frame `hc`, one value per character. |
-| `table( … )` | Counts how many characters have each ascendancy. |
+| `table( …)` | Counts how many characters have each ascendancy. |
 | `hc.tab <- …` | Stores the counts under the name `hc.tab`. |
 
 **Left to right**
@@ -359,9 +406,9 @@ Four pages of the PoE1 Hardcore Allflame ladder hold 800 characters, one row eac
 
 ```quiz
 [
-  {"q": "Compute $\\hat{p}$ for Luminary in these 800 characters. (4 decimals)", "type": "numeric", "answer": 0.2025, "tolerance": 0.0001, "explain": "$\\hat{p} = 162/800 = 0.2025$, about 20.3 % of the sampled characters."},
+  {"q": "Compute $\\hat{p}$ for Luminary in these 800 characters. (4 decimals)", "type": "numeric", "answer": 0.2025, "tolerance": 0.0001, "explain": "$$\\hat{p} = \\dfrac{162}{800} = \\mathbf{0.2025}$$ About 20.3 % of the sampled characters."},
   {"q": "What is the modal ascendancy?", "type": "text", "answer": ["Luminary"], "explain": "Luminary has the largest frequency, 162. The mode is the category, not the count."},
-  {"q": "In `pie(hc.tab)`, how many degrees does the Chieftain slice take? (1 decimal)", "type": "numeric", "answer": 49.5, "tolerance": 0.06, "unit": "°", "explain": "Relative frequency × 360°: $110/800 = 0.1375$, and $0.1375 \\times 360° = 49.5°$."},
+  {"q": "In `pie(hc.tab)`, how many degrees does the Chieftain slice take? (1 decimal)", "type": "numeric", "answer": 49.5, "tolerance": 0.06, "unit": "°", "explain": "Relative frequency × 360°: $$\\dfrac{110}{800} \\times 360° = 0.1375 \\times 360° = \\mathbf{49.5°}$$"},
   {"q": "Chieftain (110) and Elementalist (109) differ by one character. Which chart shows which one is larger?", "options": ["The bar chart", "The pie chart", "Both equally", "Neither"], "answer": 0, "explain": "The bars share one Frequency axis, so 110 against 109 is read off the heights. The two slices are 49.5° and 49.1°, which the eye cannot separate: a pie shows fraction of the whole, a bar chart compares."},
   {"q": "`top3` holds the Chieftain, Elementalist and Luminary counts. What does `top3[[2]]` print?", "options": ["`[1] 109`", "`[1] 110`", "`Elementalist` above `109`", "`[1] 162`"], "answer": 0, "explain": "`table()` lists the categories alphabetically: Chieftain (1), Elementalist (2), Luminary (3). Position 2 is Elementalist, and double brackets drop the name, so R prints `[1] 109`."},
   {"type": "fill", "q": "Fill the blank so the title's $n$ is computed from the data frame, not typed.", "code": "barplot(hc.tab, col=\"lightgreen\", ylab=\"Frequency\",\n        main=paste0(\"Hardcore ascendancies (n = \", ___(hc), \")\"))", "answer": ["nrow"], "explain": "`nrow(hc)` counts the rows, one per character, so the title reads n = 800 and stays right if the data changes."}
@@ -375,9 +422,9 @@ Four pages of the PoE1 Hardcore Allflame ladder hold 800 characters, one row eac
   {"q": "`freq.tab` is Black 95, Blue 52, Brown 130, Green 10, Other 15. What does `freq.tab[[3]]` print?", "options": ["`Brown` on one line and `130` below it", "`[1] 130`", "`[1] 52`", "`Brown 52`"], "answer": 1, "explain": "Double brackets return the bare value with the name dropped; position 3 is Brown (alphabetical), whose count is 130."},
   {"q": "Which chart is better for showing what fraction of the whole sample each category makes up?", "options": ["Pie chart", "Bar chart", "Histogram", "Stem-and-leaf plot"], "answer": 0, "explain": "Slice area is relative frequency, so the pie shows fraction-of-the-whole directly. The instructor's annotation: pie 'shows relative frequency'."},
   {"q": "Which chart is better for comparing two categories against each other?", "options": ["Bar chart", "Pie chart", "Ogive", "Box plot"], "answer": 0, "explain": "Bars share one Frequency axis, so heights can be compared exactly; the notes say a bar chart 'shows absolute frequency, better for comparisons'."},
-  {"q": "The vertical axis of the eye-colour bar chart shows relative frequency (proportions).", "type": "tf", "answer": false, "explain": "`barplot(freq.tab, ...)` plots the counts themselves; the axis is labelled Frequency and shows absolute frequency (Brown reaches 130)."},
-  {"q": "What is the mode of eye colour in this sample, and what is its sample proportion (4 decimals)?", "type": "numeric", "answer": 0.4305, "tolerance": 0.001, "explain": "Brown is the modal colour: it has the largest frequency, 130. $\\hat{p} = 130/302 = 0.4305$."},
-  {"q": "How many students are in the sample if the frequency table reads 95, 52, 130, 10, 15?", "type": "numeric", "answer": 302, "tolerance": 0, "explain": "Frequencies always add to $n$: $95+52+130+10+15 = 302$."},
+  {"q": "The vertical axis of the eye-colour bar chart shows relative frequency (proportions).", "type": "tf", "answer": false, "explain": "`barplot(freq.tab,...)` plots the counts themselves; the axis is labelled Frequency and shows absolute frequency (Brown reaches 130)."},
+  {"q": "What is the mode of eye colour in this sample, and what is its sample proportion (4 decimals)?", "type": "numeric", "answer": 0.4305, "tolerance": 0.001, "explain": "Brown is the modal colour: it has the largest frequency, 130. $$\\hat{p} = \\dfrac{130}{302} = \\mathbf{0.4305}$$"},
+  {"q": "How many students are in the sample if the frequency table reads 95, 52, 130, 10, 15?", "type": "numeric", "answer": 302, "tolerance": 0, "explain": "Frequencies always add to $n$: $$95+52+130+10+15 = \\mathbf{302}$$"},
   {"q": "In `main=paste(\"Eye Colour ( n = \", nrow(BCIT.students), \")\")`, why call `nrow()` instead of typing 302?", "options": ["So the title's n is computed from the data and is never hard-coded", "Because R cannot print numbers in titles", "To make the chart wider", "It sorts the bars"], "answer": 0, "explain": "`nrow()` returns the number of rows; if the data changes, the title stays correct. Lab 2 asks for titles built this way."},
   {"q": "Which measure of centre is the only one that always makes sense for a categorical variable?", "type": "text", "answer": ["mode", "the mode", "modal category"], "explain": "You cannot average colours; the mode (most frequent category, here Brown) is the only centre for categorical data."},
   {"type": "match", "q": "Match each R piece to what it does.", "pairs": [["`table(x)`", "counts rows per category (the frequency table)"], ["`pie(freq.tab)`", "one slice per category, area = relative frequency"], ["`barplot(freq.tab, col=\"lightgreen\")`", "one bar per category, height = frequency"], ["`freq.tab[\"Brown\"]`", "the Brown count, with its name attached"], ["`freq.tab[[3]]`", "the third count as a bare number, name dropped"], ["`nrow(BCIT.students)`", "the sample size n, computed from the data"]], "explain": "Single brackets keep names, double brackets drop them; both charts are drawn from the same table."}

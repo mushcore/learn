@@ -4,11 +4,15 @@ minutes: 22
 ---
 <!-- facts: classic.scroll.tiers, poe1.ladder.hc-dead-by-rank, gms.starforce.rates-0-14, gms.starforce.star-catch, poe1.chaos.affix-count -->
 
-A problem never says "this is hypergeometric": it describes cards, printers or a help line. Four questions about the story name the distribution, and one R pattern then computes any of them.
+A problem never says "this is hypergeometric": it describes cards, printers or a help line.
+
+Four questions about the story name the distribution, and one R pattern then computes any of them.
 
 ## Four questions pick the distribution
 
-Ask the questions in this order. The first yes names the distribution.
+Ask the questions in this order.
+
+The first yes names the distribution.
 
 ```diagram
 { "type": "tree", "title": "The order to ask the four questions", "nodes": [
@@ -31,7 +35,13 @@ Ask the questions in this order. The first yes names the distribution.
 | Counting trials **until the first success**? | **Geometric** | trial number of the first success, 1, 2, 3, … | $q^{x-1} p$ | $\dfrac{1}{p}$ | $\dfrac{1-p}{p^2}$ |
 | Counting **events in an interval** with a known mean rate? | **Poisson** | occurrences in the interval, 0, 1, 2, … | $\dfrac{\lambda^x}{x!} e^{-\lambda}$ | $\lambda$ | $\lambda$ |
 
-Two refinements. If the draw is without replacement but $n/N \le 5\%$, the 5% rule says the binomial with $p = K/N$ is close enough (the superdeck: 0.0460 against 0.0465). And if none of the four fits, the general definitions still do: $\mu = \sum x P(x)$ and $\sigma^2 = \sum (x - \mu)^2 P(x)$ from the table, as for the minimum of two dice.
+Two refinements.
+
+If the draw is without replacement but $n/N \le 5\%$, the 5% rule says the binomial with $p = K/N$ is close enough (the superdeck: 0.0460 against 0.0465).
+
+If none of the four fits, the general definitions still do, from the table, as for the minimum of two dice:
+
+$$\mu = \sum x P(x), \qquad \sigma^2 = \sum (x - \mu)^2 P(x)$$
 
 ```widget
 dist-picker
@@ -50,7 +60,17 @@ Every distribution has a `d` function for a single probability and a `p` functio
 | Poisson | `dpois(x, lambda)` | `ppois(x, lambda)` | `1 - ppois(x-1, lambda)` | count, mean for the interval |
 
 :::warn R's slots are not the course's letters
-`dhyper`'s slots are R's m, n, k: the course's $K$, $N - K$ and $n$. The geometric `d` and `p` functions count failures, not trials. So "at least $x$" is `1 - p*(x-1, ...)` for three of the four, but `1 - pgeom(x-2, p)` for the geometric: at least $x$ trials means at least $x - 1$ failures, the complement of at most $x - 2$ failures. Help line, $P(X \ge 4) = 0.75^3 = 0.4219$ is `1 - pgeom(2, 0.25)`; `1 - pgeom(3, 0.25)` would be $P(X > 4) = 0.75^4 = 0.3164$.
+`dhyper`'s slots are R's m, n, k: the course's $K$, $N - K$ and $n$.
+
+The geometric `d` and `p` functions count failures, not trials. So "at least $x$" is `1 - p*(x-1,...)` for three of the four, but `1 - pgeom(x-2, p)` for the geometric: at least $x$ trials means at least $x - 1$ failures, the complement of at most $x - 2$ failures.
+
+Help line: `1 - pgeom(2, 0.25)` is
+
+$$P(X \ge 4) = 0.75^3 = 0.4219$$
+
+`1 - pgeom(3, 0.25)` would be
+
+$$P(X > 4) = 0.75^4 = 0.3164$$
 :::
 
 :::info R syntax
@@ -88,7 +108,9 @@ Every distribution has a `d` function for a single probability and a `p` functio
 - `1 - ppois(x-1, lambda)`: "Subtract 1 from x (`x-1`), compute P(X ≤ x − 1) (`ppois`), and subtract it from 1 (`1 -`)."
 :::
 
-The Mac class is `dhyper(4, 40, 50, 10)`, with the 50 failures where $N$ might be expected. For a by-hand check, `choose(n, x)` is $nCx$ and `factorial(x)` is $x!$.
+The Mac class is `dhyper(4, 40, 50, 10)`, with the 50 failures where $N$ might be expected.
+
+For a by-hand check, `choose(n, x)` is $nCx$ and `factorial(x)` is $x!$.
 
 :::info R syntax
 | Code | What it does |
@@ -178,11 +200,17 @@ ppois(20, 30)                    # web server: P(X <= 20)
 - `dpois(20, 30)`, `ppois(20, 30)`: "Take 20 and lambda = 30, compute P(X = 20) (`dpois`) or P(X ≤ 20) (`ppois`), and print."
 :::
 
-The outputs are the notes' answers: 0.0123, the 3s table, 0.0465 and 0.0506, 0.0399 against 0.0465, 0.0460, 0.2539 and 0.5189, 0.1406 and 0.4219, 0.0134 and 0.0353. On paper the formula is written out with the numbers substituted; the `d`/`p` line checks it.
+The outputs are the notes' answers: 0.0123, the 3s table, 0.0465 and 0.0506, 0.0399 against 0.0465, 0.0460, 0.2539 and 0.5189, 0.1406 and 0.4219, 0.0134 and 0.0353.
+
+On paper the formula is written out with the numbers substituted; the `d`/`p` line checks it.
 
 ## The two recipes that go with any distribution
 
-**Is a value unusual?** Compute $\mu$ and $\sigma$ from the distribution's shortcut formulas, then $Z = (x - \mu)/\sigma$; beyond $\pm 2$ is unusual (or a tail probability below 0.025).
+**Is a value unusual?** Compute $\mu$ and $\sigma$ from the distribution's shortcut formulas, then the Z-score:
+
+$$Z = \dfrac{x - \mu}{\sigma}$$
+
+Beyond $\pm 2$ is unusual (or a tail probability below 0.025).
 
 ```r
 n <- 200; p <- 0.1; q <- 1 - p            # laser printers
@@ -280,7 +308,15 @@ dist-picker
 { "scenarios": "practice", "title": "Eight scenario cards to classify, including Practice Problems 23 and 25" }
 ```
 
-Practice Problem 23 (the first miss on the 15th shot) is geometric with success = miss, $p = 0.05$: $0.95^{14}(0.05) = 0.0244$. Practice Problem 25 (ten 4-choice questions guessed, none right) is binomial with $n = 10$, $p = 0.25$, $x = 0$: $0.75^{10} = 0.0563$, which is `dbinom(0, 10, 0.25)`.
+Practice Problem 23 (the first miss on the 15th shot) is geometric with success = miss, $p = 0.05$:
+
+$$0.95^{14}(0.05) = \mathbf{0.0244}$$
+
+Practice Problem 25 (ten 4-choice questions guessed, none right) is binomial with $n = 10$, $p = 0.25$, $x = 0$:
+
+$$0.75^{10} = \mathbf{0.0563}$$
+
+That is `dbinom(0, 10, 0.25)`.
 
 :::info R syntax
 | Code | What it does |
@@ -298,16 +334,18 @@ Practice Problem 23 (the first miss on the 15th shot) is geometric with success 
 
 ## Name the distribution: scrolls, a ladder draw, Star Force taps, a Chaos Orb and an intersection
 
-Four of these stories are this unit's game examples, each with the structure its own lesson checked, so the four questions land on the same answers. Ask them before computing anything.
+Four of these stories are this unit's game examples, each with the structure its own lesson checked, so the four questions land on the same answers.
+
+Ask them before computing anything.
 
 ```quiz
 [
-  {"q": "Ranks 1-200 of the Hardcore Allflame ladder hold 69 characters flagged dead out of 200 [PoE1, 3.29 Hardcore Allflame ladder, checked 2026-10-27]. Pick 20 of those 200 characters at random, no character twice. X = the number of dead characters picked. Name the distribution (one word).", "type": "text", "answer": ["hypergeometric", "hypergeometric distribution"], "explain": "A fixed sample drawn without replacement from a finite list: hypergeometric with N = 200, K = 69, n = 20. The sample is 20/200 = 10 % of the list, above 5 %, so the binomial is not a stand-in. P(X = 7) = C(69, 7) · C(131, 13)/C(200, 20) = 0.1942, which is dhyper(7, 69, 131, 20)."},
+  {"q": "Ranks 1-200 of the Hardcore Allflame ladder hold 69 characters flagged dead out of 200. Pick 20 of those 200 characters at random, no character twice. X = the number of dead characters picked. Name the distribution (one word).", "type": "text", "answer": ["hypergeometric", "hypergeometric distribution"], "explain": "A fixed sample drawn without replacement from a finite list: hypergeometric with N = 200, K = 69, n = 20. The sample is 20/200 = 10 % of the list, above 5 %, so the binomial is not a stand-in. $$P(X = 7) = \\dfrac{C(69, 7) · C(131, 13)}{C(200, 20)} = 0.1942$$ That is dhyper(7, 69, 131, 20)."},
   {"q": "An intersection averages 0.8 accidents per month, at random. X = the number of accidents in a year. Name the distribution (one word).", "type": "text", "answer": ["poisson", "poisson distribution"], "explain": "A count of random, independent events over an interval with a known mean rate: Poisson."},
-  {"q": "Same intersection: λ for one year = ?", "type": "numeric", "answer": 9.6, "tolerance": 0.001, "explain": "Rescale to the interval: 0.8 per month × 12 months = 9.6 accidents per year. P(X = 10) would be dpois(10, 9.6)."},
-  {"q": "Star Force, the enhancement that adds stars to gear, succeeds on a 14→15 tap 30 % of the time [GMS, the wiki's Star Force table 14→15, checked 2026-10-27]; on a non-Superior item a failure keeps the star and nothing is destroyed. X = the number of taps until the first success. P(X ≤ 3) = ? (4 decimals)", "type": "numeric", "answer": 0.657, "tolerance": 0.0001, "explain": "Geometric with p = 0.30: no fixed n, the same p every tap, and X counts taps to the first success. X ≤ 3 is the complement of three failed taps: 1 − 0.70³ = 1 − 0.343 = 0.6570. In R, pgeom(2, 0.3), since R counts failures (3 − 1 = 2). The wiki's table leaves out the Star Catch bonus that v.271 builds in, so live success is slightly higher."},
-  {"type": "fill", "q": "A Classic Intermediate scroll succeeds 60 % of the time [Classic, meowdb's item text, checked 2026-10-27]. A player uses one on each of 5 items. X = the number that succeed. Complete the R call for P(X = 4).", "code": "dbinom(4, ___, 0.6)", "answer": ["5"], "explain": "Binomial: a fixed n = 5 uses, each a success or a failure with the same p = 0.6, independent of each other. dbinom(x, n, p) takes the count, then the trials: dbinom(4, 5, 0.6) = C(5, 4) × 0.6⁴ × 0.4 = 5 × 0.1296 × 0.4 = 0.2592."},
-  {"q": "A Chaos Orb rerolls every modifier on a rare item, and the result has 4, 5 or 6 affixes in the ratio 8:3:1 [PoE1, 3.29 Allflame Chaos Orb, checked 2026-10-27]. X = the affix count after one Chaos Orb. Which distribution does X have?", "options": ["binomial", "geometric", "Poisson", "none of the four: build the table from the weights"], "answer": 3, "explain": "One Chaos Orb is one draw from a weight table: no n trials, no waiting for a first success, no interval. So build the table, P(4) = 8/12, P(5) = 3/12, P(6) = 1/12, and use the general definition: μ = Σ x P(x) = (4 × 8 + 5 × 3 + 6 × 1)/12 = 53/12 = 4.42 affixes."}
+  {"q": "Same intersection: λ for one year = ?", "type": "numeric", "answer": 9.6, "tolerance": 0.001, "explain": "Rescale to the interval: $$0.8 \\text{ per month} × 12 \\text{ months} = \\mathbf{9.6} \\text{ accidents per year}$$ P(X = 10) would be dpois(10, 9.6)."},
+  {"q": "Star Force, the enhancement that adds stars to gear, succeeds on a 14→15 tap 30 % of the time; on a non-Superior item a failure keeps the star and nothing is destroyed. X = the number of taps until the first success. P(X ≤ 3) = ? (4 decimals)", "type": "numeric", "answer": 0.657, "tolerance": 0.0001, "explain": "Geometric with p = 0.30: no fixed n, the same p every tap, and X counts taps to the first success. X ≤ 3 is the complement of three failed taps: $$1 − 0.70^3 = 1 − 0.343 = \\mathbf{0.6570}$$ In R, pgeom(2, 0.3), since R counts failures (3 − 1 = 2). The wiki's table leaves out the Star Catch bonus that v.271 builds in, so live success is slightly higher."},
+  {"type": "fill", "q": "A Classic Intermediate scroll succeeds 60 % of the time. A player uses one on each of 5 items. X = the number that succeed. Complete the R call for P(X = 4).", "code": "dbinom(4, ___, 0.6)", "answer": ["5"], "explain": "Binomial: a fixed n = 5 uses, each a success or a failure with the same p = 0.6, independent of each other. dbinom(x, n, p) takes the count, then the trials. dbinom(4, 5, 0.6) is $$C(5, 4) × 0.6^4 × 0.4 = 5 × 0.1296 × 0.4 = 0.2592$$"},
+  {"q": "A Chaos Orb rerolls every modifier on a rare item, and the result has 4, 5 or 6 affixes in the ratio 8:3:1. X = the affix count after one Chaos Orb. Which distribution does X have?", "options": ["binomial", "geometric", "Poisson", "none of the four: build the table from the weights"], "answer": 3, "explain": "One Chaos Orb is one draw from a weight table: no n trials, no waiting for a first success, no interval. So build the table, P(4) = 8/12, P(5) = 3/12, P(6) = 1/12, and use the general definition: $$\\mu = \\sum x P(x) = \\dfrac{4 × 8 + 5 × 3 + 6 × 1}{12} = \\dfrac{53}{12} = 4.42 \\text{ affixes}$$"}
 ]
 ```
 
@@ -333,7 +371,7 @@ Four of these stories are this unit's game examples, each with the structure its
     "q": "Complete the R call for P(X = 4) Mac users in a sample of 10 from a class of 90 with 40 Mac users.",
     "code": "dhyper(4, ___, ___, 10)",
     "answer": ["40", "50"],
-    "explain": "dhyper takes the successes in the population (K = 40) and the failures (N − K = 50), never N itself: dhyper(4, 40, 50, 10) = 0.2539."
+    "explain": "dhyper takes the successes in the population (K = 40) and the failures (N − K = 50), never N itself. dhyper(4, 40, 50, 10) returns 0.2539."
   },
   {
     "q": "For the help line (X = number of calls until access, p = 0.25), `pgeom(2, 0.25)` is...",
@@ -345,7 +383,7 @@ Four of these stories are this unit's game examples, each with the structure its
     "q": "Which R call gives P(at least 2 jacks) in 5 cards drawn with replacement?",
     "options": ["`1 - pbinom(1, 5, 4/52)`", "`1 - dbinom(2, 5, 4/52)`", "`pbinom(2, 5, 4/52)`", "`1 - pbinom(2, 5, 4/52)`"],
     "answer": 0,
-    "explain": "At least 2 is the complement of at most 1: 1 − pbinom(1, 5, 4/52) = 1 − 0.6702 − 0.2792 = 0.0506. Subtracting pbinom(2, ...) would wrongly remove P(2) as well."
+    "explain": "At least 2 is the complement of at most 1: $$1 − \\text{pbinom}(1, 5, 4/52) = 1 − 0.6702 − 0.2792 = 0.0506$$ Subtracting pbinom(2,...) would wrongly remove P(2) as well."
   },
   {
     "q": "20 items are sampled without replacement from a shipment of 500. Which distribution is acceptable for the number of defectives?",
@@ -358,14 +396,14 @@ Four of these stories are this unit's game examples, each with the structure its
     "type": "numeric",
     "answer": 0.2541,
     "tolerance": 0.0003,
-    "explain": "C(8,3) × 0.3^3 × 0.7^5 = 56 × 0.027 × 0.16807 = 0.2541; dbinom(3, 8, 0.3)."
+    "explain": "$$C(8,3) × 0.3^3 × 0.7^5 = 56 × 0.027 × 0.16807 = \\mathbf{0.2541}$$ In R, dbinom(3, 8, 0.3)."
   },
   {
     "type": "fill",
     "q": "A server averages one request every 2 seconds. Complete the R call for P(exactly 20 requests in one minute).",
     "code": "dpois(20, ___)",
     "answer": ["30"],
-    "explain": "λ must be the mean for the interval in the question: 60 s / 2 s = 30 requests per minute, so dpois(20, 30) = 0.0134."
+    "explain": "λ must be the mean for the interval in the question: $$60 \\text{ s} / 2 \\text{ s} = \\mathbf{30} \\text{ requests per minute}$$ dpois(20, 30) returns 0.0134."
   },
   {
     "q": "Which line of the `barplot` recipe makes the bars of a probability histogram touch?",
