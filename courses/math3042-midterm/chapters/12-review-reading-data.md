@@ -44,6 +44,8 @@ The tail drags the mean toward it; the median barely moves. Right tail: mean > m
 
 **Z-score.** How many SDs a value sits from the mean: $Z = (x - \bar X)/s$. On the sheet, under Descriptive Statistics, as $Z = \dfrac{x - \bar{X}}{s}$. A value with $|Z| > 2$ is called unusual (not on the sheet).
 
+Nexon's North America job ranking on 2026-10-27 lists the top 500 Heroes, a GMS job, with mean level 294.896 and SD 1.44. A level-300 Hero: $Z = (300 - 294.896)/1.44 = 5.104/1.44 = 3.54$, so level 300 is unusual even inside the top 500. A level-294 Hero: $Z = (294 - 294.896)/1.44 = -0.62$, ordinary. Z needs no bell shape; it only measures distance from this list's own mean in units of its own SD, which is why the same formula works on any data set.
+
 **Quartiles and IQR.** $Q_1$ has 25 % of the data below it, $Q_2$ is the median, $Q_3$ has 75 % below. The interquartile range $IQR = Q_3 - Q_1$ is the spread of the middle half (remember this one). The fences $Q_1 - 1.5\,IQR$ and $Q_3 + 1.5\,IQR$ are on the sheet, under Outliers; a value outside a fence is an outlier.
 
 **Reading a boxplot.**
