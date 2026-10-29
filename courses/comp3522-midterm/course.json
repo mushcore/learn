@@ -2,83 +2,86 @@
   "lang": "cpp",
   "title": "COMP 3522 C++ · Midterm",
   "subtitle": "Thursday Oct 29, 3:30 pm, SW03-1710, 90 minutes, one double-sided cheat sheet: Weeks 1 to 7",
-  "description": "The practice midterm, worked: sixteen theory questions with model answers written the way the marker expects, the three read-the-code questions traced line by line with the real output, the six Fraction questions built into one program you can run, and a mock midterm in the real format (multiple choice and true/false, definitions, write the output, a short and a guided long coding question). Ends with the cheat sheet you copy by hand, both sides, Weeks 1 to 7.",
+  "description": "Starts with the Midterm Review chapter: seven lessons for five hours from zero, and a printed Arial-10 cheat sheet. The practice midterm, worked: sixteen theory questions with model answers written the way the marker expects, the three read-the-code questions traced line by line with the real output, the six Fraction questions built into one program you can run, and a mock midterm in the real format (multiple choice and true/false, definitions, write the output, a short and a guided long coding question). Ends with the cheat sheet you copy by hand, both sides, Weeks 1 to 7.",
   "intro": ":::quiz Midterm facts\n**Thursday Oct 29, 3:30 pm, room SW03-1710, 90 minutes, on paper.** Arrive 10 minutes early. Covers everything up to and including Week 7. One page, double-sided cheat sheet, handwritten or printed in Arial 10 pt or larger (the practice paper's \"no cheat sheets\" line is the old rule). Format: multiple choice and true/false; definitions; read a code snippet and write the output; a short coding question; a long coding question broken into guided parts. Instructor's strategy: slides and their links, the sample code referenced in the slides, labs and assignments, the coding challenges in the lectures, this practice midterm, your old quiz attempts (Activities > Quizzes > Quiz 2 > Submissions > Attempt 1), and \"topic geeks for geeks\" searches. Next week is review; anonymous topic requests at https://forms.gle/HAcpDu8cZTw5yY9bA.\n:::",
   "plan": {
-    "title": "Three evenings and the exam morning",
+    "title": "Five hours from zero, then the exam",
     "steps": [
       {
-        "href": "#/comp3522/mock-quiz",
-        "title": "Mock Quiz 1",
-        "note": "Evening 1: take it cold, mark it, then the lessons the quiz exposed (80 min)"
+        "lesson": "review-printed-sheet",
+        "note": "10 minutes: print the sheet double-sided (Letter, Arial 10) and read where everything is"
       },
       {
-        "href": "#/comp3522-w2/mock-quiz-2",
-        "title": "Mock Quiz 2",
-        "note": "Evening 1: take it cold, mark it, then the lessons the quiz exposed (80 min)"
+        "lesson": "review-object-lifetime",
+        "note": "60 minutes: the trace rules, Q20, Q27, Q28, the ParentChild variants; predict every program before you run it"
       },
       {
-        "href": "#/comp3522-w3/mock-quiz-3",
-        "title": "Mock Quiz 3",
-        "note": "Evening 1: take it cold, mark it, then the lessons the quiz exposed (80 min)"
+        "lesson": "review-pointers-references",
+        "note": "40 minutes: the box pictures, swap three ways, new/delete, the five definitions written in three moves"
       },
       {
-        "href": "#/comp3522-w4/mock-quiz-4",
-        "title": "Mock Quiz 4",
-        "note": "Evening 2: take it cold, mark it, then the lessons the quiz exposed (60 min)"
+        "lesson": "review-class-definitions",
+        "note": "40 minutes: copy constructor, const, destructor timing, initialization, ::, struct, forward declaration"
       },
       {
-        "href": "#/comp3522-w5/mock-quiz-5",
-        "title": "Mock Quiz 5",
-        "note": "Evening 2: take it cold, mark it, then the lessons the quiz exposed (60 min)"
+        "lesson": "review-fraction",
+        "note": "60 minutes: write every part on paper first, then in the challenge; the file-to-stack main last"
       },
       {
-        "href": "#/comp3522-w6/mock-quiz-6",
-        "title": "Mock Quiz 6",
-        "note": "Evening 2: take it cold, mark it, then the lessons the quiz exposed (60 min)"
+        "lesson": "review-inheritance-design",
+        "note": "35 minutes: abstract, interface, diamond, copy-and-swap, each from its code"
       },
       {
-        "lesson": "theory-questions",
-        "note": "Evening 2: answer every Part A question in two or three sentences, then compare with the model answers (35 min)"
-      },
-      {
-        "lesson": "output-traces",
-        "note": "Evening 2: Q20, Q27, Q28: write the output before you run; count the lines (25 min)"
-      },
-      {
-        "href": "#/comp3522-w7/mock-quiz-7",
-        "title": "Mock Quiz 7",
-        "note": "Evening 3: take it cold, mark it, then the lessons the quiz exposed (30 min)"
-      },
-      {
-        "href": "#/comp3522-w7/right-left-rule",
-        "title": "The right-left rule for reading declarations",
-        "note": "Evening 3: read every declaration aloud from the name outward (30 min)"
-      },
-      {
-        "href": "#/comp3522-w7/copy-elision-rvo",
-        "title": "Copy elision and return value optimization",
-        "note": "Evening 3: predict which constructors print, then run (30 min)"
-      },
-      {
-        "lesson": "fraction-program",
-        "note": "Evening 3: write the six Fraction answers on paper, then build them into the runnable program (35 min)"
+        "lesson": "review-mc-bank",
+        "note": "35 minutes: the four quizzes; reread the rule behind every miss"
       },
       {
         "lesson": "mock-midterm",
-        "note": "Evening 3: cold, on paper, 90 minutes, no notes (90 min)"
-      },
-      {
-        "lesson": "cheat-sheet-midterm",
-        "note": "Evening 3: hand-write both sides from this page (25 min)"
-      },
-      {
-        "lesson": "mock-midterm",
-        "note": "Exam morning: retake on paper, mark it, fix every slip against the key (90 min)"
+        "note": "if time remains: the mock, on paper, with the printed sheet"
       }
     ]
   },
   "chapters": [
+    {
+      "title": "Midterm Review: five hours from zero",
+      "lessons": [
+        {
+          "id": "review-object-lifetime",
+          "title": "Review 1: tracing constructors, destructors and copies (Q20, Q27, Q28 and the review programs: about 15 marks plus MC)",
+          "file": "chapters/07-review-object-lifetime.md"
+        },
+        {
+          "id": "review-pointers-references",
+          "title": "Review 2: pointers, references and memory (Q2 to Q6: 19 marks of definitions)",
+          "file": "chapters/08-review-pointers-references.md"
+        },
+        {
+          "id": "review-class-definitions",
+          "title": "Review 3: the class questions written in three moves (Q1, Q7 to Q12: 24 marks)",
+          "file": "chapters/09-review-class-definitions.md"
+        },
+        {
+          "id": "review-fraction",
+          "title": "Review 4: write Fraction from a blank page (Q21 to Q26: 24 marks of code)",
+          "file": "chapters/10-review-fraction.md"
+        },
+        {
+          "id": "review-inheritance-design",
+          "title": "Review 5: abstract classes, interfaces, the diamond and copy-and-swap (Q13 to Q16: 14 marks)",
+          "file": "chapters/11-review-inheritance-design.md"
+        },
+        {
+          "id": "review-mc-bank",
+          "title": "Review 6: the multiple-choice and true-or-false bank for Weeks 1, 5, 6 and 7",
+          "file": "chapters/12-review-mc-bank.md"
+        },
+        {
+          "id": "review-printed-sheet",
+          "title": "Review 7: the printed cheat sheet: what is on each side and when to open it",
+          "file": "chapters/13-review-printed-sheet.md"
+        }
+      ]
+    },
     {
       "title": "1. The practice midterm, worked",
       "lessons": [

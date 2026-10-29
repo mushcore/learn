@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COMP 3522 Midterm Sheet</title>
+<style>
+  @page { size: letter; margin: 0.3in; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #fff; color: #000; }
+  body, code, pre, table, th, td, b, i, u, li, p, h2, div, span { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; }
+  body { line-height: 1.0; }
+  .side { width: 7.9in; height: 10.38in; columns: 3; column-gap: 0.1in; column-rule: 0.5pt solid #000; column-fill: auto; break-after: page; }
+  .side:last-child { break-after: auto; }
+  h2 { font-size: 10.5pt; font-weight: bold; margin: 1.5pt 0 0.5pt; border-bottom: 0.5pt solid #000; break-after: avoid; }
+  h2:first-child { margin-top: 0; }
+  p { margin: 0 0 0.5pt; }
+  ul, ol { margin: 0 0 0.5pt; padding-left: 9pt; }
+  li { margin: 0; }
+  pre { background: #e8e8e8; margin: 0.5pt 0; padding: 0 1.5pt; white-space: pre-wrap; break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  table { border-collapse: collapse; width: 100%; margin: 0.5pt 0; }
+  tr { break-inside: avoid; }
+  th, td { border: 0.5pt solid #000; padding: 0 1pt; vertical-align: top; text-align: left; font-weight: normal; }
+  th { font-weight: bold; }
+  .nb { break-inside: avoid; }
+  :not(pre) > code { background: linear-gradient(to bottom, transparent 16%, #e4e4e4 16%); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .rl td:first-child { white-space: nowrap; }
+  @media screen { body { padding: 0.3in; } .side { border-bottom: 2px dashed #888; margin-bottom: 0.3in; } }
+</style>
+</head>
+<body>
+
+<!-- ======================= SIDE 1 ======================= -->
+<section class="side">
+
+<h2>A. Trace rules</h2>
+<table>
+<colgroup><col style="width:41%"><col style="width:34%"><col style="width:25%"></colgroup>
+<tr><th>You write</th><th>Constructor line(s)</th><th>Destructor line(s)</th></tr>
+<tr><td><code>A a;</code></td><td>default</td><td>at its <code>}</code></td></tr>
+<tr><td><code>A b = a;</code> <code>A b(a);</code></td><td>copy</td><td>at its <code>}</code></td></tr>
+<tr><td><code>b = a;</code></td><td>none: assignment</td><td>none</td></tr>
+<tr><td><code>f(a)</code> by value</td><td>1 copy at the call</td><td>when f returns</td></tr>
+<tr><td><code>f(a)</code> by reference</td><td>none</td><td>none</td></tr>
+<tr><td><code>return input;</code> (param)</td><td>copy, never elided</td><td>at f's end</td></tr>
+<tr><td><code>A y = f(a);</code></td><td>return value <b>is</b> y</td><td>y at its <code>}</code></td></tr>
+<tr><td><code>f(a);</code> unused result</td><td>param, return</td><td>temp at <code>;</code>, param</td></tr>
+<tr><td><code>return A(…);</code> <code>return local;</code></td><td>elided: 0 copies</td><td>none extra</td></tr>
+<tr><td>derived object</td><td>base, members in order, body</td><td>reversed</td></tr>
+<tr><td><code>: public C, public D</code></td><td>C, D (order after colon)</td><td>D, C</td></tr>
+<tr><td>virtual base</td><td>once, first, by most-derived</td><td>once, last</td></tr>
+<tr><td><code>Base* p = new Derived; delete p;</code></td><td>Base, Derived</td><td>virtual: Derived, Base; else Base only</td></tr>
+<tr><td><code>Base b = derived;</code> <code>f(Base b)</code> with a Derived</td><td>sliced: Base copy</td><td>Base only</td></tr>
+</table>
+
+<p><b>Q20</b> <code>A foo(A input) { cout &lt;&lt; "Look ma, I'm fooing!" &lt;&lt; endl; return input; }</code></p>
+<table>
+<colgroup><col style="width:36%"><col style="width:64%"></colgroup>
+<tr><td><code>A littleA;</code></td><td>1 Default constructor!</td></tr>
+<tr><td><code>foo(littleA);</code></td><td>2 Copy constructor! (input)<br>3 Look ma, I'm fooing!<br>4 Copy constructor! (return)<br>5 Destructor! (temporary)<br>6 Destructor! (input)</td></tr>
+<tr><td><code>A anotherA = littleA;</code></td><td>7 Copy constructor!</td></tr>
+<tr><td><code>A yetAnotherA = foo(littleA);</code></td><td>8 Copy constructor! (input)<br>9 Look ma, I'm fooing!<br>10 Copy constructor! (yetAnotherA)<br>11 Destructor! (input)</td></tr>
+<tr><td>end of main</td><td>12 Destructor! (yetAnotherA)<br>13 Destructor! (anotherA)<br>14 Destructor! (littleA)</td></tr>
+</table>
+<p>Tally: 1 default, 5 copy, 2 fooing, 6 destructor.</p>
+
+<p><b>ParentChild</b> <code>Child c; passByValue(c); passByReference(c);</code> 1 Parent default constructor. 2 Child default constructor. 3 A Parent copy was made. 4 in passByValue 5 Parent destructor. 6 in passByReference 7 Child destructor. 8 Parent destructor.</p>
+<p><b>Q27</b> <code>E : public C, public D</code>; C, D from B; B from A. <b>Q28</b>: <code>B : virtual public A</code>, <code>C : virtual public B</code>, D still <code>public B</code>.</p>
+<div class="nb">
+<table>
+<tr><th>Q27 (14)</th><th>Q28 (12)</th></tr>
+<tr><td>A allocated<br>B allocated<br>C allocated<br>A allocated<br>B allocated<br>D allocated<br>E allocated<br>E deallocated<br>D deallocated<br>B deallocated<br>A deallocated<br>C deallocated<br>B deallocated<br>A deallocated</td>
+<td>A allocated<br>B allocated<br>C allocated<br>B allocated<br>D allocated<br>E allocated<br>E deallocated<br>D deallocated<br>B deallocated<br>C deallocated<br>B deallocated<br>A deallocated</td></tr>
+</table>
+</div>
+<p>Why: <code>virtual</code> base A is built once, first, by E; C's B is virtual, D's B is not, so B prints twice and A once.</p>
+
+
+<h2>B. Pointers, references, memory</h2>
+<p>Pointer: a box holding an address. Reference: a second name for a box.</p>
+<pre>int n = 5; int* p = &amp;n; *p = 7; // n is 7
+int&amp; r = n; r = 9;  // n is 9
+r = m;  // copies m's value into n</pre>
+<p><code>string* success = &amp;s;</code> <code>*success</code> is the string; <code>&amp;success</code> is the pointer's address, a <code>string**</code>.</p>
+<pre>void swapV(int a, int b);  // no effect
+void swapP(int* a, int* b);
+void swapR(int&amp; a, int&amp; b);
+swapV(a, b); swapP(&amp;a, &amp;b);
+swapR(a, b);</pre>
+<p><code>const T&amp;</code>: no copy, no change. Never return a reference to a local. Leak: <code>new</code> without <code>delete</code>. Dangling: used after <code>delete</code>.</p>
+<pre>int x = 5;  // static: stack, freed at }
+int* q = new int(5);  // heap, until delete
+int* arr = new int[n];  // run-time size
+delete q; q = nullptr; delete[] arr;
+pt-&gt;x;  // same as (*pt).x</pre>
+<p><code>v.at(5)</code> throws <code>out_of_range</code>; <code>v[5]</code> is unchecked.</p>
+
+<h2>C. Definitions in three moves</h2>
+<p><b>Q1 Copy ctor (4).</b> Builds a new object from an existing one: <code>Fraction(const Fraction&amp; other)</code> (by value would recurse). Runs on <code>T b(a);</code> <code>T b = a;</code> pass/return by value; not <code>b = a;</code> Default is shallow.</p>
+<p><b>Q2 Reference vs pointer (3).</b> Reference: an alias, another name for a variable; initialized at once, never re-seated: <code>int&amp; r = n;</code> Pointer: holds an address; may be null or re-pointed: <code>int* p = &amp;n;</code></p>
+<p><b>Q3 Pass by (4).</b> Value copies (caller safe). Pointer passes the address (changes the pointee; may be <code>nullptr</code>). Reference: no copy, changes the caller's variable; <code>const T&amp;</code> for big objects.</p>
+<p><b>Q4 (4).</b> <code>*success</code>: the string, to read or change it. <code>&amp;success</code>: the pointer's own address (<code>string**</code>), so a function can re-point it: <code>void reset(string** pp)</code>.</p>
+<p><b>Q5 Static vs dynamic (4).</b> Static: <code>int x = 5;</code> stack, compile-time size, freed at <code>}</code>. Dynamic: <code>int* p = new int[n];</code> heap, run-time size, until <code>delete[] p;</code></p>
+<p><b>Q6 Leak (4).</b> <code>new</code> memory never <code>delete</code>d: unreachable until exit. Prevent: pair <code>new</code>/<code>delete</code>; free in the destructor. <code>void leak() { int* p = new int[100]; <u>delete[] p;</u> }</code></p>
+<p><b>Q7 const (6).</b> a. <code>void print(const Fraction&amp; f)</code>: will not modify the argument (with <code>&amp;</code>: no copy). b. <code>int getNumerator() const;</code> changes no member; callable on a const object.</p>
+<p><b>Q8 Destructor (3)</b> at end of scope (and unwinding), on <code>delete</code>, a temporary at its <code>;</code>, members and bases after the body, statics at exit. Reverse order.</p>
+<p><b>Q9 Init (4).</b> <code>int x = 0;</code> <code>int x(0);</code> <code>int x{0};</code> Prefer braces: no narrowing (<code>int y{3.7};</code> won't compile; others truncate).</p>
+<p><b>Q10 (2).</b> <code>::</code> scope resolution: <code>std::cout</code>, <code>Fraction::Fraction(…)</code> outside the class. <code>.</code> a member of an object; <code>-&gt;</code> through a pointer.</p>
+<p><b>Q11 class vs struct (2).</b> Only default access: struct public, class private (members, inheritance).</p>
+<p><b>Q12 Forward declaration (3).</b> <code>class Car;</code> before the definition: <code>Car*</code>, <code>Car&amp;</code> usable (mutual references, fewer includes); <code>Car c;</code> is incomplete.</p>
+<p><b>Q13 Abstract (3).</b> At least one pure virtual: <code>virtual double area() const = 0;</code> No keyword; cannot instantiate; derived stays abstract until all are overridden.</p>
+<p><b>Q14 Interface (2).</b> No keyword: a pure abstract class (only pure virtuals, a virtual destructor), inherited.</p>
+<p><b>Q15 Diamond (6).</b> a. student, mathematician inherit person; math_student both: two persons unless <code>virtual</code>. b. <code>bob.all_info()</code> ambiguous: <code>bob.mathematician::all_info()</code> or override. c. Most-derived calls <code>person(name)</code>; middle calls ignored.</p>
+<p><b>Q16 Copy-and-swap (3).</b> <code>T&amp; operator=(T other)</code>: 1. by-value copy 2. <code>mySwap</code> every member 3. <code>other</code> dies with the old data. Errors: a <code>T&amp;</code> parameter; <code>std::swap</code> on the whole object (recurses).</p>
+
+<h2>D. Right-left rule</h2>
+<ol>
+<li>Start from variable name (var)</li>
+<li>Keep going right. Read what we see until we see right parentheses <code>)</code></li>
+<li>Then go left of var. Read what we see until we see left parentheses <code>(</code></li>
+<li>Exit parentheses and go right. Read what we see until right parentheses or semicolon</li>
+<li>Go left of where we exited bracket. Read what we see until left parentheses or finish</li>
+</ol>
+<table class="rl">
+<tr><td><code>int ***ppp;</code></td><td>pointer to a pointer to an int pointer</td></tr>
+<tr><td><code>int (**ppa)[];</code></td><td>pointer to a pointer to an array of ints</td></tr>
+<tr><td><code>int (**ppf)();</code></td><td>pointer to a pointer to a function returning an int</td></tr>
+<tr><td><code>int *(*pap)[];</code></td><td>pointer to an array of int pointers</td></tr>
+<tr><td><code>int (*paa)[][];</code></td><td>pointer to an array of arrays of ints (does not compile)</td></tr>
+<tr><td><code>int (*paf)[]();</code></td><td>pointer to an array of functions returning an int (does not compile)</td></tr>
+</table>
+<p><code>int (&amp;ref)[100] = a;</code> reference to an array. <code>swap(int*&amp; p, int*&amp; q)</code> references to pointers. <code>int *(*(*fp1)(int))[10];</code> pointer to a function (int) returning a pointer to an array of 10 int pointers.</p>
+</section>
+
+<!-- ======================= SIDE 2 ======================= -->
+<section class="side">
+
+<h2>E. Fraction, complete</h2>
+<p><code>#include</code> <code>&lt;iostream&gt; &lt;fstream&gt; &lt;sstream&gt; &lt;stack&gt; &lt;vector&gt; &lt;algorithm&gt; &lt;stdexcept&gt; &lt;string&gt;</code> (one per line); <code>using namespace std;</code></p>
+<pre>class Fraction {
+private:
+  int numerator;
+  int denominator;
+public:
+  // Q21: initializer list, then the check
+  Fraction(int numerator, int denominator)
+    : numerator(numerator),
+      denominator(denominator) {
+    if (denominator == 0)
+      throw invalid_argument(
+        "Denominator cannot be zero");
+  }
+  // Q22: const &amp;, else it would recurse
+  Fraction(const Fraction&amp; other)
+    : numerator(other.numerator),
+      denominator(other.denominator) {}
+  ~Fraction() {}  // Q23: nothing to free
+  int getNumerator() const {
+    return numerator; }</pre>
+<pre>  // Q24: write to os, return os
+  friend ostream&amp; operator&lt;&lt;(
+      ostream&amp; os, const Fraction&amp; f) {
+    os &lt;&lt; f.numerator &lt;&lt; "/"
+       &lt;&lt; f.denominator;
+    return os; }
+  // Q25: read into f, return is
+  friend istream&amp; operator&gt;&gt;(
+      istream&amp; is, Fraction&amp; f) {
+    is &gt;&gt; f.numerator &gt;&gt; f.denominator;
+    return is; }</pre>
+<pre>  friend Fraction operator+(
+      const Fraction&amp; a, const Fraction&amp; b)
+  { return Fraction(
+      a.numerator * b.denominator
+        + b.numerator * a.denominator,
+      a.denominator * b.denominator); }</pre>
+<pre>  friend bool operator==(
+      const Fraction&amp; a, const Fraction&amp; b)
+  { return a.numerator * b.denominator
+      == b.numerator * a.denominator; }
+  friend bool operator&lt;(
+      const Fraction&amp; a, const Fraction&amp; b)
+  { return a.numerator * b.denominator
+      &lt; b.numerator * a.denominator; }
+};</pre>
+<pre>int main() {  // Q26
+  ifstream in("Fractions.txt");
+  if (!in.is_open()) {
+    cerr &lt;&lt; "Could not open" &lt;&lt; endl;
+    return 1; }
+  stack&lt;Fraction&gt; st;
+  int num, den;
+  while (in &gt;&gt; num &gt;&gt; den)  // to EOF
+    st.push(Fraction(num, den));
+  while (!st.empty()) {  // last in, first out
+    cout &lt;&lt; st.top() &lt;&lt; endl;
+    st.pop(); }
+  try { Fraction bad(1, 0); }
+  catch (const invalid_argument&amp; e) {
+    cout &lt;&lt; e.what() &lt;&lt; endl; }
+}</pre>
+<p>Rows <code>1 2</code> <code>3 4</code> <code>5 6</code> print <code>5/6</code> <code>3/4</code> <code>1/2</code> <code>Denominator cannot be zero</code>. Or:</p>
+<pre>string line;
+while (getline(in, line)) {
+  istringstream iss(line);
+  iss &gt;&gt; num &gt;&gt; den;
+  st.push(Fraction(num, den)); }</pre>
+<p>Vector variant, prints <code>1/2 3/4 5/6</code>:</p>
+<pre>vector&lt;Fraction&gt; v;
+while (in &gt;&gt; num &gt;&gt; den)
+  v.push_back(Fraction(num, den));
+sort(v.begin(), v.end());  // operator&lt;
+for (const auto&amp; f : v) cout &lt;&lt; f &lt;&lt; " ";</pre>
+<p>Marks: Q24 returns <code>os</code>; Q25 reads into <code>f</code>, returns <code>is</code>; Q26: open check, loop, <code>push</code>, show.</p>
+
+<h2>F. Deep copy, copy-and-swap, abstract, interface, diamond</h2>
+<pre>class Character {
+  int* skillIds;
+  int size;
+public:
+  Character(int n)
+    : skillIds(new int[n]{}), size(n) {}
+  Character(const Character&amp; o)  // deep
+    : skillIds(new int[o.size]),
+      size(o.size) {
+    for (int i = 0; i &lt; size; ++i)
+      skillIds[i] = o.skillIds[i]; }
+  ~Character() { delete[] skillIds; }
+  friend void mySwap(Character&amp; a,
+                     Character&amp; b) {
+    swap(a.skillIds, b.skillIds);
+    swap(a.size, b.size); }  // all members
+  Character&amp; operator=(Character other)
+  { // 1. by value: copy ctor made other
+    mySwap(*this, other);  // 2. swap all
+    return *this; }  // 3. other dies: old
+};</pre>
+<p>Errors: <code>Character&amp; other</code> (no copy); <code>std::swap(*this, other)</code> (recurses).</p>
+<pre>class Shape { public:
+  virtual double area() const = 0;
+  virtual ~Shape() {} };
+class Circle : public Shape { double r;
+public: Circle(double r) : r(r) {}
+  double area() const override {
+    return 3.14 * r * r; } };
+Shape* s = new Circle(2);
+cout &lt;&lt; s-&gt;area();  // 12.56
+delete s;  // ~Circle then ~Shape
+// Shape sh;  error: abstract</pre>
+<p>Interface: only pure virtuals + <code>virtual ~Drawable() {}</code>.</p>
+<pre>class person { public: string name;
+  person(string n = "?") : name(n) {} };
+class student
+  : public virtual person { public:
+  student(string n) : person(n) {}
+  void all_info() { cout &lt;&lt; name; } };
+class mathematician
+  : public virtual person { public:
+  mathematician(string n) : person(n) {}
+  void all_info() { cout &lt;&lt; name; } };
+class math_student : public student,
+  public mathematician { public:
+  math_student(string n) : person(n),
+    student(n), mathematician(n) {} };
+// most-derived class constructs person;
+// the middle classes' person(name)
+// calls are ignored
+math_student bob("Bob");
+// bob.all_info();  error: ambiguous
+bob.mathematician::all_info();  // Bob</pre>
+<p>Friend: not mutual, not transitive, not inherited. <code>virtual</code> + <code>Base*</code>/<code>Base&amp;</code> runs the derived version; <code>override</code> is checked; <code>Base b = derived;</code> slices.</p>
+
+<h2>G. Exceptions</h2>
+<pre>struct MyErr : exception {
+  const char* what() const noexcept
+    override { return "MyErr"; } };
+try { throw invalid_argument("bad"); }
+catch (const invalid_argument&amp; e) {
+  cerr &lt;&lt; e.what(); }  // child first
+catch (const exception&amp; e) {
+  cerr &lt;&lt; e.what(); }  // parent after
+catch (...) { throw; }  // last; rethrows</pre>
+<p>By reference (by value slices); first match wins. Uncaught → <code>std::terminate</code> → <code>abort</code>. Unwinding destroys locals in reverse. Broken <code>noexcept</code> → terminate; destructors are <code>noexcept</code>. A throwing constructor makes no object. <code>logic_error</code> (<code>invalid_argument</code>, <code>out_of_range</code>), <code>runtime_error</code>. <code>throw "msg";</code> is a <code>const char*</code>.</p>
+
+<h2>H. STL</h2>
+<pre>map&lt;string, int&gt; bag;
+bag.insert({"Slime", 1});
+bag.insert({"Slime", 5});  // refused: 1
+bag["Slime"] = 5;  // overwrites
+cout &lt;&lt; bag["Gel"];  // 0: [] creates
+for (auto it = bag.begin();
+     it != bag.end(); ++it)
+  cout &lt;&lt; it-&gt;first &lt;&lt; it-&gt;second;
+for (auto&amp; x : v) x *= 10;  // auto copies</pre>
+<p><code>set</code> skips equals; <code>priority_queue</code> top is the largest; <code>end()</code> is one past the last.</p>
+<table>
+<colgroup><col style="width:33%"><col style="width:31%"><col style="width:36%"></colgroup>
+<tr><th>Kind</th><th>Operations</th><th>Containers</th></tr>
+<tr><td>input</td><td>read, <code>++</code></td><td>istream_<wbr>iterator</td></tr>
+<tr><td>output</td><td>write, <code>++</code></td><td>ostream_<wbr>iterator</td></tr>
+<tr><td>forward</td><td><code>++</code></td><td>forward_<wbr>list, unordered_<wbr>map</td></tr>
+<tr><td>bidirectional</td><td><code>++</code> <code>--</code></td><td>list, map, set</td></tr>
+<tr><td>random access</td><td><code>it + n</code> <code>it[n]</code> <code>&lt;</code></td><td>vector, deque, array</td></tr>
+</table>
+<pre>bool byHp(const Mob&amp; a, const Mob&amp; b)
+  { return a.hp &lt; b.hp; }
+sort(v.begin(), v.end());  // operator&lt;
+sort(mobs.begin(), mobs.end(), byHp);
+l.sort();  // sort() needs random access</pre>
+<p><code>partition</code> loses order, <code>stable_partition</code> keeps it. Strict weak ordering: irreflexive, antisymmetric, transitive.</p>
+
+<h2>I. Static, copy elision</h2>
+<pre>class Mob { public:
+  static int alive;  // define outside
+  const static int maxHp = 9;  // may
+  constexpr static int level = 3;  // must
+  Mob() { ++alive; }
+  static int count() { return alive; } };
+int Mob::alive = 0;  // no "static" here</pre>
+<p>One copy per class. Static function: no <code>this</code>, "can only access static data", not virtual or const.</p>
+<pre>Number createNumber(int n) {
+  return Number(n); }  // RVO
+Number n = createNumber(5);  // 1 obj
+Number n(Number(2));  // 1 object
+Number t(n); return t;  // NRVO: optional
+Number f(Number p) { return p; }  // 2 copies</pre>
+
+<h2>J. Week 1 syntax</h2>
+<p><code>-7 / 2</code> is -3, <code>-7 % 2</code> is -1. <code>fixed &lt;&lt; setprecision(2)</code>: 3.14.</p>
+<pre>cin.clear(); cin.ignore(numeric_limits
+  &lt;streamsize&gt;::max(), '\n');  // bad input</pre>
+</section>
+
+</body>
+</html>
