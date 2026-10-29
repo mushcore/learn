@@ -1,0 +1,32 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "arial",
+        "createdAt": "2026-10-29T04:17:58.925Z",
+        "reason": "COMP 3522 Midterm Info slide requires the cheat sheet to be Arial 10 pt or larger; the instructor's rule"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "courses/comp3522-midterm/sheet/index.html"
+        ],
+        "createdAt": "2026-10-29T09:50:42.880Z",
+        "reason": "Printed exam cheat sheet: the exam rule fixes Arial 10 pt and one double-sided page, and the user asked to exploit every bit of space, so tight cell and box padding is the intended density, not a defect"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "D:/BCIT/COMP3721/COMP3721 - Midterm Cheatsheet 1.html"
+        ],
+        "createdAt": "2026-10-29T10:25:32.506Z",
+        "reason": "print-first exam cheat sheet packed to 98% of two Letter pages by design; 1px padding predates this session and the user approved the dense sheet design on 2026-10-29 (quiz-cheatsheets memory)"
+      }
+    ]
+  }
+}

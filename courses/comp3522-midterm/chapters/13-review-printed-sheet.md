@@ -2,7 +2,7 @@
 title: "Core 1: the printed cheat sheet: what is on each band and when to open it"
 minutes: 10
 ---
-The midterm allows one page, double-sided, handwritten or printed in Arial 10 pt or larger. The printed sheet is built to that rule: one Letter page in landscape, three columns per side, every character Arial 10 pt, code included. Colour carries the structure: a dark band names each question shape, yellow marks the paper's own words, blue is plain English beside the code, red is a trap. A pass strip sits under the title at the top of side 1: band 2 definitions (57 marks), band 3 Fraction Q21 to Q26 (24) and band 1 Q20 trace (7) cover 88 of the practice paper's 96 marks, so do those first and band 4 last.
+The midterm allows one page, double-sided, handwritten or printed in Arial 10 pt or larger. The printed sheet is built to that rule: one Letter page in landscape, three columns per side, every character Arial 9 pt, code included (one point under the stated minimum; a 10 pt copy without band 5 is kept beside it as `COMP3522 - Midterm Cheatsheet (10pt).pdf`). Colour carries the structure: a dark band names each question shape, yellow marks the paper's own words, blue is plain English beside the code, red is a trap. An index strip sits at the top of side 1: four cells, one per question shape, each listing the paper's cue words and the boxed tag to find (`Rule table`, `Q20 shape`, `Q1` to `Q16`, `Fraction`, `Deep copy`, `Abstract class`). Marks to chase first: band 2 definitions (57), band 3 Fraction Q21 to Q26 (24) and band 1 Q20 trace (7) cover 88 of the practice paper's 96, so do those first and band 4 last.
 
 [Print page](/courses/comp3522-midterm/sheet/index.html) (also saved as [sheet.pdf](/courses/comp3522-midterm/sheet/sheet.pdf), and copied to `D:/BCIT/COMP3522/COMP3522 - Midterm Cheatsheet.pdf`). Print double-sided on Letter, landscape, at actual size (not "fit to page"), and check the printout against the PDF.
 
@@ -17,18 +17,19 @@ The sheet is ordered by the shape of the question on the paper, not by week. Rea
 | Output with pass by value, return by value (Q20 shape) | Side 1 | 1. Q20 shape |
 | Output with two base classes or virtual inheritance (Q27, Q28 shape) | Side 1 | 1. Q27 / Q28 shape |
 | Output with slicing, a virtual or non-virtual destructor, a virtual function | Side 1 | 1. Parent/Child shape |
-| "What is X? How is it different from Y? When is it used?" (marks in brackets) | Side 1 bottom, side 2 | 2. Definitions |
+| "What is X? How is it different from Y? When is it used?" (marks in brackets) | Side 1 right column (Q1 to Q8), side 2 (Q9 to Q16) | 2. Definitions, tag `Q1` to `Q16` |
 | Write the Fraction class, `operator<<`, `operator>>`, or the file-reading `main` | Side 2 | 3. Fraction, all parts |
 | Write a copy constructor for a class owning an array; write an abstract class | Side 2 | 3. Deep copy; abstract class |
 | True/false or multiple choice on exceptions, STL, static, elision, the right-left rule, Week 1 | Side 2 | 4. True/false and multiple choice traps |
 
 ## The band map
 
-- **Side 1, band 0, Reading C++:** eight rows, one per symbol a definition or trace question uses: class and object, constructor, copy constructor, destructor, initializer list, reference, pointer, `virtual`. Each row says the thing in one plain sentence.
-- **Side 1, band 1, What is printed:** the method (born, copied, dies), the fourteen-row rule table, Q20 line by line with the fourteen lines numbered, Q27 and Q28 side by side with the one-sentence "why different", the Parent/Child program's five variants, the Animal/Bird virtual-function trace, and the by-value friend that prints 1.
+- **Side 1, band 0, Reading C++:** six rows, one per symbol a definition or trace question uses: constructor, copy constructor, destructor, initializer list, reference, pointer. Each row says the thing in one plain sentence; `virtual` is explained where it matters, in the Parent/Child and Animal/Bird traces of band 1.
+- **Side 1, band 1, What is printed:** the method (born, copied, dies), the fourteen-row rule table, Q20 line by line with the fourteen lines numbered, Q27 and Q28 side by side with the one-sentence "why different", the Parent/Child program's five variants, the Animal/Bird virtual-function trace, and the by-value friend that prints 1. Each shape carries a boxed tag (`Rule table`, `Q20 shape`, `Q27 / Q28 shape`, `Parent / Child shape`) that the index strip names.
 - **Side 1 right column and side 2, band 2, Definitions:** the sixteen Part A answers in the paper's order, each one paragraph in three labelled moves (**Name:**, **Contrast:**, **Code:**), plus a **Used when:** line for Q1, Q3 and Q4, with the a/b/c parts kept for Q7 and Q15; the yellow cue carries the question's own words.
 - **Side 2, band 3, Write the code:** the whole Fraction class with Q21 to Q25 marked and `main` for Q26, the marking notes, `operator+`, then `Character` with a deep copy constructor and destructor, and `Shape` with `Circle`.
-- **Side 2, band 4, Traps:** one entry per topic: exceptions, STL, static and elision, the right-left rule (the procedure and two of the slide declarations), Week 1 arithmetic.
+- **Side 2, band 4, Traps:** one entry per topic: exceptions, STL, static and elision, the right-left rule (the procedure and two of the slide declarations), Weeks 1 and 2 (arithmetic, `C c();`, narrowing, `cin` then `getline`). The exceptions entry now also has `throw;`, the throwing constructor, `noexcept` destructors and the `<stdexcept>` families; the STL entry has `set`, strict weak ordering, iterator categories, `[first, last)`, `at`, and ranged-for copies; the static entry has `const static`, `constexpr static`, NRVO and the never-elided parameter.
+- **Side 2, band 5, On the slides, not on the practice paper:** four entries for the multiple choice the slides can ask: Design (SOLID, Demeter), Operators and friends (member vs friendly non-member, friendship not mutual, transitive or inherited), Classes and inheritance (access levels, declaration-order initialisation, what is not inherited, virtual destructor), UML (visibility marks, the six arrows).
 
 ## Know these cold: they are not on the sheet
 
