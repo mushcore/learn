@@ -5,331 +5,202 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>COMP 3522 Midterm Sheet</title>
 <style>
-  @page { size: letter; margin: 0.3in; }
-  * { box-sizing: border-box; }
+  @page { size: letter landscape; margin: 0.2in; }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   html, body { margin: 0; padding: 0; background: #fff; color: #000; }
-  body, code, pre, table, th, td, b, i, u, li, p, h2, div, span { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; }
-  body { line-height: 1.0; }
-  .side { width: 7.9in; height: 10.38in; columns: 3; column-gap: 0.1in; column-rule: 0.5pt solid #000; column-fill: auto; break-after: page; }
+  body, code, pre, table, th, td, b, i, u, li, p, h2, h3, div, span { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; line-height: 1.0; }
+  .side { width: 10.6in; height: 8.1in; columns: 3; column-gap: 0.1in; column-rule: 0.5pt solid #999; column-fill: auto; break-after: page; }
   .side:last-child { break-after: auto; }
-  h2 { font-size: 10.5pt; font-weight: bold; margin: 1.5pt 0 0.5pt; border-bottom: 0.5pt solid #000; break-after: avoid; }
+  h2 { font-size: 10pt; font-weight: bold; margin: 2pt 0 1pt; padding: 1pt 3pt; background: #1f2937; color: #fff; break-after: avoid; }
   h2:first-child { margin-top: 0; }
+  h3 { font-size: 10pt; font-weight: bold; margin: 1.5pt 0 0; padding: 0 2pt; background: #dfe3ea; break-after: avoid; }
   p { margin: 0 0 0.5pt; }
-  ul, ol { margin: 0 0 0.5pt; padding-left: 9pt; }
-  li { margin: 0; }
-  pre { background: #e8e8e8; margin: 0.5pt 0; padding: 0 1.5pt; white-space: pre-wrap; break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  /* one rule per box: the code key, then its result; the result drops to its own line when it would not fit beside the key */
+  p.r { margin: 0; padding: 0 2pt; border: 0.5pt solid #9aa3ad; break-inside: avoid; }
+  p.r + p.r, h3 + p.r { margin-top: -0.5pt; }
+  p.r .k { display: inline; }
+  p.r .v { display: inline-block; max-width: 100%; vertical-align: top; margin-left: 3pt; }
+  p.r .v:first-child { margin-left: 0; }
+  /* one definition per box: the paper's words on yellow, the answer under it */
+  .d { border: 0.5pt solid #9aa3ad; margin: 1.5pt 0 0; break-inside: avoid; }
+  .d p { margin: 0; padding: 0 2pt; }
+  .d p.q { background: #ffe88a; font-weight: bold; }
+  p.pass { border: 1pt solid #000; padding: 1pt 2pt; margin: 1pt 0; background: #ffe88a; }
+  pre { background: #eef0f3; margin: 0.5pt 0; padding: 0.5pt 2pt; white-space: pre-wrap; break-inside: avoid; }
+  pre.long { break-inside: auto; }
+  pre.c + pre.c { margin-top: -0.5pt; }
+  pre i, .n { color: #1452b8; }
+  pre i { font-style: italic; }
+  .t { color: #b00020; font-weight: bold; }
+  .y { background: #ffe88a; font-weight: bold; padding: 0 1pt; }
+  :not(pre) > code { color: #0b6b3a; }
   table { border-collapse: collapse; width: 100%; margin: 0.5pt 0; }
   tr { break-inside: avoid; }
-  th, td { border: 0.5pt solid #000; padding: 0 1pt; vertical-align: top; text-align: left; font-weight: normal; }
-  th { font-weight: bold; }
-  .nb { break-inside: avoid; }
-  :not(pre) > code { background: linear-gradient(to bottom, transparent 16%, #e4e4e4 16%); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .rl td:first-child { white-space: nowrap; }
+  th, td { border: 0.5pt solid #9aa3ad; padding: 0 1.5pt; vertical-align: top; text-align: left; font-weight: normal; }
   @media screen { body { padding: 0.3in; } .side { border-bottom: 2px dashed #888; margin-bottom: 0.3in; } }
 </style>
 </head>
 <body>
-
 <!-- ======================= SIDE 1 ======================= -->
 <section class="side">
+<h2>COMP 3522 midterm: find the question's shape, open that band</h2>
+<p class="pass"><b>Pass:</b> 88 of 96 marks = band 2 (57) · band 3 Q21 to Q26 (24) · band 1 Q20 (7). Do these first; band 4 last.</p>
+<p><span class="y">yellow</span> = the paper's words · <span class="n">blue</span> = plain English · <span class="t">red</span> = trap · <code>green</code> = code; grey box = code to copy.</p>
 
-<h2>A. Trace rules</h2>
+<h2>0. Reading C++: the words every question uses</h2>
 <table>
-<colgroup><col style="width:41%"><col style="width:34%"><col style="width:25%"></colgroup>
-<tr><th>You write</th><th>Constructor line(s)</th><th>Destructor line(s)</th></tr>
-<tr><td><code>A a;</code></td><td>default</td><td>at its <code>}</code></td></tr>
-<tr><td><code>A b = a;</code> <code>A b(a);</code></td><td>copy</td><td>at its <code>}</code></td></tr>
-<tr><td><code>b = a;</code></td><td>none: assignment</td><td>none</td></tr>
-<tr><td><code>f(a)</code> by value</td><td>1 copy at the call</td><td>when f returns</td></tr>
-<tr><td><code>f(a)</code> by reference</td><td>none</td><td>none</td></tr>
-<tr><td><code>return input;</code> (param)</td><td>copy, never elided</td><td>at f's end</td></tr>
-<tr><td><code>A y = f(a);</code></td><td>return value <b>is</b> y</td><td>y at its <code>}</code></td></tr>
-<tr><td><code>f(a);</code> unused result</td><td>param, return</td><td>temp at <code>;</code>, param</td></tr>
-<tr><td><code>return A(…);</code> <code>return local;</code></td><td>elided: 0 copies</td><td>none extra</td></tr>
-<tr><td>derived object</td><td>base, members in order, body</td><td>reversed</td></tr>
-<tr><td><code>: public C, public D</code></td><td>C, D (order after colon)</td><td>D, C</td></tr>
-<tr><td>virtual base</td><td>once, first, by most-derived</td><td>once, last</td></tr>
-<tr><td><code>Base* p = new Derived; delete p;</code></td><td>Base, Derived</td><td>virtual: Derived, Base; else Base only</td></tr>
-<tr><td><code>Base b = derived;</code> <code>f(Base b)</code> with a Derived</td><td>sliced: Base copy</td><td>Base only</td></tr>
+<colgroup><col style="width:40%"><col style="width:60%"></colgroup>
+<tr><td><code>class A { ... };</code></td><td>a blueprint; an <b>object</b> is one thing built from it: <code>A a;</code></td></tr>
+<tr><td><code>A() {}</code> <b>constructor</b></td><td>runs once when an object is <b>born</b>; <code>A(int n)</code> takes a value</td></tr>
+<tr><td><code>A(const A&amp; o)</code> <b>copy constructor</b></td><td>born as a <b>photocopy</b> of object <code>o</code></td></tr>
+<tr><td><code>~A() {}</code> <b>destructor</b></td><td>runs once when it <b>dies</b>: the <code>}</code> ending its block, or <code>delete</code></td></tr>
+<tr><td><code>A(int x) : n(x) {}</code></td><td><b>initializer list</b>: member <code>n</code> set to <code>x</code> before the body</td></tr>
+<tr><td><code>int&amp; r = x;</code> <b>reference</b></td><td>a second name for <code>x</code>; change <code>r</code> and <code>x</code> changes</td></tr>
+<tr><td><code>int* p = &amp;x;</code> <b>pointer</b></td><td>the <b>address</b> of <code>x</code>; <code>*p</code> = what it points at; <code>p-&gt;f()</code> calls f on it</td></tr>
+<tr><td><code>virtual void f();</code></td><td>"use the <b>real</b> object's f, even through a B pointer or reference"</td></tr>
 </table>
 
-<p><b>Q20</b> <code>A foo(A input) { cout &lt;&lt; "Look ma, I'm fooing!" &lt;&lt; endl; return input; }</code></p>
-<table>
-<colgroup><col style="width:36%"><col style="width:64%"></colgroup>
-<tr><td><code>A littleA;</code></td><td>1 Default constructor!</td></tr>
-<tr><td><code>foo(littleA);</code></td><td>2 Copy constructor! (input)<br>3 Look ma, I'm fooing!<br>4 Copy constructor! (return)<br>5 Destructor! (temporary)<br>6 Destructor! (input)</td></tr>
-<tr><td><code>A anotherA = littleA;</code></td><td>7 Copy constructor!</td></tr>
-<tr><td><code>A yetAnotherA = foo(littleA);</code></td><td>8 Copy constructor! (input)<br>9 Look ma, I'm fooing!<br>10 Copy constructor! (yetAnotherA)<br>11 Destructor! (input)</td></tr>
-<tr><td>end of main</td><td>12 Destructor! (yetAnotherA)<br>13 Destructor! (anotherA)<br>14 Destructor! (littleA)</td></tr>
-</table>
-<p>Tally: 1 default, 5 copy, 2 fooing, 6 destructor.</p>
+<h2>1. "What is printed by this code?"</h2>
+<p><span class="n">Read <code>main</code> top to bottom. At each line ask: who is <b>born</b>, who is <b>copied</b>, who <b>dies</b>. Count lines against the HINT.</span></p>
+<p class="r"><span class="k"><code>A a;</code></span><span class="v">→ Default constructor now; Destructor at the block's <code>}</code></span></p>
+<p class="r"><span class="k"><code>A b = a;</code> or <code>A b(a);</code></span><span class="v">→ Copy constructor now; Destructor at <code>}</code></span></p>
+<p class="r"><span class="k"><code>b = a;</code> (b exists already)</span><span class="v">→ <span class="t">nothing</span>: assignment is not a birth</span></p>
+<p class="r"><span class="k"><code>f(a)</code> with <code>f(A x)</code> (by value)</span><span class="v">→ Copy constructor (x); x's Destructor when f ends</span></p>
+<p class="r"><span class="k"><code>f(a)</code> with <code>f(A&amp; x)</code> or <code>f(const A&amp; x)</code></span><span class="v">→ <span class="t">nothing</span>: no copy, no death</span></p>
+<p class="r"><span class="k">in f: <code>return x;</code> (x the <b>parameter</b>)</span><span class="v">→ Copy constructor (the result); an ignored result dies at that line's end, then x dies</span></p>
+<p class="r"><span class="k"><code>A y = f(a);</code></span><span class="v">→ the result <b>is</b> y: no extra copy; y dies at <code>}</code></span></p>
+<p class="r"><span class="k">in f: <code>return A(..);</code> or <code>return local;</code></span><span class="v">→ no copy (elided)</span></p>
+<p class="r"><span class="k"><code>D d;</code> with <code>D : public B</code></span><span class="v">→ B constructor, then D; dies D, then B (reverse)</span></p>
+<p class="r"><span class="k"><code>E : public C, public D</code></span><span class="v">→ C's chain then D's (order written); dies D's then C's</span></p>
+<p class="r"><span class="k"><code>B : virtual public A</code></span><span class="v">→ the one shared A: once, first; dies once, last</span></p>
+<p class="r"><span class="k"><code>B* p = new D; delete p;</code></span><span class="v">→ B, D born; dies D then B if <code>~B</code> virtual, <span class="t">else B only</span></span></p>
+<p class="r"><span class="k"><code>B b = d;</code> or <code>f(B x)</code> given a D</span><span class="v">→ <b>slicing</b>: B's copy constructor only; dies B only</span></p>
+<p class="r"><span class="k">block end <code>}</code></span><span class="v">→ locals die in <b>reverse</b> order of birth</span></p>
 
-<p><b>ParentChild</b> <code>Child c; passByValue(c); passByReference(c);</code> 1 Parent default constructor. 2 Child default constructor. 3 A Parent copy was made. 4 in passByValue 5 Parent destructor. 6 in passByReference 7 Child destructor. 8 Parent destructor.</p>
-<p><b>Q27</b> <code>E : public C, public D</code>; C, D from B; B from A. <b>Q28</b>: <code>B : virtual public A</code>, <code>C : virtual public B</code>, D still <code>public B</code>.</p>
-<div class="nb">
-<table>
-<tr><th>Q27 (14)</th><th>Q28 (12)</th></tr>
-<tr><td>A allocated<br>B allocated<br>C allocated<br>A allocated<br>B allocated<br>D allocated<br>E allocated<br>E deallocated<br>D deallocated<br>B deallocated<br>A deallocated<br>C deallocated<br>B deallocated<br>A deallocated</td>
-<td>A allocated<br>B allocated<br>C allocated<br>B allocated<br>D allocated<br>E allocated<br>E deallocated<br>D deallocated<br>B deallocated<br>C deallocated<br>B deallocated<br>A deallocated</td></tr>
-</table>
-</div>
-<p>Why: <code>virtual</code> base A is built once, first, by E; C's B is virtual, D's B is not, so B prints twice and A once.</p>
+<h3>Shape: <code>A foo(A input) { print "Look ma"; return input; }</code>, hint 14 lines</h3>
+<p class="r"><span class="k"><code>A littleA;</code></span><span class="v">→ 1 Default constructor!</span></p>
+<p class="r"><span class="k"><code>foo(littleA);</code> <span class="n">result unused</span></span><span class="v">→ 2 Copy constructor! <span class="n">input</span> · 3 Look ma, I'm fooing! · 4 Copy constructor! <span class="n">result</span> · 5 Destructor! <span class="n">result</span> · 6 Destructor! <span class="n">input</span></span></p>
+<p class="r"><span class="k"><code>A anotherA = littleA;</code></span><span class="v">→ 7 Copy constructor!</span></p>
+<p class="r"><span class="k"><code>A yetAnotherA = foo(littleA);</code></span><span class="v">→ 8 Copy constructor! <span class="n">input</span> · 9 Look ma, I'm fooing! · 10 Copy constructor! <span class="n">result = yetAnotherA</span> · 11 Destructor! <span class="n">input</span></span></p>
+<p class="r"><span class="k">end of main</span><span class="v">→ 12, 13, 14 Destructor! <span class="n">yetAnotherA, anotherA, littleA</span></span></p>
+<p class="r"><span class="v">Tally 1 default, 5 copy, 2 fooing, 6 destructor. <span class="n">If foo took <code>A&amp; input</code>: lines 2, 6, 8, 11 vanish (10 lines); the result is still copied.</span></span></p>
 
+<h3>Shape: <code>E : public C, public D</code>; C and D from B; B from A; <code>E e;</code></h3>
+<p class="r"><span class="k">no virtual (14 lines)</span><span class="v">→ born <b>A B C A B D E</b>, dies <b>E D B A C B A</b> <span class="n">(write "X allocated" / "X deallocated" per letter)</span></span></p>
+<p class="r"><span class="k"><code>B : virtual public A</code>, <code>C : virtual public B</code> (12 lines)</span><span class="v">→ born <b>A B C B D E</b>, dies <b>E D B C B A</b></span></p>
+<p class="r"><span class="v"><span class="n">No virtual: two full A→B chains (under C, under D), death in exact reverse.</span> <span class="y">"Why different"</span>: with virtual, the one shared A is built once, first, by E; C's B is virtual but D's B is an ordinary base built again, so B prints twice and A once.</span></p>
 
-<h2>B. Pointers, references, memory</h2>
-<p>Pointer: a box holding an address. Reference: a second name for a box.</p>
-<pre>int n = 5; int* p = &amp;n; *p = 7; // n is 7
-int&amp; r = n; r = 9;  // n is 9
-r = m;  // copies m's value into n</pre>
-<p><code>string* success = &amp;s;</code> <code>*success</code> is the string; <code>&amp;success</code> is the pointer's address, a <code>string**</code>.</p>
-<pre>void swapV(int a, int b);  // no effect
-void swapP(int* a, int* b);
-void swapR(int&amp; a, int&amp; b);
-swapV(a, b); swapP(&amp;a, &amp;b);
-swapR(a, b);</pre>
-<p><code>const T&amp;</code>: no copy, no change. Never return a reference to a local. Leak: <code>new</code> without <code>delete</code>. Dangling: used after <code>delete</code>.</p>
-<pre>int x = 5;  // static: stack, freed at }
-int* q = new int(5);  // heap, until delete
-int* arr = new int[n];  // run-time size
-delete q; q = nullptr; delete[] arr;
-pt-&gt;x;  // same as (*pt).x</pre>
-<p><code>v.at(5)</code> throws <code>out_of_range</code>; <code>v[5]</code> is unchecked.</p>
+<h3>Shape: Parent/Child, lines "X default constructor." "A Parent copy was made." "X destructor."</h3>
+<p class="r"><span class="k"><code>Child c;</code></span><span class="v">→ Parent default constructor. · Child default constructor. <span class="n">at }:</span> Child destructor. · Parent destructor.</span></p>
+<p class="r"><span class="k"><code>passByValue(c);</code> with <code>(Parent p)</code></span><span class="v">→ A Parent copy was made. <span class="n">(a Child squeezed into a Parent box: slicing)</span> · in passByValue · Parent destructor.</span></p>
+<p class="r"><span class="k"><code>passByReference(c);</code> with <code>(Parent&amp; p)</code></span><span class="v">→ in passByReference <span class="n">(no copy, no death)</span></span></p>
+<p class="r"><span class="k"><code>Parent* p = new Child; delete p;</code></span><span class="v">→ Parent default constructor. · Child default constructor. · Child destructor. · Parent destructor.</span></p>
+<p class="r"><span class="k">same, <code>~Parent()</code> <b>not</b> virtual</span><span class="v">→ … Child default constructor. · <span class="t">Parent destructor. only</span>: Child's never runs ("BAD")</span></p>
+<p class="r"><span class="k"><code>Animal* p = new Bird; p-&gt;speak();</code></span><span class="v">→ <code>speak</code> not virtual: Animal's "???"; <code>virtual</code>: Bird's "Chirp". <code>Bird b; b.speak();</code> always Chirp</span></p>
+<p class="r"><span class="k"><code>friend void f(MyClass mc) { mc.x++; cout &lt;&lt; mc.x; }</code></span><span class="v">→ prints 1; the caller's object is unchanged (a copy)</span></p>
 
-<h2>C. Definitions in three moves</h2>
-<p><b>Q1 Copy ctor (4).</b> Builds a new object from an existing one: <code>Fraction(const Fraction&amp; other)</code> (by value would recurse). Runs on <code>T b(a);</code> <code>T b = a;</code> pass/return by value; not <code>b = a;</code> Default is shallow.</p>
-<p><b>Q2 Reference vs pointer (3).</b> Reference: an alias, another name for a variable; initialized at once, never re-seated: <code>int&amp; r = n;</code> Pointer: holds an address; may be null or re-pointed: <code>int* p = &amp;n;</code></p>
-<p><b>Q3 Pass by (4).</b> Value copies (caller safe). Pointer passes the address (changes the pointee; may be <code>nullptr</code>). Reference: no copy, changes the caller's variable; <code>const T&amp;</code> for big objects.</p>
-<p><b>Q4 (4).</b> <code>*success</code>: the string, to read or change it. <code>&amp;success</code>: the pointer's own address (<code>string**</code>), so a function can re-point it: <code>void reset(string** pp)</code>.</p>
-<p><b>Q5 Static vs dynamic (4).</b> Static: <code>int x = 5;</code> stack, compile-time size, freed at <code>}</code>. Dynamic: <code>int* p = new int[n];</code> heap, run-time size, until <code>delete[] p;</code></p>
-<p><b>Q6 Leak (4).</b> <code>new</code> memory never <code>delete</code>d: unreachable until exit. Prevent: pair <code>new</code>/<code>delete</code>; free in the destructor. <code>void leak() { int* p = new int[100]; <u>delete[] p;</u> }</code></p>
-<p><b>Q7 const (6).</b> a. <code>void print(const Fraction&amp; f)</code>: will not modify the argument (with <code>&amp;</code>: no copy). b. <code>int getNumerator() const;</code> changes no member; callable on a const object.</p>
-<p><b>Q8 Destructor (3)</b> at end of scope (and unwinding), on <code>delete</code>, a temporary at its <code>;</code>, members and bases after the body, statics at exit. Reverse order.</p>
-<p><b>Q9 Init (4).</b> <code>int x = 0;</code> <code>int x(0);</code> <code>int x{0};</code> Prefer braces: no narrowing (<code>int y{3.7};</code> won't compile; others truncate).</p>
-<p><b>Q10 (2).</b> <code>::</code> scope resolution: <code>std::cout</code>, <code>Fraction::Fraction(…)</code> outside the class. <code>.</code> a member of an object; <code>-&gt;</code> through a pointer.</p>
-<p><b>Q11 class vs struct (2).</b> Only default access: struct public, class private (members, inheritance).</p>
-<p><b>Q12 Forward declaration (3).</b> <code>class Car;</code> before the definition: <code>Car*</code>, <code>Car&amp;</code> usable (mutual references, fewer includes); <code>Car c;</code> is incomplete.</p>
-<p><b>Q13 Abstract (3).</b> At least one pure virtual: <code>virtual double area() const = 0;</code> No keyword; cannot instantiate; derived stays abstract until all are overridden.</p>
-<p><b>Q14 Interface (2).</b> No keyword: a pure abstract class (only pure virtuals, a virtual destructor), inherited.</p>
-<p><b>Q15 Diamond (6).</b> a. student, mathematician inherit person; math_student both: two persons unless <code>virtual</code>. b. <code>bob.all_info()</code> ambiguous: <code>bob.mathematician::all_info()</code> or override. c. Most-derived calls <code>person(name)</code>; middle calls ignored.</p>
-<p><b>Q16 Copy-and-swap (3).</b> <code>T&amp; operator=(T other)</code>: 1. by-value copy 2. <code>mySwap</code> every member 3. <code>other</code> dies with the old data. Errors: a <code>T&amp;</code> parameter; <code>std::swap</code> on the whole object (recurses).</p>
-
-<h2>D. Right-left rule</h2>
-<ol>
-<li>Start from variable name (var)</li>
-<li>Keep going right. Read what we see until we see right parentheses <code>)</code></li>
-<li>Then go left of var. Read what we see until we see left parentheses <code>(</code></li>
-<li>Exit parentheses and go right. Read what we see until right parentheses or semicolon</li>
-<li>Go left of where we exited bracket. Read what we see until left parentheses or finish</li>
-</ol>
-<table class="rl">
-<tr><td><code>int ***ppp;</code></td><td>pointer to a pointer to an int pointer</td></tr>
-<tr><td><code>int (**ppa)[];</code></td><td>pointer to a pointer to an array of ints</td></tr>
-<tr><td><code>int (**ppf)();</code></td><td>pointer to a pointer to a function returning an int</td></tr>
-<tr><td><code>int *(*pap)[];</code></td><td>pointer to an array of int pointers</td></tr>
-<tr><td><code>int (*paa)[][];</code></td><td>pointer to an array of arrays of ints (does not compile)</td></tr>
-<tr><td><code>int (*paf)[]();</code></td><td>pointer to an array of functions returning an int (does not compile)</td></tr>
-</table>
-<p><code>int (&amp;ref)[100] = a;</code> reference to an array. <code>swap(int*&amp; p, int*&amp; q)</code> references to pointers. <code>int *(*(*fp1)(int))[10];</code> pointer to a function (int) returning a pointer to an array of 10 int pointers.</p>
+<h2>2. "What is X? How is it different from Y? When is it used?"</h2>
+<div class="d"><p class="q">Copy constructor (when is it used?)</p>
+<p><b>Name:</b> builds a <b>new object as a copy of an existing one</b>. <code>&amp;</code> because a by-value parameter would itself need a copy (endless); <code>const</code> so const objects can be copied. <b>Contrast:</b> <span class="t">not</span> <code>b = a;</code> on an existing b (assignment). The compiler's version is <b>shallow</b> (copies pointers, not what they point at); write your own for a <b>deep</b> copy. <b>Code:</b> <code>A(const A&amp; other)</code> <b>Used when:</b> a new object starts from another: <code>A b(a); A b = a;</code>, pass by value, return by value.</p></div>
+<div class="d"><p class="q">Reference vs pointer</p>
+<p><b>Name:</b> a <b>reference</b> is an <b>alias</b>, "a nickname for an existing variable": must be initialized at declaration, never re-seated. <b>Contrast:</b> a <b>pointer</b> holds an <b>address</b>: may be null, may be re-pointed, needs <code>*p</code> to reach the value. Use a reference to change the caller's variable, to avoid a copy, or for polymorphism. <b>Code:</b> <code>int&amp; r = n;</code> · <code>int* p = &amp;n;</code></p></div>
+<div class="d"><p class="q">Pass by value / pointer / reference (why choose one?)</p>
+<p><b>Name:</b> <b>value</b> = a copy; <b>pointer</b> = the address; <b>reference</b> = the variable itself under a new name. <b>Contrast:</b> value: the caller's variable cannot change. Pointer: <code>*p = 5</code> changes it; may be <code>nullptr</code>. Reference: changes it, no copy, never null. <b>Code:</b> <code>f(int x)</code> · <code>f(int* p)</code> · <code>f(int&amp; r)</code> <b>Used when:</b> value for small types you will not change; pointer when "none" (<code>nullptr</code>) is possible; reference to change it or skip a copy; <code>const T&amp;</code> = no copy and no change.</p></div>
+<div class="d"><p class="q">&amp;success vs *success (when would we use each?)</p>
+<p><b>Name:</b> <code>*success</code> is the <b>string itself</b> (dereference). <b>Contrast:</b> <code>&amp;success</code> is the <b>address of the pointer variable</b> (<code>string**</code>). <b>Code:</b> <code>string* success = &amp;s; *success = "done";</code> · <code>void reset(string** pp) { *pp = &amp;other; }</code> <b>Used when:</b> <code>*success</code> to read or change the string; <code>&amp;success</code> so a function can re-point the pointer.</p></div>
+<div class="d"><p class="q">Static vs dynamic allocation</p>
+<p><b>Name:</b> <b>static</b>: on the <b>stack</b>, size fixed at compile time, dies by itself at <code>}</code>. <b>Contrast:</b> <b>dynamic</b>: on the <b>heap</b>, size chosen at run time, used through a pointer, lives until <b>you</b> <code>delete</code>. <b>Code:</b> <code>int x = 5; A a(1);</code> · <code>int* p = new int(5); new int[n];</code></p></div>
+<div class="d"><p class="q">Memory leak (prevent it; underline the fix)</p>
+<p><b>Name:</b> heap memory from <code>new</code> never freed with <code>delete</code>: unreachable until the program ends. <b>Contrast:</b> the fix: pair every <code>new</code> with a <code>delete</code> (<code>new[]</code> with <code>delete[]</code>), free in the destructor. <b>Code:</b> <code>void leak() { int* p = new int[100]; /* use */ <u>delete[] p;</u> }</code></p></div>
 </section>
 
 <!-- ======================= SIDE 2 ======================= -->
 <section class="side">
+<h2>2. continued: definitions</h2>
+<div class="d"><p class="q">const argument / const function</p>
+<p>a. <b>Name:</b> a const argument: the function <b>promises not to modify</b> it. <b>Contrast:</b> with <code>&amp;</code> it also avoids a copy. <b>Code:</b> <code>void print(const A&amp; a)</code> b. <b>Name:</b> <b>const member function</b>: promises not to change any data member. <b>Contrast:</b> only these can be called on a const object or through <code>const A&amp;</code>; getters get it. <b>Code:</b> <code>int get() const;</code></p></div>
+<div class="d"><p class="q">Destructor runs automatically when?</p>
+<p><b>Name:</b> when the object <b>goes out of scope</b> (its block's <code>}</code>, also while an exception unwinds); a <b>temporary</b> at the end of its statement; members and bases after the owner's destructor body. Reverse order of construction. <b>Contrast:</b> a heap object: only on <code>delete</code> (<code>delete[]</code> for arrays). <b>Code:</b> <code>{ A a; }</code> dies at <code>}</code> · <code>A* p = new A; delete p;</code></p></div>
+<div class="d"><p class="q">Three ways to initialize; preferred?</p>
+<p><b>Name:</b> <code>=</code>, parentheses, <b>braces</b>; prefer <b>braces</b>. <b>Contrast:</b> braces refuse <b>narrowing</b> where the other two silently truncate; they work for every type. <b>Code:</b> <code>int x = 0;</code> · <code>int x(0);</code> · <code>int x{0};</code> · <code>int y{3.7};</code> will not compile</p></div>
+<div class="d"><p class="q">:: vs .</p>
+<p><b>Name:</b> <code>::</code> <b>scope resolution</b>: a name inside a namespace or class. <b>Contrast:</b> <code>.</code> a <b>member of an object</b>; <code>-&gt;</code> the same via a pointer. <b>Code:</b> <code>std::cout</code> · <code>A::A(int)</code> defined outside · <code>A::count()</code> · <code>a.f()</code></p></div>
+<div class="d"><p class="q">class vs struct</p>
+<p><b>Name:</b> only the <b>default access</b> differs; otherwise identical. <b>Contrast:</b> struct public, class private (also for inheritance). <b>Code:</b> <code>struct P { int x; };</code> x public · <code>class Q { int x; };</code> x private</p></div>
+<div class="d"><p class="q">Forward declaration (and its purpose)</p>
+<p><b>Name:</b> a name declared before its definition, so code can use <code>Car*</code> or <code>Car&amp;</code> before Car is defined (classes referring to each other, <code>friend class Car;</code>); fewer includes, no circular includes. <b>Contrast:</b> <span class="t">cannot</span> create a <code>Car</code> or use its members yet (incomplete type). <b>Code:</b> <code>class Car;</code></p></div>
+<div class="d"><p class="q">Make a class abstract</p>
+<p><b>Name:</b> at least one <b>pure virtual</b> function. No <code>abstract</code> keyword. <b>Contrast:</b> <b>cannot be instantiated</b>; a child stays abstract until it overrides every pure virtual. <b>Code:</b> <code>virtual double area() const = 0;</code></p></div>
+<div class="d"><p class="q">Does C++ have interfaces?</p>
+<p><b>Name:</b> no keyword: a <b>pure abstract class</b>. <b>Contrast:</b> only pure virtuals, no data, a virtual destructor; implemented by inheriting (multiple allowed) and overriding all. <b>Code:</b> <code>class I { public: virtual void f() = 0; virtual ~I() {} };</code></p></div>
+<div class="d"><p class="q">Diamond: how, ambiguity, most-derived</p>
+<p>a. <b>Name:</b> student and mathematician both inherit person, and math_student inherits both. <b>Contrast:</b> person appears <b>twice</b> unless the middle classes inherit <code>virtual</code>. <b>Code:</b> <code>class student : public virtual person</code> b. <b>Name:</b> a function on both sides (<code>all_info</code>) is <b>ambiguous</b>. <b>Contrast:</b> <code>bob.all_info()</code> will not compile: qualify, override it in math_student, or use virtual inheritance. <b>Code:</b> <code>bob.mathematician::all_info()</code> c. <b>Name:</b> with virtual bases the <b>most-derived class must call the shared base's constructor itself</b>. <b>Contrast:</b> the middle classes' <code>person(..)</code> calls are ignored; forget it and person is default-built. <b>Code:</b> <code>math_student(..) : person(name), student(..), mathematician(..)</code></p></div>
+<div class="d"><p class="q">Copy and swap: how, easy error</p>
+<p><b>Name:</b> 1. parameter <b>by value</b>, so the copy constructor makes the copy; 2. swap every member with it; 3. the copy, holding the old state, dies at return and frees it. <b>Contrast:</b> the <b>errors</b>: parameter by reference (no copy, you swap the caller away); <code>std::swap</code> on the whole object (calls <code>=</code> again: endless); a forgotten member. <b>Code:</b> <code>A&amp; operator=(A other) { mySwap(*this, other); return *this; }</code></p></div>
 
-<h2>E. Fraction, complete</h2>
-<p><code>#include</code> <code>&lt;iostream&gt; &lt;fstream&gt; &lt;sstream&gt; &lt;stack&gt; &lt;vector&gt; &lt;algorithm&gt; &lt;stdexcept&gt; &lt;string&gt;</code> (one per line); <code>using namespace std;</code></p>
-<pre>class Fraction {
-private:
-  int numerator;
-  int denominator;
+<h2>3. "Write the function / class / program"</h2>
+<h3>Fraction, all parts: class, read a file into a stack, print</h3>
+<pre class="c">#include &lt;iostream&gt;      <i>also fstream, stack, stdexcept</i>
+using namespace std;
+class Fraction {
+private: int numerator; int denominator;
 public:
-  // Q21: initializer list, then the check
-  Fraction(int numerator, int denominator)
-    : numerator(numerator),
-      denominator(denominator) {
-    if (denominator == 0)
-      throw invalid_argument(
-        "Denominator cannot be zero");
-  }
-  // Q22: const &amp;, else it would recurse
-  Fraction(const Fraction&amp; other)
-    : numerator(other.numerator),
-      denominator(other.denominator) {}
-  ~Fraction() {}  // Q23: nothing to free
-  int getNumerator() const {
-    return numerator; }</pre>
-<pre>  // Q24: write to os, return os
-  friend ostream&amp; operator&lt;&lt;(
-      ostream&amp; os, const Fraction&amp; f) {
-    os &lt;&lt; f.numerator &lt;&lt; "/"
-       &lt;&lt; f.denominator;
-    return os; }
-  // Q25: read into f, return is
-  friend istream&amp; operator&gt;&gt;(
-      istream&amp; is, Fraction&amp; f) {
+  Fraction(int n, int d)            <i>constructor</i>
+    : numerator(n), denominator(d) {   <i>initializer list</i>
+    if (d == 0) throw
+      invalid_argument("Denominator cannot be zero"); }
+  Fraction(const Fraction&amp; o)       <i>copy constructor: const + &amp;</i>
+    : numerator(o.numerator),
+      denominator(o.denominator) {}</pre><pre class="c">  ~Fraction() {}                    <i>destructor: nothing to free</i>
+  friend ostream&amp; operator&lt;&lt;(ostream&amp; os,    <i>print</i>
+      const Fraction&amp; f) {
+    os &lt;&lt; f.numerator &lt;&lt; "/" &lt;&lt; f.denominator;
+    return os; }                    <i>must return os</i></pre><pre class="c">  friend istream&amp; operator&gt;&gt;(istream&amp; is,    <i>read</i>
+      Fraction&amp; f) {                <i>not const: it changes f</i>
     is &gt;&gt; f.numerator &gt;&gt; f.denominator;
-    return is; }</pre>
-<pre>  friend Fraction operator+(
-      const Fraction&amp; a, const Fraction&amp; b)
-  { return Fraction(
-      a.numerator * b.denominator
-        + b.numerator * a.denominator,
-      a.denominator * b.denominator); }</pre>
-<pre>  friend bool operator==(
-      const Fraction&amp; a, const Fraction&amp; b)
-  { return a.numerator * b.denominator
-      == b.numerator * a.denominator; }
-  friend bool operator&lt;(
-      const Fraction&amp; a, const Fraction&amp; b)
-  { return a.numerator * b.denominator
-      &lt; b.numerator * a.denominator; }
-};</pre>
-<pre>int main() {  // Q26
+    return is; }</pre><pre class="c">  friend bool operator&lt;(const Fraction&amp; a,
+      const Fraction&amp; b) {          <i>lets sort work</i>
+    return a.numerator * b.denominator
+         &lt; b.numerator * a.denominator; }
+};</pre><pre class="c">int main() {                        <i>file → stack → print</i>
   ifstream in("Fractions.txt");
   if (!in.is_open()) {
-    cerr &lt;&lt; "Could not open" &lt;&lt; endl;
-    return 1; }
-  stack&lt;Fraction&gt; st;
-  int num, den;
-  while (in &gt;&gt; num &gt;&gt; den)  // to EOF
+    cerr &lt;&lt; "Could not open" &lt;&lt; endl; return 1; }
+  stack&lt;Fraction&gt; st; int num, den;
+  while (in &gt;&gt; num &gt;&gt; den)          <i>until end of file</i>
     st.push(Fraction(num, den));
-  while (!st.empty()) {  // last in, first out
-    cout &lt;&lt; st.top() &lt;&lt; endl;
-    st.pop(); }
+  while (!st.empty()) {             <i>last pushed, first out</i>
+    cout &lt;&lt; st.top() &lt;&lt; endl; st.pop(); }
   try { Fraction bad(1, 0); }
   catch (const invalid_argument&amp; e) {
-    cout &lt;&lt; e.what() &lt;&lt; endl; }
-}</pre>
-<p>Rows <code>1 2</code> <code>3 4</code> <code>5 6</code> print <code>5/6</code> <code>3/4</code> <code>1/2</code> <code>Denominator cannot be zero</code>. Or:</p>
-<pre>string line;
-while (getline(in, line)) {
-  istringstream iss(line);
-  iss &gt;&gt; num &gt;&gt; den;
-  st.push(Fraction(num, den)); }</pre>
-<p>Vector variant, prints <code>1/2 3/4 5/6</code>:</p>
-<pre>vector&lt;Fraction&gt; v;
-while (in &gt;&gt; num &gt;&gt; den)
-  v.push_back(Fraction(num, den));
-sort(v.begin(), v.end());  // operator&lt;
-for (const auto&amp; f : v) cout &lt;&lt; f &lt;&lt; " ";</pre>
-<p>Marks: Q24 returns <code>os</code>; Q25 reads into <code>f</code>, returns <code>is</code>; Q26: open check, loop, <code>push</code>, show.</p>
+    cout &lt;&lt; e.what(); } }</pre>
+<p><span class="n"><code>operator+</code>: <code>return Fraction(a.n*b.d + b.n*a.d, a.d*b.d);</code> (a friend, both <code>const&amp;</code>)</span></p>
+<pre>class BadDenom : public invalid_argument {
+public: BadDenom()                 <i>your own exception type</i>
+    : invalid_argument("Denominator cannot be zero") {} };</pre>
 
-<h2>F. Deep copy, copy-and-swap, abstract, interface, diamond</h2>
-<pre>class Character {
-  int* skillIds;
-  int size;
-public:
-  Character(int n)
-    : skillIds(new int[n]{}), size(n) {}
-  Character(const Character&amp; o)  // deep
-    : skillIds(new int[o.size]),
-      size(o.size) {
-    for (int i = 0; i &lt; size; ++i)
-      skillIds[i] = o.skillIds[i]; }
-  ~Character() { delete[] skillIds; }
-  friend void mySwap(Character&amp; a,
-                     Character&amp; b) {
-    swap(a.skillIds, b.skillIds);
-    swap(a.size, b.size); }  // all members
-  Character&amp; operator=(Character other)
-  { // 1. by value: copy ctor made other
-    mySwap(*this, other);  // 2. swap all
-    return *this; }  // 3. other dies: old
-};</pre>
-<p>Errors: <code>Character&amp; other</code> (no copy); <code>std::swap(*this, other)</code> (recurses).</p>
+<h3>Deep copy (a class owning an array)</h3>
+<pre>class Character { int* ids; int size; public:
+  Character(int n) : ids(new int[n]{}), size(n) {}
+  Character(const Character&amp; o)     <i>copy constructor</i>
+    : ids(new int[o.size]), size(o.size) {   <i>new array</i>
+    for (int i = 0; i &lt; size; ++i)  <i>copy the contents</i>
+      ids[i] = o.ids[i]; }
+  ~Character() { delete[] ids; } };  <i>free what you own</i></pre>
+<h3>Abstract class and its child</h3>
 <pre>class Shape { public:
-  virtual double area() const = 0;
-  virtual ~Shape() {} };
-class Circle : public Shape { double r;
-public: Circle(double r) : r(r) {}
-  double area() const override {
-    return 3.14 * r * r; } };
-Shape* s = new Circle(2);
-cout &lt;&lt; s-&gt;area();  // 12.56
-delete s;  // ~Circle then ~Shape
-// Shape sh;  error: abstract</pre>
-<p>Interface: only pure virtuals + <code>virtual ~Drawable() {}</code>.</p>
-<pre>class person { public: string name;
-  person(string n = "?") : name(n) {} };
-class student
-  : public virtual person { public:
-  student(string n) : person(n) {}
-  void all_info() { cout &lt;&lt; name; } };
-class mathematician
-  : public virtual person { public:
-  mathematician(string n) : person(n) {}
-  void all_info() { cout &lt;&lt; name; } };
-class math_student : public student,
-  public mathematician { public:
-  math_student(string n) : person(n),
-    student(n), mathematician(n) {} };
-// most-derived class constructs person;
-// the middle classes' person(name)
-// calls are ignored
-math_student bob("Bob");
-// bob.all_info();  error: ambiguous
-bob.mathematician::all_info();  // Bob</pre>
-<p>Friend: not mutual, not transitive, not inherited. <code>virtual</code> + <code>Base*</code>/<code>Base&amp;</code> runs the derived version; <code>override</code> is checked; <code>Base b = derived;</code> slices.</p>
+  virtual double area() const = 0;  <i>pure virtual</i>
+  virtual ~Shape() {} };            <i>Shape s; = error</i>
+class Circle : public Shape { double r; public:
+  Circle(double r) : r(r) {}
+  double area() const override { return 3.14 * r * r; } };</pre>
 
-<h2>G. Exceptions</h2>
-<pre>struct MyErr : exception {
-  const char* what() const noexcept
-    override { return "MyErr"; } };
-try { throw invalid_argument("bad"); }
-catch (const invalid_argument&amp; e) {
-  cerr &lt;&lt; e.what(); }  // child first
-catch (const exception&amp; e) {
-  cerr &lt;&lt; e.what(); }  // parent after
-catch (...) { throw; }  // last; rethrows</pre>
-<p>By reference (by value slices); first match wins. Uncaught → <code>std::terminate</code> → <code>abort</code>. Unwinding destroys locals in reverse. Broken <code>noexcept</code> → terminate; destructors are <code>noexcept</code>. A throwing constructor makes no object. <code>logic_error</code> (<code>invalid_argument</code>, <code>out_of_range</code>), <code>runtime_error</code>. <code>throw "msg";</code> is a <code>const char*</code>.</p>
-
-<h2>H. STL</h2>
-<pre>map&lt;string, int&gt; bag;
-bag.insert({"Slime", 1});
-bag.insert({"Slime", 5});  // refused: 1
-bag["Slime"] = 5;  // overwrites
-cout &lt;&lt; bag["Gel"];  // 0: [] creates
-for (auto it = bag.begin();
-     it != bag.end(); ++it)
-  cout &lt;&lt; it-&gt;first &lt;&lt; it-&gt;second;
-for (auto&amp; x : v) x *= 10;  // auto copies</pre>
-<p><code>set</code> skips equals; <code>priority_queue</code> top is the largest; <code>end()</code> is one past the last.</p>
-<table>
-<colgroup><col style="width:33%"><col style="width:31%"><col style="width:36%"></colgroup>
-<tr><th>Kind</th><th>Operations</th><th>Containers</th></tr>
-<tr><td>input</td><td>read, <code>++</code></td><td>istream_<wbr>iterator</td></tr>
-<tr><td>output</td><td>write, <code>++</code></td><td>ostream_<wbr>iterator</td></tr>
-<tr><td>forward</td><td><code>++</code></td><td>forward_<wbr>list, unordered_<wbr>map</td></tr>
-<tr><td>bidirectional</td><td><code>++</code> <code>--</code></td><td>list, map, set</td></tr>
-<tr><td>random access</td><td><code>it + n</code> <code>it[n]</code> <code>&lt;</code></td><td>vector, deque, array</td></tr>
-</table>
-<pre>bool byHp(const Mob&amp; a, const Mob&amp; b)
-  { return a.hp &lt; b.hp; }
-sort(v.begin(), v.end());  // operator&lt;
-sort(mobs.begin(), mobs.end(), byHp);
-l.sort();  // sort() needs random access</pre>
-<p><code>partition</code> loses order, <code>stable_partition</code> keeps it. Strict weak ordering: irreflexive, antisymmetric, transitive.</p>
-
-<h2>I. Static, copy elision</h2>
-<pre>class Mob { public:
-  static int alive;  // define outside
-  const static int maxHp = 9;  // may
-  constexpr static int level = 3;  // must
-  Mob() { ++alive; }
-  static int count() { return alive; } };
-int Mob::alive = 0;  // no "static" here</pre>
-<p>One copy per class. Static function: no <code>this</code>, "can only access static data", not virtual or const.</p>
-<pre>Number createNumber(int n) {
-  return Number(n); }  // RVO
-Number n = createNumber(5);  // 1 obj
-Number n(Number(2));  // 1 object
-Number t(n); return t;  // NRVO: optional
-Number f(Number p) { return p; }  // 2 copies</pre>
-
-<h2>J. Week 1 syntax</h2>
-<p><code>-7 / 2</code> is -3, <code>-7 % 2</code> is -1. <code>fixed &lt;&lt; setprecision(2)</code>: 3.14.</p>
-<pre>cin.clear(); cin.ignore(numeric_limits
-  &lt;streamsize&gt;::max(), '\n');  // bad input</pre>
+<h2>4. True/false and multiple choice traps</h2>
+<p class="r"><span class="v"><b>Exceptions:</b> <code>catch (const X&amp; e)</code> (by value slices) · child before parent, <code>catch(...)</code> last · uncaught → <code>std::terminate</code>.</span></p>
+<p class="r"><span class="v"><b>STL:</b> <code>m[k]</code> on a missing key <b>creates</b> it, <code>insert</code> refuses a duplicate · <code>priority_queue</code> top = <b>largest</b> · <code>sort</code> needs random access (<code>l.sort()</code> for a list).</span></p>
+<p class="r"><span class="v"><b>Static, elision:</b> <b>one copy per class</b>, <b>defined outside</b> <code>int X::n = 0;</code> · static function: no <code>this</code>, <span class="t">not virtual or const</span> · <code>return Number(n);</code> builds <b>one</b> object.</span></p>
+<p class="r"><span class="v"><b>Right-left rule:</b> start at the name, go <b>right</b> to <code>)</code> or <code>;</code>, then <b>left</b> to <code>(</code>, exit the parentheses, repeat. <code>int (**ppf)()</code> ptr→ptr→function→int · <code>int *(*pap)[]</code> ptr→array of ptr→int.</span></p>
+<p class="r"><span class="v"><b>Week 1:</b> <code>-7 / 2</code> = -3, <code>-7 % 2</code> = -1 · <code>C c();</code> declares a <b>function</b>.</span></p>
 </section>
-
 </body>
 </html>
