@@ -1,69 +1,152 @@
 {
   "title": "COMP 3721 · Midterm",
   "subtitle": "Thu Oct 29, 11:00, 120 minutes: Lecture Notes 01 to 07 and the textbook chapters; calculator and two double-sided cheat sheets",
-  "description": "The instructor's Suggested Midterm Review Topics worked one by one, with you computing before every reveal: each item mapped to the lesson that teaches it, the differences the review list flags (Nyquist vs Shannon, the three formulas that start with 2, digital-to-analog vs analog-to-analog), every calculation type in one mixed drill where you pick the formula first, cross-week problems, a 120-minute mock midterm in the sample-quiz shapes (true or false, fill in the blanks, written response, calculations), and a four-side cheat-sheet draft for Weeks 1 to 7.",
+  "description": "The instructor's Suggested Midterm Review Topics taught from zero, one idea per short lesson: plain words first, then a tiny case, then the formula with every symbol named, then the slide's own example worked line by line, then a few exam-shaped questions. Nineteen review lessons in five groups (calculations for Weeks 1 to 3, calculations for Weeks 4 to 6, Week 7 by hand, the written-response bank, the true-or-false and fill-in bank), then the older item-by-item lessons, a 120-minute mock midterm, and the text of the four printed cheat-sheet sides.",
   "intro": ":::quiz Midterm facts\n**Thursday Oct 29 2026, 11:00, 120 minutes, on paper.** Worth **30%**; you need a **50% average across the midterm and the final** to pass the course, and there are no make-ups. Covers **Lecture Notes 01 to 07 plus the textbook chapters** (Ch 1 to 3). Bring a calculator with a log key and **two double-sided A4 or Letter cheat sheets**, handwritten or printed. The only sample of the instructor's style is the Sample Quiz Questions sheet: true or false, fill in the blanks (graded against the slide's exact words) and short written responses; expect calculations with units as in every lab quiz. The review list's own warning: Nyquist has a factor of 2 and Shannon does not.\n:::",
   "plan": {
-    "title": "Five hours from zero, then the exam",
+    "title": "The 50% track: lookup and plug, about two and a half hours",
     "steps": [
       {
-        "lesson": "review-tf-fill-bank",
-        "note": "first 15 minutes: the exam map only (where each formula and table sits on the four sides); print the two PDFs double-sided"
+        "lesson": "r0-start-here",
+        "note": "10 minutes: the exam map of the four sides and the cue table. Every true-or-false and fill-in question is a lookup if you know which side to open. Print the two PDFs double-sided now."
       },
       {
-        "lesson": "review-calculations-1",
-        "note": "70 minutes: cue, formula, substituted line with units; redo every miss on paper"
+        "lesson": "r1-decibel-snr",
+        "note": "15 minutes: dB and SNR are on sheet side 2. Read the cue word, convert dB with 10^(dB/10), write the four lines."
       },
       {
-        "lesson": "review-calculations-2",
-        "note": "60 minutes: S = N/r, PCM, constellations, FDM, the TDM chain"
+        "lesson": "r1-nyquist-shannon",
+        "note": "15 minutes: noiseless or levels is Nyquist with the 2; noisy or SNR is Shannon without it. The picker is on side 4."
       },
       {
-        "lesson": "review-week7-by-hand",
-        "note": "60 minutes: one CRC division, one checksum and one stuffing by hand before the quiz"
+        "lesson": "r2-pcm",
+        "note": "15 minutes: sampling rate, bits per sample, bit rate: one chain of multiplications in a fixed order, written out on side 3."
       },
       {
-        "lesson": "review-written-bank",
-        "note": "50 minutes: write each answer in three moves before revealing the model"
+        "lesson": "r2-fdm-tdm",
+        "note": "15 minutes: the TDM chain, unit rate to frame rate to link rate. Copy the shape from the sheet and swap the numbers."
       },
       {
-        "lesson": "review-tf-fill-bank",
-        "note": "40 minutes: the four quizzes; every miss gets a pencil mark on the printed sheet"
+        "lesson": "r3-crc",
+        "note": "25 minutes: one CRC division by hand beside the sheet's worked example. Skip checksum, stuffing, Hamming and Stop-and-Wait unless time is left."
       },
       {
-        "lesson": "mock-midterm",
-        "note": "if time remains: the mock, on paper, with the sheets"
+        "lesson": "r4-three-moves-layers",
+        "note": "20 minutes: written responses are the easiest marks. Name the thing in the slide's words from the sheet, give the reason, give an example."
+      },
+      {
+        "lesson": "r5-tf-fill-bank",
+        "note": "40 minutes: the four banks with the printed sheets open. Practise finding each answer on paper, and pencil-mark every miss on the sheet."
+      },
+      {
+        "lesson": "r1-sine-wave",
+        "note": "Only if time is left: 1a to 1c, then 2a, 2c, 3a, 3c to 3e, 4b, 4c. In the exam: true-or-false and fill-in first and fast, then written, then calculations; never leave a calculation blank, the formula and the substituted line earn part marks."
       }
     ]
   },
   "chapters": [
     {
-      "title": "Midterm Review: five hours from zero",
+      "title": "The 50% track: lookup and plug (about two and a half hours)",
       "lessons": [
         {
-          "id": "review-calculations-1",
-          "title": "Review 1: the Weeks 1 to 3 calculations: units, sine waves, bandwidth, decibels, SNR, Nyquist and Shannon (items 3 and 4)",
-          "file": "chapters/09-review-calculations-1.md"
+          "id": "r0-start-here",
+          "title": "Start here: how to use this chapter, the four-line answer, and the exam map",
+          "file": "chapters/19-r0-start-here.md"
         },
         {
-          "id": "review-calculations-2",
-          "title": "Review 2: the Weeks 4 to 6 calculations: signal rate, bits per level, PCM, constellations, FDM and TDM (items 5, 6, 7, 9, 10)",
-          "file": "chapters/10-review-calculations-2.md"
+          "id": "r1-decibel-snr",
+          "title": "Review 1d: decibels and SNR",
+          "file": "chapters/23-r1-decibel-snr.md"
         },
         {
-          "id": "review-week7-by-hand",
-          "title": "Review 3: Week 7 by hand: Hamming distance, parity, CRC, checksum, stuffing, Stop-and-Wait (item 12)",
-          "file": "chapters/11-review-week7-by-hand.md"
+          "id": "r1-nyquist-shannon",
+          "title": "Review 1e: Nyquist and Shannon: the factor of 2, noiseless vs noisy",
+          "file": "chapters/24-r1-nyquist-shannon.md"
         },
         {
-          "id": "review-written-bank",
-          "title": "Review 4: the written-response bank: differences, responsibilities and roles in the slide's words (items 1, 2, 4, 5, 9, 11)",
-          "file": "chapters/12-review-written-bank.md"
+          "id": "r2-pcm",
+          "title": "Review 2b: PCM: sample, quantize, encode",
+          "file": "chapters/26-r2-pcm.md"
         },
         {
-          "id": "review-tf-fill-bank",
-          "title": "Review 5: true-or-false and fill-in-the-blank bank, Weeks 1 to 7, plus the exam map of the four sides",
-          "file": "chapters/13-review-tf-fill-bank.md"
+          "id": "r2-fdm-tdm",
+          "title": "Review 2d: FDM with guard bands, and the synchronous TDM chain",
+          "file": "chapters/28-r2-fdm-tdm.md"
+        },
+        {
+          "id": "r3-crc",
+          "title": "Review 3b: CRC: modulo-2 division by hand",
+          "file": "chapters/30-r3-crc.md"
+        },
+        {
+          "id": "r4-three-moves-layers",
+          "title": "Review 4a: the three-move written answer, and the layers",
+          "file": "chapters/34-r4-three-moves-layers.md"
+        },
+        {
+          "id": "r5-tf-fill-bank",
+          "title": "Review 5: true-or-false and fill-in-the-blank bank, Weeks 1 to 7",
+          "file": "chapters/37-r5-tf-fill-bank.md"
+        }
+      ]
+    },
+    {
+      "title": "If time is left: the rest of the review, one idea per lesson",
+      "lessons": [
+        {
+          "id": "r1-sine-wave",
+          "title": "Review 1a: a sine wave, its period and frequency, and the units",
+          "file": "chapters/20-r1-sine-wave.md"
+        },
+        {
+          "id": "r1-phase-wavelength",
+          "title": "Review 1b: phase and wavelength",
+          "file": "chapters/21-r1-phase-wavelength.md"
+        },
+        {
+          "id": "r1-bandwidth-bits",
+          "title": "Review 1c: bandwidth of a composite signal, and bits, rate and time",
+          "file": "chapters/22-r1-bandwidth-bits.md"
+        },
+        {
+          "id": "r2-levels-signal-rate",
+          "title": "Review 2a: bits per level, data rate vs signal rate, and the bandwidth of a digital signal",
+          "file": "chapters/25-r2-levels-signal-rate.md"
+        },
+        {
+          "id": "r2-digital-to-analog",
+          "title": "Review 2c: digital-to-analog: ASK, FSK, PSK, QAM, baud and constellations",
+          "file": "chapters/27-r2-digital-to-analog.md"
+        },
+        {
+          "id": "r3-hamming-parity",
+          "title": "Review 3a: codewords, Hamming distance and parity",
+          "file": "chapters/29-r3-hamming-parity.md"
+        },
+        {
+          "id": "r3-checksum",
+          "title": "Review 3c: checksum: sum, wrap, complement, and FEC with XOR",
+          "file": "chapters/31-r3-checksum.md"
+        },
+        {
+          "id": "r3-stuffing",
+          "title": "Review 3d: framing, byte stuffing and bit stuffing",
+          "file": "chapters/32-r3-stuffing.md"
+        },
+        {
+          "id": "r3-stop-and-wait",
+          "title": "Review 3e: flow control, error control and Stop-and-Wait",
+          "file": "chapters/33-r3-stop-and-wait.md"
+        },
+        {
+          "id": "r4-networks-transmission",
+          "title": "Review 4b: networks, signals and transmission, in the slide's words",
+          "file": "chapters/35-r4-networks-transmission.md"
+        },
+        {
+          "id": "r4-coding-conversion-mux-arp",
+          "title": "Review 4c: line coding, conversion, multiplexing and ARP, in the slide's words",
+          "file": "chapters/36-r4-coding-conversion-mux-arp.md"
         }
       ]
     },

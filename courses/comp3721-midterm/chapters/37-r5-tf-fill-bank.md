@@ -1,60 +1,31 @@
 ---
-title: "Review 5: true-or-false and fill-in-the-blank bank, Weeks 1 to 7, plus the exam map of the four sides"
+title: "Review 5: true-or-false and fill-in-the-blank bank, Weeks 1 to 7"
 minutes: 40
 ---
-:::quiz What the paper asks and what earns the marks
-Every review-list item (1 to 12) can come back as a one-mark true-or-false statement or a fill-in blank. The Sample Quiz Questions sheet shows both shapes: a slide sentence with one word changed (*Data-link layer transforms bits to electromagnetic signals*: false, the physical layer does) and a blank graded against the slide's exact term (*point-to-point*, *network*). A true-or-false mark needs the right verdict; a fill-in mark needs the slide's word, not a synonym. These items are quick, so the marks go to whoever checks every noun and number before answering.
-:::
+This lesson drills the two quick shapes of the midterm: the true-or-false statement and the fill-in blank. It prepares you for the one-mark items built from a single slide sentence, in every week from 1 to 7.
 
-**Understand before the exam (cannot be looked up):**
+## What these two shapes are, in plain words
 
-- Where each shape's answer sits on the four printed sides, so a lookup takes seconds, not minutes.
-- A false statement is a slide sentence with one word swapped: a layer, a direction, a count, "sender" for "receiver", "analog" for "digital".
-- A fill-in is marked against the slide's own term. *Frequency-domain plot*, not "spectrum"; *jitter*, not "delay"; *survivability*, not "reliability".
-- A true statement can sound odd and still be the slide's sentence. Familiar is not the same as true.
+A true-or-false item is almost always a sentence copied from a slide. When it is false, one word in it has been swapped for another.
 
-**On the sheet (look up, do not memorise):**
+A fill-in item is a slide sentence with one word taken out. The mark goes to the slide's own word, not to a word that means nearly the same.
 
-- *Sheet side 1, "True or false traps, Weeks 1 and 2"* and *"Fill-in word bank, Weeks 1 and 2 (slide terms)"*; the same pair closes sides 2, 3 and 4.
-- *Sheet side 4, "Which formula? The three that start with 2"* for every calculation.
-- *Sheet side 4, "Powers, logs, dB and units"* for the unit of each answer.
-
-Do if time is short: the exam map, then the Weeks 5 and 6 and the Week 7 banks. The Weeks 1 and 2 and the Weeks 3 and 4 banks are "if time".
-
-## The exam map: what to open on which side
-
-The two printed sheets are four sides, one block of weeks each. Every side ends with the same two sections: the true-or-false traps and the fill-in word bank for its weeks. The written answers and the calculations sit in the sections above them.
+So both shapes test one skill: seeing the slide sentence behind the question. A statement that sounds familiar is not yet true.
 
 ```diagram
-{ "type": "grid", "title": "The four printed sides, by question shape", "nodes": [
-  { "id": "h0", "label": "Side", "row": 0, "col": 0 },
-  { "id": "h1", "label": "True or false, fill-in", "row": 0, "col": 1 },
-  { "id": "h2", "label": "Written response", "row": 0, "col": 2 },
-  { "id": "h3", "label": "Calculation", "row": 0, "col": 3 },
-  { "id": "s1", "label": "Side 1", "sub": "Weeks 1, 2", "row": 1, "col": 0 },
-  { "id": "a1", "label": "Traps, word bank", "sub": "Weeks 1 and 2", "row": 1, "col": 1 },
-  { "id": "b1", "label": "Topologies", "sub": "Protocol layering", "row": 1, "col": 2 },
-  { "id": "c1", "label": "Sine wave, units", "sub": "Phase, wavelength", "row": 1, "col": 3 },
-  { "id": "s2", "label": "Side 2", "sub": "Weeks 3, 4", "row": 2, "col": 0 },
-  { "id": "a2", "label": "Traps, word bank", "sub": "Weeks 3 and 4", "row": 2, "col": 1 },
-  { "id": "b2", "label": "Baseband, broadband", "sub": "Impairment", "row": 2, "col": 2 },
-  { "id": "c2", "label": "Decibel and SNR", "sub": "Data rate limits", "row": 2, "col": 3 },
-  { "id": "s3", "label": "Side 3", "sub": "Weeks 5, 6", "row": 3, "col": 0 },
-  { "id": "a3", "label": "Traps, word bank", "sub": "Weeks 5 and 6", "row": 3, "col": 1 },
-  { "id": "b3", "label": "D2A and A2A", "sub": "ARP", "row": 3, "col": 2 },
-  { "id": "c3", "label": "PCM and sampling", "sub": "Synchronous TDM", "row": 3, "col": 3 },
-  { "id": "s4", "label": "Side 4", "sub": "Week 7, picker", "row": 4, "col": 0 },
-  { "id": "a4", "label": "Traps, word bank", "sub": "Week 7", "row": 4, "col": 1 },
-  { "id": "b4", "label": "Flow, error control", "sub": "Stop-and-Wait", "row": 4, "col": 2 },
-  { "id": "c4", "label": "CRC, checksum", "sub": "Which formula?", "row": 4, "col": 3 }
-], "hi": ["a1", "a2", "a3", "a4"], "caption": "The highlighted column is this lesson. A calculation on any week starts on side 4, \"Which formula? The three that start with 2\", then goes to the section named in its row." }
+{ "type": "flow", "title": "How to answer a true-or-false item", "nodes": [
+  { "id": "r", "label": "Read the statement" },
+  { "id": "f", "label": "Recall the slide sentence" },
+  { "id": "c", "label": "Compare word by word", "sub": "nouns, then numbers" },
+  { "id": "v", "label": "Verdict", "sub": "one word off: F" }
+], "edges": [ { "from": "r", "to": "f" }, { "from": "f", "to": "c" }, { "from": "c", "to": "v" } ], "hi": ["c"], "caption": "The work is in the third box: every noun and every number is checked against the slide, and one mismatch makes the statement false." }
 ```
 
-Each cell names the first section to open, not the only one. Side 2 also holds *"Line coding: elements and rates (04)"* and *"The line-coding schemes and their level rules"*; side 3 holds *"Multiplexing, FDM and WDM (06a)"*, *"Constellation diagram"* and *"The data-link layer (06b)"*; side 4 holds *"Errors and redundancy (07a)"*, *"Block coding, Hamming distance and parity"* and *"Framing, byte stuffing and bit stuffing (07b)"*.
+## A tiny case: the sample sheet's trap
 
-## One procedure per shape
+The Sample Quiz Questions sheet printed this statement: *Data-link layer transforms bits to electromagnetic signals.*
 
-**True or false.** Find the slide sentence the statement was built from, then compare it one noun and one number at a time. The sample sheet's false item changed a single word:
+The slide gives that job to a different layer. Lay the two sentences side by side, one column per part of the sentence.
 
 ```diagram
 { "type": "grid", "title": "The sample sheet's trap, word by word", "nodes": [
@@ -73,21 +44,68 @@ Each cell names the first section to open, not the only one. Side 2 also holds *
 ], "hi": ["p1", "q1"], "caption": "Two columns agree and one does not, so the statement is false. Write the corrected word beside your F if there is room: it shows the marker you knew why." }
 ```
 
-The words that get swapped most often: a layer name, sender and receiver, analog and digital, low-pass and bandpass, beginning and end, broadcast and unicast, the factor of 2, and a count (five layers or seven, two levels or three).
+Two columns match and the "Who" column does not. The verdict is **false**.
 
-**Fill in the blank.** Write the slide's exact term. When two terms fit, write the slide's and put the other in brackets: *multipoint (multidrop)*, *MAC (link-layer) address*. Spelling counts less than the word itself, but the word must be the slide's.
+That makes sense: the physical layer is the one that touches the wire, and the data-link layer works one step above it.
 
-**Calculation.** Four lines: the formula in the slide's notation, the substitution with units, the answer with unit, and a check. A tiny case: the quester's engine runs `on_tick` every 30 ms. What frequency is that?
+The words that get swapped most often:
 
-$$f = \frac{1}{T} = \frac{1}{0.030\ \text{s}} = \mathbf{33.3\ Hz}$$
+- a layer name
+- sender and receiver
+- analog and digital
+- low-pass and bandpass
+- beginning and end
+- broadcast and unicast
+- the factor of 2
+- a count, such as five layers or seven, two levels or three
 
-Check: 33.3 ticks × 30 ms ≈ 1000 ms, one second. The units line is on *Sheet side 1, "Sine wave and units"*: 1/ms goes with kHz, so 1/(30 ms) = 0.0333 kHz = 33.3 Hz.
+## The procedure for each shape
 
-**Written response.** Three moves: name the thing in the slide's words, give the reason, give an example or a number. Review 4 drills them.
+**True or false.** Recall the slide sentence the statement was built from. Then compare it one noun and one number at a time.
+
+**Fill in the blank.** Write the slide's exact term. When two terms fit, write the slide's term and put the other in brackets: *multipoint (multidrop)*, *MAC (link-layer) address*.
+
+Spelling counts less than the word itself. The exam has punished three near-synonyms: write *frequency-domain plot*, not "spectrum"; *jitter*, not "delay"; *survivability*, not "reliability".
+
+**Calculation.** Write four lines: the formula in the slide's notation, the substitution with units, the answer with its unit, and a check.
+
+A tiny case: the quester's engine runs `on_tick` every 30 ms. What frequency is that?
+
+The period T is the time for one tick, in seconds. The frequency f is the number of ticks in one second, in hertz.
+
+Change the period to seconds:
+
+$$T = 30\ \text{ms} = 0.030\ \text{s}$$
+
+Take the reciprocal:
+
+$$f = \frac{1}{T} = \frac{1}{0.030\ \text{s}}$$
+
+$$f = \mathbf{33.3\ Hz}$$
+
+Check: 33.3 ticks of 30 ms each come to about 1000 ms, which is one second. The trap is the prefix: 1 divided by a value in ms gives kHz, so 1/(30 ms) is 0.0333 kHz, the same 33.3 Hz.
+
+**Written response.** Use three moves: name the thing in the slide's words, give the reason, then give an example or a number. Two to four sentences are enough.
 
 ## Bank 1: Weeks 1 and 2
 
-Lecture notes 01a, 01b, 01c and 02. Answer from memory first; after each miss, find the line on *Sheet side 1* that holds the slide's sentence and put a pencil mark beside it.
+Week 1 asks how devices are joined and how the work of a network is split. A topology is the shape of the links: in a mesh every device links to every other, and in a star every device links to one central box.
+
+The work is split into layers, each doing one job for the layer above it. The TCP/IP suite has five layers and the OSI model has seven.
+
+Week 2 is about signals. A sine wave is described by its peak amplitude, its frequency and its phase, and it can be drawn against time or against frequency.
+
+```diagram
+{ "type": "flow", "dir": "tb", "title": "The five TCP/IP layers at the sender", "nodes": [
+  { "id": "a", "label": "Application", "sub": "the user's program" },
+  { "id": "t", "label": "Transport", "sub": "process to process" },
+  { "id": "n", "label": "Network", "sub": "host to host" },
+  { "id": "d", "label": "Data link", "sub": "one link at a time" },
+  { "id": "p", "label": "Physical", "sub": "the wire or the air" }
+], "edges": [ { "from": "a", "to": "t" }, { "from": "t", "to": "n" }, { "from": "n", "to": "d" }, { "from": "d", "to": "p" } ], "hi": ["p"], "caption": "At the sender the data goes down all five layers, and the physical layer is the last one to handle it before the medium." }
+```
+
+Answer from memory first. After each miss, find the line on *Sheet side 1* that holds the slide's sentence and put a pencil mark beside it.
 
 ```quiz
 [
@@ -180,7 +198,22 @@ Lecture notes 01a, 01b, 01c and 02. Answer from memory first; after each miss, f
 
 ## Bank 2: Weeks 3 and 4
 
-Lecture notes 03 and 04. After each miss, find the sentence on *Sheet side 2* and mark it.
+Week 3 follows a signal through a channel. On the way it gets weaker, changes shape and picks up noise.
+
+Week 3 also asks how fast a channel can carry bits. Nyquist answers for a noiseless channel and Shannon for a noisy one.
+
+Week 4 turns bits into a digital signal on a wire, which the slides call line coding. The schemes differ in how many voltage levels they use and on which side of the time axis those levels sit.
+
+```diagram
+{ "type": "flow", "title": "Weeks 3 and 4 in one chain", "nodes": [
+  { "id": "b", "label": "Bits" },
+  { "id": "l", "label": "Line coding", "sub": "Week 4" },
+  { "id": "c", "label": "Channel", "sub": "weaker, reshaped, noisy" },
+  { "id": "r", "label": "Receiver" }
+], "edges": [ { "from": "b", "to": "l" }, { "from": "l", "to": "c", "label": "signal" }, { "from": "c", "to": "r" } ], "hi": ["c"], "caption": "Week 4 builds the signal from the bits, and Week 3 is what the channel does to that signal before it reaches the receiver." }
+```
+
+After each miss, find the sentence on *Sheet side 2* and mark it.
 
 ```quiz
 [
@@ -273,7 +306,25 @@ Lecture notes 03 and 04. After each miss, find the sentence on *Sheet side 2* an
 
 ## Bank 3: Weeks 5 and 6
 
-Lecture notes 05a, 05b, 06a and 06b. After each miss, find the sentence on *Sheet side 3* and mark it.
+Week 5 converts between analog and digital. PCM turns an analog signal into bits in three steps: sample, quantize, encode.
+
+Digital-to-analog conversion goes the other way. It changes the amplitude, the frequency or the phase of a high-frequency sine wave so that the wave carries bits.
+
+Week 6 shares one link among several signals, which is multiplexing. FDM gives each signal its own band of frequencies, and TDM gives each signal its own time slot.
+
+Week 6 ends on the data-link layer, which moves a frame across one link. ARP finds the link-layer address of the next node from its IP address.
+
+```diagram
+{ "type": "flow", "title": "PCM: analog in, bits out", "nodes": [
+  { "id": "a", "label": "Analog signal" },
+  { "id": "s", "label": "Sample", "sub": "f_s samples per second" },
+  { "id": "q", "label": "Quantize", "sub": "round to L levels" },
+  { "id": "e", "label": "Encode", "sub": "n_b bits per sample" },
+  { "id": "d", "label": "Bits" }
+], "edges": [ { "from": "a", "to": "s" }, { "from": "s", "to": "q" }, { "from": "q", "to": "e" }, { "from": "e", "to": "d" } ], "hi": ["s", "q", "e"], "caption": "The PCM encoder's three steps run in this order: sample, then quantize, then encode." }
+```
+
+After each miss, find the sentence on *Sheet side 3* and mark it.
 
 ```quiz
 [
@@ -366,7 +417,25 @@ Lecture notes 05a, 05b, 06a and 06b. After each miss, find the sentence on *Shee
 
 ## Bank 4: Week 7
 
-Lecture notes 07a, 07b and the 07c note. After each miss, find the sentence on *Sheet side 4* and mark it.
+Week 7 is about errors on a link. Extra bits travel with the data so that errors can be found, and sometimes fixed.
+
+CRC and the checksum detect errors. A code with enough distance between its codewords can also correct them.
+
+Week 7 then builds frames. A flag marks where each frame starts and ends, and stuffing keeps the data from looking like a flag.
+
+Last come flow control and error control. Stop-and-Wait sends one frame, then waits for the reply before it sends the next.
+
+```diagram
+{ "type": "flow", "title": "Week 7 along one link", "nodes": [
+  { "id": "d", "label": "Data" },
+  { "id": "x", "label": "Add check bits", "sub": "CRC or checksum" },
+  { "id": "f", "label": "Frame it", "sub": "flags, stuffing" },
+  { "id": "l", "label": "Link", "sub": "noise flips bits" },
+  { "id": "r", "label": "Check at receiver", "sub": "keep or discard" }
+], "edges": [ { "from": "d", "to": "x" }, { "from": "x", "to": "f" }, { "from": "f", "to": "l" }, { "from": "l", "to": "r" } ], "hi": ["x", "r"], "caption": "The check bits are added before the link and tested after it, so a frame the noise has damaged can be caught." }
+```
+
+After each miss, find the sentence on *Sheet side 4* and mark it.
 
 ```quiz
 [
@@ -456,3 +525,14 @@ Lecture notes 07a, 07b and the 07c note. After each miss, find the sentence on *
   }
 ]
 ```
+
+## Remember
+
+- A false statement is a slide sentence with one word swapped: a layer, a direction, a count, sender for receiver, analog for digital.
+- A fill-in is marked against the slide's own term, so write that term and put a synonym in brackets.
+- A true statement can sound odd and still be the slide's sentence.
+- *On the sheet:* every side ends with the same pair, for example *Sheet side 1, "True or false traps, Weeks 1 and 2"* and *Sheet side 1, "Fill-in word bank, Weeks 1 and 2 (slide terms)"*.
+
+| The question says | Formula | Unit | Check |
+|---|---|---|---|
+| "every 30 ms", "how often", "frequency" | f = 1/T | Hz (1/ms gives kHz) | f × T = 1 |
