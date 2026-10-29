@@ -4,38 +4,122 @@
   "description": "The instructor's Suggested Midterm Review Topics worked one by one, with you computing before every reveal: each item mapped to the lesson that teaches it, the differences the review list flags (Nyquist vs Shannon, the three formulas that start with 2, digital-to-analog vs analog-to-analog), every calculation type in one mixed drill where you pick the formula first, cross-week problems, a 120-minute mock midterm in the sample-quiz shapes (true or false, fill in the blanks, written response, calculations), and a four-side cheat-sheet draft for Weeks 1 to 7.",
   "intro": ":::quiz Midterm facts\n**Thursday Oct 29 2026, 11:00, 120 minutes, on paper.** Worth **30%**; you need a **50% average across the midterm and the final** to pass the course, and there are no make-ups. Covers **Lecture Notes 01 to 07 plus the textbook chapters** (Ch 1 to 3). Bring a calculator with a log key and **two double-sided A4 or Letter cheat sheets**, handwritten or printed. The only sample of the instructor's style is the Sample Quiz Questions sheet: true or false, fill in the blanks (graded against the slide's exact words) and short written responses; expect calculations with units as in every lab quiz. The review list's own warning: Nyquist has a factor of 2 and Shannon does not.\n:::",
   "plan": {
-    "title": "If you only have tonight",
+    "title": "Five hours from zero, then the exam",
     "steps": [
-      { "lesson": "mock-midterm", "note": "take it cold, on paper, 120 minutes, with your draft sheets" },
-      { "lesson": "formula-drill", "note": "name the formula before you compute; redo every miss" },
-      { "lesson": "differences", "note": "write each difference in two sentences, then compare with the model" },
-      { "lesson": "review-signals-coding", "note": "items 4 and 5: dB, SNR, Nyquist, Shannon, line-coding problems" },
-      { "lesson": "review-conversion-mux", "note": "items 6 to 11: PCM, constellations, AM/FM, TDM, ARP" },
-      { "lesson": "cheat-sheet-midterm", "note": "print the four sides; add whatever you missed in the mock" }
+      {
+        "lesson": "review-tf-fill-bank",
+        "note": "first 15 minutes: the exam map only (where each formula and table sits on the four sides); print the two PDFs double-sided"
+      },
+      {
+        "lesson": "review-calculations-1",
+        "note": "70 minutes: cue, formula, substituted line with units; redo every miss on paper"
+      },
+      {
+        "lesson": "review-calculations-2",
+        "note": "60 minutes: S = N/r, PCM, constellations, FDM, the TDM chain"
+      },
+      {
+        "lesson": "review-week7-by-hand",
+        "note": "60 minutes: one CRC division, one checksum and one stuffing by hand before the quiz"
+      },
+      {
+        "lesson": "review-written-bank",
+        "note": "50 minutes: write each answer in three moves before revealing the model"
+      },
+      {
+        "lesson": "review-tf-fill-bank",
+        "note": "40 minutes: the four quizzes; every miss gets a pencil mark on the printed sheet"
+      },
+      {
+        "lesson": "mock-midterm",
+        "note": "if time remains: the mock, on paper, with the sheets"
+      }
     ]
   },
   "chapters": [
     {
+      "title": "Midterm Review: five hours from zero",
+      "lessons": [
+        {
+          "id": "review-calculations-1",
+          "title": "Review 1: the Weeks 1 to 3 calculations: units, sine waves, bandwidth, decibels, SNR, Nyquist and Shannon (items 3 and 4)",
+          "file": "chapters/09-review-calculations-1.md"
+        },
+        {
+          "id": "review-calculations-2",
+          "title": "Review 2: the Weeks 4 to 6 calculations: signal rate, bits per level, PCM, constellations, FDM and TDM (items 5, 6, 7, 9, 10)",
+          "file": "chapters/10-review-calculations-2.md"
+        },
+        {
+          "id": "review-week7-by-hand",
+          "title": "Review 3: Week 7 by hand: Hamming distance, parity, CRC, checksum, stuffing, Stop-and-Wait (item 12)",
+          "file": "chapters/11-review-week7-by-hand.md"
+        },
+        {
+          "id": "review-written-bank",
+          "title": "Review 4: the written-response bank: differences, responsibilities and roles in the slide's words (items 1, 2, 4, 5, 9, 11)",
+          "file": "chapters/12-review-written-bank.md"
+        },
+        {
+          "id": "review-tf-fill-bank",
+          "title": "Review 5: true-or-false and fill-in-the-blank bank, Weeks 1 to 7, plus the exam map of the four sides",
+          "file": "chapters/13-review-tf-fill-bank.md"
+        }
+      ]
+    },
+    {
       "title": "1. The review list, worked",
       "lessons": [
-        { "id": "midterm-format", "title": "What the midterm looks like and how to answer each shape", "file": "chapters/01-midterm-format.md" },
-        { "id": "review-networks-layers", "title": "Review items 1 to 3: networks, layering, signals", "file": "chapters/02-review-networks-layers.md" },
-        { "id": "review-signals-coding", "title": "Review items 4 and 5: impairment, data rate limits, line coding", "file": "chapters/03-review-signals-coding.md" },
-        { "id": "review-conversion-mux", "title": "Review items 6 to 11: PCM, modulation, multiplexing, levels, ARP", "file": "chapters/04-review-conversion-mux.md" }
+        {
+          "id": "midterm-format",
+          "title": "What the midterm looks like and how to answer each shape",
+          "file": "chapters/01-midterm-format.md"
+        },
+        {
+          "id": "review-networks-layers",
+          "title": "Review items 1 to 3: networks, layering, signals",
+          "file": "chapters/02-review-networks-layers.md"
+        },
+        {
+          "id": "review-signals-coding",
+          "title": "Review items 4 and 5: impairment, data rate limits, line coding",
+          "file": "chapters/03-review-signals-coding.md"
+        },
+        {
+          "id": "review-conversion-mux",
+          "title": "Review items 6 to 11: PCM, modulation, multiplexing, levels, ARP",
+          "file": "chapters/04-review-conversion-mux.md"
+        }
       ]
     },
     {
       "title": "2. Differences and formulas",
       "lessons": [
-        { "id": "differences", "title": "The differences the review list asks for", "file": "chapters/05-differences.md" },
-        { "id": "formula-drill", "title": "Formula drill: pick the formula, then compute", "file": "chapters/06-formula-drill.md" }
+        {
+          "id": "differences",
+          "title": "The differences the review list asks for",
+          "file": "chapters/05-differences.md"
+        },
+        {
+          "id": "formula-drill",
+          "title": "Formula drill: pick the formula, then compute",
+          "file": "chapters/06-formula-drill.md"
+        }
       ]
     },
     {
       "title": "3. Mock midterm and cheat sheet",
       "lessons": [
-        { "id": "mock-midterm", "title": "Mock midterm (120 minutes)", "file": "chapters/07-mock-midterm.md" },
-        { "id": "cheat-sheet-midterm", "title": "Two double-sided cheat sheets: the four sides", "file": "chapters/08-cheat-sheet-midterm.md" }
+        {
+          "id": "mock-midterm",
+          "title": "Mock midterm (120 minutes)",
+          "file": "chapters/07-mock-midterm.md"
+        },
+        {
+          "id": "cheat-sheet-midterm",
+          "title": "Two double-sided cheat sheets: the four sides",
+          "file": "chapters/08-cheat-sheet-midterm.md"
+        }
       ]
     }
   ]
