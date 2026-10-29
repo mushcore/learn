@@ -12,6 +12,15 @@ Take the [mock midterm](#/comp3721-midterm/mock-midterm) first. Every question y
 
 ## Side 1: Weeks 1 and 2, networks, layers and signals
 
+### Order of attack and the find-it index (the strip across the top of side 1)
+
+**Order of attack, the 50% track.** True-or-false and fill-in first, fast. Weeks map to sides: Weeks 1 and 2 on side 1, Weeks 3 and 4 on side 2, Weeks 5 and 6 on side 3, Week 7 on side 4. Each side is labelled SIDE 1 to SIDE 4 on its first heading band, and each ends with that week's true-or-false traps and fill-in word bank. Written responses next: copy the purple WRITE box in three moves, name it in the slide's words, give the reason, give one example. Calculations last, in four lines: formula, substitution with units, answer with unit, check. Never leave one blank, because the formula and the substitution earn part marks.
+
+**Find it, calculations.** Start at side 4 "Which formula?", then open the section it names: period and units on side 1 "Sine wave"; phase and wavelength on side 1 "Phase"; bandwidth on side 1 "Time vs frequency domain"; bit duration on side 1 "Digital signals"; dB and SNR on side 2 "Decibel"; Nyquist and Shannon on side 2 "Data rate limits"; baud and S = N/r on side 2 "Line coding"; sampling rate and PCM bit rate on side 3 "PCM"; constellations on side 3 "Digital-to-analog"; FDM guard bands on side 3 "Multiplexing"; the TDM chain on side 3 "Synchronous TDM"; d_min and 2^k on side 4 "Block coding"; CRC, checksum and the powers and logs tables on side 4.
+
+**Find it, written.** Layers, PDUs and addresses on side 1 "Protocol layering"; topology disadvantages on side 1 "Topologies"; duplex, point-to-point and protocol on side 1 "Data communications"; hub, switch and router on side 1 "Connecting devices"; baseband vs broadband, impairments and Nyquist vs Shannon on side 2; baseline, DC and self-synchronization on side 2 "Line coding"; digital-to-analog vs analog-to-analog on side 3; FDM vs TDM, data-link services and ARP on side 3 "Written answers"; detection vs correction, CRC, checksum, stuffing and Stop-and-Wait on side 4 "Written answers".
+
+
 ### Data communications (01a)
 
 - **Data communications**: exchange of data between two devices via some form of transmission medium. **Data communications system**: network of hardware and software enabling exchange of data between devices over various transmission mediums.
