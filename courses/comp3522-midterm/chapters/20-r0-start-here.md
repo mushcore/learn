@@ -38,6 +38,7 @@ Half the marks come from three skills: write a definition in three moves from ba
 | Core 8 | the Fraction class from zero | Q21, Q22, Q23 (8) | 3 |
 | Core 9 | the stream operators | Q24, Q25 (6) | 3 |
 | Core 10 | reading Fractions.txt into a stack | Q26 (10) | 3 |
+| Core 10b | the Fraction block on a new class: seven slots, guided-question tactics | the long question, whatever its class | 3 |
 | Core 11 | when a copy is made, and Q20 | Q20 (7) | 1 |
 
 That is 63 marks of the practice paper's 96, all answerable from the sheet once the idea is understood.

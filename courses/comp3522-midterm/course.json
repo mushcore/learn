@@ -32,6 +32,10 @@
         "note": "50 minutes: Core 8 to 10, the Fraction class (Q21 to Q26, 24 marks); write every part on paper first, then in the challenge"
       },
       {
+        "lesson": "r4e-adapt-the-template",
+        "note": "15 minutes: Core 10b, the same block on a new class; fill the seven slots, then the tactics for the guided question"
+      },
+      {
         "lesson": "r1b-copies",
         "note": "20 minutes: Core 11, the Q20 trace (7 marks) with the rule table"
       },
@@ -103,6 +107,11 @@
           "id": "r4c-file-to-stack",
           "title": "Core 10: reading Fractions.txt into a stack: the Q26 program",
           "file": "chapters/34-r4c-file-to-stack.md"
+        },
+        {
+          "id": "r4e-adapt-the-template",
+          "title": "Core 10b: adapting the Fraction block to a new class: the seven slots, and how to play the guided question",
+          "file": "chapters/45-r4e-adapt-the-template.md"
         },
         {
           "id": "r1b-copies",
