@@ -97,6 +97,12 @@
           "title": "Midterm",
           "subtitle": "Wed Oct 28, 3:00 pm, SW5-1840, 90 min, paper and calculator: Units 1 to 4, R commands on paper",
           "description": "The study order through the four unit modules, the practice midterm worked question by question in the instructor's rounding, R on paper (the d/p/q/r families, inequalities to p-functions, simulation functions) from Labs 6 and 7, the gaps the unit modules skip (expected dollars, the variance shortcut, Poisson across intervals), the sixteen Unit 4 practice problems, two mock midterms in the real format, and the sheet of what the formula sheet gives you versus what you must know cold."
+        },
+        {
+          "id": "math3042-q7",
+          "title": "Quiz 7",
+          "subtitle": "this week's lab quiz: binomial and Poisson on paper, working with data in RStudio",
+          "description": "A 90-minute drill shaped like the quiz: the announcement and the format, one short lesson per idea (binomial on paper, at least and at most, Poisson with a rescaled λ, the six data moves in RStudio, probabilities from a data frame with a printed conclusion, the d, p and r functions with a simulated check), two mock quizzes in the real two-part format, and a one-page know-cold sheet."
         }
       ]
     },

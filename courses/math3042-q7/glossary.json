@@ -1,0 +1,15 @@
+{
+  "binomial distribution|binomial": "the distribution of $X$ = the number of successes in $n$ independent trials with the same probability $p$ of success on each; $P(x) = {}_nC_x\\,p^x\\,q^{n-x}$, $\\mu = np$, $\\sigma = \\sqrt{npq}$. See [Binomial on paper](#/math3042-q7/binomial-on-paper).",
+  "Poisson distribution|Poisson": "the distribution of $X$ = the number of events in a fixed interval of time or space when the average number per interval is $\\lambda$; $P(x) = \\lambda^x e^{-\\lambda}/x!$, $\\mu = \\lambda$, $\\sigma = \\sqrt{\\lambda}$. See [Poisson on paper](#/math3042-q7/poisson-on-paper).",
+  "lambda|λ": "the mean number of events in the interval the question asks about: the rate times the length of that interval. See [Poisson on paper](#/math3042-q7/poisson-on-paper).",
+  "complement": "the event that something does not happen; $P(\\text{at least one}) = 1 - P(\\text{none})$. See [At least, at most, more than](#/math3042-q7/at-least-at-most).",
+  "cumulative probability": "$P(X \\le k)$, the sum of $P(0)$ to $P(k)$; R's `pbinom(k, n, p)` and `ppois(k, lambda)`. See [At least, at most, more than](#/math3042-q7/at-least-at-most).",
+  "unusual": "a value more than two standard deviations from the mean: $|Z| > 2$ with $Z = (x - \\mu)/\\sigma$. See [Binomial on paper](#/math3042-q7/binomial-on-paper).",
+  "logical vector|logical column": "a column of TRUE/FALSE values made by a comparison such as `survey$Smoke != \"Never\"`; `sum()` counts the TRUEs and `mean()` gives their proportion. See [Working with data in RStudio](#/math3042-q7/r-data-moves).",
+  "conditional probability": "$P(A \\mid B)$, the proportion of the rows where $B$ is TRUE in which $A$ is also TRUE: `sum(A & B)/sum(B)`. See [Probabilities from a data frame](#/math3042-q7/r-probabilities-from-data).",
+  "mutually exclusive": "two events that cannot both happen: `sum(A & B)` is 0. See [Probabilities from a data frame](#/math3042-q7/r-probabilities-from-data).",
+  "independent events|independent": "events where $P(A \\mid B) = P(A)$, equivalently $P(A \\cap B) = P(A)\\,P(B)$. See [Probabilities from a data frame](#/math3042-q7/r-probabilities-from-data).",
+  "na.rm": "an argument of `mean()` and `sum()` that drops missing values (NA) before computing; without it a single NA makes the answer NA. See [Probabilities from a data frame](#/math3042-q7/r-probabilities-from-data).",
+  "dbinom|pbinom|rbinom": "R's binomial functions: `dbinom(x, size, prob)` is $P(X = x)$, `pbinom(q, size, prob)` is $P(X \\le q)$, `rbinom(n, size, prob)` draws $n$ random values. See [dbinom, pbinom, dpois, ppois](#/math3042-q7/r-binomial-poisson).",
+  "dpois|ppois|rpois": "R's Poisson functions: `dpois(x, lambda)` is $P(X = x)$, `ppois(q, lambda)` is $P(X \\le q)$, `rpois(n, lambda)` draws $n$ random values. See [dbinom, pbinom, dpois, ppois](#/math3042-q7/r-binomial-poisson)."
+}
