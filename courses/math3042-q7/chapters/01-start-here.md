@@ -1,5 +1,5 @@
 ---
-title: "Quiz 7: the format, the marks, and the 90-minute path"
+title: "Quiz 7: the format, the marks, and the 98-minute path"
 minutes: 3
 ---
 <!-- facts: none; a reference page about the quiz format, with no worked examples -->

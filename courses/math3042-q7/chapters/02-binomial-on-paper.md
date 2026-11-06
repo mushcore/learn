@@ -127,7 +127,7 @@ $${}_{16}C_3 = \frac{16 \times 15 \times 14}{3 \times 2 \times 1} = 560$$
 
 $$P(3) = {}_{16}C_3 \left(\tfrac{1}{8}\right)^3 \left(\tfrac{7}{8}\right)^{13} = 560 \times 0.001953 \times 0.176240 = \mathbf{0.1928}$$
 
-So about 5 chaos buys an expected two levels, and exactly three levels happens about one run in five.
+So about 5 chaos levels up two gems on average, and exactly three levelled gems happens about one run in five.
 
 ## Ten Intermediate scrolls and an eight-question guess
 

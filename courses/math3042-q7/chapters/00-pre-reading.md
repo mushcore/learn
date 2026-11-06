@@ -114,7 +114,7 @@ The `[1]` before each printed answer is the position of the first value on that 
   {"q": "${}_{12}C_2$ = ?", "type": "numeric", "answer": 66, "tolerance": 0, "explain": "$$ {}_{12}C_2 = \\dfrac{12 \\times 11}{2 \\times 1} = \\dfrac{132}{2} = \\mathbf{66}$$ On the calculator: 12, nCr, 2."},
   {"q": "${}_{15}C_4$ = ? Use the fraction form if your calculator has no nCr key.", "type": "numeric", "answer": 1365, "tolerance": 0, "explain": "Four factors counting down from 15 on top, $4!$ underneath: $$ {}_{15}C_4 = \\dfrac{15 \\times 14 \\times 13 \\times 12}{4 \\times 3 \\times 2 \\times 1} = \\dfrac{32760}{24} = \\mathbf{1365}$$"},
   {"q": "$0.6^4$ = ? (4 decimals)", "type": "numeric", "answer": 0.1296, "tolerance": 0.0001, "explain": "$$0.6^4 = 0.6 \\times 0.6 \\times 0.6 \\times 0.6 = \\mathbf{0.1296}$$ This is four Intermediate scrolls in a row all passing."},
-  {"q": "$e^{-2}$ = ? (4 decimals)", "type": "numeric", "answer": 0.1353, "tolerance": 0.0001, "explain": "Type 2, the sign key, then $e^x$: $$e^{-2} = 0.135335 = \\mathbf{0.1353}$$"},
+  {"q": "$e^{-3}$ = ? (4 decimals)", "type": "numeric", "answer": 0.0498, "tolerance": 0.0001, "explain": "Type 3, the sign key, then $e^x$: $$e^{-3} = 0.049787 = \\mathbf{0.0498}$$"},
   {"q": "$5!$ = ?", "type": "numeric", "answer": 120, "tolerance": 0, "explain": "$$5! = 5 \\times 4 \\times 3 \\times 2 \\times 1 = \\mathbf{120}$$"},
   {"q": "What does `mean(c(TRUE, TRUE, FALSE, FALSE, TRUE))` print?", "options": ["`[1] 0.6`", "`[1] 3`", "`[1] TRUE`", "`[1] 0.4`"], "answer": 0, "explain": "TRUE counts 1 and FALSE 0. Three TRUEs out of five values: $3/5 = 0.6$. `sum()` would print 3."}
 ]
