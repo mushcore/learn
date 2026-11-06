@@ -15,7 +15,7 @@ X can be 0, 1, 2, and so on with no upper limit. That is the difference from the
 
 A help desk gets 2 tickets an hour on average. What is the chance of a quiet hour with none?
 
-The answer uses the number $e = 2.718\ldots$, the $e^x$ key on the calculator. For a mean of 2, no tickets has probability $e^{-2}$.
+The answer uses the number $e = 2.718\ldots$, the $e^x$ key on the calculator. Type 2, press the sign key, then $e^x$, or type $e^x$ then −2; the keys are in [Before you start](#/math3042-q7/pre-reading). For a mean of 2, no tickets has probability $e^{-2}$.
 
 $$P(0) = e^{-2} = \mathbf{0.1353}$$
 
@@ -123,7 +123,7 @@ The last two differ because "each of two years" needs both years at 34 or fewer,
   {"q": "A COMP course inbox gets 4 emails an hour. P(exactly 2 in 15 minutes)? (4 decimals)", "type": "numeric", "answer": 0.1839, "tolerance": 0.0001, "explain": "Let X = the number of emails in 15 minutes. Poisson, rescaled: $$\\lambda = 4 \\times \\dfrac{15}{60} = 1$$ $$P(2) = \\dfrac{1^2 \\, e^{-1}}{2!} = \\dfrac{0.367879}{2} = \\mathbf{0.1839}$$"},
   {"q": "A factory line's cable has 0.3 flaws per metre. P(at least one flaw in 4 metres)? (4 decimals)", "type": "numeric", "answer": 0.6988, "tolerance": 0.0001, "explain": "Let X = the number of flaws in 4 metres. $$\\lambda = 0.3 \\times 4 = 1.2$$ At least one is the complement of none: $$P(X \\ge 1) = 1 - P(0) = 1 - e^{-1.2} = 1 - 0.301194 = \\mathbf{0.6988}$$"},
   {"q": "The same inbox, 4 emails an hour. P(exactly 1 email in a 15-minute span and exactly 1 in the next 15 minutes)? (4 decimals)", "type": "numeric", "answer": 0.1353, "tolerance": 0.0001, "explain": "Each 15-minute span has $\\lambda = 4 \\times \\frac{15}{60} = 1$. $$P(1) = \\dfrac{1^1 \\, e^{-1}}{1!} = 0.367879$$ The spans do not overlap, so they are independent. Multiply: $$0.367879 \\times 0.367879 = \\mathbf{0.1353}$$"},
-  {"q": "A SkyTrain station logs 3 delays a week. P(at most 2 delays in 2 weeks)? (4 decimals)", "type": "numeric", "answer": 0.0620, "tolerance": 0.0001, "explain": "Let X = the number of delays in 2 weeks. One interval, twice as long: $$\\lambda = 3 \\times 2 = 6, \\quad e^{-6} = 0.002479$$ $$P(X \\le 2) = e^{-6}\\left(1 + 6 + \\dfrac{6^2}{2!}\\right) = 0.002479 \\times 25 = \\mathbf{0.0620}$$"},
+  {"q": "A SkyTrain station logs 3 delays a week. P(at most 2 delays in 2 weeks)? (4 decimals)", "type": "numeric", "answer": 0.0620, "tolerance": 0.0001, "explain": "Let X = the number of delays in 2 weeks. One interval, twice as long: $$\\lambda = 3 \\times 2 = 6, \\quad e^{-6} = 0.002479$$ $$P(0) = e^{-6} = 0.002479 \\qquad P(1) = \\dfrac{6^1 e^{-6}}{1!} = 0.014873 \\qquad P(2) = \\dfrac{6^2 e^{-6}}{2!} = 0.044618$$ $$P(X \\le 2) = 0.002479 + 0.014873 + 0.044618 = \\mathbf{0.0620}$$"},
   {"q": "A lottery kiosk sells 0.5 winning tickets a day. P(exactly 3 winners in a 7-day week)? (4 decimals)", "type": "numeric", "answer": 0.2158, "tolerance": 0.0001, "explain": "Let X = the number of winning tickets in 7 days. $$\\lambda = 0.5 \\times 7 = 3.5$$ $$P(3) = \\dfrac{3.5^3 \\, e^{-3.5}}{3!} = \\dfrac{42.875 \\times 0.030197}{6} = \\mathbf{0.2158}$$"}
 ]
 ```

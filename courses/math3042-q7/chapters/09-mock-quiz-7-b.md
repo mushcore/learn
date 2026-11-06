@@ -59,7 +59,7 @@ A second full Quiz 7: the same three paper shapes with new numbers, then an RStu
     "type": "numeric",
     "answer": 0.3112,
     "tolerance": 0.0001,
-    "explain": "Each span has its own λ: $$\\lambda = 0.15 \\times 10 = 1.5$$ At most 1 is 0 or 1: $$P(X \\le 1) = e^{-1.5}(1 + 1.5) = 0.223130 \\times 2.5 = 0.557825$$ The spans do not overlap, so they are independent; multiply: $$0.557825^2 = \\mathbf{0.3112}$$ In R, `ppois(1, 1.5)^2`. One 20-minute span with λ = 3 would allow both messages in the same 10 minutes, a different question."
+    "explain": "Each span has its own λ: $$\\lambda = 0.15 \\times 10 = 1.5$$ At most 1 is 0 or 1: $$P(0) = e^{-1.5} = 0.223130 \\qquad P(1) = \\dfrac{1.5^1 e^{-1.5}}{1!} = 0.334695$$ $$P(X \\le 1) = P(0) + P(1) = 0.223130 + 0.334695 = 0.557825$$ The spans do not overlap, so they are independent; multiply: $$0.557825^2 = \\mathbf{0.3112}$$ In R, `ppois(1, 1.5)^2`. One 20-minute span with λ = 3 would allow both messages in the same 10 minutes, a different question."
   },
   {
     "q": "**Q3a (1 mark).** Lost-bag reports average 9 per day. The mean, $\\mu$ = ? (2 decimals)",
@@ -237,7 +237,7 @@ Check the script one slot at a time. Apart from the row count, the weather numbe
     "q": "**Part 2 (g) (1 of 2 marks).** Same rate, 0.8 per week. P(at least 3 heavy-rain days in four weeks).",
     "code": "1 - ppois(___, 3.2)",
     "answer": ["2"],
-    "explain": "Four weeks is one longer interval, so rescale: $$\\lambda = 0.8 \\times 4 = 3.2$$ At least 3 is the complement of at most 2, so the cumulative stops at 2: `1 - ppois(2, 3.2)`. Computed by the formula: $$1 - e^{-3.2}\\left(1 + 3.2 + \\dfrac{3.2^2}{2!}\\right) = 1 - 0.040762 \\times 9.32 = 1 - 0.379904 = \\mathbf{0.6201}$$"
+    "explain": "Four weeks is one longer interval, so rescale: $$\\lambda = 0.8 \\times 4 = 3.2$$ At least 3 is the complement of at most 2, so the cumulative stops at 2: `1 - ppois(2, 3.2)`. Computed by the formula: $$P(0) = e^{-3.2} = 0.040762 \\qquad P(1) = \\dfrac{3.2^1 e^{-3.2}}{1!} = 0.130439 \\qquad P(2) = \\dfrac{3.2^2 e^{-3.2}}{2!} = 0.208702$$ $$P(X \\le 2) = 0.040762 + 0.130439 + 0.208702 = 0.379904$$ $$1 - 0.379904 = \\mathbf{0.6201}$$"
   }
 ]
 ```
