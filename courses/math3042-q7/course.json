@@ -2,11 +2,12 @@
   "lang": "r",
   "title": "MATH 3042 Statistics · Quiz 7",
   "subtitle": "This week's lab quiz: binomial and Poisson on paper, working with data in RStudio",
-  "description": "A 90-minute drill shaped like the quiz: the announcement and the format, one short lesson per idea (binomial on paper, at least and at most, Poisson with a rescaled λ, the six data moves in RStudio, probabilities from a data frame with a printed conclusion, the d, p and r functions with a simulated check), two mock quizzes in the real two-part format, and a one-page know-cold sheet.",
+  "description": "A 98-minute drill shaped like the quiz: the announcement and the format, a pre-reading page for the calculator keys and the R basics, one short lesson per idea (binomial on paper, at least and at most, Poisson with a rescaled λ, the six data moves in RStudio, probabilities from a data frame with a printed conclusion, the d, p and r functions with a simulated check), two mock quizzes in the real two-part format, and a one-page know-cold sheet.",
   "intro": ":::quiz Quiz 7\n**This week, in the lab session, 50 minutes.** Part 1 is paper and pencil with a calculator (10 marks); Part 2 is RStudio, knitting a notebook from the Learning Hub template to a Word file (10 marks). The announced topics: *Working with data in RStudio*, *Poisson distribution*, *Binomial distribution*. A probability is rounded to four decimal places; μ, σ and Z to two. No makeups.\n:::",
   "plan": {
-    "title": "Ninety minutes to Quiz 7",
+    "title": "Ninety-eight minutes to Quiz 7",
     "steps": [
+      { "lesson": "pre-reading", "note": "8 minutes: nCx and e^x on your calculator, three R facts" },
       { "lesson": "start-here", "note": "3 minutes: the format and the marks map" },
       { "lesson": "binomial-on-paper", "note": "12 minutes: the formula with the numbers in, then μ, σ and Z" },
       { "lesson": "at-least-at-most", "note": "10 minutes: the words table; write the sum, then the R line" },
@@ -23,6 +24,7 @@
     {
       "title": "1. Start here",
       "lessons": [
+        { "id": "pre-reading", "title": "Before you start: the calculator keys and the three R facts the lessons assume", "file": "chapters/00-pre-reading.md" },
         { "id": "start-here", "title": "Quiz 7: the format, the marks, and the 90-minute path", "file": "chapters/01-start-here.md" }
       ]
     },

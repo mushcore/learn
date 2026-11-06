@@ -29,5 +29,6 @@ Everything else (the tiny cases, the mock quizzes' numbers, μ and σ for the di
 
 ## Game facts used
 
+- `00-pre-reading.md`: `classic.scroll.tiers` (Intermediate scroll, 60 %).
 - `02-binomial-on-paper.md`: `classic.scroll.tiers` (Intermediate scroll passes at 60 %) if the writer used it; otherwise `none`.
 - every other lesson: `none`.

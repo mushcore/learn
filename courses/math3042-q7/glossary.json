@@ -11,5 +11,8 @@
   "independent events|independent": "events where $P(A \\mid B) = P(A)$, equivalently $P(A \\cap B) = P(A)\\,P(B)$. See [Probabilities from a data frame](#/math3042-q7/r-probabilities-from-data).",
   "na.rm": "an argument of `mean()` and `sum()` that drops missing values (NA) before computing; without it a single NA makes the answer NA. See [Probabilities from a data frame](#/math3042-q7/r-probabilities-from-data).",
   "dbinom|pbinom|rbinom": "R's binomial functions: `dbinom(x, size, prob)` is $P(X = x)$, `pbinom(q, size, prob)` is $P(X \\le q)$, `rbinom(n, size, prob)` draws $n$ random values. See [dbinom, pbinom, dpois, ppois](#/math3042-q7/r-binomial-poisson).",
-  "dpois|ppois|rpois": "R's Poisson functions: `dpois(x, lambda)` is $P(X = x)$, `ppois(q, lambda)` is $P(X \\le q)$, `rpois(n, lambda)` draws $n$ random values. See [dbinom, pbinom, dpois, ppois](#/math3042-q7/r-binomial-poisson)."
+  "dpois|ppois|rpois": "R's Poisson functions: `dpois(x, lambda)` is $P(X = x)$, `ppois(q, lambda)` is $P(X \\le q)$, `rpois(n, lambda)` draws $n$ random values. See [dbinom, pbinom, dpois, ppois](#/math3042-q7/r-binomial-poisson).",
+  "nCx|combination": "the number of ways to choose which $x$ of the $n$ trials are the successes, ${}_nC_x = n!/(x!\\,(n-x)!)$; the calculator's nCr key, R's choose(n, x). See [Before you start](#/math3042-q7/pre-reading).",
+  "factorial": "$x! = x \\times (x-1) \\times \\dots \\times 1$, with $0! = 1$.",
+  "knit": "RStudio's button that re-runs every chunk of the notebook from the top in a fresh session and writes the Word file Part 2 is marked on."
 }
