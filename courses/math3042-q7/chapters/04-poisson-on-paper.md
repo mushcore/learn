@@ -154,6 +154,21 @@ The last two differ because "each of two years" needs both years at 34 or fewer,
 
 ## A COMP inbox, a cable line, a SkyTrain station and a lottery kiosk
 
+:::exam Formula sheet lines for these questions
+**On the sheet you are given:**
+
+- Poisson: $P(x) = e^{-\lambda} \cdot \dfrac{\lambda^x}{x!}$
+- Poisson: $\mu = \lambda$ and $\sigma^2 = \lambda$
+- Complement: $P(\bar{A}) = 1 - P(A)$
+- Independent events: $P(A \cap B) = P(A) \cdot P(B)$
+
+**Not on the sheet, so know it:**
+
+- $\lambda = \text{rate} \times \text{interval}$, in the units the question asks about.
+- At least k is $1 - P(\text{at most } k - 1)$; at least one is $1 - P(0)$.
+- "In each of two separate spans" means two independent events: multiply the two probabilities.
+:::
+
 ```quiz
 [
   {"q": "A COMP course inbox gets 4 emails an hour. P(exactly 2 in 15 minutes)? (4 decimals)", "type": "numeric", "answer": 0.1839, "tolerance": 0.0001, "explain": "Let X = the number of emails in 15 minutes. Poisson, rescaled: $$\\lambda = \\underbrace{4}_{\\text{emails per hour}} \\times \\underbrace{\\dfrac{15}{60}}_{\\text{hours asked about}} = 1$$ $$P(2) = \\dfrac{\\underbrace{1^2}_{\\text{mean 1, x = 2}} \\, \\underbrace{e^{-1}}_{\\text{mean 1}}}{\\underbrace{2!}_{\\text{x = 2}}} = \\dfrac{0.367879}{2} = \\mathbf{0.1839}$$"},

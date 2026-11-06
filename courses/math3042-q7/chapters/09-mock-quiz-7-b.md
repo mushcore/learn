@@ -31,6 +31,27 @@ A second full Quiz 7: the same three paper shapes with new numbers, then an RStu
 >
 > c. [1] Is 16 reports in a day unusual? Justify with a Z-score.
 
+:::exam Formula sheet lines for these questions
+**On the sheet you are given:**
+
+- Binomial: $P(x) = C(n,x)\,p^x q^{n-x}$
+- Binomial: $\mu = np$ and $\sigma^2 = npq$
+- Combinations: $C(n,r) = \dfrac{n!}{(n-r)!\,r!}$, the nCr key
+- Poisson: $P(x) = e^{-\lambda} \cdot \dfrac{\lambda^x}{x!}$
+- Poisson: $\mu = \lambda$ and $\sigma^2 = \lambda$
+- $Z = \dfrac{X - \mu}{\sigma}$
+- Complement: $P(\bar{A}) = 1 - P(A)$
+- Independent events: $P(A \cap B) = P(A) \cdot P(B)$
+
+**Not on the sheet, so know it:**
+
+- $q = 1 - p$, the chance of a fail. The sheet uses q without defining it.
+- $\sigma = \sqrt{\sigma^2}$. **The sheet gives the variance; take the square root for σ.**
+- A count is unusual when $|Z| > 2$.
+- $\lambda = \text{rate} \times \text{interval}$, in the units the question asks about.
+- At least k is $1 - P(\text{at most } k - 1)$; at least one is $1 - P(0)$.
+:::
+
 ```quiz
 [
   {
@@ -162,6 +183,21 @@ Something
 :::
 
 Check the script one slot at a time. Apart from the row count, the weather numbers are left to RStudio: every item asks for code.
+
+:::exam Formula sheet lines for these questions
+**On the sheet you are given:**
+
+- Either event: $P(A \cup B) = P(A) + P(B) - P(A \cap B)$
+- Both events: $P(A \cap B) = P(A) \cdot P(B \mid A)$
+- Poisson: $P(x) = e^{-\lambda} \cdot \dfrac{\lambda^x}{x!}$
+- Complement: $P(\bar{A}) = 1 - P(A)$
+
+**Not on the sheet, so know it:**
+
+- $P(B \mid A) = \dfrac{P(A \cap B)}{P(A)}$: the sheet\'s "both events" rule, divided by $P(A)$.
+- $\lambda = \text{rate} \times \text{interval}$, in the units the question asks about.
+- Every R function name and its argument order: nothing in RStudio is on the sheet.
+:::
 
 ```quiz
 [

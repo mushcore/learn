@@ -487,6 +487,20 @@ In MapleStory, Star Force adds stars to gear, and a failure keeps the star. At 1
 - $p = 0.30$, the chance one tap succeeds, on the wiki's table, without the Star Catch bonus that v.271 builds in.
 - $q = 0.70$, the chance one tap fails.
 
+:::exam Formula sheet lines for these questions
+**On the sheet you are given:**
+
+- Binomial: $P(x) = C(n,x)\,p^x q^{n-x}$
+- Poisson: $P(x) = e^{-\lambda} \cdot \dfrac{\lambda^x}{x!}$
+- Complement: $P(\bar{A}) = 1 - P(A)$
+
+**Not on the sheet, so know it:**
+
+- $\lambda = \text{rate} \times \text{interval}$, in the units the question asks about.
+- At least k is $1 - P(\text{at most } k - 1)$; at least one is $1 - P(0)$.
+- Every R function name and its argument order: nothing in RStudio is on the sheet.
+:::
+
 ```quiz
 [
   {"type": "fill", "q": "P(exactly 3 of the 40 taps are rejected).", "code": "___(3, 40, 0.05)", "answer": ["dbinom"], "explain": "Exactly one value, so the d function: `dbinom(3, 40, 0.05)`, x = 3, size = 40, prob = 0.05. Computed: $$\\underbrace{C(40,3)}_{\\text{3 of 40 taps}}\\,\\underbrace{0.05^3}_{\\text{3 rejects, 0.05 each}}\\,\\underbrace{0.95^{37}}_{\\text{37 accepts, 0.95 each}} = \\mathbf{0.1851}$$"},

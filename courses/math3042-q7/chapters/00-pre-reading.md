@@ -141,6 +141,18 @@ The `[1]` before each printed answer is the position of the first value on that 
 - $e^{-\lambda}$ is the $e^x$ key with a negative number.
 - In R, TRUE counts 1, so `mean()` of a TRUE/FALSE column is a proportion.
 
+:::exam Formula sheet lines for these questions
+**On the sheet you are given:**
+
+- Combinations: $C(n,r) = \dfrac{n!}{(n-r)!\,r!}$, the nCr key
+
+**Not on the sheet, so know it:**
+
+- $n! = n \times (n-1) \times \dots \times 1$, and $0! = 1$.
+- $e^{-\lambda}$ is the $e^x$ key with the minus sign typed first.
+- `mean()` of a TRUE/FALSE vector is the share of TRUEs, because TRUE counts 1.
+:::
+
 ```quiz
 [
   {"q": "${}_{12}C_2$ = ?", "type": "numeric", "answer": 66, "tolerance": 0, "explain": "$$ {}_{12}C_2 = \\dfrac{\\underbrace{12 \\times 11}_{\\text{2 factors down from 12}}}{\\underbrace{2 \\times 1}_{\\text{2!}}} = \\dfrac{132}{2} = \\mathbf{66}$$ On the calculator: 12, nCr, 2."},

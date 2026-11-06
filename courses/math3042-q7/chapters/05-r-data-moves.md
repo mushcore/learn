@@ -333,6 +333,16 @@ The long version of every move is in [Lab 5: conditional probability in R](#/mat
 
 ## A pulse study on survey and a new CSV, one blank per line
 
+:::exam Formula sheet lines for these questions
+**On the sheet you are given:**
+
+- Nothing on the sheet covers these.
+
+**Not on the sheet, so know it:**
+
+- These are R moves from memory: filtering out NA, building TRUE/FALSE columns, counting rows and computing a title. Nothing in RStudio is on the sheet.
+:::
+
 ```quiz
 [
   {"type": "fill", "q": "Keep only the students with a recorded pulse and an exercise level.", "code": "survey2 <- filter(survey, ___(Pulse), !is.na(Exer))", "answer": ["!is.na"], "explain": "The full line is `survey2 <- filter(survey, !is.na(Pulse), !is.na(Exer))`. `is.na()` is TRUE on a missing value and `!` flips it, so the row stays when the pulse is present. The comma between the two conditions means AND."},

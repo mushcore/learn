@@ -192,6 +192,20 @@ The R side is drilled in [dbinom, pbinom, dpois, ppois](#/math3042-q7/r-binomial
 
 ## SkyTrain gates, lab machines and exam guesses
 
+:::exam Formula sheet lines for these questions
+**On the sheet you are given:**
+
+- Binomial: $P(x) = C(n,x)\,p^x q^{n-x}$
+- Complement: $P(\bar{A}) = 1 - P(A)$
+
+**Not on the sheet, so know it:**
+
+- $q = 1 - p$, the chance of a fail. The sheet uses q without defining it.
+- At least k is $1 - P(\text{at most } k - 1)$; at least one is $1 - P(0)$.
+- Fewer than k is at most k − 1; more than k is $1 - P(\text{at most } k)$; a to b inclusive is $P(\text{at most } b) - P(\text{at most } a - 1)$.
+- Every R function name and its argument order: nothing in RStudio is on the sheet.
+:::
+
 ```quiz
 [
   {"q": "15 % of SkyTrain gate taps are rejected. Of 20 taps, which R line gives P(at least 4 rejected)?", "options": ["`1 - pbinom(3, 20, 0.15)`", "`1 - pbinom(4, 20, 0.15)`", "`pbinom(4, 20, 0.15)`", "`1 - dbinom(4, 20, 0.15)`"], "answer": 0, "explain": "At least 4 is everything except 0 to 3. So subtract P(X ≤ 3) from 1: `1 - pbinom(3, 20, 0.15)`, which is 0.3523 (computed). Using 4 inside drops the count 4 itself and gives more than 4."},
@@ -226,6 +240,19 @@ A GMS Chaos Scroll that succeeds changes each stat by −5 to +5; the wiki's tab
 
 - $p = 0.0099$, the chance one successful Chaos Scroll gives +5.
 - $q = 0.9901$, the chance it gives anything else.
+
+:::exam Formula sheet lines for these questions
+**On the sheet you are given:**
+
+- Binomial: $P(x) = C(n,x)\,p^x q^{n-x}$
+- Complement: $P(\bar{A}) = 1 - P(A)$
+
+**Not on the sheet, so know it:**
+
+- $q = 1 - p$, the chance of a fail. The sheet uses q without defining it.
+- Within n tries means at least one success: $1 - P(0) = 1 - q^n$.
+- Every R function name and its argument order: nothing in RStudio is on the sheet.
+:::
 
 ```quiz
 [

@@ -80,6 +80,20 @@ A and B are logical columns; on `survey` add `na.rm=TRUE` or filter the NA rows 
 | "at least $k$" stops the cumulative one below $k$ | **`1 - pbinom(k-1, n, p)`**, never `1 - pbinom(k, n, p)` |
 | a column with NA gives NA | `mean(survey$Pulse, na.rm=TRUE)`, or `filter(survey, !is.na(Pulse))` first |
 
+:::exam Formula sheet lines for these questions
+**On the sheet you are given:**
+
+- Binomial: $\mu = np$ and $\sigma^2 = npq$
+- Poisson: $P(x) = e^{-\lambda} \cdot \dfrac{\lambda^x}{x!}$
+
+**Not on the sheet, so know it:**
+
+- $\sigma = \sqrt{\sigma^2}$. **The sheet gives the variance; take the square root for σ.**
+- At least k is $1 - P(\text{at most } k - 1)$; at least one is $1 - P(0)$.
+- $\lambda = \text{rate} \times \text{interval}$, in the units the question asks about.
+- $P(B \mid A) = \dfrac{P(A \cap B)}{P(A)}$: the sheet\'s "both events" rule, divided by $P(A)$.
+:::
+
 ```quiz
 [
   {

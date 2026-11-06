@@ -193,6 +193,22 @@ So for the 5.11 chaos the orbs cost, you level two gems on average ($\mu = 2$). 
 
 ## Ten Intermediate scrolls and an eight-question guess
 
+:::exam Formula sheet lines for these questions
+**On the sheet you are given:**
+
+- Binomial: $P(x) = C(n,x)\,p^x q^{n-x}$
+- Binomial: $\mu = np$ and $\sigma^2 = npq$
+- Combinations: $C(n,r) = \dfrac{n!}{(n-r)!\,r!}$, the nCr key
+- $Z = \dfrac{X - \mu}{\sigma}$
+- Complement: $P(\bar{A}) = 1 - P(A)$
+
+**Not on the sheet, so know it:**
+
+- $q = 1 - p$, the chance of a fail. The sheet uses q without defining it.
+- $\sigma = \sqrt{\sigma^2}$. **The sheet gives the variance; take the square root for σ.**
+- A count is unusual when $|Z| > 2$.
+:::
+
 ```quiz
 [
   {"q": "You use 10 Intermediate scrolls, each passing with $p = 0.6$. P(exactly 7 pass)? (4 decimals)", "type": "numeric", "answer": 0.2150, "tolerance": 0.0001, "explain": "Let X = the number of passes in 10 scrolls. Binomial with $n = 10$, $p = 0.6$, $q = 0.4$. $${}_{10}C_7 = {}_{10}C_3 = \\dfrac{\\underbrace{10 \\times 9 \\times 8}_{\\text{3 factors down from 10}}}{\\underbrace{3 \\times 2 \\times 1}_{\\text{3! for the 3 fails}}} = 120$$ $$P(7) = \\underbrace{{}_{10}C_7}_{\\text{orders with 7 passes}} \\times \\underbrace{(0.6)^7}_{\\text{7 pass, 0.6 each}} \\times \\underbrace{(0.4)^3}_{\\text{3 fail, 0.4 each}} = 120 \\times 0.027994 \\times 0.064 = \\mathbf{0.2150}$$"},

@@ -257,6 +257,22 @@ The long version is [Lab 5: conditional probability in R](#/math3042-u4/lab5-con
 
 The two logical vectors are `L <- survey$W.Hnd == "Left"` and `Fem <- survey$Sex == "Female"`. The name `F` is avoided because R already uses it for FALSE.
 
+:::exam Formula sheet lines for these questions
+**On the sheet you are given:**
+
+- Either event: $P(A \cup B) = P(A) + P(B) - P(A \cap B)$
+- Mutually exclusive: $P(A \cup B) = P(A) + P(B)$
+- Both events: $P(A \cap B) = P(A) \cdot P(B \mid A)$
+- Independent events: $P(A \cap B) = P(A) \cdot P(B)$
+- Complement: $P(\bar{A}) = 1 - P(A)$
+
+**Not on the sheet, so know it:**
+
+- $P(B \mid A) = \dfrac{P(A \cap B)}{P(A)}$: the sheet\'s "both events" rule, divided by $P(A)$.
+- In R, a share is a count of TRUE rows over a count of rows; skip NA rows first.
+- Every R function name and its argument order: nothing in RStudio is on the sheet.
+:::
+
 ```quiz
 [
   {"type": "fill", "q": "P(L), the share of left-handed writers, skipping NA.", "code": "p.L <- ___(L, na.rm=TRUE)", "answer": ["mean"], "explain": "The full line is `p.L <- mean(L, na.rm=TRUE)`. TRUE counts 1 and FALSE 0, so the mean of a logical vector is the share of TRUE. `sum(L, na.rm=TRUE)/sum(!is.na(L))` gives the same number."},
@@ -281,6 +297,17 @@ Each prefix tier the boots can roll has a weight, read from the game's files. At
 | All prefixes | 37 | 37000 |
 
 Read weights the way you read the rows of a data frame. **P(A) is the weight where A is true over the total weight. P(A given B) keeps only B's weight in the bottom.** Just like a data frame where each tier appears 1000 times: a weight of 1000 counts like 1000 rows.
+
+:::exam Formula sheet lines for these questions
+**On the sheet you are given:**
+
+- Both events: $P(A \cap B) = P(A) \cdot P(B \mid A)$
+
+**Not on the sheet, so know it:**
+
+- $P(A)$ from a weight table is the weight where A is true over the total weight.
+- $P(B \mid A)$ keeps only A\'s weight in the bottom.
+:::
 
 ```quiz
 [
