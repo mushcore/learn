@@ -2,7 +2,7 @@
 title: "At least, at most, more than: the words become a sum or a complement"
 minutes: 10
 ---
-<!-- facts: gms.starforce.rates-0-14, gms.starforce.star-catch, classic.scroll.tiers, poe1.chaos.affix-count, gms.scroll.chaos-outcomes -->
+<!-- facts: gms.starforce.rates-0-14, gms.starforce.star-catch, classic.scroll.tiers, poe1.fusing.six-link-measured, gms.scroll.chaos-outcomes -->
 Most binomial questions do not ask for one exact count. They say "at least", "at most" or "between", and the first mark is turning those words into the right set of counts.
 
 ## Each wording names a set of counts
@@ -168,23 +168,23 @@ The R side is drilled in [dbinom, pbinom, dpois, ppois](#/math3042-q7/r-binomial
 ]
 ```
 
-## Star Force, Greater scrolls, Chaos Orbs and Chaos Scrolls
+## Star Force, Greater scrolls, Orbs of Fusing and Chaos Scrolls
 
-The same words table runs every item-upgrade question in the games. Each item below is its own independent roll at a fixed chance.
+The same words table runs the questions players ask while upgrading gear: will I get it within the taps or orbs I can afford? Each try below is an independent roll at a fixed chance, and "I get it within n tries" means at least one success in n tries.
 
-Star Force, the GMS enhancement that adds stars to gear, succeeds 40 % at 12 to 13 stars on the wiki's table, without the Star Catch bonus that v.271 builds in. Below 15 stars a failure keeps the star, so ten items each at 12 stars, one attempt each, are ten tries at the same p.
+Star Force, the GMS enhancement that adds stars to gear, succeeds 40 % at 12 to 13 stars on the wiki's table, without the Star Catch bonus that v.271 builds in. Below 15 stars a failure keeps the star, so every tap on an item at 12 stars is another try at the same p until one succeeds.
 
 A Greater scroll in MapleStory Classic passes 10 % of the time, and each upgrade slot rolls on its own.
 
-A Chaos Orb in Path of Exile rerolls every modifier on a rare, and the wiki gives 4, 5 or 6 affixes in the ratio 8:3:1. Six affixes is 1 in 12, fresh on every reroll.
+An Orb of Fusing in Path of Exile rerolls the links between an item's sockets, and players spam it for a six-link. A community test of 100 000 Fusings on a 20 % quality item, which the wiki cites, measured about 1 in 1000 per orb.
 
 A GMS Chaos Scroll that succeeds changes each stat by −5 to +5; the wiki's table gives +5 with probability 0.99 %, rolled anew on every successful use.
 
 ```quiz
 [
-  {"q": "Ten items each at 12 stars, one Star Force attempt each at $p = 0.40$. Which R line gives P(at least 4 succeed)?", "options": ["`1 - pbinom(3, 10, 0.4)`", "`1 - pbinom(4, 10, 0.4)`", "`pbinom(4, 10, 0.4)`", "`1 - dbinom(3, 10, 0.4)`"], "answer": 0, "explain": "At least 4 is everything except 0 to 3, so subtract P(X ≤ 3) from 1: `1 - pbinom(3, 10, 0.4)` = $1 - 0.3823 = \\mathbf{0.6177}$ (computed). A 4 inside drops the count 4 itself and gives more than 4."},
+  {"q": "Your item is at 12 stars and you have mesos for 5 taps at $p = 0.40$. Which R line gives P(you reach 13 stars within the 5 taps)?", "options": ["`1 - pbinom(0, 5, 0.4)`", "`1 - pbinom(1, 5, 0.4)`", "`dbinom(1, 5, 0.4)`", "`pbinom(1, 5, 0.4)`"], "answer": 0, "explain": "Reaching 13 within 5 taps means at least one success in 5 tries, which is everything except 0: `1 - pbinom(0, 5, 0.4)`. By hand, all five fail with $0.6^5 = 0.07776$, so $$1 - 0.07776 = \\mathbf{0.9222}$$ `dbinom(1, 5, 0.4)` is exactly one success, but you stop tapping at the first success anyway, so what matters is that one happens at all."},
   {"q": "A Greater scroll passes with probability 0.1. Seven slots, one scroll each. P(at least one passes)? (4 decimals)", "type": "numeric", "answer": 0.5217, "tolerance": 0.0001, "explain": "Let X = the number of the 7 scrolls that pass; binomial with $n = 7$, $p = 0.1$. At least one is the complement of none: $$P(X \\ge 1) = 1 - P(0) = 1 - 0.9^7 = 1 - 0.478297 = \\mathbf{0.5217}$$"},
-  {"q": "24 Chaos Orb rerolls on one rare; each lands 6 affixes with $p = 1/12$. P(at most 1 of the 24 lands 6 affixes).", "type": "fill", "code": "pbinom(___, 24, 1/12)", "answer": ["1"], "explain": "At most 1 is 0 or 1, so q = 1: `pbinom(1, 24, 1/12)`. By hand: $$P(0) = \\left(\\tfrac{11}{12}\\right)^{24} = 0.123901 \\qquad P(1) = {}_{24}C_1 \\left(\\tfrac{1}{12}\\right)\\left(\\tfrac{11}{12}\\right)^{23} = 0.270329$$ $$P(X \\le 1) = 0.123901 + 0.270329 = \\mathbf{0.3942}$$"},
+  {"q": "You have 500 Orbs of Fusing for a six-link, and each orb six-links with $p = 0.001$. P(you six-link within the 500 orbs)? (4 decimals)", "type": "numeric", "answer": 0.3936, "tolerance": 0.0001, "explain": "Let X = the number of six-link results in 500 Fusings; binomial with $n = 500$, $p = 0.001$. Within 500 orbs means at least one: $$P(X \\ge 1) = 1 - P(0) = 1 - 0.999^{500} = 1 - 0.606379 = \\mathbf{0.3936}$$ In R, `1 - pbinom(0, 500, 0.001)`. So 500 orbs fail to six-link about 61 % of the time."},
   {"q": "20 successful Chaos Scroll uses on an item with one stat; each gives +5 with $p = 0.0099$. P(at least one +5)? (4 decimals)", "type": "numeric", "answer": 0.1804, "tolerance": 0.0001, "explain": "Let X = the number of +5 results in 20 successful uses; binomial with $n = 20$, $p = 0.0099$. $$P(X \\ge 1) = 1 - 0.9901^{20} = 1 - 0.819561 = \\mathbf{0.1804}$$ The rate applies to successful uses only, so failed scrolls do not count toward the 20."}
 ]
 ```
