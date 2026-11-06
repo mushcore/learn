@@ -107,7 +107,36 @@ $$P(A \mid B) = P(A) \quad \text{made-up table: } 0.4286 \text{ against } 0.4000
 
 Those differ, so in the made-up table A and B are not independent. The other test gives the same verdict: $P(A)P(B) = 0.4 \times 0.7 = 0.28$, not $0.3$.
 
-Lab 5 asked whether precipitation is more likely on a Monday, from the two-way table `tab1` of day by `has.Precip`:
+Lab 5 first builds a two-way table of weekday by `has.Precip`:
+
+```r
+SFU.Weather$DoW <- weekdays(SFU.Weather$Date)
+tab1 <- table(SFU.Weather[c("DoW", "has.Precip")])
+```
+
+:::info R syntax
+| Code | What it does |
+|---|---|
+| `weekdays(SFU.Weather$Date)` | Gives each row's day name ("Monday", …) from the Date column. It works because `colClasses` read that column as a date. |
+| `SFU.Weather$DoW <-` | Stores the day names as a new column, `DoW`. |
+| `SFU.Weather[c("DoW", "has.Precip")]` | Single brackets with a vector of names keep just those two columns. |
+| `table(…)` | Counts every pair: one row per weekday, one column each for FALSE and TRUE. |
+| `tab1 <-` | Stores the table under the name `tab1`. |
+
+**Left to right**
+
+- `SFU.Weather$DoW <- weekdays(SFU.Weather$Date)`: "Store as the new column DoW (`SFU.Weather$DoW <-`) the day name (`weekdays`) of each date (`SFU.Weather$Date`)."
+- `tab1 <- table(SFU.Weather[c("DoW", "has.Precip")])`: "Store as tab1 (`tab1 <-`) the counts (`table`) of the columns DoW and has.Precip (`SFU.Weather[c(…)]`)."
+
+**Right to left**, the order R runs it
+
+- `SFU.Weather$DoW <- weekdays(SFU.Weather$Date)`: "Take the Date column, turn each date into its day name (`weekdays`), then store the result as DoW (`<-`)."
+- `tab1 <- table(SFU.Weather[c("DoW", "has.Precip")])`: "Keep the two columns (`[c(…)]`), count each weekday-and-wet pair (`table`), then store the table as tab1 (`<-`)."
+:::
+
+That table is `tab1`, with a row per weekday and a column per value of `has.Precip`.
+
+Lab 5 then asked whether precipitation is more likely on a Monday:
 
 ```r
 p.Precip <- sum( tab1[ ,"TRUE"] )/ sum(tab1)
