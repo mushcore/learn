@@ -231,6 +231,10 @@ button, a, [role="button"] { -webkit-tap-highlight-color: transparent; }
 .math .tilde { position: relative; }
 .math .tilde::after { content: "~"; position: absolute; left: 0; right: 0; top: -0.55em; text-align: center; font-size: 0.9em; }
 .math .frac { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; margin: 0 3px; line-height: 1.15; }
+.math .ubrace { display: inline-flex; flex-direction: column; align-items: center; vertical-align: text-top; margin: 0 3px; line-height: 1.15; }
+.math .ub-body { border: 2px solid var(--blue); border-top: 0; border-radius: 0 0 8px 8px; padding: 0 5px 3px; }
+.math .ub-label { font-family: var(--body); font-size: 0.58em; color: var(--blue); margin-top: 3px; max-width: 9em; text-align: center; line-height: 1.25; }
+.math .ub-label .txt { font-size: 1em; }
 .math .frac .num { border-bottom: 1px solid var(--ink); padding: 0 3px; }
 .math .frac .den { padding: 0 3px; }
 .math .sqrt .ovl { border-top: 1px solid var(--ink); text-decoration: none; padding: 0 2px; }

@@ -25,21 +25,29 @@ For example, using scrolls until one passes has no fixed n, so the binomial form
 
 In MapleStory Classic, an Intermediate scroll is a scroll that upgrades a piece of gear and passes at a fixed rate: 60 %. Use three of them on one item. Each use passes (P) or fails (F), and the rate does not change.
 
-So $n = 3$ tries and $p = 0.6$. Let X be the number of passes. Three tries give $2^3 = 8$ sequences.
+So $n = 3$ tries and $p = 0.6$. **A fail takes the rest of the chance: $q = 1 - 0.6 = 0.4$.** Let X be the number of passes.
+
+A **sequence** is the full result of the three uses, written in order. For example, PPF means the first scroll passed, the second passed and the third failed. Just like a three-game record such as win, win, loss.
+
+**Each use has 2 possible results, P or F.** The first use has 2 results. Each of those can be followed by 2 results on the second use, and each of those by 2 on the third. That makes $2 \times 2 \times 2 = 2^3 = 8$ sequences. Just like flipping a coin three times: HHH, HHT, HTH and so on, 8 in all. The grid sorts the 8 sequences by how many passes they hold.
 
 ```diagram
 {"type": "grid", "title": "Three scrolls: the eight sequences by number of passes", "nodes": [{"id": "h0", "label": "X = passes", "row": 0, "col": 0}, {"id": "h1", "label": "Sequences", "row": 0, "col": 1}, {"id": "h2", "label": "How many", "row": 0, "col": 2}, {"id": "h3", "label": "Each one", "row": 0, "col": 3}, {"id": "r0a", "label": "0", "row": 1, "col": 0}, {"id": "r0b", "label": "FFF", "row": 1, "col": 1}, {"id": "r0c", "label": "1", "row": 1, "col": 2}, {"id": "r0d", "label": "0.4³", "row": 1, "col": 3}, {"id": "r1a", "label": "1", "row": 2, "col": 0}, {"id": "r1b", "label": "PFF, FPF, FFP", "row": 2, "col": 1}, {"id": "r1c", "label": "3", "row": 2, "col": 2}, {"id": "r1d", "label": "0.6 × 0.4²", "row": 2, "col": 3}, {"id": "r2a", "label": "2", "row": 3, "col": 0}, {"id": "r2b", "label": "PPF, PFP, FPP", "row": 3, "col": 1}, {"id": "r2c", "label": "3", "row": 3, "col": 2}, {"id": "r2d", "label": "0.6² × 0.4", "row": 3, "col": 3}, {"id": "r3a", "label": "3", "row": 4, "col": 0}, {"id": "r3b", "label": "PPP", "row": 4, "col": 1}, {"id": "r3c", "label": "1", "row": 4, "col": 2}, {"id": "r3d", "label": "0.6³", "row": 4, "col": 3}], "hi": ["r2a", "r2b", "r2c", "r2d"], "caption": "Exactly two passes: three orders, each with two 0.6s and one 0.4."}
 ```
 
-Each of the three orders for two passes has probability $0.6 \times 0.6 \times 0.4$. **Orders that cannot happen together add.** Just like winning a raffle with ticket A or ticket B: two separate ways to win, so their chances add. Add the three orders.
+Take one order with two passes, PPF. **Its chance is the three uses multiplied together:** 0.6 for the first pass, 0.6 for the second pass, and 0.4 for the fail.
 
-$$P(X = 2) = 3 \times 0.6^2 \times 0.4 = 3 \times 0.36 \times 0.4 = \mathbf{0.432}$$
+$$P(\text{PPF}) = \underbrace{0.6}_{\text{1st passes}} \times \underbrace{0.6}_{\text{2nd passes}} \times \underbrace{0.4}_{\text{3rd fails}} = 0.144$$
+
+PFP and FPP hold the same two 0.6s and one 0.4 in a different order, so each of them is also 0.144. **Orders that cannot happen together add.** Just like winning a raffle with ticket A or ticket B: two separate ways to win, so their chances add. Add the three orders: $0.144 + 0.144 + 0.144$, which is 3 times one order.
+
+$$P(X = 2) = \underbrace{3}_{\text{orders}} \times \underbrace{0.6^2 \times 0.4}_{\text{one order}} = 3 \times 0.36 \times 0.4 = \mathbf{0.432}$$
 
 ## The formula: count the orders, then price one order
 
-**The binomial formula does those two steps for any n: count the orders, then multiply by the chance of one order.**
+The scroll answer took two steps. **Step 1: count the orders that give x passes** (3 orders above). **Step 2: multiply by the chance of one such order** ($0.6 \times 0.6 \times 0.4$ above). The binomial formula does those same two steps for any number of tries.
 
-$$P(x) = {}_nC_x \, p^x \, q^{n-x}$$
+$$P(x) = \underbrace{{}_nC_x}_{\text{step 1: how many orders}} \times \underbrace{p^x \, q^{n-x}}_{\text{step 2: chance of one order}}$$
 
 :::tip The two exponents add to n
 For the three scrolls, p gets exponent 2 and q gets exponent 1, and 2 + 1 = 3. If yours do not add to n, one exponent is wrong.
@@ -57,7 +65,9 @@ $${}_3C_2 = \frac{3!}{2!\,1!} = \frac{6}{2 \times 1} = \mathbf{3}$$
 
 The keys, and the fraction form for a calculator without nCr, are in [Before you start](#/math3042-q7/pre-reading).
 
-$$P(2) = {}_3C_2 \, (0.6)^2 \, (0.4)^{1} = 3 \times 0.36 \times 0.4 = \mathbf{0.432}$$
+Now put the scroll numbers in. Each label says what the number is and why it sits there:
+
+$$P(2) = \underbrace{{}_3C_2}_{\text{3 orders give 2 passes}} \times \underbrace{(0.6)^2}_{\text{2 passes, 0.6 each}} \times \underbrace{(0.4)^{1}}_{\text{1 fail, 0.4 each}} = 3 \times 0.36 \times 0.4 = \mathbf{0.432}$$
 
 The same line for the other counts gives $P(0) = 0.064$, $P(1) = 0.288$ and $P(3) = 0.216$ (computed). **The four add to 1, which is the check that nothing was missed.** Just like the slices of a whole pizza: every possible count is one slice, and together they make the whole.
 
@@ -69,7 +79,7 @@ The course's binomial lab rolls a fair 12-sided die 30 times. X is the number of
 
 $${}_{30}C_3 = \frac{30 \times 29 \times 28}{3 \times 2 \times 1} = \mathbf{4060}$$
 
-$$P(3) = {}_{30}C_3 \left(\tfrac{1}{12}\right)^3 \left(\tfrac{11}{12}\right)^{27} = \mathbf{0.2242}$$
+$$P(3) = \underbrace{{}_{30}C_3}_{\text{orders with 3 eights}} \times \underbrace{\left(\tfrac{1}{12}\right)^3}_{\text{3 rolls show 8, 1/12 each}} \times \underbrace{\left(\tfrac{11}{12}\right)^{27}}_{\text{27 rolls do not, 11/12 each}} = \mathbf{0.2242}$$
 
 In R you can type the formula yourself, then get the same number from the built-in function `dbinom`. Just like adding a bill by hand and then checking it on your phone's calculator.
 
@@ -141,7 +151,7 @@ $$\sigma = \sqrt{npq} = \sqrt{16 \times \tfrac{1}{8} \times \tfrac{7}{8}} = \sqr
 
 $${}_{16}C_3 = \frac{16 \times 15 \times 14}{3 \times 2 \times 1} = 560$$
 
-$$P(3) = {}_{16}C_3 \left(\tfrac{1}{8}\right)^3 \left(\tfrac{7}{8}\right)^{13} = 560 \times 0.001953 \times 0.176240 = \mathbf{0.1928}$$
+$$P(3) = \underbrace{{}_{16}C_3}_{\text{orders with 3 levelled}} \times \underbrace{\left(\tfrac{1}{8}\right)^3}_{\text{3 gems level, 1/8 each}} \times \underbrace{\left(\tfrac{7}{8}\right)^{13}}_{\text{13 gems do not, 7/8 each}} = 560 \times 0.001953 \times 0.176240 = \mathbf{0.1928}$$
 
 So about 5 chaos levels up two gems on average, and exactly three levelled gems happens about one run in five.
 

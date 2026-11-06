@@ -25,7 +25,7 @@ $$P(1) = 2 \times e^{-2} = 2 \times 0.135335 = \mathbf{0.2707}$$
 
 ## The formula, with λ named
 
-$$P(x) = \dfrac{\lambda^x e^{-\lambda}}{x!}$$
+$$P(x) = \dfrac{\underbrace{\lambda^x}_{\text{mean, to the power x}} \; \underbrace{e^{-\lambda}}_{\text{e to minus the mean}}}{\underbrace{x!}_{\text{x factorial}}}$$
 
 For the help desk, each symbol is:
 
@@ -33,7 +33,7 @@ For the help desk, each symbol is:
 - $x$, the number of tickets asked about.
 - $x!$ is $x \times (x-1) \times \dots \times 1$, with $0! = 1$.
 
-$$P(1) = \dfrac{2^1 \, e^{-2}}{1!} = \dfrac{2 \times 0.135335}{1} = \mathbf{0.2707}$$
+$$P(1) = \dfrac{\underbrace{2^1}_{\text{mean 2, x = 1}} \; \underbrace{e^{-2}}_{\text{mean 2}}}{\underbrace{1!}_{\text{x = 1}}} = \dfrac{2 \times 0.135335}{1} = \mathbf{0.2707}$$
 
 **The mean of a Poisson count is λ itself, and its standard deviation is $\sqrt{\lambda}$.** For the help desk, $\mu = 2$ and $\sigma = \sqrt{2} = 1.41$. For example, pages that average 4 typos have a mean of 4 typos and a standard deviation of 2.
 
@@ -45,7 +45,7 @@ $$\lambda = \text{rate} \times \text{interval}$$
 
 A factory makes cable with 0.75 flaws per metre on average. The question asks about the flaws in a five-metre piece. This is Lab 7 Task 8.
 
-$$\lambda = 0.75 \times 5 = \mathbf{3.75}$$
+$$\lambda = \underbrace{0.75}_{\text{flaws per metre}} \times \underbrace{5}_{\text{metres asked about}} = \mathbf{3.75}$$
 
 Its table of probabilities then starts with P(0) = 0.023518. The help desk over 90 minutes is 1.5 hours, so $\lambda = 2 \times 1.5 = 3$.
 
