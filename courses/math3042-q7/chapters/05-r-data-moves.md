@@ -25,16 +25,21 @@ Take five days of precipitation in millimetres: 0, 2.4, 0, 0.8, and one day with
 
 Filtering drops the NA day, which leaves 4 days. Just like a sign-up sheet with one blank line: you do not count the blank line as a person. A new column asks "more than 0?" of each day and gets FALSE, TRUE, FALSE, TRUE. Two of the four are TRUE.
 
+- 4, the number of days left after the filter.
+- 2, the number of those days with precipitation above 0.
+
 ```diagram
 {"type": "grid", "title": "Five days, filtered, then tested", "nodes": [{"id": "h0", "label": "Day", "row": 0, "col": 0}, {"id": "h1", "label": "Precip (mm)", "row": 0, "col": 1}, {"id": "h2", "label": "Kept by filter", "row": 0, "col": 2}, {"id": "h3", "label": "More than 0?", "row": 0, "col": 3}, {"id": "d1", "label": "1", "row": 1, "col": 0}, {"id": "p1", "label": "0", "row": 1, "col": 1}, {"id": "k1", "label": "yes", "row": 1, "col": 2}, {"id": "t1", "label": "FALSE", "row": 1, "col": 3}, {"id": "d2", "label": "2", "row": 2, "col": 0}, {"id": "p2", "label": "2.4", "row": 2, "col": 1}, {"id": "k2", "label": "yes", "row": 2, "col": 2}, {"id": "t2", "label": "TRUE", "row": 2, "col": 3}, {"id": "d3", "label": "3", "row": 3, "col": 0}, {"id": "p3", "label": "0", "row": 3, "col": 1}, {"id": "k3", "label": "yes", "row": 3, "col": 2}, {"id": "t3", "label": "FALSE", "row": 3, "col": 3}, {"id": "d4", "label": "4", "row": 4, "col": 0}, {"id": "p4", "label": "0.8", "row": 4, "col": 1}, {"id": "k4", "label": "yes", "row": 4, "col": 2}, {"id": "t4", "label": "TRUE", "row": 4, "col": 3}, {"id": "d5", "label": "5", "row": 5, "col": 0}, {"id": "p5", "label": "NA", "row": 5, "col": 1}, {"id": "k5", "label": "dropped", "row": 5, "col": 2}, {"id": "t5", "label": "", "row": 5, "col": 3}], "hi": ["t2", "t4"], "caption": "Two TRUE rows out of the four kept: 2/4 = 0.5."}
 ```
 
-$$P(\text{wet}) = \dfrac{\text{TRUE rows}}{\text{rows left}} = \dfrac{2}{4} = \mathbf{0.5}$$
+$$P(\text{wet}) = \dfrac{\text{TRUE rows}}{\text{rows left}} = \dfrac{\underbrace{2}_{\text{wet days}}}{\underbrace{4}_{\text{days left after filter}}} = \mathbf{0.5}$$
 
 Keep the NA day and the count of rows is wrong. That is why **the filter comes before the tally**.
 
 :::warn An NA row left in still counts in the bottom
-Divide by all five days and the answer drops to 2/5 = 0.4 instead of 0.5.
+Divide by all five days and the answer drops to 0.4 instead of 0.5:
+
+$$\dfrac{\underbrace{2}_{\text{wet days}}}{\underbrace{5}_{\text{all days, NA included}}} = 0.4$$
 :::
 
 ## Six moves from the labs
@@ -247,7 +252,9 @@ SFU.Weather$Temp.Seg <- with(SFU.Weather,
 
 To **tally** is to count. Just like counting the ticked boxes in a checkbox column, then dividing by the number of lines. The formula is the five-day case again, with the SFU file's rows:
 
-$$P(\text{Cold}) = \dfrac{\text{rows where Temp.Seg is Cold}}{\text{all rows}} = \dfrac{\text{Cold days}}{17582} = \mathbf{0.3439}$$
+- 17582, the number of days left in the SFU file after the filter.
+
+$$P(\text{Cold}) = \dfrac{\text{rows where Temp.Seg is Cold}}{\text{all rows}} = \dfrac{\text{Cold days}}{\underbrace{17582}_{\text{days left after filter}}} = \mathbf{0.3439}$$
 
 ```r
 p.Cold <- sum(SFU.Weather$Temp.Seg == "Cold") / nrow(SFU.Weather)

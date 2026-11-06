@@ -38,55 +38,55 @@ A second full Quiz 7: the same three paper shapes with new numbers, then an RStu
     "type": "numeric",
     "answer": 0.2330,
     "tolerance": 0.0001,
-    "explain": "Let X = the number of winning tickets among the 10. X is binomial with $n = 10$ tickets, $x = 2$ the number that win, $p = 0.12$ the chance one ticket wins, and $q = 0.88$ the chance it does not: a fixed 10 tickets, win or not, the same 0.12 each, independent. $$P(x) = C(n, x)\\, p^x\\, q^{n-x}$$ $$P(2) = C(10, 2)(0.12)^2(0.88)^8 = 45 \\times 0.0144 \\times 0.359635 = \\mathbf{0.2330}$$ In R, `dbinom(2, 10, 0.12)`."
+    "explain": "Let X = the number of winning tickets among the 10. X is binomial with $n = 10$ tickets, $x = 2$ the number that win, $p = 0.12$ the chance one ticket wins, and $q = 0.88$ the chance it does not: a fixed 10 tickets, win or not, the same 0.12 each, independent. $$P(x) = C(n, x)\\, p^x\\, q^{n-x}$$ $$P(2) = \\underbrace{C(10, 2)}_{\\text{10 tickets, 2 win}} \\times \\underbrace{(0.12)^2}_{\\text{2 wins, 0.12 each}} \\times \\underbrace{(0.88)^8}_{\\text{8 losers, 0.88 each}} = 45 \\times 0.0144 \\times 0.359635 = \\mathbf{0.2330}$$ In R, `dbinom(2, 10, 0.12)`."
   },
   {
     "q": "**Q1b (2 marks).** Same tickets. P(at least 3 win)? (4 decimals)",
     "type": "numeric",
     "answer": 0.1087,
     "tolerance": 0.0001,
-    "explain": "At least 3 is everything except 0, 1 and 2: $$P(X \\ge 3) = 1 - [P(0) + P(1) + P(2)]$$ $$P(0) = (0.88)^{10} = 0.278501, \\quad P(1) = C(10, 1)(0.12)(0.88)^9 = 10 \\times 0.12 \\times 0.316478 = 0.379774, \\quad P(2) = 0.233043$$ $$P(X \\ge 3) = 1 - (0.278501 + 0.379774 + 0.233043) = 1 - 0.891318 = \\mathbf{0.1087}$$ In R, `1 - pbinom(2, 10, 0.12)`: the cumulative stops at 2, one below the 3."
+    "explain": "At least 3 is everything except 0, 1 and 2: $$P(X \\ge 3) = 1 - [P(0) + P(1) + P(2)]$$ $$P(0) = \\underbrace{(0.88)^{10}}_{\\text{all 10 lose, 0.88 each}} = 0.278501, \\quad P(1) = \\underbrace{C(10, 1)}_{\\text{10 choices of 1}} \\times \\underbrace{(0.12)}_{\\text{1 win}} \\times \\underbrace{(0.88)^9}_{\\text{9 losers}} = 10 \\times 0.12 \\times 0.316478 = 0.379774, \\quad P(2) = \\underbrace{0.233043}_{\\text{from Q1a}}$$ $$P(X \\ge 3) = 1 - (\\underbrace{0.278501}_{\\text{P(0)}} + \\underbrace{0.379774}_{\\text{P(1)}} + \\underbrace{0.233043}_{\\text{P(2)}}) = 1 - 0.891318 = \\mathbf{0.1087}$$ In R, `1 - pbinom(2, 10, 0.12)`: the cumulative stops at 2, one below the 3."
   },
   {
     "q": "**Q2a (2 marks).** Messages at 0.15 per minute. P(exactly 3 messages in a 30-minute span)? (4 decimals)",
     "type": "numeric",
     "answer": 0.1687,
     "tolerance": 0.0001,
-    "explain": "Let X = the number of messages in 30 minutes. X is Poisson; rescale the rate to the span first: $$\\lambda = 0.15 \\text{ per minute} \\times 30 \\text{ minutes} = 4.5$$ So $\\lambda = 4.5$ is the average number of messages in 30 minutes, and $x = 3$ is the number of messages asked about. $$P(x) = \\dfrac{\\lambda^x e^{-\\lambda}}{x!}$$ $$P(3) = \\dfrac{4.5^3 e^{-4.5}}{3!} = \\dfrac{91.125 \\times 0.011109}{6} = \\mathbf{0.1687}$$ In R, `dpois(3, 4.5)`."
+    "explain": "Let X = the number of messages in 30 minutes. X is Poisson; rescale the rate to the span first: $$\\lambda = \\underbrace{0.15}_{\\text{messages per minute}} \\times \\underbrace{30}_{\\text{minutes in span}} = 4.5$$ So $\\lambda = 4.5$ is the average number of messages in 30 minutes, and $x = 3$ is the number of messages asked about. $$P(x) = \\dfrac{\\lambda^x e^{-\\lambda}}{x!}$$ $$P(3) = \\dfrac{\\underbrace{4.5^3}_{\\text{mean 4.5, 3 messages}} \\, \\underbrace{e^{-4.5}}_{\\text{e to minus mean}}}{\\underbrace{3!}_{\\text{3 messages}}} = \\dfrac{91.125 \\times 0.011109}{6} = \\mathbf{0.1687}$$ In R, `dpois(3, 4.5)`."
   },
   {
     "q": "**Q2b (1 mark).** Same text line. P(at most 1 message in each of two separate 10-minute spans)? (4 decimals)",
     "type": "numeric",
     "answer": 0.3112,
     "tolerance": 0.0001,
-    "explain": "Each span has its own λ, the average number of messages in 10 minutes at 0.15 messages per minute: $$\\lambda = 0.15 \\times 10 = 1.5$$ At most 1 is 0 or 1: $$P(0) = e^{-1.5} = 0.223130 \\qquad P(1) = \\dfrac{1.5^1 e^{-1.5}}{1!} = 0.334695$$ $$P(X \\le 1) = P(0) + P(1) = 0.223130 + 0.334695 = 0.557825$$ The spans do not overlap, so they are independent; multiply: $$0.557825^2 = \\mathbf{0.3112}$$ In R, `ppois(1, 1.5)^2`. One 20-minute span with λ = 3 would allow both messages in the same 10 minutes, a different question."
+    "explain": "Each span has its own λ, the average number of messages in 10 minutes at 0.15 messages per minute: $$\\lambda = \\underbrace{0.15}_{\\text{messages per minute}} \\times \\underbrace{10}_{\\text{minutes in span}} = 1.5$$ At most 1 is 0 or 1: $$P(0) = \\underbrace{e^{-1.5}}_{\\text{no messages, mean 1.5}} = 0.223130 \\qquad P(1) = \\dfrac{\\underbrace{1.5^1}_{\\text{mean 1.5, 1 message}} \\, e^{-1.5}}{\\underbrace{1!}_{\\text{1 message}}} = 0.334695$$ $$P(X \\le 1) = P(0) + P(1) = \\underbrace{0.223130}_{\\text{P(0)}} + \\underbrace{0.334695}_{\\text{P(1)}} = 0.557825$$ The spans do not overlap, so they are independent; multiply: $$\\underbrace{0.557825^2}_{\\text{one span's chance, twice}} = \\mathbf{0.3112}$$ In R, `ppois(1, 1.5)^2`. One 20-minute span with λ = 3 would allow both messages in the same 10 minutes, a different question."
   },
   {
     "q": "**Q3a (1 mark).** Lost-bag reports average 9 per day. The mean, $\\mu$ = ? (2 decimals)",
     "type": "numeric",
     "answer": 9,
     "tolerance": 0.05,
-    "explain": "Let X = the number of lost-bag reports in a day; Poisson with $\\lambda = 9$ the average number of reports per day. For a Poisson variable the mean is λ: $$\\mu = \\lambda = \\mathbf{9.00}$$"
+    "explain": "Let X = the number of lost-bag reports in a day; Poisson with $\\lambda = 9$ the average number of reports per day. For a Poisson variable the mean is λ: $$\\mu = \\lambda = \\underbrace{9}_{\\text{reports per day}} = \\mathbf{9.00}$$"
   },
   {
     "q": "**Q3b (1 mark).** Same office. The standard deviation, $\\sigma$ = ? (2 decimals)",
     "type": "numeric",
     "answer": 3,
     "tolerance": 0.05,
-    "explain": "For a Poisson variable the variance is also λ: $$\\sigma = \\sqrt{\\lambda} = \\sqrt{9} = \\mathbf{3.00}$$ There is no q in the Poisson; $\\sqrt{npq}$ belongs to the binomial."
+    "explain": "For a Poisson variable the variance is also λ: $$\\sigma^2 = \\lambda = \\underbrace{9}_{\\text{reports per day}}$$ $$\\sigma = \\sqrt{\\lambda} = \\sqrt{9} = \\mathbf{3.00}$$ There is no q in the Poisson; $\\sqrt{npq}$ belongs to the binomial."
   },
   {
     "q": "**Q3c (1 mark), the Z-score.** Same office, 16 reports. $Z$ = ? (2 decimals, keep the sign)",
     "type": "numeric",
     "answer": 2.33,
     "tolerance": 0.01,
-    "explain": "With $x = 16$ the reports on that day, $\\mu = 9$ the mean number of reports per day, and $\\sigma = 3$ the standard deviation: $$Z = \\dfrac{x - \\mu}{\\sigma} = \\dfrac{16 - 9}{3} = \\mathbf{2.33}$$"
+    "explain": "With $x = 16$ the reports on that day, $\\mu = 9$ the mean number of reports per day, and $\\sigma = 3$ the standard deviation: $$Z = \\dfrac{x - \\mu}{\\sigma} = \\dfrac{\\underbrace{16}_{\\text{reports that day}} - \\underbrace{9}_{\\text{mean reports}}}{\\underbrace{3}_{\\text{SD of reports}}} = \\mathbf{2.33}$$"
   },
   {
     "q": "**Q3c (1 mark), the verdict.** Is 16 reports in a day unusual? Type Yes or No.",
     "type": "text",
     "answer": ["Yes", "yes", "YES"],
-    "explain": "$$Z = \\dfrac{16 - 9}{3} = 2.33$$ A value is unusual when $|Z| > 2$. 2.33 is beyond 2, so **Yes**: 16 reports is unusually high for a day."
+    "explain": "$$Z = \\dfrac{\\underbrace{16}_{\\text{reports that day}} - \\underbrace{9}_{\\text{mean reports}}}{\\underbrace{3}_{\\text{SD of reports}}} = 2.33$$ A value is unusual when $|Z| > 2$. 2.33 is beyond 2, so **Yes**: 16 reports is unusually high for a day."
   }
 ]
 ```
@@ -230,14 +230,14 @@ Check the script one slot at a time. Apart from the row count, the weather numbe
     "q": "**Part 2 (g) (1 of 2 marks).** Assume heavy-rain days arrive at 0.8 per week in winter. P(exactly 2 heavy-rain days in one week).",
     "code": "dpois(2, ___)",
     "answer": ["0.8"],
-    "explain": "`dpois(x, lambda)`: x = 2, the number of heavy-rain days asked about, and λ = 0.8, the average number of heavy-rain days in one week, the rate as given. Computed by the formula: $$P(2) = \\dfrac{0.8^2 e^{-0.8}}{2!} = \\dfrac{0.64 \\times 0.449329}{2} = \\mathbf{0.1438}$$"
+    "explain": "`dpois(x, lambda)`: x = 2, the number of heavy-rain days asked about, and λ = 0.8, the average number of heavy-rain days in one week, the rate as given. Computed by the formula: $$P(2) = \\dfrac{\\underbrace{0.8^2}_{\\text{mean 0.8, 2 days}} \\, \\underbrace{e^{-0.8}}_{\\text{e to minus mean}}}{\\underbrace{2!}_{\\text{2 days}}} = \\dfrac{0.64 \\times 0.449329}{2} = \\mathbf{0.1438}$$"
   },
   {
     "type": "fill",
     "q": "**Part 2 (g) (1 of 2 marks).** Same rate, 0.8 per week. P(at least 3 heavy-rain days in four weeks).",
     "code": "1 - ppois(___, 3.2)",
     "answer": ["2"],
-    "explain": "Four weeks is one longer interval, so rescale to λ, the average number of heavy-rain days in four weeks at 0.8 per week: $$\\lambda = 0.8 \\times 4 = 3.2$$ At least 3 is the complement of at most 2, so the cumulative stops at 2: `1 - ppois(2, 3.2)`. Computed by the formula: $$P(0) = e^{-3.2} = 0.040762 \\qquad P(1) = \\dfrac{3.2^1 e^{-3.2}}{1!} = 0.130439 \\qquad P(2) = \\dfrac{3.2^2 e^{-3.2}}{2!} = 0.208702$$ $$P(X \\le 2) = 0.040762 + 0.130439 + 0.208702 = 0.379904$$ $$1 - 0.379904 = \\mathbf{0.6201}$$"
+    "explain": "Four weeks is one longer interval, so rescale to λ, the average number of heavy-rain days in four weeks at 0.8 per week: $$\\lambda = \\underbrace{0.8}_{\\text{heavy days per week}} \\times \\underbrace{4}_{\\text{weeks}} = 3.2$$ At least 3 is the complement of at most 2, so the cumulative stops at 2: `1 - ppois(2, 3.2)`. Computed by the formula: $$P(0) = \\underbrace{e^{-3.2}}_{\\text{no days, mean 3.2}} = 0.040762 \\qquad P(1) = \\dfrac{\\underbrace{3.2^1}_{\\text{mean 3.2, 1 day}} \\, e^{-3.2}}{\\underbrace{1!}_{\\text{1 day}}} = 0.130439 \\qquad P(2) = \\dfrac{\\underbrace{3.2^2}_{\\text{mean 3.2, 2 days}} \\, e^{-3.2}}{\\underbrace{2!}_{\\text{2 days}}} = 0.208702$$ $$P(X \\le 2) = \\underbrace{0.040762}_{\\text{P(0)}} + \\underbrace{0.130439}_{\\text{P(1)}} + \\underbrace{0.208702}_{\\text{P(2)}} = 0.379904$$ $$1 - \\underbrace{0.379904}_{\\text{P(at most 2)}} = \\mathbf{0.6201}$$"
   }
 ]
 ```

@@ -20,11 +20,11 @@ A help desk gets tickets at a steady average rate. What is the chance of a quiet
 
 The answer uses the number $e = 2.718\ldots$, the $e^x$ key on the calculator. Type 2, press the sign key, then $e^x$, or type $e^x$ then −2; the keys are in [Before you start](#/math3042-q7/pre-reading). For a mean of 2, no tickets has probability $e^{-2}$. **No events at all has probability e to the minus mean.** Just like asking how often a whole hour passes with the help desk phone silent.
 
-$$P(0) = e^{-2} = \mathbf{0.1353}$$
+$$P(0) = \underbrace{e^{-2}}_{\text{e to minus the mean, 2}} = \mathbf{0.1353}$$
 
 Exactly one ticket is twice that, because the mean is 2.
 
-$$P(1) = 2 \times e^{-2} = 2 \times 0.135335 = \mathbf{0.2707}$$
+$$P(1) = \underbrace{2}_{\text{mean tickets an hour}} \times \underbrace{e^{-2}}_{\text{P(0), from above}} = 2 \times 0.135335 = \mathbf{0.2707}$$
 
 ## The formula, with λ named
 
@@ -38,7 +38,11 @@ For the help desk, each symbol is:
 
 $$P(1) = \dfrac{\underbrace{2^1}_{\text{mean 2, x = 1}} \; \underbrace{e^{-2}}_{\text{mean 2}}}{\underbrace{1!}_{\text{x = 1}}} = \dfrac{2 \times 0.135335}{1} = \mathbf{0.2707}$$
 
-**The mean of a Poisson count is λ itself, and its standard deviation is $\sqrt{\lambda}$.** For the help desk, $\mu = 2$ and $\sigma = \sqrt{2} = 1.41$. For example, pages that average 4 typos have a mean of 4 typos and a standard deviation of 2.
+**The mean of a Poisson count is λ itself, and its standard deviation is $\sqrt{\lambda}$.** For the help desk:
+
+$$\mu = \lambda = \underbrace{2}_{\text{mean tickets an hour}} \qquad \sigma = \sqrt{\lambda} = \sqrt{2} = \mathbf{1.41}$$
+
+For example, pages that average 4 typos have a mean of 4 typos and a standard deviation of 2.
 
 ## λ must match the question's interval
 
@@ -58,7 +62,9 @@ Its table of probabilities then starts with P(0) = 0.023518. The help desk over 
 
 - rate = 2, the tickets per hour.
 - interval = 1.5, the hours in 90 minutes.
-- $\lambda = 2 \times 1.5 = 3$, the mean number of tickets in those 90 minutes.
+- $\lambda = 3$, the mean number of tickets in those 90 minutes.
+
+$$\lambda = \underbrace{2}_{\text{tickets per hour}} \times \underbrace{1.5}_{\text{hours asked about}} = \mathbf{3}$$
 
 ```diagram
 {"type": "flow", "title": "Rescale λ before the formula", "nodes": [{"id": "r", "label": "Rate", "sub": "0.75 flaws per metre"}, {"id": "t", "label": "× interval asked", "sub": "5 metres"}, {"id": "l", "label": "λ for this question", "sub": "0.75 × 5 = 3.75"}, {"id": "f", "label": "Formula", "sub": "P(x) with λ = 3.75"}], "edges": [{"from": "r", "to": "t"}, {"from": "t", "to": "l"}, {"from": "l", "to": "f"}], "hi": ["l"], "caption": "The help desk the same way: 2 per hour × 1.5 hours = 3."}
@@ -76,7 +82,9 @@ A rate per hour used on a 15-minute question makes λ four times too big. Every 
 
 - rate = 34, the transformer failures per year.
 - interval = 2, the years asked about.
-- $\lambda = 2 \times 34 = 68$, the mean number of failures in those two years.
+- $\lambda = 68$, the mean number of failures in those two years.
+
+$$\lambda = \underbrace{34}_{\text{failures per year}} \times \underbrace{2}_{\text{years asked about}} = \mathbf{68}$$
 
 :::tip "In each of" multiplies; "over" rescales
 In each of two years: square the one-year answer. Over two years: double λ and use the formula once.
@@ -148,11 +156,11 @@ The last two differ because "each of two years" needs both years at 34 or fewer,
 
 ```quiz
 [
-  {"q": "A COMP course inbox gets 4 emails an hour. P(exactly 2 in 15 minutes)? (4 decimals)", "type": "numeric", "answer": 0.1839, "tolerance": 0.0001, "explain": "Let X = the number of emails in 15 minutes. Poisson, rescaled: $$\\lambda = 4 \\times \\dfrac{15}{60} = 1$$ $$P(2) = \\dfrac{1^2 \\, e^{-1}}{2!} = \\dfrac{0.367879}{2} = \\mathbf{0.1839}$$"},
-  {"q": "A factory line's cable has 0.3 flaws per metre. P(at least one flaw in 4 metres)? (4 decimals)", "type": "numeric", "answer": 0.6988, "tolerance": 0.0001, "explain": "Let X = the number of flaws in 4 metres. $$\\lambda = 0.3 \\times 4 = 1.2$$ At least one is the complement of none: $$P(X \\ge 1) = 1 - P(0) = 1 - e^{-1.2} = 1 - 0.301194 = \\mathbf{0.6988}$$"},
-  {"q": "The same inbox, 4 emails an hour. P(exactly 1 email in a 15-minute span and exactly 1 in the next 15 minutes)? (4 decimals)", "type": "numeric", "answer": 0.1353, "tolerance": 0.0001, "explain": "Each 15-minute span has $\\lambda = 4 \\times \\frac{15}{60} = 1$. $$P(1) = \\dfrac{1^1 \\, e^{-1}}{1!} = 0.367879$$ The spans do not overlap, so they are independent. Multiply: $$0.367879 \\times 0.367879 = \\mathbf{0.1353}$$"},
-  {"q": "A SkyTrain station logs 3 delays a week. P(at most 2 delays in 2 weeks)? (4 decimals)", "type": "numeric", "answer": 0.0620, "tolerance": 0.0001, "explain": "Let X = the number of delays in 2 weeks. One interval, twice as long: $$\\lambda = 3 \\times 2 = 6, \\quad e^{-6} = 0.002479$$ $$P(0) = e^{-6} = 0.002479 \\qquad P(1) = \\dfrac{6^1 e^{-6}}{1!} = 0.014873 \\qquad P(2) = \\dfrac{6^2 e^{-6}}{2!} = 0.044618$$ $$P(X \\le 2) = 0.002479 + 0.014873 + 0.044618 = \\mathbf{0.0620}$$"},
-  {"q": "A lottery kiosk sells 0.5 winning tickets a day. P(exactly 3 winners in a 7-day week)? (4 decimals)", "type": "numeric", "answer": 0.2158, "tolerance": 0.0001, "explain": "Let X = the number of winning tickets in 7 days. $$\\lambda = 0.5 \\times 7 = 3.5$$ $$P(3) = \\dfrac{3.5^3 \\, e^{-3.5}}{3!} = \\dfrac{42.875 \\times 0.030197}{6} = \\mathbf{0.2158}$$"}
+  {"q": "A COMP course inbox gets 4 emails an hour. P(exactly 2 in 15 minutes)? (4 decimals)", "type": "numeric", "answer": 0.1839, "tolerance": 0.0001, "explain": "Let X = the number of emails in 15 minutes. Poisson, rescaled: $$\\lambda = \\underbrace{4}_{\\text{emails per hour}} \\times \\underbrace{\\dfrac{15}{60}}_{\\text{hours asked about}} = 1$$ $$P(2) = \\dfrac{\\underbrace{1^2}_{\\text{mean 1, x = 2}} \\, \\underbrace{e^{-1}}_{\\text{mean 1}}}{\\underbrace{2!}_{\\text{x = 2}}} = \\dfrac{0.367879}{2} = \\mathbf{0.1839}$$"},
+  {"q": "A factory line's cable has 0.3 flaws per metre. P(at least one flaw in 4 metres)? (4 decimals)", "type": "numeric", "answer": 0.6988, "tolerance": 0.0001, "explain": "Let X = the number of flaws in 4 metres. $$\\lambda = \\underbrace{0.3}_{\\text{flaws per metre}} \\times \\underbrace{4}_{\\text{metres asked about}} = 1.2$$ At least one is the complement of none: $$P(X \\ge 1) = 1 - P(0) = 1 - \\underbrace{e^{-1.2}}_{\\text{no flaws, mean 1.2}} = 1 - 0.301194 = \\mathbf{0.6988}$$"},
+  {"q": "The same inbox, 4 emails an hour. P(exactly 1 email in a 15-minute span and exactly 1 in the next 15 minutes)? (4 decimals)", "type": "numeric", "answer": 0.1353, "tolerance": 0.0001, "explain": "Each 15-minute span has its own λ: $$\\lambda = \\underbrace{4}_{\\text{emails per hour}} \\times \\underbrace{\\tfrac{15}{60}}_{\\text{hours in a span}} = 1$$ $$P(1) = \\dfrac{\\underbrace{1^1}_{\\text{mean 1, x = 1}} \\, \\underbrace{e^{-1}}_{\\text{mean 1}}}{\\underbrace{1!}_{\\text{x = 1}}} = 0.367879$$ The spans do not overlap, so they are independent. Multiply: $$\\underbrace{0.367879}_{\\text{1 in the first span}} \\times \\underbrace{0.367879}_{\\text{1 in the next span}} = \\mathbf{0.1353}$$"},
+  {"q": "A SkyTrain station logs 3 delays a week. P(at most 2 delays in 2 weeks)? (4 decimals)", "type": "numeric", "answer": 0.0620, "tolerance": 0.0001, "explain": "Let X = the number of delays in 2 weeks. One interval, twice as long: $$\\lambda = \\underbrace{3}_{\\text{delays per week}} \\times \\underbrace{2}_{\\text{weeks asked about}} = 6, \\quad e^{-6} = 0.002479$$ $$P(0) = \\underbrace{e^{-6}}_{\\text{mean 6}} = 0.002479 \\qquad P(1) = \\dfrac{\\underbrace{6^1}_{\\text{mean 6, x = 1}} \\underbrace{e^{-6}}_{\\text{mean 6}}}{\\underbrace{1!}_{\\text{x = 1}}} = 0.014873 \\qquad P(2) = \\dfrac{\\underbrace{6^2}_{\\text{mean 6, x = 2}} \\underbrace{e^{-6}}_{\\text{mean 6}}}{\\underbrace{2!}_{\\text{x = 2}}} = 0.044618$$ $$P(X \\le 2) = \\underbrace{0.002479}_{\\text{P(0)}} + \\underbrace{0.014873}_{\\text{P(1)}} + \\underbrace{0.044618}_{\\text{P(2)}} = \\mathbf{0.0620}$$"},
+  {"q": "A lottery kiosk sells 0.5 winning tickets a day. P(exactly 3 winners in a 7-day week)? (4 decimals)", "type": "numeric", "answer": 0.2158, "tolerance": 0.0001, "explain": "Let X = the number of winning tickets in 7 days. $$\\lambda = \\underbrace{0.5}_{\\text{winners per day}} \\times \\underbrace{7}_{\\text{days asked about}} = 3.5$$ $$P(3) = \\dfrac{\\underbrace{3.5^3}_{\\text{mean 3.5, x = 3}} \\, \\underbrace{e^{-3.5}}_{\\text{mean 3.5}}}{\\underbrace{3!}_{\\text{x = 3}}} = \\dfrac{42.875 \\times 0.030197}{6} = \\mathbf{0.2158}$$"}
 ]
 ```
 

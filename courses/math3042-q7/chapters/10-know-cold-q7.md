@@ -108,7 +108,7 @@ A and B are logical columns; on `survey` add `na.rm=TRUE` or filter the NA rows 
     "q": "Calls at 4 per hour. P(at most 2 calls in 30 minutes). Fill the lambda slot.",
     "code": "ppois(2, ___)",
     "answer": ["2", "4*0.5", "4/2"],
-    "explain": "Rescale to the question's interval: $$\\lambda = 4 \\times 0.5 = \\mathbf{2}$$"
+    "explain": "Rescale to the question's interval: $$\\lambda = \\underbrace{4}_{\\text{calls per hour}} \\times \\underbrace{0.5}_{\\text{hours, 30 minutes}} = \\mathbf{2}$$"
   },
   {
     "type": "fill",

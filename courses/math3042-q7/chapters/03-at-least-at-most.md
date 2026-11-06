@@ -40,11 +40,11 @@ Take a few independent tries, each a yes or no at the same chance.
 
 The whole line adds to 1, so compute the short side and subtract it from 1. This is the **complement**: everything the wording leaves out. Just like counting the few students absent from a class instead of the many present: the short list gives the long one by subtraction.
 
-$$P(0) = 0.7^4 = 0.2401 \qquad P(1) = {}_4C_1 \, (0.3)(0.7)^3 = 4 \times 0.3 \times 0.343 = 0.4116$$
+$$P(0) = \underbrace{0.7^4}_{\text{4 fails, 0.7 each}} = 0.2401 \qquad P(1) = \underbrace{{}_4C_1}_{\text{4 places for the success}} \, \underbrace{(0.3)}_{\text{1 success}} \underbrace{(0.7)^3}_{\text{3 fails, 0.7 each}} = 4 \times 0.3 \times 0.343 = 0.4116$$
 
 ${}_4C_1 = 4$: the one success can sit in any of the four tries. The formula and the keys are in [Before you start](#/math3042-q7/pre-reading).
 
-$$P(X \ge 2) = 1 - [P(0) + P(1)] = 1 - (0.2401 + 0.4116) = \mathbf{0.3483}$$
+$$P(X \ge 2) = 1 - [P(0) + P(1)] = 1 - (\underbrace{0.2401}_{\text{P(0), from above}} + \underbrace{0.4116}_{\text{P(1), from above}}) = \mathbf{0.3483}$$
 
 :::tip At least k is 1 minus at most k − 1
 With 4 tries this saved one term. With 30 tries and "at least 2", it turns 29 terms into 2.
@@ -52,7 +52,7 @@ With 4 tries this saved one term. With 30 tries and "at least 2", it turns 29 te
 
 "At least one" is the shortest case of all. Its opposite is the single count 0. For example, "at least one bus is late this week" is everything except "no bus is late".
 
-$$P(X \ge 1) = 1 - P(0) = 1 - 0.7^4 = 1 - 0.2401 = \mathbf{0.7599}$$
+$$P(X \ge 1) = 1 - P(0) = 1 - \underbrace{0.7^4}_{\text{all 4 tries fail}} = 1 - 0.2401 = \mathbf{0.7599}$$
 
 ## The words table: sum on paper, complement, R line
 
@@ -199,7 +199,7 @@ The R side is drilled in [dbinom, pbinom, dpois, ppois](#/math3042-q7/r-binomial
   {"q": "15 tries at $p = 0.4$. P(between 3 and 7 inclusive).", "type": "fill", "code": "pbinom(7, 15, 0.4) - pbinom(___, 15, 0.4)", "answer": ["2"], "explain": "Up to 7, minus up to 2, leaves 3 to 7. The second slot is a − 1 = 2: `pbinom(7, 15, 0.4) - pbinom(2, 15, 0.4)` = 0.7598 (computed)."},
   {"q": "25 tries at $p = 0.4$. P(more than 9).", "type": "fill", "code": "1 - pbinom(___, 25, 0.4)", "answer": ["9"], "explain": "More than 9 starts at 10. Its complement is 0 to 9, so the line is `1 - pbinom(9, 25, 0.4)` = 0.5754 (computed)."},
   {"q": "5 tries. Which sum on paper gives P(at least 2)?", "options": ["$1 - [P(0) + P(1)]$", "$1 - [P(0) + P(1) + P(2)]$", "$P(2) + P(3) + P(4)$", "$1 - P(1)$"], "answer": 0, "explain": "At least 2 is 2, 3, 4, 5. Its complement is 0 and 1, so $1 - [P(0) + P(1)]$. Writing out $P(2) + \\dots + P(5)$ also works, but needs four terms and must not stop at 4."},
-  {"q": "A student guesses on 5 multiple-choice questions with 5 options each, so $p = 0.2$. P(at most 1 right)? (4 decimals)", "type": "numeric", "answer": 0.7373, "tolerance": 0.0001, "explain": "Let X = the number right out of 5. Binomial with $n = 5$, $p = 0.2$, $q = 0.8$. At most 1 is 0 or 1. $$P(0) = 0.8^5 = 0.32768 \\qquad P(1) = {}_5C_1 \\, (0.2)(0.8)^4 = 5 \\times 0.2 \\times 0.4096 = 0.4096$$ $$P(X \\le 1) = 0.32768 + 0.4096 = \\mathbf{0.7373}$$"}
+  {"q": "A student guesses on 5 multiple-choice questions with 5 options each, so $p = 0.2$. P(at most 1 right)? (4 decimals)", "type": "numeric", "answer": 0.7373, "tolerance": 0.0001, "explain": "Let X = the number right out of 5. Binomial with $n = 5$, $p = 0.2$, $q = 0.8$. At most 1 is 0 or 1. $$P(0) = \\underbrace{0.8^5}_{\\text{5 wrong, 0.8 each}} = 0.32768 \\qquad P(1) = \\underbrace{{}_5C_1}_{\\text{5 places for the right one}} \\, \\underbrace{(0.2)}_{\\text{1 right}} \\underbrace{(0.8)^4}_{\\text{4 wrong, 0.8 each}} = 5 \\times 0.2 \\times 0.4096 = 0.4096$$ $$P(X \\le 1) = \\underbrace{0.32768}_{\\text{P(0)}} + \\underbrace{0.4096}_{\\text{P(1)}} = \\mathbf{0.7373}$$"}
 ]
 ```
 
@@ -229,10 +229,10 @@ A GMS Chaos Scroll that succeeds changes each stat by −5 to +5; the wiki's tab
 
 ```quiz
 [
-  {"q": "Your item is at 12 stars and you have mesos for 5 taps at $p = 0.40$. Which R line gives P(you reach 13 stars within the 5 taps)?", "options": ["`1 - pbinom(0, 5, 0.4)`", "`1 - pbinom(1, 5, 0.4)`", "`dbinom(1, 5, 0.4)`", "`pbinom(1, 5, 0.4)`"], "answer": 0, "explain": "Reaching 13 within 5 taps means at least one success in 5 tries, which is everything except 0: `1 - pbinom(0, 5, 0.4)`. By hand, all five fail with $0.6^5 = 0.07776$, so $$1 - 0.07776 = \\mathbf{0.9222}$$ `dbinom(1, 5, 0.4)` is exactly one success, but you stop tapping at the first success anyway, so what matters is that one happens at all."},
-  {"q": "A Greater scroll passes with probability 0.1. Seven slots, one scroll each. P(at least one passes)? (4 decimals)", "type": "numeric", "answer": 0.5217, "tolerance": 0.0001, "explain": "Let X = the number of the 7 scrolls that pass; binomial with $n = 7$, $p = 0.1$. At least one is the complement of none: $$P(X \\ge 1) = 1 - P(0) = 1 - 0.9^7 = 1 - 0.478297 = \\mathbf{0.5217}$$"},
-  {"q": "You have 500 Orbs of Fusing for a six-link, and each orb six-links with $p = 0.001$. P(you six-link within the 500 orbs)? (4 decimals)", "type": "numeric", "answer": 0.3936, "tolerance": 0.0001, "explain": "Let X = the number of six-link results in 500 Fusings; binomial with $n = 500$, $p = 0.001$. Within 500 orbs means at least one: $$P(X \\ge 1) = 1 - P(0) = 1 - 0.999^{500} = 1 - 0.606379 = \\mathbf{0.3936}$$ In R, `1 - pbinom(0, 500, 0.001)`. So 500 orbs fail to six-link about 61 % of the time."},
-  {"q": "20 successful Chaos Scroll uses on an item with one stat; each gives +5 with $p = 0.0099$. P(at least one +5)? (4 decimals)", "type": "numeric", "answer": 0.1804, "tolerance": 0.0001, "explain": "Let X = the number of +5 results in 20 successful uses; binomial with $n = 20$, $p = 0.0099$. $$P(X \\ge 1) = 1 - 0.9901^{20} = 1 - 0.819561 = \\mathbf{0.1804}$$ The rate applies to successful uses only, so failed scrolls do not count toward the 20."}
+  {"q": "Your item is at 12 stars and you have mesos for 5 taps at $p = 0.40$. Which R line gives P(you reach 13 stars within the 5 taps)?", "options": ["`1 - pbinom(0, 5, 0.4)`", "`1 - pbinom(1, 5, 0.4)`", "`dbinom(1, 5, 0.4)`", "`pbinom(1, 5, 0.4)`"], "answer": 0, "explain": "Reaching 13 within 5 taps means at least one success in 5 tries, which is everything except 0: `1 - pbinom(0, 5, 0.4)`. By hand, all five fail with probability $0.6^5$, so $$P(X \\ge 1) = 1 - \\underbrace{0.6^5}_{\\text{all 5 taps fail}} = 1 - 0.07776 = \\mathbf{0.9222}$$ `dbinom(1, 5, 0.4)` is exactly one success, but you stop tapping at the first success anyway, so what matters is that one happens at all."},
+  {"q": "A Greater scroll passes with probability 0.1. Seven slots, one scroll each. P(at least one passes)? (4 decimals)", "type": "numeric", "answer": 0.5217, "tolerance": 0.0001, "explain": "Let X = the number of the 7 scrolls that pass; binomial with $n = 7$, $p = 0.1$. At least one is the complement of none: $$P(X \\ge 1) = 1 - P(0) = 1 - \\underbrace{0.9^7}_{\\text{all 7 scrolls fail}} = 1 - 0.478297 = \\mathbf{0.5217}$$"},
+  {"q": "You have 500 Orbs of Fusing for a six-link, and each orb six-links with $p = 0.001$. P(you six-link within the 500 orbs)? (4 decimals)", "type": "numeric", "answer": 0.3936, "tolerance": 0.0001, "explain": "Let X = the number of six-link results in 500 Fusings; binomial with $n = 500$, $p = 0.001$. Within 500 orbs means at least one: $$P(X \\ge 1) = 1 - P(0) = 1 - \\underbrace{0.999^{500}}_{\\text{all 500 orbs miss}} = 1 - 0.606379 = \\mathbf{0.3936}$$ In R, `1 - pbinom(0, 500, 0.001)`. So 500 orbs fail to six-link about 61 % of the time."},
+  {"q": "20 successful Chaos Scroll uses on an item with one stat; each gives +5 with $p = 0.0099$. P(at least one +5)? (4 decimals)", "type": "numeric", "answer": 0.1804, "tolerance": 0.0001, "explain": "Let X = the number of +5 results in 20 successful uses; binomial with $n = 20$, $p = 0.0099$. $$P(X \\ge 1) = 1 - \\underbrace{0.9901^{20}}_{\\text{no +5 in 20 uses}} = 1 - 0.819561 = \\mathbf{0.1804}$$ The rate applies to successful uses only, so failed scrolls do not count toward the 20."}
 ]
 ```
 

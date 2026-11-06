@@ -17,19 +17,27 @@ The two add to 1, because one of them always happens. That gives the fastest tri
 For three scrolls, "none" is the single order FFF. "At least one" is every other order, so one term replaces many.
 :::
 
+- $n = 3$, the number of scrolls used.
+- $q = 0.4$, the chance one scroll fails.
+
 Three scrolls all fail with probability $0.4 \times 0.4 \times 0.4$, so at least one passes with:
 
-$$P(\text{at least one pass}) = 1 - 0.4^3 = 1 - 0.064 = \mathbf{0.936}$$
+$$P(\text{at least one pass}) = \underbrace{1}_{\text{every outcome}} - \underbrace{0.4^3}_{\text{all 3 fail}} = 1 - 0.064 = \mathbf{0.936}$$
 
 ## Powers and factorials on the calculator
 
 $0.6^3$ means $0.6 \times 0.6 \times 0.6$. Just like needing three Intermediate scrolls in a row to all pass: you multiply the 0.6 once for each scroll. On the calculator type 0.6, press the power key ($x^y$, $y^x$ or ^), then 3.
 
-$$0.6^3 = \mathbf{0.216}$$
+- $p = 0.6$, the chance one scroll passes.
+- $3$, the number of scrolls that must all pass.
+
+$$0.6^3 = \underbrace{0.6}_{\text{1st passes}} \times \underbrace{0.6}_{\text{2nd passes}} \times \underbrace{0.6}_{\text{3rd passes}} = \mathbf{0.216}$$
 
 A **factorial** $x!$ multiplies every whole number from $x$ down to 1. **By definition $0! = 1$.** For example, $x!$ counts the ways to line up x different things, just like the number of orders you could use x different scrolls in.
 
-$$4! = 4 \times 3 \times 2 \times 1 = \mathbf{24}$$
+- $x = 4$, the number of different things to line up.
+
+$$4! = \underbrace{4}_{\text{choices for 1st}} \times \underbrace{3}_{\text{for 2nd}} \times \underbrace{2}_{\text{for 3rd}} \times \underbrace{1}_{\text{for last}} = \mathbf{24}$$
 
 The key is marked $n!$ or $x!$. On many calculators it is a second function, so press 2ndF or SHIFT first.
 
@@ -44,7 +52,7 @@ Here **$n$ is the number of tries and $x$ the number of successes.** The bottom 
 - $n = 3$, the number of scrolls used.
 - $x = 2$, the number of them that pass.
 
-$${}_3C_2 = \frac{3!}{2!\,1!} = \frac{6}{2 \times 1} = \mathbf{3}$$
+$${}_3C_2 = \frac{\underbrace{3}_{\text{scrolls}}!}{\underbrace{2}_{\text{passes}}!\,\underbrace{1}_{\text{fails}}!} = \frac{6}{2 \times 1} = \mathbf{3}$$
 
 On the calculator, type n, press the nCr key, then type x. On a Sharp that is n, 2ndF, nCr, x. On a Casio it is n, SHIFT, ÷, x. On a TI it is n, MATH, PRB, nCr, x.
 
@@ -57,7 +65,7 @@ With no nCr key, write the top as x factors counting down from n, and the bottom
 - $n = 14$, the number of tries to choose from.
 - $x = 3$, the number of those tries that are successes.
 
-$${}_{14}C_3 = \frac{14 \times 13 \times 12}{3 \times 2 \times 1} = \frac{2184}{6} = \mathbf{364}$$
+$${}_{14}C_3 = \frac{\underbrace{14 \times 13 \times 12}_{\text{3 factors down from 14}}}{\underbrace{3 \times 2 \times 1}_{\text{3! for the 3 successes}}} = \frac{2184}{6} = \mathbf{364}$$
 
 ```diagram
 {"type": "grid", "title": "nCx values the lessons use", "nodes": [{"id": "h0", "label": "n", "row": 0, "col": 0}, {"id": "h1", "label": "x", "row": 0, "col": 1}, {"id": "h2", "label": "nCx", "row": 0, "col": 2}, {"id": "a0", "label": "3", "row": 1, "col": 0}, {"id": "a1", "label": "2", "row": 1, "col": 1}, {"id": "a2", "label": "3", "row": 1, "col": 2}, {"id": "b0", "label": "4", "row": 2, "col": 0}, {"id": "b1", "label": "1", "row": 2, "col": 1}, {"id": "b2", "label": "4", "row": 2, "col": 2}, {"id": "c0", "label": "8", "row": 3, "col": 0}, {"id": "c1", "label": "3", "row": 3, "col": 1}, {"id": "c2", "label": "56", "row": 3, "col": 2}, {"id": "d0", "label": "10", "row": 4, "col": 0}, {"id": "d1", "label": "7", "row": 4, "col": 1}, {"id": "d2", "label": "120", "row": 4, "col": 2}, {"id": "e0", "label": "14", "row": 5, "col": 0}, {"id": "e1", "label": "3", "row": 5, "col": 1}, {"id": "e2", "label": "364", "row": 5, "col": 2}, {"id": "f0", "label": "16", "row": 6, "col": 0}, {"id": "f1", "label": "3", "row": 6, "col": 1}, {"id": "f2", "label": "560", "row": 6, "col": 2}], "hi": ["e0", "e1", "e2"], "caption": "Compute each row on your calculator before you trust it. 10C7 equals 10C3: choosing the 7 passes is the same as choosing the 3 fails."}
@@ -135,11 +143,11 @@ The `[1]` before each printed answer is the position of the first value on that 
 
 ```quiz
 [
-  {"q": "${}_{12}C_2$ = ?", "type": "numeric", "answer": 66, "tolerance": 0, "explain": "$$ {}_{12}C_2 = \\dfrac{12 \\times 11}{2 \\times 1} = \\dfrac{132}{2} = \\mathbf{66}$$ On the calculator: 12, nCr, 2."},
-  {"q": "${}_{15}C_4$ = ? Use the fraction form if your calculator has no nCr key.", "type": "numeric", "answer": 1365, "tolerance": 0, "explain": "Four factors counting down from 15 on top, $4!$ underneath: $$ {}_{15}C_4 = \\dfrac{15 \\times 14 \\times 13 \\times 12}{4 \\times 3 \\times 2 \\times 1} = \\dfrac{32760}{24} = \\mathbf{1365}$$"},
-  {"q": "$0.6^4$ = ? (4 decimals)", "type": "numeric", "answer": 0.1296, "tolerance": 0.0001, "explain": "$$0.6^4 = 0.6 \\times 0.6 \\times 0.6 \\times 0.6 = \\mathbf{0.1296}$$ This is four Intermediate scrolls in a row all passing."},
+  {"q": "${}_{12}C_2$ = ?", "type": "numeric", "answer": 66, "tolerance": 0, "explain": "$$ {}_{12}C_2 = \\dfrac{\\underbrace{12 \\times 11}_{\\text{2 factors down from 12}}}{\\underbrace{2 \\times 1}_{\\text{2!}}} = \\dfrac{132}{2} = \\mathbf{66}$$ On the calculator: 12, nCr, 2."},
+  {"q": "${}_{15}C_4$ = ? Use the fraction form if your calculator has no nCr key.", "type": "numeric", "answer": 1365, "tolerance": 0, "explain": "Four factors counting down from 15 on top, $4!$ underneath: $$ {}_{15}C_4 = \\dfrac{\\underbrace{15 \\times 14 \\times 13 \\times 12}_{\\text{4 factors down from 15}}}{\\underbrace{4 \\times 3 \\times 2 \\times 1}_{\\text{4!}}} = \\dfrac{32760}{24} = \\mathbf{1365}$$"},
+  {"q": "$0.6^4$ = ? (4 decimals)", "type": "numeric", "answer": 0.1296, "tolerance": 0.0001, "explain": "$$0.6^4 = \\underbrace{0.6}_{\\text{1st passes}} \\times \\underbrace{0.6}_{\\text{2nd passes}} \\times \\underbrace{0.6}_{\\text{3rd passes}} \\times \\underbrace{0.6}_{\\text{4th passes}} = \\mathbf{0.1296}$$ This is four Intermediate scrolls in a row all passing."},
   {"q": "$e^{-3}$ = ? (4 decimals)", "type": "numeric", "answer": 0.0498, "tolerance": 0.0001, "explain": "Type 3, the sign key, then $e^x$: $$e^{-3} = 0.049787 = \\mathbf{0.0498}$$"},
-  {"q": "$5!$ = ?", "type": "numeric", "answer": 120, "tolerance": 0, "explain": "$$5! = 5 \\times 4 \\times 3 \\times 2 \\times 1 = \\mathbf{120}$$"},
+  {"q": "$5!$ = ?", "type": "numeric", "answer": 120, "tolerance": 0, "explain": "$$5! = \\underbrace{5}_{\\text{choices for 1st}} \\times \\underbrace{4}_{\\text{for 2nd}} \\times 3 \\times 2 \\times \\underbrace{1}_{\\text{for last}} = \\mathbf{120}$$"},
   {"q": "What does `mean(c(TRUE, TRUE, FALSE, FALSE, TRUE))` print?", "options": ["`[1] 0.6`", "`[1] 3`", "`[1] TRUE`", "`[1] 0.4`"], "answer": 0, "explain": "TRUE counts 1 and FALSE 0. Three TRUEs out of five values: $3/5 = 0.6$. `sum()` would print 3."}
 ]
 ```

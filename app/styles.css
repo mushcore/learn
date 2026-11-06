@@ -235,6 +235,8 @@ button, a, [role="button"] { -webkit-tap-highlight-color: transparent; }
 .math .ub-body { border: 2px solid var(--blue); border-top: 0; border-radius: 0 0 8px 8px; padding: 0 5px 3px; }
 .math .ub-label { font-family: var(--body); font-size: 0.58em; color: var(--blue); margin-top: 3px; max-width: 9em; text-align: center; line-height: 1.25; }
 .math .ub-label .txt { font-size: 1em; }
+.math .frac .num:has(.ubrace) { padding-bottom: 6px; }
+.math .frac .den:has(.ubrace) { padding-top: 6px; }
 .math .frac .num { border-bottom: 1px solid var(--ink); padding: 0 3px; }
 .math .frac .den { padding: 0 3px; }
 .math .sqrt .ovl { border-top: 1px solid var(--ink); text-decoration: none; padding: 0 2px; }

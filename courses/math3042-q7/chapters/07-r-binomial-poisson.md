@@ -76,7 +76,7 @@ $$P(X \ge 6) = 1 - P(X \le 5)$$
 
 With these numbers, where 0.96513 is computed as one minus the answer R prints:
 
-$$P(X \ge 6) = 1 - \text{pbinom}(5, 30, 1/12) = 1 - 0.96513 = \mathbf{0.03487}$$
+$$P(X \ge 6) = 1 - \text{pbinom}(\underbrace{5}_{\text{one below 6}}, \underbrace{30}_{\text{rolls}}, \underbrace{1/12}_{\text{chance of an 8}}) = 1 - \underbrace{0.96513}_{\text{at most 5 eights}} = \mathbf{0.03487}$$
 
 The rule: **"at least k" is `pbinom` at k − 1, subtracted from 1.** The words become values of X exactly as in [At least, at most, more than](#/math3042-q7/at-least-at-most).
 
@@ -297,7 +297,11 @@ Take a group of BCIT students, each of whom may be left-handed. X counts the lef
 
 Computed:
 
-$$\mu = np = 50 \times 0.13 = \mathbf{6.50} \qquad \sigma = \sqrt{npq} = \sqrt{50 \times 0.13 \times 0.87} = \sqrt{5.655} = \mathbf{2.38}$$
+$$\mu = np = \underbrace{50}_{\text{students}} \times \underbrace{0.13}_{\text{chance left-handed}} = \mathbf{6.50}$$
+
+$$npq = \underbrace{50}_{\text{students}} \times \underbrace{0.13}_{\text{chance left-handed}} \times \underbrace{0.87}_{\text{chance not left-handed}} = 5.655$$
+
+$$\sigma = \sqrt{npq} = \sqrt{5.655} = \mathbf{2.38}$$
 
 The simulation below draws 100 000 such groups:
 
@@ -388,7 +392,9 @@ The same check works for a Poisson count, using `rpois`. A cable has flaws sprea
 
 - rate = 0.75, the flaws per metre.
 - interval = 5, the metres in the piece asked about.
-- $\lambda = 0.75 \times 5 = 3.75$, the mean number of flaws in that piece.
+- $\lambda = 3.75$, the mean number of flaws in that piece, rate × interval:
+
+$$\lambda = \underbrace{0.75}_{\text{flaws per metre}} \times \underbrace{5}_{\text{metres}} = \mathbf{3.75}$$
 
 The function below simulates 100 000 such pieces.
 
@@ -483,16 +489,16 @@ In MapleStory, Star Force adds stars to gear, and a failure keeps the star. At 1
 
 ```quiz
 [
-  {"type": "fill", "q": "P(exactly 3 of the 40 taps are rejected).", "code": "___(3, 40, 0.05)", "answer": ["dbinom"], "explain": "Exactly one value, so the d function: `dbinom(3, 40, 0.05)`, x = 3, size = 40, prob = 0.05. Computed: $$C(40,3)\\,0.05^3\\,0.95^{37} = \\mathbf{0.1851}$$"},
-  {"type": "fill", "q": "P(at least 3 of the 40 taps are rejected).", "code": "1 - pbinom(___, 40, 0.05)", "answer": ["2"], "explain": "At least 3 is everything except 0, 1 and 2, so subtract at most 2: `1 - pbinom(2, 40, 0.05)`. Computed: $$1 - 0.6767 = \\mathbf{0.3233}$$ Writing 3 in the slot would also remove X = 3."},
+  {"type": "fill", "q": "P(exactly 3 of the 40 taps are rejected).", "code": "___(3, 40, 0.05)", "answer": ["dbinom"], "explain": "Exactly one value, so the d function: `dbinom(3, 40, 0.05)`, x = 3, size = 40, prob = 0.05. Computed: $$\\underbrace{C(40,3)}_{\\text{3 of 40 taps}}\\,\\underbrace{0.05^3}_{\\text{3 rejects, 0.05 each}}\\,\\underbrace{0.95^{37}}_{\\text{37 accepts, 0.95 each}} = \\mathbf{0.1851}$$"},
+  {"type": "fill", "q": "P(at least 3 of the 40 taps are rejected).", "code": "1 - pbinom(___, 40, 0.05)", "answer": ["2"], "explain": "At least 3 is everything except 0, 1 and 2, so subtract at most 2: `1 - pbinom(2, 40, 0.05)`. Computed: $$1 - \\underbrace{0.6767}_{\\text{at most 2 rejected}} = \\mathbf{0.3233}$$ Writing 3 in the slot would also remove X = 3."},
   {"type": "fill", "q": "P(fewer than 3 of the 40 taps are rejected).", "code": "pbinom(___, 40, 0.05)", "answer": ["2"], "explain": "Fewer than 3 is 0, 1 or 2, so q = 2: `pbinom(2, 40, 0.05)`. Computed: $$P(0) + P(1) + P(2) = \\mathbf{0.6767}$$"},
-  {"type": "fill", "q": "P(at most 5 tickets in the 2 hours).", "code": "ppois(5, ___)", "answer": ["8", "4*2", "2*4"], "explain": "lambda is the mean for the interval asked: $$\\lambda = 4 \\times 2 = 8$$ So `ppois(5, 8)`. Computed: $$\\mathbf{0.1912}$$ Using 4 answers a question about one hour."},
+  {"type": "fill", "q": "P(at most 5 tickets in the 2 hours).", "code": "ppois(5, ___)", "answer": ["8", "4*2", "2*4"], "explain": "lambda is the mean for the interval asked: $$\\lambda = \\underbrace{4}_{\\text{tickets per hour}} \\times \\underbrace{2}_{\\text{hours}} = 8$$ So `ppois(5, 8)`. Computed: $$\\mathbf{0.1912}$$ Using 4 answers a question about one hour."},
   {"type": "fill", "q": "P(from 2 to 6 tickets, inclusive, in the 2 hours).", "code": "ppois(6, 8) - ppois(___, 8)", "answer": ["1"], "explain": "At most 6 minus at most 1 leaves 2 to 6: `ppois(6, 8) - ppois(1, 8)`. Computed: $$\\mathbf{0.3104}$$ Subtracting `ppois(2, 8)` would drop X = 2."},
   {"type": "fill", "q": "Simulate 1000 days of 40 taps each, one count of rejected taps per day.", "code": "X.vals <- rbinom(___, 40, 0.05)", "answer": ["1000", "10^3", "1e3", "1e+03"], "explain": "The first slot of `rbinom` is R's `n`: how many values to draw. The 40 taps go in `size`. So `X.vals <- rbinom(1000, 40, 0.05)`, and `prop.table(table(X.vals))` gives the shares to compare with `dbinom`."},
-  {"type": "text", "q": "Write the full line on paper for P(more than 10 tickets in the 2 hours), then type the name of the function you used.", "answer": ["ppois", "ppois()"], "explain": "More than 10 is one minus at most 10: `1 - ppois(10, 8)`. Computed: $$1 - 0.8159 = \\mathbf{0.1841}$$ The labs write every upper tail as this complement."},
+  {"type": "text", "q": "Write the full line on paper for P(more than 10 tickets in the 2 hours), then type the name of the function you used.", "answer": ["ppois", "ppois()"], "explain": "More than 10 is one minus at most 10: `1 - ppois(10, 8)`. Computed: $$1 - \\underbrace{0.8159}_{\\text{at most 10 tickets}} = \\mathbf{0.1841}$$ The labs write every upper tail as this complement."},
   {"type": "fill", "q": "P(exactly 3 of the 16 gems gain a level).", "code": "___(3, 16, 1/8)", "answer": ["dbinom"], "explain": "Exactly one value, so the d function: `dbinom(3, 16, 1/8)`, x = 3, size = 16, prob = 1/8. Computed: $$\\mathbf{0.1928}$$"},
-  {"type": "fill", "q": "P(you reach 15 stars within 6 taps).", "code": "1 - pbinom(___, 6, 0.3)", "answer": ["0"], "explain": "Within 6 taps means at least one success in 6, so subtract the chance of none: `1 - pbinom(0, 6, 0.3)`. Computed: $$1 - 0.7^6 = 1 - 0.117649 = \\mathbf{0.8824}$$"},
-  {"type": "fill", "q": "Simulate 1000 runs of 16 gems, one count of levelled gems per run.", "code": "X.vals <- rbinom(___, 16, 1/8)", "answer": ["1000", "10^3", "1e3", "1e+03"], "explain": "The first slot of `rbinom` is how many values to draw, here 1000 runs; 16 is size, the gems per run. `mean(X.vals)` lands near $\\mu = 16 \\times \\tfrac{1}{8} = 2.00$."}
+  {"type": "fill", "q": "P(you reach 15 stars within 6 taps).", "code": "1 - pbinom(___, 6, 0.3)", "answer": ["0"], "explain": "Within 6 taps means at least one success in 6, so subtract the chance of none: `1 - pbinom(0, 6, 0.3)`. Computed: $$1 - \\underbrace{0.7^6}_{\\text{6 fails, 0.7 each}} = 1 - 0.117649 = \\mathbf{0.8824}$$"},
+  {"type": "fill", "q": "Simulate 1000 runs of 16 gems, one count of levelled gems per run.", "code": "X.vals <- rbinom(___, 16, 1/8)", "answer": ["1000", "10^3", "1e3", "1e+03"], "explain": "The first slot of `rbinom` is how many values to draw, here 1000 runs; 16 is size, the gems per run. `mean(X.vals)` lands near $$\\mu = \\underbrace{16}_{\\text{gems}} \\times \\underbrace{\\tfrac{1}{8}}_{\\text{chance of a level}} = 2.00$$"}
 ]
 ```
 

@@ -25,21 +25,28 @@ This table is invented, small enough to see every row. A is "exercises often" an
 
 Read the three answers off it before any formula. A is true in 4 rows. A or B is true in every row except the 2 in the bottom-right cell, so 8 rows. Inside the B row, A is true in 3 of 7.
 
+- 10, the number of students in the table.
+- 4, the number of students who exercise often (A).
+- 7, the number of students who never smoked (B).
+- 3, the number of students who do both.
+
 ## The three formulas with the table's numbers
 
 P(A) is the A rows over all rows:
 
-$$P(A) = \dfrac{4}{10} = \mathbf{0.4000}$$
+$$P(A) = \dfrac{\underbrace{4}_{\text{students who exercise often}}}{\underbrace{10}_{\text{all students}}} = \mathbf{0.4000}$$
 
 **P(A or B) adds the two events and subtracts the overlap**, because the 3 students in both were counted twice. Just like counting the people at a party who brought a drink or a snack: someone who brought both is still one person.
 
-$$P(A \text{ or } B) = P(A) + P(B) - P(A \text{ and } B) = 0.4 + 0.7 - 0.3 = \mathbf{0.8000}$$
+$$P(A \text{ or } B) = P(A) + P(B) - P(A \text{ and } B) = \underbrace{0.4}_{\text{4 of 10 exercise}} + \underbrace{0.7}_{\text{7 of 10 never smoked}} - \underbrace{0.3}_{\text{3 of 10 do both}} = \mathbf{0.8000}$$
 
 **P(A | B) divides the overlap by the B rows only:**
 
-$$P(A \mid B) = \dfrac{P(A \text{ and } B)}{P(B)} = \dfrac{3}{7} = \mathbf{0.4286}$$
+$$P(A \mid B) = \dfrac{P(A \text{ and } B)}{P(B)} = \dfrac{\underbrace{3}_{\text{students who do both}}}{\underbrace{7}_{\text{students who never smoked}}} = \mathbf{0.4286}$$
 
-**The trap is P(A or B) = P(A) + P(B).** Here that gives 1.1, more than certain.
+**The trap is P(A or B) = P(A) + P(B).** Here that gives 1.1, more than certain:
+
+$$P(A) + P(B) = \underbrace{0.4}_{\text{4 of 10 exercise}} + \underbrace{0.7}_{\text{7 of 10 never smoked}} = 1.1$$
 
 :::warn A probability above 1 means you double-counted
 Any answer over 1 is wrong. Look for an overlap you added twice.
@@ -115,9 +122,11 @@ The knit still finishes, so the NA is easy to miss. Check that every printed sha
 
 **Independent** means **knowing B does not change the chance of A**. Just like asking if rain is more likely on a Monday: if it is not, the weekday tells you nothing about rain.
 
-$$P(A \mid B) = P(A) \quad \text{made-up table: } 0.4286 \text{ against } 0.4000$$
+$$P(A \mid B) = P(A) \quad \text{made-up table: } \underbrace{0.4286}_{\text{3 of 7 never-smokers}} \text{ against } \underbrace{0.4000}_{\text{4 of 10 students}}$$
 
-Those differ, so in the made-up table A and B are not independent. The other test gives the same verdict: $P(A)P(B) = 0.4 \times 0.7 = 0.28$, not $0.3$.
+Those differ, so in the made-up table A and B are not independent. The other test gives the same verdict, 0.28 and not 0.3:
+
+$$P(A)P(B) = \underbrace{0.4}_{\text{4 of 10 exercise}} \times \underbrace{0.7}_{\text{7 of 10 never smoked}} = 0.28 \quad \text{against} \quad P(A \text{ and } B) = \underbrace{0.3}_{\text{3 of 10 do both}}$$
 
 :::tip Exclusive is about the overlap; independent is about a ratio
 Exclusive asks one count, the A-and-B rows. Independent compares two shares, P(A | B) and P(A).
@@ -238,7 +247,9 @@ print(paste0("P(A) = ", round(p.A, 4), ", P(A|B) = ", round(p.A.given.B, 4)))
 - last line: "Round both numbers (`round`), join them with the labels (`paste0`), print the sentence (`print`)."
 :::
 
-The 0.01 is a judgement, not a rule from the course; say so in a comment if you use it. The Monday gap above was 0.0002. For example, a full answer prints "Not independent" and then the sentence with both rounded shares.
+The 0.01 is a judgement, not a rule from the course; say so in a comment if you use it. The Monday gap above was 0.0002:
+
+$$\left| \underbrace{0.4876297}_{\text{wet Mondays over Mondays}} - \underbrace{0.4878285}_{\text{wet days over all days}} \right| = 0.0002$$ For example, a full answer prints "Not independent" and then the sentence with both rounded shares.
 
 The long version is [Lab 5: conditional probability in R](#/math3042-u4/lab5-conditional-r).
 
@@ -273,9 +284,9 @@ Read weights the way you read the rows of a data frame. **P(A) is the weight whe
 
 ```quiz
 [
-  {"q": "P(the Augment adds a movement speed prefix)? (4 decimals)", "type": "numeric", "answer": 0.1351, "tolerance": 0.0001, "explain": "Movement speed weight over all prefix weight: $$P(\\text{MS}) = \\dfrac{5000}{37000} = \\mathbf{0.1351}$$ About 1 Augment in 7."},
-  {"q": "The Augment gave movement speed. P(it is the 30 % tier, given that it is movement speed)? (4 decimals)", "type": "numeric", "answer": 0.2, "tolerance": 0.0001, "explain": "Given B means B's weight goes in the bottom: $$P(30\\% \\mid \\text{MS}) = \\dfrac{1000}{5000} = \\mathbf{0.2000}$$ The same move as a row total on survey."},
-  {"q": "Before you use the Augment: P(it adds the 30 % movement speed tier)? (4 decimals)", "type": "numeric", "answer": 0.027, "tolerance": 0.0001, "explain": "One tier of weight 1000 out of 37000: $$\\dfrac{1000}{37000} = \\mathbf{0.0270}$$ It also equals $P(\\text{MS}) \\times P(30\\% \\mid \\text{MS}) = 0.135135 \\times 0.2 = 0.0270$."}
+  {"q": "P(the Augment adds a movement speed prefix)? (4 decimals)", "type": "numeric", "answer": 0.1351, "tolerance": 0.0001, "explain": "Movement speed weight over all prefix weight: $$P(\\text{MS}) = \\dfrac{\\underbrace{5000}_{\\text{movement speed weight}}}{\\underbrace{37000}_{\\text{all prefix weight}}} = \\mathbf{0.1351}$$ About 1 Augment in 7."},
+  {"q": "The Augment gave movement speed. P(it is the 30 % tier, given that it is movement speed)? (4 decimals)", "type": "numeric", "answer": 0.2, "tolerance": 0.0001, "explain": "Given B means B's weight goes in the bottom: $$P(30\\% \\mid \\text{MS}) = \\dfrac{\\underbrace{1000}_{\\text{30\\% tier weight}}}{\\underbrace{5000}_{\\text{movement speed weight}}} = \\mathbf{0.2000}$$ The same move as a row total on survey."},
+  {"q": "Before you use the Augment: P(it adds the 30 % movement speed tier)? (4 decimals)", "type": "numeric", "answer": 0.027, "tolerance": 0.0001, "explain": "One tier of weight 1000 out of 37000: $$\\dfrac{\\underbrace{1000}_{\\text{30\\% tier weight}}}{\\underbrace{37000}_{\\text{all prefix weight}}} = \\mathbf{0.0270}$$ It also equals $$P(\\text{MS}) \\times P(30\\% \\mid \\text{MS}) = \\underbrace{0.135135}_{\\text{P(MS), unrounded}} \\times \\underbrace{0.2}_{\\text{P(30\\% given MS)}} = 0.0270$$"}
 ]
 ```
 
