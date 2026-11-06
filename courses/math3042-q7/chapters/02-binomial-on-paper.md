@@ -189,7 +189,7 @@ $${}_{16}C_3 = \frac{\underbrace{16 \times 15 \times 14}_{\text{3 factors down f
 
 $$P(3) = \underbrace{{}_{16}C_3}_{\text{orders with 3 levelled}} \times \underbrace{\left(\tfrac{1}{8}\right)^3}_{\text{3 gems level, 1/8 each}} \times \underbrace{\left(\tfrac{7}{8}\right)^{13}}_{\text{13 gems do not, 7/8 each}} = 560 \times 0.001953 \times 0.176240 = \mathbf{0.1928}$$
 
-So about 5 chaos levels up two gems on average, and exactly three levelled gems happens about one run in five.
+So for the 5.11 chaos the orbs cost, you level two gems on average ($\mu = 2$). **Exactly three** levelled gems happens about one run in five. That counts only runs with three, not four or more. The price is game detail: the quiz never asks for it.
 
 ## Ten Intermediate scrolls and an eight-question guess
 
