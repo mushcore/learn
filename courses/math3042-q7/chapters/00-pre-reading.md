@@ -47,7 +47,7 @@ $${}_{14}C_3 = \frac{14 \times 13 \times 12}{3 \times 2 \times 1} = \frac{2184}{
 {"type": "grid", "title": "nCx values the lessons use", "nodes": [{"id": "h0", "label": "n", "row": 0, "col": 0}, {"id": "h1", "label": "x", "row": 0, "col": 1}, {"id": "h2", "label": "nCx", "row": 0, "col": 2}, {"id": "a0", "label": "3", "row": 1, "col": 0}, {"id": "a1", "label": "2", "row": 1, "col": 1}, {"id": "a2", "label": "3", "row": 1, "col": 2}, {"id": "b0", "label": "4", "row": 2, "col": 0}, {"id": "b1", "label": "1", "row": 2, "col": 1}, {"id": "b2", "label": "4", "row": 2, "col": 2}, {"id": "c0", "label": "8", "row": 3, "col": 0}, {"id": "c1", "label": "3", "row": 3, "col": 1}, {"id": "c2", "label": "56", "row": 3, "col": 2}, {"id": "d0", "label": "10", "row": 4, "col": 0}, {"id": "d1", "label": "7", "row": 4, "col": 1}, {"id": "d2", "label": "120", "row": 4, "col": 2}, {"id": "e0", "label": "14", "row": 5, "col": 0}, {"id": "e1", "label": "3", "row": 5, "col": 1}, {"id": "e2", "label": "364", "row": 5, "col": 2}, {"id": "f0", "label": "16", "row": 6, "col": 0}, {"id": "f1", "label": "3", "row": 6, "col": 1}, {"id": "f2", "label": "560", "row": 6, "col": 2}], "hi": ["e0", "e1", "e2"], "caption": "Compute each row on your calculator before you trust it. 10C7 equals 10C3: choosing the 7 passes is the same as choosing the 3 fails."}
 ```
 
-## e and the e^x key
+## The number e and its calculator key
 
 The Poisson formula uses the number $e = 2.718\ldots$ raised to a negative power. The key is $e^x$, often the second function of ln.
 
