@@ -2,7 +2,7 @@
 title: "Binomial on paper: x successes in n fixed trials"
 minutes: 12
 ---
-<!-- facts: classic.scroll.tiers -->
+<!-- facts: classic.scroll.tiers, poe1.vaal.gem-outcomes, poe1.price.currency-snapshot, poe2.items.unid-rare-mod-count, poe2.items.affix-limits -->
 Part 1 gives you a number of tries, a chance of success on each, and asks for the chance of an exact count. The binomial formula answers it in one line.
 
 ## A binomial count: a fixed number of yes-or-no tries
@@ -43,7 +43,11 @@ For the three scrolls, each symbol is:
 - $x = 2$, the number of passes asked about.
 - $p = 0.6$, the chance one scroll passes.
 - $q = 1 - p = 0.4$, the chance one scroll fails.
-- ${}_nC_x$ counts the orders: ${}_3C_2 = 3$.
+- ${}_nC_x$ counts the orders: $\displaystyle {}_nC_x = \frac{n!}{x!\,(n-x)!}$, the calculator's nCr key.
+
+$${}_3C_2 = \frac{3!}{2!\,1!} = \frac{6}{2 \times 1} = \mathbf{3}$$
+
+The keys, and the fraction form for a calculator without nCr, are in [Before you start](#/math3042-q7/pre-reading).
 
 $$P(2) = {}_3C_2 \, (0.6)^2 \, (0.4)^{1} = 3 \times 0.36 \times 0.4 = \mathbf{0.432}$$
 
@@ -54,6 +58,8 @@ $$0.064 + 0.288 + 0.432 + 0.216 = \mathbf{1}$$
 ## Lab 6's 12-sided die: the formula line and dbinom agree
 
 Lab 6 rolls a 12-sided die 30 times. X is the number of times it shows an 8. So $n = 30$, $x = 3$, $p = \frac{1}{12}$ and $q = \frac{11}{12}$.
+
+$${}_{30}C_3 = \frac{30 \times 29 \times 28}{3 \times 2 \times 1} = \mathbf{4060}$$
 
 $$P(3) = {}_{30}C_3 \left(\tfrac{1}{12}\right)^3 \left(\tfrac{11}{12}\right)^{27} = \mathbf{0.2242}$$
 
@@ -105,16 +111,36 @@ $$Z = \dfrac{x - \mu}{\sigma} = \dfrac{6 - 2.5}{1.513825} = \mathbf{2.31}$$
 
 $Z > 2$, so six 8s is unusual. The long version is in [Binomial mean and variance; is a count unusual?](#/math3042-u4/binomial-mean-variance), and the formula's own lesson is [Binomial experiments and the binomial formula](#/math3042-u4/binomial).
 
+## Sixteen Vaal Orbs on sixteen gems: how many gain a level
+
+In Path of Exile, a Vaal Orb is the currency that corrupts an item. Used on a skill gem, it adds one gem level with probability 1/8, the wiki gives. Every other outcome leaves the level where it was or lowers it.
+
+Put one orb on each of 16 different gems. Each gem gets its own roll at the same 1/8, so this is 16 independent tries and X, the number of gems that gain a level, is binomial with $n = 16$ and $p = \tfrac{1}{8}$.
+
+On poe.ninja's price of 2026-10-27, a Vaal Orb sold for 0.3195 chaos, so the 16 orbs cost about 5.11 chaos (computed).
+
+$$\mu = np = 16 \times \tfrac{1}{8} = \mathbf{2.00}$$
+
+$$\sigma = \sqrt{npq} = \sqrt{16 \times \tfrac{1}{8} \times \tfrac{7}{8}} = \sqrt{1.75} = \mathbf{1.32}$$
+
+$${}_{16}C_3 = \frac{16 \times 15 \times 14}{3 \times 2 \times 1} = 560$$
+
+$$P(3) = {}_{16}C_3 \left(\tfrac{1}{8}\right)^3 \left(\tfrac{7}{8}\right)^{13} = 560 \times 0.001953 \times 0.176240 = \mathbf{0.1928}$$
+
+So about 5 chaos buys an expected two levels, and exactly three levels happens about one run in five.
+
 ## Ten Intermediate scrolls and an eight-question guess
 
 ```quiz
 [
-  {"q": "You use 10 Intermediate scrolls, each passing with $p = 0.6$. P(exactly 7 pass)? (4 decimals)", "type": "numeric", "answer": 0.2150, "tolerance": 0.0001, "explain": "Let X = the number of passes in 10 scrolls. Binomial with $n = 10$, $p = 0.6$, $q = 0.4$. $$P(7) = {}_{10}C_7 \\, (0.6)^7 \\, (0.4)^3 = 120 \\times 0.027994 \\times 0.064 = \\mathbf{0.2150}$$"},
-  {"q": "A COMP quiz has 8 multiple-choice questions, each with 4 options. You guess every one. P(exactly 3 right)? (4 decimals)", "type": "numeric", "answer": 0.2076, "tolerance": 0.0001, "explain": "Let X = the number right out of 8. Binomial with $n = 8$, $p = 0.25$, $q = 0.75$. $$P(3) = {}_8C_3 \\, (0.25)^3 \\, (0.75)^5 = 56 \\times 0.015625 \\times 0.237305 = \\mathbf{0.2076}$$"},
+  {"q": "You use 10 Intermediate scrolls, each passing with $p = 0.6$. P(exactly 7 pass)? (4 decimals)", "type": "numeric", "answer": 0.2150, "tolerance": 0.0001, "explain": "Let X = the number of passes in 10 scrolls. Binomial with $n = 10$, $p = 0.6$, $q = 0.4$. $${}_{10}C_7 = \\dfrac{10 \\times 9 \\times 8}{3 \\times 2 \\times 1} = 120$$ $$P(7) = {}_{10}C_7 \\, (0.6)^7 \\, (0.4)^3 = 120 \\times 0.027994 \\times 0.064 = \\mathbf{0.2150}$$"},
+  {"q": "A COMP quiz has 8 multiple-choice questions, each with 4 options. You guess every one. P(exactly 3 right)? (4 decimals)", "type": "numeric", "answer": 0.2076, "tolerance": 0.0001, "explain": "Let X = the number right out of 8. Binomial with $n = 8$, $p = 0.25$, $q = 0.75$. $${}_8C_3 = \\dfrac{8 \\times 7 \\times 6}{3 \\times 2 \\times 1} = 56$$ $$P(3) = {}_8C_3 \\, (0.25)^3 \\, (0.75)^5 = 56 \\times 0.015625 \\times 0.237305 = \\mathbf{0.2076}$$"},
   {"q": "The 10 scrolls: the mean number of passes μ = ? (2 decimals)", "type": "numeric", "answer": 6, "tolerance": 0.05, "explain": "$$\\mu = np = 10 \\times 0.6 = \\mathbf{6.00}$$"},
   {"q": "The 10 scrolls: the standard deviation σ = ? (2 decimals)", "type": "numeric", "answer": 1.55, "tolerance": 0.05, "explain": "$$\\sigma = \\sqrt{npq} = \\sqrt{10 \\times 0.6 \\times 0.4} = \\sqrt{2.4} = \\mathbf{1.55}$$"},
   {"q": "Only 2 of the 10 scrolls pass. Is that unusual? Answer Yes or No.", "type": "text", "answer": ["Yes", "yes", "YES"], "explain": "$$Z = \\dfrac{x - \\mu}{\\sigma} = \\dfrac{2 - 6}{1.549193} = \\mathbf{-2.58}$$ Beyond −2, so **yes**, 2 passes is unusually low for a 60 % rate."},
-  {"q": "A help desk solves 35 % of tickets on the first call. Of 6 tickets, write $P(X = 2)$ as the binomial formula with the numbers substituted. Use C(n,x), ^ for powers, * between factors, no spaces.", "type": "text", "answer": ["C(6,2)*0.35^2*0.65^4", "C(6,2)*(0.35)^2*(0.65)^4", "6C2*0.35^2*0.65^4", "6C2*(0.35)^2*(0.65)^4", "choose(6,2)*0.35^2*0.65^4", "C(6,2)*0.35^2*(1-0.35)^4", "15*0.35^2*0.65^4"], "explain": "${}_nC_x \\, p^x \\, q^{n-x}$ with $n = 6$, $x = 2$, $p = 0.35$, $q = 0.65$: $$C(6,2) \\cdot 0.35^2 \\cdot 0.65^4 = 15 \\times 0.1225 \\times 0.178506 = \\mathbf{0.3280}$$ Four failures, so q has exponent 4."}
+  {"q": "A help desk solves 35 % of tickets on the first call. Of 6 tickets, write $P(X = 2)$ as the binomial formula with the numbers substituted. Use C(n,x), ^ for powers, * between factors, no spaces.", "type": "text", "answer": ["C(6,2)*0.35^2*0.65^4", "C(6,2)*(0.35)^2*(0.65)^4", "6C2*0.35^2*0.65^4", "6C2*(0.35)^2*(0.65)^4", "choose(6,2)*0.35^2*0.65^4", "C(6,2)*0.35^2*(1-0.35)^4", "15*0.35^2*0.65^4"], "explain": "${}_nC_x \\, p^x \\, q^{n-x}$ with $n = 6$, $x = 2$, $p = 0.35$, $q = 0.65$: $$C(6,2) \\cdot 0.35^2 \\cdot 0.65^4 = 15 \\times 0.1225 \\times 0.178506 = \\mathbf{0.3280}$$ Four failures, so q has exponent 4."},
+  {"q": "You identify 10 rare items in PoE2. A rare holds up to three prefixes and three suffixes, and the wiki gives 4, 5 or 6 modifiers in the ratio 8:3:1, so each has 6 modifiers with probability 1/12. P(none of the 10 has 6 modifiers)? (4 decimals)", "type": "numeric", "answer": 0.4189, "tolerance": 0.0001, "explain": "Let X = the number of the 10 rares with 6 modifiers. Each item rolls its own count, so X is binomial with $n = 10$, $p = \\tfrac{1}{12}$, $q = \\tfrac{11}{12}$. $$P(0) = {}_{10}C_0 \\left(\\tfrac{1}{12}\\right)^0 \\left(\\tfrac{11}{12}\\right)^{10} = 1 \\times 1 \\times 0.418904 = \\mathbf{0.4189}$$ So at least one six-modifier rare is $1 - 0.4189 = 0.5811$."},
+  {"q": "Sixteen Vaal Orbs, one per gem, each adds a level with $p = 1/8$. Six gems gain a level. Is that unusual? Answer Yes or No.", "type": "text", "answer": ["Yes", "yes", "YES"], "explain": "$\\mu = 2$ and $\\sigma = \\sqrt{1.75} = 1.322876$. $$Z = \\dfrac{x - \\mu}{\\sigma} = \\dfrac{6 - 2}{1.322876} = \\mathbf{3.02}$$ Beyond 2, so **yes**: six levels from sixteen orbs is unusually lucky."}
 ]
 ```
 
