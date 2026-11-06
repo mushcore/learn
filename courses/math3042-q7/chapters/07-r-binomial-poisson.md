@@ -7,9 +7,9 @@ Part 2 can ask for a binomial or Poisson probability by code, then a simulation 
 
 ## The first letter says which probability
 
-Every distribution in R has a family of functions with one stem and a letter in front. The stem names the distribution: `binom` or `pois`.
+Every distribution in R has a family of functions with one stem and a letter in front. **The stem names the distribution: `binom` or `pois`.**
 
-The letter d gives the chance of exactly one value. The letter p gives the chance of that value or anything below it. The letter r draws random values, for a simulation.
+**The letter d gives the chance of exactly one value. The letter p gives the chance of that value or anything below it.** Just like asking "exactly 3 taps passed" versus "at most 3 taps passed". **The letter r draws random values, for a simulation.** Just like rolling a real die, r gives new numbers each time you run it.
 
 ```r
 dbinom(x, size, prob)
@@ -49,11 +49,15 @@ rpois(n, lambda)
 - `rpois(n, lambda)`: "Take lambda, then draw n counts (`rpois`)."
 :::
 
-There is no letter for "at least". Every other wording is built from p by a complement or a difference.
+There is no letter for "at least". **Every other wording is built from p by a complement or a difference.** For example, "more than 3 taps passed" is everything except "at most 3 passed".
+
+:::tip d is one value, p is a running total up to q
+On the die below, `dbinom(6, 30, 1/12)` is only X = 6. `pbinom(6, 30, 1/12)` adds X = 0 through 6.
+:::
 
 ## Thirty rolls of a 12-sided die
 
-Lab 6 rolls a 12-sided die 30 times and counts the 8s, so $n = 30$ and $p = 1/12$. "At least 6" means 6, 7, 8, and so on up to 30.
+Roll a 12-sided die 30 times and count the 8s. So $n = 30$ and $p = 1/12$. This die is from Lab 6. "At least 6" means 6, 7, 8, and so on up to 30. Just like "at least 18 years old" includes 18 itself and every age above.
 
 ```diagram
 {"type": "grid", "title": "At least 6 eights in 30 rolls", "nodes": [{"id": "h", "label": "X", "row": 0, "col": 0}, {"id": "v0", "label": "0", "row": 0, "col": 1}, {"id": "v1", "label": "1", "row": 0, "col": 2}, {"id": "v2", "label": "2", "row": 0, "col": 3}, {"id": "v3", "label": "3", "row": 0, "col": 4}, {"id": "v4", "label": "4", "row": 0, "col": 5}, {"id": "v5", "label": "5", "row": 0, "col": 6}, {"id": "v6", "label": "6", "row": 0, "col": 7}, {"id": "v7", "label": "7", "row": 0, "col": 8}, {"id": "v8", "label": "8", "row": 0, "col": 9}, {"id": "vd", "label": "…", "row": 0, "col": 10}, {"id": "v30", "label": "30", "row": 0, "col": 11}], "hi": ["v6", "v7", "v8", "vd", "v30"], "caption": "The lit values are the event. The unlit ones, 0 to 5, are exactly what pbinom(5, 30, 1/12) adds up."}
@@ -63,15 +67,19 @@ R's p function adds the unlit cells, so the event is one minus that sum:
 
 $$P(X \ge 6) = 1 - P(X \le 5)$$
 
-With the lab's numbers, where 0.96513 is computed as one minus the lab's printed answer:
+With these numbers, where 0.96513 is computed as one minus the answer R prints:
 
 $$P(X \ge 6) = 1 - \text{pbinom}(5, 30, 1/12) = 1 - 0.96513 = \mathbf{0.03487}$$
 
-The rule: "at least k" is `pbinom` at k − 1, subtracted from 1. The words become values of X exactly as in [At least, at most, more than](#/math3042-q7/at-least-at-most).
+The rule: **"at least k" is `pbinom` at k − 1, subtracted from 1.** The words become values of X exactly as in [At least, at most, more than](#/math3042-q7/at-least-at-most).
 
-## Lab 6 Task 2: one wording, one line
+:::warn At least k stops the cumulative at k − 1
+On the die, `1 - pbinom(6, 30, 1/12)` also drops X = 6. It answers "more than 6", not "at least 6".
+:::
 
-The lab's five parts on the same die:
+## Exactly, at most, at least for a 12-sided die
+
+Five questions on the same die, rolled 30 times while counting the 8s: exactly 6, at most 6, at least 6, more than 6, and from 2 to 6. This is Lab 6 Task 2. Each wording becomes one line:
 
 ```r
 n <- 30
@@ -121,15 +129,17 @@ pbinom(6, n, p) - pbinom(1, n, p)
 - `pbinom(6, n, p) - pbinom(1, n, p)`: "Compute both cumulative chances (`pbinom`), subtract the second from the first (`-`), print it."
 :::
 
-Task 3 asks the same shapes with 100 chips and a 20 % chance of a thin coating, `n <- 100` and `p <- 0.20`. Its lines and printed values:
+The same shapes work for any n and p. Take 100 chips, each with a 20 % chance of a thin coating. X counts the thin-coated chips, so `n <- 100` and `p <- 0.20`. This is Lab 6 Task 3. Its lines and printed values:
 
 ```diagram
-{"type": "grid", "title": "Lab 6 Task 3: n = 100, p = 0.20", "nodes": [{"id": "h0", "label": "Words", "row": 0, "col": 0}, {"id": "h1", "label": "R line", "row": 0, "col": 1}, {"id": "h2", "label": "Printed", "row": 0, "col": 2}, {"id": "a0", "label": "X = 25", "row": 1, "col": 0}, {"id": "a1", "label": "dbinom(25, n, p)", "row": 1, "col": 1}, {"id": "a2", "label": "0.04388", "row": 1, "col": 2}, {"id": "b0", "label": "X ≤ 25", "row": 2, "col": 0}, {"id": "b1", "label": "pbinom(25, n, p)", "row": 2, "col": 1}, {"id": "b2", "label": "0.9125", "row": 2, "col": 2}, {"id": "c0", "label": "X < 25", "row": 3, "col": 0}, {"id": "c1", "label": "pbinom(24, n, p)", "row": 3, "col": 1}, {"id": "c2", "label": "0.8686", "row": 3, "col": 2}, {"id": "d0", "label": "X ≥ 25", "row": 4, "col": 0}, {"id": "d1", "label": "1 - pbinom(24, n, p)", "row": 4, "col": 1}, {"id": "d2", "label": "0.1314", "row": 4, "col": 2}, {"id": "e0", "label": "20 ≤ X ≤ 30", "row": 5, "col": 0}, {"id": "e1", "label": "pbinom(30, n, p) - pbinom(19, n, p)", "row": 5, "col": 1}, {"id": "e2", "label": "0.5338", "row": 5, "col": 2}], "hi": ["c1", "d1", "e1"], "caption": "The lit lines are the ones that step down by one: fewer than 25 stops at 24, at least 25 removes up to 24, from 20 removes up to 19."}
+{"type": "grid", "title": "100 chips, each thin-coated with chance 0.20", "nodes": [{"id": "h0", "label": "Words", "row": 0, "col": 0}, {"id": "h1", "label": "R line", "row": 0, "col": 1}, {"id": "h2", "label": "Printed", "row": 0, "col": 2}, {"id": "a0", "label": "X = 25", "row": 1, "col": 0}, {"id": "a1", "label": "dbinom(25, n, p)", "row": 1, "col": 1}, {"id": "a2", "label": "0.04388", "row": 1, "col": 2}, {"id": "b0", "label": "X ≤ 25", "row": 2, "col": 0}, {"id": "b1", "label": "pbinom(25, n, p)", "row": 2, "col": 1}, {"id": "b2", "label": "0.9125", "row": 2, "col": 2}, {"id": "c0", "label": "X < 25", "row": 3, "col": 0}, {"id": "c1", "label": "pbinom(24, n, p)", "row": 3, "col": 1}, {"id": "c2", "label": "0.8686", "row": 3, "col": 2}, {"id": "d0", "label": "X ≥ 25", "row": 4, "col": 0}, {"id": "d1", "label": "1 - pbinom(24, n, p)", "row": 4, "col": 1}, {"id": "d2", "label": "0.1314", "row": 4, "col": 2}, {"id": "e0", "label": "20 ≤ X ≤ 30", "row": 5, "col": 0}, {"id": "e1", "label": "pbinom(30, n, p) - pbinom(19, n, p)", "row": 5, "col": 1}, {"id": "e2", "label": "0.5338", "row": 5, "col": 2}], "hi": ["c1", "d1", "e1"], "caption": "The lit lines are the ones that step down by one: fewer than 25 stops at 24, at least 25 removes up to 24, from 20 removes up to 19."}
 ```
 
 ## Poisson uses the same letters
 
-A Poisson count has no number of trials, so the slots are only the count and `lambda`. Lab 7 Task 10 has 34 transformer failures a year on average:
+A Poisson count has no number of trials, so the slots are only the count and `lambda`. **`lambda` is the mean count for the interval in the question.** Just like the 34 failures a year below become 68 failures over two years.
+
+Here X counts transformer failures in one year, 34 on average, so `lambda <- 34`. The lines ask for exactly 34, at most 30, fewer than 30, more than 38, at least 38, and from 30 to 40. The last two ask for at most 34 in each of two separate years, and at most 68 over one two-year stretch. This is Lab 7 Task 10.
 
 ```r
 lambda <- 34
@@ -188,9 +198,15 @@ ppois(68, lambda*2)
 
 The last two differ because squaring needs each year at 34 or fewer on its own. The two-year total also counts 40 then 28, which fails the first event. The paper version is in [Poisson on paper](#/math3042-q7/poisson-on-paper).
 
+:::warn lambda must match the question's interval
+Using 34 in a question about two years answers a one-year question. The two-year mean is 68.
+:::
+
 ## The whole distribution at once
 
-Give `dbinom` a vector of x values and it returns a vector of probabilities, one per value. Lab 6 Task 4 does this for 20 chips with $p = 1/4$:
+**Give `dbinom` a vector of x values and it returns a vector of probabilities, one per value.** Just like asking for the chance of every score from 0 to 20 in one go, instead of one score at a time.
+
+Take 20 chips, each with a defective coating with chance $p = 1/4$. X counts the defective coatings. The code below draws a bar for every value of X. This is Lab 6 Task 4.
 
 ```r
 n <- 20
@@ -236,17 +252,17 @@ barplot(P.vals[P.vals >= 0.00005],
 - `barplot(…)`: "Build the title (`paste0`), keep the visible probabilities (`[P.vals >= 0.00005]`), then draw the bars (`barplot`)."
 :::
 
-The title is built from `n`, so the lab's plot reads "Number of Defective Coatings (n = 20)" without the 20 being typed. The lab's other way labels the bars with the `names.arg` argument of `barplot()`.
+The title is built from `n`, so the plot reads "Number of Defective Coatings (n = 20)" without the 20 being typed. Another way labels the bars with the `names.arg` argument of `barplot()`.
 
 ## The simulated check
 
-A simulation draws many random counts and tallies them. If the model is right, the share of each count is close to its exact probability, the mean is close to $np$ and the standard deviation is close to $\sqrt{npq}$.
+A **simulation** draws many random counts and tallies them. **If the model is right, the share of each count is close to its exact probability, the mean is close to $np$ and the standard deviation is close to $\sqrt{npq}$.** Just like tapping Star Force many times at 14 stars: about 30 % of the taps should succeed.
 
-Lab 6 takes 50 BCIT students with a 13 % chance of being left-handed. Here $n = 50$ is the number of students, $p = 0.13$ and $q = 0.87$. Computed:
+Take a group of 50 BCIT students, each with a 13 % chance of being left-handed. X counts the left-handed students in the group. Here $n = 50$ is the number of students, $p = 0.13$ and $q = 0.87$. This is from Lab 6. Computed:
 
 $$\mu = np = 50 \times 0.13 = \mathbf{6.50} \qquad \sigma = \sqrt{npq} = \sqrt{50 \times 0.13 \times 0.87} = \sqrt{5.655} = \mathbf{2.38}$$
 
-The lab's simulation of 100 000 samples:
+The simulation below draws 100 000 such groups of 50:
 
 ```r
 n <- 50
@@ -301,6 +317,10 @@ cbind( prop.table( table(X.vals)))
 - `cbind( prop.table( table(X.vals)))`: "Count each value (`table`), divide by the total (`prop.table`), print as a column (`cbind`)."
 :::
 
+:::warn rbinom's first slot is how many values to draw
+Swapping the slots, `rbinom(50, 10^5, p)`, would simulate 50 groups of 100 000 students instead of 100 000 groups of 50.
+:::
+
 The highest share, 0.16890 at 6, sits next to $\mu = 6.50$. Two more lines compare the simulation with the computed $\mu$ and $\sigma$:
 
 ```r
@@ -325,9 +345,9 @@ sd(X.vals)
 - `sd(X.vals)`: "Take the counts (`X.vals`) and compute their standard deviation (`sd`)."
 :::
 
-A simulation gives new numbers on every run, so the lab prints no value for these two. They land close to 6.50 and 2.38.
+A simulation gives new numbers on every run, so no fixed value is printed for these two. They land close to 6.50 and 2.38.
 
-Lab 7 Task 9 does the same for the cables with 0.75 flaws per metre over five metres, using `rpois`:
+The same check works for a Poisson count, using `rpois`. A cable has 0.75 flaws per metre on average. X counts the flaws in five metres of cable, so the mean is 0.75 × 5. The function below simulates 100 000 five-metre cables. This is Lab 7 Task 9.
 
 ```r
 Simulate.Cables <- function(m, lambda){
@@ -388,7 +408,7 @@ Simulate.Cables(10^5, 0.75*5)
 - `Simulate.Cables(10^5, 0.75*5)`: "Compute 100 000 and 3.75, then run the body: draw (`rpois`), count (`table`), share (`prop.table`), filter (`[ ]`), print (`print`), draw the bars (`barplot`)."
 :::
 
-The exact Task 8 table starts at 0.023518 and 0.088192; the simulation gives 0.02393 and 0.08877. Close shares are the check that the model and the code agree.
+The exact Poisson table for the same cable, from `dpois`, starts at 0.023518 and 0.088192 (Lab 7 Task 8). The simulation gives 0.02393 and 0.08877. **Close shares are the check that the model and the code agree.**
 
 The long versions are in [Review: R for the distributions](#/math3042-midterm/review-r-distributions), [R on paper](#/math3042-midterm/r-on-paper) and [Choosing the distribution](#/math3042-u4/choosing-distribution).
 

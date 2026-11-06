@@ -7,9 +7,13 @@ Part 2 asks for a probability by code and then a verdict: are two events mutuall
 
 ## Count the rows where it is true
 
-An event is a yes-or-no question asked of every row. "Does this student exercise often?" is one event. "Has this student never smoked?" is another.
+An **event** is a yes-or-no question asked of every row. "Does this student exercise often?" is one event. "Has this student never smoked?" is another. Just like a checkbox column in a spreadsheet: each row is ticked or not.
 
-The chance of an event is the share of rows that answer yes. The chance of "one or the other" is the share of rows that answer yes to at least one. The chance of "this, given that" first throws away every row where "that" is no, then takes the share of the rows left.
+**The chance of an event is the share of rows that answer yes.** The chance of "one or the other" is the share of rows that answer yes to at least one. The chance of "this, given that" first throws away every row where "that" is no, then takes the share of the rows left. That last one is a **conditional probability**. Just like asking what share of your Monday runs were rainy: you only look at Mondays.
+
+:::tip "Given B" shrinks the table before you count
+The bottom of the fraction is the B rows, not all rows.
+:::
 
 ## A made-up table of ten students
 
@@ -27,15 +31,19 @@ P(A) is the A rows over all rows:
 
 $$P(A) = \dfrac{4}{10} = \mathbf{0.4000}$$
 
-P(A or B) adds the two events and subtracts the overlap, because the 3 students in both were counted twice:
+**P(A or B) adds the two events and subtracts the overlap**, because the 3 students in both were counted twice. Just like counting the people at a party who brought a drink or a snack: someone who brought both is still one person.
 
 $$P(A \text{ or } B) = P(A) + P(B) - P(A \text{ and } B) = 0.4 + 0.7 - 0.3 = \mathbf{0.8000}$$
 
-P(A | B) divides the overlap by the B rows only:
+**P(A | B) divides the overlap by the B rows only:**
 
 $$P(A \mid B) = \dfrac{P(A \text{ and } B)}{P(B)} = \dfrac{3}{7} = \mathbf{0.4286}$$
 
-The trap is P(A or B) = P(A) + P(B). Here that gives 1.1, more than certain.
+**The trap is P(A or B) = P(A) + P(B).** Here that gives 1.1, more than certain.
+
+:::warn A probability above 1 means you double-counted
+Any answer over 1 is wrong. Look for an overlap you added twice.
+:::
 
 ## The same three fractions on survey
 
@@ -87,7 +95,7 @@ mean(survey$Exer[survey$Smoke == "Never"] == "Freq", na.rm=TRUE)
 - `mean(survey$Exer[…] == "Freq", na.rm=TRUE)`: "Test Smoke for Never (`==`), keep Exer on those rows (`[ ]`), test each for Freq (`==`), drop NA (`na.rm=TRUE`), average (`mean`)."
 :::
 
-`survey` has NA in several columns. Without `na.rm=TRUE` a single NA makes `mean` and `sum` return NA.
+`A` is a **logical vector**: one TRUE, FALSE or NA per student. `survey` has NA in several columns. **Without `na.rm=TRUE` a single NA makes `mean` and `sum` return NA.** Just like a calculator that refuses to total a column with one blank cell.
 
 The other way is to filter the NA rows out first, as in [the data moves](#/math3042-q7/r-data-moves), and then every count uses the same rows.
 
@@ -95,19 +103,27 @@ The other way is to filter the NA rows out first, as in [the data moves](#/math3
 {"type": "flow", "title": "P(A | B) in two steps", "nodes": [{"id": "all", "label": "All rows", "sub": "every student"}, {"id": "b", "label": "Keep the B rows", "sub": "B is TRUE"}, {"id": "a", "label": "Share of A in them", "sub": "count of A and B / count of B"}], "edges": [{"from": "all", "to": "b", "label": "restrict"}, {"from": "b", "to": "a", "label": "divide"}], "hi": ["a"], "caption": "Made-up table: 10 rows, then the 7 B rows, then 3 of 7 = 0.4286."}
 ```
 
-The last two lines are the same idea written twice. One divides the both-rows by the B rows; the other keeps the B rows and takes the share of A inside them.
+The last two lines are the same idea written twice. One divides the both-rows by the B rows; the other keeps the B rows and takes the share of A inside them. Just like filtering a spreadsheet to the never-smokers, then counting the Freq rows that are left.
+
+:::warn A missing na.rm=TRUE prints NA, not an error
+The knit still finishes, so the NA is easy to miss. Check that every printed share is a number.
+:::
 
 ## Exclusive means no shared rows; independent means B changes nothing
 
-Mutually exclusive means A and B never happen in the same row, so the count of A and B is 0. The made-up table has 3 such rows, so its events are not exclusive.
+**Mutually exclusive** means A and B never happen in the same row, so **the count of A and B is 0**. Just like a day that cannot be both a Monday and a Tuesday. The made-up table has 3 such rows, so its events are not exclusive.
 
-Independent means knowing B does not change the chance of A:
+**Independent** means **knowing B does not change the chance of A**. Just like asking if rain is more likely on a Monday: if it is not, the weekday tells you nothing about rain.
 
 $$P(A \mid B) = P(A) \quad \text{made-up table: } 0.4286 \text{ against } 0.4000$$
 
 Those differ, so in the made-up table A and B are not independent. The other test gives the same verdict: $P(A)P(B) = 0.4 \times 0.7 = 0.28$, not $0.3$.
 
-Lab 5 first builds a two-way table of weekday by `has.Precip`:
+:::tip Exclusive is about the overlap; independent is about a ratio
+Exclusive asks one count, the A-and-B rows. Independent compares two shares, P(A | B) and P(A).
+:::
+
+The real data here is the SFU weather file from [the data moves](#/math3042-q7/r-data-moves): one row per day of weather at SFU, read with a Date column. Its TRUE/FALSE column `has.Precip` is TRUE on a day with rain or snow, that is, precipitation above 0 mm. The first step builds a two-way table of weekday by `has.Precip`:
 
 ```r
 SFU.Weather$DoW <- weekdays(SFU.Weather$Date)
@@ -134,9 +150,9 @@ tab1 <- table(SFU.Weather[c("DoW", "has.Precip")])
 - `tab1 <- table(SFU.Weather[c("DoW", "has.Precip")])`: "Keep the two columns (`[c(…)]`), count each weekday-and-wet pair (`table`), then store the table as tab1 (`<-`)."
 :::
 
-That table is `tab1`, with a row per weekday and a column per value of `has.Precip`.
+That table is `tab1`, with a row per weekday and a column per value of `has.Precip`. A **two-way table** counts every pair of values. Just like a tally sheet with weekdays down the side and "dry" and "wet" across the top.
 
-Lab 5 then asked whether precipitation is more likely on a Monday:
+The next question is whether precipitation is more likely on a Monday:
 
 ```r
 p.Precip <- sum( tab1[ ,"TRUE"] )/ sum(tab1)
@@ -175,7 +191,7 @@ p.Precip.Cond.Monday
 - `p.Precip.Cond.Monday`: "Look up the value and print it."
 :::
 
-The two agree to three decimals, so the lab concludes that precipitation is independent of the day being a Monday. Part 2 wants that verdict printed by the code, with the numbers in it:
+The two agree to three decimals, so the conclusion is that precipitation is independent of the day being a Monday. Part 2 wants that verdict printed by the code, with the numbers in it:
 
 ```r
 p.A <- mean(A, na.rm=TRUE)
@@ -222,7 +238,7 @@ print(paste0("P(A) = ", round(p.A, 4), ", P(A|B) = ", round(p.A.given.B, 4)))
 - last line: "Round both numbers (`round`), join them with the labels (`paste0`), print the sentence (`print`)."
 :::
 
-The 0.01 is a judgement, not a rule from the course; say so in a comment if you use it. Lab 5's own gap was 0.0002.
+The 0.01 is a judgement, not a rule from the course; say so in a comment if you use it. The Monday gap above was 0.0002. For example, a full answer prints "Not independent" and then the sentence with both rounded shares.
 
 The long version is [Lab 5: conditional probability in R](#/math3042-u4/lab5-conditional-r).
 
@@ -253,7 +269,7 @@ Each prefix tier the boots can roll has a weight, read from the game's files. At
 | Movement Speed: 10, 15, 20, 25 or 30 % | 5 | 5000 |
 | All prefixes | 37 | 37000 |
 
-Read weights the way you read the rows of a data frame. P(A) is the weight where A is true over the total weight. P(A given B) keeps only B's weight in the bottom.
+Read weights the way you read the rows of a data frame. **P(A) is the weight where A is true over the total weight. P(A given B) keeps only B's weight in the bottom.** Just like a data frame where each tier appears 1000 times: a weight of 1000 counts like 1000 rows.
 
 ```quiz
 [

@@ -7,15 +7,15 @@ Some counts have no fixed number of tries: calls in an hour, flaws in a cable, f
 
 ## A Poisson count: events in a stretch of time or space
 
-Events happen one at a time, independently, at a steady average rate. You watch a fixed stretch: an hour, five metres, a year. X counts the events in it.
+Events happen one at a time, independently, at a steady average rate. You watch a fixed stretch: an hour, five metres, a year. **A Poisson count X is the number of events in that stretch.** Just like counting the buses that reach your stop in one hour: nobody fixes a number of tries, you only know the average.
 
-X can be 0, 1, 2, and so on with no upper limit. That is the difference from the binomial, which stops at n.
+**X can be 0, 1, 2, and so on with no upper limit.** That is the difference from the binomial, which stops at n. For example, a page of an essay can hold 0 typos or 9 typos; nothing caps the count.
 
 ## A help desk at 2 tickets an hour
 
 A help desk gets 2 tickets an hour on average. What is the chance of a quiet hour with none?
 
-The answer uses the number $e = 2.718\ldots$, the $e^x$ key on the calculator. Type 2, press the sign key, then $e^x$, or type $e^x$ then −2; the keys are in [Before you start](#/math3042-q7/pre-reading). For a mean of 2, no tickets has probability $e^{-2}$.
+The answer uses the number $e = 2.718\ldots$, the $e^x$ key on the calculator. Type 2, press the sign key, then $e^x$, or type $e^x$ then −2; the keys are in [Before you start](#/math3042-q7/pre-reading). For a mean of 2, no tickets has probability $e^{-2}$. **No events at all has probability e to the minus mean.** Just like asking how often a whole hour passes with the help desk phone silent.
 
 $$P(0) = e^{-2} = \mathbf{0.1353}$$
 
@@ -29,39 +29,47 @@ $$P(x) = \dfrac{\lambda^x e^{-\lambda}}{x!}$$
 
 For the help desk, each symbol is:
 
-- $\lambda = 2$, the mean number of tickets in the interval asked about, one hour.
+- $\lambda = 2$, the **mean number of events in the interval asked about** (here tickets in one hour). λ is the Greek letter lambda.
 - $x$, the number of tickets asked about.
 - $x!$ is $x \times (x-1) \times \dots \times 1$, with $0! = 1$.
 
 $$P(1) = \dfrac{2^1 \, e^{-2}}{1!} = \dfrac{2 \times 0.135335}{1} = \mathbf{0.2707}$$
 
-The mean of a Poisson count is λ itself, and its standard deviation is $\sqrt{\lambda}$. For the help desk, $\mu = 2$ and $\sigma = \sqrt{2} = 1.41$.
+**The mean of a Poisson count is λ itself, and its standard deviation is $\sqrt{\lambda}$.** For the help desk, $\mu = 2$ and $\sigma = \sqrt{2} = 1.41$. For example, pages that average 4 typos have a mean of 4 typos and a standard deviation of 2.
 
 ## λ must match the question's interval
 
-The question often gives a rate for one interval and asks about another. Multiply the rate by the length of the interval asked about, in the same units.
+The question often gives a rate for one interval and asks about another. **Multiply the rate by the length of the interval asked about, in the same units.** Just like a bus that comes every 10 minutes: over an hour you expect 6, not 1.
 
 $$\lambda = \text{rate} \times \text{interval}$$
 
-Lab 7 Task 8 has cables with 0.75 flaws per metre, and asks about five metres.
+A factory makes cable with 0.75 flaws per metre on average. The question asks about the flaws in a five-metre piece. This is Lab 7 Task 8.
 
 $$\lambda = 0.75 \times 5 = \mathbf{3.75}$$
 
-The lab's table then starts with P(0) = 0.023518. The help desk over 90 minutes is 1.5 hours, so $\lambda = 2 \times 1.5 = 3$.
+Its table of probabilities then starts with P(0) = 0.023518. The help desk over 90 minutes is 1.5 hours, so $\lambda = 2 \times 1.5 = 3$.
 
 ```diagram
 {"type": "flow", "title": "Rescale λ before the formula", "nodes": [{"id": "r", "label": "Rate", "sub": "0.75 flaws per metre"}, {"id": "t", "label": "× interval asked", "sub": "5 metres"}, {"id": "l", "label": "λ for this question", "sub": "0.75 × 5 = 3.75"}, {"id": "f", "label": "Formula", "sub": "P(x) with λ = 3.75"}], "edges": [{"from": "r", "to": "t"}, {"from": "t", "to": "l"}, {"from": "l", "to": "f"}], "hi": ["l"], "caption": "The help desk the same way: 2 per hour × 1.5 hours = 3."}
 ```
 
+:::warn λ follows the question's interval, not the given rate
+A rate per hour used on a 15-minute question makes λ four times too big. Every probability after it is then wrong.
+:::
+
 ## Separate intervals multiply; one longer interval rescales
 
-Counts in intervals that do not overlap are independent. "At most 34 in each of two years" is the one-year answer squared.
+**Counts in intervals that do not overlap are independent.** Just like typos on page 1 telling you nothing about typos on page 2. "At most 34 in each of two years" is the one-year answer squared.
 
 "At most 68 over two years" is one interval, twice as long. It uses $\lambda = 2 \times 34 = 68$ in a single `ppois`.
 
-## Lab 7 Task 10: 34 transformer failures a year
+:::tip "In each of" multiplies; "over" rescales
+In each of two years: square the one-year answer. Over two years: double λ and use the formula once.
+:::
 
-A city averages 34 transformer failures a year, so $\lambda = 34$ for one year. The lab's eight parts are exactly 34, at most 30, fewer than 30, more than 38, at least 38, 30 to 40 inclusive, at most 34 in each of two years, and at most 68 over two years.
+## 34 transformer failures a year
+
+A city averages 34 transformer failures a year, so $\lambda = 34$ for one year. This is Lab 7 Task 10. Its eight questions are exactly 34, at most 30, fewer than 30, more than 38, at least 38, 30 to 40 inclusive, at most 34 in each of two years, and at most 68 over two years. For example, "fewer than 30" stops at 29, which is why the code writes `30-1`.
 
 ```r
 lambda <- 34
@@ -131,7 +139,7 @@ The last two differ because "each of two years" needs both years at 34 or fewer,
 ## Remember
 
 - Poisson counts events in a fixed interval at a known average rate; there is no fixed n.
-- $\lambda = \text{rate} \times \text{interval}$, in the same units, before anything else.
+- **$\lambda = \text{rate} \times \text{interval}$, in the same units, before anything else.**
 - $P(x) = \dfrac{\lambda^x e^{-\lambda}}{x!}$, and $P(0) = e^{-\lambda}$.
 - At least one is $1 - e^{-\lambda}$.
 - Separate intervals multiply; one longer interval rescales λ.

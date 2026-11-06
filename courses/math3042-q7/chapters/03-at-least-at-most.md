@@ -15,7 +15,13 @@ Write the counts out before any formula.
 - "Fewer than 2" stops at 1.
 - "Between 2 and 6 inclusive" is 2, 3, 4, 5, 6.
 
-"At least" and "more than" differ by one count, and so do "at most" and "fewer than". That one count is where the marks go.
+Just like a bus ticket that allows "at most 2 transfers": 0, 1 or 2 transfers are fine, and a third is not.
+
+**"At least" and "more than" differ by one count, and so do "at most" and "fewer than".** That one count is where the marks go.
+
+:::tip "At least" keeps the number; "more than" drops it
+At least 3 starts at 3, and more than 3 starts at 4. Mix them up and the whole answer shifts by one count.
+:::
 
 ```diagram
 {"type": "grid", "title": "Two wordings on a number line, n = 8", "nodes": [{"id": "w", "label": "X =", "row": 0, "col": 0}, {"id": "h0", "label": "0", "row": 0, "col": 1}, {"id": "h1", "label": "1", "row": 0, "col": 2}, {"id": "h2", "label": "2", "row": 0, "col": 3}, {"id": "h3", "label": "3", "row": 0, "col": 4}, {"id": "h4", "label": "4", "row": 0, "col": 5}, {"id": "h5", "label": "5", "row": 0, "col": 6}, {"id": "h6", "label": "6", "row": 0, "col": 7}, {"id": "h7", "label": "7", "row": 0, "col": 8}, {"id": "h8", "label": "8", "row": 0, "col": 9}, {"id": "aw", "label": "at least 3", "row": 1, "col": 0}, {"id": "a0", "label": "", "row": 1, "col": 1}, {"id": "a1", "label": "", "row": 1, "col": 2}, {"id": "a2", "label": "", "row": 1, "col": 3}, {"id": "a3", "label": "in", "row": 1, "col": 4}, {"id": "a4", "label": "in", "row": 1, "col": 5}, {"id": "a5", "label": "in", "row": 1, "col": 6}, {"id": "a6", "label": "in", "row": 1, "col": 7}, {"id": "a7", "label": "in", "row": 1, "col": 8}, {"id": "a8", "label": "in", "row": 1, "col": 9}, {"id": "mw", "label": "at most 2", "row": 2, "col": 0}, {"id": "m0", "label": "in", "row": 2, "col": 1}, {"id": "m1", "label": "in", "row": 2, "col": 2}, {"id": "m2", "label": "in", "row": 2, "col": 3}, {"id": "m3", "label": "", "row": 2, "col": 4}, {"id": "m4", "label": "", "row": 2, "col": 5}, {"id": "m5", "label": "", "row": 2, "col": 6}, {"id": "m6", "label": "", "row": 2, "col": 7}, {"id": "m7", "label": "", "row": 2, "col": 8}, {"id": "m8", "label": "", "row": 2, "col": 9}], "hi": ["a3", "a4", "a5", "a6", "a7", "a8", "m0", "m1", "m2"], "caption": "At least 3 and at most 2 split the line: together they cover every count once, so P(X ≥ 3) = 1 − P(X ≤ 2)."}
@@ -25,7 +31,7 @@ Write the counts out before any formula.
 
 Take $n = 4$ tries with $p = 0.3$. "At least 2" is 2, 3 or 4: three terms. Its opposite, 0 or 1, is two terms.
 
-The whole line adds to 1, so compute the short side and subtract it from 1. This is the complement.
+The whole line adds to 1, so compute the short side and subtract it from 1. This is the **complement**: everything the wording leaves out. Just like counting the few students absent from a class instead of the many present: the short list gives the long one by subtraction.
 
 $$P(0) = 0.7^4 = 0.2401 \qquad P(1) = {}_4C_1 \, (0.3)(0.7)^3 = 4 \times 0.3 \times 0.343 = 0.4116$$
 
@@ -33,13 +39,17 @@ ${}_4C_1 = 4$: the one success can sit in any of the four tries. The formula and
 
 $$P(X \ge 2) = 1 - [P(0) + P(1)] = 1 - (0.2401 + 0.4116) = \mathbf{0.3483}$$
 
-"At least one" is the shortest case of all. Its opposite is the single count 0.
+:::tip At least k is 1 minus at most k − 1
+With 4 tries this saved one term. With 30 tries and "at least 2", it turns 29 terms into 2.
+:::
+
+"At least one" is the shortest case of all. Its opposite is the single count 0. For example, "at least one bus is late this week" is everything except "no bus is late".
 
 $$P(X \ge 1) = 1 - P(0) = 1 - 0.7^4 = 1 - 0.2401 = \mathbf{0.7599}$$
 
 ## The words table: sum on paper, complement, R line
 
-R's `pbinom` gives "at most": it adds P(0) up to P(k). Every other wording is built from it.
+**R's `pbinom` gives "at most": it adds P(0) up to P(k).** Every other wording is built from it. Just like a running total on a receipt: it holds every line from the top down to line k.
 
 | Words | Values of X | On paper | R |
 |---|---|---|---|
@@ -78,11 +88,15 @@ R's `pbinom` gives "at most": it adds P(0) up to P(k). Every other wording is bu
 - `1 - dbinom(0, n, p)`: "Compute P(X = 0) (`dbinom`), then take it from 1 (`1 -`)."
 :::
 
-The trap is "at least k". Its complement stops at k − 1, so the R line holds `k-1`, not `k`.
+The trap is "at least k". **Its complement stops at k − 1, so the R line holds `k-1`, not `k`.**
 
-## Lab 6 Tasks 2 and 3: the instructor's lines
+:::warn At least k needs k − 1 inside pbinom, not k
+Put k inside and the count k itself falls out. The line then answers "more than k" instead.
+:::
 
-Task 2 rolls the 12-sided die 30 times and counts the 8s: $n = 30$, $p = \frac{1}{12}$. Its five parts are exactly 6, at most 6, at least 6, more than 6, and between 2 and 6 inclusive.
+## A 12-sided die rolled 30 times, and chips at 20 % defective
+
+Roll a 12-sided die 30 times and count the 8s: $n = 30$, $p = \frac{1}{12}$. Each roll is one try, and an 8 is a success. The five questions are exactly 6, at most 6, at least 6, more than 6, and between 2 and 6 inclusive. This is Lab 6 Task 2, with the instructor's lines.
 
 ```r
 n <- 30
@@ -122,7 +136,9 @@ pbinom(6, n, p) - pbinom(1, n, p)
 - the five probability lines: "Look up n and p, compute each `dbinom` or `pbinom`, then do the subtraction (`1 -` or `-`) last."
 :::
 
-Task 3 is a coating line where 20 % of chips are defective, sampled 100 at a time. The lab writes `pbinom(24, n, p)` for X < 25 and `1 - pbinom(24, n, p)` for X ≥ 25.
+For example, "at least 6" keeps 6 and up, so its complement stops at 5. That is the 5 in `1 - pbinom(5, n, p)`.
+
+Next, a coating line makes chips, and 20 % of chips are defective. Take 100 chips and count the defective ones: $n = 100$, $p = 0.20$. This is Lab 6 Task 3. The lab writes `pbinom(24, n, p)` for X < 25 and `1 - pbinom(24, n, p)` for X ≥ 25.
 
 | Words | R line | Prints |
 |---|---|---|
@@ -170,7 +186,7 @@ The R side is drilled in [dbinom, pbinom, dpois, ppois](#/math3042-q7/r-binomial
 
 ## Star Force, Greater scrolls, Orbs of Fusing and Chaos Scrolls
 
-The same words table runs the questions players ask while upgrading gear: will I get it within the taps or orbs I can afford? Each try below is an independent roll at a fixed chance, and "I get it within n tries" means at least one success in n tries.
+The same words table runs the questions players ask while upgrading gear: will I get it within the taps or orbs I can afford? Each try below is an independent roll at a fixed chance, and **"I get it within n tries" means at least one success in n tries.** Just like spamming Fusings until the six-link shows: you stop at the first hit, so the only question is whether a hit comes at all.
 
 Star Force, the GMS enhancement that adds stars to gear, succeeds 40 % at 12 to 13 stars on the wiki's table, without the Star Catch bonus that v.271 builds in. Below 15 stars a failure keeps the star, so every tap on an item at 12 stars is another try at the same p until one succeeds.
 
@@ -193,7 +209,7 @@ A GMS Chaos Scroll that succeeds changes each stat by −5 to +5; the wiki's tab
 
 - Write the counts out first: at least 2 is 2, 3, … n.
 - At most k is `pbinom(k, n, p)`.
-- At least k is `1 - pbinom(k-1, n, p)`: the complement stops at k − 1.
+- **At least k is `1 - pbinom(k-1, n, p)`: the complement stops at k − 1.**
 - More than k is `1 - pbinom(k, n, p)`.
 - Between a and b inclusive is `pbinom(b, n, p) - pbinom(a-1, n, p)`.
 - At least one is $1 - P(0)$.

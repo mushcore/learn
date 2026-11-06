@@ -7,19 +7,23 @@ Part 2 hands you a data frame and asks for a probability. Six moves take you fro
 
 ## A data frame is a table with named columns
 
-Each row is one case: one student in `survey`, one day in the SFU weather file. Each column is one variable, and `$` picks a column out by its name.
+A **data frame** is R's name for a table. Each **row** is one case: one student in `survey`, one day in the SFU weather file. Each **column** is one variable, and `$` picks a column out by its name. Just like a spreadsheet: one line per case, one heading per column.
 
-A probability from data is a count of rows that pass a test, divided by the number of rows that count. Every move below either cleans the table or makes the test easier to write.
+**A probability from data is a count of rows that pass a test, divided by the number of rows that count.** For example, if 3 of your 10 bus rides last month were late, the share of late rides is 3 out of 10. Every move below either cleans the table or makes the test easier to write.
+
+:::tip Every probability in Part 2 is a count over a count
+So each move below does one of two jobs: put the right rows in the bottom, or make the test on top easy to write.
+:::
 
 ```diagram
-{"type": "flow", "title": "From the raw file to a probability", "nodes": [{"id": "raw", "label": "Raw file", "kind": "cylinder"}, {"id": "imp", "label": "Import", "sub": "with types"}, {"id": "fil", "label": "Filter", "sub": "drop NA rows"}, {"id": "col", "label": "New columns", "sub": "logical, ifelse"}, {"id": "tab", "label": "Tally", "sub": "table, mean"}, {"id": "prob", "label": "Probability", "kind": "pill"}], "edges": [{"from": "raw", "to": "imp"}, {"from": "imp", "to": "fil"}, {"from": "fil", "to": "col"}, {"from": "col", "to": "tab"}, {"from": "tab", "to": "prob"}], "hi": ["prob"], "caption": "Each arrow is one or two lines of R from Lab 5."}
+{"type": "flow", "title": "From the raw file to a probability", "nodes": [{"id": "raw", "label": "Raw file", "kind": "cylinder"}, {"id": "imp", "label": "Import", "sub": "with types"}, {"id": "fil", "label": "Filter", "sub": "drop NA rows"}, {"id": "col", "label": "New columns", "sub": "logical, ifelse"}, {"id": "tab", "label": "Tally", "sub": "table, mean"}, {"id": "prob", "label": "Probability", "kind": "pill"}], "edges": [{"from": "raw", "to": "imp"}, {"from": "imp", "to": "fil"}, {"from": "fil", "to": "col"}, {"from": "col", "to": "tab"}, {"from": "tab", "to": "prob"}], "hi": ["prob"], "caption": "Each arrow is one or two lines of R."}
 ```
 
 ## Five days small enough to hold in your head
 
 Take five days of precipitation in millimetres: 0, 2.4, 0, 0.8, and one day with no reading, NA.
 
-Filtering drops the NA day, which leaves 4 days. A new column asks "more than 0?" of each day and gets FALSE, TRUE, FALSE, TRUE. Two of the four are TRUE.
+Filtering drops the NA day, which leaves 4 days. Just like a sign-up sheet with one blank line: you do not count the blank line as a person. A new column asks "more than 0?" of each day and gets FALSE, TRUE, FALSE, TRUE. Two of the four are TRUE.
 
 ```diagram
 {"type": "grid", "title": "Five days, filtered, then tested", "nodes": [{"id": "h0", "label": "Day", "row": 0, "col": 0}, {"id": "h1", "label": "Precip (mm)", "row": 0, "col": 1}, {"id": "h2", "label": "Kept by filter", "row": 0, "col": 2}, {"id": "h3", "label": "More than 0?", "row": 0, "col": 3}, {"id": "d1", "label": "1", "row": 1, "col": 0}, {"id": "p1", "label": "0", "row": 1, "col": 1}, {"id": "k1", "label": "yes", "row": 1, "col": 2}, {"id": "t1", "label": "FALSE", "row": 1, "col": 3}, {"id": "d2", "label": "2", "row": 2, "col": 0}, {"id": "p2", "label": "2.4", "row": 2, "col": 1}, {"id": "k2", "label": "yes", "row": 2, "col": 2}, {"id": "t2", "label": "TRUE", "row": 2, "col": 3}, {"id": "d3", "label": "3", "row": 3, "col": 0}, {"id": "p3", "label": "0", "row": 3, "col": 1}, {"id": "k3", "label": "yes", "row": 3, "col": 2}, {"id": "t3", "label": "FALSE", "row": 3, "col": 3}, {"id": "d4", "label": "4", "row": 4, "col": 0}, {"id": "p4", "label": "0.8", "row": 4, "col": 1}, {"id": "k4", "label": "yes", "row": 4, "col": 2}, {"id": "t4", "label": "TRUE", "row": 4, "col": 3}, {"id": "d5", "label": "5", "row": 5, "col": 0}, {"id": "p5", "label": "NA", "row": 5, "col": 1}, {"id": "k5", "label": "dropped", "row": 5, "col": 2}, {"id": "t5", "label": "", "row": 5, "col": 3}], "hi": ["t2", "t4"], "caption": "Two TRUE rows out of the four kept: 2/4 = 0.5."}
@@ -27,7 +31,11 @@ Filtering drops the NA day, which leaves 4 days. A new column asks "more than 0?
 
 $$P(\text{wet}) = \dfrac{\text{TRUE rows}}{\text{rows left}} = \dfrac{2}{4} = \mathbf{0.5}$$
 
-Keep the NA day and the count of rows is wrong. That is why the filter comes before the tally.
+Keep the NA day and the count of rows is wrong. That is why **the filter comes before the tally**.
+
+:::warn An NA row left in still counts in the bottom
+Divide by all five days and the answer drops to 2/5 = 0.4 instead of 0.5.
+:::
 
 ## Six moves from the labs
 
@@ -67,9 +75,15 @@ levels(survey$Exer)
 - `levels(survey$Exer)`: "Take the survey data (`survey`), pull out Exer (`$Exer`), and list its categories (`levels`)."
 :::
 
-`survey` has 237 rows, one per student. The factor columns include `Sex`, `W.Hnd`, `Exer` with the levels Freq, Some and None, and `Smoke` with Heavy, Regul, Occas and Never. The numeric ones include `Pulse`, `Height` and `Age`. Several columns contain NA.
+`survey` has 237 rows, one per student. A **factor** is a column of categories with a fixed list of levels. Just like a drop-down cell in a spreadsheet: it can only hold one of the listed choices. The factor columns include `Sex`, `W.Hnd`, `Exer` with the levels Freq, Some and None, and `Smoke` with Heavy, Regul, Occas and Never. The numeric ones include `Pulse`, `Height` and `Age`. Several columns contain NA.
+
+:::warn Knitting starts from an empty session
+`survey` can work in the console and still fail in the knit. **Put `library(MASS)` in the notebook above the first use of `survey`.**
+:::
 
 ### Move 2: import a CSV with a type for every column
+
+A **CSV** is a plain text file of a table, with commas between the values. The SFU weather file, `SFU.Weather.with.Precip.csv`, holds daily weather at SFU, one row per day.
 
 ```r
 SFU.Weather <- read.csv("SFU.Weather.with.Precip.csv",
@@ -99,7 +113,11 @@ SFU.Weather <- read.csv("SFU.Weather.with.Precip.csv",
 - "Combine the seven type names (`c`), read the file with them (`read.csv`, `header=TRUE`, `na.strings ="NA"`), and store the data frame (`SFU.Weather <-`)."
 :::
 
-The seven columns are Date, Year, Month, Day, `Temp.deg.C`, `Total.Rain.mm` and `Total.Precip.mm`. Without `colClasses` the Date column arrives as text and a date function cannot read it.
+The seven columns are Date, Year, Month, Day, `Temp.deg.C`, `Total.Rain.mm` and `Total.Precip.mm`. **Without `colClasses` the Date column arrives as text and a date function cannot read it.** Just like a spreadsheet cell holding a date as plain text: it cannot sort by date or give a weekday.
+
+:::tip colClasses is what lets weekdays() work later
+[The next lesson](#/math3042-q7/r-probabilities-from-data) turns each Date into a day name, and that only works on a column read as a date.
+:::
 
 ### Move 3: drop the rows with missing values
 
@@ -138,11 +156,17 @@ nrow(SFU.Weather)
 - `nrow(SFU.Weather)`: "Take SFU.Weather and count its rows (`nrow`)."
 :::
 
-The lab uses the `filter` line; either line gives the same rows. After it, the lab's plot title reads n = 17582 days, which is the number of rows `nrow` counts.
+Either line gives the same rows. After the filter, `nrow` counts 17582 days in the SFU file, and a plot title built from it reads n = 17582 days.
 
-A comparison such as `Temp.deg.C != NA` does not work: any comparison with NA gives NA, never TRUE.
+A comparison such as `Temp.deg.C != NA` does not work: **any comparison with NA gives NA, never TRUE.**
+
+:::warn Use is.na(), never == NA or != NA
+A filter on `Temp.deg.C != NA` gets NA on every row, so it keeps no rows at all.
+:::
 
 ### Move 4: add a logical column
+
+A **logical column** (a **logical vector** inside a data frame) holds only TRUE, FALSE or NA, one per row. Just like a checkbox column in a spreadsheet: ticked or not ticked on each line.
 
 ```r
 SFU.Weather$has.Precip <- (SFU.Weather$Total.Precip.mm > 0)
@@ -168,9 +192,15 @@ survey$is.Smoker <- (survey$Smoke != "Never")
 - `survey$is.Smoker <- …`: "Pull out the Smoke column (`$Smoke`), test each value against Never (`!= "Never"`), and store the TRUE/FALSE values as is.Smoker (`survey$is.Smoker <-`)."
 :::
 
-A row whose Smoke is NA gets NA in `is.Smoker`, not FALSE. The NA stays until you filter it out or tell a function to skip it.
+**A row whose Smoke is NA gets NA in `is.Smoker`, not FALSE.** The NA stays until you filter it out or tell a function to skip it.
+
+:::tip TRUE counts 1 and FALSE counts 0
+That is why `sum()` of a logical column is the number of TRUE rows, which Move 6 uses.
+:::
 
 ### Move 5: segment with ifelse and %in%
+
+To **segment** is to give each row a group label. Just like sorting mail into boxes: try the first box, and if the letter does not fit, try the next one.
 
 ```r
 SFU.Weather$Season <- with(SFU.Weather,
@@ -207,11 +237,15 @@ SFU.Weather$Temp.Seg <- with(SFU.Weather,
 - `SFU.Weather$Temp.Seg <- …`: "For each row, test the anomaly against −0.4307 (`<`), then against 0.4307 (`<=`), choose Cold, Mid or Warm (`ifelse`), and store the labels as Temp.Seg (`SFU.Weather$Temp.Seg <-`)."
 :::
 
-`Z.Temp.anomaly` is each day's temperature minus its month's mean, divided by its month's standard deviation. The cut points −0.4307 and 0.4307 split it into three groups of about a third each. Two groups need one `ifelse`; four groups need three nested ones plus a last `no`.
+`Z.Temp.anomaly` is each day's temperature minus its month's mean, divided by its month's standard deviation. The cut points −0.4307 and 0.4307 split it into three groups of about a third each. **Two groups need one `ifelse`; four groups need three nested ones plus a last `no`.** For example, three groups (Cold, Mid, Warm) need two.
+
+:::tip %in% replaces a chain of == tests joined by OR
+`Month %in% c("Jun","Jul","Aug")` gives the same TRUE/FALSE as testing Jun, Jul and Aug one at a time and joining them with OR.
+:::
 
 ### Move 6: tally, then divide
 
-The formula is the five-day case again, with the lab's rows:
+To **tally** is to count. Just like counting the ticked boxes in a checkbox column, then dividing by the number of lines. The formula is the five-day case again, with the SFU file's rows:
 
 $$P(\text{Cold}) = \dfrac{\text{rows where Temp.Seg is Cold}}{\text{all rows}} = \dfrac{\text{Cold days}}{17582} = \mathbf{0.3439}$$
 
@@ -247,7 +281,13 @@ round(c(p.Cold, p.Mid, p.Warm), 4)
 - `round(…)`: "Combine the three values (`c`), round each to four decimals (`round`), and print."
 :::
 
-The three printed values add to 1.0001; the extra 0.0001 is rounding. The same tallies on `survey`:
+The three printed values add to 1.0001; the extra 0.0001 is rounding.
+
+:::warn == compares, = assigns
+Typed on its own line, `SFU.Weather$Temp.Seg = "Cold"` does not count anything: it overwrites every label with Cold.
+:::
+
+The same tallies on `survey`:
 
 ```r
 table(survey$Exer)

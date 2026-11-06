@@ -26,21 +26,29 @@ Quiz 7 is this week, in your lab session. This page says what it looks like, whe
 {"type": "flow", "title": "Quiz 7 in the lab session", "nodes": [{"id": "p1", "label": "Part 1 on paper", "sub": "calculator · 10 marks"}, {"id": "p2", "label": "Part 2 in RStudio", "sub": "knit to Word · 10 marks"}, {"id": "end", "label": "50 minutes", "kind": "pill", "sub": "no makeups"}], "edges": [{"from": "p1", "to": "p2"}, {"from": "p2", "to": "end"}], "hi": ["p1", "p2"], "caption": "Bring a calculator. Part 2 uses the lab computers with RStudio only."}
 ```
 
-Part 1 has two or three questions with their marks in brackets. The instructor's own solutions to past quizzes box the final number and keep the working beside it, so the marks come from both: the set-up line, the formula with the numbers in, and the boxed answer.
+Part 1 has two or three questions with their marks in brackets. The instructor's own solutions to past quizzes box the final number and keep the working beside it, so **the marks come from both: the set-up line, the formula with the numbers in, and the boxed answer.** Just like a math test in high school: a right answer with no working shows the marker nothing to give part marks for.
 
-A probability is rounded to 4 decimals. A mean $\mu$, a standard deviation $\sigma$ and a Z-score are rounded to 2 decimals.
+:::tip Each Part 1 answer needs its working
+A boxed number alone can lose most of a question's marks. A right set-up with a slip in the last step still earns part marks.
+:::
 
-Part 2 has used three kinds of data so far: the SFU weather file with missing values, a simulation, and the `survey` data set from the `MASS` package. Its shapes are a new column from a factor, a probability computed by code, and a check that prints a conclusion.
+**A probability is rounded to 4 decimals. A mean $\mu$, a standard deviation $\sigma$ and a Z-score are rounded to 2 decimals.**
+
+Part 2 has used three kinds of data so far: the SFU weather file with missing values, a simulation, and the `survey` data set from the `MASS` package. A **simulation** is code that makes up random results by rolling virtual dice, just like rolling a die over and over to see how often each face comes up. Its shapes are a new column from a factor, a probability computed by code, and a check that prints a conclusion.
 
 ## Part 2 is marked on the knitted Word file
 
-Open the template `.Rmd` from Learning Hub in RStudio. The grey boxes are the code chunks, and your code goes inside them. `Ctrl+Shift+Enter` runs the chunk under the cursor and shows its output beneath it.
+Open the template `.Rmd` from Learning Hub in RStudio. **The grey boxes are the code chunks, and your code goes inside them.** `Ctrl+Shift+Enter` runs the chunk under the cursor and shows its output beneath it.
 
-Knit is the button above the editor, or `Ctrl+Shift+K`. It re-runs every chunk from the top in a fresh session and writes the Word file that is marked.
+**Knit** is the button above the editor, or `Ctrl+Shift+K`. **It re-runs every chunk from the top in a fresh session and writes the Word file that is marked.** Just like printing a document: only what is saved in the file ends up on the page.
 
-A fresh session knows only what the notebook itself loads. A chunk that worked in the console stops the knit with `object 'survey' not found` when `library(MASS)` is missing above it, and with `could not find function "filter"` when `library(dplyr)` is missing.
+**A fresh session knows only what the notebook itself loads.** For example, a package you loaded by typing in the console earlier is forgotten. A chunk that worked in the console stops the knit with `object 'survey' not found` when `library(MASS)` is missing above it, and with `could not find function "filter"` when `library(dplyr)` is missing.
 
-Knit once at the start with the template as it is, then again after every part. A knit that fails at minute 45 costs every mark in Part 2. The long version is [R from Lab 1](#/math3042/r-essentials).
+:::warn A package loaded only in the console stops the knit
+The fix is to put every `library()` line in the first chunk of the notebook, then knit again.
+:::
+
+**Knit once at the start with the template as it is, then again after every part.** A knit that fails at minute 45 costs every mark in Part 2. The long version is [R from Lab 1](#/math3042/r-essentials).
 
 ## Where the marks come from
 

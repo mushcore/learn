@@ -7,9 +7,15 @@ Every Part 1 answer ends with a few presses on the calculator, and every Part 2 
 
 ## A probability is a fraction between 0 and 1
 
+A **probability** is how often something happens out of all tries, written as a number from 0 (never) to 1 (always). For example, a fair coin lands heads half the time, so heads has probability 0.5.
+
 In MapleStory Classic, an Intermediate scroll is a scroll that upgrades a piece of gear and passes at a fixed rate: 60 %, by meowdb's copy of the item text. So one use passes with probability 0.6 and fails with probability 0.4.
 
-The two add to 1, because one of them always happens. That gives the fastest trick on the quiz: the chance of "at least one" is 1 minus the chance of "none".
+The two add to 1, because one of them always happens. That gives the fastest trick on the quiz: **the chance of "at least one" is 1 minus the chance of "none".** Just like asking "does at least one of my scrolls pass?": it is easier to find the one way it can go wrong, all fail, and take that away from 1.
+
+:::tip "At least one" is 1 minus "none"
+For three scrolls, "none" is the single order FFF. "At least one" is every other order, so one term replaces many.
+:::
 
 Three scrolls all fail with probability $0.4 \times 0.4 \times 0.4$, so at least one passes with:
 
@@ -17,11 +23,11 @@ $$P(\text{at least one pass}) = 1 - 0.4^3 = 1 - 0.064 = \mathbf{0.936}$$
 
 ## Powers and factorials on the calculator
 
-$0.6^3$ means $0.6 \times 0.6 \times 0.6$. On the calculator type 0.6, press the power key ($x^y$, $y^x$ or ^), then 3.
+$0.6^3$ means $0.6 \times 0.6 \times 0.6$. Just like needing three Intermediate scrolls in a row to all pass: you multiply the 0.6 once for each scroll. On the calculator type 0.6, press the power key ($x^y$, $y^x$ or ^), then 3.
 
 $$0.6^3 = \mathbf{0.216}$$
 
-A factorial $x!$ multiplies every whole number from $x$ down to 1. By definition $0! = 1$.
+A **factorial** $x!$ multiplies every whole number from $x$ down to 1. **By definition $0! = 1$.** For example, $x!$ counts the ways to line up x different things, just like the number of orders you could use x different scrolls in.
 
 $$4! = 4 \times 3 \times 2 \times 1 = \mathbf{24}$$
 
@@ -29,15 +35,19 @@ The key is marked $n!$ or $x!$. On many calculators it is a second function, so 
 
 ## nCx: how many ways to pick which x of the n succeed
 
-Three scrolls with exactly two passes can happen as PPF, PFP or FPP. That count, 3, is ${}_3C_2$: the number of ways to choose which 2 of the 3 tries are the passes.
+Three scrolls with exactly two passes can happen as PPF, PFP or FPP. That count, 3, is ${}_3C_2$: **the number of ways to choose which 2 of the 3 tries are the passes.** Just like picking 2 friends out of 3 for a party: who comes matters, the order you ask them in does not.
 
 $${}_nC_x = \frac{n!}{x!\,(n-x)!}$$
 
-Here $n$ is the number of tries and $x$ the number of successes. The bottom removes the orderings that do not matter.
+Here **$n$ is the number of tries and $x$ the number of successes.** The bottom removes the orderings that do not matter.
 
 $${}_3C_2 = \frac{3!}{2!\,1!} = \frac{6}{2 \times 1} = \mathbf{3}$$
 
 On the calculator, type n, press the nCr key, then type x. On a Sharp that is n, 2ndF, nCr, x. On a Casio it is n, SHIFT, ÷, x. On a TI it is n, MATH, PRB, nCr, x.
+
+:::warn Type n before the nCr key, x after it
+With x typed first, the calculator works out a different count, and often shows an error instead.
+:::
 
 With no nCr key, write the top as x factors counting down from n, and the bottom as $x!$. The rest cancels.
 
@@ -49,23 +59,31 @@ $${}_{14}C_3 = \frac{14 \times 13 \times 12}{3 \times 2 \times 1} = \frac{2184}{
 
 ## The number e and its calculator key
 
-The Poisson formula uses the number $e = 2.718\ldots$ raised to a negative power. The key is $e^x$, often the second function of ln.
+The Poisson formula uses the number $e = 2.718\ldots$ raised to a negative power. For example, $e^{-2}$ is a fixed number to a power, the same kind of thing as $0.6^3$, only the base is $e$. The key is $e^x$, often the second function of ln.
 
 For $e^{-2}$, type 2, press the sign key (+/− or (−)), then $e^x$. On a calculator that takes the key first, press $e^x$, then −2.
 
 $$e^{-2} = \mathbf{0.1353}$$
 
-Keep six digits in the middle of a calculation, such as $e^{-5} = 0.006738$, and round only on the last line.
+:::warn e to a positive power is bigger than 1
+If a Poisson answer comes out above 1, check the sign you typed before the $e^x$ key.
+:::
+
+**Keep six digits in the middle of a calculation**, such as $e^{-5} = 0.006738$, **and round only on the last line.**
 
 ## Rounding on Part 1
 
-A probability is rounded to 4 decimals. A mean $\mu$, a standard deviation $\sigma$ and a Z-score are rounded to 2 decimals.
+**A probability is rounded to 4 decimals. A mean $\mu$, a standard deviation $\sigma$ and a Z-score are rounded to 2 decimals.** Just like a price tag: you write the final total to the cent, but the cashier's machine keeps more digits until the end.
 
 ## Three R facts
 
-`<-` stores a value under a name, so later lines can use the name. `$` picks one column out of a data frame by its name.
+**`<-` stores a value under a name**, so later lines can use the name. Just like saving a file: you name it once, then open it by that name later. **`$` picks one column out of a data frame by its name.** A **data frame** is a table: one row per thing, one column per fact about it.
 
-In R, TRUE counts as 1 and FALSE as 0. So the mean of a TRUE/FALSE vector is the share of TRUE: a proportion, which is a probability from data.
+**In R, TRUE counts as 1 and FALSE as 0.** So the mean of a TRUE/FALSE vector is the share of TRUE: a proportion, which is a probability from data. For example, a list of scroll uses marked TRUE for a pass and FALSE for a fail has a mean equal to the pass rate.
+
+:::tip mean() of a TRUE/FALSE column is a proportion
+On Part 2 this turns a data column into a probability in one line. `sum()` of the same column gives the count instead.
+:::
 
 ```r
 p <- 0.6

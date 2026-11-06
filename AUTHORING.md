@@ -408,4 +408,9 @@ Built on `app/playback.js` so far: the animations `wave-travel`, `line-code-play
   - Trivial members (`close()`, `exit(1)`) get one sentence. Short sentences; no parenthetical asides.
   - Headings and callout titles state the fact or name the thing. Never the format: no "the one-sentence version", "the rule in one line", "What it is", "Good to know", "Summary", "Quick recap", "Try it". A `quiz` block gets no heading at all (its box is already labelled); a widget section is headed by what the widget shows.
   - Budget: 500-800 prose words per lesson outside code and quizzes. A lesson over 900 is restating something. Mock quizzes, cheat sheets and formula sheets are reference material and are exempt.
+- Student feedback rules (2026-11-06, every course):
+  - A concrete example follows every abstract definition or rule at once: one or two sentences opening "Just like …" or "For example, …". Everyday situations or game moves players really make; never a framing that exists only to fit the formula.
+  - Highlight what must be remembered: **bold** the key term where it is defined and each rule sentence. At most one `:::tip` (the rule) or `:::warn` (the common mistake) box per section, titled with the fact itself, its body giving the consequence or the case, not a repeat. Never italics for emphasis: italics mean the instructor's exact words.
+  - Never lean on material the student does not have open. A lab, slide deck or assignment is named only after its setup is stated in plain words in that place ("a fair 12-sided die rolled 30 times, counting the 8s; this is Lab 6"). Headings name the thing, not "Lab 6 Task 2".
+  - These rules outrank the word budget above: a lesson may exceed it by the examples and highlights they add.
 - Do NOT edit engine files (`app/`, `server.js`, `course.json`). Only write your assigned chapter files.

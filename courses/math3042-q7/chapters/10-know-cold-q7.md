@@ -7,12 +7,12 @@ Cover each right-hand column and say it aloud before you look.
 
 ## The two formulas
 
-Unusual means $|Z| > 2$, with $Z = (x - \mu)/\sigma$.
+**Unusual means $|Z| > 2$**, with $Z = (x - \mu)/\sigma$.
 
 | | $P(x)$ | $\mu$ | $\sigma$ | Use it when |
 |---|---|---|---|---|
 | Binomial | $C(n, x)\, p^x\, q^{n-x}$ | $np$ | $\sqrt{npq}$ | fixed $n$ trials, two outcomes, the same $p$, independent |
-| Poisson | $\dfrac{\lambda^x e^{-\lambda}}{x!}$ | $\lambda$ | $\sqrt{\lambda}$ | a count in an interval; $\lambda$ = rate × the question's interval |
+| Poisson | $\dfrac{\lambda^x e^{-\lambda}}{x!}$ | $\lambda$ | $\sqrt{\lambda}$ | a count in an interval; **$\lambda$ = rate × the question's interval** |
 
 ${}_nC_x = \dfrac{n!}{x!\,(n-x)!}$, the calculator's nCr key; $0! = 1$; $e^{-\lambda}$ is the $e^x$ key with $-\lambda$.
 
@@ -72,12 +72,12 @@ A and B are logical columns; on `survey` add `na.rm=TRUE` or filter the NA rows 
 
 ## Rounding and the three traps
 
-A probability to 4 decimals, μ, σ and Z to 2; carry 6 digits until the last line.
+**A probability to 4 decimals, μ, σ and Z to 2**; carry 6 digits until the last line.
 
 | Trap | The right line |
 |---|---|
-| `rbinom`'s first slot is how many values to draw, not the binomial $n$ | `rbinom(10^5, 50, 0.13)`: 100 000 draws, each a count out of 50 |
-| "at least $k$" stops the cumulative one below $k$ | `1 - pbinom(k-1, n, p)`, never `1 - pbinom(k, n, p)` |
+| `rbinom`'s first slot is **how many values to draw**, not the binomial $n$ | `rbinom(10^5, 50, 0.13)`: 100 000 draws, each a count out of 50 |
+| "at least $k$" stops the cumulative one below $k$ | **`1 - pbinom(k-1, n, p)`**, never `1 - pbinom(k, n, p)` |
 | a column with NA gives NA | `mean(survey$Pulse, na.rm=TRUE)`, or `filter(survey, !is.na(Pulse))` first |
 
 ```quiz

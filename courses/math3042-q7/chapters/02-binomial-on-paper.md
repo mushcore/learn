@@ -7,15 +7,19 @@ Part 1 gives you a number of tries, a chance of success on each, and asks for th
 
 ## A binomial count: a fixed number of yes-or-no tries
 
-You try something a set number of times. Each try ends in yes or no. The chance of a yes is the same every time, and one try does not change the next.
+You try something a set number of times. Each try ends in yes or no. The chance of a yes is the same every time, and one try does not change the next. Just like using Intermediate scrolls on gear: you decide how many to use, each one passes or fails, each pass is 60 %, and one scroll does not change the next scroll's odds.
 
-The count of yeses is the binomial variable X. It can be 0, 1, 2, and so on up to the number of tries.
+**The count of yeses is the binomial variable X.** It can be 0, 1, 2, and so on up to the number of tries.
 
-Before you use the formula, check the four conditions. Lab 6 checks them in these words for its die.
+**Before you use the formula, check the four conditions.** The course's binomial lab checks them in these words for a fair 12-sided die rolled 30 times, counting how often it shows an 8.
 
 ```diagram
-{"type": "grid", "title": "The four binomial conditions", "nodes": [{"id": "h0", "label": "Condition", "row": 0, "col": 0}, {"id": "h1", "label": "Plain words", "row": 0, "col": 1}, {"id": "h2", "label": "Lab 6 die", "row": 0, "col": 2}, {"id": "a0", "label": "Fixed number of trials", "row": 1, "col": 0}, {"id": "a1", "label": "n is set before you start", "row": 1, "col": 1}, {"id": "a2", "label": "n = 30 rolls", "row": 1, "col": 2}, {"id": "b0", "label": "Success / failure", "row": 2, "col": 0}, {"id": "b1", "label": "each try is yes or no", "row": 2, "col": 1}, {"id": "b2", "label": "an 8 is a success", "row": 2, "col": 2}, {"id": "c0", "label": "Equal probability", "row": 3, "col": 0}, {"id": "c1", "label": "same p every try", "row": 3, "col": 1}, {"id": "c2", "label": "p = 1/12", "row": 3, "col": 2}, {"id": "d0", "label": "Independence", "row": 4, "col": 0}, {"id": "d1", "label": "one try does not change the next", "row": 4, "col": 1}, {"id": "d2", "label": "rolls do not influence each other", "row": 4, "col": 2}], "hi": ["a0", "b0", "c0", "d0"], "caption": "All four must hold. A count with no fixed n is not binomial."}
+{"type": "grid", "title": "The four binomial conditions", "nodes": [{"id": "h0", "label": "Condition", "row": 0, "col": 0}, {"id": "h1", "label": "Plain words", "row": 0, "col": 1}, {"id": "h2", "label": "12-sided die, 30 rolls", "row": 0, "col": 2}, {"id": "a0", "label": "Fixed number of trials", "row": 1, "col": 0}, {"id": "a1", "label": "n is set before you start", "row": 1, "col": 1}, {"id": "a2", "label": "n = 30 rolls", "row": 1, "col": 2}, {"id": "b0", "label": "Success / failure", "row": 2, "col": 0}, {"id": "b1", "label": "each try is yes or no", "row": 2, "col": 1}, {"id": "b2", "label": "an 8 is a success", "row": 2, "col": 2}, {"id": "c0", "label": "Equal probability", "row": 3, "col": 0}, {"id": "c1", "label": "same p every try", "row": 3, "col": 1}, {"id": "c2", "label": "p = 1/12", "row": 3, "col": 2}, {"id": "d0", "label": "Independence", "row": 4, "col": 0}, {"id": "d1", "label": "one try does not change the next", "row": 4, "col": 1}, {"id": "d2", "label": "rolls do not influence each other", "row": 4, "col": 2}], "hi": ["a0", "b0", "c0", "d0"], "caption": "All four must hold. A count with no fixed n is not binomial."}
 ```
+
+:::warn "Keep going until the first yes" is not binomial
+For example, using scrolls until one passes has no fixed n, so the binomial formula does not apply.
+:::
 
 ## Three Intermediate scrolls: eight ways to land two
 
@@ -27,15 +31,19 @@ So $n = 3$ tries and $p = 0.6$. Let X be the number of passes. Three tries give 
 {"type": "grid", "title": "Three scrolls: the eight sequences by number of passes", "nodes": [{"id": "h0", "label": "X = passes", "row": 0, "col": 0}, {"id": "h1", "label": "Sequences", "row": 0, "col": 1}, {"id": "h2", "label": "How many", "row": 0, "col": 2}, {"id": "h3", "label": "Each one", "row": 0, "col": 3}, {"id": "r0a", "label": "0", "row": 1, "col": 0}, {"id": "r0b", "label": "FFF", "row": 1, "col": 1}, {"id": "r0c", "label": "1", "row": 1, "col": 2}, {"id": "r0d", "label": "0.4³", "row": 1, "col": 3}, {"id": "r1a", "label": "1", "row": 2, "col": 0}, {"id": "r1b", "label": "PFF, FPF, FFP", "row": 2, "col": 1}, {"id": "r1c", "label": "3", "row": 2, "col": 2}, {"id": "r1d", "label": "0.6 × 0.4²", "row": 2, "col": 3}, {"id": "r2a", "label": "2", "row": 3, "col": 0}, {"id": "r2b", "label": "PPF, PFP, FPP", "row": 3, "col": 1}, {"id": "r2c", "label": "3", "row": 3, "col": 2}, {"id": "r2d", "label": "0.6² × 0.4", "row": 3, "col": 3}, {"id": "r3a", "label": "3", "row": 4, "col": 0}, {"id": "r3b", "label": "PPP", "row": 4, "col": 1}, {"id": "r3c", "label": "1", "row": 4, "col": 2}, {"id": "r3d", "label": "0.6³", "row": 4, "col": 3}], "hi": ["r2a", "r2b", "r2c", "r2d"], "caption": "Exactly two passes: three orders, each with two 0.6s and one 0.4."}
 ```
 
-Each of the three orders for two passes has probability $0.6 \times 0.6 \times 0.4$. Add the three orders.
+Each of the three orders for two passes has probability $0.6 \times 0.6 \times 0.4$. **Orders that cannot happen together add.** Just like winning a raffle with ticket A or ticket B: two separate ways to win, so their chances add. Add the three orders.
 
 $$P(X = 2) = 3 \times 0.6^2 \times 0.4 = 3 \times 0.36 \times 0.4 = \mathbf{0.432}$$
 
 ## The formula: count the orders, then price one order
 
-The binomial formula does those two steps for any n.
+**The binomial formula does those two steps for any n: count the orders, then multiply by the chance of one order.**
 
 $$P(x) = {}_nC_x \, p^x \, q^{n-x}$$
+
+:::tip The two exponents add to n
+For the three scrolls, p gets exponent 2 and q gets exponent 1, and 2 + 1 = 3. If yours do not add to n, one exponent is wrong.
+:::
 
 For the three scrolls, each symbol is:
 
@@ -51,19 +59,19 @@ The keys, and the fraction form for a calculator without nCr, are in [Before you
 
 $$P(2) = {}_3C_2 \, (0.6)^2 \, (0.4)^{1} = 3 \times 0.36 \times 0.4 = \mathbf{0.432}$$
 
-The same line for the other counts gives $P(0) = 0.064$, $P(1) = 0.288$ and $P(3) = 0.216$ (computed). The four add to 1, which is the check that nothing was missed.
+The same line for the other counts gives $P(0) = 0.064$, $P(1) = 0.288$ and $P(3) = 0.216$ (computed). **The four add to 1, which is the check that nothing was missed.** Just like the slices of a whole pizza: every possible count is one slice, and together they make the whole.
 
 $$0.064 + 0.288 + 0.432 + 0.216 = \mathbf{1}$$
 
-## Lab 6's 12-sided die: the formula line and dbinom agree
+## A 12-sided die rolled 30 times: the formula line and dbinom agree
 
-Lab 6 rolls a 12-sided die 30 times. X is the number of times it shows an 8. So $n = 30$, $x = 3$, $p = \frac{1}{12}$ and $q = \frac{11}{12}$.
+The course's binomial lab rolls a fair 12-sided die 30 times. X is the number of times it shows an 8. So $n = 30$, $x = 3$, $p = \frac{1}{12}$ and $q = \frac{11}{12}$.
 
 $${}_{30}C_3 = \frac{30 \times 29 \times 28}{3 \times 2 \times 1} = \mathbf{4060}$$
 
 $$P(3) = {}_{30}C_3 \left(\tfrac{1}{12}\right)^3 \left(\tfrac{11}{12}\right)^{27} = \mathbf{0.2242}$$
 
-The lab types the formula into R, then gets the same number from the built-in function.
+In R you can type the formula yourself, then get the same number from the built-in function `dbinom`. Just like adding a bill by hand and then checking it on your phone's calculator.
 
 ```r
 choose(30,3)*(1/12)^3 * (11/12)^27
@@ -95,17 +103,25 @@ dbinom(3, 30, 1/12)
 - `dbinom(3, 30, 1/12)`: "Divide 1 by 12 (`1/12`), take x = 3 and size = 30, and return P(X = 3) (`dbinom`)."
 :::
 
-The trap is the slot order. `dbinom` takes the count asked about first, then n, then p.
+The trap is the slot order. **`dbinom` takes the count asked about first, then n, then p.**
+
+:::warn dbinom with n and x swapped returns 0
+`dbinom(30, 3, 1/12)` asks for 30 successes in 3 tries. That cannot happen, so R prints 0 instead of an error.
+:::
 
 ## The centre and spread: μ = np, σ = √(npq)
 
-The mean count is n times p. The standard deviation is the square root of n, p and q multiplied. Round both to 2 decimals, and Z too.
+**The mean count is n times p. The standard deviation is the square root of n, p and q multiplied.** Round both to 2 decimals, and Z too. Just like a basketball player's free throws: the mean is how many go in on a typical night, and the standard deviation is how much that swings from night to night.
 
-For the die, the lab gives $\mu = 30 \times \frac{1}{12} = 2.5$.
+For the 30 rolls of the die, $\mu = 30 \times \frac{1}{12} = 2.5$.
 
 $$\sigma = \sqrt{npq} = \sqrt{30 \times \tfrac{1}{12} \times \tfrac{11}{12}} = \sqrt{2.291667} = \mathbf{1.51}$$
 
-That σ is computed, not printed in the lab. A count is unusual when its Z-score is beyond 2 either way. Six 8s in 30 rolls:
+That σ is computed here, not given in the course material. **A count is unusual when its Z-score is beyond 2 either way.** Just like a friend who is usually 5 minutes late showing up an hour late: far from their normal, so you notice. Six 8s in 30 rolls:
+
+:::tip Unusual means |Z| > 2, in either direction
+A count far below the mean is unusual too. A negative Z beyond −2 counts the same as a positive one beyond 2.
+:::
 
 $$Z = \dfrac{x - \mu}{\sigma} = \dfrac{6 - 2.5}{1.513825} = \mathbf{2.31}$$
 
