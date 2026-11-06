@@ -2,7 +2,7 @@
 title: "At least, at most, more than: the words become a sum or a complement"
 minutes: 10
 ---
-<!-- facts: none; the lesson keeps the instructor's die and chip examples from Lab 6 -->
+<!-- facts: gms.starforce.rates-0-14, gms.starforce.star-catch, classic.scroll.tiers, poe1.chaos.affix-count, gms.scroll.chaos-outcomes -->
 Most binomial questions do not ask for one exact count. They say "at least", "at most" or "between", and the first mark is turning those words into the right set of counts.
 
 ## Each wording names a set of counts
@@ -27,7 +27,9 @@ Take $n = 4$ tries with $p = 0.3$. "At least 2" is 2, 3 or 4: three terms. Its o
 
 The whole line adds to 1, so compute the short side and subtract it from 1. This is the complement.
 
-$$P(0) = 0.7^4 = 0.2401 \qquad P(1) = {}_4C_1 \, (0.3)(0.7)^3 = 0.4116$$
+$$P(0) = 0.7^4 = 0.2401 \qquad P(1) = {}_4C_1 \, (0.3)(0.7)^3 = 4 \times 0.3 \times 0.343 = 0.4116$$
+
+${}_4C_1 = 4$: the one success can sit in any of the four tries. The formula and the keys are in [Before you start](#/math3042-q7/pre-reading).
 
 $$P(X \ge 2) = 1 - [P(0) + P(1)] = 1 - (0.2401 + 0.4116) = \mathbf{0.3483}$$
 
@@ -163,6 +165,27 @@ The R side is drilled in [dbinom, pbinom, dpois, ppois](#/math3042-q7/r-binomial
   {"q": "25 tries at $p = 0.4$. P(more than 9).", "type": "fill", "code": "1 - pbinom(___, 25, 0.4)", "answer": ["9"], "explain": "More than 9 starts at 10. Its complement is 0 to 9, so the line is `1 - pbinom(9, 25, 0.4)` = 0.5754 (computed)."},
   {"q": "5 tries. Which sum on paper gives P(at least 2)?", "options": ["$1 - [P(0) + P(1)]$", "$1 - [P(0) + P(1) + P(2)]$", "$P(2) + P(3) + P(4)$", "$1 - P(1)$"], "answer": 0, "explain": "At least 2 is 2, 3, 4, 5. Its complement is 0 and 1, so $1 - [P(0) + P(1)]$. Writing out $P(2) + \\dots + P(5)$ also works, but needs four terms and must not stop at 4."},
   {"q": "A student guesses on 5 multiple-choice questions with 5 options each, so $p = 0.2$. P(at most 1 right)? (4 decimals)", "type": "numeric", "answer": 0.7373, "tolerance": 0.0001, "explain": "Let X = the number right out of 5. Binomial with $n = 5$, $p = 0.2$, $q = 0.8$. At most 1 is 0 or 1. $$P(0) = 0.8^5 = 0.32768 \\qquad P(1) = {}_5C_1 \\, (0.2)(0.8)^4 = 5 \\times 0.2 \\times 0.4096 = 0.4096$$ $$P(X \\le 1) = 0.32768 + 0.4096 = \\mathbf{0.7373}$$"}
+]
+```
+
+## Star Force, Greater scrolls, Chaos Orbs and Chaos Scrolls
+
+The same words table runs every item-upgrade question in the games. Each item below is its own independent roll at a fixed chance.
+
+Star Force, the GMS enhancement that adds stars to gear, succeeds 40 % at 12 to 13 stars on the wiki's table, without the Star Catch bonus that v.271 builds in. Below 15 stars a failure keeps the star, so ten items each at 12 stars, one attempt each, are ten tries at the same p.
+
+A Greater scroll in MapleStory Classic passes 10 % of the time, and each upgrade slot rolls on its own.
+
+A Chaos Orb in Path of Exile rerolls every modifier on a rare, and the wiki gives 4, 5 or 6 affixes in the ratio 8:3:1. Six affixes is 1 in 12, fresh on every reroll.
+
+A GMS Chaos Scroll that succeeds changes each stat by −5 to +5; the wiki's table gives +5 with probability 0.99 %, rolled anew on every successful use.
+
+```quiz
+[
+  {"q": "Ten items each at 12 stars, one Star Force attempt each at $p = 0.40$. Which R line gives P(at least 4 succeed)?", "options": ["`1 - pbinom(3, 10, 0.4)`", "`1 - pbinom(4, 10, 0.4)`", "`pbinom(4, 10, 0.4)`", "`1 - dbinom(3, 10, 0.4)`"], "answer": 0, "explain": "At least 4 is everything except 0 to 3, so subtract P(X ≤ 3) from 1: `1 - pbinom(3, 10, 0.4)` = $1 - 0.3823 = \\mathbf{0.6177}$ (computed). A 4 inside drops the count 4 itself and gives more than 4."},
+  {"q": "A Greater scroll passes with probability 0.1. Seven slots, one scroll each. P(at least one passes)? (4 decimals)", "type": "numeric", "answer": 0.5217, "tolerance": 0.0001, "explain": "Let X = the number of the 7 scrolls that pass; binomial with $n = 7$, $p = 0.1$. At least one is the complement of none: $$P(X \\ge 1) = 1 - P(0) = 1 - 0.9^7 = 1 - 0.478297 = \\mathbf{0.5217}$$"},
+  {"q": "24 Chaos Orb rerolls on one rare; each lands 6 affixes with $p = 1/12$. P(at most 1 of the 24 lands 6 affixes).", "type": "fill", "code": "pbinom(___, 24, 1/12)", "answer": ["1"], "explain": "At most 1 is 0 or 1, so q = 1: `pbinom(1, 24, 1/12)`. By hand: $$P(0) = \\left(\\tfrac{11}{12}\\right)^{24} = 0.123901 \\qquad P(1) = {}_{24}C_1 \\left(\\tfrac{1}{12}\\right)\\left(\\tfrac{11}{12}\\right)^{23} = 0.270329$$ $$P(X \\le 1) = 0.123901 + 0.270329 = \\mathbf{0.3942}$$"},
+  {"q": "20 successful Chaos Scroll uses; each gives +5 with $p = 0.0099$. P(at least one +5)? (4 decimals)", "type": "numeric", "answer": 0.1804, "tolerance": 0.0001, "explain": "Let X = the number of +5 results in 20 successful uses; binomial with $n = 20$, $p = 0.0099$. $$P(X \\ge 1) = 1 - 0.9901^{20} = 1 - 0.819561 = \\mathbf{0.1804}$$ The rate applies to successful uses only, so failed scrolls do not count toward the 20."}
 ]
 ```
 

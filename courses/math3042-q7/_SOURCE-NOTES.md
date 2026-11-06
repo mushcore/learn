@@ -31,4 +31,5 @@ Everything else (the tiny cases, the mock quizzes' numbers, μ and σ for the di
 
 - `00-pre-reading.md`: `classic.scroll.tiers` (Intermediate scroll, 60 %).
 - `02-binomial-on-paper.md`: `classic.scroll.tiers` (Intermediate scroll 60 %), `poe1.vaal.gem-outcomes` (+1 gem level 1/8), `poe1.price.currency-snapshot` (Vaal Orb 0.3195 chaos), `poe2.items.unid-rare-mod-count` (6 modifiers 1/12), `poe2.items.affix-limits` (three prefixes, three suffixes; gloss only).
+- `03-at-least-at-most.md`: `gms.starforce.rates-0-14` (12 to 13 stars 40 %), `gms.starforce.star-catch` (v.271 caveat), `classic.scroll.tiers` (Greater scroll 10 %), `poe1.chaos.affix-count` (6 affixes 1/12), `gms.scroll.chaos-outcomes` (+5 at 0.99 %).
 - every other lesson: `none`.
