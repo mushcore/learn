@@ -14,6 +14,8 @@ Unusual means $|Z| > 2$, with $Z = (x - \mu)/\sigma$.
 | Binomial | $C(n, x)\, p^x\, q^{n-x}$ | $np$ | $\sqrt{npq}$ | fixed $n$ trials, two outcomes, the same $p$, independent |
 | Poisson | $\dfrac{\lambda^x e^{-\lambda}}{x!}$ | $\lambda$ | $\sqrt{\lambda}$ | a count in an interval; $\lambda$ = rate × the question's interval |
 
+${}_nC_x = \dfrac{n!}{x!\,(n-x)!}$, the calculator's nCr key; $0! = 1$; $e^{-\lambda}$ is the $e^x$ key with $-\lambda$.
+
 ## The words become a sum, then an R line
 
 Poisson is the same table with `ppois(k, lambda)` in place of `pbinom(k, n, p)`.

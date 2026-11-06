@@ -2,7 +2,7 @@
 title: "dbinom, pbinom, dpois, ppois, and the simulated check"
 minutes: 10
 ---
-<!-- facts: none; the examples are the lab's die, chips, cables and transformers, with no game context -->
+<!-- facts: poe1.vaal.gem-outcomes, gms.starforce.rates-0-14, gms.starforce.star-catch -->
 Part 2 can ask for a binomial or Poisson probability by code, then a simulation that checks it. The first letter of the function and the order of its slots are the whole skill.
 
 ## The first letter says which probability
@@ -394,7 +394,7 @@ The long versions are in [Review: R for the distributions](#/math3042-midterm/re
 
 ## A SkyTrain fare gate and a help desk
 
-A fare gate rejects 5 % of taps; take 40 taps, so X is binomial with size 40 and prob 0.05. A help desk gets 4 tickets an hour; over 2 hours the count is Poisson with lambda 8.
+A fare gate rejects 5 % of taps; take 40 taps, so X is binomial with size 40 and prob 0.05. A help desk gets 4 tickets an hour; over 2 hours the count is Poisson with lambda 8. In Path of Exile, a Vaal Orb on a skill gem adds a level with probability 1/8, the wiki gives; one orb on each of 16 gems is 16 independent tries. In MapleStory, ten items each at 12 stars get one Star Force attempt each, and each succeeds 40 % on the wiki's table, without the Star Catch bonus that v.271 builds in.
 
 ```quiz
 [
@@ -404,7 +404,10 @@ A fare gate rejects 5 % of taps; take 40 taps, so X is binomial with size 40 and
   {"type": "fill", "q": "P(at most 5 tickets in the 2 hours).", "code": "ppois(5, ___)", "answer": ["8", "4*2", "2*4"], "explain": "lambda is the mean for the interval asked: $$\\lambda = 4 \\times 2 = 8$$ So `ppois(5, 8)`. Computed: $$\\mathbf{0.1912}$$ Using 4 answers a question about one hour."},
   {"type": "fill", "q": "P(from 2 to 6 tickets, inclusive, in the 2 hours).", "code": "ppois(6, 8) - ppois(___, 8)", "answer": ["1"], "explain": "At most 6 minus at most 1 leaves 2 to 6: `ppois(6, 8) - ppois(1, 8)`. Computed: $$\\mathbf{0.3104}$$ Subtracting `ppois(2, 8)` would drop X = 2."},
   {"type": "fill", "q": "Simulate 1000 days of 40 taps each, one count of rejected taps per day.", "code": "X.vals <- rbinom(___, 40, 0.05)", "answer": ["1000", "10^3", "1e3", "1e+03"], "explain": "The first slot of `rbinom` is R's `n`: how many values to draw. The 40 taps go in `size`. So `X.vals <- rbinom(1000, 40, 0.05)`, and `prop.table(table(X.vals))` gives the shares to compare with `dbinom`."},
-  {"type": "text", "q": "Write the full line on paper for P(more than 10 tickets in the 2 hours), then type the name of the function you used.", "answer": ["ppois", "ppois()"], "explain": "More than 10 is one minus at most 10: `1 - ppois(10, 8)`. Computed: $$1 - 0.8159 = \\mathbf{0.1841}$$ The labs write every upper tail as this complement."}
+  {"type": "text", "q": "Write the full line on paper for P(more than 10 tickets in the 2 hours), then type the name of the function you used.", "answer": ["ppois", "ppois()"], "explain": "More than 10 is one minus at most 10: `1 - ppois(10, 8)`. Computed: $$1 - 0.8159 = \\mathbf{0.1841}$$ The labs write every upper tail as this complement."},
+  {"type": "fill", "q": "P(exactly 3 of the 16 gems gain a level).", "code": "___(3, 16, 1/8)", "answer": ["dbinom"], "explain": "Exactly one value, so the d function: `dbinom(3, 16, 1/8)`, x = 3, size = 16, prob = 1/8. Computed: $$\\mathbf{0.1928}$$"},
+  {"type": "fill", "q": "P(at least 4 of the 10 Star Force attempts succeed).", "code": "1 - pbinom(___, 10, 0.4)", "answer": ["3"], "explain": "At least 4 is everything except 0 to 3, so subtract at most 3: `1 - pbinom(3, 10, 0.4)`. Computed: $$1 - 0.3823 = \\mathbf{0.6177}$$"},
+  {"type": "fill", "q": "Simulate 1000 runs of 16 gems, one count of levelled gems per run.", "code": "X.vals <- rbinom(___, 16, 1/8)", "answer": ["1000", "10^3", "1e3", "1e+03"], "explain": "The first slot of `rbinom` is how many values to draw, here 1000 runs; 16 is size, the gems per run. `mean(X.vals)` lands near $\\mu = 16 \\times \\tfrac{1}{8} = 2.00$."}
 ]
 ```
 
