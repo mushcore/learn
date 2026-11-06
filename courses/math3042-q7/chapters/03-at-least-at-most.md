@@ -36,9 +36,9 @@ Take a few independent tries, each a yes or no at the same chance.
 - $n = 4$, the number of tries.
 - $p = 0.3$, the chance one try succeeds.
 - $q = 0.7$, the chance one try fails.
-- at least 2, and then at least 1, the successes the questions ask about.
+This section answers two separate questions about these same 4 tries. First P(at least 2), then, at the end, P(at least 1).
 
-"At least 2" is 2, 3 or 4: three terms. Its opposite, 0 or 1, is two terms.
+**Question 1: P(at least 2).** "At least 2" is 2, 3 or 4: three terms. Its opposite, 0 or 1, is two terms.
 
 The whole line adds to 1, so compute the short side and subtract it from 1. This is the **complement**: everything the wording leaves out. Just like counting the few students absent from a class instead of the many present: the short list gives the long one by subtraction.
 
@@ -58,7 +58,7 @@ $$P(X \ge 2) = 1 - [P(0) + P(1)] = 1 - (\underbrace{0.2401}_{\text{P(0), from ab
 With 4 tries this saved one term. With 30 tries and "at least 2", it turns 29 terms into 2.
 :::
 
-"At least one" is the shortest case of all. Its opposite is the single count 0. For example, "at least one bus is late this week" is everything except "no bus is late".
+**Question 2, a new question on the same 4 tries: P(at least 1).** "At least one" is the shortest case of all. Its opposite is the single count 0. For example, "at least one bus is late this week" is everything except "no bus is late".
 
 $$P(X \ge 1) = 1 - P(0) = 1 - \underbrace{0.7^4}_{\text{all 4 tries fail}} = 1 - 0.2401 = \mathbf{0.7599}$$
 
