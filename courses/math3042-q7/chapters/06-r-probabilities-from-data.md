@@ -2,7 +2,7 @@
 title: "Probabilities from a data frame: P(A), P(A or B), P(A given B), and the printed conclusion"
 minutes: 12
 ---
-<!-- facts: none; the examples are a made-up table, the survey data and Lab 5's weather table, with no game context -->
+<!-- facts: poe1.craft.evasion-boots-prefix-weights -->
 Part 2 asks for a probability by code and then a verdict: are two events mutually exclusive, are they independent? Every one of these is a count of rows divided by a count of rows.
 
 ## Count the rows where it is true
@@ -238,6 +238,28 @@ The two logical vectors are `L <- survey$W.Hnd == "Left"` and `Fem <- survey$Sex
   {"q": "Which line computes P(left-handed | female), the share of the women who write left-handed?", "options": ["`sum(Fem & L, na.rm=TRUE)/sum(Fem, na.rm=TRUE)`", "`sum(Fem & L, na.rm=TRUE)/sum(L, na.rm=TRUE)`", "`mean(Fem & L, na.rm=TRUE)`", "`mean(Fem, na.rm=TRUE)*mean(L, na.rm=TRUE)`"], "answer": 0, "explain": "Given female, so divide the both-rows by the Fem rows: `sum(Fem & L, na.rm=TRUE)/sum(Fem, na.rm=TRUE)`. Dividing by the L rows gives P(female | left-handed) instead. `mean(Fem & L)` is P(female and left-handed) over all students. The product of the two means is what P(female and left-handed) would be if the events were independent."},
   {"type": "fill", "q": "The mutually exclusive test: TRUE when no student is both female and left-handed.", "code": "sum(Fem & L, na.rm=TRUE) ___ 0", "answer": ["=="], "explain": "The full test is `sum(Fem & L, na.rm=TRUE) == 0`. `==` compares; a single `=` would try to assign. Put it inside `if ( ) { print(\"Mutually exclusive\") } else { print(\"Not mutually exclusive\") }` to print the verdict."},
   {"type": "text", "q": "Write the full line on paper that prints one sentence holding P(female | left-handed) rounded to 4 decimals, then type the name of the function that joins the text and the number.", "answer": ["paste0", "paste0()", "paste", "paste()"], "explain": "A model line: `print(paste0(\"P(female | left-handed) = \", round(p.Fem.given.L, 4)))`. `round(x, 4)` rounds, `paste0()` joins the label and the number with nothing between, and `print()` shows the sentence in the knitted file. `paste()` also works but puts a space between the pieces."}
+]
+```
+
+## A crafting weight table is a count table
+
+In Path of Exile, an Orb of Augmentation adds one random modifier to a magic item. The classic boots craft: your magic evasion boots have a resistance suffix only, so the Augment must add a prefix, and you want movement speed.
+
+Each prefix tier the boots can roll has a weight, read from the game's files. At item level 83, the level of tier 16 map drops, every tier weighs 1000:
+
+| Prefix family | Tiers | Weight |
+|---|---|---|
+| The other six families: evasion, life and rarity | 32 | 32000 |
+| Movement Speed: 10, 15, 20, 25 or 30 % | 5 | 5000 |
+| All prefixes | 37 | 37000 |
+
+Read weights the way you read the rows of a data frame. P(A) is the weight where A is true over the total weight. P(A given B) keeps only B's weight in the bottom.
+
+```quiz
+[
+  {"q": "P(the Augment adds a movement speed prefix)? (4 decimals)", "type": "numeric", "answer": 0.1351, "tolerance": 0.0001, "explain": "Movement speed weight over all prefix weight: $$P(\\text{MS}) = \\dfrac{5000}{37000} = \\mathbf{0.1351}$$ About 1 Augment in 7."},
+  {"q": "The Augment gave movement speed. P(it is the 30 % tier, given that it is movement speed)? (4 decimals)", "type": "numeric", "answer": 0.2, "tolerance": 0.0001, "explain": "Given B means B's weight goes in the bottom: $$P(30\\% \\mid \\text{MS}) = \\dfrac{1000}{5000} = \\mathbf{0.2000}$$ The same move as a row total on survey."},
+  {"q": "Before you use the Augment: P(it adds the 30 % movement speed tier)? (4 decimals)", "type": "numeric", "answer": 0.027, "tolerance": 0.0001, "explain": "One tier of weight 1000 out of 37000: $$\\dfrac{1000}{37000} = \\mathbf{0.0270}$$ It also equals $P(\\text{MS}) \\times P(30\\% \\mid \\text{MS}) = 0.135135 \\times 0.2 = 0.0270$."}
 ]
 ```
 

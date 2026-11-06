@@ -88,6 +88,21 @@ A Chaos Orb rerolls all modifiers on a rare item. For regular items, the result 
 Source: https://www.poewiki.net/wiki/Chaos_Orb (poewiki.net). Version: PoE1 3.29 Allflame (wiki page last edited 2026-07-26). Checked: 2026-10-27. Trust: wiki.
 Notes: The probability column is the page's 8:3:1 ratio divided by 12. A Chaos Orb is the price unit (1 chaos) on poe.ninja. Good for E(X) = expected affix count, variance, and geometric "chaos until six affixes".
 
+### poe1.craft.evasion-boots-prefix-weights
+On evasion boots (Boots_dex) of item level 83, the prefixes that can roll are 37 tiers in 7 families, and every tier has spawn weight 1000. A new prefix is picked from the eligible tiers in proportion to weight.
+| Prefix family | Tiers at item level 83 | Total weight |
+|---|---|---|
+| Flat Evasion Rating | 7 | 7000 |
+| Evasion Rating and Life | 2 | 2000 |
+| % increased Evasion Rating | 6 | 6000 |
+| % Evasion Rating and Stun Recovery | 6 | 6000 |
+| Maximum Life | 9 | 9000 |
+| Rarity of Items found | 2 | 2000 |
+| Movement Speed (10, 15, 20, 25, 30 %) | 5 | 5000 |
+| All prefixes | 37 | 37000 |
+Source: https://poedb.tw/us/Boots_dex (poedb, datamined from the PoE1 game files; the "normal" modifier list with its spawn weights). Version: PoE1 3.29 Allflame, as served 2026-11-06. Checked: 2026-11-06. Trust: datamined.
+Notes: Item level 83 is the level of items dropped in tier 16 maps. Two higher tiers are left out at that level: Mirage's (92-100 % increased Evasion, level 84) and Hellion's (35 % Movement Speed, level 86); at item level 86 the pool is 39 tiers with 6 Movement Speed tiers. An Orb of Augmentation on a magic item that has a suffix only adds one prefix, so P(movement speed) = 5000/37000 and P(30 % tier | movement speed) = 1000/5000. Influence, essence, delve and other special mods are not in this pool.
+
 ### poe1.divine.reroll
 A Divine Orb rerolls the numeric values of all explicit modifiers on a magic, rare or unique item, within each modifier's current tier. It does not change the tier and cannot reroll fractured modifiers. It is the "gold standard" trade currency, and the Chaos Orb is the lower-value "silver standard".
 Source: https://www.poewiki.net/wiki/Divine_Orb (poewiki.net). Version: PoE1 3.29 Allflame (wiki page last edited 2026-07-26). Checked: 2026-10-27. Trust: wiki.
