@@ -29,7 +29,14 @@ At least 3 starts at 3, and more than 3 starts at 4. Mix them up and the whole a
 
 ## Four tries at 30 %: the short side is cheaper
 
-Take $n = 4$ tries with $p = 0.3$. "At least 2" is 2, 3 or 4: three terms. Its opposite, 0 or 1, is two terms.
+Take a few independent tries, each a yes or no at the same chance.
+
+- $n = 4$, the number of tries.
+- $p = 0.3$, the chance one try succeeds.
+- $q = 0.7$, the chance one try fails.
+- at least 2, and then at least 1, the successes the questions ask about.
+
+"At least 2" is 2, 3 or 4: three terms. Its opposite, 0 or 1, is two terms.
 
 The whole line adds to 1, so compute the short side and subtract it from 1. This is the **complement**: everything the wording leaves out. Just like counting the few students absent from a class instead of the many present: the short list gives the long one by subtraction.
 
@@ -96,7 +103,13 @@ Put k inside and the count k itself falls out. The line then answers "more than 
 
 ## A 12-sided die rolled 30 times, and chips at 20 % defective
 
-Roll a 12-sided die 30 times and count the 8s: $n = 30$, $p = \frac{1}{12}$. Each roll is one try, and an 8 is a success. The five questions are exactly 6, at most 6, at least 6, more than 6, and between 2 and 6 inclusive. This is Lab 6 Task 2, with the instructor's lines.
+Roll a 12-sided die 30 times and count the 8s. Each roll is one try, and an 8 is a success.
+
+- $n = 30$, the number of rolls.
+- $p = \frac{1}{12}$, the chance one roll lands on an 8.
+- exactly 6, at most 6, at least 6, more than 6, and between 2 and 6 inclusive, the counts of 8s the five questions ask about.
+
+This is Lab 6 Task 2, with the instructor's lines.
 
 ```r
 n <- 30
@@ -138,7 +151,13 @@ pbinom(6, n, p) - pbinom(1, n, p)
 
 For example, "at least 6" keeps 6 and up, so its complement stops at 5. That is the 5 in `1 - pbinom(5, n, p)`.
 
-Next, a coating line makes chips, and 20 % of chips are defective. Take 100 chips and count the defective ones: $n = 100$, $p = 0.20$. This is Lab 6 Task 3. The lab writes `pbinom(24, n, p)` for X < 25 and `1 - pbinom(24, n, p)` for X ≥ 25.
+Next, a coating line makes chips, and 20 % of chips are defective. Take 100 chips and count the defective ones.
+
+- $n = 100$, the number of chips.
+- $p = 0.20$, the chance one chip is defective.
+- exactly 25, at most 25, fewer than 25, at least 25, and 20 to 30 inclusive, the counts of defective chips the questions ask about.
+
+This is Lab 6 Task 3. The lab writes `pbinom(24, n, p)` for X < 25 and `1 - pbinom(24, n, p)` for X ≥ 25.
 
 | Words | R line | Prints |
 |---|---|---|
@@ -188,13 +207,25 @@ The R side is drilled in [dbinom, pbinom, dpois, ppois](#/math3042-q7/r-binomial
 
 The same words table runs the questions players ask while upgrading gear: will I get it within the taps or orbs I can afford? Each try below is an independent roll at a fixed chance, and **"I get it within n tries" means at least one success in n tries.** Just like spamming Fusings until the six-link shows: you stop at the first hit, so the only question is whether a hit comes at all.
 
-Star Force, the GMS enhancement that adds stars to gear, succeeds 40 % at 12 to 13 stars on the wiki's table, without the Star Catch bonus that v.271 builds in. Below 15 stars a failure keeps the star, so every tap on an item at 12 stars is another try at the same p until one succeeds.
+Star Force, the GMS enhancement that adds stars to gear, succeeds at a fixed rate at 12 to 13 stars on the wiki's table, without the Star Catch bonus that v.271 builds in. Below 15 stars a failure keeps the star, so every tap on an item at 12 stars is another try at the same p until one succeeds.
 
-A Greater scroll in MapleStory Classic passes 10 % of the time, and each upgrade slot rolls on its own.
+- $p = 0.40$, the chance one tap at 12 stars adds a star.
+- $q = 0.60$, the chance one tap fails and the item stays at 12 stars.
 
-An Orb of Fusing in Path of Exile rerolls the links between an item's sockets, and players spam it for a six-link. A community test of 100 000 Fusings on a 20 % quality item, which the wiki cites, measured about 1 in 1000 per orb.
+A Greater scroll in MapleStory Classic passes at a fixed rate, and each upgrade slot rolls on its own.
 
-A GMS Chaos Scroll that succeeds changes each stat by −5 to +5; the wiki's table gives +5 with probability 0.99 %, rolled anew on every successful use.
+- $p = 0.1$, the chance one Greater scroll passes.
+- $q = 0.9$, the chance one Greater scroll fails.
+
+An Orb of Fusing in Path of Exile rerolls the links between an item's sockets, and players spam it for a six-link. A community test of 100 000 Fusings on a 20 % quality item, which the wiki cites, measured the chance per orb.
+
+- $p = 0.001$, the chance one Fusing gives a six-link.
+- $q = 0.999$, the chance one Fusing does not.
+
+A GMS Chaos Scroll that succeeds changes each stat by −5 to +5; the wiki's table gives +5 at a fixed rate, rolled anew on every successful use.
+
+- $p = 0.0099$, the chance one successful Chaos Scroll gives +5.
+- $q = 0.9901$, the chance it gives anything else.
 
 ```quiz
 [

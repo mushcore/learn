@@ -57,7 +57,14 @@ On the die below, `dbinom(6, 30, 1/12)` is only X = 6. `pbinom(6, 30, 1/12)` add
 
 ## Thirty rolls of a 12-sided die
 
-Roll a 12-sided die 30 times and count the 8s. So $n = 30$ and $p = 1/12$. This die is from Lab 6. "At least 6" means 6, 7, 8, and so on up to 30. Just like "at least 18 years old" includes 18 itself and every age above.
+Roll a fair 12-sided die and count the 8s. This die is from Lab 6.
+
+- $n = 30$, the number of rolls.
+- $p = \frac{1}{12}$, the chance one roll lands on an 8.
+- $q = \frac{11}{12}$, the chance one roll lands on anything else.
+- at least 6: the count of 8s the question asks about.
+
+"At least 6" means 6, 7, 8, and so on up to 30. Just like "at least 18 years old" includes 18 itself and every age above.
 
 ```diagram
 {"type": "grid", "title": "At least 6 eights in 30 rolls", "nodes": [{"id": "h", "label": "X", "row": 0, "col": 0}, {"id": "v0", "label": "0", "row": 0, "col": 1}, {"id": "v1", "label": "1", "row": 0, "col": 2}, {"id": "v2", "label": "2", "row": 0, "col": 3}, {"id": "v3", "label": "3", "row": 0, "col": 4}, {"id": "v4", "label": "4", "row": 0, "col": 5}, {"id": "v5", "label": "5", "row": 0, "col": 6}, {"id": "v6", "label": "6", "row": 0, "col": 7}, {"id": "v7", "label": "7", "row": 0, "col": 8}, {"id": "v8", "label": "8", "row": 0, "col": 9}, {"id": "vd", "label": "…", "row": 0, "col": 10}, {"id": "v30", "label": "30", "row": 0, "col": 11}], "hi": ["v6", "v7", "v8", "vd", "v30"], "caption": "The lit values are the event. The unlit ones, 0 to 5, are exactly what pbinom(5, 30, 1/12) adds up."}
@@ -79,7 +86,14 @@ On the die, `1 - pbinom(6, 30, 1/12)` also drops X = 6. It answers "more than 6"
 
 ## Exactly, at most, at least for a 12-sided die
 
-Five questions on the same die, rolled 30 times while counting the 8s: exactly 6, at most 6, at least 6, more than 6, and from 2 to 6. This is Lab 6 Task 2. Each wording becomes one line:
+Five questions on the same die, counting the 8s. This is Lab 6 Task 2.
+
+- $n = 30$, the number of rolls.
+- $p = \frac{1}{12}$, the chance one roll lands on an 8.
+- $q = \frac{11}{12}$, the chance one roll lands on anything else.
+- exactly 6, at most 6, at least 6, more than 6, and from 2 to 6: the counts of 8s the questions ask about.
+
+Each wording becomes one line:
 
 ```r
 n <- 30
@@ -129,7 +143,14 @@ pbinom(6, n, p) - pbinom(1, n, p)
 - `pbinom(6, n, p) - pbinom(1, n, p)`: "Compute both cumulative chances (`pbinom`), subtract the second from the first (`-`), print it."
 :::
 
-The same shapes work for any n and p. Take 100 chips, each with a 20 % chance of a thin coating. X counts the thin-coated chips, so `n <- 100` and `p <- 0.20`. This is Lab 6 Task 3. Its lines and printed values:
+The same shapes work for any n and p. Take a batch of chips, each of which may get a thin coating. X counts the thin-coated chips. This is Lab 6 Task 3.
+
+- $n = 100$, the number of chips.
+- $p = 0.20$, the chance one chip gets a thin coating.
+- $q = 0.80$, the chance one chip's coating is not thin.
+- exactly 25, at most 25, fewer than 25, at least 25, and from 20 to 30: the counts of thin-coated chips the questions ask about.
+
+The code stores n and p under those names. Its lines and printed values:
 
 ```diagram
 {"type": "grid", "title": "100 chips, each thin-coated with chance 0.20", "nodes": [{"id": "h0", "label": "Words", "row": 0, "col": 0}, {"id": "h1", "label": "R line", "row": 0, "col": 1}, {"id": "h2", "label": "Printed", "row": 0, "col": 2}, {"id": "a0", "label": "X = 25", "row": 1, "col": 0}, {"id": "a1", "label": "dbinom(25, n, p)", "row": 1, "col": 1}, {"id": "a2", "label": "0.04388", "row": 1, "col": 2}, {"id": "b0", "label": "X ≤ 25", "row": 2, "col": 0}, {"id": "b1", "label": "pbinom(25, n, p)", "row": 2, "col": 1}, {"id": "b2", "label": "0.9125", "row": 2, "col": 2}, {"id": "c0", "label": "X < 25", "row": 3, "col": 0}, {"id": "c1", "label": "pbinom(24, n, p)", "row": 3, "col": 1}, {"id": "c2", "label": "0.8686", "row": 3, "col": 2}, {"id": "d0", "label": "X ≥ 25", "row": 4, "col": 0}, {"id": "d1", "label": "1 - pbinom(24, n, p)", "row": 4, "col": 1}, {"id": "d2", "label": "0.1314", "row": 4, "col": 2}, {"id": "e0", "label": "20 ≤ X ≤ 30", "row": 5, "col": 0}, {"id": "e1", "label": "pbinom(30, n, p) - pbinom(19, n, p)", "row": 5, "col": 1}, {"id": "e2", "label": "0.5338", "row": 5, "col": 2}], "hi": ["c1", "d1", "e1"], "caption": "The lit lines are the ones that step down by one: fewer than 25 stops at 24, at least 25 removes up to 24, from 20 removes up to 19."}
@@ -139,7 +160,11 @@ The same shapes work for any n and p. Take 100 chips, each with a 20 % chance of
 
 A Poisson count has no number of trials, so the slots are only the count and `lambda`. **`lambda` is the mean count for the interval in the question.** Just like the 34 failures a year below become 68 failures over two years.
 
-Here X counts transformer failures in one year, 34 on average, so `lambda <- 34`. The lines ask for exactly 34, at most 30, fewer than 30, more than 38, at least 38, and from 30 to 40. The last two ask for at most 34 in each of two separate years, and at most 68 over one two-year stretch. This is Lab 7 Task 10.
+Here X counts transformer failures in one year. This is Lab 7 Task 10.
+
+- $\lambda = 34$, the mean number of transformer failures in one year.
+- exactly 34, at most 30, fewer than 30, more than 38, at least 38, and from 30 to 40: the counts of failures the first six lines ask about.
+- at most 34 in each of two separate years, and at most 68 over one two-year stretch: the counts the last two lines ask about.
 
 ```r
 lambda <- 34
@@ -206,7 +231,13 @@ Using 34 in a question about two years answers a one-year question. The two-year
 
 **Give `dbinom` a vector of x values and it returns a vector of probabilities, one per value.** Just like asking for the chance of every score from 0 to 20 in one go, instead of one score at a time.
 
-Take 20 chips, each with a defective coating with chance $p = 1/4$. X counts the defective coatings. The code below draws a bar for every value of X. This is Lab 6 Task 4.
+Take a batch of chips, each of which may have a defective coating. X counts the defective coatings.
+
+- $n = 20$, the number of chips.
+- $p = \frac{1}{4}$, the chance one chip has a defective coating.
+- $q = \frac{3}{4}$, the chance one chip's coating is fine.
+
+The code below draws a bar for every value of X. This is Lab 6 Task 4.
 
 ```r
 n <- 20
@@ -258,11 +289,17 @@ The title is built from `n`, so the plot reads "Number of Defective Coatings (n 
 
 A **simulation** draws many random counts and tallies them. **If the model is right, the share of each count is close to its exact probability, the mean is close to $np$ and the standard deviation is close to $\sqrt{npq}$.** Just like tapping Star Force many times at 14 stars: about 30 % of the taps should succeed.
 
-Take a group of 50 BCIT students, each with a 13 % chance of being left-handed. X counts the left-handed students in the group. Here $n = 50$ is the number of students, $p = 0.13$ and $q = 0.87$. This is from Lab 6. Computed:
+Take a group of BCIT students, each of whom may be left-handed. X counts the left-handed students in the group. This is from Lab 6.
+
+- $n = 50$, the number of students in the group.
+- $p = 0.13$, the chance one student is left-handed.
+- $q = 0.87$, the chance one student is not left-handed.
+
+Computed:
 
 $$\mu = np = 50 \times 0.13 = \mathbf{6.50} \qquad \sigma = \sqrt{npq} = \sqrt{50 \times 0.13 \times 0.87} = \sqrt{5.655} = \mathbf{2.38}$$
 
-The simulation below draws 100 000 such groups of 50:
+The simulation below draws 100 000 such groups:
 
 ```r
 n <- 50
@@ -347,7 +384,13 @@ sd(X.vals)
 
 A simulation gives new numbers on every run, so no fixed value is printed for these two. They land close to 6.50 and 2.38.
 
-The same check works for a Poisson count, using `rpois`. A cable has 0.75 flaws per metre on average. X counts the flaws in five metres of cable, so the mean is 0.75 × 5. The function below simulates 100 000 five-metre cables. This is Lab 7 Task 9.
+The same check works for a Poisson count, using `rpois`. A cable has flaws spread along it. X counts the flaws in one piece of cable. This is Lab 7 Task 9.
+
+- rate = 0.75, the flaws per metre.
+- interval = 5, the metres in the piece asked about.
+- $\lambda = 0.75 \times 5 = 3.75$, the mean number of flaws in that piece.
+
+The function below simulates 100 000 such pieces.
 
 ```r
 Simulate.Cables <- function(m, lambda){
@@ -414,7 +457,29 @@ The long versions are in [Review: R for the distributions](#/math3042-midterm/re
 
 ## A SkyTrain fare gate and a help desk
 
-A fare gate rejects 5 % of taps; take 40 taps, so X is binomial with size 40 and prob 0.05. A help desk gets 4 tickets an hour; over 2 hours the count is Poisson with lambda 8. In Path of Exile, a Vaal Orb corrupts an item; on a skill gem it adds a level with probability 1/8, the wiki gives; one orb on each of 16 gems is 16 independent tries. In MapleStory, Star Force adds stars to gear: at 14 stars each tap succeeds 30 % on the wiki's table, without the Star Catch bonus that v.271 builds in, and a failure keeps the star.
+A fare gate rejects some of the taps it reads, so X, the rejected taps, is binomial:
+
+- $n = 40$, the number of taps.
+- $p = 0.05$, the chance the gate rejects one tap.
+- $q = 0.95$, the chance it accepts one tap.
+
+A help desk gets tickets at a steady rate, so the count over the stretch asked about is Poisson:
+
+- rate = 4, the tickets per hour.
+- interval = 2, the hours asked about.
+- $\lambda$, the mean number of tickets in those hours: rate × interval. The first ticket question asks you for it.
+
+In Path of Exile, a Vaal Orb corrupts an item. One orb on each of several skill gems makes independent tries:
+
+- $n = 16$, the number of gems, one orb on each.
+- $p = \frac{1}{8}$, the chance one orb adds a level to its gem, the wiki gives.
+- $q = \frac{7}{8}$, the chance it adds no level.
+
+In MapleStory, Star Force adds stars to gear, and a failure keeps the star. At 14 stars:
+
+- $n = 6$, the most taps the question allows.
+- $p = 0.30$, the chance one tap succeeds, on the wiki's table, without the Star Catch bonus that v.271 builds in.
+- $q = 0.70$, the chance one tap fails.
 
 ```quiz
 [

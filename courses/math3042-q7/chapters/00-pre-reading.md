@@ -39,7 +39,10 @@ Three scrolls with exactly two passes can happen as PPF, PFP or FPP. That count,
 
 $${}_nC_x = \frac{n!}{x!\,(n-x)!}$$
 
-Here **$n$ is the number of tries and $x$ the number of successes.** The bottom removes the orderings that do not matter.
+Here **$n$ is the number of tries and $x$ the number of successes.** The bottom removes the orderings that do not matter. For the three scrolls:
+
+- $n = 3$, the number of scrolls used.
+- $x = 2$, the number of them that pass.
 
 $${}_3C_2 = \frac{3!}{2!\,1!} = \frac{6}{2 \times 1} = \mathbf{3}$$
 
@@ -49,7 +52,10 @@ On the calculator, type n, press the nCr key, then type x. On a Sharp that is n,
 With x typed first, the calculator works out a different count, and often shows an error instead.
 :::
 
-With no nCr key, write the top as x factors counting down from n, and the bottom as $x!$. The rest cancels.
+With no nCr key, write the top as x factors counting down from n, and the bottom as $x!$. The rest cancels. For example:
+
+- $n = 14$, the number of tries to choose from.
+- $x = 3$, the number of those tries that are successes.
 
 $${}_{14}C_3 = \frac{14 \times 13 \times 12}{3 \times 2 \times 1} = \frac{2184}{6} = \mathbf{364}$$
 

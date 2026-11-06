@@ -38,7 +38,7 @@ A full Quiz 7 in its real shape: three paper questions worth 10 marks, then an R
     "type": "numeric",
     "answer": 0.2501,
     "tolerance": 0.0001,
-    "explain": "Let X = the number of the 14 workstations that need a reboot. X is binomial with $n = 14$, $p = 0.2$, $q = 0.8$: a fixed 14 machines, reboot or not, the same 0.2 each, independent. $$P(x) = C(n, x)\\, p^x\\, q^{n-x}$$ $$P(3) = C(14, 3)(0.2)^3(0.8)^{11} = 364 \\times 0.008 \\times 0.085899 = \\mathbf{0.2501}$$ In R, `dbinom(3, 14, 0.2)`."
+    "explain": "Let X = the number of the 14 workstations that need a reboot. X is binomial with $n = 14$ workstations, $x = 3$ the number that need a reboot, $p = 0.2$ the chance one needs a reboot, and $q = 0.8$ the chance it does not: a fixed 14 machines, reboot or not, the same 0.2 each, independent. $$P(x) = C(n, x)\\, p^x\\, q^{n-x}$$ $$P(3) = C(14, 3)(0.2)^3(0.8)^{11} = 364 \\times 0.008 \\times 0.085899 = \\mathbf{0.2501}$$ In R, `dbinom(3, 14, 0.2)`."
   },
   {
     "q": "**Q1b (2 marks).** Same lab. P(at least 2 workstations need a reboot)? (4 decimals)",
@@ -52,35 +52,35 @@ A full Quiz 7 in its real shape: three paper questions worth 10 marks, then an R
     "type": "numeric",
     "answer": 0.1755,
     "tolerance": 0.0001,
-    "explain": "Let X = the number of planes landing in a 10-minute window. X is Poisson; rescale the rate to the window first: $$\\lambda = 0.5 \\text{ per minute} \\times 10 \\text{ minutes} = 5$$ $$P(x) = \\dfrac{\\lambda^x e^{-\\lambda}}{x!}$$ $$P(4) = \\dfrac{5^4 e^{-5}}{4!} = \\dfrac{625 \\times 0.006738}{24} = \\mathbf{0.1755}$$ In R, `dpois(4, 5)`. Using λ = 0.5 answers a one-minute question."
+    "explain": "Let X = the number of planes landing in a 10-minute window. X is Poisson; rescale the rate to the window first: $$\\lambda = 0.5 \\text{ per minute} \\times 10 \\text{ minutes} = 5$$ So $\\lambda = 5$ is the average number of landings in 10 minutes, and $x = 4$ is the number of landings asked about. $$P(x) = \\dfrac{\\lambda^x e^{-\\lambda}}{x!}$$ $$P(4) = \\dfrac{5^4 e^{-5}}{4!} = \\dfrac{625 \\times 0.006738}{24} = \\mathbf{0.1755}$$ In R, `dpois(4, 5)`. Using λ = 0.5 answers a one-minute question."
   },
   {
     "q": "**Q2b (1 mark).** Same runway. P(at least one plane lands in each of two separate 3-minute windows)? (4 decimals)",
     "type": "numeric",
     "answer": 0.6035,
     "tolerance": 0.0001,
-    "explain": "Each window has its own λ: $$\\lambda = 0.5 \\times 3 = 1.5$$ At least one is the complement of none: $$P(X \\ge 1) = 1 - e^{-1.5} = 1 - 0.223130 = 0.776870$$ The windows do not overlap, so they are independent; multiply: $$0.776870^2 = \\mathbf{0.6035}$$ In R, `(1 - dpois(0, 1.5))^2`. One 6-minute window with λ = 3 would answer a different question: it allows both landings in the same 3 minutes."
+    "explain": "Each window has its own λ, the average number of landings in 3 minutes at 0.5 landings per minute: $$\\lambda = 0.5 \\times 3 = 1.5$$ At least one is the complement of none: $$P(X \\ge 1) = 1 - e^{-1.5} = 1 - 0.223130 = 0.776870$$ The windows do not overlap, so they are independent; multiply: $$0.776870^2 = \\mathbf{0.6035}$$ In R, `(1 - dpois(0, 1.5))^2`. One 6-minute window with λ = 3 would answer a different question: it allows both landings in the same 3 minutes."
   },
   {
     "q": "**Q3a (1 mark).** 80 hands, each won with probability 0.3. The mean number of wins, $\\mu$ = ? (2 decimals)",
     "type": "numeric",
     "answer": 24,
     "tolerance": 0.05,
-    "explain": "Let X = the number of hands won out of 80; binomial with $n = 80$, $p = 0.3$. $$\\mu = np = 80 \\times 0.3 = \\mathbf{24.00}$$"
+    "explain": "Let X = the number of hands won out of 80; binomial with $n = 80$ hands and $p = 0.3$ the chance of winning one hand. $$\\mu = np = 80 \\times 0.3 = \\mathbf{24.00}$$"
   },
   {
     "q": "**Q3b (1 mark).** Same player. The standard deviation, $\\sigma$ = ? (2 decimals)",
     "type": "numeric",
     "answer": 4.10,
     "tolerance": 0.05,
-    "explain": "$$\\sigma = \\sqrt{npq} = \\sqrt{80 \\times 0.3 \\times 0.7} = \\sqrt{16.8} = \\mathbf{4.10}$$ The square root is the step most often left off: 16.8 is the variance."
+    "explain": "With $n = 80$ hands, $p = 0.3$ the chance of winning a hand, and $q = 0.7$ the chance of losing it: $$\\sigma = \\sqrt{npq} = \\sqrt{80 \\times 0.3 \\times 0.7} = \\sqrt{16.8} = \\mathbf{4.10}$$ The square root is the step most often left off: 16.8 is the variance."
   },
   {
     "q": "**Q3c (1 mark), the Z-score.** Same player, 32 wins. $Z$ = ? (2 decimals, keep the sign)",
     "type": "numeric",
     "answer": 1.95,
     "tolerance": 0.01,
-    "explain": "$$Z = \\dfrac{x - \\mu}{\\sigma} = \\dfrac{32 - 24}{4.10} = \\mathbf{1.95}$$"
+    "explain": "With $x = 32$ the wins observed, $\\mu = 24$ the mean number of wins, and $\\sigma = 4.10$ the standard deviation: $$Z = \\dfrac{x - \\mu}{\\sigma} = \\dfrac{32 - 24}{4.10} = \\mathbf{1.95}$$"
   },
   {
     "q": "**Q3c (1 mark), the verdict.** Is 32 wins in 80 hands unusual? Type Yes or No.",

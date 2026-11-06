@@ -25,7 +25,11 @@ For example, using scrolls until one passes has no fixed n, so the binomial form
 
 In MapleStory Classic, an Intermediate scroll is a scroll that upgrades a piece of gear and passes at a fixed rate: 60 %. Use three of them on one item. Each use passes (P) or fails (F), and the rate does not change.
 
-So $n = 3$ tries and $p = 0.6$. **A fail takes the rest of the chance: $q = 1 - 0.6 = 0.4$.** Let X be the number of passes.
+Let X be the number of passes.
+
+- $n = 3$, the number of scrolls used.
+- $p = 0.6$, the chance one scroll passes.
+- $q = 1 - 0.6 = 0.4$, the chance one scroll fails. **A fail takes the rest of the chance.**
 
 A **sequence** is the full result of the three uses, written in order. For example, PPF means the first scroll passed, the second passed and the third failed. Just like a three-game record such as win, win, loss.
 
@@ -75,7 +79,12 @@ $$0.064 + 0.288 + 0.432 + 0.216 = \mathbf{1}$$
 
 ## A 12-sided die rolled 30 times: the formula line and dbinom agree
 
-The course's binomial lab rolls a fair 12-sided die 30 times. X is the number of times it shows an 8. So $n = 30$, $x = 3$, $p = \frac{1}{12}$ and $q = \frac{11}{12}$.
+The course's binomial lab rolls a fair 12-sided die 30 times. X is the number of times it shows an 8.
+
+- $n = 30$, the number of rolls.
+- $x = 3$, the number of times it shows an 8 that the question asks about.
+- $p = \frac{1}{12}$, the chance one roll lands on an 8.
+- $q = \frac{11}{12}$, the chance one roll lands on anything else.
 
 $${}_{30}C_3 = \frac{30 \times 29 \times 28}{3 \times 2 \times 1} = \mathbf{4060}$$
 
@@ -141,7 +150,12 @@ $Z > 2$, so six 8s is unusual. The long version is in [Binomial mean and varianc
 
 In Path of Exile, a Vaal Orb is the currency that corrupts an item. Used on a skill gem, it adds one gem level with probability 1/8, the wiki gives. Every other outcome leaves the level where it was or lowers it.
 
-Put one orb on each of 16 different gems. Each gem gets its own roll at the same 1/8, so this is 16 independent tries and X, the number of gems that gain a level, is binomial with $n = 16$ and $p = \tfrac{1}{8}$.
+Put one orb on each of 16 different gems. Each gem gets its own roll at the same chance, so these are independent tries and X, the number of gems that gain a level, is binomial.
+
+- $n = 16$, the number of gems, one orb each.
+- $x = 3$, the number of gems that gain a level that the question asks about.
+- $p = \tfrac{1}{8}$, the chance one orb adds a level to its gem.
+- $q = \tfrac{7}{8}$, the chance one orb leaves its gem without a new level.
 
 On poe.ninja's price of 2026-10-27, a Vaal Orb sold for 0.3195 chaos, so the 16 orbs cost about 5.11 chaos (computed).
 

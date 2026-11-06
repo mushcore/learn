@@ -13,7 +13,10 @@ Events happen one at a time, independently, at a steady average rate. You watch 
 
 ## A help desk at 2 tickets an hour
 
-A help desk gets 2 tickets an hour on average. What is the chance of a quiet hour with none?
+A help desk gets tickets at a steady average rate. What is the chance of a quiet hour with none?
+
+- $\lambda = 2$, the mean number of tickets in one hour.
+- $x = 0$, the number of tickets the question asks about.
 
 The answer uses the number $e = 2.718\ldots$, the $e^x$ key on the calculator. Type 2, press the sign key, then $e^x$, or type $e^x$ then −2; the keys are in [Before you start](#/math3042-q7/pre-reading). For a mean of 2, no tickets has probability $e^{-2}$. **No events at all has probability e to the minus mean.** Just like asking how often a whole hour passes with the help desk phone silent.
 
@@ -43,11 +46,19 @@ The question often gives a rate for one interval and asks about another. **Multi
 
 $$\lambda = \text{rate} \times \text{interval}$$
 
-A factory makes cable with 0.75 flaws per metre on average. The question asks about the flaws in a five-metre piece. This is Lab 7 Task 8.
+A factory makes cable with flaws spread along it. The question asks about the flaws in one piece. This is Lab 7 Task 8.
+
+- rate = 0.75, the flaws per metre.
+- interval = 5, the metres in the piece asked about.
+- $\lambda = 3.75$, the mean number of flaws in that piece.
 
 $$\lambda = \underbrace{0.75}_{\text{flaws per metre}} \times \underbrace{5}_{\text{metres asked about}} = \mathbf{3.75}$$
 
-Its table of probabilities then starts with P(0) = 0.023518. The help desk over 90 minutes is 1.5 hours, so $\lambda = 2 \times 1.5 = 3$.
+Its table of probabilities then starts with P(0) = 0.023518. The help desk over 90 minutes works the same way:
+
+- rate = 2, the tickets per hour.
+- interval = 1.5, the hours in 90 minutes.
+- $\lambda = 2 \times 1.5 = 3$, the mean number of tickets in those 90 minutes.
 
 ```diagram
 {"type": "flow", "title": "Rescale λ before the formula", "nodes": [{"id": "r", "label": "Rate", "sub": "0.75 flaws per metre"}, {"id": "t", "label": "× interval asked", "sub": "5 metres"}, {"id": "l", "label": "λ for this question", "sub": "0.75 × 5 = 3.75"}, {"id": "f", "label": "Formula", "sub": "P(x) with λ = 3.75"}], "edges": [{"from": "r", "to": "t"}, {"from": "t", "to": "l"}, {"from": "l", "to": "f"}], "hi": ["l"], "caption": "The help desk the same way: 2 per hour × 1.5 hours = 3."}
@@ -61,7 +72,11 @@ A rate per hour used on a 15-minute question makes λ four times too big. Every 
 
 **Counts in intervals that do not overlap are independent.** Just like typos on page 1 telling you nothing about typos on page 2. "At most 34 in each of two years" is the one-year answer squared.
 
-"At most 68 over two years" is one interval, twice as long. It uses $\lambda = 2 \times 34 = 68$ in a single `ppois`.
+"At most 68 over two years" is one interval, twice as long. It uses a single `ppois` with:
+
+- rate = 34, the transformer failures per year.
+- interval = 2, the years asked about.
+- $\lambda = 2 \times 34 = 68$, the mean number of failures in those two years.
 
 :::tip "In each of" multiplies; "over" rescales
 In each of two years: square the one-year answer. Over two years: double λ and use the formula once.
@@ -69,7 +84,12 @@ In each of two years: square the one-year answer. Over two years: double λ and 
 
 ## 34 transformer failures a year
 
-A city averages 34 transformer failures a year, so $\lambda = 34$ for one year. This is Lab 7 Task 10. Its eight questions are exactly 34, at most 30, fewer than 30, more than 38, at least 38, 30 to 40 inclusive, at most 34 in each of two years, and at most 68 over two years. For example, "fewer than 30" stops at 29, which is why the code writes `30-1`.
+A city's transformers fail at a steady average rate. This is Lab 7 Task 10.
+
+- $\lambda = 34$, the mean number of transformer failures in one year.
+- exactly 34, at most 30, fewer than 30, more than 38, at least 38, 30 to 40 inclusive, at most 34 in each of two years, and at most 68 over two years: the counts the eight questions ask about.
+
+For example, "fewer than 30" stops at 29, which is why the code writes `30-1`.
 
 ```r
 lambda <- 34
