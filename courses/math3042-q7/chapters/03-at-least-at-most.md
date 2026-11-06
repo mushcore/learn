@@ -9,11 +9,13 @@ Most binomial questions do not ask for one exact count. They say "at least", "at
 
 Write the counts out before any formula.
 
-- "At most 2" is 0 or 1 or 2.
-- "At least 2" is everything except 0 and 1.
-- "More than 2" starts at 3.
-- "Fewer than 2" stops at 1.
+- "At most 2" is 0, 1, 2. It includes 2.
+- "At least 2" is 2, 3, 4, … up to n. It includes 2, so it is everything except 0 and 1.
+- "More than 2" is 3, 4, 5, … up to n. It leaves 2 out.
+- "Fewer than 2" is 0, 1. It leaves 2 out, so 1 is the biggest count in it.
 - "Between 2 and 6 inclusive" is 2, 3, 4, 5, 6.
+
+**Every count starts at 0, the lowest possible.** So a "fewer than" or "at most" list always begins at 0.
 
 Just like a bus ticket that allows "at most 2 transfers": 0, 1 or 2 transfers are fine, and a third is not.
 
