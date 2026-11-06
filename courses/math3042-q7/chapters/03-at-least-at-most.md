@@ -42,7 +42,13 @@ Take a few independent tries, each a yes or no at the same chance.
 
 The whole line adds to 1, so compute the short side and subtract it from 1. This is the **complement**: everything the wording leaves out. Just like counting the few students absent from a class instead of the many present: the short list gives the long one by subtraction.
 
-$$P(0) = \underbrace{0.7^4}_{\text{4 fails, 0.7 each}} = 0.2401 \qquad P(1) = \underbrace{{}_4C_1}_{\text{4 places for the success}} \, \underbrace{(0.3)}_{\text{1 success}} \underbrace{(0.7)^3}_{\text{3 fails, 0.7 each}} = 4 \times 0.3 \times 0.343 = 0.4116$$
+**P(0) is the chance of exactly 0 successes: all four tries fail.** It is the binomial formula with $x = 0$. There is one way to place no successes, so ${}_4C_0 = 1$, and any number to the power 0 is 1:
+
+$$P(0) = \underbrace{{}_4C_0}_{\text{1 way: none succeed}} \times \underbrace{0.3^0}_{\text{= 1}} \times \underbrace{0.7^4}_{\text{4 fails, 0.7 each}} = 1 \times 1 \times 0.2401 = 0.2401$$
+
+So P(0) is always just $q^n$. **P(1) is the chance of exactly 1 success**, which can be any one of the four tries:
+
+$$P(1) = \underbrace{{}_4C_1}_{\text{4 places for the success}} \times \underbrace{(0.3)}_{\text{1 success}} \times \underbrace{(0.7)^3}_{\text{3 fails, 0.7 each}} = 4 \times 0.3 \times 0.343 = 0.4116$$
 
 ${}_4C_1 = 4$: the one success can sit in any of the four tries. The formula and the keys are in [Before you start](#/math3042-q7/pre-reading).
 
