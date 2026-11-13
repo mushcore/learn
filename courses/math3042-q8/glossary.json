@@ -1,0 +1,22 @@
+{
+  "continuous random variable|continuous variable": "a variable that can take any value on an interval of the number line, such as a wait of 6.3 minutes; the probability of one exact value is 0, and a probability is an area. See [Probability is an area](#/math3042-q8/area-is-probability).",
+  "probability density function|pdf|density": "$f(x)$, the height of the curve at $x$; the area under it between two values is the probability of landing between them, and the whole area is 1. See [Probability is an area](#/math3042-q8/area-is-probability).",
+  "cumulative distribution function|cdf": "$F(x) = P(X \\le x)$, the area under the curve to the left of $x$; $P(a \\le X \\le b) = F(b) - F(a)$. See [Probability is an area](#/math3042-q8/area-is-probability).",
+  "uniform distribution|uniform": "every value between $a$ and $b$ is equally likely: a rectangle of height $1/(b-a)$, with $\\mu = (a+b)/2$ and $\\sigma = (b-a)/\\sqrt{12}$. See [Uniform on paper](#/math3042-q8/uniform-on-paper).",
+  "normal distribution|bell curve|Gaussian": "the bell-shaped curve, symmetric about its mean $\\mu$, with width set by its standard deviation $\\sigma$. See [The normal curve](#/math3042-q8/normal-curve).",
+  "standard normal|Z-distribution": "the normal distribution with $\\mu = 0$ and $\\sigma = 1$, the one the Z table is printed for. See [The Z table](#/math3042-q8/z-table).",
+  "Z score|z-score|standardize": "$Z = (x - \\mu)/\\sigma$, the number of standard deviations a value sits above (positive) or below (negative) the mean. See [Any normal on paper](#/math3042-q8/normal-on-paper).",
+  "Z table": "the printed table that gives the area to the left of $z$, for $z$ to two decimals: the row is $z$ to one decimal and the column is the second decimal. See [The Z table](#/math3042-q8/z-table).",
+  "empirical rule": "for a normal distribution, about 68 % of values lie within one standard deviation of the mean, 95 % within two and 99.7 % within three. See [The normal curve](#/math3042-q8/normal-curve).",
+  "unusual": "a value more than two standard deviations from the mean: $Z$ below $-2$ or above $2$. See [Any normal on paper](#/math3042-q8/normal-on-paper).",
+  "percentile": "the value with a stated percentage of the area to its left; the 95th percentile has 0.95 to its left. See [From a percentage back to a value](#/math3042-q8/normal-backwards).",
+  "median": "the 50th percentile: half the area lies on each side. For an exponential it is $\\beta\\ln 2$. See [Exponential backwards and memoryless](#/math3042-q8/exponential-percentile-memoryless).",
+  "exponential distribution|exponential": "the distribution of the waiting time until the next event when events arrive at random at a steady average rate; $F(x) = 1 - e^{-x/\\beta}$, $\\mu = \\beta$, $\\sigma = \\beta$. See [Exponential on paper](#/math3042-q8/exponential-on-paper).",
+  "beta|β": "the mean waiting time of an exponential distribution, equal to 1 divided by the rate, in the same time unit as the question. See [Exponential on paper](#/math3042-q8/exponential-on-paper).",
+  "memoryless": "the property of the exponential distribution that the time already waited has no influence on how much longer the wait will be. See [Exponential backwards and memoryless](#/math3042-q8/exponential-percentile-memoryless).",
+  "punif|pnorm|pexp": "R's area-to-the-left functions: `punif(q, min, max)`, `pnorm(q, mean, sd)`, `pexp(q, rate)` with `rate` equal to $1/\\beta$. See [punif, pnorm, pexp](#/math3042-q8/r-p-functions).",
+  "qunif|qnorm|qexp": "R's percentile functions, the reverse of the p functions: give an area to the left, get the value back. See [qnorm, qexp, qunif](#/math3042-q8/r-q-functions).",
+  "runif|rnorm|rexp": "R's random-value functions: `runif(n, min, max)`, `rnorm(n, mean, sd)`, `rexp(n, rate)` each make `n` simulated values. See [runif, rexp, rnorm](#/math3042-q8/r-simulate-continuous).",
+  "interquartile range|IQR": "the third quartile minus the first, $Q_3 - Q_1$: the width of the middle half of the distribution. See [qnorm, qexp, qunif](#/math3042-q8/r-q-functions).",
+  "knit": "RStudio's button that re-runs every chunk of the notebook from the top in a fresh session and writes the Word file Part 2 is marked on."
+}

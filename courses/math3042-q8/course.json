@@ -1,0 +1,68 @@
+{
+  "lang": "r",
+  "title": "MATH 3042 Statistics · Quiz 8",
+  "subtitle": "The next lab quiz: all of Unit 5, continuous distributions on paper and in RStudio",
+  "description": "A three-hour drill shaped like the quiz, written to be read with no earlier knowledge of Unit 5: a pre-reading page for the calculator keys, how the past quizzes are written, one short lesson per idea (area as probability, uniform, the normal curve, the Z table forwards and backwards, two-step questions, exponential waits, percentiles and the memoryless fact, then the p, q and r functions in RStudio), two mock quizzes in the real two-part format, and a one-page know-cold sheet.",
+  "intro": ":::quiz Quiz 8\n**In the lab session, 50 minutes.** Part 1 is paper and pencil with a calculator (10 marks); Part 2 is RStudio, knitting a notebook from the Learning Hub template to a Word file (10 marks). The scope is all of Unit 5, continuous probability distributions: uniform, normal with the Z table, exponential. A probability is rounded to four decimal places; μ, σ and Z to two. No makeups.\n:::",
+  "plan": {
+    "title": "Three hours to Quiz 8",
+    "steps": [
+      { "lesson": "pre-reading", "note": "8 minutes: area of a rectangle, the e^x and ln keys, the four R letters" },
+      { "lesson": "start-here", "note": "5 minutes: the format, how the past quizzes are written, the marks map" },
+      { "lesson": "area-is-probability", "note": "10 minutes: probability is an area; one exact value has probability 0" },
+      { "lesson": "uniform-on-paper", "note": "10 minutes: a rectangle, width times height" },
+      { "lesson": "normal-curve", "note": "10 minutes: μ is the centre, σ the width, Z counts standard deviations" },
+      { "lesson": "z-table", "note": "12 minutes: left is the cell, right is 1 minus, between is a subtraction" },
+      { "lesson": "normal-on-paper", "note": "12 minutes: turn x into Z, then the table" },
+      { "lesson": "normal-backwards", "note": "12 minutes: from a percentage back to a value, x = μ + Zσ" },
+      { "lesson": "normal-two-step", "note": "10 minutes: a normal answer becomes the p of a binomial" },
+      { "lesson": "exponential-on-paper", "note": "12 minutes: β from a rate, then 1 − e^(−x/β)" },
+      { "lesson": "exponential-percentile-memoryless", "note": "12 minutes: solve for the time with ln; time already waited does not count" },
+      { "lesson": "r-p-functions", "note": "10 minutes: punif, pnorm, pexp with rate = 1/β" },
+      { "lesson": "r-q-functions", "note": "8 minutes: qnorm and qexp, quartiles, IQR" },
+      { "lesson": "r-simulate-continuous", "note": "10 minutes: runif, rexp, rnorm, the histogram, the simulated share" },
+      { "lesson": "mock-quiz-8-a", "note": "25 minutes timed: Part 1 on paper, Part 2 one slot at a time" },
+      { "lesson": "know-cold-q8", "note": "5 minutes: rewrite the three moves, the Z recipe and the R slots from memory" },
+      { "lesson": "mock-quiz-8-b", "note": "when there is time: new contexts, the same shapes" }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Start here",
+      "lessons": [
+        { "id": "pre-reading", "title": "Before you start: area as probability, the e^x and ln keys, the four R letters", "file": "chapters/00-pre-reading.md" },
+        { "id": "start-here", "title": "Quiz 8: the format, the marks, and the path", "file": "chapters/01-start-here.md" }
+      ]
+    },
+    {
+      "title": "2. Part 1 on paper: uniform, normal, exponential",
+      "lessons": [
+        { "id": "area-is-probability", "title": "A continuous variable: probability is an area, and one exact value has probability 0", "file": "chapters/02-area-is-probability.md" },
+        { "id": "uniform-on-paper", "title": "Uniform on paper: a rectangle of width b − a and height 1/(b − a)", "file": "chapters/03-uniform-on-paper.md" },
+        { "id": "normal-curve", "title": "The normal curve: μ puts the centre, σ sets the width", "file": "chapters/04-normal-curve.md" },
+        { "id": "z-table", "title": "The Z table: the area to the left of z", "file": "chapters/05-z-table.md" },
+        { "id": "normal-on-paper", "title": "Any normal on paper: turn x into Z, then use the table", "file": "chapters/06-normal-on-paper.md" },
+        { "id": "normal-backwards", "title": "From a percentage back to a value: the table read backwards, then x = μ + Zσ", "file": "chapters/07-normal-backwards.md" },
+        { "id": "normal-two-step", "title": "Two-step questions: a threshold between two levels, and a normal answer used as a binomial p", "file": "chapters/08-normal-two-step.md" },
+        { "id": "exponential-on-paper", "title": "Exponential on paper: a waiting time with mean β", "file": "chapters/09-exponential-on-paper.md" },
+        { "id": "exponential-percentile-memoryless", "title": "Exponential backwards and memoryless: solve for the time with ln; time already waited does not count", "file": "chapters/10-exponential-percentile-memoryless.md" }
+      ]
+    },
+    {
+      "title": "3. Part 2 in RStudio: the p, q and r functions",
+      "lessons": [
+        { "id": "r-p-functions", "title": "punif, pnorm, pexp: the area to the left in one line", "file": "chapters/11-r-p-functions.md" },
+        { "id": "r-q-functions", "title": "qnorm, qexp, qunif: from a percentage back to a value", "file": "chapters/12-r-q-functions.md" },
+        { "id": "r-simulate-continuous", "title": "runif, rexp, rnorm: simulate, draw the histogram, count the share", "file": "chapters/13-r-simulate-continuous.md" }
+      ]
+    },
+    {
+      "title": "4. Mock quizzes and the sheet",
+      "lessons": [
+        { "id": "mock-quiz-8-a", "title": "Mock Quiz 8 A: Part 1 on paper (10 marks), Part 2 in RStudio (10 marks)", "file": "chapters/14-mock-quiz-8-a.md" },
+        { "id": "mock-quiz-8-b", "title": "Mock Quiz 8 B: new contexts, the same shapes", "file": "chapters/15-mock-quiz-8-b.md" },
+        { "id": "know-cold-q8", "title": "Know cold for Quiz 8: three curves, three moves, the Z recipe, the exponential lines, the R letters", "file": "chapters/16-know-cold-q8.md" }
+      ]
+    }
+  ]
+}
