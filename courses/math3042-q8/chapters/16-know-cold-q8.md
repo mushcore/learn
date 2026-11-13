@@ -17,6 +17,12 @@ Cover each right-hand column and say it aloud before you look.
 
 **One exact value has probability 0, so ≤ and < give the same area.** There is no "k − 1" step as in the binomial and the Poisson.
 
+```diagram
+{"type": "curve", "title": "The three shapes to sketch from memory", "panels": [{"title": "Uniform on a to b", "x": [-3, 23], "curves": [{"dist": "uniform", "a": 0, "b": 20, "tone": "red"}], "ticks": [{"x": 0, "label": "a"}, {"x": 20, "label": "b"}]}, {"title": "Normal", "x": [-3.6, 3.6], "curves": [{"dist": "normal", "mu": 0, "sigma": 1}], "ticks": [{"x": 0, "label": "μ"}]}, {"title": "Exponential", "x": [-0.3, 5], "curves": [{"dist": "exp", "beta": 1, "tone": "red"}], "points": [{"x": 0, "tone": "red"}], "ticks": [0, {"x": 1, "label": "β"}]}]}
+```
+
+A flat rectangle that stops at a and b; a bell centred on μ; a curve that starts at its peak at 0 and falls with a long right tail.
+
 ## The three moves
 
 | Words | Area | Uniform | Normal, by table | Exponential |
@@ -26,6 +32,12 @@ Cover each right-hand column and say it aloud before you look.
 | between $c$ and $d$ | big left minus small left | $\dfrac{d-c}{b-a}$ | table at $z_d$ minus table at $z_c$ | $e^{-c/\beta} - e^{-d/\beta}$ |
 
 A strip that sticks out past $b$ is cut off at $b$. Half the normal area lies on each side of $\mu$, so the table at 0.00 is 0.5000.
+
+```diagram
+{"type": "curve", "title": "Left, right, between: shade first, then pick the move", "panels": [{"title": "less than x", "x": [-3.6, 3.6], "curves": [{"dist": "normal", "mu": 0, "sigma": 1}], "shade": [{"to": 0.8, "tone": "hl"}], "ticks": [{"x": 0.8, "label": "x"}]}, {"title": "more than x", "x": [-3.6, 3.6], "curves": [{"dist": "normal", "mu": 0, "sigma": 1}], "shade": [{"to": 0.8, "tone": "blue"}, {"from": 0.8, "tone": "hl"}], "ticks": [{"x": 0.8, "label": "x"}]}, {"title": "between c and d", "x": [-3.6, 3.6], "curves": [{"dist": "normal", "mu": 0, "sigma": 1}], "shade": [{"from": -0.9, "to": 1.2, "tone": "hl"}], "ticks": [{"x": -0.9, "label": "c"}, {"x": 1.2, "label": "d"}]}]}
+```
+
+In each panel the highlighted area is the one asked for. In the middle panel the blue part is what a left-area tool hands you, and the highlighted tail is what is left of the whole.
 
 ## The Z recipe
 
@@ -40,6 +52,12 @@ A strip that sticks out past $b$ is cut off at $b$. Half the normal area lies on
 | $z$ | 1.28 | 1.645 | 1.96 | 2.33 | −1.28 | −1.645 | −1.96 | −2.33 |
 
 0.95 falls between the cells 0.9495 (1.64) and 0.9505 (1.65), so the instructor takes 1.645.
+
+```diagram
+{"type": "curve", "title": "Forwards: value in, area out. Backwards: area in, value out", "panels": [{"title": "Forwards (table, p function)", "x": [-3.6, 3.6], "curves": [{"dist": "normal", "mu": 0, "sigma": 1}], "shade": [{"to": 0.9, "label": "area = ?", "tone": "hl"}], "lines": [{"x": 0.9, "solid": true, "tone": "blue"}], "ticks": [{"x": 0.9, "label": "x known"}]}, {"title": "Backwards (table inside, q function)", "x": [-3.6, 3.6], "curves": [{"dist": "normal", "mu": 0, "sigma": 1}], "shade": [{"to": 0.9, "label": "area known", "tone": "blue"}], "lines": [{"x": 0.9, "solid": true, "tone": "hl"}], "ticks": [{"x": 0.9, "label": "x = ?"}]}]}
+```
+
+Same picture both ways. Forwards, the cut is given and the shaded area is the answer. Backwards, the shaded area is given and the cut is the answer.
 
 ## The exponential lines
 

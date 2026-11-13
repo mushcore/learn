@@ -22,6 +22,12 @@ exp-wait
 
 On paper, sketch the curve, shade from 0 to an unknown x, and write "area = 0.95" on the shading, as the notes do.
 
+```diagram
+{"type": "curve", "title": "The 95th percentile x has area 0.95 to its left", "x": [-0.7, 12], "xlabel": "X = wait time (s)", "curves": [{"dist": "exp", "beta": 2.5, "tone": "red"}], "shade": [{"to": 7.49, "label": "area = 0.95", "tone": "hl"}, {"from": 7.49, "label": "0.05", "tone": "dim", "labelAt": [10, 0.3]}], "lines": [{"x": 7.49, "solid": true, "tone": "hl"}], "ticks": [0, {"x": 7.49, "label": "x = ?"}]}
+```
+
+The area is known and the cut-off is not. The thin 0.05 past x stretches far to the right, so x lands well past the mean of 2.5.
+
 ## The notes' four lines for the web server
 
 The web server's wait between requests is exponential with a mean of 2.5 seconds. Find the 95th percentile. This is the notes' example.
@@ -64,6 +70,12 @@ $$x = -\underbrace{2}_{\text{mean service time}} \times \ln(1 - \underbrace{0.75
 
 For example, three customers in four are served within 2.77 minutes.
 
+```diagram
+{"type": "curve", "title": "The teller's 75th percentile: area 0.75 left of 2.77 min", "x": [-0.5, 9], "xlabel": "X = time to serve (min)", "curves": [{"dist": "exp", "beta": 2, "tone": "red"}], "shade": [{"to": 2.77, "label": "0.75", "tone": "hl"}, {"from": 2.77, "label": "0.25", "tone": "dim", "labelAt": [5.5, 0.3]}], "ticks": [0, 2, 2.77]}
+```
+
+The shaded piece from 0 to 2.77 holds three quarters of the area. The tail past 2.77 holds the last quarter.
+
 ## The median is β times ln 2
 
 **The median is the 50th percentile**, so p = 0.5. The minus sign and ln(0.5) together give ln 2 = 0.693147.
@@ -95,6 +107,12 @@ $$IQR = \underbrace{13.8629}_{Q_3} - \underbrace{2.8768}_{Q_1} = \mathbf{10.9861
 
 ```diagram
 {"type": "grid", "title": "Bus wait, β = 10 minutes: the cut-offs in order", "nodes": [{"id": "h0", "label": "", "row": 0, "col": 0}, {"id": "h1", "label": "Q1", "row": 0, "col": 1}, {"id": "h2", "label": "Median", "row": 0, "col": 2}, {"id": "h3", "label": "Mean β", "row": 0, "col": 3}, {"id": "h4", "label": "Q3", "row": 0, "col": 4}, {"id": "m0", "label": "Minutes", "row": 1, "col": 0}, {"id": "m1", "label": "2.88", "row": 1, "col": 1}, {"id": "m2", "label": "6.93", "row": 1, "col": 2}, {"id": "m3", "label": "10", "row": 1, "col": 3}, {"id": "m4", "label": "13.86", "row": 1, "col": 4}, {"id": "a0", "label": "Area to the left", "row": 2, "col": 0}, {"id": "a1", "label": "0.25", "row": 2, "col": 1}, {"id": "a2", "label": "0.50", "row": 2, "col": 2}, {"id": "a3", "label": "more than 0.50", "row": 2, "col": 3}, {"id": "a4", "label": "0.75", "row": 2, "col": 4}], "hi": ["m2", "m3"], "caption": "The median comes before the mean: more than half of the waits are shorter than the mean."}
+```
+
+The four pieces below each hold a quarter of the area. They get wider to the right, because the curve gets lower.
+
+```diagram
+{"type": "curve", "title": "Bus, β = 10 min: Q1, median and Q3 cut the area into quarters", "x": [-2.7, 45], "xlabel": "X = wait (min)", "curves": [{"dist": "exp", "beta": 10, "tone": "red"}], "shade": [{"to": 2.8768, "label": "0.25", "tone": "hl", "labelAt": [1.4, 0.15]}, {"from": 2.8768, "to": 6.9315, "label": "0.25", "tone": "blue", "labelAt": [4.9, 0.15]}, {"from": 6.9315, "to": 13.8629, "label": "0.25", "tone": "hl", "labelAt": [10.4, 0.1]}, {"from": 13.8629, "label": "0.25", "tone": "blue", "labelAt": [26, 0.3]}], "lines": [{"x": 10, "full": true, "tone": "purple", "label": "mean 10"}], "ticks": [{"x": 2.8768, "label": "2.88"}, {"x": 6.9315, "label": "6.93"}, {"x": 13.8629, "label": "13.86"}]}
 ```
 
 ## The median sits below the mean
@@ -136,6 +154,12 @@ $$P(A \mid B) = \dfrac{P(A \cap B)}{P(B)}$$
 
 Here A is "2.5 to 3.5" and B is "at least 1". Every time from 2.5 to 3.5 is already past 1, so A lies inside B, and "A and B" is just A.
 
+```diagram
+{"type": "curve", "title": "Given X ≥ 1: the strip 2.5 to 3.5 out of everything past 1", "x": [-0.5, 9], "xlabel": "X = time to serve (min)", "curves": [{"dist": "exp", "beta": 2, "tone": "red"}], "shade": [{"from": 1, "tone": "blue"}, {"from": 2.5, "to": 3.5, "tone": "hl", "label": "A: 0.1127", "labelAt": [4.3, 0.55]}], "ticks": [0, 1, 2.5, 3.5], "notes": [{"text": "B, from 1 on: 0.6065", "at": [6.6, 0.4], "to": [5.5, 0.07], "tone": "blue"}]}
+```
+
+The blue area is everything from 1 minute on, the chance of B. The highlighted strip from 2.5 to 3.5 is A. The answer is the strip as a share of the blue area.
+
 $$P(2.5 \le X \le 3.5 \mid X \ge 1) = \dfrac{\underbrace{P(2.5 \le X \le 3.5)}_{\text{A and B, which is A}}}{\underbrace{P(X \ge 1)}_{\text{B, already 1 min}}}$$
 
 $$= \dfrac{(1 - \underbrace{e^{-3.5/2}}_{\text{past 3.5 min}}) - (1 - \underbrace{e^{-2.5/2}}_{\text{past 2.5 min}})}{1 - (1 - \underbrace{e^{-1/2}}_{\text{past 1 min}})}$$
@@ -147,6 +171,12 @@ The instructor writes "same as previous" beside it: 0.1859 is the chance that a 
 ## The shortcut: subtract the time already waited
 
 **Given s already waited, subtract s from every bound and answer as if the wait started now.** Just like a stopwatch reset to zero at the moment the question is asked.
+
+```diagram
+{"type": "curve", "title": "Same answer: the share past 1, or a fresh strip", "panels": [{"title": "0.1127 out of 0.6065", "x": [-0.5, 9], "curves": [{"dist": "exp", "beta": 2, "tone": "red"}], "shade": [{"from": 1, "tone": "blue"}, {"from": 2.5, "to": 3.5, "tone": "hl"}], "ticks": [1, 2.5, 3.5], "notes": [{"text": "ratio 0.1859", "at": [6, 0.6], "tone": "hl"}]}, {"title": "Fresh wait, 1.5 to 2.5", "x": [-0.5, 9], "curves": [{"dist": "exp", "beta": 2, "tone": "red"}], "shade": [{"from": 1.5, "to": 2.5, "label": "0.1859", "tone": "hl", "labelAt": [4.5, 0.55]}], "ticks": [0, 1.5, 2.5]}]}
+```
+
+On the left, the strip is taken as a share of the blue tail. On the right, the clock starts again at 0 and the bounds move down by 1. Both give 0.1859.
 
 ```diagram
 {"type": "flow", "title": "Already waited s: shift, then answer fresh", "nodes": [{"id": "g", "label": "Given", "sub": "1 min already spent"}, {"id": "s", "label": "Subtract s", "sub": "2.5 − 1 and 3.5 − 1"}, {"id": "n", "label": "New bounds", "sub": "1.5 to 2.5 min"}, {"id": "a", "label": "Fresh wait", "sub": "e^(−1.5/2) − e^(−2.5/2)"}], "edges": [{"from": "g", "to": "s"}, {"from": "s", "to": "n"}, {"from": "n", "to": "a"}], "hi": ["s"], "caption": "The teller: the same 0.1859 as a service that has just started."}

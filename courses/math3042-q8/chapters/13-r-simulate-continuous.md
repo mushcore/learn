@@ -215,6 +215,12 @@ sum(X.vals < 6)/length(X.vals)
 
 The lab printed 0.2987 for the run with $10^5$ waits. The theory is the strip on paper:
 
+```diagram
+{"type": "curve", "title": "The simulated share 0.2987 estimates the area 0.3000", "x": [-2, 24], "xlabel": "X = wait (min)", "curves": [{"dist": "uniform", "a": 0, "b": 20, "tone": "red"}], "shade": [{"from": 0, "to": 6, "label": "0.3000", "tone": "green"}], "ticks": [0, 6, 20], "notes": [{"text": ["simulated share:", "0.2987"], "at": [13, 0.55], "to": [5, 0.75], "tone": "hl"}]}
+```
+
+The strip from 0 to 6 covers 6 of the 20 minutes. Its area, 0.3000, is the target; the share of simulated waits below 6 lands next to it.
+
 $$P(X < 6) = \dfrac{\underbrace{6 - 0}_{\text{strip width}}}{\underbrace{20 - 0}_{\text{full width}}} = \mathbf{0.3000}$$
 
 The two differ by 0.0013. A new run gives a slightly different share, always close to 0.3000.
@@ -260,7 +266,15 @@ sum( X.vals < 6) / m.trials
 - `sum( X.vals < 6) / m.trials`: "Test each wait (`<`), count the TRUEs (`sum`), divide (`/`)."
 :::
 
-The simulation gives 0.4529; the exact area, from `pexp`, is 0.4512, as in [the p-function lesson](#/math3042-q8/r-p-functions). On the histograms the lab wrote: *The histogram using 10^5 trials is much smoother and extends further to the right (although with very low probabilities).*
+The simulation gives 0.4529; the exact area, from `pexp`, is 0.4512, as in [the p-function lesson](#/math3042-q8/r-p-functions).
+
+```diagram
+{"type": "curve", "title": "The simulated share 0.4529 estimates the area 0.4512", "x": [-2.7, 45], "xlabel": "X = wait (min)", "curves": [{"dist": "exp", "beta": 10, "tone": "red"}], "shade": [{"to": 6, "label": "0.4512", "tone": "hl", "labelAt": [15, 0.55]}], "ticks": [0, 6, 10], "notes": [{"text": ["simulated share:", "0.4529"], "at": [30, 0.55], "tone": "hl"}]}
+```
+
+The shaded piece left of 6 is the exact area. The share of simulated waits under 6 is a close estimate of it.
+
+On the histograms the lab wrote: *The histogram using 10^5 trials is much smoother and extends further to the right (although with very low probabilities).*
 
 The lab's batteries have voltages on a bell, and a battery ships when its voltage is between 8.9 V and 9.1 V.
 

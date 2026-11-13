@@ -11,6 +11,12 @@ A **uniform distribution** on $[a, b]$ gives every value between a lower limit a
 
 **Its picture is a flat rectangle from a to b, with nothing outside it.** Sketch it on paper as a box sitting on the number line, with a and b marked under its corners.
 
+The red line is flat at height 1/(b − a) between a and b, and it lies on the axis, at height 0, everywhere else. The width b − a times that height is 1.
+
+```diagram
+{"type": "curve", "title": "Uniform on [a, b]: flat at 1/(b − a), zero outside", "x": [0, 10.5], "xlabel": "X", "ylabel": "prob. density", "curves": [{"dist": "uniform", "a": 2, "b": 8, "tone": "red"}], "ticks": [{"x": 2, "label": "a"}, {"x": 8, "label": "b"}], "heights": [{"x": 9.2, "of": 5, "label": "1/(b − a)"}]}
+```
+
 ## A download that finishes between 2 and 10 seconds
 
 A file finishes downloading at a random moment between 2 and 10 seconds after you click. The shaded strip is the chance it takes more than 7 seconds.
@@ -32,7 +38,13 @@ The whole area must be 1, and the rectangle is $10 - 2 = 8$ seconds wide. So its
 
 $$\text{height} = \dfrac{1}{\underbrace{10}_{b} - \underbrace{2}_{a}} = \dfrac{1}{8} = 0.125$$
 
-The strip from 7 to the end at 10 is a rectangle of its own:
+The strip from 7 to the end at 10 is a rectangle of its own, 3 seconds wide and 0.125 high. Its area is 0.3750.
+
+```diagram
+{"type": "curve", "title": "P(X > 7) is the strip from 7 to 10, 0.3750", "x": [0, 12], "xlabel": "X, download time (seconds)", "ylabel": "prob. density", "curves": [{"dist": "uniform", "a": 2, "b": 10, "tone": "red"}], "shade": [{"from": 7, "label": "0.3750", "tone": "green"}], "ticks": [0, 2, 7, 10], "heights": [{"x": 11, "of": 6, "label": "1/8 = 0.125"}]}
+```
+
+In numbers:
 
 $$P(X > 7) = \underbrace{(10 - 7)}_{\text{strip width}} \times \underbrace{0.125}_{\text{height}} = \mathbf{0.3750}$$
 
@@ -63,9 +75,21 @@ For example, a strip half as wide as the rectangle holds half the area.
 - $6$ and $12$, the ends asked about.
 - $10$, where the rectangle ends, so the strip stops there.
 
+The shaded strip runs from 6 to 10 only. From 10 to 12 the curve lies on the axis, so that part adds no area. The strip's area is 0.5000.
+
+```diagram
+{"type": "curve", "title": "P(6 ≤ X ≤ 12) stops at b = 10: 0.5000", "x": [0, 14], "xlabel": "X, download time (seconds)", "curves": [{"dist": "uniform", "a": 2, "b": 10, "tone": "red"}], "shade": [{"from": 6, "to": 10, "label": "0.5000", "tone": "green"}], "lines": [{"x": 12, "full": true, "tone": "dim", "label": "12: no area here", "side": "left"}], "ticks": [2, 6, 10, 12]}
+```
+
 $$P(6 \le X \le 12) = \underbrace{(10 - 6)}_{\text{cut off at b = 10}} \times \underbrace{0.125}_{\text{height}} = \mathbf{0.5000}$$
 
-**The area up to x is $F(x) = \dfrac{x-a}{b-a}$.** For example, the chance the download is done within 4 seconds:
+**The area up to x is $F(x) = \dfrac{x-a}{b-a}$.** For example, the chance the download is done within 4 seconds is the strip from 2 to 4, a quarter of the rectangle's width. Its area is 0.2500.
+
+```diagram
+{"type": "curve", "title": "F(4) is the area up to 4, 0.2500", "x": [0, 12], "xlabel": "X, download time (seconds)", "curves": [{"dist": "uniform", "a": 2, "b": 10, "tone": "red"}], "shade": [{"to": 4, "label": "0.2500", "tone": "green"}], "ticks": [2, 4, 10]}
+```
+
+From the formula:
 
 $$F(4) = \dfrac{\underbrace{4}_{x} - \underbrace{2}_{a}}{\underbrace{10}_{b} - \underbrace{2}_{a}} = \dfrac{2}{8} = \mathbf{0.2500}$$
 
@@ -83,6 +107,12 @@ $$\sigma = \sqrt{5.333333} = \mathbf{2.31}$$
 
 - $p = 0.30$, the area to the left of the value asked for.
 
+Here the area is given and the cut-off is unknown. The cut-off sits 30 % of the way along the rectangle, at 4.40.
+
+```diagram
+{"type": "curve", "title": "The 30th percentile, 4.40, has area 0.30 to its left", "x": [0, 12], "xlabel": "X, download time (seconds)", "curves": [{"dist": "uniform", "a": 2, "b": 10, "tone": "red"}], "shade": [{"to": 4.4, "label": "0.30", "tone": "green"}], "ticks": [2, {"x": 4.4, "label": "4.40"}, 10]}
+```
+
 $$x = \underbrace{2}_{a} + \underbrace{0.30}_{p} \times (\underbrace{10}_{b} - \underbrace{2}_{a}) = 2 + 2.4 = \mathbf{4.40}$$
 
 So 30 % of downloads are done within 4.40 seconds.
@@ -95,6 +125,12 @@ The notes' example is the bus that comes once every 20 minutes, with your wait T
 - $b = 20$, the longest wait.
 - $\dfrac{1}{20} = 0.05$, the height.
 
+It asks three things, each a strip of the same rectangle: between 8 and 11 minutes, more than 12 minutes, and exactly 4 minutes. The first strip is 3 wide, the second runs from 12 to the end at 20, and the third is a single line with no width.
+
+```diagram
+{"type": "curve", "title": "The three bus questions: 0.1500, 0.40 and 0", "panels": [{"title": "Between 8 and 11", "x": [-2, 23], "xlabel": "T (minutes)", "curves": [{"dist": "uniform", "a": 0, "b": 20, "tone": "red"}], "shade": [{"from": 8, "to": 11, "label": "0.1500", "tone": "green"}], "ticks": [0, 8, 11, 20]}, {"title": "More than 12", "x": [-2, 23], "xlabel": "T (minutes)", "curves": [{"dist": "uniform", "a": 0, "b": 20, "tone": "red"}], "shade": [{"from": 12, "label": "0.40", "tone": "green"}], "ticks": [0, 12, 20]}, {"title": "Exactly 4", "x": [-2, 23], "xlabel": "T (minutes)", "curves": [{"dist": "uniform", "a": 0, "b": 20, "tone": "red"}], "lines": [{"x": 4, "solid": true, "tone": "green", "label": "area 0"}], "ticks": [0, 4, 20]}]}
+```
+
 Between 8 and 11 minutes:
 
 $$P(8 \le T \le 11) = \underbrace{(11 - 8)}_{\text{strip width}} \times \underbrace{\dfrac{1}{20}}_{\text{height}} = \mathbf{0.1500}$$
@@ -105,7 +141,11 @@ $$P(T \ge 12) = \underbrace{(20 - 12)}_{\text{strip width}} \times \underbrace{\
 
 Exactly 4 minutes is a strip of width 0: $P(T = 4) = \mathbf{0.0000}$. The notes box all three answers, each beside a sketch of the rectangle with the strip shaded.
 
-Lab 8 uses the same bus wait, 0 to 20 minutes, and asks three more things. Less than 6 minutes:
+Lab 8 uses the same bus wait, 0 to 20 minutes, and asks three more things. Less than 6 minutes is the strip from 0 to 6, three tenths of the rectangle.
+
+```diagram
+{"type": "curve", "title": "P(X < 6) is the strip from 0 to 6, 0.3000", "x": [-2, 23], "xlabel": "X, the wait (minutes)", "curves": [{"dist": "uniform", "a": 0, "b": 20, "tone": "red"}], "shade": [{"to": 6, "label": "0.3000", "tone": "green"}], "ticks": [0, 6, 20]}
+```
 
 $$P(X < 6) = \dfrac{\underbrace{6 - 0}_{\text{strip width}}}{\underbrace{20 - 0}_{\text{whole width}}} = \mathbf{0.3000}$$
 

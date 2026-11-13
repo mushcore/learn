@@ -17,6 +17,12 @@ The notes call it *a model for waiting time in a memory-less system*. The memory
 
 The curve starts at its highest point at x = 0 and falls towards 0 without ever touching it. It is a falling curve with a long tail to the right. Sketch it that way on paper: a dot on the vertical axis, then a slide down to the right.
 
+```diagram
+{"type": "curve", "title": "An exponential starts at its peak at 0 and falls; β marks the mean", "panels": [{"title": "Any exponential", "x": [-0.3, 5], "curves": [{"dist": "exp", "beta": 1, "tone": "red"}], "points": [{"x": 0, "tone": "red"}], "ticks": [0, {"x": 1, "label": "β"}], "notes": [{"text": "long tail to the right", "at": [3.4, 0.45], "to": [3.6, 0.08], "tone": "red"}]}, {"title": "Web server, β = 2.5 s", "x": [-0.7, 12], "xlabel": "X = wait time (s)", "curves": [{"dist": "exp", "beta": 2.5, "tone": "red"}], "points": [{"x": 0, "tone": "red"}], "ticks": [0, 2.5]}]}
+```
+
+Both curves have the same shape. Only the scale changes: the web server's β of 2.5 seconds stretches the curve to the right.
+
 ```widget
 exp-wait
 { "beta": 2.5, "unit": "s", "x": 4, "mode": "single", "title": "Web server, β = 2.5 s: the shaded area left of 4 is P(X ≤ 4); the rest is P(X > 4)" }
@@ -32,6 +38,12 @@ A web server waits between requests. On average the wait is 2.5 seconds. What is
 - $x = 4$, the wait asked about, in seconds.
 
 **The area to the left of x is 1 minus e to the power −x/β.** Work the exponent out first: 4 divided by 2.5 is 1.6. Then press the sign key, 1.6, and $e^x$, as in [Before you start](#/math3042-q8/pre-reading).
+
+```diagram
+{"type": "curve", "title": "P(X ≤ 4) is the area left of 4: 0.7981", "x": [-0.7, 12], "xlabel": "X = wait time (s)", "curves": [{"dist": "exp", "beta": 2.5, "tone": "red"}], "shade": [{"to": 4, "label": "0.7981", "tone": "hl"}, {"from": 4, "label": "0.2019", "tone": "blue", "labelAt": [7, 0.3]}], "ticks": [0, 2.5, 4]}
+```
+
+The shaded area runs from 0 to 4 and holds most of the curve, 0.7981. The tail past 4 is the 0.2019 left over.
 
 $$P(X \le 4) = \underbrace{1}_{\text{whole area}} - \underbrace{e^{-4/2.5}}_{\text{4 s asked, mean 2.5 s}} = 1 - 0.201897 = \mathbf{0.7981}$$
 
@@ -50,6 +62,12 @@ $$f(x) = \dfrac{1}{\beta}\,e^{-x/\beta} \qquad F(x) = \underbrace{1}_{\text{whol
 - $f(x)$ is the **height of the curve**. It is not a probability; use it only when a question asks for "the pdf".
 - $F(x)$ is the **area to the left of x**, the chance the wait is x or less.
 - $\mu = \beta$ and $\sigma = \beta$: **the mean and the standard deviation of an exponential are the same number.** The sheet gives $\sigma^2 = \beta^2$; its square root is β.
+
+```diagram
+{"type": "curve", "title": "F(x) is the area from 0 up to x", "x": [-0.3, 5], "curves": [{"dist": "exp", "beta": 1, "tone": "red"}], "shade": [{"to": 1.4, "tone": "hl"}], "lines": [{"x": 1.4, "solid": true, "tone": "hl"}], "ticks": [0, {"x": 1.4, "label": "x"}], "notes": [{"text": "area = F(x)", "at": [2.6, 0.7], "to": [0.8, 0.4], "tone": "hl"}]}
+```
+
+The shaded piece starts at 0, where the curve is highest, and stops at x. Move x right and the area grows towards 1.
 
 For the web server, the pdf the notes box is:
 
@@ -105,7 +123,13 @@ exp-wait
 { "rate": 30, "rateUnit": "h", "unit": "min", "lo": 1.5, "hi": 2.5, "mode": "interval", "title": "Bank teller, 30 per hour so β = 2 min: the strip from 1.5 to 2.5 minutes" }
 ```
 
-The strip is thin and sits on the falling part of the curve. The instructor writes the two F values, then lets the 1s cancel.
+The strip is thin and sits on the falling part of the curve.
+
+```diagram
+{"type": "curve", "title": "P(1.5 ≤ X ≤ 2.5) is a thin strip: 0.1859", "x": [-0.5, 9], "xlabel": "X = time to serve (min)", "curves": [{"dist": "exp", "beta": 2, "tone": "red"}], "shade": [{"from": 1.5, "to": 2.5, "label": "0.1859", "tone": "hl"}], "ticks": [0, 1.5, 2.5]}
+```
+
+The strip runs from 1.5 to 2.5 minutes, one minute wide; its area is 0.1859. The instructor writes the two F values, then lets the 1s cancel.
 
 $$P(1.5 \le X \le 2.5) = (1 - \underbrace{e^{-2.5/2}}_{\text{past 2.5 min}}) - (1 - \underbrace{e^{-1.5/2}}_{\text{past 1.5 min}})$$
 
@@ -127,6 +151,12 @@ A person waits for a bus, and the wait is exponential with a mean of 10 minutes.
 
 - $\beta = 10$, the mean wait in minutes.
 - 6, 10, 15, and 5 to 10: the waits the four questions ask about, in minutes.
+
+```diagram
+{"type": "curve", "title": "The bus, β = 10 min: left, right and between", "panels": [{"title": "Less than 6", "x": [-2.7, 45], "curves": [{"dist": "exp", "beta": 10, "tone": "red"}], "shade": [{"to": 6, "label": "0.4512", "tone": "hl", "labelAt": [18, 0.6]}], "ticks": [0, 6]}, {"title": "More than 15", "x": [-2.7, 45], "curves": [{"dist": "exp", "beta": 10, "tone": "red"}], "shade": [{"from": 15, "label": "0.2231", "tone": "hl", "labelAt": [28, 0.45]}], "ticks": [0, 15]}, {"title": "Between 5 and 10", "x": [-2.7, 45], "curves": [{"dist": "exp", "beta": 10, "tone": "red"}], "shade": [{"from": 5, "to": 10, "label": "0.2387", "tone": "hl", "labelAt": [24, 0.6]}], "ticks": [0, 5, 10]}]}
+```
+
+Less than 6 is the piece from 0 to 6. More than 15 is the long tail. Between 5 and 10 is a strip. Less than 10 is the piece from 0 to 10, a little over the left panel's area: 0.6321.
 
 $$P(X < 6) = 1 - \underbrace{e^{-6/10}}_{\text{past 6 min}} = 1 - 0.548812 = \mathbf{0.4512}$$
 

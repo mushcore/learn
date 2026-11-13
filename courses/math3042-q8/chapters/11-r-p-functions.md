@@ -9,6 +9,12 @@ Part 2 asks for the same areas you found on paper, typed as one line of R. Each 
 
 Every distribution in R has a family of functions: one stem and a letter in front. **The stem names the curve: `unif`, `norm` or `exp`.** **The letter p gives the area to the left of a value.** For example, the p function of the bus wait answers "what is the chance the wait is at most 6 minutes", the same area you shaded on paper.
 
+```diagram
+{"type": "curve", "title": "Every p function returns the area to the LEFT of q", "panels": [{"title": "pnorm(q, mean, sd)", "x": [-3.6, 3.6], "curves": [{"dist": "normal", "mu": 0, "sigma": 1}], "shade": [{"to": 0.7, "tone": "hl"}], "lines": [{"x": 0.7, "solid": true, "tone": "hl"}], "ticks": [{"x": 0.7, "label": "q"}]}, {"title": "pexp(q, rate)", "x": [-0.3, 5], "curves": [{"dist": "exp", "beta": 1, "tone": "red"}], "shade": [{"to": 1.3, "tone": "hl"}], "lines": [{"x": 1.3, "solid": true, "tone": "hl"}], "ticks": [0, {"x": 1.3, "label": "q"}]}, {"title": "punif(q, min, max)", "x": [-3, 23], "curves": [{"dist": "uniform", "a": 0, "b": 20, "tone": "red"}], "shade": [{"from": 0, "to": 13, "tone": "hl"}], "lines": [{"x": 13, "solid": true, "tone": "hl"}], "ticks": [{"x": 0, "label": "min"}, {"x": 13, "label": "q"}, {"x": 20, "label": "max"}]}]}
+```
+
+On all three curves the shaded part starts at the far left and stops at q. Whatever the curve, the p function hands back that one area.
+
 **The letter q goes the other way, from an area back to a value. The letter r makes random values. The letter d gives the height of the curve, which is not a probability for a continuous variable.** Just like a ruler: p reads the area up to a mark, q finds the mark for a given area.
 
 ```diagram
@@ -37,7 +43,15 @@ On paper the strip is width times height:
 
 $$P(8 \le T \le 11) = (\underbrace{11 - 8}_{\text{strip width}}) \times \underbrace{\tfrac{1}{20}}_{\text{height}} = \mathbf{0.1500}$$
 
-R gets each end's area to the left and subtracts, the move $F(b) - F(a)$. These are the instructor's demo lines:
+R gets each end's area to the left and subtracts, the move $F(b) - F(a)$.
+
+```diagram
+{"type": "curve", "title": "Two left areas subtract to the strip: 0.55 − 0.40 = 0.15", "panels": [{"title": "punif(11, 0, 20)", "x": [-3, 23], "curves": [{"dist": "uniform", "a": 0, "b": 20, "tone": "red"}], "shade": [{"from": 0, "to": 11, "label": "0.55", "tone": "blue"}], "ticks": [0, 11, 20]}, {"title": "punif(8, 0, 20)", "x": [-3, 23], "curves": [{"dist": "uniform", "a": 0, "b": 20, "tone": "red"}], "shade": [{"from": 0, "to": 8, "label": "0.40", "tone": "blue"}], "ticks": [0, 8, 20]}, {"title": "the difference", "x": [-3, 23], "curves": [{"dist": "uniform", "a": 0, "b": 20, "tone": "red"}], "shade": [{"from": 8, "to": 11, "label": "0.15", "tone": "green", "labelAt": [15.5, 0.45]}], "ticks": [0, 8, 11, 20]}]}
+```
+
+The area left of 11 covers 11 of the 20 minutes, 0.55. The area left of 8 covers 8 of them, 0.40. Take the second from the first and only the strip from 8 to 11 is left.
+
+These are the instructor's demo lines:
 
 ```r
 punif(11, 0, 20) - punif(8, 0, 20)
@@ -161,6 +175,12 @@ The lab's batteries have voltages that follow a bell.
 - $\sigma = 0.05$ V, the standard deviation.
 - $9.03$, $9.02$, and $8.9$ to $9.1$: the voltages asked about, below, above and between.
 
+```diagram
+{"type": "curve", "title": "Batteries, μ = 9.01, σ = 0.05: left, right, between", "panels": [{"title": "pnorm(9.03, …)", "x": [8.83, 9.19], "curves": [{"dist": "normal", "mu": 9.01, "sigma": 0.05}], "shade": [{"to": 9.03, "label": "0.6554", "tone": "hl"}], "ticks": [9.03]}, {"title": "1 − pnorm(9.02, …)", "x": [8.83, 9.19], "curves": [{"dist": "normal", "mu": 9.01, "sigma": 0.05}], "shade": [{"from": 9.02, "label": "0.4207", "tone": "hl"}], "ticks": [9.02]}, {"title": "pnorm(9.1, …) − pnorm(8.9, …)", "x": [8.83, 9.19], "curves": [{"dist": "normal", "mu": 9.01, "sigma": 0.05}], "shade": [{"to": 8.9, "tone": "dim"}, {"from": 8.9, "to": 9.1, "label": "0.9502", "tone": "hl"}, {"from": 9.1, "tone": "dim"}], "ticks": [{"x": 8.9, "label": "8.90"}, {"x": 9.1, "label": "9.10"}]}]}
+```
+
+Below 9.03 is the area left of the cut. Above 9.02 is the tail on the right, so the line takes the p value from 1. Between 8.9 and 9.1 is almost the whole bell, with two thin tails thrown away.
+
 ```r
 mu <- 9.01
 sig <- 0.05
@@ -206,7 +226,13 @@ $$P(8.9 < X < 9.1) = \underbrace{0.9641}_{\text{table at } 1.80} - \underbrace{0
 
 The first two lines agree with the table as well: their Z values, 0.40 and 0.20, already have two decimals.
 
-R also has a switch for the right tail. The notes' flight radiation has mean 4.35 mrem and standard deviation 0.5 mrem, and both demo lines below ask for more than 5.00 mrem:
+R also has a switch for the right tail. The notes' flight radiation has mean 4.35 mrem and standard deviation 0.5 mrem, and both demo lines below ask for more than 5.00 mrem.
+
+```diagram
+{"type": "curve", "title": "lower.tail = FALSE returns the right tail past 5.0", "x": [2.55, 6.15], "xlabel": "radiation (mrem)", "curves": [{"dist": "normal", "mu": 4.35, "sigma": 0.5}], "shade": [{"to": 5.0, "label": "0.9032", "tone": "blue"}, {"from": 5.0, "label": "0.0968", "tone": "hl", "labelAt": [5.7, 0.3]}], "notes": [{"text": "pnorm(5.0, …)", "at": [3.1, 0.75], "to": [3.9, 0.45], "tone": "blue"}, {"text": "lower.tail = FALSE", "at": [5.65, 0.75], "to": [5.15, 0.12], "tone": "hl"}], "ticks": [4.35, {"x": 5.0, "label": "5.00"}]}
+```
+
+The blue area left of 5.0 is what `pnorm` gives by default. The small tail on the right is the answer, and `lower.tail=FALSE` returns it directly, the same as 1 minus the blue area.
 
 ```r
 mu <- 4.35

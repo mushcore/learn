@@ -13,6 +13,12 @@ Some questions give the area and ask for the value: the 75th percentile voltage,
 {"type": "flow", "title": "p and q go opposite ways", "nodes": [{"id": "x", "label": "a value", "sub": "9.07 V"}, {"id": "p", "label": "p function", "sub": "pnorm"}, {"id": "a", "label": "an area", "sub": "0.8849"}, {"id": "q", "label": "q function", "sub": "qnorm"}, {"id": "x2", "label": "the value again", "sub": "9.07 V"}], "edges": [{"from": "x", "to": "p"}, {"from": "p", "to": "a"}, {"from": "a", "to": "q"}, {"from": "q", "to": "x2"}], "hi": ["q"], "caption": "pnorm(9.07, mean=9.01, sd=0.05) printed 0.8849 in the lab. Give that area to qnorm with the same mean and sd and 9.07 comes back."}
 ```
 
+```diagram
+{"type": "curve", "title": "A q function runs backwards: the area goes in, the cut-off comes out", "panels": [{"title": "qnorm(0.75, 9.01, 0.05)", "x": [8.83, 9.19], "curves": [{"dist": "normal", "mu": 9.01, "sigma": 0.05}], "shade": [{"to": 9.0437, "label": "0.75 in", "tone": "hl"}], "lines": [{"x": 9.0437, "solid": true, "tone": "blue"}], "ticks": [{"x": 9.0437, "label": "9.044 out"}]}, {"title": "qexp(0.5, rate=0.1)", "x": [-2.7, 45], "curves": [{"dist": "exp", "beta": 10, "tone": "red"}], "shade": [{"to": 6.9315, "label": "0.5 in", "tone": "hl", "labelAt": [20, 0.55]}], "lines": [{"x": 6.9315, "solid": true, "tone": "blue"}], "ticks": [{"x": 6.9315, "label": "6.93 out"}]}, {"title": "qunif(0.3, 0, 20)", "x": [-3, 23], "curves": [{"dist": "uniform", "a": 0, "b": 20, "tone": "red"}], "shade": [{"from": 0, "to": 6, "label": "0.3 in", "tone": "green"}], "lines": [{"x": 6, "solid": true, "tone": "blue"}], "ticks": [0, {"x": 6, "label": "6 out"}, 20]}]}
+```
+
+Each panel starts from a shaded area on the left, the number you type. The q function slides the cut until the area to its left is exactly that much, and returns where the cut stands.
+
 ## The voltage with three quarters of the batteries below it
 
 The lab's batteries have voltages that follow a bell centred on 9.01 V. The widget shades the left 75 % of the bell and reads the table backwards to the cut-off.
@@ -115,6 +121,12 @@ $$x = \underbrace{0}_{a} + \underbrace{0.3}_{\text{area asked}} \times (\underbr
 ## Larger than 95 %, lower than 95 %
 
 **"Larger than 95 % of the voltages" means 0.95 of the area lies to its left. "Lower than 95 % of the voltages" means 95 % lies to its right, so only 0.05 lies to its left.** For example, the student taller than 95 % of the class stands near the top of the list; the student shorter than 95 % stands near the bottom.
+
+```diagram
+{"type": "curve", "title": "Larger than 95 % has 0.95 to its left; lower than 95 % has 0.05", "panels": [{"title": "Larger than 95 %: qnorm(0.95, …)", "x": [8.83, 9.19], "curves": [{"dist": "normal", "mu": 9.01, "sigma": 0.05}], "shade": [{"to": 9.0922, "label": "0.95", "tone": "hl"}, {"from": 9.0922, "tone": "dim"}], "ticks": [9.01, {"x": 9.0922, "label": "9.092"}]}, {"title": "Lower than 95 %: qnorm(0.05, …)", "x": [8.83, 9.19], "curves": [{"dist": "normal", "mu": 9.01, "sigma": 0.05}], "shade": [{"to": 8.9278, "label": "0.05", "tone": "hl", "labelAt": [8.87, 0.35]}, {"from": 8.9278, "label": "0.95", "tone": "blue"}], "ticks": [{"x": 8.9278, "label": "8.928"}, 9.01]}]}
+```
+
+On the left the cut sits high, with 0.95 of the bell below it. On the right the cut sits low: the 0.95 lies above it, so the number typed into `qnorm` is the 0.05 below.
 
 The same batteries, with the mean and standard deviation stored first:
 
@@ -256,6 +268,12 @@ The notes' teller, mean 2 minutes, works the same way: `qexp(0.75, rate)` return
 ## Pearson's skewness from the median
 
 **Pearson's coefficient of skewness compares the mean with the median: $Sk = 3(\mu - \text{median})/\sigma$.** For example, a few very long bus waits pull the mean up past the median, and Sk comes out positive.
+
+```diagram
+{"type": "curve", "title": "A symmetric bell has Sk = 0; a long right tail makes Sk positive", "panels": [{"title": "Normal: mean = median", "x": [-3.6, 3.6], "curves": [{"dist": "normal", "mu": 0, "sigma": 1}], "lines": [{"x": 0, "full": true, "tone": "purple", "label": "mean = median"}], "ticks": [0], "notes": [{"text": "Sk = 0", "at": [2.4, 0.7], "tone": "ink"}]}, {"title": "Exponential bus, β = 10", "x": [-2.7, 45], "curves": [{"dist": "exp", "beta": 10, "tone": "red"}], "lines": [{"x": 6.9315, "full": true, "tone": "blue", "label": "median 6.93", "side": "left"}, {"x": 10, "full": true, "tone": "purple", "label": "mean 10", "side": "right"}], "ticks": [0], "notes": [{"text": ["long tail pulls", "the mean right"], "at": [32, 0.5], "to": [30, 0.06], "tone": "red"}]}]}
+```
+
+The bell is the same on both sides, so its mean and median sit on one line. The exponential's tail stretches far to the right; the mean, 10, lies past the median, 6.93, and Sk = 3(10 − 6.93)/10 is positive.
 
 For the exponential, every piece is known exactly.
 

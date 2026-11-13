@@ -26,6 +26,12 @@ standardize-play
 - $\sigma = 15$, the standard deviation.
 - $x = 115$, the score asked about.
 
+The IQ bell is centred on 100. The shaded part is everything left of 115, one standard deviation above the mean; its area is 0.8413.
+
+```diagram
+{"type": "curve", "title": "P(X ≤ 115) is the area left of 115, 0.8413", "x": [46, 154], "xlabel": "X = IQ score", "curves": [{"dist": "normal", "mu": 100, "sigma": 15}], "shade": [{"to": 115, "label": "0.8413", "tone": "hl"}], "ticks": [70, 85, 100, 115, 130]}
+```
+
 $$Z = \dfrac{\underbrace{115}_{\text{score asked}} - \underbrace{100}_{\text{mean}}}{\underbrace{15}_{\text{standard deviation}}} = \mathbf{1.00}$$
 
 $$P(X \le 115) = P(Z \le \underbrace{1.00}_{\text{row 1.0, column .00}}) = \mathbf{0.8413}$$
@@ -50,6 +56,12 @@ The notes ask for the chance that a random person's IQ is below 120, with $X \si
 - $\mu = 100$, the mean IQ.
 - $\sigma = 15$, the standard deviation.
 - $x = 120$, the score asked about.
+
+On the left is the IQ bell with the area left of 120 shaded. On the right is the standard bell with the area left of 1.33 shaded. The two shaded areas are the same, 0.9082 by the table.
+
+```diagram
+{"type": "curve", "title": "Left of 120 on the IQ bell = left of 1.33 on Z", "panels": [{"title": "X ~ N(100, 15²)", "x": [46, 154], "xlabel": "X = IQ score", "curves": [{"dist": "normal", "mu": 100, "sigma": 15}], "shade": [{"to": 120, "label": "0.9082", "tone": "hl"}], "ticks": [50, 100, 120, 150]}, {"title": "Z, standard normal", "x": [-3.6, 3.6], "xlabel": "Z", "curves": [{"dist": "normal", "mu": 0, "sigma": 1}], "shade": [{"to": 1.33, "label": "0.9082", "tone": "hl"}], "ticks": [0, 1.33]}]}
+```
 
 $$Z = \dfrac{\underbrace{120}_{\text{score asked}} - \underbrace{100}_{\text{mean}}}{\underbrace{15}_{\text{standard deviation}}} = 1.33333 = \mathbf{1.33}$$
 
@@ -105,7 +117,13 @@ normal-prob
 { "mu": 4.35, "sigma": 0.5, "lo": 4.35, "hi": 5.0, "title": "Radiation between 4.35 and 5.00 mrem: Z from 0 to 1.3" }
 ```
 
-Part b asks for more than 5.00 mrem, the thin right tail past 5.0. Its Z is the 1.3 from part a:
+Part b asks for more than 5.00 mrem, the thin right tail past 5.0. The bell is centred on 4.35; the shaded tail starts at 5.0 and runs off to the right, and its area is 0.0968.
+
+```diagram
+{"type": "curve", "title": "P(X > 5.0) is the right tail, 0.0968", "x": [2.55, 6.15], "xlabel": "X = dose (mrem)", "curves": [{"dist": "normal", "mu": 4.35, "sigma": 0.5}], "shade": [{"to": 5.0, "label": "table: 0.9032", "tone": "blue"}, {"from": 5.0, "label": "0.0968", "tone": "hl"}], "ticks": [4.35, {"x": 5.0, "label": "5.0"}]}
+```
+
+Its Z is the 1.3 from part a:
 
 $$P(X > 5.00) = P(Z > 1.3) = \underbrace{1}_{\text{the whole area}} - \underbrace{0.9032}_{\text{area left of 1.30}} = \mathbf{0.0968}$$
 
@@ -116,6 +134,12 @@ A factory's 9-volt batteries have a voltage X that is normal. The question asks 
 - $\mu = 9.01$ V, the mean voltage.
 - $\sigma = 0.05$ V, the standard deviation.
 - 8.9 V and 9.1 V, the two bounds.
+
+The bell is centred on 9.01, a little left of the band's middle. The shaded strip from 8.9 to 9.1 covers almost the whole bell; its area is 0.9502.
+
+```diagram
+{"type": "curve", "title": "P(8.9 < X < 9.1) is the strip, 0.9502", "x": [8.83, 9.19], "xlabel": "X = voltage (V)", "curves": [{"dist": "normal", "mu": 9.01, "sigma": 0.05}], "shade": [{"from": 8.9, "to": 9.1, "label": "0.9502", "tone": "hl"}], "ticks": [{"x": 8.9, "label": "8.9"}, 9.01, {"x": 9.1, "label": "9.1"}]}
+```
 
 $$Z_1 = \dfrac{\underbrace{8.9}_{\text{lower bound}} - \underbrace{9.01}_{\text{mean}}}{\underbrace{0.05}_{\text{standard deviation}}} = \mathbf{-2.2} \qquad Z_2 = \dfrac{\underbrace{9.1}_{\text{upper bound}} - \underbrace{9.01}_{\text{mean}}}{\underbrace{0.05}_{\text{standard deviation}}} = \mathbf{1.8}$$
 
@@ -130,6 +154,12 @@ The lab's `pnorm` line prints the same 0.9502, because both Z values have at mos
 - $\mu = 9.01$ V, the mean voltage.
 - $\sigma = 0.05$ V, the standard deviation.
 - $x = 9.13$ V, the reading asked about.
+
+The unusual zones are the two far tails, more than 2 standard deviations from 9.01: below 8.91 and above 9.11. The reading 9.13 lands in the right one.
+
+```diagram
+{"type": "curve", "title": "9.13 V lies past Z = 2: unusual", "x": [8.83, 9.19], "xlabel": "X = voltage (V)", "curves": [{"dist": "normal", "mu": 9.01, "sigma": 0.05}], "shade": [{"to": 8.91, "tone": "red"}, {"from": 9.11, "tone": "red"}], "ticks": [{"x": 8.91, "label": "8.91"}, 9.01, {"x": 9.11, "label": "9.11"}], "lines": [{"x": 9.13, "tone": "hl", "label": "9.13, Z = 2.40", "side": "right", "full": true}], "notes": [{"text": ["unusual:", "|Z| > 2"], "at": [8.86, 0.55], "to": [8.89, 0.08], "tone": "red"}]}
+```
 
 $$Z = \dfrac{\underbrace{9.13}_{\text{reading}} - \underbrace{9.01}_{\text{mean}}}{\underbrace{0.05}_{\text{standard deviation}}} = \mathbf{2.40}$$
 

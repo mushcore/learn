@@ -17,6 +17,12 @@ That one difference changes how a probability is found. A count gets its probabi
 
 In Unit 5 a probability is drawn as the area of a shape above a number line. **The whole shape always has area 1**, because the measurement is certain to land somewhere on the line.
 
+Unit 5 uses three shapes: a flat rectangle (uniform), a bell (normal) and a curve that starts high and falls (exponential). Each is shaded in full below, and each shaded area is 1.
+
+```diagram
+{"type": "curve", "title": "Three shapes, each with total area 1", "panels": [{"title": "Uniform: flat", "x": [-2, 23], "curves": [{"dist": "uniform", "a": 0, "b": 20, "tone": "red"}], "shade": [{"from": 0, "to": 20, "label": "area 1", "tone": "green"}], "ticks": [0, 20]}, {"title": "Normal: a bell", "x": [-3.6, 3.6], "curves": [{"dist": "normal", "mu": 0, "sigma": 1}], "shade": [{"label": "area 1", "tone": "hl"}], "ticks": [0]}, {"title": "Exponential: falls from 0", "x": [-0.3, 5], "curves": [{"dist": "exp", "beta": 1, "tone": "red"}], "shade": [{"label": "area 1", "tone": "hl", "labelAt": [2, 0.5]}], "ticks": [0]}]}
+```
+
 The simplest shape is a rectangle. **The area of a rectangle is width × height.** For example, a floor tile 2 metres long and 0.5 metres wide covers 1 square metre.
 
 Take a bus that comes every 20 minutes, with your wait spread evenly from 0 to 20 minutes:
@@ -30,6 +36,12 @@ The chance of waiting between 8 and 11 minutes is the strip of the rectangle fro
 
 - $11 - 8 = 3$, the width of the strip in minutes.
 - $0.05$, the same height.
+
+The shaded strip is 3 wide and 0.05 high, so its area is 0.15.
+
+```diagram
+{"type": "curve", "title": "The strip from 8 to 11 has area 0.15", "x": [-2, 24], "xlabel": "T, the wait (minutes)", "curves": [{"dist": "uniform", "a": 0, "b": 20, "tone": "red"}], "shade": [{"from": 8, "to": 11, "label": "0.15", "tone": "green"}], "ticks": [0, 8, 11, 20], "heights": [{"x": 21.5, "of": 10, "label": "0.05"}]}
+```
 
 $$P(8 \le T \le 11) = \underbrace{(11 - 8)}_{\text{strip width}} \times \underbrace{0.05}_{\text{height}} = \mathbf{0.15}$$
 
@@ -54,7 +66,13 @@ On the calculator type 1.6, the sign key (+/− or (−)), then $e^x$. On a calc
 Typing $e^x$, −4, ÷, 2.5 gives $e^{-4} \div 2.5 = 0.0073$, a different number. Brackets or the exponent worked out first avoid it.
 :::
 
-The exponential answers then subtract that number from 1. The 1 is the whole area:
+The exponential answers then subtract that number from 1. The 1 is the whole area. For a mean wait of 2.5 seconds, $e^{-1.6}$ is the tail past 4 seconds, and what is left is the area from 0 to 4:
+
+```diagram
+{"type": "curve", "title": "Area from 0 to 4 is 1 − e^(−1.6) = 0.7981", "x": [-0.7, 12], "xlabel": "X, the wait (seconds)", "curves": [{"dist": "exp", "beta": 2.5, "tone": "red"}], "shade": [{"to": 4, "label": "0.7981", "tone": "hl"}, {"from": 4, "label": "0.2019", "tone": "blue", "labelAt": [7, 0.3]}], "ticks": [0, 4]}
+```
+
+In numbers:
 
 $$1 - e^{-1.6} = \underbrace{1}_{\text{whole area}} - \underbrace{0.201897}_{e^{-1.6}\text{, from above}} = \mathbf{0.7981}$$
 
@@ -74,6 +92,12 @@ ln is how a later lesson solves for a time. The waiting time with 95 % of the ar
 
 - $2.5$, the mean wait in seconds.
 - $0.05$, which is $1 - 0.95$: the area above the time asked for.
+
+The shaded area from 0 up to the unknown time is 0.95, and the thin tail past it is 0.05. The time turns out to be 7.49 seconds.
+
+```diagram
+{"type": "curve", "title": "Area 0.95 below 7.49 seconds", "x": [-0.7, 12], "xlabel": "X, the wait (seconds)", "curves": [{"dist": "exp", "beta": 2.5, "tone": "red"}], "shade": [{"to": 7.49, "label": "0.95", "tone": "hl"}, {"from": 7.49, "label": "0.05", "tone": "dim"}], "ticks": [0, {"x": 7.49, "label": "7.49"}]}
+```
 
 $$x = -\underbrace{2.5}_{\text{mean wait}} \times \ln(\underbrace{0.05}_{1 - 0.95}) = -2.5 \times (-2.995732) = \mathbf{7.4893}$$
 
@@ -106,7 +130,11 @@ The rest of the name is the distribution: `unif` for uniform, `norm` for normal,
 {"type": "grid", "title": "First letter + distribution = the function", "nodes": [{"id": "h0", "label": "", "row": 0, "col": 0}, {"id": "h1", "label": "unif", "row": 0, "col": 1}, {"id": "h2", "label": "norm", "row": 0, "col": 2}, {"id": "h3", "label": "exp", "row": 0, "col": 3}, {"id": "h4", "label": "gives back", "row": 0, "col": 4}, {"id": "p0", "label": "p", "row": 1, "col": 0}, {"id": "p1", "label": "punif", "row": 1, "col": 1}, {"id": "p2", "label": "pnorm", "row": 1, "col": 2}, {"id": "p3", "label": "pexp", "row": 1, "col": 3}, {"id": "p4", "label": "area to the left", "row": 1, "col": 4}, {"id": "q0", "label": "q", "row": 2, "col": 0}, {"id": "q1", "label": "qunif", "row": 2, "col": 1}, {"id": "q2", "label": "qnorm", "row": 2, "col": 2}, {"id": "q3", "label": "qexp", "row": 2, "col": 3}, {"id": "q4", "label": "value for an area", "row": 2, "col": 4}, {"id": "r0", "label": "r", "row": 3, "col": 0}, {"id": "r1", "label": "runif", "row": 3, "col": 1}, {"id": "r2", "label": "rnorm", "row": 3, "col": 2}, {"id": "r3", "label": "rexp", "row": 3, "col": 3}, {"id": "r4", "label": "random values", "row": 3, "col": 4}, {"id": "d0", "label": "d", "row": 4, "col": 0}, {"id": "d1", "label": "dunif", "row": 4, "col": 1}, {"id": "d2", "label": "dnorm", "row": 4, "col": 2}, {"id": "d3", "label": "dexp", "row": 4, "col": 3}, {"id": "d4", "label": "height, not a probability", "row": 4, "col": 4}], "hi": ["p0", "p1", "p2", "p3", "p4"], "caption": "The p row does most of the work on Part 2."}
 ```
 
-The notes check one paper answer this way: the chance that an IQ score is 120 or lower, when scores are normal with mean 100 and standard deviation 15.
+The notes check one paper answer this way: the chance that an IQ score is 120 or lower, when scores are normal with mean 100 and standard deviation 15. That chance is the area under the IQ bell to the left of 120.
+
+```diagram
+{"type": "curve", "title": "P(IQ ≤ 120) is the area left of 120, 0.9088", "x": [46, 154], "xlabel": "IQ score", "curves": [{"dist": "normal", "mu": 100, "sigma": 15}], "shade": [{"to": 120, "label": "0.9088", "tone": "hl"}, {"from": 120, "label": "0.0912", "tone": "blue"}], "ticks": [100, 120]}
+```
 
 ```r
 pnorm(120, 100, 15)

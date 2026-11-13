@@ -15,6 +15,12 @@ There are three shapes: a threshold halfway between two levels, a normal answer 
 
 A digital line sends bit 0 as 2 volts and bit 1 as 3 volts. Noise on the line adds a small random amount, up or down, to every voltage. The receiver reads whichever level is closer, so anything at 2.5 V or more reads as a 1. **The threshold sits halfway between the two levels.** Just like a line judge calling a ball in or out by which side of the line it lands on.
 
+Fifteen bits sent in a row, 0 0 1 1 1 1 0 1 1 1 0 0 0 1 1. The clean signal steps between 2 V and 3 V; the noise makes the received trace jitter around each level.
+
+```diagram
+{"type": "curve", "title": "Bits sent as 2 V and 3 V, with noise on top", "x": [0, 15], "y": [1.4, 3.6], "xlabel": "time", "ylabel": "voltage", "height": 110, "curves": [{"dist": "steps", "start": 0, "values": [2, 2, 3, 3, 3, 3, 2, 3, 3, 3, 2, 2, 2, 3, 3], "noise": 0.2, "tone": "red", "cells": ["0", "0", "1", "1", "1", "1", "0", "1", "1", "1", "0", "0", "0", "1", "1"]}], "yticks": [{"y": 2, "label": "2 V"}, {"y": 3, "label": "3 V"}]}
+```
+
 A sent 0 is misread when the noise pushes 2 V up past 2.5 V. **The misread chance is the chance that the noise is larger than half the gap between the levels.** For example, a gap of 1 V means noise above 0.5 V flips the bit.
 
 ## Two noise bells and the threshold between them
@@ -34,6 +40,12 @@ The noise X is normal, which the notes call *Gaussian noise*.
 - $\sigma = 0.22$, the standard deviation of the noise in volts.
 - $x = 0.5$, the noise that just reaches the threshold.
 
+The noise bell is centred on 0. One standard deviation, 0.22 V, either side of 0 marks where the bell bends.
+
+```diagram
+{"type": "curve", "title": "Noise X ~ N(0, 0.22²): σ = 0.22 V either side of 0", "x": [-0.8, 0.8], "xlabel": "X = channel noise (V)", "curves": [{"dist": "normal", "mu": 0, "sigma": 0.22}], "points": [{"x": -0.22, "tone": "red"}, {"x": 0.22, "tone": "red"}], "lines": [{"x": -0.22, "tone": "red"}, {"x": 0.22, "tone": "red"}], "ticks": [-0.22, 0, 0.22]}
+```
+
 Half the gap:
 
 $$x = \underbrace{2.5}_{\text{threshold}} - \underbrace{2}_{\text{level of bit 0}} = \mathbf{0.5 \text{ V}}$$
@@ -41,6 +53,12 @@ $$x = \underbrace{2.5}_{\text{threshold}} - \underbrace{2}_{\text{level of bit 0
 Standardize the noise of 0.5 V:
 
 $$Z = \dfrac{\underbrace{0.5}_{\text{noise at threshold}} - \underbrace{0}_{\text{mean noise}}}{\underbrace{0.22}_{\text{standard deviation}}} = 2.2727 \to \mathbf{2.27}$$
+
+A misread is noise past 0.5 V, the thin right tail of the noise bell, more than two standard deviations out. Its area is 0.0116.
+
+```diagram
+{"type": "curve", "title": "P(X > 0.5) is the right tail, 0.0116", "x": [-0.8, 0.8], "xlabel": "X = channel noise (V)", "curves": [{"dist": "normal", "mu": 0, "sigma": 0.22}], "shade": [{"to": 0.5, "label": "table: 0.9884", "tone": "blue"}, {"from": 0.5, "label": "0.0116", "tone": "hl"}], "ticks": [0, 0.22, 0.5]}
+```
 
 It is a right tail, so 1 minus the cell at 2.27:
 
@@ -108,6 +126,12 @@ The binomial formula is $P(x) = C(n, x)\, p^x q^{n-x}$, with $q = 1 - p$; it is 
 
 At least one is everything except none. None is $P(0) = q^{10}$, because $C(10, 0) = 1$ and $p^0 = 1$.
 
+The two steps side by side. On the left, the normal area below 50 mg gives p = 0.3446. On the right, that p builds the binomial bars for 0 to 10 light tablets; "at least one" is every bar except the one at 0, which is only 0.0146 tall.
+
+```diagram
+{"type": "curve", "title": "Step 1 gives p; step 2 uses it", "panels": [{"title": "Step 1: P(X < 50) = 0.3446", "x": [42, 60], "xlabel": "X = mass (mg)", "curves": [{"dist": "normal", "mu": 51, "sigma": 2.5}], "shade": [{"to": 50, "label": "0.3446", "tone": "hl"}], "ticks": [50, 55]}, {"title": "Step 2: Y ~ Bin(10, 0.3446)", "x": [-0.7, 10.7], "xlabel": "Y = light tablets", "curves": [{"dist": "bars", "start": 0, "values": [0.0146, 0.077, 0.182, 0.255, 0.235, 0.148, 0.065, 0.019, 0.004, 0.0005, 0.00002], "hi": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}], "ticks": [0, 2, 4, 6, 8, 10], "notes": [{"text": ["left out: the bar at 0,", "P(0) = 0.0146"], "at": [8.2, 0.75], "tone": "ink"}]}]}
+```
+
 $$P(Y \ge 1) = 1 - P(0) = 1 - \underbrace{0.6554^{10}}_{\text{all 10 at 50 mg or more}} = 1 - 0.014624 = \mathbf{0.9854}$$
 
 The mean number of light tablets among 10 is $\mu = np$ from the formula sheet:
@@ -126,6 +150,12 @@ The same tablets are acceptable from 47 mg to 55 mg. What share lies outside?
 
 - $\mu = 51$ and $\sigma = 2.5$, the mean and standard deviation in mg, as above.
 - 47 and 55, the limits of the band in mg.
+
+The band from 47 to 55 sits evenly around the mean of 51. The two shaded tails outside it are the share asked for; together they hold 0.1096.
+
+```diagram
+{"type": "curve", "title": "Outside 47 to 55: two tails, 0.0548 each", "x": [42, 60], "xlabel": "X = mass (mg)", "curves": [{"dist": "normal", "mu": 51, "sigma": 2.5}], "shade": [{"to": 47, "label": "0.0548", "tone": "hl"}, {"from": 47, "to": 55, "label": "inside: 0.8904", "tone": "blue"}, {"from": 55, "label": "0.0548", "tone": "hl"}], "ticks": [47, 51, 55]}
+```
 
 $$Z_{\text{low}} = \dfrac{\underbrace{47}_{\text{lower limit}} - \underbrace{51}_{\text{mean mass}}}{\underbrace{2.5}_{\text{standard deviation}}} = \mathbf{-1.60} \qquad Z_{\text{high}} = \dfrac{\underbrace{55}_{\text{upper limit}} - \underbrace{51}_{\text{mean mass}}}{\underbrace{2.5}_{\text{standard deviation}}} = \mathbf{1.60}$$
 

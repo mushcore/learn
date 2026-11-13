@@ -4,8 +4,12 @@
 //                   parent? (layers, tree), row?/col? (grid) }],
 //         edges: [{ from, to, label?, dashed?, both? }], hi?: [ids], caption? }
 // layout(spec) is pure (tested in Bun); mountDiagram(container, spec) draws it.
+// A sixth type, "curve" (sketched probability curves with shaded areas), has its own spec and
+// lives in diagram-curve.js.
 
-export const DIAGRAM_TYPES = ["flow", "layers", "tree", "grid", "sequence"];
+import { layoutCurvePanels, curveDefs, curveProblems } from "./diagram-curve.js";
+
+export const DIAGRAM_TYPES = ["flow", "layers", "tree", "grid", "sequence", "curve"];
 
 const CHAR_W = 7.3;      // average glyph width at 13 px
 const SUB_CHAR_W = 6.4;  // at 11.5 px
@@ -338,6 +342,7 @@ function edgeSvg(e, mid) {
 
 /** Render a diagram spec into `container` as responsive inline SVG with an optional caption. */
 export function mountDiagram(container, spec) {
+  if (spec.type === "curve") return mountCurve(container, spec);
   const L = layout(spec);
   const mid = `dg-arrow-${++mountCount}`;
   const arrow = (id, cls, start) => `<marker id="${id}" viewBox="0 0 10 10" refX="${start ? 1 : 9}" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="${cls}" d="M0 0L10 5L0 10Z"/></marker>`;
@@ -358,10 +363,27 @@ export function mountDiagram(container, spec) {
   return wrapEl;
 }
 
+/** A "curve" figure (app/diagram-curve.js): sketched probability curves with shaded areas. */
+function mountCurve(container, spec) {
+  const mid = `cv-arrow-${++mountCount}`;
+  const label = spec.title || spec.caption || "figure";
+  const wrapEl = document.createElement("figure");
+  wrapEl.className = "diagram diagram-curve";
+  wrapEl.innerHTML =
+    (spec.title ? `<div class="diagram-title">${esc(spec.title)}</div>` : "") +
+    `<div class="cv-row">` +
+    layoutCurvePanels(spec, mid).map((p, i) => `<svg viewBox="0 0 ${p.width} ${p.height}" style="max-width:${p.width}px" role="img" aria-label="${esc(label)}${i ? " " + (i + 1) : ""}">${i ? "" : curveDefs(mid)}${p.body}</svg>`).join("") +
+    `</div>` +
+    (spec.caption ? `<figcaption class="diagram-caption">${esc(spec.caption)}</figcaption>` : "");
+  container.appendChild(wrapEl);
+  return wrapEl;
+}
+
 /** Problems with a diagram spec, as strings (used by validate.js). */
 export function diagramProblems(spec) {
   const out = [];
   if (!spec || typeof spec !== "object") return ["diagram JSON is not an object"];
+  if (spec.type === "curve") return curveProblems(spec);
   if (!DIAGRAM_TYPES.includes(spec.type)) out.push(`unknown diagram type "${spec.type}" (use ${DIAGRAM_TYPES.join(", ")})`);
   if (!Array.isArray(spec.nodes) || !spec.nodes.length) { out.push("diagram needs a non-empty nodes array"); return out; }
   if (spec.nodes.length > 40) out.push(`diagram has ${spec.nodes.length} nodes (max 40)`);

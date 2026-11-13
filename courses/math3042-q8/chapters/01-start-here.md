@@ -13,6 +13,12 @@ The quiz covers **all of Unit 5, continuous probability distributions.** A conti
 - **Normal**: a bell, highest in the middle and the same on both sides, just like adult heights.
 - **Exponential**: a curve that starts high at 0 and falls, just like the time until the next call reaches a help desk.
 
+The three side by side: the bus wait is flat from 0 to 20 minutes, adult heights make a bell around 175 cm, and the wait for the next call starts at its highest at 0 and falls.
+
+```diagram
+{"type": "curve", "title": "Flat, bell, falling: the three shapes of Unit 5", "panels": [{"title": "Uniform: bus wait", "x": [-2, 23], "xlabel": "minutes", "curves": [{"dist": "uniform", "a": 0, "b": 20, "tone": "red"}], "ticks": [0, 20]}, {"title": "Normal: heights", "x": [150, 200], "xlabel": "cm", "curves": [{"dist": "normal", "mu": 175, "sigma": 7}], "ticks": [175]}, {"title": "Exponential: next call", "x": [-0.3, 5], "xlabel": "minutes", "curves": [{"dist": "exp", "beta": 1, "tone": "red"}], "ticks": [0]}]}
+```
+
 ## Two parts, 50 minutes, 20 marks
 
 | Part | What you do | Marks |
@@ -43,6 +49,12 @@ Quiz 6 and Quiz 7 were built the same way. Each habit below comes with what to d
 ## On paper, normal answers come from the Z table
 
 The notes solve every normal example with a printed Z table: you turn the value into Z, **round Z to 2 decimals**, and read the area to the left of it. R does not round Z, so **a table answer and an R answer can differ in the third or fourth decimal.**
+
+**The table always gives the area to the left of z.** For example, the shaded area left of z = 1.33 is 0.9082, the table value for the IQ example below. A right tail is 1 minus that: 0.0918.
+
+```diagram
+{"type": "curve", "title": "The Z table gives the area left of z: 0.9082 at 1.33", "x": [-3.6, 3.6], "xlabel": "Z", "curves": [{"dist": "normal", "mu": 0, "sigma": 1}], "shade": [{"to": 1.33, "label": "0.9082", "tone": "blue"}, {"from": 1.33, "label": "0.0918", "tone": "dim", "labelAt": [2.6, 0.35]}], "ticks": [0, 1.33]}
+```
 
 For example, the notes find the share of IQ scores at or below 120 both ways: 0.9082 from the table and 0.9088 from R. Both are the instructor's own answers. On paper, give the table answer.
 

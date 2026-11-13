@@ -25,3 +25,19 @@ test("checkDiagram accepts a valid grid and sequence", () => {
   checkDiagram({ type: "sequence", nodes: [{ id: "s", kind: "lane" }, { id: "t", kind: "lane" }], edges: [{ from: "s", to: "t", label: "hi" }] }, "d.md", 2, errors);
   expect(errors).toEqual([]);
 });
+
+test("checkDiagram accepts a curve figure and reports its mistakes", () => {
+  const errors = [];
+  checkDiagram({ type: "curve", x: [-3, 3], curves: [{ dist: "normal", mu: 0, sigma: 1 }], shade: [{ from: 1, label: "0.1587" }], ticks: [0, 1] }, "d.md", 1, errors);
+  checkDiagram({ type: "curve", panels: [{ x: [0, 20], curves: [{ dist: "uniform", a: 0, b: 20 }] }, { x: [0, 8], curves: [{ dist: "exp", beta: 2 }] }] }, "d.md", 2, errors);
+  expect(errors).toEqual([]);
+  checkDiagram({ type: "curve", x: [3, -3], curves: [{ dist: "normal", mu: 0, sigma: 1 }] }, "d.md", 3, errors);
+  checkDiagram({ type: "curve", x: [0, 1], curves: [{ dist: "gamma" }] }, "d.md", 4, errors);
+  checkDiagram({ type: "curve", x: [0, 1], curves: [{ dist: "exp", beta: 1 }], shade: [{ from: 2, to: 1, curve: 3, tone: "pink" }] }, "d.md", 5, errors);
+  const text = errors.join("\n");
+  expect(text).toMatch(/d\.md:3 diagram: panel 1 needs "x"/);
+  expect(text).toMatch(/unknown dist "gamma"/);
+  expect(text).toMatch(/curve 3 does not exist/);
+  expect(text).toMatch(/unknown tone "pink"/);
+  expect(text).toMatch(/to must be above from/);
+});

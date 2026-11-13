@@ -11,6 +11,12 @@ Test scores, fill volumes and battery voltages all pile up around an average and
 
 The notes list three properties: *Bell Shaped*, *Symmetric about μ*, and *Distance from center to "inflection point" is σ*. The inflection point is where the curve is steepest, the spot where it stops bending down and starts bending up. For example, on a road over a hill it is the point where the slope stops getting steeper.
 
+For IQ scores, with mean 100 and standard deviation 15, the bell is steepest at 85 and at 115: one σ either side of the centre. The two dots mark those inflection points.
+
+```diagram
+{"type": "curve", "title": "The bell is steepest one σ from the centre: 85 and 115", "x": [46, 154], "xlabel": "IQ score", "curves": [{"dist": "normal", "mu": 100, "sigma": 15}], "points": [{"x": 85, "tone": "blue"}, {"x": 115, "tone": "blue", "label": "inflection point (steepest)"}], "lines": [{"x": 85, "tone": "blue"}, {"x": 115, "tone": "blue"}], "ticks": [85, 100, 115], "spans": [{"from": 100, "to": 115, "y": 0.2, "label": "σ = 15"}]}
+```
+
 ## The bell for IQ scores
 
 IQ scores follow a normal curve with mean 100 and standard deviation 15; this is the notes' example. The picture is a bell: one peak above 100, falling away the same on each side, nearly flat by 55 and by 145.
@@ -32,6 +38,12 @@ The notes put it in four sentences:
 - *If σ decreases, then the distribution becomes taller and narrower.*
 
 **μ sets where the centre is; σ sets how spread out the bell is.** The total area under every bell is 1, so a wider bell must be shorter. Just like spreading the same bucket of sand over a wider tray: the pile gets lower.
+
+Four normal curves on one axis. Three share μ = 0 and differ only in the variance: the smallest variance, 0.2, gives the tallest and narrowest bell, and the largest, 5, the flattest. The fourth has μ = −2, so it sits 2 to the left.
+
+```diagram
+{"type": "curve", "title": "Four normal curves: μ moves the bell, σ² sets its width", "x": [-5, 5], "height": 220, "curves": [{"dist": "normal", "mu": 0, "sigma": 0.447, "tone": "red"}, {"dist": "normal", "mu": 0, "sigma": 1, "tone": "green"}, {"dist": "normal", "mu": 0, "sigma": 2.236, "tone": "blue"}, {"dist": "normal", "mu": -2, "sigma": 0.707, "tone": "purple"}], "ticks": [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5], "notes": [{"text": "μ = 0, σ² = 0.2", "at": [2.2, 0.9], "to": [0.3, 0.8], "tone": "red"}, {"text": "μ = 0, σ² = 1", "at": [2.8, 0.45], "to": [0.9, 0.3], "tone": "green"}, {"text": "μ = 0, σ² = 5", "at": [3.8, 0.25], "to": [3.2, 0.08], "tone": "blue"}, {"text": "μ = −2, σ² = 0.5", "at": [-3.8, 0.7], "to": [-2.4, 0.55], "tone": "purple"}]}
+```
 
 ## N(100, 15²) holds the variance, not σ
 
@@ -55,6 +67,12 @@ Using 1.3225 as σ makes every Z score after it wrong. The formula sheet also gi
 ## 68, 95 and 99.7: the empirical rule
 
 **About 68 % of values lie within one standard deviation of the mean, 95 % within two, and 99.7 % within three.** This is on page 1 of the formula sheet. Just like a commute: most days you land within a few minutes of the usual time, and a day far outside it is rare.
+
+For IQ the three bands are 85 to 115, 70 to 130 and 55 to 145. Each wider band holds more of the area, and the third holds nearly all of it.
+
+```diagram
+{"type": "curve", "title": "About 68 %, 95 % and 99.7 % within 1, 2 and 3 σ", "panels": [{"title": "Within 1σ: 85 to 115", "x": [46, 154], "curves": [{"dist": "normal", "mu": 100, "sigma": 15}], "shade": [{"from": 85, "to": 115, "label": "68 %", "tone": "hl"}], "ticks": [85, 100, 115]}, {"title": "Within 2σ: 70 to 130", "x": [46, 154], "curves": [{"dist": "normal", "mu": 100, "sigma": 15}], "shade": [{"from": 70, "to": 130, "label": "95 %", "tone": "hl"}], "ticks": [70, 100, 130]}, {"title": "Within 3σ: 55 to 145", "x": [46, 154], "curves": [{"dist": "normal", "mu": 100, "sigma": 15}], "shade": [{"from": 55, "to": 145, "label": "99.7 %", "tone": "hl"}], "ticks": [55, 100, 145]}]}
+```
 
 For IQ:
 
@@ -95,6 +113,12 @@ $$Z = \dfrac{\underbrace{70}_{\text{score asked}} - \underbrace{100}_{\text{mean
 
 **A value is statistically unusual when its Z is below −2 or above 2.** The middle 95 % lies between those, so a value outside is in the rarest 5 %. For example, a bus that is usually within 5 minutes of schedule arriving 25 minutes late.
 
+On the Z scale the two unusual zones are the tails: left of −2 and right of 2. The middle, from −2 to 2, holds about 95 % of the area.
+
+```diagram
+{"type": "curve", "title": "Unusual means Z below −2 or above 2", "x": [-3.6, 3.6], "xlabel": "Z", "curves": [{"dist": "normal", "mu": 0, "sigma": 1}], "shade": [{"from": -2, "to": 2, "label": "about 95 %", "tone": "blue"}, {"to": -2, "tone": "red"}, {"from": 2, "tone": "red"}], "ticks": [-2, 0, 2], "notes": [{"text": "unusual", "at": [-3, 0.35], "to": [-2.3, 0.05], "tone": "red"}, {"text": "unusual", "at": [3, 0.35], "to": [2.3, 0.05], "tone": "red"}]}
+```
+
 ## IQ 120 is 1.33 standard deviations above the mean
 
 The notes ask about a person with an IQ of 120.
@@ -102,6 +126,12 @@ The notes ask about a person with an IQ of 120.
 - $\mu = 100$, the mean IQ.
 - $\sigma = 15$, the standard deviation.
 - $x = 120$, the score asked about.
+
+On the IQ bell, 120 sits right of the centre but well inside 70 to 130, the band two σ either side. The tails outside that band are the unusual scores.
+
+```diagram
+{"type": "curve", "title": "IQ 120 sits inside 70 to 130, so it is not unusual", "x": [46, 154], "xlabel": "IQ score", "curves": [{"dist": "normal", "mu": 100, "sigma": 15}], "shade": [{"to": 70, "tone": "dim"}, {"from": 130, "tone": "dim"}], "lines": [{"x": 120, "solid": true, "tone": "hl", "label": "120: Z = 1.33", "side": "right"}], "ticks": [70, 100, 120, 130], "spans": [{"from": 100, "to": 120, "y": 0.25, "label": "20"}], "notes": [{"text": "unusual", "at": [56, 0.35], "to": [66, 0.04], "tone": "dim"}, {"text": "unusual", "at": [146, 0.35], "to": [135, 0.04], "tone": "dim"}]}
+```
 
 $$Z = \dfrac{\underbrace{120}_{\text{score asked}} - \underbrace{100}_{\text{mean}}}{\underbrace{15}_{\text{standard deviation}}} = 1.33333 = \mathbf{1.33}$$
 
@@ -142,6 +172,12 @@ The two calculations give 1.333333 and 1.15 (computed). The long version is [The
 ## The standard normal: μ = 0 and σ = 1
 
 **The normal curve with μ = 0 and σ = 1 is the *standard normal distribution*, or the *Z-distribution*.** Z scores live on it: a Z of 1.33 is a point on this bell, 1.33 to the right of 0. For example, IQ 115 and Z = 1 sit at the same spot on their two bells.
+
+The standard normal is a bell centred at 0. Its inflection points, where it is steepest, are at −1 and 1, because σ = 1.
+
+```diagram
+{"type": "curve", "title": "The standard normal: inflection points at −1 and 1", "x": [-3.6, 3.6], "xlabel": "Z", "curves": [{"dist": "normal", "mu": 0, "sigma": 1}], "points": [{"x": -1, "tone": "blue"}, {"x": 1, "tone": "blue", "label": "inflection point (steepest)"}], "lines": [{"x": -1, "tone": "blue"}, {"x": 1, "tone": "blue"}], "ticks": [-1, 0, 1], "spans": [{"from": 0, "to": 1, "y": 0.2, "label": "σ = 1"}]}
+```
 
 The formula sheet gives the height of any normal bell:
 

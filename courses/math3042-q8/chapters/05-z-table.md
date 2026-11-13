@@ -9,6 +9,12 @@ Areas under a normal curve cannot be worked out by hand, so on paper every norma
 
 **The Z table gives the area under the standard normal curve to the left of z, which is $P(Z \le z)$.** Just like a bus timetable: find the row and the column, and the cell is the answer, with no arithmetic.
 
+The shaded part is everything under the bell to the left of z. That one area is what every cell of the table holds.
+
+```diagram
+{"type": "curve", "title": "Each cell is the area to the left of z", "x": [-3.6, 3.6], "xlabel": "Z", "curves": [{"dist": "normal", "mu": 0, "sigma": 1}], "shade": [{"to": 0.8, "label": "P(Z ≤ z)", "tone": "blue"}], "ticks": [0, {"x": 0.8, "label": "z"}]}
+```
+
 **The row is z to one decimal; the column is its second decimal.** For example, z = 1.10 is row 1.1, column .00, and z = 0.55 is row 0.5, column .05.
 
 ## The left tail beyond −1.96, shaded on the table
@@ -43,6 +49,12 @@ $$P(Z \le \underbrace{1.10}_{\text{row 1.1, column .00}}) = \mathbf{0.8643}$$
 
 Every question asks for one of three shapes of area. Sketch the bell, shade the area, then pick the move.
 
+The three shapes: a tail on the left, a tail on the right, and a strip with an edge on each side. Only the left tail is printed in the table; the other two are built from cells.
+
+```diagram
+{"type": "curve", "title": "Three shapes of area, three moves", "panels": [{"title": "Left of z: the cell", "x": [-3.6, 3.6], "curves": [{"dist": "normal", "mu": 0, "sigma": 1}], "shade": [{"to": 0.5, "label": "cell(z)", "tone": "hl"}], "ticks": [{"x": 0.5, "label": "z"}]}, {"title": "Right of z: 1 − cell", "x": [-3.6, 3.6], "curves": [{"dist": "normal", "mu": 0, "sigma": 1}], "shade": [{"to": 1, "label": "cell(z)", "tone": "blue"}, {"from": 1, "label": "1 − cell(z)", "tone": "hl"}], "ticks": [{"x": 1, "label": "z"}]}, {"title": "Between: a difference", "x": [-3.6, 3.6], "curves": [{"dist": "normal", "mu": 0, "sigma": 1}], "shade": [{"from": -0.6, "to": 1, "label": "cell(b) − cell(a)", "tone": "hl"}], "ticks": [{"x": -0.6, "label": "a"}, {"x": 1, "label": "b"}]}]}
+```
+
 - **Left of z: the cell itself.** $P(Z \le z) = \text{cell}(z)$.
 - **Right of z: 1 minus the cell**, because the whole area under the curve is 1. $P(Z > z) = 1 - \text{cell}(z)$.
 - **Between a and b: the bigger cell minus the smaller cell.** $P(a \le Z \le b) = \text{cell}(b) - \text{cell}(a)$.
@@ -55,15 +67,31 @@ A single exact value has probability 0, so ≤ and < give the same area. For exa
 
 The notes work three questions on the standard normal, one for each move.
 
-Left of −1.96, a thin left tail:
+Left of −1.96, a thin left tail. The shaded sliver past −1.96 holds 2.5 % of the area.
+
+```diagram
+{"type": "curve", "title": "P(Z ≤ −1.96) is the left tail, 0.0250", "x": [-3.6, 3.6], "xlabel": "Z", "curves": [{"dist": "normal", "mu": 0, "sigma": 1}], "shade": [{"to": -1.96, "label": "0.0250", "tone": "hl"}], "ticks": [-1.96, -1, 0, 1]}
+```
 
 $$P(Z \le -1.96) = \text{cell}(\underbrace{-1.96}_{\text{row -1.9, column .06}}) = \mathbf{0.0250}$$
 
-Right of 2.33, a thin right tail. The table gives the area to the left, so take it from the whole:
+Right of 2.33, a thin right tail. The table gives the big area to the left of 2.33; the tail is what remains of the whole.
+
+```diagram
+{"type": "curve", "title": "P(Z > 2.33) is the right tail, 0.0099", "x": [-3.6, 3.6], "xlabel": "Z", "curves": [{"dist": "normal", "mu": 0, "sigma": 1}], "shade": [{"to": 2.33, "label": "table: 0.9901", "tone": "blue"}, {"from": 2.33, "label": "0.0099", "tone": "hl"}], "ticks": [0, 2.33]}
+```
+
+So take the cell from the whole:
 
 $$P(Z > 2.33) = \underbrace{1}_{\text{the whole area}} - \underbrace{0.9901}_{\text{area left of 2.33}} = \mathbf{0.0099}$$
 
-Between 0.55 and 1.10, a strip right of the centre. The area left of 1.10 holds the strip plus everything left of 0.55, so subtract that part:
+Between 0.55 and 1.10, a strip right of the centre. The shaded strip runs from 0.55 to 1.10; its area is 0.1555.
+
+```diagram
+{"type": "curve", "title": "P(0.55 ≤ Z ≤ 1.10) is the strip, 0.1555", "x": [-3.6, 3.6], "xlabel": "Z", "curves": [{"dist": "normal", "mu": 0, "sigma": 1}], "shade": [{"from": 0.55, "to": 1.1, "label": "0.1555", "tone": "hl"}], "ticks": [0, 0.55, {"x": 1.1, "label": "1.10"}]}
+```
+
+The area left of 1.10 holds the strip plus everything left of 0.55, so subtract that part:
 
 $$P(0.55 \le Z \le 1.10) = \underbrace{0.8643}_{\text{area left of 1.10}} - \underbrace{0.7088}_{\text{area left of 0.55}} = \mathbf{0.1555}$$
 
@@ -81,6 +109,12 @@ Reading 0.9901 as the answer to "more than 2.33" gives a probability near 1 for 
 ## The two halves mirror each other
 
 **The bell is symmetric about 0, so the area right of z equals the area left of −z.** Just like a sheet of paper folded down the middle: each half covers the other.
+
+The right tail past 1.5 and the left tail past −1.5 are mirror images, so they hold the same area.
+
+```diagram
+{"type": "curve", "title": "Mirror tails: each holds 0.0668", "panels": [{"title": "P(Z > 1.5)", "x": [-3.6, 3.6], "curves": [{"dist": "normal", "mu": 0, "sigma": 1}], "shade": [{"from": 1.5, "label": "0.0668", "tone": "hl"}], "ticks": [0, 1.5]}, {"title": "P(Z < −1.5)", "x": [-3.6, 3.6], "curves": [{"dist": "normal", "mu": 0, "sigma": 1}], "shade": [{"to": -1.5, "label": "0.0668", "tone": "hl"}], "ticks": [-1.5, 0]}]}
+```
 
 - $z = 1.5$, the value asked about.
 - 0.9332, the cell for 1.50.

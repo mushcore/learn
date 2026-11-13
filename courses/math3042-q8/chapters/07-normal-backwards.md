@@ -26,6 +26,10 @@ normal-prob
 
 The picture is a bell centred on 4.35, shaded on the left 95 %, with a thin 5 % tail left on the right. The cut-off, marked $P_{95}$ in the instructor's sketch, sits where the shading stops, a little past 5.
 
+```diagram
+{"type": "curve", "title": "95 % left of the cut-off, 5 % right: the cut-off is unknown", "x": [2.55, 6.15], "xlabel": "X = dose (mrem)", "curves": [{"dist": "normal", "mu": 4.35, "sigma": 0.5}], "shade": [{"to": 5.17, "label": "area = 0.95", "tone": "hl"}, {"from": 5.17, "label": "0.05", "tone": "dim"}], "ticks": [4.35, {"x": 5.17, "label": "P95 = ?"}]}
+```
+
 ## Step 1: find the area inside the table, read z off the edges
 
 **Search the body of the table for the area, then read z from the row and the column.** For example, the cell 0.9505 sits in row 1.6 and column .05, so its z is 1.65.
@@ -51,6 +55,12 @@ $$x = \underbrace{\mu}_{\text{start at the mean}} + \underbrace{Z}_{\text{steps,
 
 It is $Z = \dfrac{x - \mu}{\sigma}$ solved for x: multiply both sides by σ, then add μ. Just like giving directions: start at the bus stop, then walk 1.645 blocks of 0.5 km each.
 
+The two bells below carry the same 0.95 to the left. On the standard bell the cut-off is z = 1.645; on the radiation bell it is 1.645 steps of 0.5 above 4.35.
+
+```diagram
+{"type": "curve", "title": "The same 0.95: z = 1.645 becomes x = 5.17", "panels": [{"title": "Step 1: Z", "x": [-3.6, 3.6], "xlabel": "Z", "curves": [{"dist": "normal", "mu": 0, "sigma": 1}], "shade": [{"to": 1.645, "label": "0.95", "tone": "hl"}, {"from": 1.645, "tone": "dim"}], "ticks": [0, 1.645]}, {"title": "Step 2: X", "x": [2.55, 6.15], "xlabel": "X = dose (mrem)", "curves": [{"dist": "normal", "mu": 4.35, "sigma": 0.5}], "shade": [{"to": 5.17, "label": "0.95", "tone": "hl"}, {"from": 5.17, "tone": "dim"}], "ticks": [4.35, {"x": 5.17, "label": "5.17"}]}]}
+```
+
 $$P_{95} = \underbrace{4.35}_{\text{mean dose}} + \underbrace{1.645}_{\text{z for 0.95}} \times \underbrace{0.5}_{\text{standard deviation}} = 4.35 + 0.8225 = \mathbf{5.17 \text{ mrem}}$$
 
 The check: a percentile above 50 must land above the mean, and 5.17 does.
@@ -69,6 +79,12 @@ The table only gives areas to the left. So first turn the question's words into 
 
 **A top share s becomes 1 − s to the left; a bottom share is already the area to the left.** For example, the top 10 % of marks is the 0.90 cell, because 1 − 0.10 = 0.90.
 
+The top 10 % is a thin right tail. The table cannot see it directly; it sees the 0.90 to the left of the same cut-off.
+
+```diagram
+{"type": "curve", "title": "Top 10 %: look up 0.90, the area to the left", "x": [-3.6, 3.6], "xlabel": "Z", "curves": [{"dist": "normal", "mu": 0, "sigma": 1}], "shade": [{"to": 1.28, "label": "table: 0.90", "tone": "blue"}, {"from": 1.28, "label": "top 0.10", "tone": "hl"}], "ticks": [0, {"x": 1.28, "label": "z = ?"}]}
+```
+
 **An area to the left below 0.5 gives a negative z, and x lands below the mean.** Just like a cut-off for the lightest babies: it must be lighter than average.
 
 Birth weights in Norway are normal with mean 3570 g and standard deviation 500 g. A hospital gives special care to the smallest 3 % of babies. Which weight separates them? This is from the unit's practice problems.
@@ -76,6 +92,12 @@ Birth weights in Norway are normal with mean 3570 g and standard deviation 500 g
 - $\mu = 3570$, the mean birth weight in grams.
 - $\sigma = 500$, the standard deviation in grams.
 - 0.03, the area to the left of the cut-off: the smallest 3 %.
+
+The shaded sliver is the smallest 3 %, on the left of the bell. Its right edge is the weight asked for, so it sits below the mean of 3570.
+
+```diagram
+{"type": "curve", "title": "Smallest 3 %: area 0.03 to the left, cut-off unknown", "x": [1770, 5370], "xlabel": "X = birth weight (g)", "curves": [{"dist": "normal", "mu": 3570, "sigma": 500}], "shade": [{"to": 2630, "label": "0.03", "tone": "hl"}], "ticks": [{"x": 2630, "label": "x = ?"}, 3570]}
+```
 
 Step 1. On the negative page, 0.0301 at row −1.8, column .08 is the closest cell to 0.0300. The next cell, 0.0294, is further away. So z = −1.88.
 
@@ -97,12 +119,24 @@ Four areas come up again and again; know their z values from memory.
 
 **The middle 95 % leaves 2.5 % in each tail, so its two ends are at z = −1.96 and z = 1.96.** For example, the middle 95 % of IQ scores runs from 1.96 standard deviations below the mean to 1.96 standard deviations above it.
 
+```diagram
+{"type": "curve", "title": "The middle 95 % runs from −1.96 to 1.96", "x": [-3.6, 3.6], "xlabel": "Z", "curves": [{"dist": "normal", "mu": 0, "sigma": 1}], "shade": [{"to": -1.96, "label": "0.025", "tone": "dim"}, {"from": -1.96, "to": 1.96, "label": "0.95", "tone": "hl"}, {"from": 1.96, "label": "0.025", "tone": "dim"}], "ticks": [-1.96, 0, 1.96]}
+```
+
+The middle strip holds 0.95, and each thin tail holds 0.025.
+
 ## Battery voltages, by table and by R
 
 A company's batteries have voltages that are normal with mean 9.01 V and standard deviation 0.05 V. This is Lab 8, which asked three backwards questions in R.
 
 - $\mu = 9.01$, the mean voltage in volts.
 - $\sigma = 0.05$, the standard deviation in volts.
+
+The three questions shade three different areas to the left. Each cut-off is where the shading stops: right of 9.01 for 0.95, left of it for 0.05 and 0.25.
+
+```diagram
+{"type": "curve", "title": "Three areas to the left, three cut-offs", "panels": [{"title": "0.95 to the left", "x": [8.83, 9.19], "curves": [{"dist": "normal", "mu": 9.01, "sigma": 0.05}], "shade": [{"to": 9.0922, "label": "0.95", "tone": "hl"}], "ticks": [9.01, {"x": 9.09, "label": "9.09"}]}, {"title": "0.05 to the left", "x": [8.83, 9.19], "curves": [{"dist": "normal", "mu": 9.01, "sigma": 0.05}], "shade": [{"to": 8.9278, "label": "0.05", "tone": "hl"}], "ticks": [{"x": 8.93, "label": "8.93"}, 9.01]}, {"title": "0.25 to the left", "x": [8.83, 9.19], "curves": [{"dist": "normal", "mu": 9.01, "sigma": 0.05}], "shade": [{"to": 8.9763, "label": "0.25", "tone": "hl"}], "ticks": [{"x": 8.98, "label": "8.98"}]}]}
+```
 
 By table, the voltage larger than 95 % of voltages has 0.95 to its left:
 
@@ -161,6 +195,12 @@ A machine makes a part whose length is normal with standard deviation 0.90 mm, a
 - $\sigma = 0.90$, the standard deviation in mm.
 - $x = 12.10$, the cut-off length in mm.
 - 0.10, the area to the left of 12.10, because 90 % lie above it.
+
+This time the cut-off 12.10 is fixed and the bell's centre is the unknown. The 10 % tail left of 12.10 is shaded; the other 90 % lies above it.
+
+```diagram
+{"type": "curve", "title": "Cut-off fixed at 12.10, mean unknown", "x": [10.0, 16.5], "xlabel": "length (mm)", "curves": [{"dist": "normal", "mu": 13.25, "sigma": 0.9}], "shade": [{"to": 12.1, "label": "0.10", "tone": "hl"}, {"from": 12.1, "label": "0.90", "tone": "blue"}], "ticks": [{"x": 12.1, "label": "12.10"}, {"x": 13.25, "label": "μ = ?"}]}
+```
 
 Step 1. The closest cell to 0.1000 is 0.1003 at row −1.2, column .08, so z = −1.28.
 

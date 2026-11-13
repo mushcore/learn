@@ -98,7 +98,7 @@ stat-calc
 { "data": "5.0 4.5 6.0 7.0 5.2" }
 ```
 ````
-6. Diagram (`app/diagram.js`): a JSON figure drawn as inline SVG in the app's colours, scaled to the column (it shrinks on a phone, never scrolls sideways). Five types:
+6. Diagram (`app/diagram.js`): a JSON figure drawn as inline SVG in the app's colours, scaled to the column (it shrinks on a phone, never scrolls sideways). Five node-and-edge types:
    - `flow`: boxes in a row (`"dir": "tb"` for a column) joined by arrows; wraps past 820 px.
    - `layers`: nested bands (`parent` names the enclosing band), outermost first: the box model, the n-tier stack.
    - `tree`: `parent` links drawn top-down: a DOM tree, a JSON shape.
@@ -128,6 +128,26 @@ stat-calc
 ```
 ````
    `validate.js` lays each diagram out and fails one wider than 880 units or with an edge label that runs into a box. Still look at a new diagram at phone width (390 px) before shipping.
+
+   A sixth type, `curve` (`app/diagram-curve.js`), is a static labelled sketch of probability curves with shaded areas: the picture drawn beside a worked answer. It has no `nodes`; it has `panels`, drawn side by side (one to three per row; they stack on a phone). One panel's fields may sit at the top level instead of in `panels`. A panel:
+   - `x`: `[min, max]` (required). `y`: `[min, max]` (default: 0 to just above the tallest curve). `height` in units (default 160), `title`, `xlabel`, `ylabel` (naming it draws the vertical axis).
+   - `curves` (required): each has a `dist`: `normal` (`mu`, `sigma`), `exp` (`beta`, the mean), `uniform` (`a`, `b`), `mix` (`parts: [[weight, mu, sigma], …]`, a lumpy "any density" curve), `bars` (`start`, `values`, `hi: [x, …]` for accent bars; a discrete pmf), `steps` (`start`, `values`, `noise`, `cells`; a square wave with a noisy trace and a label under each cell). Also `tone`, `dashed`, `label`, `labelAt: [x, yFrac]`.
+   - `shade`: `[{ from, to, curve, tone, label, labelAt }]`. Leave out `from` or `to` to shade to the end of the curve. The label goes inside the area when it fits, otherwise just above with a leader.
+   - `ticks`: numbers or `{ x, label }`. `yticks`: `[{ y, label }]`.
+   - `lines`: `[{ x, label, side, full, solid, tone }]`, a vertical line from the axis to the curve (`full`: to the top). `points`: `[{ x, label, side, open, tone }]`, a dot on the curve.
+   - `spans`: `[{ from, to, y, label }]`, a horizontal double arrow. `heights`: `[{ x, of, label, side }]`, a vertical double arrow from the axis to the curve's height at `of`.
+   - `notes`: `[{ text, at: [x, yFrac], to: [x, yFrac], anchor, tone }]`, free text (`text` may be a list of lines) with an optional arrow to `to`.
+
+   `curve` indexes into `curves` (default 0). A `yFrac` is a fraction of the plot height: 0 is the axis, 1 the top. Tones: `ink`, `dim`, `hl`, `blue`, `green`, `red`, `purple`. Every number in a figure (areas, ticks) is typed by the author, so compute it first.
+````
+```diagram
+{ "type": "curve", "title": "P(Z > 1.5) is the right tail", "x": [-3.6, 3.6], "xlabel": "Z", "curves": [ { "dist": "normal", "mu": 0, "sigma": 1 } ], "shade": [ { "to": 1.5, "label": "0.9332", "tone": "blue" }, { "from": 1.5, "label": "0.0668", "tone": "red" } ], "ticks": [0, 1.5] }
+```
+
+```diagram
+{ "type": "curve", "title": "Two waits", "panels": [ { "title": "Uniform on 0 to 20", "x": [-2, 23], "curves": [ { "dist": "uniform", "a": 0, "b": 20 } ], "shade": [ { "from": 8, "to": 11, "label": "0.15", "tone": "green" } ], "ticks": [0, 8, 11, 20] }, { "title": "Exponential, mean 2", "x": [-0.4, 8], "curves": [ { "dist": "exp", "beta": 2 } ], "shade": [ { "to": 3, "label": "0.7769" } ], "ticks": [0, 3], "notes": [ { "text": "long right tail", "at": [6, 0.5], "to": [6.4, 0.06] } ] } ] }
+```
+````
 7. Endpoints for lessons (`server.js`; stateless, nothing stored or logged; bodies over 64 KB get 413). Call them as `SERVER + "/api/…"`:
    - `/api/echo` (any path below it too, any method): answers `{ method, path, query, headers, body }` as JSON with `Access-Control-Allow-Origin: *`, `-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS`, `-Headers: Content-Type, X-Requested-With`; `OPTIONS` answers 204 (a preflight succeeds). Custom request headers other than those two make the browser's preflight fail, so lessons avoid them.
    - `/api/echo-nocors` (and below): the same JSON with no `Access-Control-*` header, so the browser blocks the sandboxed script from reading it (`xhr.status` is `0`, `onerror` fires, the console shows the CORS message). The request still reaches the server.
