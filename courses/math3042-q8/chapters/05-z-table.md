@@ -5,6 +5,26 @@ minutes: 12
 <!-- facts: none; every number here is a Z-table cell or one of the notes' three standard normal examples -->
 Areas under a normal curve cannot be worked out by hand, so on paper every normal question ends at a printed table. This lesson reads that table for Z alone.
 
+## What you do with the table: look up, not calculate, not memorize
+
+**The Z table is a page of answers that someone already worked out. In Part 1, on paper, you read one number off it; you never calculate it and you never memorize it.** Just like a times-table chart: you find 7 × 8 at the crossing of a row and a column instead of working it out.
+
+| Your question | The answer |
+|---|---|
+| Do I calculate something? | Only around the table, never inside it. Before it: turn the value into Z. After it: sometimes 1 − cell, or one cell minus another. The area itself comes off the page. |
+| Do I memorize it? | No. Learn how to read it: the row is z to one decimal, the column is the second decimal. A few cells are worth knowing by sight: 0.5000 at z = 0, 0.9750 at 1.96, 0.0250 at −1.96. |
+| Is it for R? | No. In Part 2, `pnorm` gives the same area to the left, so R never needs the table. |
+
+Every normal question on paper runs the same three steps, and the table is the middle one:
+
+```diagram
+{"type": "flow", "title": "A normal question on paper", "nodes": [{"id": "z", "label": "1. Value to Z", "sub": "Z = (x − μ)/σ, round to 2 decimals"}, {"id": "t", "label": "2. Read the table", "sub": "the area to the left of Z"}, {"id": "m", "label": "3. Pick the move", "sub": "the cell, 1 − cell, or a difference"}], "edges": [{"from": "z", "to": "t"}, {"from": "t", "to": "m"}], "hi": ["t"], "caption": "This lesson drills steps 2 and 3 on Z alone. The next lesson adds step 1."}
+```
+
+:::warn Bring the table question to the instructor
+The course formula sheet has no Z table on it. Before the quiz, check with the instructor that a Z table is handed out with Part 1.
+:::
+
 ## The table is a lookup: z in, area to the left out
 
 **The Z table gives the area under the standard normal curve to the left of z, which is $P(Z \le z)$.** Just like a bus timetable: find the row and the column, and the cell is the answer, with no arithmetic.
