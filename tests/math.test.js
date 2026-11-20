@@ -7,6 +7,11 @@ test("underbrace puts a label under the term", () => {
   expect(h).toContain("× 3");
 });
 
+test("an escaped percent sign inside \\text prints without its backslash", () => {
+  const h = mathify(String.raw`\underbrace{1.96}_{\text{reach for 95\%, in widths}}`);
+  expect(h).toContain('<span class="txt">reach for 95%, in widths</span>');
+});
+
 test("underbrace without a label still renders its body", () => {
   const h = mathify(String.raw`\underbrace{x}`);
   expect(h).toContain('<span class="ub-body">x</span>');

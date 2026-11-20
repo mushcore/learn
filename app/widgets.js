@@ -22,8 +22,10 @@ import * as cpp4 from "./widgets-cpp4.js";
 import * as web from "./widgets-web.js";
 import * as web2 from "./widgets-web2.js";
 import * as viz2 from "./widgets-viz2.js";
+import * as q9a from "./widgets-q9a.js";
+import * as q9b from "./widgets-q9b.js";
 
-const REGISTRY = { ...cpp.WIDGETS, ...stats.WIDGETS, ...net.WIDGETS, ...viz.WIDGETS, ...cpp2.WIDGETS, ...algo.WIDGETS, ...net2.WIDGETS, ...oop.WIDGETS, ...prob.WIDGETS, ...net3.WIDGETS, ...net4.WIDGETS, ...net5.WIDGETS, ...prob2.WIDGETS, ...stl.WIDGETS, ...cont.WIDGETS, ...cpp3.WIDGETS, ...os.WIDGETS, ...os2.WIDGETS, ...os3.WIDGETS, ...net6.WIDGETS, ...cpp4.WIDGETS, ...web.WIDGETS, ...web2.WIDGETS, ...viz2.WIDGETS };
+const REGISTRY = { ...cpp.WIDGETS, ...stats.WIDGETS, ...net.WIDGETS, ...viz.WIDGETS, ...cpp2.WIDGETS, ...algo.WIDGETS, ...net2.WIDGETS, ...oop.WIDGETS, ...prob.WIDGETS, ...net3.WIDGETS, ...net4.WIDGETS, ...net5.WIDGETS, ...prob2.WIDGETS, ...stl.WIDGETS, ...cont.WIDGETS, ...cpp3.WIDGETS, ...os.WIDGETS, ...os2.WIDGETS, ...os3.WIDGETS, ...net6.WIDGETS, ...cpp4.WIDGETS, ...web.WIDGETS, ...web2.WIDGETS, ...viz2.WIDGETS, ...q9a.WIDGETS, ...q9b.WIDGETS };
 
 export function widgetNames() {
   return Object.keys(REGISTRY);

@@ -48,7 +48,7 @@ export function mathParse(src) {
         case "bar": case "overline": out += `<span class="ovl">${mathParse(readArg())}</span>`; break;
         case "hat": out += `<span class="hat">${mathParse(readArg())}</span>`; break;
         case "tilde": out += `<span class="tilde">${mathParse(readArg())}</span>`; break;
-        case "text": case "mathrm": case "textrm": out += `<span class="txt">${escapeHtml(readArg())}</span>`; break;
+        case "text": case "mathrm": case "textrm": out += `<span class="txt">${escapeHtml(readArg().replace(/\\([%$_&#])/g, "$1"))}</span>`; break;
         case "mathbf": case "textbf": out += `<b>${mathParse(readArg())}</b>`; break;
         case "underbrace": { const body = readArg(); while (src[i] === " ") i++; let label = ""; if (src[i] === "_") { i++; label = readArg(); } out += `<span class="ubrace"><span class="ub-body">${mathParse(body)}</span>${label ? `<span class="ub-label">${mathParse(label)}</span>` : ""}</span>`; break; }
         case "tag": { const id = readArg(); const body = readArg(); out += `<span class="mtag" data-tag="${escapeHtml(id)}">${mathParse(body)}</span>`; break; }

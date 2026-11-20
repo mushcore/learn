@@ -1431,3 +1431,16 @@ button.net6-pkt:hover { border-color: var(--rule-strong); }
 .free-model-head, .free-points-head { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-dim); margin-bottom: 4px; }
 .free-points { margin: 8px 0 4px; }
 @media (max-width: 760px) { .free-answer { font-size: 16px; } }
+
+/* Film-style animations (Quiz 9, app/widgets-q9a.js and -q9b.js): a fixed cream stage like a video
+   frame, the same in every theme, with a narration caption under it. One colour per quantity. */
+.film { margin: 6px 0 2px; }
+.film-stage { display: block; width: 100%; height: auto; background: #fdf8ee; border: 1px solid #e9dfc8; border-radius: 10px; }
+.film-stage text { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; }
+.film-caption { font-size: 16px; line-height: 1.5; color: var(--ink); margin: 10px 0 6px; min-height: 4.6em; }
+.film-caption .pink { color: #ff7aa8; font-weight: 600; }
+.film-caption .blue { color: var(--blue); font-weight: 600; }
+.film-caption .green { color: var(--green); font-weight: 600; }
+.film-caption .orange { color: #ffb454; font-weight: 600; }
+.film-scene { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-dim); margin: 0 0 2px; }
+.film-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 4px 0 8px; font-size: 13px; color: var(--ink-2); }

@@ -1,0 +1,77 @@
+{
+  "lang": "r",
+  "title": "MATH 3042 Statistics · Quiz 9",
+  "subtitle": "The next lab quiz as one picture: the pile of sample results, the confidence interval for p, and the QQ plot",
+  "description": "Quiz 9 built like an animated explainer: one picture, the pile of sample results, drawn from nothing and then reused for everything. Four film-style animations (the pile of p-hat and X-bar, the pile at every sample size, the flip from margin of error to confidence interval, a QQ plot built point by point), one short lesson per idea in the instructor's numbers, the R for the posted Part 2 template, two mock quizzes in the real two-part format, and a one-page know-cold sheet.",
+  "intro": ":::quiz Quiz 9\n**In the lab session.** Part 1 is paper and pencil with a calculator (10 marks); Part 2 is RStudio, filling in the posted notebook template (10 marks). The scope: the sampling distributions of p-hat and X-bar (notes 6.1 and 6.3 up to page 93, and the sampling lab), confidence intervals for a proportion (notes 6.2 and the confidence-interval practice problems 1 and 2), and normality testing with a QQ plot. The formula sheet and the Z table are handed out. No makeups.\n:::",
+  "plan": {
+    "title": "The path to Quiz 9",
+    "steps": [
+      { "lesson": "one-picture", "note": "15 minutes: watch the four animations in order; everything else is this picture again" },
+      { "lesson": "start-here", "note": "5 minutes: the format, the three paper shapes, the posted template, the shortest path" },
+      { "lesson": "ci-for-p", "note": "12 minutes: the six lines of a confidence interval for p" },
+      { "lesson": "phat-sampling-distribution", "note": "10 minutes: centre p, width √(pq/n), bell when np and nq are 5 or more" },
+      { "lesson": "xbar-sampling-distribution", "note": "10 minutes: centre μ, width σ/√n" },
+      { "lesson": "clt-shape-rule", "note": "10 minutes: a bell when X is normal or n is 30 or more, with the reason" },
+      { "lesson": "population-sample-pile", "note": "10 minutes: the population, one sample, the pile of means: three objects, three shapes" },
+      { "lesson": "part2-walkthrough", "note": "15 minutes: the posted Part 2 template, heading by heading" },
+      { "lesson": "margin-of-error", "note": "10 minutes: 1.96 widths reach 95% of the pile; 1.645 and 2.576" },
+      { "lesson": "ci-confidence-level", "note": "10 minutes: 90%, 95%, 99%; more confidence, wider interval" },
+      { "lesson": "ci-sample-size-and-overlap", "note": "10 minutes: the sample size for a target E, rounded up; two intervals that overlap" },
+      { "lesson": "qq-plot", "note": "12 minutes: qqnorm, qqline, and reading the line" },
+      { "lesson": "r-simulate-xbar", "note": "10 minutes: one sample mean, then replicate" },
+      { "lesson": "r-histogram-normal-fit", "note": "8 minutes: histogram with fit = normal, and the one-sentence verdict" },
+      { "lesson": "r-load-two-way-table", "note": "6 minutes: read.csv and table with two columns" },
+      { "lesson": "xbar-probability", "note": "10 minutes: a probability about X-bar, the Z recipe with σ/√n" },
+      { "lesson": "mock-quiz-9-a", "note": "25 minutes timed: Part 1 on paper, Part 2 one slot at a time" },
+      { "lesson": "know-cold-q9", "note": "5 minutes: rewrite the two piles, the six lines and the R lines from memory" },
+      { "lesson": "mock-quiz-9-b", "note": "when there is time: new contexts, the same shapes" }
+    ]
+  },
+  "chapters": [
+    {
+      "title": "1. Start here: the whole quiz in one picture",
+      "lessons": [
+        { "id": "one-picture", "title": "Everything on Quiz 9 is one pile of dots", "file": "chapters/00-one-picture.md" },
+        { "id": "start-here", "title": "Quiz 9: the format, the marks, and the shortest path", "file": "chapters/01-start-here.md" }
+      ]
+    },
+    {
+      "title": "2. Part 1 on paper: the pile of p-hat and the confidence interval",
+      "lessons": [
+        { "id": "phat-sampling-distribution", "title": "The sampling distribution of p-hat: centre p, width √(pq/n)", "file": "chapters/02-phat-pile.md" },
+        { "id": "margin-of-error", "title": "The margin of error: how far 95% of the pile reaches", "file": "chapters/03-margin-of-error.md" },
+        { "id": "ci-for-p", "title": "A confidence interval for p: measure the reach from your own dot", "file": "chapters/04-ci-for-p.md" },
+        { "id": "ci-confidence-level", "title": "90%, 95%, 99%: more confidence costs a wider interval", "file": "chapters/05-ci-confidence-level.md" },
+        { "id": "ci-sample-size-and-overlap", "title": "Planning a sample size, and comparing two intervals", "file": "chapters/06-ci-sample-size-and-overlap.md" }
+      ]
+    },
+    {
+      "title": "3. Part 1 on paper: the pile of X-bar and the Central Limit Theorem",
+      "lessons": [
+        { "id": "xbar-sampling-distribution", "title": "The sampling distribution of X-bar: centre μ, width σ/√n", "file": "chapters/07-xbar-pile.md" },
+        { "id": "clt-shape-rule", "title": "The Central Limit Theorem: when the pile of X-bar is a bell", "file": "chapters/08-clt-shape.md" },
+        { "id": "xbar-probability", "title": "A probability about X-bar or p-hat: the same Z recipe with the pile's width", "file": "chapters/09-xbar-probability.md" }
+      ]
+    },
+    {
+      "title": "4. Part 2 in RStudio",
+      "lessons": [
+        { "id": "r-load-two-way-table", "title": "Load a CSV and count two columns at once: read.csv and table", "file": "chapters/10-r-load-and-two-way-table.md" },
+        { "id": "r-simulate-xbar", "title": "Simulate X-bar in R: one sample, then ten thousand", "file": "chapters/11-r-simulate-xbar.md" },
+        { "id": "r-histogram-normal-fit", "title": "A histogram with a fitted normal curve: does it look like a bell?", "file": "chapters/12-r-histogram-is-it-normal.md" },
+        { "id": "qq-plot", "title": "The QQ plot: a straight line means the data are bell-shaped", "file": "chapters/13-qq-plot.md" },
+        { "id": "population-sample-pile", "title": "Three different objects: the population, one sample, the pile of sample means", "file": "chapters/14-r-three-questions-three-objects.md" },
+        { "id": "part2-walkthrough", "title": "The posted Part 2 template, worked on heights.csv", "file": "chapters/15-part2-walkthrough.md" }
+      ]
+    },
+    {
+      "title": "5. Mock quizzes and the sheet",
+      "lessons": [
+        { "id": "mock-quiz-9-a", "title": "Mock Quiz 9 A: Part 1 on paper (10 marks), Part 2 in RStudio (10 marks)", "file": "chapters/16-mock-quiz-9-a.md" },
+        { "id": "mock-quiz-9-b", "title": "Mock Quiz 9 B: new contexts, the same shapes", "file": "chapters/17-mock-quiz-9-b.md" },
+        { "id": "know-cold-q9", "title": "Know cold for Quiz 9: two piles, six lines, three critical values, the R lines", "file": "chapters/18-know-cold-q9.md" }
+      ]
+    }
+  ]
+}

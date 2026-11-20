@@ -1,0 +1,16 @@
+{
+  "sampling distribution": "the probability distribution of a sample statistic (p-hat or X-bar) over all possible random samples of size n; in this module's picture, the pile. See [The pile of p-hat](#/math3042-q9/phat-sampling-distribution).",
+  "sample proportion|p-hat": "$\\hat{p} = X/n$, the share of successes in one sample; one blue dot on the pile. See [The pile of p-hat](#/math3042-q9/phat-sampling-distribution).",
+  "population proportion": "$p$, the true share of the whole population that has the property; the pink line, which is never seen in real life. See [The pile of p-hat](#/math3042-q9/phat-sampling-distribution).",
+  "standard error|standard error of the mean": "the standard deviation of a sampling distribution, that is, the width of the pile: $\\sqrt{pq/n}$ for p-hat, $\\sigma/\\sqrt{n}$ for X-bar. See [The pile of X-bar](#/math3042-q9/xbar-sampling-distribution).",
+  "margin of error": "$E = z_{\\alpha/2}\\sqrt{pq/n}$, the distance from the centre of the pile that holds the stated share of all samples (95% for 1.96). See [The margin of error](#/math3042-q9/margin-of-error).",
+  "critical value|critical Z": "$z_{\\alpha/2}$, the Z value with area $\\alpha/2$ to its right: 1.645 for 90%, 1.96 for 95%, 2.576 for 99%. See [The margin of error](#/math3042-q9/margin-of-error).",
+  "confidence interval": "the range $\\hat{p} - E$ to $\\hat{p} + E$, built from one sample, that covers the true p for the stated share of samples. See [A confidence interval for p](#/math3042-q9/ci-for-p).",
+  "confidence level": "$1 - \\alpha$, the share of samples whose interval covers the truth: typically 0.95. See [90%, 95%, 99%](#/math3042-q9/ci-confidence-level).",
+  "Central Limit Theorem|CLT": "the sample mean X-bar is approximately normal when X itself is normal or when the sample size is 30 or more, with mean $\\mu$ and standard deviation $\\sigma/\\sqrt{n}$. See [When the pile is a bell](#/math3042-q9/clt-shape-rule).",
+  "QQ plot|quantile-quantile plot": "sorted sample values plotted against the Z-scores a perfect normal sample of the same size would have; a straight line means the data are consistent with a normal population. See [The QQ plot](#/math3042-q9/qq-plot).",
+  "qqnorm": "the R function that draws a QQ plot of a vector against the normal distribution. See [The QQ plot](#/math3042-q9/qq-plot).",
+  "qqline": "the R function that adds the reference line to a QQ plot, through the first and third quartiles. See [The QQ plot](#/math3042-q9/qq-plot).",
+  "replicate": "the R function that runs an expression m times and returns the m results as a vector; used to make many sample means. See [Simulate X-bar in R](#/math3042-q9/r-simulate-xbar).",
+  "two-way table": "a table of counts with one variable down the rows and another across the columns; `table(a, b)` in R. See [Load a CSV and count two columns](#/math3042-q9/r-load-two-way-table)."
+}

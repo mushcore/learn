@@ -33,7 +33,7 @@ const WIDGETS = new Set([
   "clock-drift-play", "baseline-play", "shift-keying-play", "sampling-play", "fdm-play",
   "sequence-play", "build-play", "vector-grow-play", "seek-play",
   "stem-leaf-play", "ogive-play", "hist-tally-play", "birthday-play", "bayes-flow-play", "perm-fill-play",
-  "arrivals-play", "deal-play", "cdf-sweep-play",
+  "arrivals-play", "deal-play", "cdf-sweep-play", "sample-pile-play", "xbar-n-play", "ci-flip-play", "qq-build-play",
   "insertion-play", "pairs-play", "halving-play",
   // COMP 4736 operating systems (widgets-os*.js)
   "pipeline-play", "alu-calc", "cache-map-play", "interrupt-io-play", "rwx-bits", "clock-play", "alarm-list-play",

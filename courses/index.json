@@ -109,6 +109,12 @@
           "title": "Quiz 8",
           "subtitle": "the next lab quiz: all of Unit 5, continuous distributions on paper and in RStudio",
           "description": "A three-hour drill shaped like the quiz, written to be read with no earlier knowledge of Unit 5: how the past quizzes are written, one short lesson per idea (area as probability, uniform, the normal curve, the Z table forwards and backwards, two-step questions, exponential waits, percentiles and the memoryless fact, the p, q and r functions in RStudio), two mock quizzes in the real two-part format, and a one-page know-cold sheet."
+        },
+        {
+          "id": "math3042-q9",
+          "title": "Quiz 9",
+          "subtitle": "the next lab quiz as one picture: the pile of sample results, confidence intervals for p, QQ plots",
+          "description": "Quiz 9 built like an animated explainer: one picture, the pile of sample results, drawn from nothing and reused for everything. Four film-style animations, one short lesson per idea in the instructor's numbers (sampling distributions of p-hat and X-bar, the margin of error, the six lines of a confidence interval, the Central Limit Theorem, the QQ plot), the R for the posted Part 2 template, two mock quizzes and a know-cold sheet."
         }
       ]
     },
