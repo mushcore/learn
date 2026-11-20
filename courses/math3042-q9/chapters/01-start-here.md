@@ -55,7 +55,7 @@ Just like a receipt with the items listed: the total alone gives the marker noth
 
 ## Part 2 is the posted template
 
-The template was posted with a data file, `heights.csv`: 3000 people, with a height in cm, an age group and a sex. Its headings, in order:
+The template was posted with a practice data file, `heights.csv`: 3000 people, with a height in cm, an age group and a sex. **Expect a different file on the quiz.** The headings stay the same, in this order:
 
 | Heading | What it asks | Lesson |
 |---|---|---|
@@ -70,7 +70,10 @@ The template was posted with a data file, `heights.csv`: 3000 people, with a hei
 
 **The template asks about three different objects: the population (Q2), one sample (Q3), and the pile of sample means (Q4).** They can have three different shapes, and that is the point of Q4c. For example, a population with two humps gives a sample with two humps, while the pile of its sample means is a bell.
 
-Which column the quiz calls X, and its exact numbers, are known only on the day. The reasoning is the same for any column. [The posted Part 2 template, worked](#/math3042-q9/part2-walkthrough) goes through every heading.
+The file, the column the quiz calls X, and the numbers are known only on the day. So do not memorize the heights answers. Learn the code once and the rule for each answer. For example, the heights are two humps, but a file of waiting times would be skewed to the right, and the Q2 answer changes with it.
+
+- [The Part 2 template, worked on the practice file](#/math3042-q9/part2-walkthrough) goes through every heading on `heights.csv`.
+- [Part 2 on a file you have never seen](#/math3042-q9/part2-new-data) gives the same code with four blanks, the sentence to write for each shape, and three new files to practise on.
 
 ## The shortest path
 
@@ -84,7 +87,8 @@ The core lessons come first: they cover the shapes that carry most of the marks.
 | Core 3 | [The pile of X-bar](#/math3042-q9/xbar-sampling-distribution) | centre μ, width $\sigma/\sqrt{n}$; Q4a | 10 |
 | Core 4 | [The Central Limit Theorem](#/math3042-q9/clt-shape-rule) | the shape and its reason, on paper and in Q4b | 10 |
 | Core 5 | [Three different objects](#/math3042-q9/population-sample-pile) | Q2, Q3c and Q4c answered without mixing them up | 10 |
-| Core 6 | [The posted Part 2 template, worked](#/math3042-q9/part2-walkthrough) | all of Part 2, heading by heading | 15 |
+| Core 6 | [The Part 2 template, worked on the practice file](#/math3042-q9/part2-walkthrough) | all of Part 2, heading by heading | 15 |
+| Core 7 | [Part 2 on a file you have never seen](#/math3042-q9/part2-new-data) | the same marks when the quiz file is different | 15 |
 | Then | [The margin of error](#/math3042-q9/margin-of-error) | 1.645, 1.96 and 2.576 | 10 |
 | Then | [90%, 95%, 99%](#/math3042-q9/ci-confidence-level) | an interval at another level | 10 |
 | Then | [Sample size and overlap](#/math3042-q9/ci-sample-size-and-overlap) | n for a target E, rounded up; two intervals | 10 |

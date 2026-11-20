@@ -106,6 +106,17 @@ About 15 points at least. For a small sample a QQ plot shows more than a histogr
 
 `sample(x, size)` draws without replacement; `replicate(m, expr)` runs `expr` m times; `sd` divides by n − 1. On `heights.csv`: two humps in the population, about 149.97 for the centre and 2.47 for the width of the pile of means.
 
+**The quiz file will likely be a different one.** The lines above are written on the practice file. On a new file, four things change: the file name, the number column (`height_cm` here), the two word columns (`age` and `sex` here), and maybe n. Run `head` first and copy the column names from its output.
+
+## The answers depend on the file
+
+| Heading | What decides the answer |
+|---|---|
+| Q2 | The histogram of X. A bell: normal. A long tail, two humps or a flat top: not normal, and name the shape. |
+| Q3c | The QQ plot. Points along the line: the sample is consistent with a normal population. A curve, an S, or two flat runs with a jump: it is not. |
+| Q4b | X normal: X-bar is normal at any n. X not normal and n ≥ 30: X-bar is approximately normal. X not normal and n < 30: the histogram of X-bar can still be skewed. |
+| Q4c | No, in every case. The theorem is about the averages for n ≥ 30. It says nothing about X, about one sample, or about small n. |
+
 ## The traps
 
 | Trap | The right line |

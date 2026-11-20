@@ -30,3 +30,16 @@ Part 1 on paper with a calculator, 10 marks; Part 2 in RStudio, 10 marks; formul
 - The hand interval is the Wald interval; R's `prop.test` prints the Wilson interval. One sentence in lesson 05.
 - The module's organising picture ("the pile") and the four film-style animations follow the student's request for an explainer in the style of an animated video.
 - Numbers for `heights.csv` were computed in Python from the file; R was not run.
+
+## Practice data for Part 2 (added 2026-11-20)
+
+The quiz is expected to use a data file other than the posted `heights.csv`. Lesson `part2-new-data` therefore
+teaches the template with blanks and practises it on three made-up files in `practice/`:
+
+- `commute.csv` (1500 rows: `minutes`, `mode`, `campus`), right skewed, used with n = 100.
+- `battery.csv` (800 rows: `hours`, `os`, `size`), a bell, used with n = 10.
+- `wait.csv` (2000 rows: `seconds`, `queue`, `tier`), strongly right skewed, used with n = 5.
+
+All three are synthetic, generated with a seeded Python script (stdlib `random`); none is course material.
+Counts, means and standard deviations in the lesson were computed in Python from the files (`sd` with n − 1).
+Simulated values are described as approximate. R was not run.

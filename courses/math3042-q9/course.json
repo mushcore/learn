@@ -14,7 +14,8 @@
       { "lesson": "xbar-sampling-distribution", "note": "10 minutes: centre μ, width σ/√n" },
       { "lesson": "clt-shape-rule", "note": "10 minutes: a bell when X is normal or n is 30 or more, with the reason" },
       { "lesson": "population-sample-pile", "note": "10 minutes: the population, one sample, the pile of means: three objects, three shapes" },
-      { "lesson": "part2-walkthrough", "note": "15 minutes: the posted Part 2 template, heading by heading" },
+      { "lesson": "part2-walkthrough", "note": "15 minutes: the Part 2 template, heading by heading, on the practice file" },
+      { "lesson": "part2-new-data", "note": "15 minutes: the same template on a file you have not seen; four blanks, an answer for every shape, three practice files" },
       { "lesson": "margin-of-error", "note": "10 minutes: 1.96 widths reach 95% of the pile; 1.645 and 2.576" },
       { "lesson": "ci-confidence-level", "note": "10 minutes: 90%, 95%, 99%; more confidence, wider interval" },
       { "lesson": "ci-sample-size-and-overlap", "note": "10 minutes: the sample size for a target E, rounded up; two intervals that overlap" },
@@ -62,7 +63,8 @@
         { "id": "r-histogram-normal-fit", "title": "A histogram with a fitted normal curve: does it look like a bell?", "file": "chapters/12-r-histogram-is-it-normal.md" },
         { "id": "qq-plot", "title": "The QQ plot: a straight line means the data are bell-shaped", "file": "chapters/13-qq-plot.md" },
         { "id": "population-sample-pile", "title": "Three different objects: the population, one sample, the pile of sample means", "file": "chapters/14-r-three-questions-three-objects.md" },
-        { "id": "part2-walkthrough", "title": "The posted Part 2 template, worked on heights.csv", "file": "chapters/15-part2-walkthrough.md" }
+        { "id": "part2-walkthrough", "title": "The Part 2 template, worked on the practice file heights.csv", "file": "chapters/15-part2-walkthrough.md" },
+        { "id": "part2-new-data", "title": "Part 2 on a file you have never seen", "file": "chapters/19-part2-new-data.md" }
       ]
     },
     {

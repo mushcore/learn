@@ -1,11 +1,13 @@
 ---
-title: "The posted Part 2 template, worked on heights.csv"
+title: "The Part 2 template, worked on the practice file heights.csv"
 minutes: 15
 ---
 <!-- facts: none; counts, mean and sd recomputed from heights.csv in writer-f/heights_check.py; simulated values are described, never printed -->
-The Part 2 template was posted with a data file, `heights.csv`. This lesson works the template heading by heading on that file: the R, what appears on screen, and a model answer with its reason.
+The Part 2 template was posted with a practice data file, `heights.csv`. This lesson works the template heading by heading on that file: the R, what appears on screen, and a model answer with its reason.
 
-**The quiz may name a different column or change a number. The reasoning below carries over unchanged.**
+**Expect a different file on the quiz. The code carries over with the names swapped, but the answers do not.** For example, the heights have two humps, so the answer to Q2 here is "not normal, two humps". A file of battery lives could be a bell, and then the Q2 answer is "normal".
+
+So use this page to learn the code and the reason behind each answer. Then [Part 2 on a file you have never seen](#/math3042-q9/part2-new-data) gives the same code with blanks, the sentence to write for every shape, and three new files to practise on.
 
 ## The data: 3000 people, three columns
 
@@ -322,6 +324,10 @@ The heights have two humps. One sample of 100 has two humps. The pile of means i
 
 :::tip If the quiz's X turns out to be a bell
 Then Q2 and Q3c become "yes", with the same reasons turned round: one hump that follows the fitted curve, points that follow the line. Q4b stays "yes", and Q4c stays "no".
+:::
+
+:::warn If the quiz's file or its n is different
+The shape you name in Q2 and Q3c comes from the pictures on your screen, not from this page. And if n is below 30 while X is not a bell, the histogram of X-bar can stay skewed, so Q4b becomes "not normal". Q4c is still "no": the theorem only promises a bell for n of 30 or more. [Part 2 on a file you have never seen](#/math3042-q9/part2-new-data) has the sentence for each case.
 :::
 
 ## Knit to Word, with your name in it
